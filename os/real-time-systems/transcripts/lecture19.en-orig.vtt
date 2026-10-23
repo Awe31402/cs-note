@@ -1,0 +1,3792 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.840 --> 00:00:16.390 align:start position:0%
+ 
+[Music]
+
+00:00:16.390 --> 00:00:16.400 align:start position:0%
+[Music]
+ 
+
+00:00:16.400 --> 00:00:18.390 align:start position:0%
+[Music]
+welcome<00:00:16.720><c> to</c><00:00:16.880><c> lecture</c><00:00:17.359><c> 20.</c><00:00:17.840><c> so</c><00:00:18.000><c> we</c><00:00:18.160><c> will</c>
+
+00:00:18.390 --> 00:00:18.400 align:start position:0%
+welcome to lecture 20. so we will
+ 
+
+00:00:18.400 --> 00:00:19.590 align:start position:0%
+welcome to lecture 20. so we will
+discuss
+
+00:00:19.590 --> 00:00:19.600 align:start position:0%
+discuss
+ 
+
+00:00:19.600 --> 00:00:21.830 align:start position:0%
+discuss
+the<00:00:19.840><c> features</c><00:00:20.400><c> and</c><00:00:20.560><c> as</c><00:00:20.720><c> well</c><00:00:20.960><c> as</c><00:00:21.119><c> the</c><00:00:21.279><c> utility</c>
+
+00:00:21.830 --> 00:00:21.840 align:start position:0%
+the features and as well as the utility
+ 
+
+00:00:21.840 --> 00:00:24.390 align:start position:0%
+the features and as well as the utility
+of<00:00:22.000><c> both</c><00:00:22.480><c> unix</c><00:00:23.039><c> and</c><00:00:23.279><c> windows</c>
+
+00:00:24.390 --> 00:00:24.400 align:start position:0%
+of both unix and windows
+ 
+
+00:00:24.400 --> 00:00:27.589 align:start position:0%
+of both unix and windows
+as<00:00:24.640><c> a</c><00:00:24.720><c> real-time</c><00:00:25.279><c> operating</c><00:00:25.840><c> system</c>
+
+00:00:27.589 --> 00:00:27.599 align:start position:0%
+as a real-time operating system
+ 
+
+00:00:27.599 --> 00:00:28.950 align:start position:0%
+as a real-time operating system
+so<00:00:27.840><c> we</c><00:00:28.000><c> have</c><00:00:28.160><c> discussed</c><00:00:28.720><c> both</c><00:00:28.960><c> monolithic</c>
+
+00:00:28.950 --> 00:00:28.960 align:start position:0%
+so we have discussed both monolithic
+ 
+
+00:00:28.960 --> 00:00:30.550 align:start position:0%
+so we have discussed both monolithic
+monolithic
+
+00:00:30.550 --> 00:00:30.560 align:start position:0%
+monolithic
+ 
+
+00:00:30.560 --> 00:00:32.630 align:start position:0%
+monolithic
+and<00:00:30.720><c> microkernel</c><00:00:31.519><c> based</c>
+
+00:00:32.630 --> 00:00:32.640 align:start position:0%
+and microkernel based
+ 
+
+00:00:32.640 --> 00:00:34.229 align:start position:0%
+and microkernel based
+operating<00:00:33.120><c> systems</c><00:00:33.600><c> in</c><00:00:33.680><c> the</c><00:00:33.840><c> previous</c>
+
+00:00:34.229 --> 00:00:34.239 align:start position:0%
+operating systems in the previous
+ 
+
+00:00:34.239 --> 00:00:35.590 align:start position:0%
+operating systems in the previous
+lecture
+
+00:00:35.590 --> 00:00:35.600 align:start position:0%
+lecture
+ 
+
+00:00:35.600 --> 00:00:37.350 align:start position:0%
+lecture
+so<00:00:35.760><c> what</c><00:00:36.000><c> we</c><00:00:36.160><c> have</c><00:00:36.320><c> discussed</c><00:00:36.800><c> is</c><00:00:37.040><c> that</c><00:00:37.200><c> we</c>
+
+00:00:37.350 --> 00:00:37.360 align:start position:0%
+so what we have discussed is that we
+ 
+
+00:00:37.360 --> 00:00:39.910 align:start position:0%
+so what we have discussed is that we
+have<00:00:37.600><c> an</c><00:00:37.840><c> underlying</c><00:00:38.320><c> hardware</c><00:00:38.879><c> layer</c><00:00:39.440><c> on</c><00:00:39.680><c> top</c>
+
+00:00:39.910 --> 00:00:39.920 align:start position:0%
+have an underlying hardware layer on top
+ 
+
+00:00:39.920 --> 00:00:42.630 align:start position:0%
+have an underlying hardware layer on top
+of<00:00:40.079><c> that</c><00:00:40.320><c> we</c><00:00:40.480><c> have</c><00:00:40.719><c> a</c><00:00:40.800><c> kernel</c><00:00:41.200><c> mode</c>
+
+00:00:42.630 --> 00:00:42.640 align:start position:0%
+of that we have a kernel mode
+ 
+
+00:00:42.640 --> 00:00:45.590 align:start position:0%
+of that we have a kernel mode
+so<00:00:42.960><c> in</c><00:00:43.040><c> the</c><00:00:43.200><c> kernel</c><00:00:43.680><c> mode</c><00:00:44.000><c> we</c><00:00:44.239><c> have</c>
+
+00:00:45.590 --> 00:00:45.600 align:start position:0%
+so in the kernel mode we have
+ 
+
+00:00:45.600 --> 00:00:48.150 align:start position:0%
+so in the kernel mode we have
+the<00:00:45.760><c> traditional</c><00:00:46.399><c> features</c><00:00:46.960><c> of</c>
+
+00:00:48.150 --> 00:00:48.160 align:start position:0%
+the traditional features of
+ 
+
+00:00:48.160 --> 00:00:50.069 align:start position:0%
+the traditional features of
+process<00:00:48.640><c> management</c>
+
+00:00:50.069 --> 00:00:50.079 align:start position:0%
+process management
+ 
+
+00:00:50.079 --> 00:00:52.069 align:start position:0%
+process management
+memory<00:00:50.399><c> management</c><00:00:51.120><c> device</c><00:00:51.520><c> management</c>
+
+00:00:52.069 --> 00:00:52.079 align:start position:0%
+memory management device management
+ 
+
+00:00:52.079 --> 00:00:53.830 align:start position:0%
+memory management device management
+storage<00:00:52.559><c> management</c>
+
+00:00:53.830 --> 00:00:53.840 align:start position:0%
+storage management
+ 
+
+00:00:53.840 --> 00:00:56.950 align:start position:0%
+storage management
+and<00:00:54.160><c> io</c><00:00:54.480><c> management</c><00:00:55.360><c> and</c><00:00:55.760><c> on</c><00:00:56.079><c> top</c><00:00:56.399><c> of</c><00:00:56.800><c> the</c>
+
+00:00:56.950 --> 00:00:56.960 align:start position:0%
+and io management and on top of the
+ 
+
+00:00:56.960 --> 00:00:59.670 align:start position:0%
+and io management and on top of the
+storage<00:00:57.440><c> and</c><00:00:57.600><c> device</c><00:00:58.079><c> part</c>
+
+00:00:59.670 --> 00:00:59.680 align:start position:0%
+storage and device part
+ 
+
+00:00:59.680 --> 00:01:01.670 align:start position:0%
+storage and device part
+we<00:00:59.840><c> have</c><00:01:00.000><c> the</c><00:01:00.079><c> file</c><00:01:00.399><c> system</c>
+
+00:01:01.670 --> 00:01:01.680 align:start position:0%
+we have the file system
+ 
+
+00:01:01.680 --> 00:01:03.349 align:start position:0%
+we have the file system
+and<00:01:01.840><c> then</c><00:01:02.000><c> we</c><00:01:02.160><c> have</c><00:01:02.320><c> a</c><00:01:02.399><c> system</c><00:01:02.800><c> services</c>
+
+00:01:03.349 --> 00:01:03.359 align:start position:0%
+and then we have a system services
+ 
+
+00:01:03.359 --> 00:01:05.429 align:start position:0%
+and then we have a system services
+interface<00:01:03.920><c> for</c><00:01:04.080><c> system</c><00:01:04.559><c> calls</c>
+
+00:01:05.429 --> 00:01:05.439 align:start position:0%
+interface for system calls
+ 
+
+00:01:05.439 --> 00:01:07.270 align:start position:0%
+interface for system calls
+and<00:01:05.680><c> at</c><00:01:05.760><c> the</c><00:01:05.920><c> very</c><00:01:06.320><c> top</c><00:01:06.720><c> we</c><00:01:06.880><c> have</c><00:01:07.119><c> the</c>
+
+00:01:07.270 --> 00:01:07.280 align:start position:0%
+and at the very top we have the
+ 
+
+00:01:07.280 --> 00:01:09.670 align:start position:0%
+and at the very top we have the
+application<00:01:07.840><c> program</c><00:01:08.400><c> so</c><00:01:08.560><c> pretty</c><00:01:08.880><c> much</c><00:01:09.119><c> linux</c>
+
+00:01:09.670 --> 00:01:09.680 align:start position:0%
+application program so pretty much linux
+ 
+
+00:01:09.680 --> 00:01:11.109 align:start position:0%
+application program so pretty much linux
+and<00:01:09.920><c> unix</c>
+
+00:01:11.109 --> 00:01:11.119 align:start position:0%
+and unix
+ 
+
+00:01:11.119 --> 00:01:14.710 align:start position:0%
+and unix
+fall<00:01:11.439><c> into</c><00:01:11.680><c> this</c><00:01:12.000><c> paradigm</c>
+
+00:01:14.710 --> 00:01:14.720 align:start position:0%
+ 
+ 
+
+00:01:14.720 --> 00:01:17.109 align:start position:0%
+ 
+the<00:01:14.880><c> monolithic</c><00:01:15.680><c> kernel</c><00:01:16.400><c> so</c><00:01:16.640><c> we</c><00:01:16.799><c> have</c><00:01:16.880><c> seen</c>
+
+00:01:17.109 --> 00:01:17.119 align:start position:0%
+the monolithic kernel so we have seen
+ 
+
+00:01:17.119 --> 00:01:19.109 align:start position:0%
+the monolithic kernel so we have seen
+this<00:01:17.360><c> diagram</c><00:01:18.159><c> in</c>
+
+00:01:19.109 --> 00:01:19.119 align:start position:0%
+this diagram in
+ 
+
+00:01:19.119 --> 00:01:21.350 align:start position:0%
+this diagram in
+lecture<00:01:19.520><c> 19</c>
+
+00:01:21.350 --> 00:01:21.360 align:start position:0%
+lecture 19
+ 
+
+00:01:21.360 --> 00:01:23.109 align:start position:0%
+lecture 19
+everything<00:01:21.920><c> starting</c><00:01:22.320><c> from</c><00:01:22.560><c> the</c><00:01:22.640><c> hardware</c>
+
+00:01:23.109 --> 00:01:23.119 align:start position:0%
+everything starting from the hardware
+ 
+
+00:01:23.119 --> 00:01:24.870 align:start position:0%
+everything starting from the hardware
+abstraction<00:01:23.680><c> layer</c><00:01:23.920><c> to</c><00:01:24.080><c> the</c><00:01:24.240><c> key</c><00:01:24.479><c> kernel</c>
+
+00:01:24.870 --> 00:01:24.880 align:start position:0%
+abstraction layer to the key kernel
+ 
+
+00:01:24.880 --> 00:01:27.670 align:start position:0%
+abstraction layer to the key kernel
+modules<00:01:25.360><c> are</c><00:01:25.520><c> all</c><00:01:25.759><c> are</c><00:01:25.920><c> part</c><00:01:26.159><c> of</c><00:01:26.240><c> the</c><00:01:26.479><c> same</c>
+
+00:01:27.670 --> 00:01:27.680 align:start position:0%
+modules are all are part of the same
+ 
+
+00:01:27.680 --> 00:01:30.149 align:start position:0%
+modules are all are part of the same
+same<00:01:28.000><c> hole</c><00:01:28.799><c> right</c><00:01:29.119><c> it's</c><00:01:29.280><c> the</c><00:01:29.360><c> same</c><00:01:29.600><c> program</c><00:01:30.079><c> it</c>
+
+00:01:30.149 --> 00:01:30.159 align:start position:0%
+same hole right it's the same program it
+ 
+
+00:01:30.159 --> 00:01:31.590 align:start position:0%
+same hole right it's the same program it
+cannot<00:01:30.479><c> be</c><00:01:30.640><c> split</c>
+
+00:01:31.590 --> 00:01:31.600 align:start position:0%
+cannot be split
+ 
+
+00:01:31.600 --> 00:01:35.030 align:start position:0%
+cannot be split
+so<00:01:31.759><c> of</c><00:01:31.920><c> course</c><00:01:32.079><c> linux</c><00:01:32.560><c> has</c><00:01:32.640><c> the</c><00:01:33.200><c> has</c><00:01:33.439><c> the</c>
+
+00:01:35.030 --> 00:01:35.040 align:start position:0%
+so of course linux has the has the
+ 
+
+00:01:35.040 --> 00:01:37.910 align:start position:0%
+so of course linux has the has the
+notion<00:01:35.439><c> of</c><00:01:35.680><c> loadable</c><00:01:36.159><c> kernel</c><00:01:36.560><c> modules</c><00:01:37.040><c> lkm</c><00:01:37.600><c> so</c>
+
+00:01:37.910 --> 00:01:37.920 align:start position:0%
+notion of loadable kernel modules lkm so
+ 
+
+00:01:37.920 --> 00:01:39.670 align:start position:0%
+notion of loadable kernel modules lkm so
+lkms
+
+00:01:39.670 --> 00:01:39.680 align:start position:0%
+lkms
+ 
+
+00:01:39.680 --> 00:01:42.149 align:start position:0%
+lkms
+can<00:01:39.920><c> be</c><00:01:40.159><c> used</c><00:01:40.479><c> to</c><00:01:40.720><c> augment</c><00:01:41.200><c> its</c><00:01:41.360><c> functionality</c>
+
+00:01:42.149 --> 00:01:42.159 align:start position:0%
+can be used to augment its functionality
+ 
+
+00:01:42.159 --> 00:01:44.789 align:start position:0%
+can be used to augment its functionality
+or<00:01:42.240><c> modify</c><00:01:42.720><c> its</c><00:01:42.880><c> functionality</c><00:01:43.600><c> at</c><00:01:43.759><c> runtime</c>
+
+00:01:44.789 --> 00:01:44.799 align:start position:0%
+or modify its functionality at runtime
+ 
+
+00:01:44.799 --> 00:01:47.190 align:start position:0%
+or modify its functionality at runtime
+but<00:01:45.040><c> that</c><00:01:45.280><c> is</c><00:01:45.439><c> again</c><00:01:45.759><c> not</c><00:01:46.079><c> the</c><00:01:46.240><c> core</c><00:01:46.560><c> of</c><00:01:46.720><c> linux</c>
+
+00:01:47.190 --> 00:01:47.200 align:start position:0%
+but that is again not the core of linux
+ 
+
+00:01:47.200 --> 00:01:48.870 align:start position:0%
+but that is again not the core of linux
+right<00:01:47.439><c> so</c><00:01:47.600><c> that</c><00:01:47.840><c> is</c><00:01:48.000><c> not</c>
+
+00:01:48.870 --> 00:01:48.880 align:start position:0%
+right so that is not
+ 
+
+00:01:48.880 --> 00:01:52.310 align:start position:0%
+right so that is not
+really<00:01:49.360><c> a</c><00:01:49.520><c> very</c><00:01:49.840><c> essential</c><00:01:50.399><c> feature</c>
+
+00:01:52.310 --> 00:01:52.320 align:start position:0%
+really a very essential feature
+ 
+
+00:01:52.320 --> 00:01:54.710 align:start position:0%
+really a very essential feature
+so<00:01:52.560><c> monolithic</c><00:01:53.119><c> os</c><00:01:53.439><c> the</c><00:01:53.600><c> strong</c><00:01:54.000><c> points</c><00:01:54.399><c> is</c><00:01:54.560><c> it</c>
+
+00:01:54.710 --> 00:01:54.720 align:start position:0%
+so monolithic os the strong points is it
+ 
+
+00:01:54.720 --> 00:01:56.469 align:start position:0%
+so monolithic os the strong points is it
+provides<00:01:55.119><c> a</c><00:01:55.200><c> single</c><00:01:55.600><c> program</c><00:01:56.000><c> in</c><00:01:56.159><c> address</c>
+
+00:01:56.469 --> 00:01:56.479 align:start position:0%
+provides a single program in address
+ 
+
+00:01:56.479 --> 00:01:59.350 align:start position:0%
+provides a single program in address
+space<00:01:57.280><c> unix</c><00:01:57.680><c> linux</c>
+
+00:01:59.350 --> 00:01:59.360 align:start position:0%
+space unix linux
+ 
+
+00:01:59.360 --> 00:02:01.429 align:start position:0%
+space unix linux
+so<00:01:59.600><c> these</c><00:02:00.000><c> approaches</c><00:02:00.479><c> are</c><00:02:00.640><c> well</c><00:02:00.960><c> understood</c>
+
+00:02:01.429 --> 00:02:01.439 align:start position:0%
+so these approaches are well understood
+ 
+
+00:02:01.439 --> 00:02:03.270 align:start position:0%
+so these approaches are well understood
+the<00:02:01.520><c> performance</c><00:02:02.159><c> is</c><00:02:02.320><c> good</c><00:02:02.560><c> it's</c><00:02:02.799><c> easy</c><00:02:03.119><c> to</c>
+
+00:02:03.270 --> 00:02:03.280 align:start position:0%
+the performance is good it's easy to
+ 
+
+00:02:03.280 --> 00:02:04.389 align:start position:0%
+the performance is good it's easy to
+debug
+
+00:02:04.389 --> 00:02:04.399 align:start position:0%
+debug
+ 
+
+00:02:04.399 --> 00:02:06.630 align:start position:0%
+debug
+but<00:02:04.719><c> of</c><00:02:04.880><c> course</c><00:02:05.360><c> the</c><00:02:05.600><c> key</c><00:02:05.920><c> problem</c><00:02:06.320><c> is</c><00:02:06.479><c> that</c>
+
+00:02:06.630 --> 00:02:06.640 align:start position:0%
+but of course the key problem is that
+ 
+
+00:02:06.640 --> 00:02:09.029 align:start position:0%
+but of course the key problem is that
+the<00:02:06.799><c> kernel</c><00:02:07.439><c> components</c><00:02:08.080><c> are</c><00:02:08.160><c> not</c><00:02:08.399><c> protected</c>
+
+00:02:09.029 --> 00:02:09.039 align:start position:0%
+the kernel components are not protected
+ 
+
+00:02:09.039 --> 00:02:10.949 align:start position:0%
+the kernel components are not protected
+or<00:02:09.200><c> isolated</c><00:02:09.920><c> from</c><00:02:10.160><c> each</c><00:02:10.319><c> other</c><00:02:10.640><c> right</c><00:02:10.800><c> so</c>
+
+00:02:10.949 --> 00:02:10.959 align:start position:0%
+or isolated from each other right so
+ 
+
+00:02:10.959 --> 00:02:12.150 align:start position:0%
+or isolated from each other right so
+there<00:02:11.200><c> is</c><00:02:11.360><c> this</c>
+
+00:02:12.150 --> 00:02:12.160 align:start position:0%
+there is this
+ 
+
+00:02:12.160 --> 00:02:14.390 align:start position:0%
+there is this
+traditional<00:02:12.800><c> protection</c><00:02:13.360><c> or</c><00:02:13.440><c> this</c><00:02:13.680><c> isolation</c>
+
+00:02:14.390 --> 00:02:14.400 align:start position:0%
+traditional protection or this isolation
+ 
+
+00:02:14.400 --> 00:02:15.670 align:start position:0%
+traditional protection or this isolation
+is<00:02:14.560><c> not</c><00:02:14.800><c> there</c>
+
+00:02:15.670 --> 00:02:15.680 align:start position:0%
+is not there
+ 
+
+00:02:15.680 --> 00:02:17.670 align:start position:0%
+is not there
+furthermore<00:02:16.400><c> these</c><00:02:16.640><c> are</c><00:02:16.800><c> not</c><00:02:17.120><c> easily</c>
+
+00:02:17.670 --> 00:02:17.680 align:start position:0%
+furthermore these are not easily
+ 
+
+00:02:17.680 --> 00:02:20.150 align:start position:0%
+furthermore these are not easily
+extended<00:02:18.319><c> modified</c><00:02:18.959><c> or</c><00:02:19.120><c> customized</c><00:02:19.760><c> right</c>
+
+00:02:20.150 --> 00:02:20.160 align:start position:0%
+extended modified or customized right
+ 
+
+00:02:20.160 --> 00:02:23.030 align:start position:0%
+extended modified or customized right
+it's<00:02:20.319><c> not</c><00:02:20.480><c> really</c><00:02:20.840><c> possible</c><00:02:22.319><c> to</c>
+
+00:02:23.030 --> 00:02:23.040 align:start position:0%
+it's not really possible to
+ 
+
+00:02:23.040 --> 00:02:24.790 align:start position:0%
+it's not really possible to
+implement<00:02:23.599><c> a</c><00:02:23.680><c> very</c><00:02:23.920><c> diverse</c><00:02:24.400><c> set</c><00:02:24.640><c> of</c>
+
+00:02:24.790 --> 00:02:24.800 align:start position:0%
+implement a very diverse set of
+ 
+
+00:02:24.800 --> 00:02:26.150 align:start position:0%
+implement a very diverse set of
+applications
+
+00:02:26.150 --> 00:02:26.160 align:start position:0%
+applications
+ 
+
+00:02:26.160 --> 00:02:28.630 align:start position:0%
+applications
+on<00:02:26.480><c> such</c><00:02:26.800><c> kind</c><00:02:27.120><c> of</c><00:02:27.280><c> a</c><00:02:27.360><c> monolithic</c><00:02:28.080><c> os</c><00:02:28.400><c> or</c><00:02:28.560><c> a</c>
+
+00:02:28.630 --> 00:02:28.640 align:start position:0%
+on such kind of a monolithic os or a
+ 
+
+00:02:28.640 --> 00:02:31.910 align:start position:0%
+on such kind of a monolithic os or a
+monolithic<00:02:29.280><c> kernel</c>
+
+00:02:31.910 --> 00:02:31.920 align:start position:0%
+ 
+ 
+
+00:02:31.920 --> 00:02:33.910 align:start position:0%
+ 
+so<00:02:32.080><c> the</c><00:02:32.239><c> monolithic</c><00:02:32.879><c> structure</c><00:02:33.440><c> that</c><00:02:33.599><c> we</c><00:02:33.760><c> are</c>
+
+00:02:33.910 --> 00:02:33.920 align:start position:0%
+so the monolithic structure that we are
+ 
+
+00:02:33.920 --> 00:02:37.430 align:start position:0%
+so the monolithic structure that we are
+looking<00:02:34.319><c> at</c><00:02:34.879><c> basically</c><00:02:35.519><c> has</c><00:02:36.080><c> a</c><00:02:36.239><c> main</c><00:02:36.959><c> kernel</c>
+
+00:02:37.430 --> 00:02:37.440 align:start position:0%
+looking at basically has a main kernel
+ 
+
+00:02:37.440 --> 00:02:38.229 align:start position:0%
+looking at basically has a main kernel
+core
+
+00:02:38.229 --> 00:02:38.239 align:start position:0%
+core
+ 
+
+00:02:38.239 --> 00:02:40.949 align:start position:0%
+core
+that<00:02:38.480><c> provides</c><00:02:38.959><c> a</c><00:02:39.040><c> bunch</c><00:02:39.280><c> of</c><00:02:39.440><c> os</c><00:02:39.760><c> services</c>
+
+00:02:40.949 --> 00:02:40.959 align:start position:0%
+that provides a bunch of os services
+ 
+
+00:02:40.959 --> 00:02:42.949 align:start position:0%
+that provides a bunch of os services
+and<00:02:41.280><c> a</c><00:02:41.360><c> bunch</c><00:02:41.599><c> of</c><00:02:41.840><c> utility</c><00:02:42.319><c> functions</c><00:02:42.800><c> that</c>
+
+00:02:42.949 --> 00:02:42.959 align:start position:0%
+and a bunch of utility functions that
+ 
+
+00:02:42.959 --> 00:02:44.949 align:start position:0%
+and a bunch of utility functions that
+use<00:02:43.280><c> those</c><00:02:43.519><c> os</c><00:02:43.840><c> services</c>
+
+00:02:44.949 --> 00:02:44.959 align:start position:0%
+use those os services
+ 
+
+00:02:44.959 --> 00:02:49.990 align:start position:0%
+use those os services
+to<00:02:45.120><c> provide</c><00:02:45.840><c> services</c><00:02:46.400><c> to</c><00:02:46.560><c> real</c><00:02:46.959><c> applications</c>
+
+00:02:49.990 --> 00:02:50.000 align:start position:0%
+ 
+ 
+
+00:02:50.000 --> 00:02:51.990 align:start position:0%
+ 
+so<00:02:50.239><c> again</c><00:02:50.560><c> the</c><00:02:50.720><c> pros</c><00:02:51.120><c> as</c><00:02:51.280><c> we</c><00:02:51.440><c> have</c><00:02:51.599><c> said</c><00:02:51.920><c> is</c>
+
+00:02:51.990 --> 00:02:52.000 align:start position:0%
+so again the pros as we have said is
+ 
+
+00:02:52.000 --> 00:02:54.229 align:start position:0%
+so again the pros as we have said is
+that<00:02:52.160><c> the</c><00:02:52.400><c> kernel</c><00:02:52.879><c> is</c><00:02:53.040><c> the</c><00:02:53.200><c> os</c>
+
+00:02:54.229 --> 00:02:54.239 align:start position:0%
+that the kernel is the os
+ 
+
+00:02:54.239 --> 00:02:55.910 align:start position:0%
+that the kernel is the os
+uh<00:02:54.560><c> it</c><00:02:54.720><c> is</c>
+
+00:02:55.910 --> 00:02:55.920 align:start position:0%
+uh it is
+ 
+
+00:02:55.920 --> 00:02:58.229 align:start position:0%
+uh it is
+one<00:02:56.160><c> whole</c><00:02:56.480><c> thing</c><00:02:56.800><c> easy</c><00:02:57.200><c> to</c><00:02:57.440><c> write</c><00:02:57.760><c> debug</c><00:02:58.159><c> and</c>
+
+00:02:58.229 --> 00:02:58.239 align:start position:0%
+one whole thing easy to write debug and
+ 
+
+00:02:58.239 --> 00:02:59.350 align:start position:0%
+one whole thing easy to write debug and
+verify
+
+00:02:59.350 --> 00:02:59.360 align:start position:0%
+verify
+ 
+
+00:02:59.360 --> 00:03:01.990 align:start position:0%
+verify
+protection<00:02:59.920><c> is</c><00:03:00.000><c> an</c><00:03:00.159><c> issue</c>
+
+00:03:01.990 --> 00:03:02.000 align:start position:0%
+protection is an issue
+ 
+
+00:03:02.000 --> 00:03:05.110 align:start position:0%
+protection is an issue
+and<00:03:02.239><c> given</c><00:03:02.560><c> the</c><00:03:02.720><c> fact</c><00:03:04.000><c> that</c><00:03:04.319><c> we</c><00:03:04.480><c> have</c><00:03:04.640><c> a</c><00:03:04.720><c> large</c>
+
+00:03:05.110 --> 00:03:05.120 align:start position:0%
+and given the fact that we have a large
+ 
+
+00:03:05.120 --> 00:03:07.430 align:start position:0%
+and given the fact that we have a large
+and<00:03:05.200><c> generic</c><00:03:05.760><c> base</c>
+
+00:03:07.430 --> 00:03:07.440 align:start position:0%
+and generic base
+ 
+
+00:03:07.440 --> 00:03:09.110 align:start position:0%
+and generic base
+uh<00:03:07.760><c> which</c><00:03:08.239><c> you</c><00:03:08.400><c> know</c>
+
+00:03:09.110 --> 00:03:09.120 align:start position:0%
+uh which you know
+ 
+
+00:03:09.120 --> 00:03:11.030 align:start position:0%
+uh which you know
+can<00:03:09.440><c> contain</c><00:03:09.840><c> all</c><00:03:10.000><c> the</c><00:03:10.159><c> device</c><00:03:10.480><c> drivers</c><00:03:10.879><c> and</c>
+
+00:03:11.030 --> 00:03:11.040 align:start position:0%
+can contain all the device drivers and
+ 
+
+00:03:11.040 --> 00:03:13.750 align:start position:0%
+can contain all the device drivers and
+so<00:03:11.200><c> on</c><00:03:11.440><c> it's</c><00:03:11.599><c> a</c><00:03:11.760><c> great</c><00:03:12.080><c> idea</c><00:03:12.640><c> for</c>
+
+00:03:13.750 --> 00:03:13.760 align:start position:0%
+so on it's a great idea for
+ 
+
+00:03:13.760 --> 00:03:15.830 align:start position:0%
+so on it's a great idea for
+a<00:03:13.920><c> company</c><00:03:14.319><c> such</c><00:03:14.560><c> as</c><00:03:14.720><c> apple</c><00:03:15.120><c> which</c><00:03:15.360><c> also</c><00:03:15.599><c> makes</c>
+
+00:03:15.830 --> 00:03:15.840 align:start position:0%
+a company such as apple which also makes
+ 
+
+00:03:15.840 --> 00:03:18.149 align:start position:0%
+a company such as apple which also makes
+its<00:03:16.000><c> own</c><00:03:16.159><c> hardware</c><00:03:16.959><c> so</c><00:03:17.120><c> for</c><00:03:17.360><c> example</c><00:03:17.840><c> you</c><00:03:17.920><c> know</c>
+
+00:03:18.149 --> 00:03:18.159 align:start position:0%
+its own hardware so for example you know
+ 
+
+00:03:18.159 --> 00:03:19.110 align:start position:0%
+its own hardware so for example you know
+on<00:03:18.319><c> a</c>
+
+00:03:19.110 --> 00:03:19.120 align:start position:0%
+on a
+ 
+
+00:03:19.120 --> 00:03:20.949 align:start position:0%
+on a
+on<00:03:19.360><c> an</c><00:03:19.519><c> apple</c><00:03:19.840><c> machine</c>
+
+00:03:20.949 --> 00:03:20.959 align:start position:0%
+on an apple machine
+ 
+
+00:03:20.959 --> 00:03:22.390 align:start position:0%
+on an apple machine
+the<00:03:21.120><c> hardware</c><00:03:21.680><c> is</c>
+
+00:03:22.390 --> 00:03:22.400 align:start position:0%
+the hardware is
+ 
+
+00:03:22.400 --> 00:03:23.990 align:start position:0%
+the hardware is
+made<00:03:22.640><c> by</c><00:03:22.959><c> apple</c>
+
+00:03:23.990 --> 00:03:24.000 align:start position:0%
+made by apple
+ 
+
+00:03:24.000 --> 00:03:26.149 align:start position:0%
+made by apple
+right<00:03:24.239><c> so</c><00:03:24.400><c> it's</c><00:03:24.480><c> not</c><00:03:24.640><c> made</c><00:03:24.879><c> by</c><00:03:25.040><c> anybody</c><00:03:25.519><c> else</c>
+
+00:03:26.149 --> 00:03:26.159 align:start position:0%
+right so it's not made by anybody else
+ 
+
+00:03:26.159 --> 00:03:27.830 align:start position:0%
+right so it's not made by anybody else
+so<00:03:26.319><c> there</c><00:03:26.560><c> is</c><00:03:26.640><c> no</c><00:03:26.799><c> reason</c><00:03:27.200><c> for</c><00:03:27.360><c> the</c><00:03:27.519><c> apple</c>
+
+00:03:27.830 --> 00:03:27.840 align:start position:0%
+so there is no reason for the apple
+ 
+
+00:03:27.840 --> 00:03:30.309 align:start position:0%
+so there is no reason for the apple
+operating<00:03:28.319><c> system</c><00:03:29.120><c> ios</c>
+
+00:03:30.309 --> 00:03:30.319 align:start position:0%
+operating system ios
+ 
+
+00:03:30.319 --> 00:03:32.470 align:start position:0%
+operating system ios
+to<00:03:30.560><c> actually</c><00:03:31.040><c> you</c><00:03:31.200><c> know</c><00:03:31.599><c> cater</c><00:03:32.000><c> to</c><00:03:32.159><c> all</c><00:03:32.239><c> kinds</c>
+
+00:03:32.470 --> 00:03:32.480 align:start position:0%
+to actually you know cater to all kinds
+ 
+
+00:03:32.480 --> 00:03:34.309 align:start position:0%
+to actually you know cater to all kinds
+of<00:03:32.560><c> hardware</c><00:03:32.959><c> that's</c><00:03:33.200><c> not</c><00:03:33.360><c> required</c>
+
+00:03:34.309 --> 00:03:34.319 align:start position:0%
+of hardware that's not required
+ 
+
+00:03:34.319 --> 00:03:36.070 align:start position:0%
+of hardware that's not required
+because<00:03:34.640><c> the</c><00:03:34.720><c> hardware</c><00:03:35.200><c> on</c><00:03:35.280><c> which</c><00:03:35.599><c> it</c><00:03:35.760><c> is</c><00:03:35.920><c> it</c>
+
+00:03:36.070 --> 00:03:36.080 align:start position:0%
+because the hardware on which it is it
+ 
+
+00:03:36.080 --> 00:03:37.750 align:start position:0%
+because the hardware on which it is it
+will<00:03:36.239><c> run</c><00:03:36.480><c> is</c><00:03:36.640><c> fixed</c>
+
+00:03:37.750 --> 00:03:37.760 align:start position:0%
+will run is fixed
+ 
+
+00:03:37.760 --> 00:03:40.789 align:start position:0%
+will run is fixed
+so<00:03:37.920><c> that</c><00:03:38.640><c> can</c><00:03:38.959><c> be</c><00:03:39.120><c> a</c><00:03:39.200><c> monolithic</c><00:03:40.080><c> kernel</c>
+
+00:03:40.789 --> 00:03:40.799 align:start position:0%
+so that can be a monolithic kernel
+ 
+
+00:03:40.799 --> 00:03:43.030 align:start position:0%
+so that can be a monolithic kernel
+because<00:03:41.120><c> the</c><00:03:41.280><c> point</c><00:03:41.599><c> is</c><00:03:41.760><c> that</c><00:03:42.400><c> that</c><00:03:42.640><c> much</c><00:03:42.879><c> of</c>
+
+00:03:43.030 --> 00:03:43.040 align:start position:0%
+because the point is that that much of
+ 
+
+00:03:43.040 --> 00:03:45.110 align:start position:0%
+because the point is that that much of
+runtime<00:03:43.519><c> flexibility</c><00:03:44.239><c> is</c><00:03:44.400><c> something</c><00:03:44.799><c> that</c><00:03:44.959><c> we</c>
+
+00:03:45.110 --> 00:03:45.120 align:start position:0%
+runtime flexibility is something that we
+ 
+
+00:03:45.120 --> 00:03:47.430 align:start position:0%
+runtime flexibility is something that we
+don't<00:03:45.360><c> require</c><00:03:46.319><c> as</c><00:03:46.640><c> opposed</c><00:03:46.959><c> to</c><00:03:47.120><c> something</c>
+
+00:03:47.430 --> 00:03:47.440 align:start position:0%
+don't require as opposed to something
+ 
+
+00:03:47.440 --> 00:03:49.990 align:start position:0%
+don't require as opposed to something
+like<00:03:47.680><c> windows</c><00:03:48.239><c> which</c><00:03:48.480><c> is</c><00:03:48.640><c> actually</c><00:03:48.959><c> meant</c><00:03:49.280><c> to</c>
+
+00:03:49.990 --> 00:03:50.000 align:start position:0%
+like windows which is actually meant to
+ 
+
+00:03:50.000 --> 00:03:53.429 align:start position:0%
+like windows which is actually meant to
+run<00:03:50.239><c> on</c><00:03:50.400><c> a</c><00:03:50.560><c> large</c><00:03:51.040><c> variety</c><00:03:51.599><c> of</c><00:03:51.840><c> machines</c>
+
+00:03:53.429 --> 00:03:53.439 align:start position:0%
+run on a large variety of machines
+ 
+
+00:03:53.439 --> 00:03:55.270 align:start position:0%
+run on a large variety of machines
+so<00:03:53.599><c> the</c><00:03:53.760><c> monolithic</c><00:03:54.480><c> kernel</c><00:03:54.879><c> has</c><00:03:55.120><c> its</c>
+
+00:03:55.270 --> 00:03:55.280 align:start position:0%
+so the monolithic kernel has its
+ 
+
+00:03:55.280 --> 00:03:57.830 align:start position:0%
+so the monolithic kernel has its
+disadvantages<00:03:56.319><c> which</c><00:03:56.560><c> is</c><00:03:56.959><c> a</c><00:03:57.040><c> large</c><00:03:57.439><c> kernel</c>
+
+00:03:57.830 --> 00:03:57.840 align:start position:0%
+disadvantages which is a large kernel
+ 
+
+00:03:57.840 --> 00:04:00.550 align:start position:0%
+disadvantages which is a large kernel
+size<00:03:58.560><c> because</c><00:03:58.959><c> all</c><00:03:59.120><c> the</c><00:03:59.280><c> features</c>
+
+00:04:00.550 --> 00:04:00.560 align:start position:0%
+size because all the features
+ 
+
+00:04:00.560 --> 00:04:02.949 align:start position:0%
+size because all the features
+have<00:04:00.799><c> to</c><00:04:00.959><c> be</c><00:04:01.120><c> compiled</c><00:04:01.840><c> have</c><00:04:02.000><c> to</c><00:04:02.159><c> be</c>
+
+00:04:02.949 --> 00:04:02.959 align:start position:0%
+have to be compiled have to be
+ 
+
+00:04:02.959 --> 00:04:05.830 align:start position:0%
+have to be compiled have to be
+linked<00:04:03.360><c> and</c><00:04:03.519><c> bound</c><00:04:03.840><c> together</c><00:04:04.319><c> as</c><00:04:04.560><c> one</c><00:04:04.879><c> kernel</c>
+
+00:04:05.830 --> 00:04:05.840 align:start position:0%
+linked and bound together as one kernel
+ 
+
+00:04:05.840 --> 00:04:08.550 align:start position:0%
+linked and bound together as one kernel
+and<00:04:06.000><c> that</c><00:04:06.319><c> kernel</c><00:04:06.720><c> would</c><00:04:06.879><c> be</c><00:04:06.959><c> running</c>
+
+00:04:08.550 --> 00:04:08.560 align:start position:0%
+and that kernel would be running
+ 
+
+00:04:08.560 --> 00:04:10.309 align:start position:0%
+and that kernel would be running
+so<00:04:08.720><c> the</c><00:04:08.879><c> size</c><00:04:09.200><c> is</c><00:04:09.360><c> large</c>
+
+00:04:10.309 --> 00:04:10.319 align:start position:0%
+so the size is large
+ 
+
+00:04:10.319 --> 00:04:12.229 align:start position:0%
+so the size is large
+there<00:04:10.480><c> is</c><00:04:10.640><c> a</c><00:04:10.720><c> shared</c><00:04:11.120><c> address</c><00:04:11.519><c> space</c><00:04:11.920><c> in</c><00:04:12.080><c> the</c>
+
+00:04:12.229 --> 00:04:12.239 align:start position:0%
+there is a shared address space in the
+ 
+
+00:04:12.239 --> 00:04:14.149 align:start position:0%
+there is a shared address space in the
+sense<00:04:12.480><c> that</c><00:04:12.720><c> correcting</c><00:04:13.280><c> kernel</c><00:04:13.680><c> bugs</c><00:04:14.080><c> is</c>
+
+00:04:14.149 --> 00:04:14.159 align:start position:0%
+sense that correcting kernel bugs is
+ 
+
+00:04:14.159 --> 00:04:15.670 align:start position:0%
+sense that correcting kernel bugs is
+difficult
+
+00:04:15.670 --> 00:04:15.680 align:start position:0%
+difficult
+ 
+
+00:04:15.680 --> 00:04:17.430 align:start position:0%
+difficult
+and<00:04:16.000><c> also</c><00:04:16.320><c> it</c><00:04:16.479><c> is</c><00:04:16.560><c> hard</c><00:04:16.799><c> to</c><00:04:16.959><c> isolate</c>
+
+00:04:17.430 --> 00:04:17.440 align:start position:0%
+and also it is hard to isolate
+ 
+
+00:04:17.440 --> 00:04:19.189 align:start position:0%
+and also it is hard to isolate
+components<00:04:17.919><c> from</c><00:04:18.160><c> each</c><00:04:18.320><c> other</c>
+
+00:04:19.189 --> 00:04:19.199 align:start position:0%
+components from each other
+ 
+
+00:04:19.199 --> 00:04:21.749 align:start position:0%
+components from each other
+so<00:04:19.440><c> either</c><00:04:19.840><c> because</c><00:04:20.239><c> of</c><00:04:20.400><c> a</c><00:04:20.479><c> genuine</c><00:04:20.959><c> bug</c><00:04:21.519><c> or</c>
+
+00:04:21.749 --> 00:04:21.759 align:start position:0%
+so either because of a genuine bug or
+ 
+
+00:04:21.759 --> 00:04:24.790 align:start position:0%
+so either because of a genuine bug or
+because<00:04:22.160><c> of</c><00:04:22.320><c> a</c><00:04:22.479><c> virus</c><00:04:23.120><c> or</c><00:04:23.360><c> because</c><00:04:23.840><c> of</c>
+
+00:04:24.790 --> 00:04:24.800 align:start position:0%
+because of a virus or because of
+ 
+
+00:04:24.800 --> 00:04:27.590 align:start position:0%
+because of a virus or because of
+you<00:04:24.960><c> know</c><00:04:25.199><c> an</c><00:04:25.440><c> inadvertent</c><00:04:26.720><c> issue</c><00:04:27.120><c> where</c><00:04:27.360><c> one</c>
+
+00:04:27.590 --> 00:04:27.600 align:start position:0%
+you know an inadvertent issue where one
+ 
+
+00:04:27.600 --> 00:04:29.590 align:start position:0%
+you know an inadvertent issue where one
+part<00:04:28.080><c> corrupts</c><00:04:28.560><c> the</c><00:04:28.639><c> memory</c><00:04:29.040><c> of</c><00:04:29.120><c> some</c><00:04:29.280><c> other</c>
+
+00:04:29.590 --> 00:04:29.600 align:start position:0%
+part corrupts the memory of some other
+ 
+
+00:04:29.600 --> 00:04:32.150 align:start position:0%
+part corrupts the memory of some other
+part
+
+00:04:32.150 --> 00:04:32.160 align:start position:0%
+ 
+ 
+
+00:04:32.160 --> 00:04:34.150 align:start position:0%
+ 
+isolating<00:04:32.800><c> this</c><00:04:33.040><c> is</c><00:04:33.199><c> difficult</c><00:04:33.600><c> see</c><00:04:33.840><c> again</c>
+
+00:04:34.150 --> 00:04:34.160 align:start position:0%
+isolating this is difficult see again
+ 
+
+00:04:34.160 --> 00:04:36.550 align:start position:0%
+isolating this is difficult see again
+monolithic<00:04:34.720><c> kernels</c><00:04:35.199><c> are</c><00:04:35.280><c> well</c><00:04:35.600><c> understood</c>
+
+00:04:36.550 --> 00:04:36.560 align:start position:0%
+monolithic kernels are well understood
+ 
+
+00:04:36.560 --> 00:04:39.350 align:start position:0%
+monolithic kernels are well understood
+in<00:04:36.720><c> the</c><00:04:36.880><c> sense</c><00:04:37.199><c> the</c><00:04:37.360><c> number</c><00:04:37.680><c> of</c>
+
+00:04:39.350 --> 00:04:39.360 align:start position:0%
+in the sense the number of
+ 
+
+00:04:39.360 --> 00:04:41.430 align:start position:0%
+in the sense the number of
+you<00:04:39.520><c> know</c><00:04:39.680><c> behaviors</c><00:04:40.320><c> is</c><00:04:40.400><c> kind</c><00:04:40.560><c> of</c><00:04:40.720><c> limited</c><00:04:41.280><c> so</c>
+
+00:04:41.430 --> 00:04:41.440 align:start position:0%
+you know behaviors is kind of limited so
+ 
+
+00:04:41.440 --> 00:04:43.670 align:start position:0%
+you know behaviors is kind of limited so
+in<00:04:41.600><c> a</c><00:04:41.680><c> sense</c><00:04:42.000><c> it's</c><00:04:42.160><c> easy</c><00:04:42.400><c> to</c><00:04:42.479><c> verify</c>
+
+00:04:43.670 --> 00:04:43.680 align:start position:0%
+in a sense it's easy to verify
+ 
+
+00:04:43.680 --> 00:04:45.749 align:start position:0%
+in a sense it's easy to verify
+but<00:04:43.919><c> in</c><00:04:44.160><c> another</c><00:04:44.560><c> sense</c><00:04:44.880><c> correcting</c><00:04:45.360><c> a</c><00:04:45.440><c> kernel</c>
+
+00:04:45.749 --> 00:04:45.759 align:start position:0%
+but in another sense correcting a kernel
+ 
+
+00:04:45.759 --> 00:04:47.990 align:start position:0%
+but in another sense correcting a kernel
+bug<00:04:46.000><c> is</c><00:04:46.160><c> difficult</c><00:04:46.639><c> because</c><00:04:47.040><c> it's</c><00:04:47.280><c> still</c><00:04:47.759><c> one</c>
+
+00:04:47.990 --> 00:04:48.000 align:start position:0%
+bug is difficult because it's still one
+ 
+
+00:04:48.000 --> 00:04:49.909 align:start position:0%
+bug is difficult because it's still one
+large<00:04:48.320><c> code</c><00:04:48.560><c> base</c><00:04:48.800><c> the</c><00:04:48.960><c> separation</c><00:04:49.600><c> is</c><00:04:49.680><c> not</c>
+
+00:04:49.909 --> 00:04:49.919 align:start position:0%
+large code base the separation is not
+ 
+
+00:04:49.919 --> 00:04:51.510 align:start position:0%
+large code base the separation is not
+there
+
+00:04:51.510 --> 00:04:51.520 align:start position:0%
+there
+ 
+
+00:04:51.520 --> 00:04:54.230 align:start position:0%
+there
+so<00:04:51.680><c> this</c><00:04:51.919><c> can</c><00:04:52.160><c> lead</c><00:04:52.320><c> to</c><00:04:52.479><c> some</c><00:04:52.720><c> instability</c>
+
+00:04:54.230 --> 00:04:54.240 align:start position:0%
+so this can lead to some instability
+ 
+
+00:04:54.240 --> 00:04:55.110 align:start position:0%
+so this can lead to some instability
+right
+
+00:04:55.110 --> 00:04:55.120 align:start position:0%
+right
+ 
+
+00:04:55.120 --> 00:04:57.510 align:start position:0%
+right
+and<00:04:55.440><c> also</c><00:04:56.160><c> for</c><00:04:56.400><c> many</c><00:04:56.720><c> such</c><00:04:56.960><c> designs</c>
+
+00:04:57.510 --> 00:04:57.520 align:start position:0%
+and also for many such designs
+ 
+
+00:04:57.520 --> 00:05:00.070 align:start position:0%
+and also for many such designs
+particularly<00:04:58.160><c> for</c><00:04:58.400><c> commercial</c><00:04:58.880><c> unix</c>
+
+00:05:00.070 --> 00:05:00.080 align:start position:0%
+particularly for commercial unix
+ 
+
+00:05:00.080 --> 00:05:02.310 align:start position:0%
+particularly for commercial unix
+the<00:05:00.320><c> kernel</c><00:05:00.720><c> code</c><00:05:01.039><c> is</c><00:05:01.120><c> not</c><00:05:01.360><c> available</c><00:05:01.919><c> so</c><00:05:02.080><c> only</c>
+
+00:05:02.310 --> 00:05:02.320 align:start position:0%
+the kernel code is not available so only
+ 
+
+00:05:02.320 --> 00:05:03.830 align:start position:0%
+the kernel code is not available so only
+it's<00:05:02.479><c> only</c><00:05:02.720><c> the</c><00:05:02.800><c> kernel</c>
+
+00:05:03.830 --> 00:05:03.840 align:start position:0%
+it's only the kernel
+ 
+
+00:05:03.840 --> 00:05:06.469 align:start position:0%
+it's only the kernel
+writers<00:05:04.320><c> who</c><00:05:04.400><c> can</c><00:05:04.560><c> do</c><00:05:04.800><c> it</c><00:05:05.440><c> so</c><00:05:05.600><c> if</c><00:05:05.680><c> you</c><00:05:05.840><c> need</c><00:05:06.240><c> any</c>
+
+00:05:06.469 --> 00:05:06.479 align:start position:0%
+writers who can do it so if you need any
+ 
+
+00:05:06.479 --> 00:05:08.070 align:start position:0%
+writers who can do it so if you need any
+additional<00:05:06.960><c> feature</c><00:05:07.360><c> you'll</c><00:05:07.600><c> have</c><00:05:07.759><c> to</c><00:05:07.919><c> go</c>
+
+00:05:08.070 --> 00:05:08.080 align:start position:0%
+additional feature you'll have to go
+ 
+
+00:05:08.080 --> 00:05:09.830 align:start position:0%
+additional feature you'll have to go
+back<00:05:08.320><c> to</c><00:05:08.479><c> the</c><00:05:08.639><c> authors</c><00:05:09.039><c> of</c><00:05:09.120><c> the</c><00:05:09.280><c> kernel</c><00:05:09.759><c> and</c>
+
+00:05:09.830 --> 00:05:09.840 align:start position:0%
+back to the authors of the kernel and
+ 
+
+00:05:09.840 --> 00:05:11.830 align:start position:0%
+back to the authors of the kernel and
+they<00:05:10.000><c> need</c><00:05:10.240><c> to</c><00:05:10.320><c> recompile</c><00:05:10.960><c> the</c><00:05:11.120><c> kernel</c><00:05:11.600><c> give</c><00:05:11.759><c> a</c>
+
+00:05:11.830 --> 00:05:11.840 align:start position:0%
+they need to recompile the kernel give a
+ 
+
+00:05:11.840 --> 00:05:14.310 align:start position:0%
+they need to recompile the kernel give a
+new<00:05:12.080><c> kernel</c><00:05:12.479><c> to</c><00:05:12.560><c> you</c><00:05:13.199><c> even</c><00:05:13.520><c> though</c><00:05:14.080><c> you</c><00:05:14.160><c> know</c>
+
+00:05:14.310 --> 00:05:14.320 align:start position:0%
+new kernel to you even though you know
+ 
+
+00:05:14.320 --> 00:05:17.029 align:start position:0%
+new kernel to you even though you know
+linux<00:05:14.800><c> still</c><00:05:15.039><c> being</c><00:05:15.199><c> a</c><00:05:15.280><c> monolithic</c><00:05:15.919><c> kernel</c><00:05:16.800><c> it</c>
+
+00:05:17.029 --> 00:05:17.039 align:start position:0%
+linux still being a monolithic kernel it
+ 
+
+00:05:17.039 --> 00:05:19.110 align:start position:0%
+linux still being a monolithic kernel it
+is<00:05:17.199><c> open</c><00:05:17.440><c> source</c><00:05:18.000><c> it</c><00:05:18.160><c> does</c><00:05:18.320><c> not</c><00:05:18.560><c> have</c><00:05:18.880><c> this</c>
+
+00:05:19.110 --> 00:05:19.120 align:start position:0%
+is open source it does not have this
+ 
+
+00:05:19.120 --> 00:05:22.710 align:start position:0%
+is open source it does not have this
+particular<00:05:19.759><c> issue</c>
+
+00:05:22.710 --> 00:05:22.720 align:start position:0%
+ 
+ 
+
+00:05:22.720 --> 00:05:25.270 align:start position:0%
+ 
+also<00:05:23.199><c> the</c><00:05:23.440><c> thing</c><00:05:23.680><c> is</c><00:05:23.919><c> that</c><00:05:24.240><c> given</c><00:05:24.639><c> the</c><00:05:24.800><c> fact</c>
+
+00:05:25.270 --> 00:05:25.280 align:start position:0%
+also the thing is that given the fact
+ 
+
+00:05:25.280 --> 00:05:27.430 align:start position:0%
+also the thing is that given the fact
+that<00:05:25.520><c> we</c><00:05:25.680><c> are</c><00:05:25.840><c> not</c>
+
+00:05:27.430 --> 00:05:27.440 align:start position:0%
+that we are not
+ 
+
+00:05:27.440 --> 00:05:29.590 align:start position:0%
+that we are not
+having<00:05:27.759><c> the</c><00:05:27.919><c> kind</c><00:05:28.160><c> of</c><00:05:28.320><c> flexibility</c><00:05:29.039><c> we</c><00:05:29.280><c> may</c>
+
+00:05:29.590 --> 00:05:29.600 align:start position:0%
+having the kind of flexibility we may
+ 
+
+00:05:29.600 --> 00:05:30.629 align:start position:0%
+having the kind of flexibility we may
+have
+
+00:05:30.629 --> 00:05:30.639 align:start position:0%
+have
+ 
+
+00:05:30.639 --> 00:05:33.110 align:start position:0%
+have
+if<00:05:31.039><c> we</c><00:05:31.199><c> are</c><00:05:31.440><c> allowed</c><00:05:31.840><c> to</c><00:05:32.080><c> dynamically</c><00:05:32.720><c> at</c><00:05:32.880><c> run</c>
+
+00:05:33.110 --> 00:05:33.120 align:start position:0%
+if we are allowed to dynamically at run
+ 
+
+00:05:33.120 --> 00:05:34.070 align:start position:0%
+if we are allowed to dynamically at run
+time
+
+00:05:34.070 --> 00:05:34.080 align:start position:0%
+time
+ 
+
+00:05:34.080 --> 00:05:36.310 align:start position:0%
+time
+modify<00:05:34.639><c> parts</c><00:05:34.960><c> of</c><00:05:35.039><c> the</c><00:05:35.199><c> kernel</c>
+
+00:05:36.310 --> 00:05:36.320 align:start position:0%
+modify parts of the kernel
+ 
+
+00:05:36.320 --> 00:05:39.270 align:start position:0%
+modify parts of the kernel
+is<00:05:36.479><c> that</c><00:05:36.720><c> it</c><00:05:36.880><c> is</c><00:05:37.039><c> bound</c><00:05:37.360><c> to</c><00:05:37.600><c> specific</c><00:05:38.160><c> hardware</c>
+
+00:05:39.270 --> 00:05:39.280 align:start position:0%
+is that it is bound to specific hardware
+ 
+
+00:05:39.280 --> 00:05:41.670 align:start position:0%
+is that it is bound to specific hardware
+and<00:05:39.600><c> it</c><00:05:39.759><c> is</c><00:05:39.840><c> bound</c><00:05:40.160><c> to</c><00:05:40.320><c> specific</c><00:05:41.039><c> application</c>
+
+00:05:41.670 --> 00:05:41.680 align:start position:0%
+and it is bound to specific application
+ 
+
+00:05:41.680 --> 00:05:43.350 align:start position:0%
+and it is bound to specific application
+needs<00:05:42.400><c> right</c>
+
+00:05:43.350 --> 00:05:43.360 align:start position:0%
+needs right
+ 
+
+00:05:43.360 --> 00:05:46.310 align:start position:0%
+needs right
+so<00:05:43.520><c> which</c><00:05:43.759><c> is</c><00:05:43.919><c> fine</c><00:05:44.400><c> if</c><00:05:44.639><c> let's</c><00:05:44.880><c> say</c><00:05:45.120><c> the</c><00:05:45.440><c> scope</c>
+
+00:05:46.310 --> 00:05:46.320 align:start position:0%
+so which is fine if let's say the scope
+ 
+
+00:05:46.320 --> 00:05:49.430 align:start position:0%
+so which is fine if let's say the scope
+of<00:05:46.800><c> usage</c><00:05:47.759><c> is</c><00:05:48.240><c> limited</c>
+
+00:05:49.430 --> 00:05:49.440 align:start position:0%
+of usage is limited
+ 
+
+00:05:49.440 --> 00:05:52.629 align:start position:0%
+of usage is limited
+but<00:05:49.759><c> in</c><00:05:50.080><c> general</c><00:05:50.720><c> you</c><00:05:50.880><c> know</c><00:05:51.199><c> we</c><00:05:52.160><c> when</c><00:05:52.400><c> we</c><00:05:52.479><c> are</c>
+
+00:05:52.629 --> 00:05:52.639 align:start position:0%
+but in general you know we when we are
+ 
+
+00:05:52.639 --> 00:05:53.830 align:start position:0%
+but in general you know we when we are
+looking<00:05:53.039><c> at</c>
+
+00:05:53.830 --> 00:05:53.840 align:start position:0%
+looking at
+ 
+
+00:05:53.840 --> 00:05:55.590 align:start position:0%
+looking at
+creating<00:05:54.400><c> any</c><00:05:54.560><c> kind</c><00:05:54.720><c> of</c><00:05:54.880><c> operating</c><00:05:55.280><c> system</c>
+
+00:05:55.590 --> 00:05:55.600 align:start position:0%
+creating any kind of operating system
+ 
+
+00:05:55.600 --> 00:05:57.670 align:start position:0%
+creating any kind of operating system
+which<00:05:55.840><c> will</c><00:05:55.919><c> be</c><00:05:56.080><c> generic</c><00:05:56.720><c> generic</c><00:05:57.199><c> means</c><00:05:57.440><c> run</c>
+
+00:05:57.670 --> 00:05:57.680 align:start position:0%
+which will be generic generic means run
+ 
+
+00:05:57.680 --> 00:05:59.189 align:start position:0%
+which will be generic generic means run
+on<00:05:57.759><c> a</c><00:05:57.840><c> lot</c><00:05:58.080><c> of</c><00:05:58.160><c> hardware</c>
+
+00:05:59.189 --> 00:05:59.199 align:start position:0%
+on a lot of hardware
+ 
+
+00:05:59.199 --> 00:06:02.230 align:start position:0%
+on a lot of hardware
+a<00:05:59.360><c> monolithic</c><00:05:59.919><c> kernel</c><00:06:00.400><c> is</c>
+
+00:06:02.230 --> 00:06:02.240 align:start position:0%
+a monolithic kernel is
+ 
+
+00:06:02.240 --> 00:06:04.550 align:start position:0%
+a monolithic kernel is
+not<00:06:02.479><c> a</c><00:06:02.560><c> good</c><00:06:02.800><c> idea</c><00:06:03.440><c> but</c><00:06:03.680><c> as</c><00:06:03.840><c> i</c><00:06:03.919><c> said</c><00:06:04.160><c> in</c><00:06:04.240><c> real</c>
+
+00:06:04.550 --> 00:06:04.560 align:start position:0%
+not a good idea but as i said in real
+ 
+
+00:06:04.560 --> 00:06:06.309 align:start position:0%
+not a good idea but as i said in real
+time<00:06:04.800><c> systems</c><00:06:05.280><c> that</c><00:06:05.360><c> the</c><00:06:05.440><c> embedded</c><00:06:05.919><c> system</c>
+
+00:06:06.309 --> 00:06:06.319 align:start position:0%
+time systems that the embedded system
+ 
+
+00:06:06.319 --> 00:06:07.909 align:start position:0%
+time systems that the embedded system
+etc<00:06:06.880><c> is</c><00:06:07.039><c> fixed</c>
+
+00:06:07.909 --> 00:06:07.919 align:start position:0%
+etc is fixed
+ 
+
+00:06:07.919 --> 00:06:09.909 align:start position:0%
+etc is fixed
+then<00:06:08.160><c> at</c><00:06:08.319><c> that</c><00:06:08.560><c> point</c><00:06:08.800><c> a</c><00:06:08.880><c> monolithic</c><00:06:09.520><c> kernel</c>
+
+00:06:09.909 --> 00:06:09.919 align:start position:0%
+then at that point a monolithic kernel
+ 
+
+00:06:09.919 --> 00:06:13.029 align:start position:0%
+then at that point a monolithic kernel
+is<00:06:10.160><c> okay</c><00:06:10.800><c> right</c><00:06:11.039><c> it</c><00:06:11.280><c> all</c><00:06:11.440><c> depends</c><00:06:11.919><c> upon</c>
+
+00:06:13.029 --> 00:06:13.039 align:start position:0%
+is okay right it all depends upon
+ 
+
+00:06:13.039 --> 00:06:15.189 align:start position:0%
+is okay right it all depends upon
+our<00:06:13.440><c> application</c><00:06:14.080><c> need</c><00:06:14.400><c> and</c><00:06:14.560><c> the</c><00:06:14.639><c> application</c>
+
+00:06:15.189 --> 00:06:15.199 align:start position:0%
+our application need and the application
+ 
+
+00:06:15.199 --> 00:06:17.110 align:start position:0%
+our application need and the application
+scenario
+
+00:06:17.110 --> 00:06:17.120 align:start position:0%
+scenario
+ 
+
+00:06:17.120 --> 00:06:18.950 align:start position:0%
+scenario
+so<00:06:17.360><c> the</c><00:06:17.440><c> microkernel</c><00:06:18.240><c> on</c><00:06:18.319><c> the</c><00:06:18.479><c> other</c><00:06:18.639><c> hand</c><00:06:18.880><c> is</c>
+
+00:06:18.950 --> 00:06:18.960 align:start position:0%
+so the microkernel on the other hand is
+ 
+
+00:06:18.960 --> 00:06:21.270 align:start position:0%
+so the microkernel on the other hand is
+a<00:06:19.039><c> minimalist</c><00:06:19.680><c> approach</c>
+
+00:06:21.270 --> 00:06:21.280 align:start position:0%
+a minimalist approach
+ 
+
+00:06:21.280 --> 00:06:24.469 align:start position:0%
+a minimalist approach
+we<00:06:21.600><c> run</c><00:06:21.919><c> as</c><00:06:22.080><c> much</c><00:06:22.319><c> as</c><00:06:22.479><c> possible</c><00:06:22.880><c> in</c><00:06:23.039><c> user</c><00:06:23.360><c> space</c>
+
+00:06:24.469 --> 00:06:24.479 align:start position:0%
+we run as much as possible in user space
+ 
+
+00:06:24.479 --> 00:06:26.870 align:start position:0%
+we run as much as possible in user space
+the<00:06:24.720><c> kernel</c><00:06:25.199><c> itself</c><00:06:25.680><c> is</c><00:06:25.840><c> modular</c><00:06:26.400><c> and</c><00:06:26.560><c> quite</c>
+
+00:06:26.870 --> 00:06:26.880 align:start position:0%
+the kernel itself is modular and quite
+ 
+
+00:06:26.880 --> 00:06:27.909 align:start position:0%
+the kernel itself is modular and quite
+small
+
+00:06:27.909 --> 00:06:27.919 align:start position:0%
+small
+ 
+
+00:06:27.919 --> 00:06:30.550 align:start position:0%
+small
+could<00:06:28.160><c> be</c><00:06:28.319><c> as</c><00:06:28.560><c> low</c><00:06:28.800><c> as</c><00:06:28.960><c> 10</c><00:06:29.199><c> kilobytes</c><00:06:30.000><c> its</c><00:06:30.240><c> size</c>
+
+00:06:30.550 --> 00:06:30.560 align:start position:0%
+could be as low as 10 kilobytes its size
+ 
+
+00:06:30.560 --> 00:06:32.710 align:start position:0%
+could be as low as 10 kilobytes its size
+to<00:06:30.720><c> a</c><00:06:30.800><c> few</c><00:06:30.960><c> hundred</c><00:06:31.280><c> kilobytes</c>
+
+00:06:32.710 --> 00:06:32.720 align:start position:0%
+to a few hundred kilobytes
+ 
+
+00:06:32.720 --> 00:06:35.430 align:start position:0%
+to a few hundred kilobytes
+is<00:06:32.880><c> easier</c><00:06:33.360><c> to</c><00:06:33.600><c> port</c><00:06:34.240><c> the</c><00:06:34.479><c> kernel</c><00:06:34.960><c> easier</c><00:06:35.280><c> to</c>
+
+00:06:35.430 --> 00:06:35.440 align:start position:0%
+is easier to port the kernel easier to
+ 
+
+00:06:35.440 --> 00:06:37.270 align:start position:0%
+is easier to port the kernel easier to
+maintain<00:06:36.000><c> and</c><00:06:36.160><c> extend</c>
+
+00:06:37.270 --> 00:06:37.280 align:start position:0%
+maintain and extend
+ 
+
+00:06:37.280 --> 00:06:39.590 align:start position:0%
+maintain and extend
+there<00:06:37.520><c> is</c><00:06:37.680><c> no</c><00:06:37.919><c> agreement</c><00:06:38.639><c> on</c><00:06:38.960><c> what</c><00:06:39.199><c> should</c><00:06:39.440><c> be</c>
+
+00:06:39.590 --> 00:06:39.600 align:start position:0%
+there is no agreement on what should be
+ 
+
+00:06:39.600 --> 00:06:41.110 align:start position:0%
+there is no agreement on what should be
+or<00:06:39.759><c> should</c><00:06:39.919><c> not</c><00:06:40.080><c> be</c><00:06:40.240><c> there</c><00:06:40.479><c> in</c><00:06:40.560><c> the</c><00:06:40.639><c> kernel</c>
+
+00:06:41.110 --> 00:06:41.120 align:start position:0%
+or should not be there in the kernel
+ 
+
+00:06:41.120 --> 00:06:42.870 align:start position:0%
+or should not be there in the kernel
+even<00:06:41.360><c> though</c><00:06:41.520><c> the</c><00:06:41.600><c> key</c><00:06:41.840><c> idea</c><00:06:42.240><c> is</c>
+
+00:06:42.870 --> 00:06:42.880 align:start position:0%
+even though the key idea is
+ 
+
+00:06:42.880 --> 00:06:44.870 align:start position:0%
+even though the key idea is
+the<00:06:43.039><c> critical</c><00:06:43.520><c> features</c><00:06:44.000><c> such</c><00:06:44.240><c> as</c><00:06:44.400><c> interrupt</c>
+
+00:06:44.870 --> 00:06:44.880 align:start position:0%
+the critical features such as interrupt
+ 
+
+00:06:44.880 --> 00:06:46.550 align:start position:0%
+the critical features such as interrupt
+handlers<00:06:45.360><c> some</c><00:06:45.600><c> basic</c>
+
+00:06:46.550 --> 00:06:46.560 align:start position:0%
+handlers some basic
+ 
+
+00:06:46.560 --> 00:06:48.390 align:start position:0%
+handlers some basic
+memory<00:06:46.880><c> management</c><00:06:47.520><c> and</c><00:06:47.600><c> process</c><00:06:48.000><c> handling</c>
+
+00:06:48.390 --> 00:06:48.400 align:start position:0%
+memory management and process handling
+ 
+
+00:06:48.400 --> 00:06:50.469 align:start position:0%
+memory management and process handling
+should<00:06:48.560><c> be</c><00:06:48.720><c> there</c><00:06:48.960><c> in</c><00:06:49.039><c> the</c><00:06:49.199><c> kernel</c><00:06:50.000><c> but</c><00:06:50.319><c> as</c>
+
+00:06:50.469 --> 00:06:50.479 align:start position:0%
+should be there in the kernel but as
+ 
+
+00:06:50.479 --> 00:06:52.390 align:start position:0%
+should be there in the kernel but as
+much<00:06:50.800><c> as</c><00:06:50.960><c> possible</c><00:06:51.440><c> it</c><00:06:51.520><c> should</c><00:06:51.759><c> be</c><00:06:51.919><c> sent</c><00:06:52.240><c> to</c>
+
+00:06:52.390 --> 00:06:52.400 align:start position:0%
+much as possible it should be sent to
+ 
+
+00:06:52.400 --> 00:06:54.950 align:start position:0%
+much as possible it should be sent to
+the<00:06:52.560><c> user</c><00:06:52.960><c> space</c>
+
+00:06:54.950 --> 00:06:54.960 align:start position:0%
+the user space
+ 
+
+00:06:54.960 --> 00:06:57.270 align:start position:0%
+the user space
+so<00:06:55.199><c> as</c><00:06:55.360><c> i</c><00:06:55.520><c> said</c><00:06:55.840><c> basic</c><00:06:56.400><c> process</c><00:06:56.800><c> and</c><00:06:56.960><c> memory</c>
+
+00:06:57.270 --> 00:06:57.280 align:start position:0%
+so as i said basic process and memory
+ 
+
+00:06:57.280 --> 00:07:00.150 align:start position:0%
+so as i said basic process and memory
+management<00:06:57.919><c> is</c><00:06:58.160><c> what</c><00:06:58.479><c> goes</c>
+
+00:07:00.150 --> 00:07:00.160 align:start position:0%
+management is what goes
+ 
+
+00:07:00.160 --> 00:07:01.589 align:start position:0%
+management is what goes
+so<00:07:00.400><c> then</c>
+
+00:07:01.589 --> 00:07:01.599 align:start position:0%
+so then
+ 
+
+00:07:01.599 --> 00:07:03.830 align:start position:0%
+so then
+at<00:07:01.840><c> least</c><00:07:02.080><c> the</c><00:07:02.240><c> basic</c><00:07:02.720><c> idea</c><00:07:03.120><c> of</c><00:07:03.280><c> supporting</c>
+
+00:07:03.830 --> 00:07:03.840 align:start position:0%
+at least the basic idea of supporting
+ 
+
+00:07:03.840 --> 00:07:05.589 align:start position:0%
+at least the basic idea of supporting
+different<00:07:04.319><c> address</c><00:07:04.720><c> spaces</c><00:07:05.120><c> and</c><00:07:05.199><c> memory</c>
+
+00:07:05.589 --> 00:07:05.599 align:start position:0%
+different address spaces and memory
+ 
+
+00:07:05.599 --> 00:07:08.790 align:start position:0%
+different address spaces and memory
+protection<00:07:06.160><c> goes</c><00:07:06.479><c> in</c><00:07:06.560><c> the</c><00:07:06.720><c> kernel</c>
+
+00:07:08.790 --> 00:07:08.800 align:start position:0%
+protection goes in the kernel
+ 
+
+00:07:08.800 --> 00:07:11.110 align:start position:0%
+protection goes in the kernel
+again<00:07:09.120><c> the</c><00:07:09.360><c> basic</c><00:07:09.919><c> implementation</c><00:07:10.800><c> of</c>
+
+00:07:11.110 --> 00:07:11.120 align:start position:0%
+again the basic implementation of
+ 
+
+00:07:11.120 --> 00:07:13.990 align:start position:0%
+again the basic implementation of
+processes<00:07:11.759><c> and</c><00:07:12.000><c> threads</c><00:07:12.639><c> also</c><00:07:13.039><c> goes</c>
+
+00:07:13.990 --> 00:07:14.000 align:start position:0%
+processes and threads also goes
+ 
+
+00:07:14.000 --> 00:07:16.309 align:start position:0%
+processes and threads also goes
+remains<00:07:14.400><c> in</c><00:07:14.560><c> the</c><00:07:14.639><c> kernel</c><00:07:15.039><c> and</c><00:07:15.199><c> basic</c><00:07:15.680><c> ipc</c>
+
+00:07:16.309 --> 00:07:16.319 align:start position:0%
+remains in the kernel and basic ipc
+ 
+
+00:07:16.319 --> 00:07:19.270 align:start position:0%
+remains in the kernel and basic ipc
+inter<00:07:17.120><c> process</c><00:07:17.520><c> communication</c>
+
+00:07:19.270 --> 00:07:19.280 align:start position:0%
+inter process communication
+ 
+
+00:07:19.280 --> 00:07:21.909 align:start position:0%
+inter process communication
+so<00:07:19.440><c> the</c><00:07:19.599><c> real</c><00:07:20.000><c> goal</c><00:07:20.240><c> of</c><00:07:20.400><c> microkernel</c><00:07:21.280><c> is</c><00:07:21.680><c> that</c>
+
+00:07:21.909 --> 00:07:21.919 align:start position:0%
+so the real goal of microkernel is that
+ 
+
+00:07:21.919 --> 00:07:23.270 align:start position:0%
+so the real goal of microkernel is that
+make<00:07:22.160><c> it</c><00:07:22.319><c> small</c>
+
+00:07:23.270 --> 00:07:23.280 align:start position:0%
+make it small
+ 
+
+00:07:23.280 --> 00:07:26.309 align:start position:0%
+make it small
+make<00:07:23.520><c> it</c><00:07:23.680><c> flexible</c><00:07:24.639><c> right</c><00:07:25.280><c> so</c><00:07:25.440><c> the</c><00:07:25.599><c> real</c><00:07:25.919><c> goals</c>
+
+00:07:26.309 --> 00:07:26.319 align:start position:0%
+make it flexible right so the real goals
+ 
+
+00:07:26.319 --> 00:07:28.790 align:start position:0%
+make it flexible right so the real goals
+would<00:07:26.479><c> be</c><00:07:26.720><c> small</c>
+
+00:07:28.790 --> 00:07:28.800 align:start position:0%
+would be small
+ 
+
+00:07:28.800 --> 00:07:33.430 align:start position:0%
+would be small
+and<00:07:29.039><c> flexible</c>
+
+00:07:33.430 --> 00:07:33.440 align:start position:0%
+ 
+ 
+
+00:07:33.440 --> 00:07:34.790 align:start position:0%
+ 
+this<00:07:33.680><c> is</c><00:07:33.919><c> fine</c>
+
+00:07:34.790 --> 00:07:34.800 align:start position:0%
+this is fine
+ 
+
+00:07:34.800 --> 00:07:37.110 align:start position:0%
+this is fine
+right<00:07:35.039><c> but</c><00:07:35.280><c> it</c><00:07:35.440><c> is</c><00:07:35.599><c> not</c><00:07:36.000><c> simple</c><00:07:36.560><c> to</c><00:07:36.720><c> make</c><00:07:36.960><c> it</c>
+
+00:07:37.110 --> 00:07:37.120 align:start position:0%
+right but it is not simple to make it
+ 
+
+00:07:37.120 --> 00:07:38.230 align:start position:0%
+right but it is not simple to make it
+small
+
+00:07:38.230 --> 00:07:38.240 align:start position:0%
+small
+ 
+
+00:07:38.240 --> 00:07:40.150 align:start position:0%
+small
+that<00:07:38.479><c> is</c><00:07:38.639><c> the</c><00:07:38.800><c> main</c><00:07:39.120><c> issue</c>
+
+00:07:40.150 --> 00:07:40.160 align:start position:0%
+that is the main issue
+ 
+
+00:07:40.160 --> 00:07:42.390 align:start position:0%
+that is the main issue
+that<00:07:40.479><c> to</c><00:07:40.639><c> make</c><00:07:40.880><c> it</c><00:07:41.039><c> small</c><00:07:41.440><c> is</c><00:07:41.599><c> not</c><00:07:41.840><c> simple</c><00:07:42.240><c> at</c>
+
+00:07:42.390 --> 00:07:42.400 align:start position:0%
+that to make it small is not simple at
+ 
+
+00:07:42.400 --> 00:07:44.869 align:start position:0%
+that to make it small is not simple at
+all<00:07:43.120><c> because</c><00:07:43.440><c> this</c><00:07:43.680><c> fundamentally</c><00:07:44.400><c> changes</c>
+
+00:07:44.869 --> 00:07:44.879 align:start position:0%
+all because this fundamentally changes
+ 
+
+00:07:44.879 --> 00:07:47.189 align:start position:0%
+all because this fundamentally changes
+the<00:07:45.039><c> way</c><00:07:45.440><c> in</c><00:07:45.599><c> which</c><00:07:45.919><c> we</c><00:07:46.160><c> create</c><00:07:46.560><c> and</c><00:07:46.720><c> deliver</c>
+
+00:07:47.189 --> 00:07:47.199 align:start position:0%
+the way in which we create and deliver
+ 
+
+00:07:47.199 --> 00:07:48.950 align:start position:0%
+the way in which we create and deliver
+os<00:07:47.599><c> functionality</c>
+
+00:07:48.950 --> 00:07:48.960 align:start position:0%
+os functionality
+ 
+
+00:07:48.960 --> 00:07:51.510 align:start position:0%
+os functionality
+where<00:07:49.199><c> modularity</c><00:07:50.000><c> is</c><00:07:50.080><c> the</c><00:07:50.240><c> key</c><00:07:50.479><c> but</c><00:07:50.720><c> size</c><00:07:51.199><c> is</c>
+
+00:07:51.510 --> 00:07:51.520 align:start position:0%
+where modularity is the key but size is
+ 
+
+00:07:51.520 --> 00:07:53.430 align:start position:0%
+where modularity is the key but size is
+just<00:07:51.759><c> a</c><00:07:51.919><c> side</c><00:07:52.160><c> effect</c>
+
+00:07:53.430 --> 00:07:53.440 align:start position:0%
+just a side effect
+ 
+
+00:07:53.440 --> 00:07:56.390 align:start position:0%
+just a side effect
+so<00:07:53.599><c> we</c><00:07:53.840><c> cannot</c><00:07:54.319><c> call</c><00:07:54.560><c> an</c><00:07:54.720><c> os</c><00:07:55.039><c> microkernel</c><00:07:56.080><c> base</c>
+
+00:07:56.390 --> 00:07:56.400 align:start position:0%
+so we cannot call an os microkernel base
+ 
+
+00:07:56.400 --> 00:07:58.790 align:start position:0%
+so we cannot call an os microkernel base
+just<00:07:56.639><c> because</c><00:07:56.960><c> it</c><00:07:57.120><c> is</c><00:07:57.199><c> small</c><00:07:58.000><c> but</c><00:07:58.319><c> again</c><00:07:58.639><c> it</c>
+
+00:07:58.790 --> 00:07:58.800 align:start position:0%
+just because it is small but again it
+ 
+
+00:07:58.800 --> 00:08:00.869 align:start position:0%
+just because it is small but again it
+needs<00:07:59.039><c> to</c><00:07:59.199><c> show</c><00:07:59.440><c> the</c><00:07:59.599><c> flexibility</c><00:08:00.400><c> features</c>
+
+00:08:00.869 --> 00:08:00.879 align:start position:0%
+needs to show the flexibility features
+ 
+
+00:08:00.879 --> 00:08:03.830 align:start position:0%
+needs to show the flexibility features
+that<00:08:01.039><c> we</c><00:08:01.199><c> have</c><00:08:01.280><c> been</c><00:08:01.520><c> talking</c><00:08:01.919><c> about</c>
+
+00:08:03.830 --> 00:08:03.840 align:start position:0%
+that we have been talking about
+ 
+
+00:08:03.840 --> 00:08:05.749 align:start position:0%
+that we have been talking about
+so<00:08:04.000><c> the</c><00:08:04.160><c> microkernel</c><00:08:04.879><c> again</c><00:08:05.120><c> we</c><00:08:05.280><c> have</c><00:08:05.440><c> seen</c>
+
+00:08:05.749 --> 00:08:05.759 align:start position:0%
+so the microkernel again we have seen
+ 
+
+00:08:05.759 --> 00:08:08.390 align:start position:0%
+so the microkernel again we have seen
+this<00:08:05.919><c> diagram</c><00:08:06.560><c> in</c><00:08:06.639><c> the</c><00:08:06.879><c> previous</c><00:08:07.440><c> lecture</c>
+
+00:08:08.390 --> 00:08:08.400 align:start position:0%
+this diagram in the previous lecture
+ 
+
+00:08:08.400 --> 00:08:11.670 align:start position:0%
+this diagram in the previous lecture
+where<00:08:08.560><c> we</c><00:08:08.720><c> have</c><00:08:08.879><c> a</c><00:08:09.039><c> small</c><00:08:09.360><c> tiny</c><00:08:09.840><c> kernel</c>
+
+00:08:11.670 --> 00:08:11.680 align:start position:0%
+where we have a small tiny kernel
+ 
+
+00:08:11.680 --> 00:08:12.790 align:start position:0%
+where we have a small tiny kernel
+which<00:08:12.000><c> is</c>
+
+00:08:12.790 --> 00:08:12.800 align:start position:0%
+which is
+ 
+
+00:08:12.800 --> 00:08:15.350 align:start position:0%
+which is
+in<00:08:13.039><c> user</c><00:08:13.520><c> mode</c><00:08:14.240><c> sorry</c><00:08:14.479><c> which</c><00:08:14.720><c> is</c><00:08:14.800><c> in</c><00:08:14.960><c> kernel</c>
+
+00:08:15.350 --> 00:08:15.360 align:start position:0%
+in user mode sorry which is in kernel
+ 
+
+00:08:15.360 --> 00:08:18.309 align:start position:0%
+in user mode sorry which is in kernel
+mode<00:08:16.080><c> and</c><00:08:16.479><c> most</c><00:08:16.800><c> of</c><00:08:16.879><c> the</c><00:08:17.039><c> key</c><00:08:17.280><c> features</c><00:08:18.080><c> so</c>
+
+00:08:18.309 --> 00:08:18.319 align:start position:0%
+mode and most of the key features so
+ 
+
+00:08:18.319 --> 00:08:19.670 align:start position:0%
+mode and most of the key features so
+again<00:08:18.560><c> you</c><00:08:18.720><c> know</c><00:08:18.800><c> we</c><00:08:18.960><c> have</c><00:08:19.120><c> a</c><00:08:19.199><c> proto</c>
+
+00:08:19.670 --> 00:08:19.680 align:start position:0%
+again you know we have a proto
+ 
+
+00:08:19.680 --> 00:08:21.670 align:start position:0%
+again you know we have a proto
+implementation<00:08:20.560><c> of</c>
+
+00:08:21.670 --> 00:08:21.680 align:start position:0%
+implementation of
+ 
+
+00:08:21.680 --> 00:08:23.350 align:start position:0%
+implementation of
+the<00:08:21.840><c> process</c><00:08:22.240><c> manager</c><00:08:22.720><c> but</c><00:08:22.879><c> most</c><00:08:23.120><c> of</c><00:08:23.199><c> the</c>
+
+00:08:23.350 --> 00:08:23.360 align:start position:0%
+the process manager but most of the
+ 
+
+00:08:23.360 --> 00:08:25.430 align:start position:0%
+the process manager but most of the
+process<00:08:23.680><c> manager</c><00:08:24.160><c> and</c><00:08:24.240><c> scheduler</c><00:08:24.800><c> can</c><00:08:24.960><c> be</c>
+
+00:08:25.430 --> 00:08:25.440 align:start position:0%
+process manager and scheduler can be
+ 
+
+00:08:25.440 --> 00:08:27.670 align:start position:0%
+process manager and scheduler can be
+again<00:08:25.759><c> in</c><00:08:26.000><c> what's</c><00:08:26.319><c> called</c><00:08:26.560><c> user</c><00:08:26.879><c> mode</c><00:08:27.120><c> or</c><00:08:27.280><c> user</c>
+
+00:08:27.670 --> 00:08:27.680 align:start position:0%
+again in what's called user mode or user
+ 
+
+00:08:27.680 --> 00:08:28.629 align:start position:0%
+again in what's called user mode or user
+lan
+
+00:08:28.629 --> 00:08:28.639 align:start position:0%
+lan
+ 
+
+00:08:28.639 --> 00:08:30.070 align:start position:0%
+lan
+similarly<00:08:29.199><c> we'll</c><00:08:29.360><c> have</c><00:08:29.520><c> a</c><00:08:29.680><c> proto</c>
+
+00:08:30.070 --> 00:08:30.080 align:start position:0%
+similarly we'll have a proto
+ 
+
+00:08:30.080 --> 00:08:32.230 align:start position:0%
+similarly we'll have a proto
+implementation<00:08:30.800><c> of</c><00:08:30.960><c> a</c><00:08:31.039><c> file</c><00:08:31.360><c> system</c>
+
+00:08:32.230 --> 00:08:32.240 align:start position:0%
+implementation of a file system
+ 
+
+00:08:32.240 --> 00:08:33.589 align:start position:0%
+implementation of a file system
+but<00:08:32.479><c> most</c><00:08:32.719><c> of</c><00:08:32.800><c> the</c><00:08:32.880><c> file</c><00:08:33.200><c> system</c>
+
+00:08:33.589 --> 00:08:33.599 align:start position:0%
+but most of the file system
+ 
+
+00:08:33.599 --> 00:08:35.350 align:start position:0%
+but most of the file system
+implementation<00:08:34.240><c> can</c><00:08:34.479><c> again</c><00:08:34.719><c> be</c><00:08:34.880><c> in</c><00:08:35.039><c> user</c>
+
+00:08:35.350 --> 00:08:35.360 align:start position:0%
+implementation can again be in user
+ 
+
+00:08:35.360 --> 00:08:36.469 align:start position:0%
+implementation can again be in user
+space
+
+00:08:36.469 --> 00:08:36.479 align:start position:0%
+space
+ 
+
+00:08:36.479 --> 00:08:38.389 align:start position:0%
+space
+and<00:08:36.560><c> the</c><00:08:36.719><c> same</c><00:08:36.959><c> holds</c><00:08:37.200><c> for</c><00:08:37.440><c> drivers</c><00:08:37.919><c> as</c><00:08:38.080><c> well</c>
+
+00:08:38.389 --> 00:08:38.399 align:start position:0%
+and the same holds for drivers as well
+ 
+
+00:08:38.399 --> 00:08:41.190 align:start position:0%
+and the same holds for drivers as well
+so<00:08:38.560><c> again</c><00:08:38.959><c> it's</c><00:08:39.120><c> like</c><00:08:39.279><c> a</c><00:08:39.440><c> kernel</c><00:08:39.919><c> for</c><00:08:40.159><c> a</c><00:08:40.240><c> kernel</c>
+
+00:08:41.190 --> 00:08:41.200 align:start position:0%
+so again it's like a kernel for a kernel
+ 
+
+00:08:41.200 --> 00:08:43.750 align:start position:0%
+so again it's like a kernel for a kernel
+this<00:08:41.440><c> is</c><00:08:41.599><c> what</c><00:08:41.839><c> runs</c><00:08:42.240><c> in</c><00:08:42.399><c> protected</c><00:08:42.959><c> mode</c>
+
+00:08:43.750 --> 00:08:43.760 align:start position:0%
+this is what runs in protected mode
+ 
+
+00:08:43.760 --> 00:08:46.470 align:start position:0%
+this is what runs in protected mode
+and<00:08:44.000><c> the</c><00:08:44.159><c> rest</c><00:08:44.720><c> as</c><00:08:44.880><c> much</c><00:08:45.120><c> as</c><00:08:45.279><c> possible</c><00:08:45.920><c> is</c><00:08:46.160><c> sent</c>
+
+00:08:46.470 --> 00:08:46.480 align:start position:0%
+and the rest as much as possible is sent
+ 
+
+00:08:46.480 --> 00:08:49.829 align:start position:0%
+and the rest as much as possible is sent
+to<00:08:47.040><c> the</c><00:08:47.279><c> application</c><00:08:47.920><c> mode</c>
+
+00:08:49.829 --> 00:08:49.839 align:start position:0%
+to the application mode
+ 
+
+00:08:49.839 --> 00:08:51.990 align:start position:0%
+to the application mode
+so<00:08:50.080><c> for</c><00:08:50.480><c> any</c><00:08:50.720><c> kind</c><00:08:50.959><c> of</c><00:08:51.120><c> a</c><00:08:51.200><c> client</c><00:08:51.519><c> server</c><00:08:51.839><c> kind</c>
+
+00:08:51.990 --> 00:08:52.000 align:start position:0%
+so for any kind of a client server kind
+ 
+
+00:08:52.000 --> 00:08:54.070 align:start position:0%
+so for any kind of a client server kind
+of<00:08:52.160><c> os</c><00:08:52.560><c> the</c><00:08:52.720><c> kernel</c><00:08:53.120><c> would</c><00:08:53.279><c> still</c><00:08:53.600><c> need</c><00:08:53.839><c> to</c>
+
+00:08:54.070 --> 00:08:54.080 align:start position:0%
+of os the kernel would still need to
+ 
+
+00:08:54.080 --> 00:08:55.990 align:start position:0%
+of os the kernel would still need to
+implement<00:08:54.560><c> scheduling</c><00:08:55.040><c> memory</c><00:08:55.440><c> management</c>
+
+00:08:55.990 --> 00:08:56.000 align:start position:0%
+implement scheduling memory management
+ 
+
+00:08:56.000 --> 00:08:57.829 align:start position:0%
+implement scheduling memory management
+and<00:08:56.160><c> ipc</c>
+
+00:08:57.829 --> 00:08:57.839 align:start position:0%
+and ipc
+ 
+
+00:08:57.839 --> 00:08:59.030 align:start position:0%
+and ipc
+and
+
+00:08:59.030 --> 00:08:59.040 align:start position:0%
+and
+ 
+
+00:08:59.040 --> 00:09:01.430 align:start position:0%
+and
+but<00:08:59.360><c> all</c><00:08:59.519><c> the</c><00:08:59.760><c> other</c><00:09:00.080><c> services</c><00:09:00.640><c> and</c><00:09:00.880><c> including</c>
+
+00:09:01.430 --> 00:09:01.440 align:start position:0%
+but all the other services and including
+ 
+
+00:09:01.440 --> 00:09:03.590 align:start position:0%
+but all the other services and including
+you<00:09:01.600><c> know</c>
+
+00:09:03.590 --> 00:09:03.600 align:start position:0%
+you know
+ 
+
+00:09:03.600 --> 00:09:05.350 align:start position:0%
+you know
+practical<00:09:04.160><c> or</c><00:09:04.240><c> runnable</c><00:09:04.800><c> or</c><00:09:04.880><c> advanced</c>
+
+00:09:05.350 --> 00:09:05.360 align:start position:0%
+practical or runnable or advanced
+ 
+
+00:09:05.360 --> 00:09:07.750 align:start position:0%
+practical or runnable or advanced
+versions<00:09:05.839><c> of</c><00:09:06.000><c> these</c>
+
+00:09:07.750 --> 00:09:07.760 align:start position:0%
+versions of these
+ 
+
+00:09:07.760 --> 00:09:09.829 align:start position:0%
+versions of these
+they<00:09:08.000><c> can</c><00:09:08.320><c> all</c><00:09:08.560><c> run</c><00:09:08.800><c> in</c><00:09:08.880><c> user</c><00:09:09.200><c> space</c><00:09:09.600><c> for</c>
+
+00:09:09.829 --> 00:09:09.839 align:start position:0%
+they can all run in user space for
+ 
+
+00:09:09.839 --> 00:09:12.310 align:start position:0%
+they can all run in user space for
+example<00:09:10.320><c> the</c><00:09:10.480><c> kernel</c><00:09:10.880><c> can</c><00:09:11.120><c> see</c>
+
+00:09:12.310 --> 00:09:12.320 align:start position:0%
+example the kernel can see
+ 
+
+00:09:12.320 --> 00:09:15.190 align:start position:0%
+example the kernel can see
+that<00:09:12.640><c> it</c><00:09:12.800><c> will</c><00:09:13.040><c> provide</c><00:09:13.600><c> a</c><00:09:13.680><c> very</c><00:09:14.000><c> basic</c>
+
+00:09:15.190 --> 00:09:15.200 align:start position:0%
+that it will provide a very basic
+ 
+
+00:09:15.200 --> 00:09:18.550 align:start position:0%
+that it will provide a very basic
+fifo<00:09:15.760><c> or</c><00:09:16.000><c> round</c><00:09:16.320><c> robin</c><00:09:16.720><c> scheduling</c><00:09:17.279><c> service</c>
+
+00:09:18.550 --> 00:09:18.560 align:start position:0%
+fifo or round robin scheduling service
+ 
+
+00:09:18.560 --> 00:09:21.430 align:start position:0%
+fifo or round robin scheduling service
+but<00:09:18.959><c> again</c><00:09:19.680><c> it</c><00:09:19.839><c> will</c><00:09:20.080><c> not</c><00:09:20.320><c> be</c><00:09:20.560><c> averse</c><00:09:21.120><c> to</c><00:09:21.279><c> the</c>
+
+00:09:21.430 --> 00:09:21.440 align:start position:0%
+but again it will not be averse to the
+ 
+
+00:09:21.440 --> 00:09:23.190 align:start position:0%
+but again it will not be averse to the
+idea<00:09:22.080><c> of</c>
+
+00:09:23.190 --> 00:09:23.200 align:start position:0%
+idea of
+ 
+
+00:09:23.200 --> 00:09:25.590 align:start position:0%
+idea of
+the<00:09:23.440><c> user</c><00:09:23.839><c> writing</c><00:09:24.240><c> a</c><00:09:24.399><c> dedicated</c><00:09:24.959><c> scheduler</c>
+
+00:09:25.590 --> 00:09:25.600 align:start position:0%
+the user writing a dedicated scheduler
+ 
+
+00:09:25.600 --> 00:09:27.670 align:start position:0%
+the user writing a dedicated scheduler
+and<00:09:25.839><c> linking</c><00:09:26.240><c> it</c><00:09:26.399><c> with</c><00:09:26.560><c> the</c><00:09:26.640><c> kernel</c>
+
+00:09:27.670 --> 00:09:27.680 align:start position:0%
+and linking it with the kernel
+ 
+
+00:09:27.680 --> 00:09:29.590 align:start position:0%
+and linking it with the kernel
+so<00:09:27.839><c> then</c><00:09:28.160><c> what</c><00:09:28.320><c> can</c><00:09:28.560><c> happen</c><00:09:28.959><c> is</c><00:09:29.120><c> that</c><00:09:29.279><c> when</c><00:09:29.440><c> the</c>
+
+00:09:29.590 --> 00:09:29.600 align:start position:0%
+so then what can happen is that when the
+ 
+
+00:09:29.600 --> 00:09:32.230 align:start position:0%
+so then what can happen is that when the
+kernel<00:09:30.080><c> needs</c><00:09:30.399><c> a</c><00:09:30.560><c> scheduling</c><00:09:31.120><c> service</c>
+
+00:09:32.230 --> 00:09:32.240 align:start position:0%
+kernel needs a scheduling service
+ 
+
+00:09:32.240 --> 00:09:35.110 align:start position:0%
+kernel needs a scheduling service
+it<00:09:32.399><c> can</c><00:09:32.800><c> call</c><00:09:33.200><c> the</c><00:09:33.360><c> user</c><00:09:33.839><c> mode</c><00:09:34.399><c> process</c><00:09:34.880><c> to</c>
+
+00:09:35.110 --> 00:09:35.120 align:start position:0%
+it can call the user mode process to
+ 
+
+00:09:35.120 --> 00:09:36.949 align:start position:0%
+it can call the user mode process to
+actually<00:09:35.440><c> do</c><00:09:35.600><c> the</c><00:09:35.760><c> scheduling</c><00:09:36.800><c> and</c>
+
+00:09:36.949 --> 00:09:36.959 align:start position:0%
+actually do the scheduling and
+ 
+
+00:09:36.959 --> 00:09:39.750 align:start position:0%
+actually do the scheduling and
+definitely<00:09:37.680><c> other</c><00:09:38.000><c> smaller</c><00:09:38.480><c> services</c>
+
+00:09:39.750 --> 00:09:39.760 align:start position:0%
+definitely other smaller services
+ 
+
+00:09:39.760 --> 00:09:41.990 align:start position:0%
+definitely other smaller services
+for<00:09:40.000><c> example</c><00:09:40.399><c> setting</c><00:09:40.720><c> timers</c><00:09:41.279><c> and</c><00:09:41.440><c> alarms</c>
+
+00:09:41.990 --> 00:09:42.000 align:start position:0%
+for example setting timers and alarms
+ 
+
+00:09:42.000 --> 00:09:43.590 align:start position:0%
+for example setting timers and alarms
+and<00:09:42.160><c> all</c><00:09:42.240><c> these</c><00:09:42.480><c> things</c><00:09:42.720><c> implementing</c><00:09:43.360><c> other</c>
+
+00:09:43.590 --> 00:09:43.600 align:start position:0%
+and all these things implementing other
+ 
+
+00:09:43.600 --> 00:09:45.829 align:start position:0%
+and all these things implementing other
+ipc<00:09:44.080><c> mechanisms</c><00:09:44.720><c> like</c><00:09:44.959><c> pipes</c><00:09:45.360><c> and</c><00:09:45.440><c> message</c>
+
+00:09:45.829 --> 00:09:45.839 align:start position:0%
+ipc mechanisms like pipes and message
+ 
+
+00:09:45.839 --> 00:09:47.190 align:start position:0%
+ipc mechanisms like pipes and message
+queues<00:09:46.080><c> etc</c>
+
+00:09:47.190 --> 00:09:47.200 align:start position:0%
+queues etc
+ 
+
+00:09:47.200 --> 00:09:50.550 align:start position:0%
+queues etc
+could<00:09:47.519><c> all</c><00:09:47.839><c> go</c><00:09:48.080><c> into</c><00:09:48.320><c> user</c><00:09:48.839><c> space</c><00:09:50.160><c> right</c><00:09:50.399><c> so</c>
+
+00:09:50.550 --> 00:09:50.560 align:start position:0%
+could all go into user space right so
+ 
+
+00:09:50.560 --> 00:09:52.310 align:start position:0%
+could all go into user space right so
+that<00:09:50.800><c> is</c><00:09:50.880><c> the</c><00:09:51.040><c> key</c><00:09:51.279><c> idea</c>
+
+00:09:52.310 --> 00:09:52.320 align:start position:0%
+that is the key idea
+ 
+
+00:09:52.320 --> 00:09:53.990 align:start position:0%
+that is the key idea
+that<00:09:52.560><c> we</c><00:09:52.720><c> have</c><00:09:52.880><c> our</c><00:09:53.040><c> hardware</c><00:09:53.600><c> we</c><00:09:53.680><c> have</c><00:09:53.920><c> our</c>
+
+00:09:53.990 --> 00:09:54.000 align:start position:0%
+that we have our hardware we have our
+ 
+
+00:09:54.000 --> 00:09:55.990 align:start position:0%
+that we have our hardware we have our
+micro<00:09:54.399><c> kernel</c><00:09:54.880><c> provides</c><00:09:55.360><c> very</c><00:09:55.680><c> basic</c>
+
+00:09:55.990 --> 00:09:56.000 align:start position:0%
+micro kernel provides very basic
+ 
+
+00:09:56.000 --> 00:09:57.990 align:start position:0%
+micro kernel provides very basic
+services<00:09:56.640><c> mind</c><00:09:56.880><c> you</c>
+
+00:09:57.990 --> 00:09:58.000 align:start position:0%
+services mind you
+ 
+
+00:09:58.000 --> 00:09:59.110 align:start position:0%
+services mind you
+and<00:09:58.240><c> then</c>
+
+00:09:59.110 --> 00:09:59.120 align:start position:0%
+and then
+ 
+
+00:09:59.120 --> 00:10:01.750 align:start position:0%
+and then
+all<00:09:59.360><c> the</c><00:09:59.920><c> client</c><00:10:00.399><c> applications</c>
+
+00:10:01.750 --> 00:10:01.760 align:start position:0%
+all the client applications
+ 
+
+00:10:01.760 --> 00:10:04.870 align:start position:0%
+all the client applications
+and<00:10:02.079><c> all</c><00:10:02.240><c> the</c><00:10:02.839><c> other</c><00:10:03.839><c> what</c><00:10:04.079><c> should</c><00:10:04.240><c> be</c><00:10:04.480><c> kernel</c>
+
+00:10:04.870 --> 00:10:04.880 align:start position:0%
+and all the other what should be kernel
+ 
+
+00:10:04.880 --> 00:10:07.430 align:start position:0%
+and all the other what should be kernel
+applications<00:10:05.440><c> but</c><00:10:05.680><c> now</c><00:10:05.920><c> run</c><00:10:06.160><c> in</c><00:10:06.240><c> user</c><00:10:06.640><c> mode</c>
+
+00:10:07.430 --> 00:10:07.440 align:start position:0%
+applications but now run in user mode
+ 
+
+00:10:07.440 --> 00:10:09.670 align:start position:0%
+applications but now run in user mode
+they<00:10:07.680><c> all</c><00:10:07.839><c> run</c><00:10:08.079><c> in</c><00:10:08.240><c> user</c><00:10:08.560><c> mode</c><00:10:08.880><c> the</c><00:10:09.040><c> client</c><00:10:09.440><c> can</c>
+
+00:10:09.670 --> 00:10:09.680 align:start position:0%
+they all run in user mode the client can
+ 
+
+00:10:09.680 --> 00:10:11.110 align:start position:0%
+they all run in user mode the client can
+talk<00:10:09.839><c> to</c><00:10:10.000><c> them</c>
+
+00:10:11.110 --> 00:10:11.120 align:start position:0%
+talk to them
+ 
+
+00:10:11.120 --> 00:10:15.030 align:start position:0%
+talk to them
+and<00:10:11.200><c> the</c><00:10:11.440><c> kernel</c><00:10:11.839><c> can</c><00:10:12.079><c> also</c><00:10:12.399><c> talk</c><00:10:12.640><c> to</c><00:10:12.800><c> them</c>
+
+00:10:15.030 --> 00:10:15.040 align:start position:0%
+ 
+ 
+
+00:10:15.040 --> 00:10:16.949 align:start position:0%
+ 
+so<00:10:15.200><c> the</c><00:10:15.360><c> pros</c><00:10:15.760><c> of</c><00:10:15.920><c> a</c><00:10:16.000><c> microkernel</c><00:10:16.640><c> based</c>
+
+00:10:16.949 --> 00:10:16.959 align:start position:0%
+so the pros of a microkernel based
+ 
+
+00:10:16.959 --> 00:10:19.030 align:start position:0%
+so the pros of a microkernel based
+approach<00:10:17.360><c> is</c><00:10:17.519><c> it's</c><00:10:17.760><c> a</c><00:10:17.839><c> smaller</c><00:10:18.320><c> kernel</c><00:10:18.800><c> which</c>
+
+00:10:19.030 --> 00:10:19.040 align:start position:0%
+approach is it's a smaller kernel which
+ 
+
+00:10:19.040 --> 00:10:21.910 align:start position:0%
+approach is it's a smaller kernel which
+is<00:10:19.120><c> suitable</c><00:10:19.760><c> for</c><00:10:20.079><c> embedded</c><00:10:20.560><c> applications</c>
+
+00:10:21.910 --> 00:10:21.920 align:start position:0%
+is suitable for embedded applications
+ 
+
+00:10:21.920 --> 00:10:23.829 align:start position:0%
+is suitable for embedded applications
+mainly<00:10:22.240><c> because</c><00:10:22.480><c> of</c><00:10:22.640><c> its</c><00:10:22.800><c> small</c><00:10:23.040><c> size</c><00:10:23.440><c> i'm</c><00:10:23.600><c> not</c>
+
+00:10:23.829 --> 00:10:23.839 align:start position:0%
+mainly because of its small size i'm not
+ 
+
+00:10:23.839 --> 00:10:26.710 align:start position:0%
+mainly because of its small size i'm not
+saying<00:10:24.079><c> that</c><00:10:24.320><c> embedded</c><00:10:24.800><c> applications</c>
+
+00:10:26.710 --> 00:10:26.720 align:start position:0%
+saying that embedded applications
+ 
+
+00:10:26.720 --> 00:10:29.430 align:start position:0%
+saying that embedded applications
+need<00:10:27.200><c> a</c><00:10:27.360><c> very</c><00:10:27.680><c> high</c><00:10:28.000><c> level</c><00:10:28.480><c> or</c><00:10:28.640><c> a</c><00:10:28.800><c> very</c><00:10:29.120><c> high</c>
+
+00:10:29.430 --> 00:10:29.440 align:start position:0%
+need a very high level or a very high
+ 
+
+00:10:29.440 --> 00:10:31.750 align:start position:0%
+need a very high level or a very high
+degree<00:10:29.839><c> of</c><00:10:30.000><c> flexibility</c>
+
+00:10:31.750 --> 00:10:31.760 align:start position:0%
+degree of flexibility
+ 
+
+00:10:31.760 --> 00:10:34.949 align:start position:0%
+degree of flexibility
+but<00:10:32.160><c> again</c><00:10:32.560><c> because</c><00:10:33.040><c> of</c><00:10:33.200><c> the</c><00:10:33.360><c> small</c><00:10:33.839><c> size</c><00:10:34.720><c> this</c>
+
+00:10:34.949 --> 00:10:34.959 align:start position:0%
+but again because of the small size this
+ 
+
+00:10:34.959 --> 00:10:36.949 align:start position:0%
+but again because of the small size this
+microkernel<00:10:35.760><c> based</c><00:10:36.079><c> approach</c><00:10:36.480><c> is</c><00:10:36.640><c> quite</c>
+
+00:10:36.949 --> 00:10:36.959 align:start position:0%
+microkernel based approach is quite
+ 
+
+00:10:36.959 --> 00:10:39.110 align:start position:0%
+microkernel based approach is quite
+suitable
+
+00:10:39.110 --> 00:10:39.120 align:start position:0%
+suitable
+ 
+
+00:10:39.120 --> 00:10:41.030 align:start position:0%
+suitable
+also<00:10:39.440><c> it</c><00:10:39.600><c> is</c><00:10:39.680><c> modular</c>
+
+00:10:41.030 --> 00:10:41.040 align:start position:0%
+also it is modular
+ 
+
+00:10:41.040 --> 00:10:44.710 align:start position:0%
+also it is modular
+extensible<00:10:42.000><c> and</c><00:10:42.160><c> customizable</c>
+
+00:10:44.710 --> 00:10:44.720 align:start position:0%
+extensible and customizable
+ 
+
+00:10:44.720 --> 00:10:46.870 align:start position:0%
+extensible and customizable
+so<00:10:44.959><c> this</c><00:10:45.360><c> again</c><00:10:45.760><c> is</c><00:10:45.920><c> not</c><00:10:46.240><c> something</c><00:10:46.560><c> that</c><00:10:46.720><c> we</c>
+
+00:10:46.870 --> 00:10:46.880 align:start position:0%
+so this again is not something that we
+ 
+
+00:10:46.880 --> 00:10:48.870 align:start position:0%
+so this again is not something that we
+would<00:10:47.120><c> ideally</c><00:10:47.600><c> like</c><00:10:47.760><c> to</c><00:10:47.920><c> do</c><00:10:48.160><c> in</c><00:10:48.240><c> an</c><00:10:48.480><c> embedded</c>
+
+00:10:48.870 --> 00:10:48.880 align:start position:0%
+would ideally like to do in an embedded
+ 
+
+00:10:48.880 --> 00:10:50.790 align:start position:0%
+would ideally like to do in an embedded
+environment<00:10:49.440><c> this</c><00:10:49.600><c> is</c><00:10:49.760><c> more</c><00:10:50.000><c> for</c><00:10:50.160><c> laptops</c><00:10:50.720><c> and</c>
+
+00:10:50.790 --> 00:10:50.800 align:start position:0%
+environment this is more for laptops and
+ 
+
+00:10:50.800 --> 00:10:53.670 align:start position:0%
+environment this is more for laptops and
+desktops<00:10:51.920><c> but</c><00:10:52.160><c> again</c><00:10:52.480><c> in</c><00:10:52.640><c> an</c><00:10:52.800><c> environment</c>
+
+00:10:53.670 --> 00:10:53.680 align:start position:0%
+desktops but again in an environment
+ 
+
+00:10:53.680 --> 00:10:55.350 align:start position:0%
+desktops but again in an environment
+environment<00:10:54.240><c> who</c><00:10:54.399><c> knows</c><00:10:54.640><c> if</c><00:10:54.720><c> we</c><00:10:54.880><c> have</c><00:10:55.040><c> a</c><00:10:55.120><c> lot</c>
+
+00:10:55.350 --> 00:10:55.360 align:start position:0%
+environment who knows if we have a lot
+ 
+
+00:10:55.360 --> 00:10:56.630 align:start position:0%
+environment who knows if we have a lot
+of<00:10:55.519><c> sensors</c>
+
+00:10:56.630 --> 00:10:56.640 align:start position:0%
+of sensors
+ 
+
+00:10:56.640 --> 00:10:58.069 align:start position:0%
+of sensors
+and<00:10:56.720><c> those</c><00:10:56.959><c> sensors</c><00:10:57.440><c> or</c><00:10:57.600><c> specialized</c>
+
+00:10:58.069 --> 00:10:58.079 align:start position:0%
+and those sensors or specialized
+ 
+
+00:10:58.079 --> 00:11:00.069 align:start position:0%
+and those sensors or specialized
+interfaces<00:10:58.640><c> which</c><00:10:58.880><c> has</c><00:10:59.040><c> not</c><00:10:59.200><c> been</c><00:10:59.440><c> coded</c><00:10:59.839><c> into</c>
+
+00:11:00.069 --> 00:11:00.079 align:start position:0%
+interfaces which has not been coded into
+ 
+
+00:11:00.079 --> 00:11:01.269 align:start position:0%
+interfaces which has not been coded into
+the<00:11:00.240><c> kernel</c>
+
+00:11:01.269 --> 00:11:01.279 align:start position:0%
+the kernel
+ 
+
+00:11:01.279 --> 00:11:03.590 align:start position:0%
+the kernel
+or<00:11:01.440><c> they</c><00:11:01.600><c> have</c><00:11:01.760><c> specialized</c><00:11:02.240><c> requirements</c>
+
+00:11:03.590 --> 00:11:03.600 align:start position:0%
+or they have specialized requirements
+ 
+
+00:11:03.600 --> 00:11:05.670 align:start position:0%
+or they have specialized requirements
+then<00:11:03.920><c> again</c><00:11:04.240><c> it's</c><00:11:04.399><c> a</c><00:11:04.480><c> good</c><00:11:04.720><c> idea</c>
+
+00:11:05.670 --> 00:11:05.680 align:start position:0%
+then again it's a good idea
+ 
+
+00:11:05.680 --> 00:11:07.590 align:start position:0%
+then again it's a good idea
+also<00:11:06.000><c> the</c><00:11:06.160><c> other</c><00:11:06.480><c> thing</c><00:11:06.720><c> is</c><00:11:06.880><c> if</c><00:11:07.040><c> we</c><00:11:07.120><c> have</c><00:11:07.279><c> real</c>
+
+00:11:07.590 --> 00:11:07.600 align:start position:0%
+also the other thing is if we have real
+ 
+
+00:11:07.600 --> 00:11:09.670 align:start position:0%
+also the other thing is if we have real
+time<00:11:07.839><c> requirements</c><00:11:08.560><c> and</c><00:11:08.640><c> we</c><00:11:08.800><c> find</c><00:11:09.040><c> the</c><00:11:09.200><c> kernel</c>
+
+00:11:09.670 --> 00:11:09.680 align:start position:0%
+time requirements and we find the kernel
+ 
+
+00:11:09.680 --> 00:11:11.670 align:start position:0%
+time requirements and we find the kernel
+to<00:11:09.760><c> be</c><00:11:09.920><c> coming</c><00:11:10.240><c> in</c><00:11:10.320><c> the</c><00:11:10.480><c> way</c>
+
+00:11:11.670 --> 00:11:11.680 align:start position:0%
+to be coming in the way
+ 
+
+00:11:11.680 --> 00:11:12.949 align:start position:0%
+to be coming in the way
+again<00:11:12.000><c> we</c><00:11:12.160><c> can</c>
+
+00:11:12.949 --> 00:11:12.959 align:start position:0%
+again we can
+ 
+
+00:11:12.959 --> 00:11:15.750 align:start position:0%
+again we can
+go<00:11:13.200><c> for</c><00:11:13.440><c> a</c><00:11:13.519><c> micro</c><00:11:13.839><c> kernel</c><00:11:14.160><c> based</c><00:11:14.560><c> design</c>
+
+00:11:15.750 --> 00:11:15.760 align:start position:0%
+go for a micro kernel based design
+ 
+
+00:11:15.760 --> 00:11:17.750 align:start position:0%
+go for a micro kernel based design
+where<00:11:16.160><c> it</c><00:11:16.320><c> will</c><00:11:16.480><c> be</c><00:11:16.640><c> possible</c><00:11:17.120><c> for</c><00:11:17.279><c> a</c><00:11:17.360><c> user</c>
+
+00:11:17.750 --> 00:11:17.760 align:start position:0%
+where it will be possible for a user
+ 
+
+00:11:17.760 --> 00:11:18.790 align:start position:0%
+where it will be possible for a user
+process
+
+00:11:18.790 --> 00:11:18.800 align:start position:0%
+process
+ 
+
+00:11:18.800 --> 00:11:21.269 align:start position:0%
+process
+which<00:11:19.040><c> has</c><00:11:19.279><c> a</c><00:11:19.360><c> high</c><00:11:19.600><c> real</c><00:11:19.839><c> time</c><00:11:20.079><c> requirement</c>
+
+00:11:21.269 --> 00:11:21.279 align:start position:0%
+which has a high real time requirement
+ 
+
+00:11:21.279 --> 00:11:23.350 align:start position:0%
+which has a high real time requirement
+to<00:11:21.519><c> execute</c><00:11:22.160><c> in</c><00:11:22.320><c> the</c><00:11:22.480><c> place</c><00:11:22.720><c> of</c><00:11:22.880><c> kernel</c>
+
+00:11:23.350 --> 00:11:23.360 align:start position:0%
+to execute in the place of kernel
+ 
+
+00:11:23.360 --> 00:11:25.030 align:start position:0%
+to execute in the place of kernel
+processes
+
+00:11:25.030 --> 00:11:25.040 align:start position:0%
+processes
+ 
+
+00:11:25.040 --> 00:11:26.389 align:start position:0%
+processes
+so<00:11:25.279><c> as</c><00:11:25.519><c> such</c>
+
+00:11:26.389 --> 00:11:26.399 align:start position:0%
+so as such
+ 
+
+00:11:26.399 --> 00:11:28.389 align:start position:0%
+so as such
+a<00:11:26.640><c> school</c><00:11:26.959><c> of</c><00:11:27.120><c> thought</c><00:11:27.360><c> does</c><00:11:27.760><c> argue</c><00:11:28.160><c> that</c><00:11:28.320><c> a</c>
+
+00:11:28.389 --> 00:11:28.399 align:start position:0%
+a school of thought does argue that a
+ 
+
+00:11:28.399 --> 00:11:30.470 align:start position:0%
+a school of thought does argue that a
+microkernel<00:11:29.120><c> based</c><00:11:29.440><c> approach</c><00:11:29.839><c> makes</c><00:11:30.079><c> os</c>
+
+00:11:30.470 --> 00:11:30.480 align:start position:0%
+microkernel based approach makes os
+ 
+
+00:11:30.480 --> 00:11:31.990 align:start position:0%
+microkernel based approach makes os
+development<00:11:31.040><c> simpler</c>
+
+00:11:31.990 --> 00:11:32.000 align:start position:0%
+development simpler
+ 
+
+00:11:32.000 --> 00:11:33.910 align:start position:0%
+development simpler
+because<00:11:32.399><c> it</c><00:11:32.480><c> distributes</c><00:11:33.040><c> the</c><00:11:33.360><c> design</c><00:11:33.760><c> and</c>
+
+00:11:33.910 --> 00:11:33.920 align:start position:0%
+because it distributes the design and
+ 
+
+00:11:33.920 --> 00:11:35.750 align:start position:0%
+because it distributes the design and
+you<00:11:34.000><c> have</c><00:11:34.079><c> well-defined</c><00:11:34.720><c> interfaces</c><00:11:35.360><c> between</c>
+
+00:11:35.750 --> 00:11:35.760 align:start position:0%
+you have well-defined interfaces between
+ 
+
+00:11:35.760 --> 00:11:36.949 align:start position:0%
+you have well-defined interfaces between
+components
+
+00:11:36.949 --> 00:11:36.959 align:start position:0%
+components
+ 
+
+00:11:36.959 --> 00:11:39.269 align:start position:0%
+components
+but<00:11:37.279><c> as</c><00:11:37.600><c> i</c><00:11:37.680><c> have</c><00:11:38.000><c> argued</c>
+
+00:11:39.269 --> 00:11:39.279 align:start position:0%
+but as i have argued
+ 
+
+00:11:39.279 --> 00:11:41.190 align:start position:0%
+but as i have argued
+in<00:11:39.440><c> the</c><00:11:39.519><c> previous</c><00:11:40.000><c> lecture</c>
+
+00:11:41.190 --> 00:11:41.200 align:start position:0%
+in the previous lecture
+ 
+
+00:11:41.200 --> 00:11:43.750 align:start position:0%
+in the previous lecture
+this<00:11:41.680><c> point</c><00:11:42.000><c> is</c><00:11:42.160><c> somewhat</c><00:11:42.640><c> debatable</c><00:11:43.519><c> right</c>
+
+00:11:43.750 --> 00:11:43.760 align:start position:0%
+this point is somewhat debatable right
+ 
+
+00:11:43.760 --> 00:11:44.790 align:start position:0%
+this point is somewhat debatable right
+so<00:11:44.000><c> some</c>
+
+00:11:44.790 --> 00:11:44.800 align:start position:0%
+so some
+ 
+
+00:11:44.800 --> 00:11:46.870 align:start position:0%
+so some
+one<00:11:45.120><c> camp</c><00:11:45.440><c> may</c><00:11:45.680><c> say</c><00:11:45.920><c> that</c><00:11:46.240><c> a</c><00:11:46.320><c> monolithic</c>
+
+00:11:46.870 --> 00:11:46.880 align:start position:0%
+one camp may say that a monolithic
+ 
+
+00:11:46.880 --> 00:11:48.949 align:start position:0%
+one camp may say that a monolithic
+kernel<00:11:47.279><c> is</c><00:11:47.360><c> better</c><00:11:47.839><c> the</c><00:11:47.920><c> other</c><00:11:48.240><c> camp</c><00:11:48.560><c> may</c><00:11:48.800><c> say</c>
+
+00:11:48.949 --> 00:11:48.959 align:start position:0%
+kernel is better the other camp may say
+ 
+
+00:11:48.959 --> 00:11:51.350 align:start position:0%
+kernel is better the other camp may say
+that<00:11:49.120><c> a</c><00:11:49.200><c> micro</c><00:11:49.600><c> kernel</c><00:11:50.000><c> is</c><00:11:50.079><c> better</c>
+
+00:11:51.350 --> 00:11:51.360 align:start position:0%
+that a micro kernel is better
+ 
+
+00:11:51.360 --> 00:11:52.870 align:start position:0%
+that a micro kernel is better
+and<00:11:51.519><c> of</c><00:11:51.680><c> course</c><00:11:51.839><c> for</c><00:11:52.079><c> operating</c><00:11:52.560><c> system</c>
+
+00:11:52.870 --> 00:11:52.880 align:start position:0%
+and of course for operating system
+ 
+
+00:11:52.880 --> 00:11:54.870 align:start position:0%
+and of course for operating system
+services<00:11:53.519><c> no</c><00:11:53.680><c> doubt</c><00:11:54.160><c> more</c><00:11:54.320><c> than</c><00:11:54.560><c> one</c>
+
+00:11:54.870 --> 00:11:54.880 align:start position:0%
+services no doubt more than one
+ 
+
+00:11:54.880 --> 00:11:57.590 align:start position:0%
+services no doubt more than one
+implementation<00:11:55.760><c> is</c><00:11:56.000><c> possible</c><00:11:56.959><c> so</c><00:11:57.200><c> a</c><00:11:57.279><c> lot</c><00:11:57.440><c> of</c>
+
+00:11:57.590 --> 00:11:57.600 align:start position:0%
+implementation is possible so a lot of
+ 
+
+00:11:57.600 --> 00:12:01.670 align:start position:0%
+implementation is possible so a lot of
+flexibility<00:11:58.560><c> is</c><00:11:58.800><c> given</c><00:11:59.200><c> over</c><00:11:59.519><c> here</c>
+
+00:12:01.670 --> 00:12:01.680 align:start position:0%
+flexibility is given over here
+ 
+
+00:12:01.680 --> 00:12:04.230 align:start position:0%
+flexibility is given over here
+the<00:12:01.839><c> microkernel</c><00:12:02.880><c> is</c><00:12:03.040><c> stable</c><00:12:03.680><c> in</c><00:12:03.760><c> the</c><00:12:03.920><c> sense</c>
+
+00:12:04.230 --> 00:12:04.240 align:start position:0%
+the microkernel is stable in the sense
+ 
+
+00:12:04.240 --> 00:12:06.069 align:start position:0%
+the microkernel is stable in the sense
+that<00:12:04.480><c> it</c><00:12:04.639><c> can</c><00:12:04.800><c> have</c><00:12:04.959><c> fewer</c><00:12:05.360><c> bugs</c><00:12:05.760><c> mainly</c>
+
+00:12:06.069 --> 00:12:06.079 align:start position:0%
+that it can have fewer bugs mainly
+ 
+
+00:12:06.079 --> 00:12:08.069 align:start position:0%
+that it can have fewer bugs mainly
+because<00:12:06.480><c> of</c><00:12:06.639><c> isolation</c>
+
+00:12:08.069 --> 00:12:08.079 align:start position:0%
+because of isolation
+ 
+
+00:12:08.079 --> 00:12:10.470 align:start position:0%
+because of isolation
+because<00:12:08.480><c> of</c><00:12:08.560><c> component</c><00:12:09.040><c> wise</c><00:12:09.360><c> testing</c><00:12:10.240><c> but</c>
+
+00:12:10.470 --> 00:12:10.480 align:start position:0%
+because of component wise testing but
+ 
+
+00:12:10.480 --> 00:12:12.470 align:start position:0%
+because of component wise testing but
+again<00:12:10.800><c> as</c><00:12:10.959><c> i</c><00:12:11.120><c> have</c><00:12:11.279><c> said</c><00:12:11.440><c> this</c><00:12:11.680><c> is</c><00:12:11.839><c> an</c><00:12:12.000><c> ongoing</c>
+
+00:12:12.470 --> 00:12:12.480 align:start position:0%
+again as i have said this is an ongoing
+ 
+
+00:12:12.480 --> 00:12:13.910 align:start position:0%
+again as i have said this is an ongoing
+debate
+
+00:12:13.910 --> 00:12:13.920 align:start position:0%
+debate
+ 
+
+00:12:13.920 --> 00:12:15.829 align:start position:0%
+debate
+because<00:12:14.320><c> someone</c><00:12:14.639><c> can</c><00:12:14.880><c> always</c><00:12:15.200><c> say</c><00:12:15.440><c> that</c><00:12:15.600><c> look</c>
+
+00:12:15.829 --> 00:12:15.839 align:start position:0%
+because someone can always say that look
+ 
+
+00:12:15.839 --> 00:12:18.150 align:start position:0%
+because someone can always say that look
+you<00:12:15.920><c> have</c><00:12:16.079><c> a</c><00:12:16.160><c> lot</c><00:12:16.399><c> of</c><00:12:16.560><c> components</c>
+
+00:12:18.150 --> 00:12:18.160 align:start position:0%
+you have a lot of components
+ 
+
+00:12:18.160 --> 00:12:20.470 align:start position:0%
+you have a lot of components
+at<00:12:18.320><c> the</c><00:12:18.480><c> time</c><00:12:18.800><c> of</c><00:12:18.959><c> creation</c><00:12:19.680><c> or</c><00:12:19.920><c> at</c><00:12:20.079><c> the</c><00:12:20.240><c> time</c>
+
+00:12:20.470 --> 00:12:20.480 align:start position:0%
+at the time of creation or at the time
+ 
+
+00:12:20.480 --> 00:12:21.910 align:start position:0%
+at the time of creation or at the time
+of<00:12:20.639><c> compilation</c>
+
+00:12:21.910 --> 00:12:21.920 align:start position:0%
+of compilation
+ 
+
+00:12:21.920 --> 00:12:23.670 align:start position:0%
+of compilation
+you<00:12:22.079><c> don't</c><00:12:22.320><c> really</c><00:12:22.720><c> know</c><00:12:23.120><c> how</c><00:12:23.360><c> these</c>
+
+00:12:23.670 --> 00:12:23.680 align:start position:0%
+you don't really know how these
+ 
+
+00:12:23.680 --> 00:12:26.230 align:start position:0%
+you don't really know how these
+components<00:12:24.240><c> will</c><00:12:24.480><c> interact</c><00:12:24.880><c> with</c><00:12:25.120><c> each</c><00:12:25.279><c> other</c>
+
+00:12:26.230 --> 00:12:26.240 align:start position:0%
+components will interact with each other
+ 
+
+00:12:26.240 --> 00:12:29.110 align:start position:0%
+components will interact with each other
+given<00:12:26.639><c> the</c><00:12:26.800><c> fact</c><00:12:27.120><c> that</c><00:12:27.279><c> you</c><00:12:27.440><c> do</c><00:12:27.600><c> not</c><00:12:27.920><c> know</c><00:12:28.160><c> that</c>
+
+00:12:29.110 --> 00:12:29.120 align:start position:0%
+given the fact that you do not know that
+ 
+
+00:12:29.120 --> 00:12:31.350 align:start position:0%
+given the fact that you do not know that
+it<00:12:29.279><c> would</c><00:12:29.519><c> be</c><00:12:29.680><c> unwise</c><00:12:30.240><c> or</c><00:12:30.399><c> impractical</c><00:12:31.040><c> to</c><00:12:31.200><c> say</c>
+
+00:12:31.350 --> 00:12:31.360 align:start position:0%
+it would be unwise or impractical to say
+ 
+
+00:12:31.360 --> 00:12:33.590 align:start position:0%
+it would be unwise or impractical to say
+that<00:12:31.519><c> the</c><00:12:31.600><c> entire</c><00:12:31.920><c> thing</c><00:12:32.079><c> is</c><00:12:32.240><c> stable</c><00:12:32.639><c> because</c>
+
+00:12:33.590 --> 00:12:33.600 align:start position:0%
+that the entire thing is stable because
+ 
+
+00:12:33.600 --> 00:12:35.430 align:start position:0%
+that the entire thing is stable because
+it<00:12:33.839><c> is</c><00:12:33.920><c> possible</c><00:12:34.320><c> there</c><00:12:34.480><c> may</c><00:12:34.639><c> be</c><00:12:34.800><c> some</c><00:12:35.040><c> feature</c>
+
+00:12:35.430 --> 00:12:35.440 align:start position:0%
+it is possible there may be some feature
+ 
+
+00:12:35.440 --> 00:12:38.069 align:start position:0%
+it is possible there may be some feature
+here<00:12:35.680><c> which</c><00:12:35.920><c> will</c><00:12:36.079><c> break</c><00:12:36.399><c> when</c><00:12:37.040><c> you</c><00:12:37.120><c> know</c><00:12:37.279><c> this</c>
+
+00:12:38.069 --> 00:12:38.079 align:start position:0%
+here which will break when you know this
+ 
+
+00:12:38.079 --> 00:12:40.150 align:start position:0%
+here which will break when you know this
+component<00:12:38.639><c> is</c><00:12:38.800><c> run</c><00:12:39.120><c> right</c>
+
+00:12:40.150 --> 00:12:40.160 align:start position:0%
+component is run right
+ 
+
+00:12:40.160 --> 00:12:41.670 align:start position:0%
+component is run right
+but<00:12:40.399><c> at</c><00:12:40.480><c> least</c><00:12:40.720><c> one</c><00:12:40.959><c> thing</c><00:12:41.120><c> is</c><00:12:41.279><c> there</c><00:12:41.440><c> is</c><00:12:41.519><c> some</c>
+
+00:12:41.670 --> 00:12:41.680 align:start position:0%
+but at least one thing is there is some
+ 
+
+00:12:41.680 --> 00:12:43.350 align:start position:0%
+but at least one thing is there is some
+degree<00:12:42.000><c> of</c><00:12:42.079><c> recovery</c><00:12:42.560><c> in</c><00:12:42.639><c> the</c><00:12:42.800><c> sense</c><00:12:43.040><c> if</c><00:12:43.200><c> this</c>
+
+00:12:43.350 --> 00:12:43.360 align:start position:0%
+degree of recovery in the sense if this
+ 
+
+00:12:43.360 --> 00:12:46.870 align:start position:0%
+degree of recovery in the sense if this
+component<00:12:43.839><c> fails</c><00:12:44.160><c> we</c><00:12:44.320><c> can</c><00:12:44.399><c> restart</c><00:12:44.959><c> it</c>
+
+00:12:46.870 --> 00:12:46.880 align:start position:0%
+component fails we can restart it
+ 
+
+00:12:46.880 --> 00:12:49.190 align:start position:0%
+component fails we can restart it
+coming<00:12:47.279><c> to</c><00:12:47.440><c> context</c><00:12:47.920><c> switches</c><00:12:48.480><c> if</c><00:12:48.639><c> i</c><00:12:48.800><c> were</c><00:12:49.040><c> to</c>
+
+00:12:49.190 --> 00:12:49.200 align:start position:0%
+coming to context switches if i were to
+ 
+
+00:12:49.200 --> 00:12:51.190 align:start position:0%
+coming to context switches if i were to
+compare<00:12:49.839><c> the</c><00:12:50.079><c> difference</c><00:12:50.560><c> between</c><00:12:51.040><c> a</c>
+
+00:12:51.190 --> 00:12:51.200 align:start position:0%
+compare the difference between a
+ 
+
+00:12:51.200 --> 00:12:54.629 align:start position:0%
+compare the difference between a
+monolithic<00:12:52.079><c> kernel</c><00:12:52.560><c> and</c><00:12:52.639><c> a</c><00:12:52.720><c> microkernel</c>
+
+00:12:54.629 --> 00:12:54.639 align:start position:0%
+monolithic kernel and a microkernel
+ 
+
+00:12:54.639 --> 00:12:56.550 align:start position:0%
+monolithic kernel and a microkernel
+so<00:12:54.880><c> then</c><00:12:55.200><c> in</c><00:12:55.279><c> a</c><00:12:55.360><c> monolithic</c><00:12:55.920><c> kernel</c><00:12:56.320><c> we</c>
+
+00:12:56.550 --> 00:12:56.560 align:start position:0%
+so then in a monolithic kernel we
+ 
+
+00:12:56.560 --> 00:12:59.110 align:start position:0%
+so then in a monolithic kernel we
+clearly<00:12:57.040><c> have</c><00:12:57.360><c> multiple</c><00:12:58.079><c> address</c><00:12:58.480><c> spaces</c><00:12:58.959><c> in</c>
+
+00:12:59.110 --> 00:12:59.120 align:start position:0%
+clearly have multiple address spaces in
+ 
+
+00:12:59.120 --> 00:13:00.150 align:start position:0%
+clearly have multiple address spaces in
+the<00:12:59.279><c> sense</c>
+
+00:13:00.150 --> 00:13:00.160 align:start position:0%
+the sense
+ 
+
+00:13:00.160 --> 00:13:02.230 align:start position:0%
+the sense
+if<00:13:00.399><c> there</c><00:13:00.560><c> is</c><00:13:00.639><c> a</c><00:13:00.720><c> context</c><00:13:01.200><c> switch</c><00:13:01.760><c> when</c><00:13:01.920><c> we</c><00:13:02.079><c> go</c>
+
+00:13:02.230 --> 00:13:02.240 align:start position:0%
+if there is a context switch when we go
+ 
+
+00:13:02.240 --> 00:13:05.430 align:start position:0%
+if there is a context switch when we go
+to<00:13:02.399><c> the</c><00:13:02.560><c> kernel</c><00:13:03.279><c> we</c><00:13:03.519><c> store</c>
+
+00:13:05.430 --> 00:13:05.440 align:start position:0%
+to the kernel we store
+ 
+
+00:13:05.440 --> 00:13:07.350 align:start position:0%
+to the kernel we store
+the<00:13:05.600><c> data</c>
+
+00:13:07.350 --> 00:13:07.360 align:start position:0%
+the data
+ 
+
+00:13:07.360 --> 00:13:10.150 align:start position:0%
+the data
+we<00:13:07.600><c> store</c><00:13:07.839><c> the</c><00:13:08.000><c> context</c><00:13:08.480><c> and</c><00:13:08.639><c> we</c><00:13:08.800><c> come</c><00:13:08.959><c> back</c><00:13:09.279><c> to</c>
+
+00:13:10.150 --> 00:13:10.160 align:start position:0%
+we store the context and we come back to
+ 
+
+00:13:10.160 --> 00:13:11.670 align:start position:0%
+we store the context and we come back to
+maybe<00:13:10.399><c> the</c><00:13:10.560><c> same</c><00:13:10.800><c> user</c><00:13:11.120><c> process</c><00:13:11.440><c> or</c><00:13:11.600><c> a</c>
+
+00:13:11.670 --> 00:13:11.680 align:start position:0%
+maybe the same user process or a
+ 
+
+00:13:11.680 --> 00:13:13.670 align:start position:0%
+maybe the same user process or a
+different<00:13:12.000><c> user</c><00:13:12.399><c> process</c>
+
+00:13:13.670 --> 00:13:13.680 align:start position:0%
+different user process
+ 
+
+00:13:13.680 --> 00:13:15.350 align:start position:0%
+different user process
+in<00:13:13.839><c> the</c><00:13:13.920><c> case</c><00:13:14.160><c> of</c><00:13:14.320><c> a</c><00:13:14.399><c> micro</c><00:13:14.800><c> kernel</c><00:13:15.200><c> what</c>
+
+00:13:15.350 --> 00:13:15.360 align:start position:0%
+in the case of a micro kernel what
+ 
+
+00:13:15.360 --> 00:13:17.190 align:start position:0%
+in the case of a micro kernel what
+happens<00:13:15.839><c> is</c><00:13:16.000><c> well</c><00:13:16.160><c> the</c><00:13:16.320><c> system</c><00:13:16.639><c> call</c><00:13:16.959><c> does</c>
+
+00:13:17.190 --> 00:13:17.200 align:start position:0%
+happens is well the system call does
+ 
+
+00:13:17.200 --> 00:13:19.509 align:start position:0%
+happens is well the system call does
+take<00:13:17.360><c> you</c><00:13:17.519><c> to</c><00:13:17.680><c> the</c><00:13:17.760><c> kernel</c><00:13:18.240><c> all</c><00:13:18.399><c> right</c>
+
+00:13:19.509 --> 00:13:19.519 align:start position:0%
+take you to the kernel all right
+ 
+
+00:13:19.519 --> 00:13:22.069 align:start position:0%
+take you to the kernel all right
+but<00:13:19.680><c> the</c><00:13:19.839><c> kernel</c><00:13:20.399><c> itself</c><00:13:20.880><c> may</c><00:13:21.120><c> now</c><00:13:21.600><c> invoke</c>
+
+00:13:22.069 --> 00:13:22.079 align:start position:0%
+but the kernel itself may now invoke
+ 
+
+00:13:22.079 --> 00:13:23.990 align:start position:0%
+but the kernel itself may now invoke
+some<00:13:22.240><c> other</c><00:13:22.560><c> code</c><00:13:23.279><c> which</c><00:13:23.519><c> is</c><00:13:23.680><c> actually</c>
+
+00:13:23.990 --> 00:13:24.000 align:start position:0%
+some other code which is actually
+ 
+
+00:13:24.000 --> 00:13:26.230 align:start position:0%
+some other code which is actually
+running<00:13:24.320><c> in</c><00:13:24.399><c> the</c><00:13:24.560><c> user</c><00:13:24.959><c> space</c>
+
+00:13:26.230 --> 00:13:26.240 align:start position:0%
+running in the user space
+ 
+
+00:13:26.240 --> 00:13:27.509 align:start position:0%
+running in the user space
+so<00:13:26.480><c> the</c>
+
+00:13:27.509 --> 00:13:27.519 align:start position:0%
+so the
+ 
+
+00:13:27.519 --> 00:13:29.509 align:start position:0%
+so the
+time<00:13:27.839><c> it</c><00:13:28.079><c> takes</c><00:13:28.399><c> to</c>
+
+00:13:29.509 --> 00:13:29.519 align:start position:0%
+time it takes to
+ 
+
+00:13:29.519 --> 00:13:31.350 align:start position:0%
+time it takes to
+actually<00:13:30.000><c> process</c><00:13:30.399><c> a</c><00:13:30.480><c> system</c><00:13:30.880><c> call</c><00:13:31.120><c> will</c>
+
+00:13:31.350 --> 00:13:31.360 align:start position:0%
+actually process a system call will
+ 
+
+00:13:31.360 --> 00:13:32.230 align:start position:0%
+actually process a system call will
+increase
+
+00:13:32.230 --> 00:13:32.240 align:start position:0%
+increase
+ 
+
+00:13:32.240 --> 00:13:33.910 align:start position:0%
+increase
+because<00:13:32.639><c> previously</c><00:13:33.120><c> everything</c><00:13:33.440><c> was</c><00:13:33.680><c> within</c>
+
+00:13:33.910 --> 00:13:33.920 align:start position:0%
+because previously everything was within
+ 
+
+00:13:33.920 --> 00:13:36.230 align:start position:0%
+because previously everything was within
+the<00:13:34.079><c> kernel</c><00:13:34.480><c> but</c><00:13:34.720><c> now</c><00:13:34.880><c> the</c><00:13:35.120><c> kernel</c><00:13:35.519><c> would</c><00:13:35.839><c> call</c>
+
+00:13:36.230 --> 00:13:36.240 align:start position:0%
+the kernel but now the kernel would call
+ 
+
+00:13:36.240 --> 00:13:38.949 align:start position:0%
+the kernel but now the kernel would call
+a<00:13:36.399><c> program</c><00:13:36.880><c> in</c><00:13:37.040><c> the</c><00:13:37.120><c> user</c><00:13:37.519><c> space</c>
+
+00:13:38.949 --> 00:13:38.959 align:start position:0%
+a program in the user space
+ 
+
+00:13:38.959 --> 00:13:40.710 align:start position:0%
+a program in the user space
+that<00:13:39.120><c> would</c><00:13:39.360><c> compute</c><00:13:39.839><c> something</c><00:13:40.320><c> again</c><00:13:40.639><c> it</c>
+
+00:13:40.710 --> 00:13:40.720 align:start position:0%
+that would compute something again it
+ 
+
+00:13:40.720 --> 00:13:42.230 align:start position:0%
+that would compute something again it
+will<00:13:40.880><c> send</c><00:13:41.120><c> the</c><00:13:41.199><c> response</c><00:13:41.760><c> back</c><00:13:41.920><c> to</c><00:13:42.079><c> the</c>
+
+00:13:42.230 --> 00:13:42.240 align:start position:0%
+will send the response back to the
+ 
+
+00:13:42.240 --> 00:13:43.670 align:start position:0%
+will send the response back to the
+kernel<00:13:42.639><c> and</c><00:13:42.720><c> the</c><00:13:42.800><c> kernel</c><00:13:43.199><c> will</c><00:13:43.360><c> send</c><00:13:43.600><c> the</c>
+
+00:13:43.670 --> 00:13:43.680 align:start position:0%
+kernel and the kernel will send the
+ 
+
+00:13:43.680 --> 00:13:46.150 align:start position:0%
+kernel and the kernel will send the
+response<00:13:44.240><c> back</c><00:13:44.480><c> to</c><00:13:44.560><c> the</c><00:13:44.639><c> user</c><00:13:44.959><c> space</c>
+
+00:13:46.150 --> 00:13:46.160 align:start position:0%
+response back to the user space
+ 
+
+00:13:46.160 --> 00:13:48.470 align:start position:0%
+response back to the user space
+so<00:13:46.399><c> as</c><00:13:46.560><c> you</c><00:13:46.720><c> can</c><00:13:46.880><c> see</c><00:13:47.120><c> we</c><00:13:47.279><c> are</c><00:13:47.440><c> paying</c><00:13:47.760><c> a</c><00:13:48.000><c> price</c>
+
+00:13:48.470 --> 00:13:48.480 align:start position:0%
+so as you can see we are paying a price
+ 
+
+00:13:48.480 --> 00:13:52.310 align:start position:0%
+so as you can see we are paying a price
+for<00:13:48.639><c> this</c><00:13:48.959><c> flexibility</c>
+
+00:13:52.310 --> 00:13:52.320 align:start position:0%
+ 
+ 
+
+00:13:52.320 --> 00:13:55.829 align:start position:0%
+ 
+again<00:13:52.880><c> some</c><00:13:53.360><c> cons</c><00:13:53.920><c> of</c><00:13:54.160><c> micro</c><00:13:54.480><c> kernel</c><00:13:55.360><c> we</c><00:13:55.600><c> could</c>
+
+00:13:55.829 --> 00:13:55.839 align:start position:0%
+again some cons of micro kernel we could
+ 
+
+00:13:55.839 --> 00:13:58.389 align:start position:0%
+again some cons of micro kernel we could
+have<00:13:56.000><c> poor</c><00:13:56.320><c> performance</c><00:13:56.880><c> as</c><00:13:57.040><c> you</c><00:13:57.199><c> just</c><00:13:57.440><c> saw</c>
+
+00:13:58.389 --> 00:13:58.399 align:start position:0%
+have poor performance as you just saw
+ 
+
+00:13:58.399 --> 00:14:00.710 align:start position:0%
+have poor performance as you just saw
+because<00:13:58.800><c> number</c><00:13:59.199><c> one</c><00:13:59.839><c> given</c><00:14:00.160><c> that</c><00:14:00.480><c> each</c>
+
+00:14:00.710 --> 00:14:00.720 align:start position:0%
+because number one given that each
+ 
+
+00:14:00.720 --> 00:14:04.310 align:start position:0%
+because number one given that each
+kernel<00:14:01.199><c> call</c><00:14:01.440><c> achieves</c><00:14:01.920><c> less</c>
+
+00:14:04.310 --> 00:14:04.320 align:start position:0%
+ 
+ 
+
+00:14:04.320 --> 00:14:06.550 align:start position:0%
+ 
+will<00:14:04.560><c> we</c><00:14:04.800><c> could</c><00:14:05.040><c> have</c><00:14:05.279><c> more</c><00:14:05.519><c> system</c><00:14:05.920><c> calls</c><00:14:06.399><c> or</c>
+
+00:14:06.550 --> 00:14:06.560 align:start position:0%
+will we could have more system calls or
+ 
+
+00:14:06.560 --> 00:14:08.389 align:start position:0%
+will we could have more system calls or
+if<00:14:06.720><c> we</c><00:14:06.880><c> still</c><00:14:07.120><c> keep</c><00:14:07.360><c> the</c><00:14:07.519><c> same</c><00:14:07.760><c> system</c><00:14:08.079><c> call</c>
+
+00:14:08.389 --> 00:14:08.399 align:start position:0%
+if we still keep the same system call
+ 
+
+00:14:08.399 --> 00:14:10.870 align:start position:0%
+if we still keep the same system call
+interface<00:14:09.360><c> you</c><00:14:09.519><c> can</c><00:14:09.680><c> definitely</c><00:14:10.399><c> see</c><00:14:10.639><c> over</c>
+
+00:14:10.870 --> 00:14:10.880 align:start position:0%
+interface you can definitely see over
+ 
+
+00:14:10.880 --> 00:14:13.350 align:start position:0%
+interface you can definitely see over
+here<00:14:11.120><c> we</c><00:14:11.279><c> have</c><00:14:11.440><c> more</c><00:14:11.760><c> context</c><00:14:12.160><c> switches</c>
+
+00:14:13.350 --> 00:14:13.360 align:start position:0%
+here we have more context switches
+ 
+
+00:14:13.360 --> 00:14:14.150 align:start position:0%
+here we have more context switches
+right
+
+00:14:14.150 --> 00:14:14.160 align:start position:0%
+right
+ 
+
+00:14:14.160 --> 00:14:16.069 align:start position:0%
+right
+so<00:14:14.320><c> each</c><00:14:14.560><c> system</c><00:14:14.959><c> call</c><00:14:15.199><c> has</c><00:14:15.360><c> to</c><00:14:15.519><c> switch</c><00:14:15.760><c> to</c><00:14:15.920><c> the</c>
+
+00:14:16.069 --> 00:14:16.079 align:start position:0%
+so each system call has to switch to the
+ 
+
+00:14:16.079 --> 00:14:17.910 align:start position:0%
+so each system call has to switch to the
+kernel<00:14:16.480><c> the</c><00:14:16.639><c> kernel</c><00:14:16.959><c> can</c><00:14:17.199><c> again</c><00:14:17.440><c> switch</c><00:14:17.680><c> to</c><00:14:17.839><c> a</c>
+
+00:14:17.910 --> 00:14:17.920 align:start position:0%
+kernel the kernel can again switch to a
+ 
+
+00:14:17.920 --> 00:14:19.590 align:start position:0%
+kernel the kernel can again switch to a
+user<00:14:18.160><c> level</c><00:14:18.480><c> process</c><00:14:18.880><c> switch</c><00:14:19.199><c> back</c><00:14:19.519><c> and</c>
+
+00:14:19.590 --> 00:14:19.600 align:start position:0%
+user level process switch back and
+ 
+
+00:14:19.600 --> 00:14:22.949 align:start position:0%
+user level process switch back and
+switch<00:14:20.000><c> back</c><00:14:20.720><c> so</c><00:14:20.880><c> the</c><00:14:21.040><c> context</c><00:14:21.519><c> switches</c>
+
+00:14:22.949 --> 00:14:22.959 align:start position:0%
+switch back so the context switches
+ 
+
+00:14:22.959 --> 00:14:25.350 align:start position:0%
+switch back so the context switches
+indeed<00:14:23.440><c> become</c><00:14:23.839><c> more</c><00:14:24.160><c> expensive</c><00:14:25.120><c> so</c>
+
+00:14:25.350 --> 00:14:25.360 align:start position:0%
+indeed become more expensive so
+ 
+
+00:14:25.360 --> 00:14:27.189 align:start position:0%
+indeed become more expensive so
+flexibility<00:14:26.079><c> is</c><00:14:26.160><c> not</c><00:14:26.399><c> a</c><00:14:26.480><c> one-way</c><00:14:26.800><c> street</c>
+
+00:14:27.189 --> 00:14:27.199 align:start position:0%
+flexibility is not a one-way street
+ 
+
+00:14:27.199 --> 00:14:29.430 align:start position:0%
+flexibility is not a one-way street
+right<00:14:27.920><c> so</c><00:14:28.160><c> there</c><00:14:28.320><c> are</c><00:14:28.480><c> no</c><00:14:28.639><c> free</c><00:14:28.880><c> lunches</c><00:14:29.360><c> in</c>
+
+00:14:29.430 --> 00:14:29.440 align:start position:0%
+right so there are no free lunches in
+ 
+
+00:14:29.440 --> 00:14:31.990 align:start position:0%
+right so there are no free lunches in
+this<00:14:29.680><c> world</c><00:14:30.000><c> and</c><00:14:30.079><c> definitely</c><00:14:30.800><c> os</c><00:14:31.199><c> flexibility</c>
+
+00:14:31.990 --> 00:14:32.000 align:start position:0%
+this world and definitely os flexibility
+ 
+
+00:14:32.000 --> 00:14:34.310 align:start position:0%
+this world and definitely os flexibility
+falls<00:14:32.320><c> in</c><00:14:32.480><c> that</c>
+
+00:14:34.310 --> 00:14:34.320 align:start position:0%
+falls in that
+ 
+
+00:14:34.320 --> 00:14:35.430 align:start position:0%
+falls in that
+all<00:14:34.480><c> right</c>
+
+00:14:35.430 --> 00:14:35.440 align:start position:0%
+all right
+ 
+
+00:14:35.440 --> 00:14:37.910 align:start position:0%
+all right
+and<00:14:35.680><c> every</c><00:14:36.079><c> context</c><00:14:36.480><c> switch</c><00:14:37.040><c> it</c><00:14:37.199><c> does</c><00:14:37.519><c> involve</c>
+
+00:14:37.910 --> 00:14:37.920 align:start position:0%
+and every context switch it does involve
+ 
+
+00:14:37.920 --> 00:14:40.230 align:start position:0%
+and every context switch it does involve
+a<00:14:38.000><c> fair</c><00:14:38.240><c> amount</c><00:14:38.560><c> of</c><00:14:38.720><c> work</c><00:14:39.360><c> you</c><00:14:39.519><c> have</c><00:14:39.600><c> to</c><00:14:39.760><c> store</c>
+
+00:14:40.230 --> 00:14:40.240 align:start position:0%
+a fair amount of work you have to store
+ 
+
+00:14:40.240 --> 00:14:42.629 align:start position:0%
+a fair amount of work you have to store
+some<00:14:40.480><c> state</c><00:14:40.800><c> we</c><00:14:40.959><c> have</c><00:14:41.040><c> to</c><00:14:41.199><c> restore</c><00:14:41.680><c> some</c><00:14:41.920><c> state</c>
+
+00:14:42.629 --> 00:14:42.639 align:start position:0%
+some state we have to restore some state
+ 
+
+00:14:42.639 --> 00:14:45.750 align:start position:0%
+some state we have to restore some state
+you<00:14:42.800><c> have</c><00:14:42.880><c> to</c><00:14:42.959><c> flush</c><00:14:43.279><c> the</c><00:14:43.440><c> tlb</c><00:14:44.000><c> and</c><00:14:44.160><c> restore</c>
+
+00:14:45.750 --> 00:14:45.760 align:start position:0%
+you have to flush the tlb and restore
+ 
+
+00:14:45.760 --> 00:14:48.389 align:start position:0%
+you have to flush the tlb and restore
+so<00:14:46.000><c> clearly</c><00:14:46.480><c> for</c><00:14:46.639><c> flexibility</c><00:14:47.440><c> os</c><00:14:47.760><c> services</c>
+
+00:14:48.389 --> 00:14:48.399 align:start position:0%
+so clearly for flexibility os services
+ 
+
+00:14:48.399 --> 00:14:50.949 align:start position:0%
+so clearly for flexibility os services
+do<00:14:48.639><c> become</c><00:14:49.040><c> expensive</c>
+
+00:14:50.949 --> 00:14:50.959 align:start position:0%
+do become expensive
+ 
+
+00:14:50.959 --> 00:14:54.389 align:start position:0%
+do become expensive
+a<00:14:51.199><c> single</c><00:14:51.519><c> system</c><00:14:51.920><c> call</c><00:14:52.160><c> as</c><00:14:52.320><c> you</c><00:14:52.480><c> have</c><00:14:52.560><c> seen</c>
+
+00:14:54.389 --> 00:14:54.399 align:start position:0%
+a single system call as you have seen
+ 
+
+00:14:54.399 --> 00:14:56.629 align:start position:0%
+a single system call as you have seen
+requires<00:14:54.959><c> two</c><00:14:55.199><c> function</c><00:14:55.680><c> calls</c><00:14:56.000><c> and</c><00:14:56.079><c> two</c><00:14:56.320><c> mode</c>
+
+00:14:56.629 --> 00:14:56.639 align:start position:0%
+requires two function calls and two mode
+ 
+
+00:14:56.639 --> 00:14:58.629 align:start position:0%
+requires two function calls and two mode
+switches<00:14:57.120><c> as</c><00:14:57.279><c> you</c><00:14:57.440><c> just</c><00:14:57.680><c> saw</c><00:14:58.000><c> in</c><00:14:58.079><c> the</c><00:14:58.240><c> previous</c>
+
+00:14:58.629 --> 00:14:58.639 align:start position:0%
+switches as you just saw in the previous
+ 
+
+00:14:58.639 --> 00:15:00.310 align:start position:0%
+switches as you just saw in the previous
+diagram
+
+00:15:00.310 --> 00:15:00.320 align:start position:0%
+diagram
+ 
+
+00:15:00.320 --> 00:15:03.910 align:start position:0%
+diagram
+for<00:15:00.480><c> real</c><00:15:00.800><c> time</c><00:15:01.040><c> applications</c><00:15:01.760><c> however</c>
+
+00:15:03.910 --> 00:15:03.920 align:start position:0%
+for real time applications however
+ 
+
+00:15:03.920 --> 00:15:06.790 align:start position:0%
+for real time applications however
+where<00:15:04.160><c> the</c><00:15:04.320><c> main</c><00:15:04.720><c> aim</c><00:15:05.040><c> is</c><00:15:05.600><c> a</c><00:15:05.839><c> quick</c><00:15:06.160><c> turnaround</c>
+
+00:15:06.790 --> 00:15:06.800 align:start position:0%
+where the main aim is a quick turnaround
+ 
+
+00:15:06.800 --> 00:15:08.949 align:start position:0%
+where the main aim is a quick turnaround
+time<00:15:07.199><c> quick</c><00:15:07.519><c> interrupt</c><00:15:07.920><c> handling</c>
+
+00:15:08.949 --> 00:15:08.959 align:start position:0%
+time quick interrupt handling
+ 
+
+00:15:08.959 --> 00:15:10.470 align:start position:0%
+time quick interrupt handling
+in<00:15:09.120><c> the</c><00:15:09.199><c> sense</c><00:15:09.440><c> there</c><00:15:09.519><c> is</c><00:15:09.680><c> an</c><00:15:09.839><c> interrupt</c><00:15:10.160><c> so</c><00:15:10.320><c> we</c>
+
+00:15:10.470 --> 00:15:10.480 align:start position:0%
+in the sense there is an interrupt so we
+ 
+
+00:15:10.480 --> 00:15:12.790 align:start position:0%
+in the sense there is an interrupt so we
+don't<00:15:10.639><c> do</c><00:15:10.880><c> much</c><00:15:11.120><c> we</c><00:15:11.279><c> do</c><00:15:11.519><c> a</c><00:15:11.600><c> little</c><00:15:11.839><c> bit</c>
+
+00:15:12.790 --> 00:15:12.800 align:start position:0%
+don't do much we do a little bit
+ 
+
+00:15:12.800 --> 00:15:13.829 align:start position:0%
+don't do much we do a little bit
+the<00:15:12.959><c> rest</c>
+
+00:15:13.829 --> 00:15:13.839 align:start position:0%
+the rest
+ 
+
+00:15:13.839 --> 00:15:15.829 align:start position:0%
+the rest
+basically<00:15:14.399><c> runs</c><00:15:14.639><c> in</c><00:15:14.800><c> user</c><00:15:15.120><c> space</c><00:15:15.440><c> which</c><00:15:15.680><c> can</c>
+
+00:15:15.829 --> 00:15:15.839 align:start position:0%
+basically runs in user space which can
+ 
+
+00:15:15.839 --> 00:15:17.430 align:start position:0%
+basically runs in user space which can
+be<00:15:16.000><c> scheduled</c><00:15:16.399><c> later</c>
+
+00:15:17.430 --> 00:15:17.440 align:start position:0%
+be scheduled later
+ 
+
+00:15:17.440 --> 00:15:19.910 align:start position:0%
+be scheduled later
+right<00:15:17.680><c> and</c><00:15:17.839><c> it's</c><00:15:18.079><c> them</c><00:15:18.320><c> and</c><00:15:18.399><c> the</c><00:15:18.560><c> priority</c>
+
+00:15:19.910 --> 00:15:19.920 align:start position:0%
+right and it's them and the priority
+ 
+
+00:15:19.920 --> 00:15:22.150 align:start position:0%
+right and it's them and the priority
+of<00:15:20.160><c> basically</c><00:15:20.800><c> the</c><00:15:20.959><c> deferred</c><00:15:21.440><c> mechanism</c><00:15:22.000><c> so</c>
+
+00:15:22.150 --> 00:15:22.160 align:start position:0%
+of basically the deferred mechanism so
+ 
+
+00:15:22.160 --> 00:15:24.389 align:start position:0%
+of basically the deferred mechanism so
+this<00:15:22.320><c> is</c><00:15:22.399><c> known</c><00:15:22.639><c> as</c><00:15:22.720><c> deferred</c><00:15:23.199><c> processing</c>
+
+00:15:24.389 --> 00:15:24.399 align:start position:0%
+this is known as deferred processing
+ 
+
+00:15:24.399 --> 00:15:26.949 align:start position:0%
+this is known as deferred processing
+so<00:15:24.639><c> typically</c><00:15:25.199><c> in</c><00:15:25.360><c> many</c><00:15:25.760><c> pro</c><00:15:26.160><c> systems</c><00:15:26.639><c> what</c><00:15:26.800><c> we</c>
+
+00:15:26.949 --> 00:15:26.959 align:start position:0%
+so typically in many pro systems what we
+ 
+
+00:15:26.959 --> 00:15:30.710 align:start position:0%
+so typically in many pro systems what we
+do<00:15:27.199><c> is</c><00:15:27.279><c> we</c><00:15:27.440><c> have</c><00:15:27.600><c> a</c><00:15:28.000><c> sorry</c><00:15:28.320><c> a</c><00:15:28.959><c> top</c><00:15:29.360><c> half</c>
+
+00:15:30.710 --> 00:15:30.720 align:start position:0%
+do is we have a sorry a top half
+ 
+
+00:15:30.720 --> 00:15:32.550 align:start position:0%
+do is we have a sorry a top half
+and<00:15:30.959><c> a</c><00:15:31.040><c> bottom</c><00:15:31.360><c> half</c><00:15:31.680><c> the</c><00:15:31.839><c> top</c><00:15:32.079><c> half</c><00:15:32.320><c> is</c><00:15:32.480><c> the</c>
+
+00:15:32.550 --> 00:15:32.560 align:start position:0%
+and a bottom half the top half is the
+ 
+
+00:15:32.560 --> 00:15:35.590 align:start position:0%
+and a bottom half the top half is the
+one<00:15:32.800><c> that</c><00:15:32.959><c> does</c><00:15:33.279><c> quick</c><00:15:34.000><c> interrupt</c><00:15:34.480><c> processing</c>
+
+00:15:35.590 --> 00:15:35.600 align:start position:0%
+one that does quick interrupt processing
+ 
+
+00:15:35.600 --> 00:15:37.430 align:start position:0%
+one that does quick interrupt processing
+so<00:15:35.759><c> this</c><00:15:36.000><c> of</c><00:15:36.160><c> course</c><00:15:36.399><c> is</c><00:15:36.560><c> done</c><00:15:36.800><c> in</c><00:15:36.880><c> the</c><00:15:36.959><c> kernel</c>
+
+00:15:37.430 --> 00:15:37.440 align:start position:0%
+so this of course is done in the kernel
+ 
+
+00:15:37.440 --> 00:15:39.350 align:start position:0%
+so this of course is done in the kernel
+but<00:15:37.600><c> most</c><00:15:37.920><c> of</c><00:15:38.000><c> the</c><00:15:38.160><c> bulk</c><00:15:38.480><c> of</c><00:15:38.560><c> the</c><00:15:38.720><c> work</c><00:15:39.040><c> is</c><00:15:39.120><c> done</c>
+
+00:15:39.350 --> 00:15:39.360 align:start position:0%
+but most of the bulk of the work is done
+ 
+
+00:15:39.360 --> 00:15:40.949 align:start position:0%
+but most of the bulk of the work is done
+by<00:15:39.519><c> the</c><00:15:39.600><c> bottom</c><00:15:40.000><c> half</c>
+
+00:15:40.949 --> 00:15:40.959 align:start position:0%
+by the bottom half
+ 
+
+00:15:40.959 --> 00:15:43.110 align:start position:0%
+by the bottom half
+and<00:15:41.120><c> the</c><00:15:41.279><c> bottom</c><00:15:41.680><c> half</c><00:15:42.000><c> if</c><00:15:42.160><c> that</c><00:15:42.399><c> is</c><00:15:42.560><c> running</c>
+
+00:15:43.110 --> 00:15:43.120 align:start position:0%
+and the bottom half if that is running
+ 
+
+00:15:43.120 --> 00:15:46.069 align:start position:0%
+and the bottom half if that is running
+in<00:15:43.279><c> user</c><00:15:43.680><c> space</c><00:15:44.560><c> it</c><00:15:44.720><c> has</c><00:15:44.880><c> a</c><00:15:44.959><c> reduced</c><00:15:45.440><c> priority</c>
+
+00:15:46.069 --> 00:15:46.079 align:start position:0%
+in user space it has a reduced priority
+ 
+
+00:15:46.079 --> 00:15:49.590 align:start position:0%
+in user space it has a reduced priority
+so<00:15:46.240><c> if</c><00:15:46.480><c> it</c><00:15:46.639><c> if</c><00:15:46.880><c> that</c><00:15:47.199><c> has</c><00:15:47.440><c> a</c><00:15:47.519><c> reduced</c><00:15:48.079><c> priority</c>
+
+00:15:49.590 --> 00:15:49.600 align:start position:0%
+so if it if that has a reduced priority
+ 
+
+00:15:49.600 --> 00:15:51.749 align:start position:0%
+so if it if that has a reduced priority
+then<00:15:50.320><c> at</c><00:15:50.480><c> least</c><00:15:50.720><c> real</c><00:15:51.040><c> time</c>
+
+00:15:51.749 --> 00:15:51.759 align:start position:0%
+then at least real time
+ 
+
+00:15:51.759 --> 00:15:54.870 align:start position:0%
+then at least real time
+processes<00:15:52.320><c> can</c><00:15:52.480><c> run</c>
+
+00:15:54.870 --> 00:15:54.880 align:start position:0%
+processes can run
+ 
+
+00:15:54.880 --> 00:15:58.389 align:start position:0%
+processes can run
+regarding<00:15:55.440><c> ipc</c><00:15:56.000><c> services</c><00:15:56.959><c> so</c><00:15:57.199><c> basically</c><00:15:57.759><c> ipc</c>
+
+00:15:58.389 --> 00:15:58.399 align:start position:0%
+regarding ipc services so basically ipc
+ 
+
+00:15:58.399 --> 00:16:01.509 align:start position:0%
+regarding ipc services so basically ipc
+does<00:15:58.800><c> govern</c><00:15:59.199><c> the</c><00:15:59.360><c> performance</c><00:16:00.000><c> of</c><00:16:00.079><c> the</c><00:16:00.160><c> os</c>
+
+00:16:01.509 --> 00:16:01.519 align:start position:0%
+does govern the performance of the os
+ 
+
+00:16:01.519 --> 00:16:03.590 align:start position:0%
+does govern the performance of the os
+more<00:16:01.839><c> so</c><00:16:02.160><c> in</c><00:16:02.240><c> a</c><00:16:02.320><c> micro</c><00:16:02.720><c> kernel</c><00:16:03.120><c> because</c><00:16:03.360><c> that</c>
+
+00:16:03.590 --> 00:16:03.600 align:start position:0%
+more so in a micro kernel because that
+ 
+
+00:16:03.600 --> 00:16:05.430 align:start position:0%
+more so in a micro kernel because that
+is<00:16:03.680><c> heavily</c><00:16:04.079><c> dependent</c><00:16:04.639><c> on</c><00:16:04.800><c> inter</c><00:16:05.040><c> process</c>
+
+00:16:05.430 --> 00:16:05.440 align:start position:0%
+is heavily dependent on inter process
+ 
+
+00:16:05.440 --> 00:16:08.230 align:start position:0%
+is heavily dependent on inter process
+communication<00:16:06.480><c> right</c><00:16:07.199><c> so</c><00:16:07.440><c> we</c><00:16:07.600><c> will</c><00:16:07.759><c> have</c><00:16:07.920><c> many</c>
+
+00:16:08.230 --> 00:16:08.240 align:start position:0%
+communication right so we will have many
+ 
+
+00:16:08.240 --> 00:16:09.350 align:start position:0%
+communication right so we will have many
+of<00:16:08.399><c> these</c><00:16:08.639><c> nodes</c><00:16:08.959><c> there</c><00:16:09.120><c> will</c><00:16:09.199><c> be</c>
+
+00:16:09.350 --> 00:16:09.360 align:start position:0%
+of these nodes there will be
+ 
+
+00:16:09.360 --> 00:16:11.829 align:start position:0%
+of these nodes there will be
+communication<00:16:10.000><c> between</c><00:16:10.399><c> them</c><00:16:11.120><c> and</c><00:16:11.360><c> because</c>
+
+00:16:11.829 --> 00:16:11.839 align:start position:0%
+communication between them and because
+ 
+
+00:16:11.839 --> 00:16:14.470 align:start position:0%
+communication between them and because
+of<00:16:11.920><c> the</c><00:16:12.079><c> heavy</c><00:16:12.399><c> dependence</c><00:16:13.040><c> between</c><00:16:13.519><c> them</c>
+
+00:16:14.470 --> 00:16:14.480 align:start position:0%
+of the heavy dependence between them
+ 
+
+00:16:14.480 --> 00:16:16.230 align:start position:0%
+of the heavy dependence between them
+there<00:16:14.880><c> will</c><00:16:15.199><c> be</c>
+
+00:16:16.230 --> 00:16:16.240 align:start position:0%
+there will be
+ 
+
+00:16:16.240 --> 00:16:17.670 align:start position:0%
+there will be
+a<00:16:16.480><c> strong</c>
+
+00:16:17.670 --> 00:16:17.680 align:start position:0%
+a strong
+ 
+
+00:16:17.680 --> 00:16:19.430 align:start position:0%
+a strong
+there<00:16:17.839><c> will</c><00:16:17.920><c> be</c><00:16:18.079><c> a</c><00:16:18.240><c> strong</c>
+
+00:16:19.430 --> 00:16:19.440 align:start position:0%
+there will be a strong
+ 
+
+00:16:19.440 --> 00:16:21.829 align:start position:0%
+there will be a strong
+correlation<00:16:20.000><c> with</c><00:16:20.240><c> the</c><00:16:20.320><c> performance</c><00:16:20.880><c> of</c><00:16:21.040><c> ipc</c>
+
+00:16:21.829 --> 00:16:21.839 align:start position:0%
+correlation with the performance of ipc
+ 
+
+00:16:21.839 --> 00:16:22.790 align:start position:0%
+correlation with the performance of ipc
+right
+
+00:16:22.790 --> 00:16:22.800 align:start position:0%
+right
+ 
+
+00:16:22.800 --> 00:16:25.030 align:start position:0%
+right
+so<00:16:22.959><c> even</c><00:16:23.199><c> though</c><00:16:23.360><c> a</c><00:16:23.440><c> micro</c><00:16:23.839><c> kernel</c><00:16:24.320><c> itself</c><00:16:24.880><c> is</c>
+
+00:16:25.030 --> 00:16:25.040 align:start position:0%
+so even though a micro kernel itself is
+ 
+
+00:16:25.040 --> 00:16:26.150 align:start position:0%
+so even though a micro kernel itself is
+roughly
+
+00:16:26.150 --> 00:16:26.160 align:start position:0%
+roughly
+ 
+
+00:16:26.160 --> 00:16:28.629 align:start position:0%
+roughly
+comparable<00:16:26.800><c> to</c><00:16:26.959><c> a</c><00:16:27.040><c> real</c><00:16:27.279><c> time</c><00:16:27.600><c> executive</c>
+
+00:16:28.629 --> 00:16:28.639 align:start position:0%
+comparable to a real time executive
+ 
+
+00:16:28.639 --> 00:16:30.470 align:start position:0%
+comparable to a real time executive
+because<00:16:28.959><c> you</c><00:16:29.040><c> know</c><00:16:29.279><c> we</c><00:16:29.440><c> have</c><00:16:29.839><c> reduced</c><00:16:30.320><c> the</c>
+
+00:16:30.470 --> 00:16:30.480 align:start position:0%
+because you know we have reduced the
+ 
+
+00:16:30.480 --> 00:16:32.389 align:start position:0%
+because you know we have reduced the
+overhead<00:16:30.880><c> significantly</c>
+
+00:16:32.389 --> 00:16:32.399 align:start position:0%
+overhead significantly
+ 
+
+00:16:32.399 --> 00:16:34.870 align:start position:0%
+overhead significantly
+but<00:16:32.720><c> because</c><00:16:33.199><c> of</c><00:16:33.360><c> multiple</c><00:16:33.839><c> context</c><00:16:34.320><c> switches</c>
+
+00:16:34.870 --> 00:16:34.880 align:start position:0%
+but because of multiple context switches
+ 
+
+00:16:34.880 --> 00:16:37.030 align:start position:0%
+but because of multiple context switches
+and<00:16:35.040><c> the</c><00:16:35.279><c> high</c><00:16:35.680><c> overhead</c><00:16:36.160><c> of</c><00:16:36.320><c> inter</c><00:16:36.639><c> process</c>
+
+00:16:37.030 --> 00:16:37.040 align:start position:0%
+and the high overhead of inter process
+ 
+
+00:16:37.040 --> 00:16:38.629 align:start position:0%
+and the high overhead of inter process
+communication
+
+00:16:38.629 --> 00:16:38.639 align:start position:0%
+communication
+ 
+
+00:16:38.639 --> 00:16:39.749 align:start position:0%
+communication
+things
+
+00:16:39.749 --> 00:16:39.759 align:start position:0%
+things
+ 
+
+00:16:39.759 --> 00:16:41.990 align:start position:0%
+things
+can<00:16:40.079><c> get</c><00:16:40.399><c> worse</c><00:16:40.959><c> in</c><00:16:41.040><c> the</c><00:16:41.199><c> sense</c><00:16:41.440><c> performance</c>
+
+00:16:41.990 --> 00:16:42.000 align:start position:0%
+can get worse in the sense performance
+ 
+
+00:16:42.000 --> 00:16:43.509 align:start position:0%
+can get worse in the sense performance
+can<00:16:42.240><c> get</c><00:16:42.480><c> worse</c>
+
+00:16:43.509 --> 00:16:43.519 align:start position:0%
+can get worse
+ 
+
+00:16:43.519 --> 00:16:45.189 align:start position:0%
+can get worse
+because<00:16:43.920><c> we</c><00:16:44.079><c> are</c><00:16:44.240><c> just</c><00:16:44.480><c> not</c><00:16:44.720><c> looking</c><00:16:45.040><c> at</c><00:16:45.120><c> the</c>
+
+00:16:45.189 --> 00:16:45.199 align:start position:0%
+because we are just not looking at the
+ 
+
+00:16:45.199 --> 00:16:46.710 align:start position:0%
+because we are just not looking at the
+microkernel
+
+00:16:46.710 --> 00:16:46.720 align:start position:0%
+microkernel
+ 
+
+00:16:46.720 --> 00:16:49.910 align:start position:0%
+microkernel
+we<00:16:46.800><c> are</c><00:16:46.959><c> looking</c><00:16:47.360><c> at</c><00:16:47.680><c> the</c><00:16:48.000><c> entire</c><00:16:48.639><c> flow</c><00:16:49.199><c> of</c>
+
+00:16:49.910 --> 00:16:49.920 align:start position:0%
+we are looking at the entire flow of
+ 
+
+00:16:49.920 --> 00:16:52.150 align:start position:0%
+we are looking at the entire flow of
+getting<00:16:50.639><c> some</c><00:16:50.959><c> job</c><00:16:51.279><c> done</c>
+
+00:16:52.150 --> 00:16:52.160 align:start position:0%
+getting some job done
+ 
+
+00:16:52.160 --> 00:16:54.230 align:start position:0%
+getting some job done
+that<00:16:52.399><c> will</c><00:16:52.720><c> require</c><00:16:53.519><c> many</c><00:16:53.839><c> rounds</c><00:16:54.160><c> of</c>
+
+00:16:54.230 --> 00:16:54.240 align:start position:0%
+that will require many rounds of
+ 
+
+00:16:54.240 --> 00:16:55.749 align:start position:0%
+that will require many rounds of
+communication<00:16:54.959><c> between</c><00:16:55.199><c> the</c><00:16:55.360><c> different</c>
+
+00:16:55.749 --> 00:16:55.759 align:start position:0%
+communication between the different
+ 
+
+00:16:55.759 --> 00:16:57.590 align:start position:0%
+communication between the different
+entities<00:16:56.240><c> we</c><00:16:56.399><c> have</c><00:16:56.560><c> created</c>
+
+00:16:57.590 --> 00:16:57.600 align:start position:0%
+entities we have created
+ 
+
+00:16:57.600 --> 00:16:59.670 align:start position:0%
+entities we have created
+both<00:16:57.839><c> in</c><00:16:57.920><c> the</c><00:16:58.079><c> kernel</c><00:16:58.480><c> space</c><00:16:58.800><c> and</c><00:16:58.880><c> user</c><00:16:59.279><c> space</c>
+
+00:16:59.670 --> 00:16:59.680 align:start position:0%
+both in the kernel space and user space
+ 
+
+00:16:59.680 --> 00:17:02.470 align:start position:0%
+both in the kernel space and user space
+in<00:16:59.759><c> the</c><00:16:59.920><c> sense</c><00:17:00.399><c> a</c><00:17:00.560><c> single</c><00:17:01.040><c> call</c><00:17:01.440><c> may</c><00:17:01.680><c> like</c><00:17:02.320><c> take</c>
+
+00:17:02.470 --> 00:17:02.480 align:start position:0%
+in the sense a single call may like take
+ 
+
+00:17:02.480 --> 00:17:04.549 align:start position:0%
+in the sense a single call may like take
+you<00:17:02.639><c> from</c><00:17:02.800><c> user</c><00:17:03.199><c> kernel</c><00:17:03.519><c> user</c><00:17:03.839><c> kernel</c><00:17:04.240><c> user</c>
+
+00:17:04.549 --> 00:17:04.559 align:start position:0%
+you from user kernel user kernel user
+ 
+
+00:17:04.559 --> 00:17:06.470 align:start position:0%
+you from user kernel user kernel user
+kernel<00:17:04.959><c> right</c><00:17:05.199><c> to</c><00:17:05.439><c> back</c>
+
+00:17:06.470 --> 00:17:06.480 align:start position:0%
+kernel right to back
+ 
+
+00:17:06.480 --> 00:17:07.189 align:start position:0%
+kernel right to back
+and
+
+00:17:07.189 --> 00:17:07.199 align:start position:0%
+and
+ 
+
+00:17:07.199 --> 00:17:09.110 align:start position:0%
+and
+along<00:17:07.520><c> with</c><00:17:07.679><c> that</c><00:17:08.160><c> you</c><00:17:08.319><c> may</c><00:17:08.480><c> have</c><00:17:08.640><c> multiple</c>
+
+00:17:09.110 --> 00:17:09.120 align:start position:0%
+along with that you may have multiple
+ 
+
+00:17:09.120 --> 00:17:12.150 align:start position:0%
+along with that you may have multiple
+user<00:17:09.439><c> level</c><00:17:09.760><c> communication</c><00:17:10.799><c> communication</c>
+
+00:17:12.150 --> 00:17:12.160 align:start position:0%
+user level communication communication
+ 
+
+00:17:12.160 --> 00:17:13.750 align:start position:0%
+user level communication communication
+messages
+
+00:17:13.750 --> 00:17:13.760 align:start position:0%
+messages
+ 
+
+00:17:13.760 --> 00:17:15.750 align:start position:0%
+messages
+so<00:17:14.000><c> this</c><00:17:14.319><c> will</c><00:17:14.559><c> increase</c><00:17:14.959><c> the</c><00:17:15.120><c> overhead</c>
+
+00:17:15.750 --> 00:17:15.760 align:start position:0%
+so this will increase the overhead
+ 
+
+00:17:15.760 --> 00:17:16.829 align:start position:0%
+so this will increase the overhead
+somewhat
+
+00:17:16.829 --> 00:17:16.839 align:start position:0%
+somewhat
+ 
+
+00:17:16.839 --> 00:17:18.710 align:start position:0%
+somewhat
+substantially
+
+00:17:18.710 --> 00:17:18.720 align:start position:0%
+substantially
+ 
+
+00:17:18.720 --> 00:17:21.350 align:start position:0%
+substantially
+so<00:17:18.880><c> this</c><00:17:19.199><c> brings</c><00:17:19.600><c> us</c><00:17:19.839><c> to</c><00:17:20.000><c> the</c><00:17:20.400><c> end</c><00:17:20.720><c> of</c><00:17:20.880><c> lecture</c>
+
+00:17:21.350 --> 00:17:21.360 align:start position:0%
+so this brings us to the end of lecture
+ 
+
+00:17:21.360 --> 00:17:23.669 align:start position:0%
+so this brings us to the end of lecture
+20.<00:17:21.919><c> so</c><00:17:22.079><c> we</c><00:17:22.319><c> will</c><00:17:22.480><c> continue</c><00:17:23.039><c> discussing</c>
+
+00:17:23.669 --> 00:17:23.679 align:start position:0%
+20. so we will continue discussing
+ 
+
+00:17:23.679 --> 00:17:27.189 align:start position:0%
+20. so we will continue discussing
+similar<00:17:24.240><c> topics</c><00:17:24.880><c> in</c><00:17:25.520><c> lecture</c><00:17:26.000><c> 21</c><00:17:26.640><c> as</c><00:17:26.799><c> well</c>
+
+00:17:27.189 --> 00:17:27.199 align:start position:0%
+similar topics in lecture 21 as well
+ 
+
+00:17:27.199 --> 00:17:36.950 align:start position:0%
+similar topics in lecture 21 as well
+which<00:17:27.439><c> is</c><00:17:27.520><c> which</c><00:17:27.760><c> will</c><00:17:27.839><c> be</c><00:17:28.000><c> the</c><00:17:28.160><c> next</c><00:17:28.400><c> lecture</c>
+
+00:17:36.950 --> 00:17:36.960 align:start position:0%
+ 
+ 
+
+00:17:36.960 --> 00:17:39.039 align:start position:0%
+ 
+you
+

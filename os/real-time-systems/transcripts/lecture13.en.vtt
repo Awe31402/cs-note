@@ -1,0 +1,2600 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.840 --> 00:00:16.310 align:start position:0%
+ 
+[Music]
+
+00:00:16.310 --> 00:00:16.320 align:start position:0%
+ 
+ 
+
+00:00:16.320 --> 00:00:18.390 align:start position:0%
+ 
+welcome<00:00:16.720><c> to</c><00:00:16.880><c> lecture</c><00:00:17.359><c> 14.</c>
+
+00:00:18.390 --> 00:00:18.400 align:start position:0%
+welcome to lecture 14.
+ 
+
+00:00:18.400 --> 00:00:20.870 align:start position:0%
+welcome to lecture 14.
+so<00:00:18.640><c> in</c><00:00:18.720><c> this</c><00:00:18.960><c> lecture</c><00:00:19.439><c> we</c><00:00:19.600><c> will</c><00:00:20.080><c> analyze</c><00:00:20.720><c> the</c>
+
+00:00:20.870 --> 00:00:20.880 align:start position:0%
+so in this lecture we will analyze the
+ 
+
+00:00:20.880 --> 00:00:23.189 align:start position:0%
+so in this lecture we will analyze the
+priority<00:00:21.439><c> ceiling</c><00:00:21.760><c> protocol</c><00:00:22.480><c> the</c><00:00:22.640><c> pcp</c>
+
+00:00:23.189 --> 00:00:23.199 align:start position:0%
+priority ceiling protocol the pcp
+ 
+
+00:00:23.199 --> 00:00:26.630 align:start position:0%
+priority ceiling protocol the pcp
+protocol<00:00:23.760><c> slightly</c><00:00:24.240><c> more</c>
+
+00:00:26.630 --> 00:00:26.640 align:start position:0%
+ 
+ 
+
+00:00:26.640 --> 00:00:29.189 align:start position:0%
+ 
+so<00:00:26.800><c> if</c><00:00:26.960><c> we</c><00:00:27.039><c> look</c><00:00:27.279><c> at</c><00:00:27.439><c> it</c><00:00:28.000><c> priority</c><00:00:28.560><c> inversions</c>
+
+00:00:29.189 --> 00:00:29.199 align:start position:0%
+so if we look at it priority inversions
+ 
+
+00:00:29.199 --> 00:00:31.109 align:start position:0%
+so if we look at it priority inversions
+under<00:00:29.519><c> pcp</c>
+
+00:00:31.109 --> 00:00:31.119 align:start position:0%
+under pcp
+ 
+
+00:00:31.119 --> 00:00:33.750 align:start position:0%
+under pcp
+do<00:00:31.439><c> reduce</c><00:00:31.920><c> as</c><00:00:32.160><c> compared</c><00:00:32.480><c> to</c><00:00:32.719><c> hlp</c><00:00:33.200><c> the</c><00:00:33.360><c> reason</c>
+
+00:00:33.750 --> 00:00:33.760 align:start position:0%
+do reduce as compared to hlp the reason
+ 
+
+00:00:33.760 --> 00:00:34.790 align:start position:0%
+do reduce as compared to hlp the reason
+being
+
+00:00:34.790 --> 00:00:34.800 align:start position:0%
+being
+ 
+
+00:00:34.800 --> 00:00:38.229 align:start position:0%
+being
+that<00:00:35.120><c> hlp</c><00:00:35.680><c> jacks</c><00:00:36.079><c> up</c><00:00:36.239><c> the</c><00:00:36.399><c> priority</c>
+
+00:00:38.229 --> 00:00:38.239 align:start position:0%
+that hlp jacks up the priority
+ 
+
+00:00:38.239 --> 00:00:39.990 align:start position:0%
+that hlp jacks up the priority
+of<00:00:38.559><c> a</c><00:00:38.719><c> process</c><00:00:39.120><c> that</c><00:00:39.360><c> has</c><00:00:39.520><c> acquired</c><00:00:39.920><c> a</c>
+
+00:00:39.990 --> 00:00:40.000 align:start position:0%
+of a process that has acquired a
+ 
+
+00:00:40.000 --> 00:00:41.350 align:start position:0%
+of a process that has acquired a
+resource
+
+00:00:41.350 --> 00:00:41.360 align:start position:0%
+resource
+ 
+
+00:00:41.360 --> 00:00:42.830 align:start position:0%
+resource
+to<00:00:41.520><c> a</c><00:00:41.600><c> very</c><00:00:41.920><c> high</c>
+
+00:00:42.830 --> 00:00:42.840 align:start position:0%
+to a very high
+ 
+
+00:00:42.840 --> 00:00:45.190 align:start position:0%
+to a very high
+value<00:00:43.840><c> which</c><00:00:44.000><c> is</c><00:00:44.160><c> equal</c><00:00:44.399><c> to</c><00:00:44.559><c> the</c><00:00:44.719><c> ceiling</c><00:00:45.039><c> of</c>
+
+00:00:45.190 --> 00:00:45.200 align:start position:0%
+value which is equal to the ceiling of
+ 
+
+00:00:45.200 --> 00:00:46.389 align:start position:0%
+value which is equal to the ceiling of
+the<00:00:45.280><c> resource</c>
+
+00:00:46.389 --> 00:00:46.399 align:start position:0%
+the resource
+ 
+
+00:00:46.399 --> 00:00:49.350 align:start position:0%
+the resource
+but<00:00:46.640><c> in</c><00:00:46.719><c> pcp</c><00:00:47.280><c> that</c><00:00:47.440><c> doesn't</c><00:00:47.760><c> happen</c>
+
+00:00:49.350 --> 00:00:49.360 align:start position:0%
+but in pcp that doesn't happen
+ 
+
+00:00:49.360 --> 00:00:52.470 align:start position:0%
+but in pcp that doesn't happen
+so<00:00:49.520><c> high</c><00:00:49.760><c> priority</c><00:00:50.320><c> tasks</c><00:00:50.640><c> may</c><00:00:50.800><c> still</c><00:00:51.199><c> suffer</c>
+
+00:00:52.470 --> 00:00:52.480 align:start position:0%
+so high priority tasks may still suffer
+ 
+
+00:00:52.480 --> 00:00:54.389 align:start position:0%
+so high priority tasks may still suffer
+because<00:00:52.879><c> of</c><00:00:53.039><c> three</c><00:00:53.280><c> kinds</c><00:00:53.600><c> of</c><00:00:53.760><c> inversions</c>
+
+00:00:54.389 --> 00:00:54.399 align:start position:0%
+because of three kinds of inversions
+ 
+
+00:00:54.399 --> 00:00:56.549 align:start position:0%
+because of three kinds of inversions
+which<00:00:54.559><c> are</c><00:00:54.640><c> direct</c><00:00:55.120><c> inversions</c>
+
+00:00:56.549 --> 00:00:56.559 align:start position:0%
+which are direct inversions
+ 
+
+00:00:56.559 --> 00:00:58.470 align:start position:0%
+which are direct inversions
+inheritance<00:00:57.280><c> related</c><00:00:57.680><c> inversions</c><00:00:58.320><c> and</c>
+
+00:00:58.470 --> 00:00:58.480 align:start position:0%
+inheritance related inversions and
+ 
+
+00:00:58.480 --> 00:01:00.709 align:start position:0%
+inheritance related inversions and
+avoidance<00:00:58.960><c> related</c><00:00:59.440><c> inversions</c>
+
+00:01:00.709 --> 00:01:00.719 align:start position:0%
+avoidance related inversions
+ 
+
+00:01:00.719 --> 00:01:05.030 align:start position:0%
+avoidance related inversions
+where<00:01:00.960><c> this</c><00:01:01.199><c> category</c><00:01:01.840><c> is</c><00:01:02.000><c> unique</c><00:01:02.320><c> to</c><00:01:02.559><c> pcp</c>
+
+00:01:05.030 --> 00:01:05.040 align:start position:0%
+where this category is unique to pcp
+ 
+
+00:01:05.040 --> 00:01:08.630 align:start position:0%
+ 
+so<00:01:05.280><c> let</c><00:01:05.439><c> us</c><00:01:05.680><c> now</c><00:01:05.920><c> look</c><00:01:06.240><c> at</c><00:01:06.880><c> some</c><00:01:07.119><c> analysis</c>
+
+00:01:08.630 --> 00:01:08.640 align:start position:0%
+so let us now look at some analysis
+ 
+
+00:01:08.640 --> 00:01:12.070 align:start position:0%
+so let us now look at some analysis
+so<00:01:08.880><c> assume</c><00:01:09.280><c> tasks</c><00:01:09.680><c> t1</c><00:01:10.080><c> t2</c><00:01:10.560><c> and</c><00:01:10.720><c> t3</c><00:01:11.600><c> so</c><00:01:11.760><c> in</c><00:01:11.920><c> this</c>
+
+00:01:12.070 --> 00:01:12.080 align:start position:0%
+so assume tasks t1 t2 and t3 so in this
+ 
+
+00:01:12.080 --> 00:01:13.510 align:start position:0%
+so assume tasks t1 t2 and t3 so in this
+case<00:01:12.320><c> higher</c><00:01:12.640><c> the</c><00:01:12.720><c> number</c><00:01:13.119><c> higher</c><00:01:13.360><c> the</c>
+
+00:01:13.510 --> 00:01:13.520 align:start position:0%
+case higher the number higher the
+ 
+
+00:01:13.520 --> 00:01:15.990 align:start position:0%
+case higher the number higher the
+priority
+
+00:01:15.990 --> 00:01:16.000 align:start position:0%
+priority
+ 
+
+00:01:16.000 --> 00:01:18.310 align:start position:0%
+priority
+so<00:01:16.400><c> uh</c><00:01:16.960><c> they</c><00:01:17.200><c> have</c><00:01:17.360><c> their</c><00:01:17.600><c> priorities</c>
+
+00:01:18.310 --> 00:01:18.320 align:start position:0%
+so uh they have their priorities
+ 
+
+00:01:18.320 --> 00:01:21.910 align:start position:0%
+so uh they have their priorities
+priority<00:01:18.799><c> highest</c><00:01:19.200><c> for</c><00:01:19.439><c> t1</c><00:01:20.159><c> lowest</c><00:01:20.560><c> 46.</c><00:01:21.600><c> sorry</c>
+
+00:01:21.910 --> 00:01:21.920 align:start position:0%
+priority highest for t1 lowest 46. sorry
+ 
+
+00:01:21.920 --> 00:01:24.710 align:start position:0%
+priority highest for t1 lowest 46. sorry
+i<00:01:22.080><c> stand</c><00:01:22.400><c> corrected</c><00:01:23.200><c> so</c><00:01:23.439><c> here</c><00:01:23.680><c> then</c><00:01:24.320><c> we're</c><00:01:24.560><c> not</c>
+
+00:01:24.710 --> 00:01:24.720 align:start position:0%
+i stand corrected so here then we're not
+ 
+
+00:01:24.720 --> 00:01:27.030 align:start position:0%
+i stand corrected so here then we're not
+associating<00:01:25.200><c> the</c><00:01:25.280><c> number</c><00:01:25.600><c> is</c><00:01:25.759><c> the</c><00:01:25.920><c> position</c>
+
+00:01:27.030 --> 00:01:27.040 align:start position:0%
+associating the number is the position
+ 
+
+00:01:27.040 --> 00:01:29.830 align:start position:0%
+associating the number is the position
+so<00:01:27.280><c> t1</c><00:01:27.680><c> highest</c><00:01:28.159><c> t2</c><00:01:28.479><c> second</c><00:01:28.799><c> highest</c><00:01:29.200><c> t3</c><00:01:29.600><c> third</c>
+
+00:01:29.830 --> 00:01:29.840 align:start position:0%
+so t1 highest t2 second highest t3 third
+ 
+
+00:01:29.840 --> 00:01:32.870 align:start position:0%
+so t1 highest t2 second highest t3 third
+highest<00:01:30.240><c> and</c><00:01:30.400><c> t6</c><00:01:30.880><c> is</c><00:01:31.040><c> the</c><00:01:31.119><c> last</c><00:01:31.439><c> sixth</c><00:01:31.759><c> highest</c>
+
+00:01:32.870 --> 00:01:32.880 align:start position:0%
+highest and t6 is the last sixth highest
+ 
+
+00:01:32.880 --> 00:01:34.630 align:start position:0%
+highest and t6 is the last sixth highest
+and<00:01:33.119><c> these</c><00:01:33.360><c> are</c><00:01:33.520><c> their</c><00:01:33.840><c> durations</c><00:01:34.479><c> of</c>
+
+00:01:34.630 --> 00:01:34.640 align:start position:0%
+and these are their durations of
+ 
+
+00:01:34.640 --> 00:01:36.950 align:start position:0%
+and these are their durations of
+execution<00:01:35.280><c> five</c><00:01:35.520><c> to</c><00:01:35.759><c> eight</c><00:01:36.079><c> four</c><00:01:36.320><c> one</c><00:01:36.640><c> five</c>
+
+00:01:36.950 --> 00:01:36.960 align:start position:0%
+execution five to eight four one five
+ 
+
+00:01:36.960 --> 00:01:37.749 align:start position:0%
+execution five to eight four one five
+eight
+
+00:01:37.749 --> 00:01:37.759 align:start position:0%
+eight
+ 
+
+00:01:37.759 --> 00:01:39.429 align:start position:0%
+eight
+respectively
+
+00:01:39.429 --> 00:01:39.439 align:start position:0%
+respectively
+ 
+
+00:01:39.439 --> 00:01:42.230 align:start position:0%
+respectively
+okay<00:01:39.759><c> see</c><00:01:39.920><c> if</c><00:01:40.000><c> we</c><00:01:40.079><c> look</c><00:01:40.320><c> at</c><00:01:40.479><c> direct</c><00:01:40.880><c> blocking</c>
+
+00:01:42.230 --> 00:01:42.240 align:start position:0%
+okay see if we look at direct blocking
+ 
+
+00:01:42.240 --> 00:01:45.109 align:start position:0%
+okay see if we look at direct blocking
+t1<00:01:42.640><c> can</c><00:01:42.880><c> get</c><00:01:43.040><c> direct</c><00:01:43.439><c> block</c><00:01:43.680><c> because</c><00:01:44.000><c> of</c><00:01:44.159><c> t2</c>
+
+00:01:45.109 --> 00:01:45.119 align:start position:0%
+t1 can get direct block because of t2
+ 
+
+00:01:45.119 --> 00:01:47.109 align:start position:0%
+t1 can get direct block because of t2
+for<00:01:45.439><c> two</c><00:01:45.680><c> units</c><00:01:46.000><c> of</c><00:01:46.159><c> time</c>
+
+00:01:47.109 --> 00:01:47.119 align:start position:0%
+for two units of time
+ 
+
+00:01:47.119 --> 00:01:50.230 align:start position:0%
+for two units of time
+because<00:01:47.439><c> of</c><00:01:47.600><c> t3</c><00:01:48.000><c> for</c><00:01:48.240><c> eight</c><00:01:48.399><c> units</c><00:01:48.799><c> of</c><00:01:49.040><c> time</c>
+
+00:01:50.230 --> 00:01:50.240 align:start position:0%
+because of t3 for eight units of time
+ 
+
+00:01:50.240 --> 00:01:52.389 align:start position:0%
+because of t3 for eight units of time
+right<00:01:50.560><c> why</c><00:01:50.799><c> because</c><00:01:51.119><c> t1</c><00:01:51.520><c> just</c><00:01:51.840><c> arrives</c><00:01:52.240><c> and</c>
+
+00:01:52.389 --> 00:01:52.399 align:start position:0%
+right why because t1 just arrives and
+ 
+
+00:01:52.399 --> 00:01:54.870 align:start position:0%
+right why because t1 just arrives and
+then<00:01:52.640><c> at</c><00:01:52.799><c> that</c><00:01:53.360><c> exact</c><00:01:53.759><c> point</c><00:01:54.000><c> t2</c><00:01:54.399><c> has</c><00:01:54.560><c> acquired</c>
+
+00:01:54.870 --> 00:01:54.880 align:start position:0%
+then at that exact point t2 has acquired
+ 
+
+00:01:54.880 --> 00:01:57.510 align:start position:0%
+then at that exact point t2 has acquired
+a<00:01:54.960><c> resource</c><00:01:55.840><c> and</c><00:01:56.000><c> t1</c><00:01:56.399><c> also</c><00:01:56.640><c> needs</c><00:01:56.960><c> a</c><00:01:57.040><c> resource</c>
+
+00:01:57.510 --> 00:01:57.520 align:start position:0%
+a resource and t1 also needs a resource
+ 
+
+00:01:57.520 --> 00:01:59.749 align:start position:0%
+a resource and t1 also needs a resource
+at<00:01:57.600><c> that</c><00:01:57.840><c> time</c>
+
+00:01:59.749 --> 00:01:59.759 align:start position:0%
+at that time
+ 
+
+00:01:59.759 --> 00:02:01.910 align:start position:0%
+at that time
+similarly<00:02:00.240><c> t2</c><00:02:00.719><c> can</c><00:02:00.880><c> get</c><00:02:01.040><c> direct</c><00:02:01.439><c> blocked</c><00:02:01.759><c> by</c>
+
+00:02:01.910 --> 00:02:01.920 align:start position:0%
+similarly t2 can get direct blocked by
+ 
+
+00:02:01.920 --> 00:02:04.950 align:start position:0%
+similarly t2 can get direct blocked by
+t3<00:02:02.880><c> because</c><00:02:03.200><c> you</c><00:02:03.280><c> know</c><00:02:03.520><c> t3</c><00:02:04.000><c> just</c><00:02:04.320><c> acquires</c><00:02:04.799><c> a</c>
+
+00:02:04.950 --> 00:02:04.960 align:start position:0%
+t3 because you know t3 just acquires a
+ 
+
+00:02:04.960 --> 00:02:06.149 align:start position:0%
+t3 because you know t3 just acquires a
+resource
+
+00:02:06.149 --> 00:02:06.159 align:start position:0%
+resource
+ 
+
+00:02:06.159 --> 00:02:08.710 align:start position:0%
+resource
+and<00:02:06.399><c> at</c><00:02:06.560><c> that</c><00:02:06.799><c> point</c><00:02:07.200><c> t2</c><00:02:07.600><c> comes</c>
+
+00:02:08.710 --> 00:02:08.720 align:start position:0%
+and at that point t2 comes
+ 
+
+00:02:08.720 --> 00:02:10.469 align:start position:0%
+and at that point t2 comes
+right<00:02:09.039><c> exactly</c><00:02:09.440><c> at</c><00:02:09.520><c> this</c><00:02:09.759><c> point</c><00:02:10.000><c> it</c><00:02:10.080><c> needs</c><00:02:10.399><c> the</c>
+
+00:02:10.469 --> 00:02:10.479 align:start position:0%
+right exactly at this point it needs the
+ 
+
+00:02:10.479 --> 00:02:12.790 align:start position:0%
+right exactly at this point it needs the
+resource<00:02:11.440><c> so</c><00:02:11.599><c> the</c><00:02:11.760><c> maximum</c><00:02:12.239><c> duration</c><00:02:12.720><c> is</c>
+
+00:02:12.790 --> 00:02:12.800 align:start position:0%
+resource so the maximum duration is
+ 
+
+00:02:12.800 --> 00:02:14.869 align:start position:0%
+resource so the maximum duration is
+again<00:02:13.120><c> eight</c>
+
+00:02:14.869 --> 00:02:14.879 align:start position:0%
+again eight
+ 
+
+00:02:14.879 --> 00:02:16.949 align:start position:0%
+again eight
+similarly<00:02:15.360><c> t3</c><00:02:15.840><c> can</c><00:02:16.000><c> get</c><00:02:16.239><c> blocked</c><00:02:16.560><c> because</c><00:02:16.800><c> of</c>
+
+00:02:16.949 --> 00:02:16.959 align:start position:0%
+similarly t3 can get blocked because of
+ 
+
+00:02:16.959 --> 00:02:20.550 align:start position:0%
+similarly t3 can get blocked because of
+t4<00:02:17.760><c> for</c><00:02:18.000><c> one</c><00:02:18.239><c> unit</c><00:02:18.560><c> of</c><00:02:18.720><c> time</c><00:02:19.040><c> as</c><00:02:19.200><c> you</c><00:02:19.280><c> can</c><00:02:19.520><c> see</c>
+
+00:02:20.550 --> 00:02:20.560 align:start position:0%
+t4 for one unit of time as you can see
+ 
+
+00:02:20.560 --> 00:02:23.110 align:start position:0%
+t4 for one unit of time as you can see
+t5<00:02:21.360><c> since</c><00:02:21.599><c> it</c><00:02:21.680><c> doesn't</c><00:02:22.000><c> need</c><00:02:22.239><c> any</c><00:02:22.480><c> resource</c><00:02:22.959><c> it</c>
+
+00:02:23.110 --> 00:02:23.120 align:start position:0%
+t5 since it doesn't need any resource it
+ 
+
+00:02:23.120 --> 00:02:25.589 align:start position:0%
+t5 since it doesn't need any resource it
+will<00:02:23.200><c> never</c><00:02:23.440><c> have</c><00:02:23.599><c> direct</c><00:02:24.000><c> blocking</c>
+
+00:02:25.589 --> 00:02:25.599 align:start position:0%
+will never have direct blocking
+ 
+
+00:02:25.599 --> 00:02:27.110 align:start position:0%
+will never have direct blocking
+and
+
+00:02:27.110 --> 00:02:27.120 align:start position:0%
+and
+ 
+
+00:02:27.120 --> 00:02:29.589 align:start position:0%
+and
+t4<00:02:27.599><c> and</c><00:02:27.760><c> t6</c>
+
+00:02:29.589 --> 00:02:29.599 align:start position:0%
+t4 and t6
+ 
+
+00:02:29.599 --> 00:02:32.949 align:start position:0%
+t4 and t6
+well<00:02:29.920><c> t4</c><00:02:30.400><c> and</c><00:02:30.560><c> t6</c><00:02:31.040><c> what</c><00:02:31.280><c> you</c><00:02:31.440><c> will</c><00:02:31.680><c> have</c>
+
+00:02:32.949 --> 00:02:32.959 align:start position:0%
+well t4 and t6 what you will have
+ 
+
+00:02:32.959 --> 00:02:35.990 align:start position:0%
+well t4 and t6 what you will have
+is<00:02:33.440><c> t4</c><00:02:33.920><c> can</c><00:02:34.080><c> get</c><00:02:34.319><c> blocked</c><00:02:34.720><c> because</c><00:02:35.120><c> t</c><00:02:35.360><c> six</c><00:02:35.599><c> will</c>
+
+00:02:35.990 --> 00:02:36.000 align:start position:0%
+is t4 can get blocked because t six will
+ 
+
+00:02:36.000 --> 00:02:37.830 align:start position:0%
+is t4 can get blocked because t six will
+acquire<00:02:36.400><c> the</c><00:02:36.560><c> resource</c><00:02:37.040><c> for</c><00:02:37.200><c> eight</c><00:02:37.599><c> time</c>
+
+00:02:37.830 --> 00:02:37.840 align:start position:0%
+acquire the resource for eight time
+ 
+
+00:02:37.840 --> 00:02:39.750 align:start position:0%
+acquire the resource for eight time
+units
+
+00:02:39.750 --> 00:02:39.760 align:start position:0%
+units
+ 
+
+00:02:39.760 --> 00:02:41.509 align:start position:0%
+units
+you<00:02:39.920><c> can</c><00:02:40.080><c> have</c><00:02:40.319><c> inheritance</c><00:02:40.959><c> related</c>
+
+00:02:41.509 --> 00:02:41.519 align:start position:0%
+you can have inheritance related
+ 
+
+00:02:41.519 --> 00:02:44.309 align:start position:0%
+you can have inheritance related
+inversion<00:02:42.160><c> so</c><00:02:42.800><c> so</c><00:02:42.959><c> let</c><00:02:43.200><c> us</c><00:02:43.440><c> try</c><00:02:43.599><c> to</c><00:02:43.840><c> explain</c>
+
+00:02:44.309 --> 00:02:44.319 align:start position:0%
+inversion so so let us try to explain
+ 
+
+00:02:44.319 --> 00:02:45.990 align:start position:0%
+inversion so so let us try to explain
+this<00:02:44.560><c> number</c>
+
+00:02:45.990 --> 00:02:46.000 align:start position:0%
+this number
+ 
+
+00:02:46.000 --> 00:02:48.390 align:start position:0%
+this number
+t<00:02:46.239><c> two</c><00:02:46.480><c> gets</c><00:02:46.720><c> blocked</c><00:02:47.120><c> because</c><00:02:47.360><c> of</c><00:02:47.519><c> t3</c><00:02:48.080><c> for</c>
+
+00:02:48.390 --> 00:02:48.400 align:start position:0%
+t two gets blocked because of t3 for
+ 
+
+00:02:48.400 --> 00:02:51.190 align:start position:0%
+t two gets blocked because of t3 for
+eight
+
+00:02:51.190 --> 00:02:51.200 align:start position:0%
+eight
+ 
+
+00:02:51.200 --> 00:02:55.270 align:start position:0%
+eight
+time<00:02:51.440><c> units</c><00:02:52.239><c> so</c><00:02:52.400><c> what</c><00:02:52.640><c> can</c><00:02:52.800><c> happen</c>
+
+00:02:55.270 --> 00:02:55.280 align:start position:0%
+ 
+ 
+
+00:02:55.280 --> 00:02:56.070 align:start position:0%
+ 
+right
+
+00:02:56.070 --> 00:02:56.080 align:start position:0%
+right
+ 
+
+00:02:56.080 --> 00:03:00.949 align:start position:0%
+right
+is<00:02:56.319><c> like</c><00:02:56.560><c> this</c>
+
+00:03:00.949 --> 00:03:00.959 align:start position:0%
+ 
+ 
+
+00:03:00.959 --> 00:03:01.910 align:start position:0%
+ 
+that
+
+00:03:01.910 --> 00:03:01.920 align:start position:0%
+that
+ 
+
+00:03:01.920 --> 00:03:05.110 align:start position:0%
+that
+assume<00:03:02.400><c> t3</c><00:03:02.879><c> has</c><00:03:03.120><c> acquired</c><00:03:03.599><c> the</c><00:03:03.760><c> resource</c>
+
+00:03:05.110 --> 00:03:05.120 align:start position:0%
+assume t3 has acquired the resource
+ 
+
+00:03:05.120 --> 00:03:05.910 align:start position:0%
+assume t3 has acquired the resource
+okay
+
+00:03:05.910 --> 00:03:05.920 align:start position:0%
+okay
+ 
+
+00:03:05.920 --> 00:03:08.470 align:start position:0%
+okay
+so<00:03:06.159><c> t3</c><00:03:06.640><c> just</c><00:03:06.879><c> acquires</c><00:03:07.360><c> the</c><00:03:07.519><c> resource</c><00:03:08.080><c> t1</c>
+
+00:03:08.470 --> 00:03:08.480 align:start position:0%
+so t3 just acquires the resource t1
+ 
+
+00:03:08.480 --> 00:03:09.830 align:start position:0%
+so t3 just acquires the resource t1
+comes<00:03:08.879><c> in</c>
+
+00:03:09.830 --> 00:03:09.840 align:start position:0%
+comes in
+ 
+
+00:03:09.840 --> 00:03:12.710 align:start position:0%
+comes in
+it<00:03:10.080><c> needs</c><00:03:10.400><c> the</c><00:03:10.480><c> resource</c><00:03:11.519><c> but</c><00:03:11.760><c> finds</c><00:03:12.080><c> that</c><00:03:12.319><c> e3</c>
+
+00:03:12.710 --> 00:03:12.720 align:start position:0%
+it needs the resource but finds that e3
+ 
+
+00:03:12.720 --> 00:03:14.949 align:start position:0%
+it needs the resource but finds that e3
+is<00:03:13.360><c> has</c><00:03:13.599><c> acquired</c><00:03:14.080><c> it</c>
+
+00:03:14.949 --> 00:03:14.959 align:start position:0%
+is has acquired it
+ 
+
+00:03:14.959 --> 00:03:18.149 align:start position:0%
+is has acquired it
+so<00:03:15.200><c> t3</c><00:03:15.599><c> gets</c><00:03:15.920><c> t1's</c><00:03:16.400><c> priority</c><00:03:16.959><c> pretty</c><00:03:17.280><c> much</c><00:03:18.000><c> and</c>
+
+00:03:18.149 --> 00:03:18.159 align:start position:0%
+so t3 gets t1's priority pretty much and
+ 
+
+00:03:18.159 --> 00:03:20.630 align:start position:0%
+so t3 gets t1's priority pretty much and
+then<00:03:18.400><c> t2</c><00:03:18.800><c> comes</c>
+
+00:03:20.630 --> 00:03:20.640 align:start position:0%
+then t2 comes
+ 
+
+00:03:20.640 --> 00:03:24.710 align:start position:0%
+then t2 comes
+so<00:03:20.959><c> even</c><00:03:21.360><c> though</c>
+
+00:03:24.710 --> 00:03:24.720 align:start position:0%
+ 
+ 
+
+00:03:24.720 --> 00:03:26.309 align:start position:0%
+ 
+t2
+
+00:03:26.309 --> 00:03:26.319 align:start position:0%
+t2
+ 
+
+00:03:26.319 --> 00:03:29.190 align:start position:0%
+t2
+can<00:03:26.640><c> execute</c><00:03:27.200><c> on</c><00:03:27.280><c> the</c><00:03:27.440><c> cpu</c><00:03:27.920><c> at</c><00:03:28.080><c> least</c><00:03:28.720><c> it</c><00:03:28.959><c> will</c>
+
+00:03:29.190 --> 00:03:29.200 align:start position:0%
+can execute on the cpu at least it will
+ 
+
+00:03:29.200 --> 00:03:31.030 align:start position:0%
+can execute on the cpu at least it will
+not<00:03:29.440><c> get</c><00:03:29.760><c> access</c>
+
+00:03:31.030 --> 00:03:31.040 align:start position:0%
+not get access
+ 
+
+00:03:31.040 --> 00:03:34.390 align:start position:0%
+not get access
+the<00:03:31.200><c> reason</c><00:03:31.599><c> being</c><00:03:31.840><c> that</c><00:03:32.080><c> t3</c><00:03:33.040><c> has</c>
+
+00:03:34.390 --> 00:03:34.400 align:start position:0%
+the reason being that t3 has
+ 
+
+00:03:34.400 --> 00:03:36.710 align:start position:0%
+the reason being that t3 has
+gotten<00:03:34.799><c> the</c><00:03:34.879><c> priority</c><00:03:35.440><c> of</c><00:03:35.599><c> t1</c>
+
+00:03:36.710 --> 00:03:36.720 align:start position:0%
+gotten the priority of t1
+ 
+
+00:03:36.720 --> 00:03:38.229 align:start position:0%
+gotten the priority of t1
+and<00:03:36.879><c> that</c><00:03:37.120><c> is</c><00:03:37.280><c> why</c><00:03:37.440><c> it</c><00:03:37.519><c> will</c><00:03:37.680><c> continue</c><00:03:38.080><c> to</c>
+
+00:03:38.229 --> 00:03:38.239 align:start position:0%
+and that is why it will continue to
+ 
+
+00:03:38.239 --> 00:03:40.470 align:start position:0%
+and that is why it will continue to
+monopolize<00:03:38.799><c> the</c><00:03:38.959><c> cpu</c><00:03:39.519><c> as</c><00:03:39.680><c> well</c>
+
+00:03:40.470 --> 00:03:40.480 align:start position:0%
+monopolize the cpu as well
+ 
+
+00:03:40.480 --> 00:03:42.949 align:start position:0%
+monopolize the cpu as well
+so<00:03:40.720><c> this</c><00:03:40.879><c> is</c><00:03:41.040><c> where</c><00:03:41.280><c> t2</c><00:03:41.680><c> needs</c><00:03:41.840><c> to</c><00:03:42.000><c> wait</c><00:03:42.319><c> on</c><00:03:42.400><c> t3</c>
+
+00:03:42.949 --> 00:03:42.959 align:start position:0%
+so this is where t2 needs to wait on t3
+ 
+
+00:03:42.959 --> 00:03:45.350 align:start position:0%
+so this is where t2 needs to wait on t3
+for<00:03:43.200><c> how</c><00:03:43.440><c> long</c><00:03:43.920><c> a</c><00:03:44.080><c> maximum</c><00:03:44.640><c> of</c><00:03:44.799><c> eight</c><00:03:45.120><c> time</c>
+
+00:03:45.350 --> 00:03:45.360 align:start position:0%
+for how long a maximum of eight time
+ 
+
+00:03:45.360 --> 00:03:46.710 align:start position:0%
+for how long a maximum of eight time
+units
+
+00:03:46.710 --> 00:03:46.720 align:start position:0%
+units
+ 
+
+00:03:46.720 --> 00:03:48.949 align:start position:0%
+units
+so<00:03:46.959><c> using</c><00:03:47.200><c> a</c><00:03:47.360><c> similar</c><00:03:47.840><c> logic</c><00:03:48.560><c> you</c><00:03:48.720><c> can</c>
+
+00:03:48.949 --> 00:03:48.959 align:start position:0%
+so using a similar logic you can
+ 
+
+00:03:48.959 --> 00:03:52.149 align:start position:0%
+so using a similar logic you can
+actually<00:03:49.440><c> do</c><00:03:49.599><c> it</c><00:03:49.760><c> between</c><00:03:50.159><c> t5</c><00:03:50.720><c> and</c><00:03:50.879><c> t6</c>
+
+00:03:52.149 --> 00:03:52.159 align:start position:0%
+actually do it between t5 and t6
+ 
+
+00:03:52.159 --> 00:03:53.350 align:start position:0%
+actually do it between t5 and t6
+for<00:03:52.400><c> the</c><00:03:52.560><c> same</c>
+
+00:03:53.350 --> 00:03:53.360 align:start position:0%
+for the same
+ 
+
+00:03:53.360 --> 00:03:55.429 align:start position:0%
+for the same
+idea<00:03:54.159><c> that</c>
+
+00:03:55.429 --> 00:03:55.439 align:start position:0%
+idea that
+ 
+
+00:03:55.439 --> 00:03:59.110 align:start position:0%
+idea that
+t6<00:03:55.920><c> comes</c><00:03:56.640><c> then</c><00:03:56.879><c> t4</c><00:03:57.360><c> waits</c><00:03:57.680><c> on</c><00:03:57.840><c> it</c><00:03:58.080><c> t6</c><00:03:58.640><c> executes</c>
+
+00:03:59.110 --> 00:03:59.120 align:start position:0%
+t6 comes then t4 waits on it t6 executes
+ 
+
+00:03:59.120 --> 00:04:01.110 align:start position:0%
+t6 comes then t4 waits on it t6 executes
+the<00:03:59.280><c> priority</c><00:03:59.760><c> of</c><00:03:59.920><c> t4</c>
+
+00:04:01.110 --> 00:04:01.120 align:start position:0%
+the priority of t4
+ 
+
+00:04:01.120 --> 00:04:03.429 align:start position:0%
+the priority of t4
+and<00:04:01.360><c> t5</c><00:04:01.840><c> comes</c><00:04:02.080><c> at</c><00:04:02.239><c> the</c><00:04:02.319><c> same</c><00:04:02.640><c> time</c><00:04:02.959><c> it</c><00:04:03.120><c> can't</c>
+
+00:04:03.429 --> 00:04:03.439 align:start position:0%
+and t5 comes at the same time it can't
+ 
+
+00:04:03.439 --> 00:04:06.390 align:start position:0%
+and t5 comes at the same time it can't
+execute<00:04:04.000><c> because</c><00:04:04.319><c> suddenly</c><00:04:05.360><c> d6</c><00:04:05.920><c> has</c><00:04:06.080><c> taken</c>
+
+00:04:06.390 --> 00:04:06.400 align:start position:0%
+execute because suddenly d6 has taken
+ 
+
+00:04:06.400 --> 00:04:08.390 align:start position:0%
+execute because suddenly d6 has taken
+the<00:04:06.560><c> priority</c><00:04:07.040><c> of</c><00:04:07.200><c> t4</c>
+
+00:04:08.390 --> 00:04:08.400 align:start position:0%
+the priority of t4
+ 
+
+00:04:08.400 --> 00:04:11.910 align:start position:0%
+the priority of t4
+because<00:04:08.799><c> of</c><00:04:09.040><c> priority</c><00:04:09.680><c> inheritance</c>
+
+00:04:11.910 --> 00:04:11.920 align:start position:0%
+because of priority inheritance
+ 
+
+00:04:11.920 --> 00:04:14.789 align:start position:0%
+because of priority inheritance
+now<00:04:12.480><c> we</c><00:04:12.640><c> can</c><00:04:12.879><c> have</c><00:04:13.200><c> avoidance</c><00:04:14.080><c> inversion</c><00:04:14.640><c> so</c>
+
+00:04:14.789 --> 00:04:14.799 align:start position:0%
+now we can have avoidance inversion so
+ 
+
+00:04:14.799 --> 00:04:17.590 align:start position:0%
+now we can have avoidance inversion so
+let<00:04:15.040><c> us</c><00:04:15.200><c> try</c><00:04:15.439><c> to</c><00:04:15.599><c> maybe</c><00:04:16.079><c> explain</c><00:04:16.880><c> this</c><00:04:17.199><c> number</c>
+
+00:04:17.590 --> 00:04:17.600 align:start position:0%
+let us try to maybe explain this number
+ 
+
+00:04:17.600 --> 00:04:19.030 align:start position:0%
+let us try to maybe explain this number
+here
+
+00:04:19.030 --> 00:04:19.040 align:start position:0%
+here
+ 
+
+00:04:19.040 --> 00:04:21.909 align:start position:0%
+here
+so<00:04:19.359><c> t3</c><00:04:20.000><c> can</c><00:04:20.239><c> wait</c>
+
+00:04:21.909 --> 00:04:21.919 align:start position:0%
+so t3 can wait
+ 
+
+00:04:21.919 --> 00:04:23.510 align:start position:0%
+so t3 can wait
+for<00:04:22.240><c> t4</c>
+
+00:04:23.510 --> 00:04:23.520 align:start position:0%
+for t4
+ 
+
+00:04:23.520 --> 00:04:26.310 align:start position:0%
+for t4
+for<00:04:23.759><c> one</c><00:04:24.000><c> time</c><00:04:24.240><c> unit</c><00:04:24.639><c> right</c><00:04:24.880><c> t3</c><00:04:25.280><c> waits</c><00:04:25.600><c> on</c><00:04:25.759><c> t4</c>
+
+00:04:26.310 --> 00:04:26.320 align:start position:0%
+for one time unit right t3 waits on t4
+ 
+
+00:04:26.320 --> 00:04:27.110 align:start position:0%
+for one time unit right t3 waits on t4
+for
+
+00:04:27.110 --> 00:04:27.120 align:start position:0%
+for
+ 
+
+00:04:27.120 --> 00:04:31.830 align:start position:0%
+for
+1<00:04:27.520><c> time</c><00:04:27.840><c> unit</c><00:04:28.400><c> so</c><00:04:28.560><c> let</c><00:04:28.720><c> us</c><00:04:28.800><c> go</c><00:04:29.040><c> back</c><00:04:29.280><c> here</c>
+
+00:04:31.830 --> 00:04:31.840 align:start position:0%
+ 
+ 
+
+00:04:31.840 --> 00:04:36.390 align:start position:0%
+ 
+so<00:04:32.080><c> assume</c><00:04:32.400><c> that</c><00:04:32.560><c> t4</c><00:04:33.120><c> has</c><00:04:33.520><c> acquired</c><00:04:34.240><c> resource</c>
+
+00:04:36.390 --> 00:04:36.400 align:start position:0%
+so assume that t4 has acquired resource
+ 
+
+00:04:36.400 --> 00:04:38.150 align:start position:0%
+so assume that t4 has acquired resource
+r2
+
+00:04:38.150 --> 00:04:38.160 align:start position:0%
+r2
+ 
+
+00:04:38.160 --> 00:04:40.230 align:start position:0%
+r2
+so<00:04:38.400><c> then</c><00:04:38.639><c> in</c><00:04:38.800><c> this</c><00:04:39.040><c> case</c><00:04:39.360><c> what</c><00:04:39.600><c> is</c><00:04:39.680><c> the</c><00:04:39.840><c> ceiling</c>
+
+00:04:40.230 --> 00:04:40.240 align:start position:0%
+so then in this case what is the ceiling
+ 
+
+00:04:40.240 --> 00:04:42.310 align:start position:0%
+so then in this case what is the ceiling
+of<00:04:40.400><c> resource</c><00:04:40.800><c> r2</c><00:04:41.120><c> is</c><00:04:41.280><c> actually</c><00:04:41.520><c> a</c><00:04:41.680><c> maximum</c><00:04:42.240><c> of</c>
+
+00:04:42.310 --> 00:04:42.320 align:start position:0%
+of resource r2 is actually a maximum of
+ 
+
+00:04:42.320 --> 00:04:45.430 align:start position:0%
+of resource r2 is actually a maximum of
+the<00:04:42.479><c> priorities</c><00:04:43.120><c> of</c><00:04:43.199><c> t3</c><00:04:43.680><c> and</c><00:04:43.840><c> t4</c><00:04:44.880><c> so</c><00:04:45.120><c> this</c><00:04:45.280><c> is</c>
+
+00:04:45.430 --> 00:04:45.440 align:start position:0%
+the priorities of t3 and t4 so this is
+ 
+
+00:04:45.440 --> 00:04:47.430 align:start position:0%
+the priorities of t3 and t4 so this is
+nothing<00:04:45.759><c> but</c><00:04:45.919><c> the</c><00:04:46.160><c> ceiling</c><00:04:46.560><c> is</c><00:04:46.720><c> basically</c><00:04:47.280><c> the</c>
+
+00:04:47.430 --> 00:04:47.440 align:start position:0%
+nothing but the ceiling is basically the
+ 
+
+00:04:47.440 --> 00:04:49.590 align:start position:0%
+nothing but the ceiling is basically the
+priority<00:04:47.919><c> of</c><00:04:48.080><c> t3</c>
+
+00:04:49.590 --> 00:04:49.600 align:start position:0%
+priority of t3
+ 
+
+00:04:49.600 --> 00:04:52.390 align:start position:0%
+priority of t3
+so<00:04:49.759><c> when</c><00:04:50.000><c> t3</c><00:04:50.479><c> comes</c><00:04:51.120><c> it</c><00:04:51.280><c> finds</c><00:04:51.600><c> that</c><00:04:51.840><c> it</c><00:04:52.000><c> is</c><00:04:52.160><c> not</c>
+
+00:04:52.390 --> 00:04:52.400 align:start position:0%
+so when t3 comes it finds that it is not
+ 
+
+00:04:52.400 --> 00:04:54.390 align:start position:0%
+so when t3 comes it finds that it is not
+the<00:04:52.720><c> process</c><00:04:53.199><c> it</c><00:04:53.280><c> is</c><00:04:53.440><c> not</c><00:04:53.600><c> the</c><00:04:53.759><c> task</c><00:04:54.080><c> to</c><00:04:54.240><c> have</c>
+
+00:04:54.390 --> 00:04:54.400 align:start position:0%
+the process it is not the task to have
+ 
+
+00:04:54.400 --> 00:04:56.790 align:start position:0%
+the process it is not the task to have
+set<00:04:54.639><c> the</c><00:04:54.720><c> current</c><00:04:55.120><c> ceiling</c>
+
+00:04:56.790 --> 00:04:56.800 align:start position:0%
+set the current ceiling
+ 
+
+00:04:56.800 --> 00:04:59.030 align:start position:0%
+set the current ceiling
+and<00:04:57.199><c> furthermore</c>
+
+00:04:59.030 --> 00:04:59.040 align:start position:0%
+and furthermore
+ 
+
+00:04:59.040 --> 00:05:02.070 align:start position:0%
+and furthermore
+its<00:04:59.360><c> priority</c><00:04:59.919><c> is</c><00:05:00.080><c> not</c><00:05:00.320><c> greater</c><00:05:00.720><c> than</c>
+
+00:05:02.070 --> 00:05:02.080 align:start position:0%
+its priority is not greater than
+ 
+
+00:05:02.080 --> 00:05:03.909 align:start position:0%
+its priority is not greater than
+the<00:05:02.240><c> current</c><00:05:02.560><c> system</c><00:05:02.960><c> ceiling</c>
+
+00:05:03.909 --> 00:05:03.919 align:start position:0%
+the current system ceiling
+ 
+
+00:05:03.919 --> 00:05:06.070 align:start position:0%
+the current system ceiling
+and<00:05:04.160><c> it</c><00:05:04.320><c> needs</c><00:05:04.639><c> access</c><00:05:04.960><c> to</c><00:05:05.199><c> r1</c><00:05:05.600><c> which</c><00:05:05.840><c> is</c><00:05:06.000><c> of</c>
+
+00:05:06.070 --> 00:05:06.080 align:start position:0%
+and it needs access to r1 which is of
+ 
+
+00:05:06.080 --> 00:05:07.909 align:start position:0%
+and it needs access to r1 which is of
+course<00:05:06.400><c> free</c><00:05:06.639><c> in</c><00:05:06.720><c> this</c><00:05:06.960><c> case</c>
+
+00:05:07.909 --> 00:05:07.919 align:start position:0%
+course free in this case
+ 
+
+00:05:07.919 --> 00:05:10.230 align:start position:0%
+course free in this case
+but<00:05:08.160><c> it</c><00:05:08.240><c> will</c><00:05:08.400><c> not</c><00:05:08.639><c> get</c><00:05:08.880><c> access</c><00:05:09.199><c> to</c><00:05:09.440><c> r1</c><00:05:09.840><c> because</c>
+
+00:05:10.230 --> 00:05:10.240 align:start position:0%
+but it will not get access to r1 because
+ 
+
+00:05:10.240 --> 00:05:12.310 align:start position:0%
+but it will not get access to r1 because
+of<00:05:10.400><c> this</c>
+
+00:05:12.310 --> 00:05:12.320 align:start position:0%
+of this
+ 
+
+00:05:12.320 --> 00:05:14.710 align:start position:0%
+of this
+ceiling<00:05:12.800><c> issue</c><00:05:13.360><c> right</c><00:05:13.680><c> so</c><00:05:13.840><c> the</c><00:05:14.000><c> fact</c><00:05:14.320><c> that</c><00:05:14.560><c> it</c>
+
+00:05:14.710 --> 00:05:14.720 align:start position:0%
+ceiling issue right so the fact that it
+ 
+
+00:05:14.720 --> 00:05:16.310 align:start position:0%
+ceiling issue right so the fact that it
+is<00:05:14.880><c> not</c><00:05:15.120><c> set</c><00:05:15.360><c> the</c><00:05:15.440><c> current</c><00:05:15.759><c> ceiling</c><00:05:16.080><c> and</c><00:05:16.240><c> is</c>
+
+00:05:16.310 --> 00:05:16.320 align:start position:0%
+is not set the current ceiling and is
+ 
+
+00:05:16.320 --> 00:05:18.629 align:start position:0%
+is not set the current ceiling and is
+not<00:05:16.560><c> greater</c><00:05:16.880><c> than</c><00:05:17.039><c> the</c><00:05:17.120><c> current</c><00:05:17.520><c> ceiling</c>
+
+00:05:18.629 --> 00:05:18.639 align:start position:0%
+not greater than the current ceiling
+ 
+
+00:05:18.639 --> 00:05:21.110 align:start position:0%
+not greater than the current ceiling
+so<00:05:18.880><c> because</c><00:05:19.280><c> of</c><00:05:19.440><c> this</c><00:05:19.840><c> issue</c><00:05:20.160><c> t3</c><00:05:20.639><c> will</c><00:05:20.800><c> have</c><00:05:20.960><c> to</c>
+
+00:05:21.110 --> 00:05:21.120 align:start position:0%
+so because of this issue t3 will have to
+ 
+
+00:05:21.120 --> 00:05:23.270 align:start position:0%
+so because of this issue t3 will have to
+wait<00:05:21.360><c> for</c><00:05:21.600><c> t4</c><00:05:22.000><c> to</c><00:05:22.160><c> complete</c><00:05:22.639><c> which</c><00:05:22.880><c> is</c><00:05:22.960><c> one</c>
+
+00:05:23.270 --> 00:05:23.280 align:start position:0%
+wait for t4 to complete which is one
+ 
+
+00:05:23.280 --> 00:05:24.390 align:start position:0%
+wait for t4 to complete which is one
+time<00:05:23.520><c> unit</c>
+
+00:05:24.390 --> 00:05:24.400 align:start position:0%
+time unit
+ 
+
+00:05:24.400 --> 00:05:26.550 align:start position:0%
+time unit
+so<00:05:24.639><c> this</c><00:05:24.880><c> will</c><00:05:25.039><c> be</c><00:05:25.280><c> an</c><00:05:25.440><c> avoidance</c><00:05:26.080><c> related</c>
+
+00:05:26.550 --> 00:05:26.560 align:start position:0%
+so this will be an avoidance related
+ 
+
+00:05:26.560 --> 00:05:28.070 align:start position:0%
+so this will be an avoidance related
+inversion
+
+00:05:28.070 --> 00:05:28.080 align:start position:0%
+inversion
+ 
+
+00:05:28.080 --> 00:05:30.469 align:start position:0%
+inversion
+similarly<00:05:28.560><c> we</c><00:05:28.720><c> can</c><00:05:28.960><c> have</c><00:05:29.120><c> one</c><00:05:29.440><c> more</c><00:05:29.759><c> where</c><00:05:30.000><c> t4</c>
+
+00:05:30.469 --> 00:05:30.479 align:start position:0%
+similarly we can have one more where t4
+ 
+
+00:05:30.479 --> 00:05:32.310 align:start position:0%
+similarly we can have one more where t4
+waits<00:05:30.800><c> on</c><00:05:30.960><c> t6</c>
+
+00:05:32.310 --> 00:05:32.320 align:start position:0%
+waits on t6
+ 
+
+00:05:32.320 --> 00:05:34.950 align:start position:0%
+waits on t6
+right<00:05:32.720><c> and</c><00:05:32.960><c> here</c><00:05:33.280><c> again</c><00:05:33.520><c> the</c><00:05:33.680><c> idea</c><00:05:34.160><c> is</c><00:05:34.720><c> quite</c>
+
+00:05:34.950 --> 00:05:34.960 align:start position:0%
+right and here again the idea is quite
+ 
+
+00:05:34.960 --> 00:05:36.870 align:start position:0%
+right and here again the idea is quite
+similar<00:05:35.440><c> that</c><00:05:35.600><c> t6</c>
+
+00:05:36.870 --> 00:05:36.880 align:start position:0%
+similar that t6
+ 
+
+00:05:36.880 --> 00:05:39.110 align:start position:0%
+similar that t6
+acquires<00:05:37.440><c> r3</c><00:05:38.160><c> whose</c>
+
+00:05:39.110 --> 00:05:39.120 align:start position:0%
+acquires r3 whose
+ 
+
+00:05:39.120 --> 00:05:42.310 align:start position:0%
+acquires r3 whose
+c<00:05:39.600><c> ceiling</c><00:05:40.000><c> is</c><00:05:40.160><c> of</c><00:05:40.320><c> course</c><00:05:40.560><c> a</c><00:05:40.639><c> priority</c><00:05:41.120><c> of</c><00:05:41.199><c> t4</c>
+
+00:05:42.310 --> 00:05:42.320 align:start position:0%
+c ceiling is of course a priority of t4
+ 
+
+00:05:42.320 --> 00:05:44.310 align:start position:0%
+c ceiling is of course a priority of t4
+and<00:05:42.560><c> t4</c><00:05:42.960><c> does</c><00:05:43.120><c> not</c><00:05:43.199><c> need</c><00:05:43.440><c> r3</c><00:05:43.840><c> it</c><00:05:44.000><c> actually</c>
+
+00:05:44.310 --> 00:05:44.320 align:start position:0%
+and t4 does not need r3 it actually
+ 
+
+00:05:44.320 --> 00:05:45.590 align:start position:0%
+and t4 does not need r3 it actually
+needs<00:05:44.639><c> r2</c>
+
+00:05:45.590 --> 00:05:45.600 align:start position:0%
+needs r2
+ 
+
+00:05:45.600 --> 00:05:47.670 align:start position:0%
+needs r2
+but<00:05:45.759><c> will</c><00:05:45.919><c> not</c><00:05:46.160><c> get</c><00:05:46.400><c> access</c><00:05:46.800><c> to</c><00:05:46.960><c> r2</c><00:05:47.440><c> even</c>
+
+00:05:47.670 --> 00:05:47.680 align:start position:0%
+but will not get access to r2 even
+ 
+
+00:05:47.680 --> 00:05:49.510 align:start position:0%
+but will not get access to r2 even
+though<00:05:47.919><c> r2</c><00:05:48.400><c> is</c><00:05:48.560><c> free</c>
+
+00:05:49.510 --> 00:05:49.520 align:start position:0%
+though r2 is free
+ 
+
+00:05:49.520 --> 00:05:51.590 align:start position:0%
+though r2 is free
+primarily<00:05:50.320><c> because</c><00:05:50.639><c> it</c><00:05:50.800><c> has</c><00:05:50.960><c> not</c><00:05:51.280><c> set</c><00:05:51.520><c> the</c>
+
+00:05:51.590 --> 00:05:51.600 align:start position:0%
+primarily because it has not set the
+ 
+
+00:05:51.600 --> 00:05:53.350 align:start position:0%
+primarily because it has not set the
+current<00:05:52.000><c> system</c><00:05:52.400><c> ceiling</c><00:05:52.800><c> and</c><00:05:52.960><c> is</c><00:05:53.120><c> not</c>
+
+00:05:53.350 --> 00:05:53.360 align:start position:0%
+current system ceiling and is not
+ 
+
+00:05:53.360 --> 00:05:56.469 align:start position:0%
+current system ceiling and is not
+greater<00:05:53.680><c> than</c><00:05:53.840><c> the</c><00:05:53.919><c> current</c><00:05:54.240><c> system</c>
+
+00:05:56.469 --> 00:05:56.479 align:start position:0%
+greater than the current system
+ 
+
+00:05:56.479 --> 00:05:59.990 align:start position:0%
+greater than the current system
+so<00:05:56.639><c> now</c><00:05:56.800><c> that</c><00:05:57.039><c> we</c><00:05:57.120><c> have</c><00:05:57.280><c> seen</c><00:05:57.600><c> these</c><00:05:57.919><c> examples</c>
+
+00:05:59.990 --> 00:06:00.000 align:start position:0%
+so now that we have seen these examples
+ 
+
+00:06:00.000 --> 00:06:02.230 align:start position:0%
+so now that we have seen these examples
+what<00:06:00.240><c> we</c><00:06:00.400><c> see</c><00:06:00.639><c> is</c><00:06:00.800><c> each</c><00:06:01.120><c> inversion</c><00:06:01.600><c> table</c><00:06:02.000><c> here</c>
+
+00:06:02.230 --> 00:06:02.240 align:start position:0%
+what we see is each inversion table here
+ 
+
+00:06:02.240 --> 00:06:04.469 align:start position:0%
+what we see is each inversion table here
+is<00:06:02.400><c> an</c><00:06:02.560><c> upper</c><00:06:02.800><c> triangular</c><00:06:03.360><c> matrix</c>
+
+00:06:04.469 --> 00:06:04.479 align:start position:0%
+is an upper triangular matrix
+ 
+
+00:06:04.479 --> 00:06:06.070 align:start position:0%
+is an upper triangular matrix
+because<00:06:04.800><c> we</c><00:06:04.960><c> are</c><00:06:05.039><c> looking</c><00:06:05.360><c> at</c><00:06:05.520><c> priority</c>
+
+00:06:06.070 --> 00:06:06.080 align:start position:0%
+because we are looking at priority
+ 
+
+00:06:06.080 --> 00:06:08.230 align:start position:0%
+because we are looking at priority
+inversions<00:06:06.800><c> right</c><00:06:07.039><c> so</c><00:06:07.199><c> everything</c><00:06:07.759><c> is</c><00:06:07.919><c> pretty</c>
+
+00:06:08.230 --> 00:06:08.240 align:start position:0%
+inversions right so everything is pretty
+ 
+
+00:06:08.240 --> 00:06:11.110 align:start position:0%
+inversions right so everything is pretty
+much<00:06:08.720><c> above</c><00:06:09.360><c> this</c><00:06:09.840><c> line</c>
+
+00:06:11.110 --> 00:06:11.120 align:start position:0%
+much above this line
+ 
+
+00:06:11.120 --> 00:06:14.150 align:start position:0%
+much above this line
+because<00:06:11.360><c> we</c><00:06:11.440><c> are</c><00:06:11.520><c> looking</c><00:06:11.759><c> at</c><00:06:12.000><c> inversions</c>
+
+00:06:14.150 --> 00:06:14.160 align:start position:0%
+because we are looking at inversions
+ 
+
+00:06:14.160 --> 00:06:16.309 align:start position:0%
+because we are looking at inversions
+right<00:06:14.400><c> so</c><00:06:14.560><c> t1</c><00:06:15.039><c> will</c><00:06:15.360><c> not</c><00:06:15.520><c> get</c><00:06:15.759><c> inverted</c><00:06:16.160><c> by</c>
+
+00:06:16.309 --> 00:06:16.319 align:start position:0%
+right so t1 will not get inverted by
+ 
+
+00:06:16.319 --> 00:06:17.990 align:start position:0%
+right so t1 will not get inverted by
+anybody<00:06:16.800><c> t2</c>
+
+00:06:17.990 --> 00:06:18.000 align:start position:0%
+anybody t2
+ 
+
+00:06:18.000 --> 00:06:21.590 align:start position:0%
+anybody t2
+will<00:06:18.160><c> get</c><00:06:18.400><c> inverted</c><00:06:18.880><c> only</c><00:06:19.120><c> by</c><00:06:19.360><c> t1</c><00:06:19.759><c> and</c><00:06:20.000><c> so</c><00:06:20.160><c> on</c>
+
+00:06:21.590 --> 00:06:21.600 align:start position:0%
+will get inverted only by t1 and so on
+ 
+
+00:06:21.600 --> 00:06:23.749 align:start position:0%
+will get inverted only by t1 and so on
+sorry<00:06:21.919><c> we'll</c><00:06:22.240><c> get</c><00:06:22.639><c> inverted</c><00:06:23.120><c> i'm</c><00:06:23.280><c> sorry</c><00:06:23.520><c> only</c>
+
+00:06:23.749 --> 00:06:23.759 align:start position:0%
+sorry we'll get inverted i'm sorry only
+ 
+
+00:06:23.759 --> 00:06:25.990 align:start position:0%
+sorry we'll get inverted i'm sorry only
+by<00:06:23.919><c> the</c><00:06:24.000><c> lower</c><00:06:24.240><c> priority</c><00:06:24.800><c> tasks</c><00:06:25.199><c> which</c><00:06:25.440><c> are</c><00:06:25.600><c> t3</c>
+
+00:06:25.990 --> 00:06:26.000 align:start position:0%
+by the lower priority tasks which are t3
+ 
+
+00:06:26.000 --> 00:06:29.909 align:start position:0%
+by the lower priority tasks which are t3
+t4<00:06:26.400><c> t5</c><00:06:26.800><c> t6</c><00:06:27.280><c> and</c><00:06:27.360><c> so</c><00:06:27.600><c> on</c>
+
+00:06:29.909 --> 00:06:29.919 align:start position:0%
+ 
+ 
+
+00:06:29.919 --> 00:06:31.270 align:start position:0%
+ 
+so
+
+00:06:31.270 --> 00:06:31.280 align:start position:0%
+so
+ 
+
+00:06:31.280 --> 00:06:33.909 align:start position:0%
+so
+the<00:06:31.600><c> maximum</c><00:06:32.319><c> inversion</c><00:06:32.880><c> that</c><00:06:33.120><c> a</c><00:06:33.280><c> task</c><00:06:33.600><c> can</c>
+
+00:06:33.909 --> 00:06:33.919 align:start position:0%
+the maximum inversion that a task can
+ 
+
+00:06:33.919 --> 00:06:34.950 align:start position:0%
+the maximum inversion that a task can
+suffer
+
+00:06:34.950 --> 00:06:34.960 align:start position:0%
+suffer
+ 
+
+00:06:34.960 --> 00:06:37.590 align:start position:0%
+suffer
+is<00:06:35.280><c> at</c><00:06:35.520><c> best</c><00:06:35.919><c> one</c><00:06:36.240><c> of</c>
+
+00:06:37.590 --> 00:06:37.600 align:start position:0%
+is at best one of
+ 
+
+00:06:37.600 --> 00:06:40.150 align:start position:0%
+is at best one of
+uh<00:06:37.919><c> direct</c>
+
+00:06:40.150 --> 00:06:40.160 align:start position:0%
+uh direct
+ 
+
+00:06:40.160 --> 00:06:42.150 align:start position:0%
+uh direct
+inheritance<00:06:41.120><c> or</c>
+
+00:06:42.150 --> 00:06:42.160 align:start position:0%
+inheritance or
+ 
+
+00:06:42.160 --> 00:06:45.350 align:start position:0%
+inheritance or
+avoidance<00:06:42.720><c> related</c><00:06:43.199><c> inversions</c><00:06:43.840><c> from</c><00:06:44.080><c> the</c>
+
+00:06:45.350 --> 00:06:45.360 align:start position:0%
+avoidance related inversions from the
+ 
+
+00:06:45.360 --> 00:06:47.670 align:start position:0%
+avoidance related inversions from the
+blocking<00:06:45.840><c> rule</c><00:06:46.080><c> that</c><00:06:46.319><c> we</c><00:06:46.479><c> have</c><00:06:46.639><c> seen</c><00:06:47.280><c> right</c><00:06:47.520><c> so</c>
+
+00:06:47.670 --> 00:06:47.680 align:start position:0%
+blocking rule that we have seen right so
+ 
+
+00:06:47.680 --> 00:06:49.830 align:start position:0%
+blocking rule that we have seen right so
+from<00:06:48.000><c> the</c><00:06:48.080><c> rule</c><00:06:48.400><c> that</c><00:06:48.560><c> we</c><00:06:48.720><c> have</c><00:06:48.880><c> seen</c>
+
+00:06:49.830 --> 00:06:49.840 align:start position:0%
+from the rule that we have seen
+ 
+
+00:06:49.840 --> 00:06:51.990 align:start position:0%
+from the rule that we have seen
+it<00:06:50.000><c> will</c><00:06:50.080><c> be</c><00:06:50.240><c> at</c><00:06:50.400><c> best</c><00:06:50.720><c> one</c><00:06:50.960><c> of</c><00:06:51.039><c> these</c><00:06:51.599><c> kind</c><00:06:51.840><c> of</c>
+
+00:06:51.990 --> 00:06:52.000 align:start position:0%
+it will be at best one of these kind of
+ 
+
+00:06:52.000 --> 00:06:53.670 align:start position:0%
+it will be at best one of these kind of
+inversions
+
+00:06:53.670 --> 00:06:53.680 align:start position:0%
+inversions
+ 
+
+00:06:53.680 --> 00:06:55.670 align:start position:0%
+inversions
+so<00:06:53.919><c> therefore</c><00:06:54.240><c> the</c><00:06:54.400><c> maximum</c><00:06:54.960><c> inversion</c><00:06:55.599><c> a</c>
+
+00:06:55.670 --> 00:06:55.680 align:start position:0%
+so therefore the maximum inversion a
+ 
+
+00:06:55.680 --> 00:06:58.070 align:start position:0%
+so therefore the maximum inversion a
+task<00:06:56.000><c> will</c><00:06:56.240><c> be</c><00:06:56.479><c> will</c><00:06:56.720><c> suffer</c>
+
+00:06:58.070 --> 00:06:58.080 align:start position:0%
+task will be will suffer
+ 
+
+00:06:58.080 --> 00:06:59.990 align:start position:0%
+task will be will suffer
+is<00:06:58.319><c> the</c><00:06:58.400><c> maximum</c><00:06:59.039><c> of</c><00:06:59.199><c> the</c><00:06:59.360><c> entries</c><00:06:59.840><c> of</c><00:06:59.919><c> the</c>
+
+00:06:59.990 --> 00:07:00.000 align:start position:0%
+is the maximum of the entries of the
+ 
+
+00:07:00.000 --> 00:07:02.309 align:start position:0%
+is the maximum of the entries of the
+corresponding<00:07:00.880><c> row</c><00:07:01.120><c> of</c><00:07:01.199><c> the</c><00:07:01.360><c> inversion</c><00:07:01.840><c> table</c>
+
+00:07:02.309 --> 00:07:02.319 align:start position:0%
+corresponding row of the inversion table
+ 
+
+00:07:02.319 --> 00:07:05.589 align:start position:0%
+corresponding row of the inversion table
+which<00:07:02.560><c> is</c><00:07:02.639><c> that</c><00:07:02.880><c> you</c><00:07:02.960><c> take</c><00:07:03.360><c> any</c><00:07:03.680><c> task</c><00:07:04.000><c> ti</c>
+
+00:07:05.589 --> 00:07:05.599 align:start position:0%
+which is that you take any task ti
+ 
+
+00:07:05.599 --> 00:07:07.589 align:start position:0%
+which is that you take any task ti
+take<00:07:05.840><c> a</c><00:07:06.000><c> look</c><00:07:06.240><c> at</c><00:07:06.400><c> the</c><00:07:06.560><c> ith</c><00:07:07.199><c> row</c><00:07:07.360><c> of</c><00:07:07.520><c> the</c>
+
+00:07:07.589 --> 00:07:07.599 align:start position:0%
+take a look at the ith row of the
+ 
+
+00:07:07.599 --> 00:07:10.469 align:start position:0%
+take a look at the ith row of the
+inversion<00:07:08.160><c> table</c><00:07:08.560><c> find</c><00:07:08.880><c> its</c><00:07:09.120><c> maximum</c>
+
+00:07:10.469 --> 00:07:10.479 align:start position:0%
+inversion table find its maximum
+ 
+
+00:07:10.479 --> 00:07:12.550 align:start position:0%
+inversion table find its maximum
+so<00:07:10.639><c> the</c><00:07:10.800><c> maximum</c><00:07:11.360><c> will</c><00:07:11.520><c> of</c><00:07:11.680><c> course</c><00:07:12.080><c> will</c><00:07:12.240><c> have</c>
+
+00:07:12.550 --> 00:07:12.560 align:start position:0%
+so the maximum will of course will have
+ 
+
+00:07:12.560 --> 00:07:14.309 align:start position:0%
+so the maximum will of course will have
+you<00:07:12.639><c> have</c><00:07:12.800><c> three</c><00:07:12.960><c> different</c><00:07:13.360><c> tables</c>
+
+00:07:14.309 --> 00:07:14.319 align:start position:0%
+you have three different tables
+ 
+
+00:07:14.319 --> 00:07:16.309 align:start position:0%
+you have three different tables
+one<00:07:14.639><c> for</c><00:07:14.800><c> direct</c><00:07:15.199><c> inversions</c><00:07:15.919><c> one</c><00:07:16.080><c> for</c>
+
+00:07:16.309 --> 00:07:16.319 align:start position:0%
+one for direct inversions one for
+ 
+
+00:07:16.319 --> 00:07:18.469 align:start position:0%
+one for direct inversions one for
+inheritance<00:07:16.960><c> inversions</c><00:07:17.520><c> one</c><00:07:17.759><c> for</c><00:07:18.000><c> avoidance</c>
+
+00:07:18.469 --> 00:07:18.479 align:start position:0%
+inheritance inversions one for avoidance
+ 
+
+00:07:18.479 --> 00:07:20.629 align:start position:0%
+inheritance inversions one for avoidance
+related<00:07:19.120><c> inversions</c>
+
+00:07:20.629 --> 00:07:20.639 align:start position:0%
+related inversions
+ 
+
+00:07:20.639 --> 00:07:22.629 align:start position:0%
+related inversions
+so<00:07:20.880><c> what</c><00:07:21.120><c> we</c><00:07:21.360><c> do</c>
+
+00:07:22.629 --> 00:07:22.639 align:start position:0%
+so what we do
+ 
+
+00:07:22.639 --> 00:07:25.110 align:start position:0%
+so what we do
+is<00:07:22.880><c> that</c><00:07:23.599><c> we</c><00:07:23.759><c> look</c><00:07:24.000><c> at</c><00:07:24.160><c> all</c><00:07:24.319><c> three</c><00:07:24.560><c> rows</c><00:07:24.880><c> find</c>
+
+00:07:25.110 --> 00:07:25.120 align:start position:0%
+is that we look at all three rows find
+ 
+
+00:07:25.120 --> 00:07:26.390 align:start position:0%
+is that we look at all three rows find
+the<00:07:25.280><c> maximum</c>
+
+00:07:26.390 --> 00:07:26.400 align:start position:0%
+the maximum
+ 
+
+00:07:26.400 --> 00:07:28.550 align:start position:0%
+the maximum
+that<00:07:26.639><c> is</c><00:07:26.800><c> the</c><00:07:26.880><c> maximum</c><00:07:27.599><c> period</c><00:07:28.000><c> or</c><00:07:28.160><c> the</c><00:07:28.240><c> worst</c>
+
+00:07:28.550 --> 00:07:28.560 align:start position:0%
+that is the maximum period or the worst
+ 
+
+00:07:28.560 --> 00:07:31.189 align:start position:0%
+that is the maximum period or the worst
+case<00:07:28.960><c> for</c><00:07:29.199><c> how</c><00:07:29.440><c> long</c><00:07:29.680><c> a</c><00:07:29.840><c> task</c><00:07:30.160><c> can</c><00:07:30.400><c> suffer</c><00:07:30.720><c> an</c>
+
+00:07:31.189 --> 00:07:31.199 align:start position:0%
+case for how long a task can suffer an
+ 
+
+00:07:31.199 --> 00:07:33.350 align:start position:0%
+case for how long a task can suffer an
+inversion<00:07:32.160><c> which</c><00:07:32.319><c> we</c><00:07:32.479><c> have</c><00:07:32.639><c> seen</c><00:07:32.880><c> can</c><00:07:33.039><c> happen</c>
+
+00:07:33.350 --> 00:07:33.360 align:start position:0%
+inversion which we have seen can happen
+ 
+
+00:07:33.360 --> 00:07:36.309 align:start position:0%
+inversion which we have seen can happen
+only<00:07:33.599><c> once</c>
+
+00:07:36.309 --> 00:07:36.319 align:start position:0%
+ 
+ 
+
+00:07:36.319 --> 00:07:38.150 align:start position:0%
+ 
+so<00:07:36.560><c> again</c><00:07:36.960><c> if</c><00:07:37.039><c> we</c><00:07:37.199><c> take</c><00:07:37.440><c> a</c><00:07:37.520><c> look</c><00:07:37.680><c> at</c><00:07:37.759><c> the</c><00:07:37.919><c> same</c>
+
+00:07:38.150 --> 00:07:38.160 align:start position:0%
+so again if we take a look at the same
+ 
+
+00:07:38.160 --> 00:07:39.670 align:start position:0%
+so again if we take a look at the same
+example<00:07:38.720><c> of</c><00:07:38.880><c> course</c><00:07:39.120><c> with</c><00:07:39.280><c> different</c>
+
+00:07:39.670 --> 00:07:39.680 align:start position:0%
+example of course with different
+ 
+
+00:07:39.680 --> 00:07:41.990 align:start position:0%
+example of course with different
+resources<00:07:40.400><c> we</c><00:07:40.560><c> can</c><00:07:40.800><c> again</c>
+
+00:07:41.990 --> 00:07:42.000 align:start position:0%
+resources we can again
+ 
+
+00:07:42.000 --> 00:07:43.909 align:start position:0%
+resources we can again
+reason<00:07:42.479><c> about</c><00:07:42.800><c> it</c><00:07:42.880><c> so</c><00:07:43.039><c> this</c><00:07:43.120><c> is</c><00:07:43.280><c> an</c><00:07:43.440><c> inversion</c>
+
+00:07:43.909 --> 00:07:43.919 align:start position:0%
+reason about it so this is an inversion
+ 
+
+00:07:43.919 --> 00:07:45.430 align:start position:0%
+reason about it so this is an inversion
+analysis
+
+00:07:45.430 --> 00:07:45.440 align:start position:0%
+analysis
+ 
+
+00:07:45.440 --> 00:07:47.589 align:start position:0%
+analysis
+uh<00:07:45.840><c> it's</c><00:07:46.080><c> not</c><00:07:46.319><c> for</c><00:07:46.479><c> me</c><00:07:46.639><c> to</c><00:07:46.800><c> do</c><00:07:47.039><c> it's</c><00:07:47.280><c> for</c><00:07:47.440><c> the</c>
+
+00:07:47.589 --> 00:07:47.599 align:start position:0%
+uh it's not for me to do it's for the
+ 
+
+00:07:47.599 --> 00:07:49.110 align:start position:0%
+uh it's not for me to do it's for the
+students<00:07:48.080><c> to</c><00:07:48.240><c> do</c>
+
+00:07:49.110 --> 00:07:49.120 align:start position:0%
+students to do
+ 
+
+00:07:49.120 --> 00:07:51.510 align:start position:0%
+students to do
+so<00:07:49.280><c> i'll</c><00:07:49.440><c> skip</c><00:07:49.759><c> these</c><00:07:50.479><c> and</c><00:07:50.639><c> come</c><00:07:50.879><c> directly</c><00:07:51.360><c> to</c>
+
+00:07:51.510 --> 00:07:51.520 align:start position:0%
+so i'll skip these and come directly to
+ 
+
+00:07:51.520 --> 00:07:54.230 align:start position:0%
+so i'll skip these and come directly to
+the<00:07:51.680><c> liu</c><00:07:52.000><c> and</c><00:07:52.080><c> leoski's</c><00:07:52.720><c> condition</c>
+
+00:07:54.230 --> 00:07:54.240 align:start position:0%
+the liu and leoski's condition
+ 
+
+00:07:54.240 --> 00:07:57.110 align:start position:0%
+the liu and leoski's condition
+under<00:07:54.879><c> resource</c><00:07:55.599><c> sharing</c>
+
+00:07:57.110 --> 00:07:57.120 align:start position:0%
+under resource sharing
+ 
+
+00:07:57.120 --> 00:07:59.830 align:start position:0%
+under resource sharing
+so<00:07:57.360><c> let</c><00:07:57.599><c> the</c><00:07:57.759><c> term</c><00:07:58.080><c> bi</c><00:07:58.479><c> denote</c><00:07:59.199><c> the</c><00:07:59.360><c> longest</c>
+
+00:07:59.830 --> 00:07:59.840 align:start position:0%
+so let the term bi denote the longest
+ 
+
+00:07:59.840 --> 00:08:02.230 align:start position:0%
+so let the term bi denote the longest
+time<00:08:00.160><c> for</c><00:08:00.400><c> which</c><00:08:00.639><c> a</c><00:08:00.720><c> task</c><00:08:01.120><c> d</c><00:08:01.280><c> i</c>
+
+00:08:02.230 --> 00:08:02.240 align:start position:0%
+time for which a task d i
+ 
+
+00:08:02.240 --> 00:08:04.629 align:start position:0%
+time for which a task d i
+can<00:08:02.479><c> undergo</c><00:08:03.039><c> priority</c><00:08:03.520><c> inversions</c><00:08:04.160><c> because</c>
+
+00:08:04.629 --> 00:08:04.639 align:start position:0%
+can undergo priority inversions because
+ 
+
+00:08:04.639 --> 00:08:06.869 align:start position:0%
+can undergo priority inversions because
+of<00:08:04.720><c> resource</c><00:08:05.199><c> sharing</c><00:08:06.080><c> so</c><00:08:06.319><c> which</c><00:08:06.560><c> we</c><00:08:06.720><c> have</c>
+
+00:08:06.869 --> 00:08:06.879 align:start position:0%
+of resource sharing so which we have
+ 
+
+00:08:06.879 --> 00:08:09.589 align:start position:0%
+of resource sharing so which we have
+seen<00:08:07.440><c> said</c><00:08:07.840><c> is</c><00:08:08.080><c> we</c><00:08:08.240><c> take</c><00:08:08.479><c> all</c><00:08:08.720><c> three</c><00:08:08.960><c> tables</c>
+
+00:08:09.589 --> 00:08:09.599 align:start position:0%
+seen said is we take all three tables
+ 
+
+00:08:09.599 --> 00:08:13.110 align:start position:0%
+seen said is we take all three tables
+take<00:08:09.840><c> the</c><00:08:10.000><c> ith</c><00:08:10.400><c> row</c><00:08:10.720><c> compute</c><00:08:11.120><c> the</c><00:08:11.280><c> maximum</c>
+
+00:08:13.110 --> 00:08:13.120 align:start position:0%
+take the ith row compute the maximum
+ 
+
+00:08:13.120 --> 00:08:16.710 align:start position:0%
+take the ith row compute the maximum
+so<00:08:13.440><c> ti</c><00:08:13.840><c> will</c><00:08:14.080><c> meet</c><00:08:14.400><c> its</c><00:08:14.639><c> first</c><00:08:15.039><c> deadline</c><00:08:15.680><c> if</c>
+
+00:08:16.710 --> 00:08:16.720 align:start position:0%
+so ti will meet its first deadline if
+ 
+
+00:08:16.720 --> 00:08:18.550 align:start position:0%
+so ti will meet its first deadline if
+i<00:08:17.039><c> add</c><00:08:17.280><c> up</c><00:08:17.440><c> the</c>
+
+00:08:18.550 --> 00:08:18.560 align:start position:0%
+i add up the
+ 
+
+00:08:18.560 --> 00:08:22.790 align:start position:0%
+i add up the
+inversion<00:08:19.199><c> time</c><00:08:19.520><c> to</c><00:08:19.680><c> the</c><00:08:19.840><c> execution</c><00:08:20.479><c> time</c>
+
+00:08:22.790 --> 00:08:22.800 align:start position:0%
+ 
+ 
+
+00:08:22.800 --> 00:08:25.029 align:start position:0%
+ 
+and<00:08:23.039><c> then</c><00:08:23.440><c> of</c><00:08:23.599><c> course</c><00:08:23.840><c> i</c><00:08:24.080><c> add</c><00:08:24.240><c> up</c><00:08:24.400><c> this</c><00:08:24.720><c> term</c>
+
+00:08:25.029 --> 00:08:25.039 align:start position:0%
+and then of course i add up this term
+ 
+
+00:08:25.039 --> 00:08:27.189 align:start position:0%
+and then of course i add up this term
+which<00:08:25.280><c> we</c><00:08:25.440><c> have</c><00:08:25.599><c> been</c><00:08:25.840><c> seeing</c><00:08:26.160><c> for</c><00:08:26.319><c> a</c><00:08:26.479><c> while</c>
+
+00:08:27.189 --> 00:08:27.199 align:start position:0%
+which we have been seeing for a while
+ 
+
+00:08:27.199 --> 00:08:29.510 align:start position:0%
+which we have been seeing for a while
+which<00:08:27.440><c> is</c><00:08:27.599><c> again</c><00:08:27.919><c> you</c><00:08:28.000><c> know</c><00:08:28.240><c> flow</c><00:08:28.800><c> floor</c><00:08:29.199><c> of</c><00:08:29.360><c> p</c>
+
+00:08:29.510 --> 00:08:29.520 align:start position:0%
+which is again you know flow floor of p
+ 
+
+00:08:29.520 --> 00:08:34.149 align:start position:0%
+which is again you know flow floor of p
+i<00:08:29.680><c> by</c><00:08:29.919><c> p</c><00:08:30.080><c> j</c><00:08:30.720><c> times</c><00:08:31.039><c> c</c><00:08:31.199><c> j</c><00:08:31.440><c> which</c><00:08:31.599><c> is</c><00:08:31.680><c> the</c><00:08:31.840><c> maximum</c>
+
+00:08:34.149 --> 00:08:34.159 align:start position:0%
+i by p j times c j which is the maximum
+ 
+
+00:08:34.159 --> 00:08:36.389 align:start position:0%
+i by p j times c j which is the maximum
+time<00:08:34.479><c> that</c><00:08:34.719><c> you</c><00:08:34.800><c> know</c><00:08:34.959><c> other</c><00:08:35.200><c> tasks</c><00:08:35.519><c> can</c>
+
+00:08:36.389 --> 00:08:36.399 align:start position:0%
+time that you know other tasks can
+ 
+
+00:08:36.399 --> 00:08:38.630 align:start position:0%
+time that you know other tasks can
+execute<00:08:36.880><c> higher</c><00:08:37.120><c> priority</c><00:08:37.599><c> tasks</c>
+
+00:08:38.630 --> 00:08:38.640 align:start position:0%
+execute higher priority tasks
+ 
+
+00:08:38.640 --> 00:08:41.190 align:start position:0%
+execute higher priority tasks
+so<00:08:38.800><c> if</c><00:08:38.880><c> this</c><00:08:39.120><c> is</c><00:08:39.360><c> less</c><00:08:39.599><c> than</c><00:08:40.159><c> pi</c><00:08:40.560><c> where</c><00:08:40.959><c> it's</c>
+
+00:08:41.190 --> 00:08:41.200 align:start position:0%
+so if this is less than pi where it's
+ 
+
+00:08:41.200 --> 00:08:43.509 align:start position:0%
+so if this is less than pi where it's
+assumed<00:08:41.519><c> pi</c><00:08:41.919><c> is</c><00:08:42.000><c> equal</c><00:08:42.320><c> to</c><00:08:42.479><c> di</c>
+
+00:08:43.509 --> 00:08:43.519 align:start position:0%
+assumed pi is equal to di
+ 
+
+00:08:43.519 --> 00:08:45.590 align:start position:0%
+assumed pi is equal to di
+then<00:08:43.760><c> the</c><00:08:43.919><c> liu</c><00:08:44.240><c> and</c><00:08:44.320><c> leoski's</c><00:08:44.959><c> condition</c><00:08:45.440><c> is</c>
+
+00:08:45.590 --> 00:08:45.600 align:start position:0%
+then the liu and leoski's condition is
+ 
+
+00:08:45.600 --> 00:08:47.430 align:start position:0%
+then the liu and leoski's condition is
+holding<00:08:46.480><c> right</c>
+
+00:08:47.430 --> 00:08:47.440 align:start position:0%
+holding right
+ 
+
+00:08:47.440 --> 00:08:49.509 align:start position:0%
+holding right
+and<00:08:47.600><c> of</c><00:08:47.760><c> course</c><00:08:48.000><c> you</c><00:08:48.160><c> know</c><00:08:48.399><c> in</c><00:08:48.480><c> this</c><00:08:48.720><c> case</c>
+
+00:08:49.509 --> 00:08:49.519 align:start position:0%
+and of course you know in this case
+ 
+
+00:08:49.519 --> 00:08:51.829 align:start position:0%
+and of course you know in this case
+t1<00:08:49.920><c> has</c><00:08:50.080><c> the</c><00:08:50.160><c> highest</c><00:08:50.480><c> priority</c><00:08:50.959><c> then</c><00:08:51.200><c> t2</c><00:08:51.600><c> then</c>
+
+00:08:51.829 --> 00:08:51.839 align:start position:0%
+t1 has the highest priority then t2 then
+ 
+
+00:08:51.839 --> 00:08:54.550 align:start position:0%
+t1 has the highest priority then t2 then
+t3<00:08:52.320><c> and</c><00:08:52.480><c> tn</c><00:08:53.279><c> because</c><00:08:53.519><c> their</c><00:08:53.760><c> periods</c><00:08:54.320><c> also</c>
+
+00:08:54.550 --> 00:08:54.560 align:start position:0%
+t3 and tn because their periods also
+ 
+
+00:08:54.560 --> 00:08:56.710 align:start position:0%
+t3 and tn because their periods also
+follow<00:08:54.880><c> the</c><00:08:55.040><c> same</c><00:08:55.440><c> relationship</c>
+
+00:08:56.710 --> 00:08:56.720 align:start position:0%
+follow the same relationship
+ 
+
+00:08:56.720 --> 00:08:58.550 align:start position:0%
+follow the same relationship
+so<00:08:56.880><c> the</c><00:08:56.959><c> only</c><00:08:57.279><c> addition</c><00:08:57.839><c> is</c><00:08:57.920><c> we</c><00:08:58.080><c> are</c><00:08:58.240><c> adding</c>
+
+00:08:58.550 --> 00:08:58.560 align:start position:0%
+so the only addition is we are adding
+ 
+
+00:08:58.560 --> 00:09:04.630 align:start position:0%
+so the only addition is we are adding
+the<00:08:58.720><c> inversion</c><00:08:59.200><c> time</c><00:08:59.519><c> to</c><00:08:59.680><c> the</c><00:08:59.920><c> execution</c><00:09:00.480><c> time</c>
+
+00:09:04.630 --> 00:09:04.640 align:start position:0%
+ 
+ 
+
+00:09:04.640 --> 00:09:07.190 align:start position:0%
+ 
+so<00:09:04.800><c> for</c><00:09:05.040><c> dynamic</c><00:09:05.680><c> priority</c><00:09:06.240><c> systems</c><00:09:07.040><c> the</c>
+
+00:09:07.190 --> 00:09:07.200 align:start position:0%
+so for dynamic priority systems the
+ 
+
+00:09:07.200 --> 00:09:09.509 align:start position:0%
+so for dynamic priority systems the
+priority<00:09:07.839><c> ceiling</c><00:09:08.240><c> values</c><00:09:08.800><c> as</c><00:09:09.040><c> you</c><00:09:09.120><c> can</c><00:09:09.279><c> see</c>
+
+00:09:09.509 --> 00:09:09.519 align:start position:0%
+priority ceiling values as you can see
+ 
+
+00:09:09.519 --> 00:09:12.150 align:start position:0%
+priority ceiling values as you can see
+are<00:09:09.680><c> changing</c><00:09:10.560><c> dynamically</c><00:09:11.279><c> with</c><00:09:11.519><c> time</c><00:09:11.839><c> as</c>
+
+00:09:12.150 --> 00:09:12.160 align:start position:0%
+are changing dynamically with time as
+ 
+
+00:09:12.160 --> 00:09:14.550 align:start position:0%
+are changing dynamically with time as
+and<00:09:12.320><c> when</c><00:09:12.640><c> we</c><00:09:12.880><c> are</c><00:09:13.200><c> acquiring</c><00:09:13.839><c> and</c><00:09:14.080><c> releasing</c>
+
+00:09:14.550 --> 00:09:14.560 align:start position:0%
+and when we are acquiring and releasing
+ 
+
+00:09:14.560 --> 00:09:16.310 align:start position:0%
+and when we are acquiring and releasing
+resources
+
+00:09:16.310 --> 00:09:16.320 align:start position:0%
+resources
+ 
+
+00:09:16.320 --> 00:09:18.389 align:start position:0%
+resources
+so<00:09:16.480><c> each</c><00:09:16.800><c> time</c><00:09:17.040><c> the</c><00:09:17.200><c> priority</c><00:09:17.760><c> of</c><00:09:17.920><c> a</c><00:09:18.000><c> task</c>
+
+00:09:18.389 --> 00:09:18.399 align:start position:0%
+so each time the priority of a task
+ 
+
+00:09:18.399 --> 00:09:19.829 align:start position:0%
+so each time the priority of a task
+changes
+
+00:09:19.829 --> 00:09:19.839 align:start position:0%
+changes
+ 
+
+00:09:19.839 --> 00:09:22.389 align:start position:0%
+changes
+we<00:09:20.000><c> need</c><00:09:20.240><c> to</c><00:09:20.480><c> update</c><00:09:21.040><c> the</c><00:09:21.200><c> priority</c><00:09:21.839><c> ceiling</c>
+
+00:09:22.389 --> 00:09:22.399 align:start position:0%
+we need to update the priority ceiling
+ 
+
+00:09:22.399 --> 00:09:24.470 align:start position:0%
+we need to update the priority ceiling
+of<00:09:22.640><c> each</c><00:09:22.959><c> resource</c>
+
+00:09:24.470 --> 00:09:24.480 align:start position:0%
+of each resource
+ 
+
+00:09:24.480 --> 00:09:26.710 align:start position:0%
+of each resource
+right<00:09:24.800><c> assuming</c><00:09:25.279><c> that</c><00:09:25.920><c> it's</c><00:09:26.080><c> a</c><00:09:26.160><c> dynamic</c>
+
+00:09:26.710 --> 00:09:26.720 align:start position:0%
+right assuming that it's a dynamic
+ 
+
+00:09:26.720 --> 00:09:28.710 align:start position:0%
+right assuming that it's a dynamic
+system
+
+00:09:28.710 --> 00:09:28.720 align:start position:0%
+system
+ 
+
+00:09:28.720 --> 00:09:30.790 align:start position:0%
+system
+and
+
+00:09:30.790 --> 00:09:30.800 align:start position:0%
+and
+ 
+
+00:09:30.800 --> 00:09:33.670 align:start position:0%
+and
+the<00:09:30.959><c> current</c><00:09:31.360><c> system</c><00:09:31.760><c> ceiling</c>
+
+00:09:33.670 --> 00:09:33.680 align:start position:0%
+the current system ceiling
+ 
+
+00:09:33.680 --> 00:09:36.070 align:start position:0%
+the current system ceiling
+right<00:09:34.240><c> so</c><00:09:34.480><c> so</c><00:09:35.120><c> wherever</c><00:09:35.600><c> you</c><00:09:35.680><c> know</c><00:09:35.839><c> that</c>
+
+00:09:36.070 --> 00:09:36.080 align:start position:0%
+right so so wherever you know that
+ 
+
+00:09:36.080 --> 00:09:39.670 align:start position:0%
+right so so wherever you know that
+priority<00:09:36.560><c> of</c><00:09:36.640><c> a</c><00:09:36.720><c> task</c><00:09:36.959><c> changes</c><00:09:37.360><c> dynamically</c>
+
+00:09:39.670 --> 00:09:39.680 align:start position:0%
+priority of a task changes dynamically
+ 
+
+00:09:39.680 --> 00:09:42.389 align:start position:0%
+priority of a task changes dynamically
+so<00:09:39.839><c> the</c><00:09:40.000><c> priority</c><00:09:40.560><c> ceiling</c><00:09:40.880><c> which</c><00:09:41.120><c> is</c>
+
+00:09:42.389 --> 00:09:42.399 align:start position:0%
+so the priority ceiling which is
+ 
+
+00:09:42.399 --> 00:09:44.150 align:start position:0%
+so the priority ceiling which is
+previously<00:09:42.959><c> static</c><00:09:43.440><c> will</c><00:09:43.600><c> now</c><00:09:43.839><c> become</c>
+
+00:09:44.150 --> 00:09:44.160 align:start position:0%
+previously static will now become
+ 
+
+00:09:44.160 --> 00:09:46.389 align:start position:0%
+previously static will now become
+dynamic<00:09:45.040><c> so</c><00:09:45.279><c> all</c><00:09:45.519><c> of</c><00:09:45.600><c> these</c><00:09:45.839><c> things</c><00:09:46.080><c> have</c><00:09:46.320><c> to</c>
+
+00:09:46.389 --> 00:09:46.399 align:start position:0%
+dynamic so all of these things have to
+ 
+
+00:09:46.399 --> 00:09:48.389 align:start position:0%
+dynamic so all of these things have to
+be<00:09:46.640><c> changed</c><00:09:46.880><c> it</c><00:09:47.040><c> will</c><00:09:47.120><c> increase</c><00:09:47.600><c> the</c>
+
+00:09:48.389 --> 00:09:48.399 align:start position:0%
+be changed it will increase the
+ 
+
+00:09:48.399 --> 00:09:50.710 align:start position:0%
+be changed it will increase the
+overheads<00:09:48.880><c> of</c><00:09:48.959><c> the</c><00:09:49.120><c> system</c>
+
+00:09:50.710 --> 00:09:50.720 align:start position:0%
+overheads of the system
+ 
+
+00:09:50.720 --> 00:09:52.550 align:start position:0%
+overheads of the system
+so<00:09:50.880><c> given</c><00:09:51.200><c> the</c><00:09:51.360><c> fact</c><00:09:51.600><c> that</c><00:09:51.760><c> this</c><00:09:52.000><c> would</c><00:09:52.160><c> be</c><00:09:52.320><c> an</c>
+
+00:09:52.550 --> 00:09:52.560 align:start position:0%
+so given the fact that this would be an
+ 
+
+00:09:52.560 --> 00:09:55.990 align:start position:0%
+so given the fact that this would be an
+unacceptably<00:09:53.360><c> high</c><00:09:53.680><c> processing</c><00:09:54.240><c> overhead</c>
+
+00:09:55.990 --> 00:09:56.000 align:start position:0%
+unacceptably high processing overhead
+ 
+
+00:09:56.000 --> 00:09:58.070 align:start position:0%
+unacceptably high processing overhead
+this<00:09:56.320><c> is</c><00:09:56.800><c> seldom</c><00:09:57.279><c> done</c>
+
+00:09:58.070 --> 00:09:58.080 align:start position:0%
+this is seldom done
+ 
+
+00:09:58.080 --> 00:10:02.150 align:start position:0%
+this is seldom done
+right<00:09:58.480><c> so</c><00:09:58.720><c> we</c><00:09:59.120><c> use</c><00:09:59.440><c> an</c><00:09:59.600><c> rms</c><00:10:00.160><c> like</c>
+
+00:10:02.150 --> 00:10:02.160 align:start position:0%
+right so we use an rms like
+ 
+
+00:10:02.160 --> 00:10:05.829 align:start position:0%
+right so we use an rms like
+an<00:10:02.640><c> organization</c><00:10:03.440><c> or</c><00:10:03.519><c> an</c><00:10:03.680><c> rms</c><00:10:04.160><c> like</c><00:10:04.399><c> system</c>
+
+00:10:05.829 --> 00:10:05.839 align:start position:0%
+an organization or an rms like system
+ 
+
+00:10:05.839 --> 00:10:09.030 align:start position:0%
+an organization or an rms like system
+fair<00:10:06.160><c> tasks</c><00:10:06.720><c> by</c><00:10:06.959><c> and</c><00:10:07.120><c> large</c><00:10:07.360><c> remain</c><00:10:07.760><c> static</c>
+
+00:10:09.030 --> 00:10:09.040 align:start position:0%
+fair tasks by and large remain static
+ 
+
+00:10:09.040 --> 00:10:11.829 align:start position:0%
+fair tasks by and large remain static
+for<00:10:09.519><c> both</c><00:10:09.760><c> scheduling</c><00:10:10.320><c> simplicity</c><00:10:11.120><c> and</c><00:10:11.360><c> also</c>
+
+00:10:11.829 --> 00:10:11.839 align:start position:0%
+for both scheduling simplicity and also
+ 
+
+00:10:11.839 --> 00:10:16.150 align:start position:0%
+for both scheduling simplicity and also
+it<00:10:12.000><c> is</c><00:10:12.320><c> much</c><00:10:12.560><c> easier</c><00:10:12.880><c> to</c><00:10:13.120><c> analyze</c>
+
+00:10:16.150 --> 00:10:16.160 align:start position:0%
+ 
+ 
+
+00:10:16.160 --> 00:10:18.310 align:start position:0%
+ 
+so<00:10:16.320><c> if</c><00:10:16.480><c> you</c><00:10:16.560><c> compare</c><00:10:17.279><c> the</c><00:10:17.440><c> resource</c><00:10:18.000><c> sharing</c>
+
+00:10:18.310 --> 00:10:18.320 align:start position:0%
+so if you compare the resource sharing
+ 
+
+00:10:18.320 --> 00:10:21.030 align:start position:0%
+so if you compare the resource sharing
+protocols<00:10:19.440><c> this</c><00:10:19.680><c> is</c><00:10:19.760><c> what</c><00:10:20.000><c> we</c>
+
+00:10:21.030 --> 00:10:21.040 align:start position:0%
+protocols this is what we
+ 
+
+00:10:21.040 --> 00:10:23.910 align:start position:0%
+protocols this is what we
+so<00:10:21.279><c> for</c><00:10:21.519><c> pip</c><00:10:22.079><c> the</c><00:10:22.240><c> simplest</c><00:10:22.959><c> is</c><00:10:23.519><c> that</c><00:10:23.760><c> it</c>
+
+00:10:23.910 --> 00:10:23.920 align:start position:0%
+so for pip the simplest is that it
+ 
+
+00:10:23.920 --> 00:10:27.030 align:start position:0%
+so for pip the simplest is that it
+requires<00:10:24.480><c> minimal</c><00:10:24.959><c> support</c><00:10:25.360><c> from</c><00:10:25.519><c> the</c><00:10:25.600><c> os</c>
+
+00:10:27.030 --> 00:10:27.040 align:start position:0%
+requires minimal support from the os
+ 
+
+00:10:27.040 --> 00:10:29.110 align:start position:0%
+requires minimal support from the os
+so<00:10:27.279><c> pip</c><00:10:27.760><c> i'm</c><00:10:27.920><c> sorry</c><00:10:28.240><c> stand</c><00:10:28.560><c> corrector</c><00:10:28.959><c> is</c><00:10:29.040><c> the</c>
+
+00:10:29.110 --> 00:10:29.120 align:start position:0%
+so pip i'm sorry stand corrector is the
+ 
+
+00:10:29.120 --> 00:10:31.509 align:start position:0%
+so pip i'm sorry stand corrector is the
+simplest<00:10:29.600><c> protocol</c>
+
+00:10:31.509 --> 00:10:31.519 align:start position:0%
+simplest protocol
+ 
+
+00:10:31.519 --> 00:10:33.590 align:start position:0%
+simplest protocol
+unbounded<00:10:32.160><c> priority</c><00:10:32.720><c> inversion</c><00:10:33.440><c> is</c>
+
+00:10:33.590 --> 00:10:33.600 align:start position:0%
+unbounded priority inversion is
+ 
+
+00:10:33.600 --> 00:10:35.990 align:start position:0%
+unbounded priority inversion is
+something<00:10:34.000><c> that</c><00:10:34.160><c> it</c><00:10:34.399><c> overcomes</c>
+
+00:10:35.990 --> 00:10:36.000 align:start position:0%
+something that it overcomes
+ 
+
+00:10:36.000 --> 00:10:38.230 align:start position:0%
+something that it overcomes
+because<00:10:36.320><c> it</c><00:10:36.480><c> raises</c><00:10:36.880><c> the</c><00:10:37.040><c> priority</c><00:10:37.600><c> of</c><00:10:37.760><c> tl</c><00:10:38.079><c> to</c>
+
+00:10:38.230 --> 00:10:38.240 align:start position:0%
+because it raises the priority of tl to
+ 
+
+00:10:38.240 --> 00:10:40.470 align:start position:0%
+because it raises the priority of tl to
+th
+
+00:10:40.470 --> 00:10:40.480 align:start position:0%
+th
+ 
+
+00:10:40.480 --> 00:10:42.310 align:start position:0%
+th
+that's<00:10:40.800><c> pretty</c><00:10:41.040><c> much</c><00:10:41.200><c> the</c><00:10:41.360><c> only</c><00:10:41.600><c> real</c><00:10:41.920><c> problem</c>
+
+00:10:42.310 --> 00:10:42.320 align:start position:0%
+that's pretty much the only real problem
+ 
+
+00:10:42.320 --> 00:10:44.790 align:start position:0%
+that's pretty much the only real problem
+that<00:10:42.480><c> it</c><00:10:42.640><c> overcomes</c>
+
+00:10:44.790 --> 00:10:44.800 align:start position:0%
+that it overcomes
+ 
+
+00:10:44.800 --> 00:10:47.269 align:start position:0%
+that it overcomes
+however<00:10:45.279><c> chain</c><00:10:45.600><c> blocking</c><00:10:46.079><c> and</c><00:10:46.160><c> deadlocks</c><00:10:47.120><c> are</c>
+
+00:10:47.269 --> 00:10:47.279 align:start position:0%
+however chain blocking and deadlocks are
+ 
+
+00:10:47.279 --> 00:10:48.389 align:start position:0%
+however chain blocking and deadlocks are
+possible
+
+00:10:48.389 --> 00:10:48.399 align:start position:0%
+possible
+ 
+
+00:10:48.399 --> 00:10:50.870 align:start position:0%
+possible
+which<00:10:48.640><c> is</c><00:10:48.880><c> why</c><00:10:49.600><c> we</c><00:10:49.760><c> have</c><00:10:49.920><c> the</c><00:10:50.079><c> next</c><00:10:50.320><c> protocol</c>
+
+00:10:50.870 --> 00:10:50.880 align:start position:0%
+which is why we have the next protocol
+ 
+
+00:10:50.880 --> 00:10:53.509 align:start position:0%
+which is why we have the next protocol
+which<00:10:51.120><c> is</c><00:10:51.279><c> hlp</c>
+
+00:10:53.509 --> 00:10:53.519 align:start position:0%
+which is hlp
+ 
+
+00:10:53.519 --> 00:10:54.870 align:start position:0%
+which is hlp
+hlp
+
+00:10:54.870 --> 00:10:54.880 align:start position:0%
+hlp
+ 
+
+00:10:54.880 --> 00:10:56.870 align:start position:0%
+hlp
+requires<00:10:55.440><c> some</c><00:10:55.680><c> support</c><00:10:56.079><c> from</c><00:10:56.240><c> the</c><00:10:56.399><c> os</c><00:10:56.720><c> to</c>
+
+00:10:56.870 --> 00:10:56.880 align:start position:0%
+requires some support from the os to
+ 
+
+00:10:56.880 --> 00:10:58.829 align:start position:0%
+requires some support from the os to
+maintain<00:10:57.360><c> ceilings</c><00:10:57.839><c> and</c><00:10:57.920><c> so</c>
+
+00:10:58.829 --> 00:10:58.839 align:start position:0%
+maintain ceilings and so
+ 
+
+00:10:58.839 --> 00:11:01.430 align:start position:0%
+maintain ceilings and so
+on<00:10:59.920><c> it</c><00:11:00.079><c> solves</c><00:11:00.480><c> the</c><00:11:00.640><c> chain</c><00:11:00.880><c> blocking</c><00:11:01.279><c> and</c>
+
+00:11:01.430 --> 00:11:01.440 align:start position:0%
+on it solves the chain blocking and
+ 
+
+00:11:01.440 --> 00:11:03.509 align:start position:0%
+on it solves the chain blocking and
+deadlock<00:11:01.920><c> problems</c><00:11:02.320><c> but</c><00:11:02.480><c> it</c><00:11:02.800><c> introduces</c><00:11:03.440><c> a</c>
+
+00:11:03.509 --> 00:11:03.519 align:start position:0%
+deadlock problems but it introduces a
+ 
+
+00:11:03.519 --> 00:11:05.269 align:start position:0%
+deadlock problems but it introduces a
+new<00:11:03.760><c> problem</c>
+
+00:11:05.269 --> 00:11:05.279 align:start position:0%
+new problem
+ 
+
+00:11:05.279 --> 00:11:07.030 align:start position:0%
+new problem
+which<00:11:05.519><c> is</c><00:11:05.680><c> that</c><00:11:05.920><c> intermediate</c><00:11:06.480><c> priority</c>
+
+00:11:07.030 --> 00:11:07.040 align:start position:0%
+which is that intermediate priority
+ 
+
+00:11:07.040 --> 00:11:09.509 align:start position:0%
+which is that intermediate priority
+tasks<00:11:07.600><c> may</c><00:11:07.839><c> suffer</c><00:11:08.240><c> from</c><00:11:08.560><c> more</c><00:11:08.959><c> priority</c>
+
+00:11:09.509 --> 00:11:09.519 align:start position:0%
+tasks may suffer from more priority
+ 
+
+00:11:09.519 --> 00:11:11.350 align:start position:0%
+tasks may suffer from more priority
+related<00:11:10.000><c> inversions</c>
+
+00:11:11.350 --> 00:11:11.360 align:start position:0%
+related inversions
+ 
+
+00:11:11.360 --> 00:11:13.150 align:start position:0%
+related inversions
+because<00:11:11.760><c> the</c><00:11:11.920><c> priority</c><00:11:12.480><c> is</c><00:11:12.640><c> raised</c><00:11:12.959><c> to</c>
+
+00:11:13.150 --> 00:11:13.160 align:start position:0%
+because the priority is raised to
+ 
+
+00:11:13.160 --> 00:11:17.350 align:start position:0%
+because the priority is raised to
+unrealistically<00:11:14.160><c> high</c><00:11:14.720><c> levels</c>
+
+00:11:17.350 --> 00:11:17.360 align:start position:0%
+ 
+ 
+
+00:11:17.360 --> 00:11:20.150 align:start position:0%
+ 
+so<00:11:17.600><c> pcp</c><00:11:18.399><c> we</c><00:11:18.640><c> claim</c><00:11:18.959><c> solves</c><00:11:19.440><c> everything</c><00:11:19.920><c> in</c><00:11:20.079><c> the</c>
+
+00:11:20.150 --> 00:11:20.160 align:start position:0%
+so pcp we claim solves everything in the
+ 
+
+00:11:20.160 --> 00:11:21.990 align:start position:0%
+so pcp we claim solves everything in the
+sense<00:11:20.399><c> it</c><00:11:20.560><c> overcomes</c><00:11:21.120><c> the</c><00:11:21.200><c> shortcomings</c><00:11:21.839><c> of</c>
+
+00:11:21.990 --> 00:11:22.000 align:start position:0%
+sense it overcomes the shortcomings of
+ 
+
+00:11:22.000 --> 00:11:23.750 align:start position:0%
+sense it overcomes the shortcomings of
+pip
+
+00:11:23.750 --> 00:11:23.760 align:start position:0%
+pip
+ 
+
+00:11:23.760 --> 00:11:26.710 align:start position:0%
+pip
+no<00:11:24.000><c> deadlocks</c><00:11:24.560><c> and</c><00:11:24.640><c> chain</c><00:11:24.880><c> blocking</c>
+
+00:11:26.710 --> 00:11:26.720 align:start position:0%
+no deadlocks and chain blocking
+ 
+
+00:11:26.720 --> 00:11:28.630 align:start position:0%
+no deadlocks and chain blocking
+reduces<00:11:27.279><c> the</c><00:11:27.440><c> chance</c><00:11:27.760><c> of</c><00:11:28.000><c> inheritance</c>
+
+00:11:28.630 --> 00:11:28.640 align:start position:0%
+reduces the chance of inheritance
+ 
+
+00:11:28.640 --> 00:11:31.509 align:start position:0%
+reduces the chance of inheritance
+related<00:11:29.120><c> inversions</c><00:11:29.680><c> as</c><00:11:29.839><c> compared</c><00:11:30.160><c> to</c><00:11:30.320><c> hlp</c>
+
+00:11:31.509 --> 00:11:31.519 align:start position:0%
+related inversions as compared to hlp
+ 
+
+00:11:31.519 --> 00:11:33.910 align:start position:0%
+related inversions as compared to hlp
+because<00:11:31.920><c> we</c><00:11:32.079><c> do</c><00:11:32.160><c> not</c><00:11:32.320><c> raise</c><00:11:32.560><c> the</c><00:11:32.720><c> priority</c><00:11:33.600><c> of</c>
+
+00:11:33.910 --> 00:11:33.920 align:start position:0%
+because we do not raise the priority of
+ 
+
+00:11:33.920 --> 00:11:36.790 align:start position:0%
+because we do not raise the priority of
+let<00:11:34.079><c> us</c><00:11:34.160><c> say</c><00:11:34.480><c> tl</c><00:11:34.959><c> to</c><00:11:35.440><c> the</c><00:11:35.600><c> ceiling</c>
+
+00:11:36.790 --> 00:11:36.800 align:start position:0%
+let us say tl to the ceiling
+ 
+
+00:11:36.800 --> 00:11:39.190 align:start position:0%
+let us say tl to the ceiling
+but<00:11:37.120><c> instead</c><00:11:37.519><c> we</c><00:11:37.760><c> raise</c><00:11:38.000><c> the</c><00:11:38.160><c> priority</c><00:11:38.640><c> of</c><00:11:38.800><c> tl</c>
+
+00:11:39.190 --> 00:11:39.200 align:start position:0%
+but instead we raise the priority of tl
+ 
+
+00:11:39.200 --> 00:11:40.829 align:start position:0%
+but instead we raise the priority of tl
+to
+
+00:11:40.829 --> 00:11:40.839 align:start position:0%
+to
+ 
+
+00:11:40.839 --> 00:11:43.829 align:start position:0%
+to
+th<00:11:41.920><c> so</c><00:11:42.079><c> the</c><00:11:42.240><c> priority</c><00:11:42.720><c> of</c><00:11:43.120><c> a</c><00:11:43.279><c> task</c><00:11:43.680><c> on</c>
+
+00:11:43.829 --> 00:11:43.839 align:start position:0%
+th so the priority of a task on
+ 
+
+00:11:43.839 --> 00:11:45.910 align:start position:0%
+th so the priority of a task on
+acquiring<00:11:44.320><c> a</c><00:11:44.399><c> resource</c><00:11:45.040><c> per</c><00:11:45.279><c> se</c><00:11:45.519><c> does</c><00:11:45.680><c> not</c>
+
+00:11:45.910 --> 00:11:45.920 align:start position:0%
+acquiring a resource per se does not
+ 
+
+00:11:45.920 --> 00:11:47.269 align:start position:0%
+acquiring a resource per se does not
+change
+
+00:11:47.269 --> 00:11:47.279 align:start position:0%
+change
+ 
+
+00:11:47.279 --> 00:11:48.310 align:start position:0%
+change
+it
+
+00:11:48.310 --> 00:11:48.320 align:start position:0%
+it
+ 
+
+00:11:48.320 --> 00:11:50.870 align:start position:0%
+it
+in<00:11:48.480><c> a</c><00:11:48.640><c> sense</c><00:11:49.200><c> increases</c><00:11:49.839><c> only</c><00:11:50.160><c> when</c><00:11:50.480><c> somebody</c>
+
+00:11:50.870 --> 00:11:50.880 align:start position:0%
+in a sense increases only when somebody
+ 
+
+00:11:50.880 --> 00:11:52.790 align:start position:0%
+in a sense increases only when somebody
+is<00:11:51.040><c> waiting</c><00:11:51.440><c> for</c><00:11:51.680><c> it</c>
+
+00:11:52.790 --> 00:11:52.800 align:start position:0%
+is waiting for it
+ 
+
+00:11:52.800 --> 00:11:54.870 align:start position:0%
+is waiting for it
+a<00:11:52.959><c> high</c><00:11:53.200><c> priority</c><00:11:53.680><c> task</c><00:11:54.000><c> requests</c><00:11:54.560><c> for</c><00:11:54.720><c> the</c>
+
+00:11:54.870 --> 00:11:54.880 align:start position:0%
+a high priority task requests for the
+ 
+
+00:11:54.880 --> 00:11:57.670 align:start position:0%
+a high priority task requests for the
+resource<00:11:55.440><c> right</c><00:11:55.680><c> then</c><00:11:56.000><c> the</c><00:11:56.160><c> priority</c><00:11:56.639><c> changes</c>
+
+00:11:57.670 --> 00:11:57.680 align:start position:0%
+resource right then the priority changes
+ 
+
+00:11:57.680 --> 00:11:59.190 align:start position:0%
+resource right then the priority changes
+it's<00:11:57.839><c> not</c><00:11:58.079><c> the</c><00:11:58.160><c> case</c><00:11:58.399><c> in</c><00:11:58.560><c> hlp</c><00:11:58.959><c> you</c><00:11:59.040><c> just</c>
+
+00:11:59.190 --> 00:11:59.200 align:start position:0%
+it's not the case in hlp you just
+ 
+
+00:11:59.200 --> 00:12:00.790 align:start position:0%
+it's not the case in hlp you just
+acquire<00:11:59.680><c> and</c><00:11:59.760><c> your</c><00:11:59.920><c> priority</c><00:12:00.399><c> becomes</c>
+
+00:12:00.790 --> 00:12:00.800 align:start position:0%
+acquire and your priority becomes
+ 
+
+00:12:00.800 --> 00:12:04.470 align:start position:0%
+acquire and your priority becomes
+massive<00:12:01.200><c> that's</c><00:12:01.440><c> not</c><00:12:01.600><c> the</c><00:12:01.760><c> case</c>
+
+00:12:04.470 --> 00:12:04.480 align:start position:0%
+ 
+ 
+
+00:12:04.480 --> 00:12:06.790 align:start position:0%
+ 
+so<00:12:04.720><c> here</c><00:12:05.200><c> this</c><00:12:05.360><c> is</c><00:12:05.519><c> a</c><00:12:05.680><c> question</c><00:12:06.079><c> so</c><00:12:06.240><c> i</c><00:12:06.399><c> will</c><00:12:06.560><c> not</c>
+
+00:12:06.790 --> 00:12:06.800 align:start position:0%
+so here this is a question so i will not
+ 
+
+00:12:06.800 --> 00:12:09.750 align:start position:0%
+so here this is a question so i will not
+come<00:12:07.040><c> to</c><00:12:07.279><c> it</c><00:12:07.920><c> right</c><00:12:08.480><c> so</c><00:12:08.639><c> this</c><00:12:08.880><c> is</c><00:12:09.040><c> for</c><00:12:09.279><c> students</c>
+
+00:12:09.750 --> 00:12:09.760 align:start position:0%
+come to it right so this is for students
+ 
+
+00:12:09.760 --> 00:12:11.829 align:start position:0%
+come to it right so this is for students
+to
+
+00:12:11.829 --> 00:12:11.839 align:start position:0%
+to
+ 
+
+00:12:11.839 --> 00:12:15.190 align:start position:0%
+to
+answer
+
+00:12:15.190 --> 00:12:15.200 align:start position:0%
+ 
+ 
+
+00:12:15.200 --> 00:12:18.629 align:start position:0%
+ 
+so<00:12:15.440><c> basically</c><00:12:16.240><c> uh</c>
+
+00:12:18.629 --> 00:12:18.639 align:start position:0%
+ 
+ 
+
+00:12:18.639 --> 00:12:20.470 align:start position:0%
+ 
+the<00:12:18.720><c> highest</c><00:12:19.120><c> priority</c><00:12:19.519><c> task</c><00:12:19.839><c> of</c><00:12:20.000><c> course</c><00:12:20.240><c> does</c>
+
+00:12:20.470 --> 00:12:20.480 align:start position:0%
+the highest priority task of course does
+ 
+
+00:12:20.480 --> 00:12:23.430 align:start position:0%
+the highest priority task of course does
+not<00:12:20.639><c> suffer</c><00:12:21.040><c> inversions</c><00:12:21.680><c> and</c><00:12:21.920><c> under</c><00:12:22.240><c> pcp</c>
+
+00:12:23.430 --> 00:12:23.440 align:start position:0%
+not suffer inversions and under pcp
+ 
+
+00:12:23.440 --> 00:12:26.870 align:start position:0%
+not suffer inversions and under pcp
+if<00:12:23.600><c> a</c><00:12:23.680><c> task</c><00:12:24.000><c> does</c><00:12:24.160><c> not</c><00:12:24.320><c> require</c><00:12:24.720><c> any</c><00:12:24.959><c> resources</c>
+
+00:12:26.870 --> 00:12:26.880 align:start position:0%
+if a task does not require any resources
+ 
+
+00:12:26.880 --> 00:12:29.190 align:start position:0%
+if a task does not require any resources
+well<00:12:27.200><c> still</c><00:12:27.519><c> you</c><00:12:27.680><c> know</c><00:12:28.000><c> the</c><00:12:28.240><c> problem</c><00:12:28.720><c> may</c><00:12:28.959><c> be</c>
+
+00:12:29.190 --> 00:12:29.200 align:start position:0%
+well still you know the problem may be
+ 
+
+00:12:29.200 --> 00:12:30.150 align:start position:0%
+well still you know the problem may be
+that
+
+00:12:30.150 --> 00:12:30.160 align:start position:0%
+that
+ 
+
+00:12:30.160 --> 00:12:31.910 align:start position:0%
+that
+it<00:12:30.320><c> will</c><00:12:30.399><c> undergo</c><00:12:30.880><c> priority</c><00:12:31.360><c> inversion</c>
+
+00:12:31.910 --> 00:12:31.920 align:start position:0%
+it will undergo priority inversion
+ 
+
+00:12:31.920 --> 00:12:34.069 align:start position:0%
+it will undergo priority inversion
+because
+
+00:12:34.069 --> 00:12:34.079 align:start position:0%
+because
+ 
+
+00:12:34.079 --> 00:12:36.150 align:start position:0%
+because
+uh<00:12:34.320><c> you</c><00:12:34.480><c> know</c><00:12:34.720><c> some</c><00:12:35.040><c> tl</c>
+
+00:12:36.150 --> 00:12:36.160 align:start position:0%
+uh you know some tl
+ 
+
+00:12:36.160 --> 00:12:39.030 align:start position:0%
+uh you know some tl
+even<00:12:36.560><c> even</c><00:12:36.720><c> if</c><00:12:36.880><c> it</c><00:12:36.959><c> doesn't</c><00:12:37.200><c> need</c><00:12:37.440><c> a</c><00:12:37.519><c> resource</c>
+
+00:12:39.030 --> 00:12:39.040 align:start position:0%
+even even if it doesn't need a resource
+ 
+
+00:12:39.040 --> 00:12:41.350 align:start position:0%
+even even if it doesn't need a resource
+the<00:12:39.279><c> priority</c><00:12:40.000><c> of</c><00:12:40.240><c> a</c><00:12:40.399><c> low</c><00:12:40.560><c> priority</c><00:12:41.040><c> task</c>
+
+00:12:41.350 --> 00:12:41.360 align:start position:0%
+the priority of a low priority task
+ 
+
+00:12:41.360 --> 00:12:42.710 align:start position:0%
+the priority of a low priority task
+would<00:12:41.519><c> have</c><00:12:41.600><c> become</c><00:12:41.920><c> high</c><00:12:42.240><c> because</c><00:12:42.639><c> of</c>
+
+00:12:42.710 --> 00:12:42.720 align:start position:0%
+would have become high because of
+ 
+
+00:12:42.720 --> 00:12:44.150 align:start position:0%
+would have become high because of
+resource
+
+00:12:44.150 --> 00:12:44.160 align:start position:0%
+resource
+ 
+
+00:12:44.160 --> 00:12:49.910 align:start position:0%
+resource
+dependencies<00:12:44.959><c> and</c><00:12:45.040><c> inheritance</c>
+
+00:12:49.910 --> 00:12:49.920 align:start position:0%
+ 
+ 
+
+00:12:49.920 --> 00:12:51.190 align:start position:0%
+ 
+so
+
+00:12:51.190 --> 00:12:51.200 align:start position:0%
+so
+ 
+
+00:12:51.200 --> 00:12:54.949 align:start position:0%
+so
+i'll<00:12:51.600><c> skip</c><00:12:51.920><c> these</c><00:12:52.240><c> quiz</c><00:12:52.560><c> questions</c>
+
+00:12:54.949 --> 00:12:54.959 align:start position:0%
+i'll skip these quiz questions
+ 
+
+00:12:54.959 --> 00:12:57.269 align:start position:0%
+i'll skip these quiz questions
+so<00:12:55.120><c> we</c><00:12:55.360><c> finish</c><00:12:55.760><c> this</c><00:12:56.000><c> lecture</c><00:12:56.480><c> now</c><00:12:56.880><c> so</c><00:12:57.040><c> we</c><00:12:57.200><c> will</c>
+
+00:12:57.269 --> 00:12:57.279 align:start position:0%
+so we finish this lecture now so we will
+ 
+
+00:12:57.279 --> 00:12:59.030 align:start position:0%
+so we finish this lecture now so we will
+now<00:12:57.600><c> shift</c><00:12:57.920><c> gears</c>
+
+00:12:59.030 --> 00:12:59.040 align:start position:0%
+now shift gears
+ 
+
+00:12:59.040 --> 00:13:01.269 align:start position:0%
+now shift gears
+we<00:12:59.200><c> will</c><00:12:59.440><c> go</c><00:12:59.600><c> from</c><00:12:59.839><c> uniprocessor</c><00:13:00.720><c> scheduling</c>
+
+00:13:01.269 --> 00:13:01.279 align:start position:0%
+we will go from uniprocessor scheduling
+ 
+
+00:13:01.279 --> 00:13:04.020 align:start position:0%
+we will go from uniprocessor scheduling
+to<00:13:01.600><c> multi-processor</c><00:13:02.480><c> scheduling</c>
+
+00:13:04.020 --> 00:13:04.030 align:start position:0%
+to multi-processor scheduling
+ 
+
+00:13:04.030 --> 00:13:11.110 align:start position:0%
+to multi-processor scheduling
+[Music]
+
+00:13:11.110 --> 00:13:11.120 align:start position:0%
+ 
+ 
+
+00:13:11.120 --> 00:13:13.200 align:start position:0%
+ 
+you
+

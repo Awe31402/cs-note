@@ -1,0 +1,5128 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.840 --> 00:00:15.829 align:start position:0%
+ 
+[Music]
+
+00:00:15.829 --> 00:00:15.839 align:start position:0%
+ 
+ 
+
+00:00:15.839 --> 00:00:18.070 align:start position:0%
+ 
+welcome<00:00:16.240><c> to</c><00:00:16.400><c> lecture</c><00:00:16.800><c> 11.</c>
+
+00:00:18.070 --> 00:00:18.080 align:start position:0%
+welcome to lecture 11.
+ 
+
+00:00:18.080 --> 00:00:20.870 align:start position:0%
+welcome to lecture 11.
+so<00:00:18.320><c> in</c><00:00:18.400><c> this</c><00:00:18.640><c> case</c><00:00:18.960><c> we</c><00:00:19.119><c> will</c><00:00:19.359><c> take</c><00:00:19.600><c> a</c><00:00:19.680><c> look</c><00:00:20.000><c> at</c>
+
+00:00:20.870 --> 00:00:20.880 align:start position:0%
+so in this case we will take a look at
+ 
+
+00:00:20.880 --> 00:00:23.509 align:start position:0%
+so in this case we will take a look at
+the<00:00:21.039><c> constraints</c><00:00:21.680><c> that</c><00:00:21.920><c> are</c><00:00:22.080><c> introduced</c>
+
+00:00:23.509 --> 00:00:23.519 align:start position:0%
+the constraints that are introduced
+ 
+
+00:00:23.519 --> 00:00:25.990 align:start position:0%
+the constraints that are introduced
+by<00:00:23.760><c> the</c><00:00:24.000><c> sharing</c><00:00:24.400><c> of</c><00:00:24.560><c> resources</c><00:00:25.199><c> among</c><00:00:25.519><c> tasks</c>
+
+00:00:25.990 --> 00:00:26.000 align:start position:0%
+by the sharing of resources among tasks
+ 
+
+00:00:26.000 --> 00:00:29.509 align:start position:0%
+by the sharing of resources among tasks
+in<00:00:26.160><c> the</c><00:00:26.320><c> sense</c><00:00:26.640><c> that</c><00:00:26.880><c> we</c><00:00:27.279><c> have</c><00:00:27.519><c> multiple</c><00:00:28.080><c> tasks</c>
+
+00:00:29.509 --> 00:00:29.519 align:start position:0%
+in the sense that we have multiple tasks
+ 
+
+00:00:29.519 --> 00:00:32.389 align:start position:0%
+in the sense that we have multiple tasks
+and<00:00:29.760><c> we</c><00:00:29.920><c> have</c><00:00:30.160><c> a</c><00:00:30.240><c> single</c><00:00:30.560><c> resource</c>
+
+00:00:32.389 --> 00:00:32.399 align:start position:0%
+and we have a single resource
+ 
+
+00:00:32.399 --> 00:00:35.030 align:start position:0%
+and we have a single resource
+and<00:00:32.640><c> let's</c><00:00:32.880><c> say</c><00:00:33.120><c> a</c><00:00:33.760><c> task</c><00:00:34.160><c> locks</c><00:00:34.559><c> a</c><00:00:34.640><c> resource</c>
+
+00:00:35.030 --> 00:00:35.040 align:start position:0%
+and let's say a task locks a resource
+ 
+
+00:00:35.040 --> 00:00:36.470 align:start position:0%
+and let's say a task locks a resource
+preemptively
+
+00:00:36.470 --> 00:00:36.480 align:start position:0%
+preemptively
+ 
+
+00:00:36.480 --> 00:00:38.229 align:start position:0%
+preemptively
+then<00:00:36.800><c> what</c><00:00:36.960><c> happens</c><00:00:37.440><c> right</c><00:00:37.680><c> what</c><00:00:37.920><c> are</c><00:00:38.000><c> we</c>
+
+00:00:38.229 --> 00:00:38.239 align:start position:0%
+then what happens right what are we
+ 
+
+00:00:38.239 --> 00:00:40.389 align:start position:0%
+then what happens right what are we
+supposed<00:00:38.559><c> to</c><00:00:38.719><c> do</c><00:00:38.879><c> in</c><00:00:39.040><c> that</c><00:00:39.280><c> case</c>
+
+00:00:40.389 --> 00:00:40.399 align:start position:0%
+supposed to do in that case
+ 
+
+00:00:40.399 --> 00:00:42.869 align:start position:0%
+supposed to do in that case
+if<00:00:40.640><c> let's</c><00:00:40.879><c> say</c><00:00:41.040><c> the</c><00:00:41.200><c> tasks</c><00:00:42.000><c> need</c><00:00:42.239><c> resources</c>
+
+00:00:42.869 --> 00:00:42.879 align:start position:0%
+if let's say the tasks need resources
+ 
+
+00:00:42.879 --> 00:00:46.389 align:start position:0%
+if let's say the tasks need resources
+and<00:00:42.960><c> need</c><00:00:43.120><c> to</c><00:00:43.280><c> acquire</c><00:00:43.680><c> resources</c>
+
+00:00:46.389 --> 00:00:46.399 align:start position:0%
+ 
+ 
+
+00:00:46.399 --> 00:00:48.389 align:start position:0%
+ 
+so<00:00:46.640><c> so</c><00:00:46.800><c> far</c><00:00:47.039><c> the</c><00:00:47.200><c> only</c><00:00:47.440><c> resource</c><00:00:47.920><c> that</c><00:00:48.079><c> we</c><00:00:48.239><c> have</c>
+
+00:00:48.389 --> 00:00:48.399 align:start position:0%
+so so far the only resource that we have
+ 
+
+00:00:48.399 --> 00:00:51.350 align:start position:0%
+so so far the only resource that we have
+considered<00:00:48.960><c> in</c><00:00:49.039><c> the</c><00:00:49.200><c> cpu</c>
+
+00:00:51.350 --> 00:00:51.360 align:start position:0%
+considered in the cpu
+ 
+
+00:00:51.360 --> 00:00:53.270 align:start position:0%
+considered in the cpu
+and<00:00:51.520><c> that</c><00:00:51.840><c> to</c><00:00:52.079><c> a</c><00:00:52.160><c> single</c><00:00:52.559><c> cpu</c><00:00:52.960><c> which</c><00:00:53.199><c> is</c>
+
+00:00:53.270 --> 00:00:53.280 align:start position:0%
+and that to a single cpu which is
+ 
+
+00:00:53.280 --> 00:00:55.430 align:start position:0%
+and that to a single cpu which is
+serially<00:00:53.760><c> reusable</c><00:00:54.480><c> which</c><00:00:54.719><c> means</c><00:00:54.960><c> that</c><00:00:55.199><c> one</c>
+
+00:00:55.430 --> 00:00:55.440 align:start position:0%
+serially reusable which means that one
+ 
+
+00:00:55.440 --> 00:00:57.750 align:start position:0%
+serially reusable which means that one
+task<00:00:55.840><c> runs</c>
+
+00:00:57.750 --> 00:00:57.760 align:start position:0%
+task runs
+ 
+
+00:00:57.760 --> 00:00:59.349 align:start position:0%
+task runs
+and<00:00:57.920><c> then</c><00:00:58.160><c> another</c>
+
+00:00:59.349 --> 00:00:59.359 align:start position:0%
+and then another
+ 
+
+00:00:59.359 --> 00:01:01.270 align:start position:0%
+and then another
+right<00:00:59.760><c> then</c><00:01:00.000><c> another</c><00:01:00.399><c> and</c><00:01:00.559><c> so</c><00:01:00.719><c> on</c><00:01:00.960><c> so</c><00:01:01.039><c> it</c><00:01:01.199><c> is</c>
+
+00:01:01.270 --> 00:01:01.280 align:start position:0%
+right then another and so on so it is
+ 
+
+00:01:01.280 --> 00:01:03.270 align:start position:0%
+right then another and so on so it is
+serially<00:01:01.760><c> reusable</c>
+
+00:01:03.270 --> 00:01:03.280 align:start position:0%
+serially reusable
+ 
+
+00:01:03.280 --> 00:01:05.670 align:start position:0%
+serially reusable
+so<00:01:03.440><c> you</c><00:01:03.600><c> know</c><00:01:03.840><c> our</c><00:01:04.159><c> condition</c><00:01:05.119><c> which</c><00:01:05.360><c> was</c><00:01:05.519><c> our</c>
+
+00:01:05.670 --> 00:01:05.680 align:start position:0%
+so you know our condition which was our
+ 
+
+00:01:05.680 --> 00:01:07.590 align:start position:0%
+so you know our condition which was our
+utilization<00:01:06.320><c> condition</c><00:01:06.880><c> the</c><00:01:07.040><c> summation</c><00:01:07.439><c> or</c>
+
+00:01:07.590 --> 00:01:07.600 align:start position:0%
+utilization condition the summation or
+ 
+
+00:01:07.600 --> 00:01:10.390 align:start position:0%
+utilization condition the summation or
+utilizations<00:01:08.320><c> is</c><00:01:08.479><c> less</c><00:01:08.640><c> than</c><00:01:08.880><c> equal</c><00:01:09.119><c> to</c><00:01:09.280><c> one</c>
+
+00:01:10.390 --> 00:01:10.400 align:start position:0%
+utilizations is less than equal to one
+ 
+
+00:01:10.400 --> 00:01:14.070 align:start position:0%
+utilizations is less than equal to one
+was<00:01:10.720><c> dependent</c><00:01:11.360><c> on</c><00:01:11.520><c> this</c><00:01:11.760><c> premise</c>
+
+00:01:14.070 --> 00:01:14.080 align:start position:0%
+was dependent on this premise
+ 
+
+00:01:14.080 --> 00:01:17.270 align:start position:0%
+was dependent on this premise
+that<00:01:14.240><c> the</c><00:01:14.400><c> sum</c><00:01:14.640><c> of</c><00:01:14.799><c> utilizations</c><00:01:15.840><c> is</c>
+
+00:01:17.270 --> 00:01:17.280 align:start position:0%
+that the sum of utilizations is
+ 
+
+00:01:17.280 --> 00:01:19.109 align:start position:0%
+that the sum of utilizations is
+bounded<00:01:17.680><c> by</c><00:01:17.840><c> one</c><00:01:18.080><c> which</c><00:01:18.320><c> means</c><00:01:18.560><c> at</c><00:01:18.720><c> any</c><00:01:18.880><c> one</c>
+
+00:01:19.109 --> 00:01:19.119 align:start position:0%
+bounded by one which means at any one
+ 
+
+00:01:19.119 --> 00:01:20.630 align:start position:0%
+bounded by one which means at any one
+point<00:01:19.439><c> of</c><00:01:19.600><c> time</c>
+
+00:01:20.630 --> 00:01:20.640 align:start position:0%
+point of time
+ 
+
+00:01:20.640 --> 00:01:23.910 align:start position:0%
+point of time
+only<00:01:20.960><c> one</c><00:01:21.200><c> task</c><00:01:21.520><c> can</c><00:01:21.759><c> execute</c><00:01:22.320><c> on</c><00:01:22.479><c> a</c><00:01:22.560><c> cpu</c>
+
+00:01:23.910 --> 00:01:23.920 align:start position:0%
+only one task can execute on a cpu
+ 
+
+00:01:23.920 --> 00:01:24.830 align:start position:0%
+only one task can execute on a cpu
+and
+
+00:01:24.830 --> 00:01:24.840 align:start position:0%
+and
+ 
+
+00:01:24.840 --> 00:01:27.590 align:start position:0%
+and
+furthermore<00:01:25.840><c> a</c><00:01:26.000><c> task</c><00:01:26.400><c> can</c><00:01:26.560><c> be</c><00:01:26.799><c> preempted</c>
+
+00:01:27.590 --> 00:01:27.600 align:start position:0%
+furthermore a task can be preempted
+ 
+
+00:01:27.600 --> 00:01:29.109 align:start position:0%
+furthermore a task can be preempted
+anytime
+
+00:01:29.109 --> 00:01:29.119 align:start position:0%
+anytime
+ 
+
+00:01:29.119 --> 00:01:32.310 align:start position:0%
+anytime
+by<00:01:29.439><c> other</c><00:01:29.759><c> tasks</c><00:01:30.079><c> other</c><00:01:30.320><c> high</c><00:01:30.560><c> priority</c><00:01:31.119><c> tasks</c>
+
+00:01:32.310 --> 00:01:32.320 align:start position:0%
+by other tasks other high priority tasks
+ 
+
+00:01:32.320 --> 00:01:36.630 align:start position:0%
+by other tasks other high priority tasks
+without<00:01:32.799><c> affecting</c><00:01:33.280><c> correctness</c>
+
+00:01:36.630 --> 00:01:36.640 align:start position:0%
+ 
+ 
+
+00:01:36.640 --> 00:01:39.910 align:start position:0%
+ 
+so<00:01:36.880><c> in</c><00:01:37.119><c> reality</c><00:01:38.159><c> tasks</c><00:01:38.799><c> also</c><00:01:39.119><c> need</c><00:01:39.360><c> to</c><00:01:39.520><c> share</c>
+
+00:01:39.910 --> 00:01:39.920 align:start position:0%
+so in reality tasks also need to share
+ 
+
+00:01:39.920 --> 00:01:41.830 align:start position:0%
+so in reality tasks also need to share
+other<00:01:40.159><c> kinds</c><00:01:40.479><c> of</c><00:01:40.640><c> resources</c>
+
+00:01:41.830 --> 00:01:41.840 align:start position:0%
+other kinds of resources
+ 
+
+00:01:41.840 --> 00:01:45.429 align:start position:0%
+other kinds of resources
+resources<00:01:42.560><c> other</c><00:01:42.880><c> than</c><00:01:43.119><c> the</c><00:01:43.280><c> cpu</c>
+
+00:01:45.429 --> 00:01:45.439 align:start position:0%
+resources other than the cpu
+ 
+
+00:01:45.439 --> 00:01:49.749 align:start position:0%
+resources other than the cpu
+for<00:01:45.759><c> example</c><00:01:46.720><c> they</c><00:01:46.960><c> may</c><00:01:47.200><c> want</c><00:01:47.439><c> to</c><00:01:47.680><c> share</c><00:01:48.320><c> files</c>
+
+00:01:49.749 --> 00:01:49.759 align:start position:0%
+for example they may want to share files
+ 
+
+00:01:49.759 --> 00:01:51.670 align:start position:0%
+for example they may want to share files
+they<00:01:50.000><c> may</c><00:01:50.240><c> want</c><00:01:50.399><c> to</c><00:01:50.560><c> share</c><00:01:50.799><c> data</c><00:01:51.119><c> structures</c>
+
+00:01:51.670 --> 00:01:51.680 align:start position:0%
+they may want to share data structures
+ 
+
+00:01:51.680 --> 00:01:53.590 align:start position:0%
+they may want to share data structures
+share<00:01:52.000><c> data</c><00:01:52.320><c> structures</c><00:01:52.880><c> they</c><00:01:53.119><c> may</c><00:01:53.280><c> want</c><00:01:53.439><c> to</c>
+
+00:01:53.590 --> 00:01:53.600 align:start position:0%
+share data structures they may want to
+ 
+
+00:01:53.600 --> 00:01:55.670 align:start position:0%
+share data structures they may want to
+share<00:01:54.000><c> other</c><00:01:54.320><c> devices</c>
+
+00:01:55.670 --> 00:01:55.680 align:start position:0%
+share other devices
+ 
+
+00:01:55.680 --> 00:01:57.670 align:start position:0%
+share other devices
+which<00:01:56.000><c> are</c><00:01:56.079><c> non-preemptable</c><00:01:56.960><c> resources</c><00:01:57.520><c> in</c>
+
+00:01:57.670 --> 00:01:57.680 align:start position:0%
+which are non-preemptable resources in
+ 
+
+00:01:57.680 --> 00:01:59.429 align:start position:0%
+which are non-preemptable resources in
+the<00:01:57.759><c> sense</c><00:01:58.000><c> if</c><00:01:58.159><c> a</c><00:01:58.240><c> task</c><00:01:58.560><c> is</c><00:01:58.719><c> holding</c><00:01:59.119><c> on</c><00:01:59.280><c> to</c>
+
+00:01:59.429 --> 00:01:59.439 align:start position:0%
+the sense if a task is holding on to
+ 
+
+00:01:59.439 --> 00:02:00.469 align:start position:0%
+the sense if a task is holding on to
+something
+
+00:02:00.469 --> 00:02:00.479 align:start position:0%
+something
+ 
+
+00:02:00.479 --> 00:02:02.469 align:start position:0%
+something
+it<00:02:00.719><c> may</c><00:02:00.880><c> want</c><00:02:01.119><c> to</c><00:02:01.280><c> continue</c><00:02:01.680><c> to</c><00:02:01.840><c> hold</c><00:02:02.159><c> on</c><00:02:02.320><c> to</c>
+
+00:02:02.469 --> 00:02:02.479 align:start position:0%
+it may want to continue to hold on to
+ 
+
+00:02:02.479 --> 00:02:03.910 align:start position:0%
+it may want to continue to hold on to
+something
+
+00:02:03.910 --> 00:02:03.920 align:start position:0%
+something
+ 
+
+00:02:03.920 --> 00:02:06.630 align:start position:0%
+something
+till<00:02:04.320><c> it</c><00:02:04.399><c> has</c><00:02:04.560><c> completed</c><00:02:05.040><c> its</c><00:02:05.280><c> execution</c>
+
+00:02:06.630 --> 00:02:06.640 align:start position:0%
+till it has completed its execution
+ 
+
+00:02:06.640 --> 00:02:09.190 align:start position:0%
+till it has completed its execution
+right<00:02:06.880><c> so</c><00:02:07.040><c> these</c><00:02:07.280><c> resources</c><00:02:07.920><c> themselves</c>
+
+00:02:09.190 --> 00:02:09.200 align:start position:0%
+right so these resources themselves
+ 
+
+00:02:09.200 --> 00:02:10.469 align:start position:0%
+right so these resources themselves
+may<00:02:09.360><c> not</c><00:02:09.599><c> be</c><00:02:09.759><c> of</c><00:02:09.840><c> the</c><00:02:10.000><c> type</c><00:02:10.239><c> you</c><00:02:10.399><c> know</c>
+
+00:02:10.469 --> 00:02:10.479 align:start position:0%
+may not be of the type you know
+ 
+
+00:02:10.479 --> 00:02:12.150 align:start position:0%
+may not be of the type you know
+something<00:02:10.720><c> like</c><00:02:10.879><c> a</c><00:02:11.039><c> printer</c><00:02:11.680><c> so</c><00:02:11.840><c> you</c><00:02:11.920><c> can't</c>
+
+00:02:12.150 --> 00:02:12.160 align:start position:0%
+something like a printer so you can't
+ 
+
+00:02:12.160 --> 00:02:13.990 align:start position:0%
+something like a printer so you can't
+really<00:02:12.480><c> preempt</c><00:02:12.959><c> a</c><00:02:13.040><c> task</c><00:02:13.360><c> in</c><00:02:13.520><c> the</c><00:02:13.599><c> middle</c><00:02:13.840><c> of</c>
+
+00:02:13.990 --> 00:02:14.000 align:start position:0%
+really preempt a task in the middle of
+ 
+
+00:02:14.000 --> 00:02:15.670 align:start position:0%
+really preempt a task in the middle of
+printing<00:02:14.400><c> a</c><00:02:14.560><c> page</c>
+
+00:02:15.670 --> 00:02:15.680 align:start position:0%
+printing a page
+ 
+
+00:02:15.680 --> 00:02:17.430 align:start position:0%
+printing a page
+see<00:02:15.840><c> either</c><00:02:16.160><c> it</c><00:02:16.239><c> will</c><00:02:16.400><c> not</c><00:02:16.640><c> print</c><00:02:16.959><c> a</c><00:02:17.040><c> page</c><00:02:17.280><c> or</c>
+
+00:02:17.430 --> 00:02:17.440 align:start position:0%
+see either it will not print a page or
+ 
+
+00:02:17.440 --> 00:02:19.270 align:start position:0%
+see either it will not print a page or
+it<00:02:17.599><c> will</c><00:02:17.680><c> fill</c><00:02:17.920><c> the</c><00:02:18.239><c> or</c><00:02:18.560><c> it</c><00:02:18.720><c> will</c><00:02:18.879><c> print</c><00:02:19.120><c> the</c>
+
+00:02:19.270 --> 00:02:19.280 align:start position:0%
+it will fill the or it will print the
+ 
+
+00:02:19.280 --> 00:02:21.430 align:start position:0%
+it will fill the or it will print the
+complete<00:02:19.680><c> page</c>
+
+00:02:21.430 --> 00:02:21.440 align:start position:0%
+complete page
+ 
+
+00:02:21.440 --> 00:02:23.589 align:start position:0%
+complete page
+so<00:02:21.680><c> you</c><00:02:21.840><c> know</c><00:02:22.400><c> preempting</c><00:02:23.040><c> a</c><00:02:23.120><c> task</c><00:02:23.520><c> and</c>
+
+00:02:23.589 --> 00:02:23.599 align:start position:0%
+so you know preempting a task and
+ 
+
+00:02:23.599 --> 00:02:25.670 align:start position:0%
+so you know preempting a task and
+restoring<00:02:24.160><c> it</c><00:02:24.319><c> later</c><00:02:24.640><c> may</c><00:02:24.800><c> not</c><00:02:25.040><c> be</c><00:02:25.200><c> possible</c>
+
+00:02:25.670 --> 00:02:25.680 align:start position:0%
+restoring it later may not be possible
+ 
+
+00:02:25.680 --> 00:02:29.510 align:start position:0%
+restoring it later may not be possible
+with<00:02:25.840><c> many</c><00:02:26.080><c> kinds</c><00:02:26.400><c> of</c><00:02:26.560><c> devices</c>
+
+00:02:29.510 --> 00:02:29.520 align:start position:0%
+ 
+ 
+
+00:02:29.520 --> 00:02:30.390 align:start position:0%
+ 
+so
+
+00:02:30.390 --> 00:02:30.400 align:start position:0%
+so
+ 
+
+00:02:30.400 --> 00:02:32.710 align:start position:0%
+so
+any<00:02:30.720><c> piece</c><00:02:31.040><c> of</c><00:02:31.200><c> code</c><00:02:31.519><c> in</c><00:02:31.599><c> which</c><00:02:31.920><c> a</c><00:02:32.080><c> shared</c><00:02:32.560><c> and</c>
+
+00:02:32.710 --> 00:02:32.720 align:start position:0%
+any piece of code in which a shared and
+ 
+
+00:02:32.720 --> 00:02:35.830 align:start position:0%
+any piece of code in which a shared and
+non-preemptable<00:02:33.680><c> resource</c><00:02:34.160><c> is</c><00:02:34.480><c> accessed</c>
+
+00:02:35.830 --> 00:02:35.840 align:start position:0%
+non-preemptable resource is accessed
+ 
+
+00:02:35.840 --> 00:02:37.990 align:start position:0%
+non-preemptable resource is accessed
+is<00:02:36.080><c> known</c><00:02:36.400><c> as</c><00:02:36.560><c> a</c><00:02:36.640><c> critical</c><00:02:37.040><c> section</c><00:02:37.440><c> in</c><00:02:37.519><c> the</c><00:02:37.680><c> os</c>
+
+00:02:37.990 --> 00:02:38.000 align:start position:0%
+is known as a critical section in the os
+ 
+
+00:02:38.000 --> 00:02:39.750 align:start position:0%
+is known as a critical section in the os
+literature<00:02:38.560><c> in</c><00:02:38.640><c> the</c><00:02:38.800><c> sense</c><00:02:39.120><c> that</c><00:02:39.360><c> we</c><00:02:39.519><c> come</c>
+
+00:02:39.750 --> 00:02:39.760 align:start position:0%
+literature in the sense that we come
+ 
+
+00:02:39.760 --> 00:02:41.830 align:start position:0%
+literature in the sense that we come
+here
+
+00:02:41.830 --> 00:02:41.840 align:start position:0%
+here
+ 
+
+00:02:41.840 --> 00:02:43.830 align:start position:0%
+here
+we<00:02:42.080><c> execute</c><00:02:42.560><c> the</c><00:02:42.720><c> entire</c><00:02:43.040><c> critical</c><00:02:43.519><c> section</c>
+
+00:02:43.830 --> 00:02:43.840 align:start position:0%
+we execute the entire critical section
+ 
+
+00:02:43.840 --> 00:02:45.910 align:start position:0%
+we execute the entire critical section
+known<00:02:44.160><c> as</c><00:02:44.239><c> the</c><00:02:44.400><c> cs</c><00:02:44.800><c> and</c><00:02:44.879><c> then</c><00:02:45.040><c> we</c><00:02:45.200><c> exit</c><00:02:45.599><c> then</c><00:02:45.760><c> we</c>
+
+00:02:45.910 --> 00:02:45.920 align:start position:0%
+known as the cs and then we exit then we
+ 
+
+00:02:45.920 --> 00:02:47.190 align:start position:0%
+known as the cs and then we exit then we
+exit<00:02:46.319><c> it</c>
+
+00:02:47.190 --> 00:02:47.200 align:start position:0%
+exit it
+ 
+
+00:02:47.200 --> 00:02:49.990 align:start position:0%
+exit it
+so<00:02:47.440><c> no</c><00:02:47.760><c> program</c><00:02:48.720><c> would</c><00:02:48.959><c> actually</c><00:02:49.440><c> exit</c><00:02:49.840><c> the</c>
+
+00:02:49.990 --> 00:02:50.000 align:start position:0%
+so no program would actually exit the
+ 
+
+00:02:50.000 --> 00:02:51.830 align:start position:0%
+so no program would actually exit the
+critical<00:02:50.480><c> section</c>
+
+00:02:51.830 --> 00:02:51.840 align:start position:0%
+critical section
+ 
+
+00:02:51.840 --> 00:02:53.430 align:start position:0%
+critical section
+in<00:02:52.000><c> the</c><00:02:52.160><c> middle</c><00:02:52.480><c> and</c><00:02:52.640><c> you</c><00:02:52.720><c> know</c><00:02:52.879><c> resume</c><00:02:53.200><c> that</c>
+
+00:02:53.430 --> 00:02:53.440 align:start position:0%
+in the middle and you know resume that
+ 
+
+00:02:53.440 --> 00:02:55.430 align:start position:0%
+in the middle and you know resume that
+later<00:02:53.840><c> this</c><00:02:54.080><c> is</c>
+
+00:02:55.430 --> 00:02:55.440 align:start position:0%
+later this is
+ 
+
+00:02:55.440 --> 00:02:57.110 align:start position:0%
+later this is
+typically<00:02:56.000><c> something</c><00:02:56.400><c> that</c><00:02:56.560><c> we</c><00:02:56.720><c> like</c><00:02:56.959><c> to</c>
+
+00:02:57.110 --> 00:02:57.120 align:start position:0%
+typically something that we like to
+ 
+
+00:02:57.120 --> 00:02:59.350 align:start position:0%
+typically something that we like to
+avoid<00:02:58.080><c> even</c><00:02:58.319><c> though</c><00:02:58.480><c> you</c><00:02:58.640><c> know</c>
+
+00:02:59.350 --> 00:02:59.360 align:start position:0%
+avoid even though you know
+ 
+
+00:02:59.360 --> 00:03:01.509 align:start position:0%
+avoid even though you know
+sometimes<00:02:59.840><c> we</c><00:03:00.080><c> make</c><00:03:00.319><c> an</c><00:03:00.480><c> exception</c>
+
+00:03:01.509 --> 00:03:01.519 align:start position:0%
+sometimes we make an exception
+ 
+
+00:03:01.519 --> 00:03:03.190 align:start position:0%
+sometimes we make an exception
+but<00:03:01.680><c> the</c><00:03:01.840><c> main</c><00:03:02.159><c> idea</c><00:03:02.480><c> is</c><00:03:02.560><c> that</c><00:03:02.720><c> the</c><00:03:02.800><c> critical</c>
+
+00:03:03.190 --> 00:03:03.200 align:start position:0%
+but the main idea is that the critical
+ 
+
+00:03:03.200 --> 00:03:05.030 align:start position:0%
+but the main idea is that the critical
+section<00:03:03.599><c> is</c><00:03:03.840><c> where</c><00:03:04.080><c> you</c><00:03:04.159><c> know</c><00:03:04.319><c> one</c><00:03:04.640><c> thread</c><00:03:04.959><c> is</c>
+
+00:03:05.030 --> 00:03:05.040 align:start position:0%
+section is where you know one thread is
+ 
+
+00:03:05.040 --> 00:03:07.270 align:start position:0%
+section is where you know one thread is
+supposed<00:03:05.360><c> to</c><00:03:05.519><c> be</c><00:03:05.680><c> there</c><00:03:06.400><c> and</c><00:03:06.640><c> it</c><00:03:06.800><c> is</c><00:03:06.959><c> supposed</c>
+
+00:03:07.270 --> 00:03:07.280 align:start position:0%
+supposed to be there and it is supposed
+ 
+
+00:03:07.280 --> 00:03:09.830 align:start position:0%
+supposed to be there and it is supposed
+to<00:03:07.519><c> finish</c><00:03:07.840><c> the</c><00:03:08.000><c> execution</c>
+
+00:03:09.830 --> 00:03:09.840 align:start position:0%
+to finish the execution
+ 
+
+00:03:09.840 --> 00:03:11.030 align:start position:0%
+to finish the execution
+you<00:03:10.000><c> know</c>
+
+00:03:11.030 --> 00:03:11.040 align:start position:0%
+you know
+ 
+
+00:03:11.040 --> 00:03:14.949 align:start position:0%
+you know
+preferably<00:03:11.680><c> in</c><00:03:11.760><c> one</c><00:03:12.000><c> go</c>
+
+00:03:14.949 --> 00:03:14.959 align:start position:0%
+ 
+ 
+
+00:03:14.959 --> 00:03:17.509 align:start position:0%
+ 
+so<00:03:15.120><c> in</c><00:03:15.280><c> the</c><00:03:15.440><c> critical</c><00:03:15.920><c> section</c><00:03:16.480><c> execution</c>
+
+00:03:17.509 --> 00:03:17.519 align:start position:0%
+so in the critical section execution
+ 
+
+00:03:17.519 --> 00:03:19.830 align:start position:0%
+so in the critical section execution
+traditional<00:03:18.239><c> operating</c><00:03:18.720><c> solutions</c>
+
+00:03:19.830 --> 00:03:19.840 align:start position:0%
+traditional operating solutions
+ 
+
+00:03:19.840 --> 00:03:21.750 align:start position:0%
+traditional operating solutions
+operating<00:03:20.319><c> system</c><00:03:20.720><c> solution</c><00:03:21.120><c> to</c><00:03:21.280><c> execute</c><00:03:21.680><c> a</c>
+
+00:03:21.750 --> 00:03:21.760 align:start position:0%
+operating system solution to execute a
+ 
+
+00:03:21.760 --> 00:03:24.470 align:start position:0%
+operating system solution to execute a
+critical<00:03:22.159><c> section</c><00:03:22.560><c> is</c><00:03:22.640><c> like</c><00:03:22.879><c> this</c>
+
+00:03:24.470 --> 00:03:24.480 align:start position:0%
+critical section is like this
+ 
+
+00:03:24.480 --> 00:03:26.229 align:start position:0%
+critical section is like this
+that<00:03:24.640><c> we</c><00:03:24.799><c> use</c><00:03:25.040><c> semaphores</c><00:03:25.519><c> so</c><00:03:25.680><c> we</c><00:03:25.760><c> use</c><00:03:25.920><c> locks</c>
+
+00:03:26.229 --> 00:03:26.239 align:start position:0%
+that we use semaphores so we use locks
+ 
+
+00:03:26.239 --> 00:03:27.990 align:start position:0%
+that we use semaphores so we use locks
+and<00:03:26.400><c> semaphores</c><00:03:27.040><c> of</c><00:03:27.120><c> course</c><00:03:27.280><c> semaphores</c><00:03:27.840><c> are</c>
+
+00:03:27.990 --> 00:03:28.000 align:start position:0%
+and semaphores of course semaphores are
+ 
+
+00:03:28.000 --> 00:03:30.550 align:start position:0%
+and semaphores of course semaphores are
+generalizations<00:03:28.799><c> of</c><00:03:28.879><c> locks</c>
+
+00:03:30.550 --> 00:03:30.560 align:start position:0%
+generalizations of locks
+ 
+
+00:03:30.560 --> 00:03:33.990 align:start position:0%
+generalizations of locks
+so<00:03:30.720><c> we</c><00:03:30.879><c> either</c><00:03:31.280><c> use</c><00:03:31.519><c> locks</c><00:03:31.840><c> or</c><00:03:31.920><c> semi-force</c>
+
+00:03:33.990 --> 00:03:34.000 align:start position:0%
+so we either use locks or semi-force
+ 
+
+00:03:34.000 --> 00:03:35.589 align:start position:0%
+so we either use locks or semi-force
+where<00:03:34.239><c> the</c><00:03:34.400><c> idea</c><00:03:34.720><c> is</c>
+
+00:03:35.589 --> 00:03:35.599 align:start position:0%
+where the idea is
+ 
+
+00:03:35.599 --> 00:03:37.670 align:start position:0%
+where the idea is
+that<00:03:35.840><c> if</c><00:03:36.000><c> i've</c><00:03:36.159><c> acquired</c><00:03:36.640><c> a</c><00:03:36.720><c> locker</c><00:03:37.040><c> semaphore</c>
+
+00:03:37.670 --> 00:03:37.680 align:start position:0%
+that if i've acquired a locker semaphore
+ 
+
+00:03:37.680 --> 00:03:39.350 align:start position:0%
+that if i've acquired a locker semaphore
+i<00:03:37.760><c> get</c><00:03:38.000><c> the</c><00:03:38.159><c> permission</c><00:03:38.640><c> to</c><00:03:38.799><c> execute</c><00:03:39.200><c> the</c>
+
+00:03:39.350 --> 00:03:39.360 align:start position:0%
+i get the permission to execute the
+ 
+
+00:03:39.360 --> 00:03:41.589 align:start position:0%
+i get the permission to execute the
+critical<00:03:39.840><c> section</c><00:03:40.720><c> and</c><00:03:40.959><c> of</c><00:03:41.040><c> course</c><00:03:41.280><c> at</c><00:03:41.440><c> the</c>
+
+00:03:41.589 --> 00:03:41.599 align:start position:0%
+critical section and of course at the
+ 
+
+00:03:41.599 --> 00:03:43.030 align:start position:0%
+critical section and of course at the
+end<00:03:41.840><c> i</c><00:03:42.080><c> exit</c>
+
+00:03:43.030 --> 00:03:43.040 align:start position:0%
+end i exit
+ 
+
+00:03:43.040 --> 00:03:43.830 align:start position:0%
+end i exit
+right
+
+00:03:43.830 --> 00:03:43.840 align:start position:0%
+right
+ 
+
+00:03:43.840 --> 00:03:46.149 align:start position:0%
+right
+so<00:03:44.000><c> this</c><00:03:44.239><c> is</c><00:03:44.400><c> the</c><00:03:44.560><c> standard</c><00:03:45.519><c> way</c><00:03:45.760><c> in</c><00:03:45.920><c> which</c>
+
+00:03:46.149 --> 00:03:46.159 align:start position:0%
+so this is the standard way in which
+ 
+
+00:03:46.159 --> 00:03:47.589 align:start position:0%
+so this is the standard way in which
+this<00:03:46.400><c> is</c><00:03:46.560><c> done</c>
+
+00:03:47.589 --> 00:03:47.599 align:start position:0%
+this is done
+ 
+
+00:03:47.599 --> 00:03:50.390 align:start position:0%
+this is done
+however<00:03:48.159><c> in</c><00:03:48.480><c> real</c><00:03:48.799><c> time</c><00:03:49.120><c> systems</c><00:03:49.599><c> work</c><00:03:50.159><c> this</c>
+
+00:03:50.390 --> 00:03:50.400 align:start position:0%
+however in real time systems work this
+ 
+
+00:03:50.400 --> 00:03:53.030 align:start position:0%
+however in real time systems work this
+solution<00:03:51.040><c> does</c><00:03:51.200><c> not</c><00:03:51.519><c> work</c><00:03:51.760><c> very</c><00:03:52.080><c> well</c>
+
+00:03:53.030 --> 00:03:53.040 align:start position:0%
+solution does not work very well
+ 
+
+00:03:53.040 --> 00:03:55.670 align:start position:0%
+solution does not work very well
+and<00:03:53.439><c> it</c><00:03:53.680><c> results</c><00:03:54.400><c> in</c><00:03:54.799><c> what</c><00:03:55.040><c> is</c><00:03:55.200><c> known</c><00:03:55.439><c> as</c>
+
+00:03:55.670 --> 00:03:55.680 align:start position:0%
+and it results in what is known as
+ 
+
+00:03:55.680 --> 00:03:57.589 align:start position:0%
+and it results in what is known as
+priority<00:03:56.239><c> inversion</c><00:03:56.799><c> and</c><00:03:57.040><c> unbounded</c>
+
+00:03:57.589 --> 00:03:57.599 align:start position:0%
+priority inversion and unbounded
+ 
+
+00:03:57.599 --> 00:04:00.710 align:start position:0%
+priority inversion and unbounded
+priority<00:03:58.159><c> inversion</c><00:03:58.720><c> it</c><00:03:58.959><c> basically</c><00:03:59.519><c> means</c>
+
+00:04:00.710 --> 00:04:00.720 align:start position:0%
+priority inversion it basically means
+ 
+
+00:04:00.720 --> 00:04:03.429 align:start position:0%
+priority inversion it basically means
+that<00:04:01.120><c> low</c><00:04:01.360><c> priority</c><00:04:02.000><c> tasks</c><00:04:02.640><c> get</c>
+
+00:04:03.429 --> 00:04:03.439 align:start position:0%
+that low priority tasks get
+ 
+
+00:04:03.439 --> 00:04:06.470 align:start position:0%
+that low priority tasks get
+to<00:04:03.680><c> execute</c><00:04:04.319><c> get</c><00:04:04.560><c> to</c><00:04:04.720><c> run</c><00:04:05.040><c> on</c><00:04:05.200><c> the</c><00:04:05.360><c> cpu</c>
+
+00:04:06.470 --> 00:04:06.480 align:start position:0%
+to execute get to run on the cpu
+ 
+
+00:04:06.480 --> 00:04:10.229 align:start position:0%
+to execute get to run on the cpu
+and<00:04:06.720><c> high</c><00:04:07.040><c> priority</c><00:04:07.840><c> tasks</c><00:04:08.720><c> right</c><00:04:09.280><c> they</c>
+
+00:04:10.229 --> 00:04:10.239 align:start position:0%
+and high priority tasks right they
+ 
+
+00:04:10.239 --> 00:04:12.390 align:start position:0%
+and high priority tasks right they
+don't<00:04:10.560><c> get</c><00:04:10.720><c> to</c><00:04:10.879><c> execute</c><00:04:11.439><c> on</c><00:04:11.519><c> the</c><00:04:11.680><c> cpu</c><00:04:12.159><c> because</c>
+
+00:04:12.390 --> 00:04:12.400 align:start position:0%
+don't get to execute on the cpu because
+ 
+
+00:04:12.400 --> 00:04:14.229 align:start position:0%
+don't get to execute on the cpu because
+they<00:04:12.560><c> are</c><00:04:12.720><c> waiting</c><00:04:13.040><c> for</c><00:04:13.200><c> some</c><00:04:13.439><c> resource</c><00:04:14.000><c> which</c>
+
+00:04:14.229 --> 00:04:14.239 align:start position:0%
+they are waiting for some resource which
+ 
+
+00:04:14.239 --> 00:04:15.990 align:start position:0%
+they are waiting for some resource which
+is<00:04:14.480><c> not</c>
+
+00:04:15.990 --> 00:04:16.000 align:start position:0%
+is not
+ 
+
+00:04:16.000 --> 00:04:18.310 align:start position:0%
+is not
+becoming<00:04:16.479><c> free</c><00:04:17.120><c> right</c><00:04:17.359><c> so</c><00:04:17.519><c> this</c><00:04:17.759><c> is</c><00:04:17.919><c> known</c><00:04:18.160><c> as</c>
+
+00:04:18.310 --> 00:04:18.320 align:start position:0%
+becoming free right so this is known as
+ 
+
+00:04:18.320 --> 00:04:19.909 align:start position:0%
+becoming free right so this is known as
+priority<00:04:18.720><c> inversion</c><00:04:19.120><c> we'll</c><00:04:19.359><c> take</c><00:04:19.519><c> a</c><00:04:19.600><c> look</c><00:04:19.759><c> at</c>
+
+00:04:19.909 --> 00:04:19.919 align:start position:0%
+priority inversion we'll take a look at
+ 
+
+00:04:19.919 --> 00:04:21.110 align:start position:0%
+priority inversion we'll take a look at
+this<00:04:20.160><c> later</c>
+
+00:04:21.110 --> 00:04:21.120 align:start position:0%
+this later
+ 
+
+00:04:21.120 --> 00:04:23.590 align:start position:0%
+this later
+but<00:04:21.280><c> this</c><00:04:21.519><c> is</c><00:04:21.600><c> the</c><00:04:21.759><c> broad</c><00:04:22.160><c> idea</c><00:04:22.720><c> if</c><00:04:22.880><c> we</c><00:04:23.120><c> use</c><00:04:23.360><c> a</c>
+
+00:04:23.590 --> 00:04:23.600 align:start position:0%
+but this is the broad idea if we use a
+ 
+
+00:04:23.600 --> 00:04:25.350 align:start position:0%
+but this is the broad idea if we use a
+similar<00:04:24.160><c> solution</c>
+
+00:04:25.350 --> 00:04:25.360 align:start position:0%
+similar solution
+ 
+
+00:04:25.360 --> 00:04:27.909 align:start position:0%
+similar solution
+as<00:04:25.759><c> is</c><00:04:25.919><c> used</c><00:04:26.240><c> in</c><00:04:26.320><c> a</c><00:04:26.400><c> regular</c><00:04:26.880><c> operating</c><00:04:27.440><c> system</c>
+
+00:04:27.909 --> 00:04:27.919 align:start position:0%
+as is used in a regular operating system
+ 
+
+00:04:27.919 --> 00:04:31.909 align:start position:0%
+as is used in a regular operating system
+in<00:04:28.080><c> a</c><00:04:28.160><c> real-time</c><00:04:28.639><c> operating</c><00:04:29.199><c> system</c>
+
+00:04:31.909 --> 00:04:31.919 align:start position:0%
+ 
+ 
+
+00:04:31.919 --> 00:04:34.710 align:start position:0%
+ 
+so<00:04:32.160><c> what</c><00:04:32.400><c> is</c><00:04:32.560><c> priority</c><00:04:33.120><c> inversion</c><00:04:34.080><c> so</c><00:04:34.320><c> assume</c>
+
+00:04:34.710 --> 00:04:34.720 align:start position:0%
+so what is priority inversion so assume
+ 
+
+00:04:34.720 --> 00:04:37.030 align:start position:0%
+so what is priority inversion so assume
+a<00:04:34.880><c> task</c><00:04:35.199><c> is</c><00:04:35.440><c> executing</c><00:04:36.000><c> a</c><00:04:36.080><c> critical</c><00:04:36.560><c> section</c>
+
+00:04:37.030 --> 00:04:37.040 align:start position:0%
+a task is executing a critical section
+ 
+
+00:04:37.040 --> 00:04:40.469 align:start position:0%
+a task is executing a critical section
+it<00:04:37.199><c> cannot</c><00:04:37.520><c> be</c><00:04:37.680><c> preempted</c>
+
+00:04:40.469 --> 00:04:40.479 align:start position:0%
+ 
+ 
+
+00:04:40.479 --> 00:04:42.870 align:start position:0%
+ 
+so<00:04:40.720><c> what</c><00:04:40.960><c> happens</c><00:04:41.520><c> is</c><00:04:41.600><c> that</c><00:04:41.840><c> if</c><00:04:42.000><c> a</c><00:04:42.080><c> task</c><00:04:42.560><c> is</c><00:04:42.720><c> in</c>
+
+00:04:42.870 --> 00:04:42.880 align:start position:0%
+so what happens is that if a task is in
+ 
+
+00:04:42.880 --> 00:04:44.950 align:start position:0%
+so what happens is that if a task is in
+a<00:04:42.960><c> critical</c><00:04:43.440><c> section</c>
+
+00:04:44.950 --> 00:04:44.960 align:start position:0%
+a critical section
+ 
+
+00:04:44.960 --> 00:04:47.430 align:start position:0%
+a critical section
+then<00:04:45.360><c> a</c><00:04:45.520><c> higher</c><00:04:45.919><c> priority</c><00:04:46.479><c> task</c><00:04:46.880><c> will</c><00:04:47.120><c> keep</c>
+
+00:04:47.430 --> 00:04:47.440 align:start position:0%
+then a higher priority task will keep
+ 
+
+00:04:47.440 --> 00:04:48.550 align:start position:0%
+then a higher priority task will keep
+waiting
+
+00:04:48.550 --> 00:04:48.560 align:start position:0%
+waiting
+ 
+
+00:04:48.560 --> 00:04:50.150 align:start position:0%
+waiting
+because<00:04:48.880><c> the</c><00:04:49.040><c> reason</c><00:04:49.440><c> is</c><00:04:49.600><c> that</c><00:04:49.759><c> the</c><00:04:49.919><c> low</c>
+
+00:04:50.150 --> 00:04:50.160 align:start position:0%
+because the reason is that the low
+ 
+
+00:04:50.160 --> 00:04:52.469 align:start position:0%
+because the reason is that the low
+priority<00:04:50.720><c> task</c><00:04:51.120><c> tl</c>
+
+00:04:52.469 --> 00:04:52.479 align:start position:0%
+priority task tl
+ 
+
+00:04:52.479 --> 00:04:54.550 align:start position:0%
+priority task tl
+is<00:04:52.720><c> in</c><00:04:52.880><c> the</c><00:04:53.040><c> critical</c><00:04:53.520><c> section</c><00:04:53.919><c> it</c><00:04:54.000><c> cannot</c><00:04:54.400><c> be</c>
+
+00:04:54.550 --> 00:04:54.560 align:start position:0%
+is in the critical section it cannot be
+ 
+
+00:04:54.560 --> 00:04:57.189 align:start position:0%
+is in the critical section it cannot be
+evicted<00:04:55.199><c> or</c><00:04:55.520><c> from</c><00:04:55.759><c> the</c><00:04:55.919><c> cpu</c><00:04:56.400><c> or</c><00:04:56.560><c> preempted</c><00:04:57.120><c> at</c>
+
+00:04:57.189 --> 00:04:57.199 align:start position:0%
+evicted or from the cpu or preempted at
+ 
+
+00:04:57.199 --> 00:04:58.710 align:start position:0%
+evicted or from the cpu or preempted at
+this<00:04:57.360><c> point</c><00:04:57.680><c> of</c><00:04:57.840><c> time</c>
+
+00:04:58.710 --> 00:04:58.720 align:start position:0%
+this point of time
+ 
+
+00:04:58.720 --> 00:05:00.870 align:start position:0%
+this point of time
+which<00:04:58.960><c> means</c><00:04:59.199><c> that</c><00:04:59.520><c> in</c><00:04:59.680><c> the</c><00:04:59.840><c> waiting</c><00:05:00.240><c> queue</c><00:05:00.560><c> we</c>
+
+00:05:00.870 --> 00:05:00.880 align:start position:0%
+which means that in the waiting queue we
+ 
+
+00:05:00.880 --> 00:05:03.270 align:start position:0%
+which means that in the waiting queue we
+have<00:05:01.360><c> high</c><00:05:01.600><c> priority</c><00:05:02.240><c> tasks</c>
+
+00:05:03.270 --> 00:05:03.280 align:start position:0%
+have high priority tasks
+ 
+
+00:05:03.280 --> 00:05:05.110 align:start position:0%
+have high priority tasks
+which<00:05:03.520><c> are</c><00:05:03.680><c> waiting</c><00:05:04.000><c> for</c><00:05:04.240><c> the</c><00:05:04.320><c> low</c><00:05:04.560><c> priority</c>
+
+00:05:05.110 --> 00:05:05.120 align:start position:0%
+which are waiting for the low priority
+ 
+
+00:05:05.120 --> 00:05:07.990 align:start position:0%
+which are waiting for the low priority
+task<00:05:05.440><c> to</c><00:05:05.600><c> finish</c><00:05:05.919><c> its</c><00:05:06.160><c> execution</c>
+
+00:05:07.990 --> 00:05:08.000 align:start position:0%
+task to finish its execution
+ 
+
+00:05:08.000 --> 00:05:09.990 align:start position:0%
+task to finish its execution
+so<00:05:08.240><c> one</c><00:05:08.400><c> thing</c><00:05:08.560><c> you</c><00:05:08.720><c> need</c><00:05:08.880><c> to</c><00:05:09.039><c> keep</c><00:05:09.280><c> in</c><00:05:09.440><c> mind</c><00:05:09.840><c> is</c>
+
+00:05:09.990 --> 00:05:10.000 align:start position:0%
+so one thing you need to keep in mind is
+ 
+
+00:05:10.000 --> 00:05:13.270 align:start position:0%
+so one thing you need to keep in mind is
+that<00:05:10.240><c> something</c><00:05:10.720><c> similar</c><00:05:11.280><c> was</c><00:05:11.600><c> not</c><00:05:12.000><c> happening</c>
+
+00:05:13.270 --> 00:05:13.280 align:start position:0%
+that something similar was not happening
+ 
+
+00:05:13.280 --> 00:05:16.790 align:start position:0%
+that something similar was not happening
+in<00:05:13.440><c> the</c><00:05:13.600><c> case</c><00:05:14.000><c> of</c><00:05:14.560><c> rms</c><00:05:15.120><c> or</c><00:05:15.280><c> edf</c><00:05:16.240><c> the</c><00:05:16.400><c> reason</c>
+
+00:05:16.790 --> 00:05:16.800 align:start position:0%
+in the case of rms or edf the reason
+ 
+
+00:05:16.800 --> 00:05:17.909 align:start position:0%
+in the case of rms or edf the reason
+being<00:05:17.120><c> that</c>
+
+00:05:17.909 --> 00:05:17.919 align:start position:0%
+being that
+ 
+
+00:05:17.919 --> 00:05:20.310 align:start position:0%
+being that
+whenever<00:05:18.320><c> a</c><00:05:18.400><c> high</c><00:05:18.639><c> priority</c><00:05:19.199><c> task</c><00:05:19.600><c> arrived</c><00:05:20.160><c> we</c>
+
+00:05:20.310 --> 00:05:20.320 align:start position:0%
+whenever a high priority task arrived we
+ 
+
+00:05:20.320 --> 00:05:22.070 align:start position:0%
+whenever a high priority task arrived we
+could<00:05:20.560><c> immediately</c><00:05:21.280><c> preempt</c><00:05:21.759><c> the</c><00:05:21.840><c> low</c>
+
+00:05:22.070 --> 00:05:22.080 align:start position:0%
+could immediately preempt the low
+ 
+
+00:05:22.080 --> 00:05:23.830 align:start position:0%
+could immediately preempt the low
+priority<00:05:22.639><c> processes</c>
+
+00:05:23.830 --> 00:05:23.840 align:start position:0%
+priority processes
+ 
+
+00:05:23.840 --> 00:05:26.950 align:start position:0%
+priority processes
+and<00:05:24.160><c> because</c><00:05:24.560><c> of</c><00:05:24.720><c> that</c>
+
+00:05:26.950 --> 00:05:26.960 align:start position:0%
+and because of that
+ 
+
+00:05:26.960 --> 00:05:29.110 align:start position:0%
+and because of that
+we<00:05:27.199><c> were</c><00:05:27.520><c> able</c><00:05:28.080><c> to</c>
+
+00:05:29.110 --> 00:05:29.120 align:start position:0%
+we were able to
+ 
+
+00:05:29.120 --> 00:05:31.350 align:start position:0%
+we were able to
+avoid<00:05:29.600><c> priority</c><00:05:30.160><c> inversion</c>
+
+00:05:31.350 --> 00:05:31.360 align:start position:0%
+avoid priority inversion
+ 
+
+00:05:31.360 --> 00:05:33.270 align:start position:0%
+avoid priority inversion
+but<00:05:31.600><c> now</c><00:05:31.840><c> the</c><00:05:32.080><c> fact</c><00:05:32.400><c> that</c><00:05:32.560><c> this</c><00:05:32.800><c> critical</c>
+
+00:05:33.270 --> 00:05:33.280 align:start position:0%
+but now the fact that this critical
+ 
+
+00:05:33.280 --> 00:05:35.749 align:start position:0%
+but now the fact that this critical
+section<00:05:33.680><c> has</c><00:05:33.919><c> come</c><00:05:34.240><c> in</c>
+
+00:05:35.749 --> 00:05:35.759 align:start position:0%
+section has come in
+ 
+
+00:05:35.759 --> 00:05:37.830 align:start position:0%
+section has come in
+this<00:05:36.000><c> is</c><00:05:36.240><c> what</c><00:05:36.479><c> is</c><00:05:36.720><c> precisely</c><00:05:37.360><c> causing</c><00:05:37.600><c> the</c>
+
+00:05:37.830 --> 00:05:37.840 align:start position:0%
+this is what is precisely causing the
+ 
+
+00:05:37.840 --> 00:05:38.950 align:start position:0%
+this is what is precisely causing the
+problem
+
+00:05:38.950 --> 00:05:38.960 align:start position:0%
+problem
+ 
+
+00:05:38.960 --> 00:05:41.830 align:start position:0%
+problem
+in<00:05:39.120><c> the</c><00:05:39.280><c> sense</c><00:05:39.600><c> this</c><00:05:39.840><c> is</c><00:05:40.000><c> what</c><00:05:40.240><c> is</c>
+
+00:05:41.830 --> 00:05:41.840 align:start position:0%
+in the sense this is what is
+ 
+
+00:05:41.840 --> 00:05:44.310 align:start position:0%
+in the sense this is what is
+keeping<00:05:42.320><c> high</c><00:05:42.560><c> priority</c><00:05:43.199><c> tasks</c><00:05:44.080><c> in</c><00:05:44.160><c> the</c>
+
+00:05:44.310 --> 00:05:44.320 align:start position:0%
+keeping high priority tasks in the
+ 
+
+00:05:44.320 --> 00:05:45.909 align:start position:0%
+keeping high priority tasks in the
+waiting<00:05:44.720><c> queue</c><00:05:45.120><c> even</c><00:05:45.360><c> though</c><00:05:45.520><c> they</c><00:05:45.680><c> can</c>
+
+00:05:45.909 --> 00:05:45.919 align:start position:0%
+waiting queue even though they can
+ 
+
+00:05:45.919 --> 00:05:47.029 align:start position:0%
+waiting queue even though they can
+execute
+
+00:05:47.029 --> 00:05:47.039 align:start position:0%
+execute
+ 
+
+00:05:47.039 --> 00:05:49.830 align:start position:0%
+execute
+primarily<00:05:47.680><c> because</c><00:05:48.080><c> something</c><00:05:48.560><c> of</c>
+
+00:05:49.830 --> 00:05:49.840 align:start position:0%
+primarily because something of
+ 
+
+00:05:49.840 --> 00:05:51.749 align:start position:0%
+primarily because something of
+you<00:05:50.000><c> know</c><00:05:50.160><c> a</c><00:05:50.240><c> non-preemptable</c><00:05:51.039><c> resource</c><00:05:51.600><c> or</c>
+
+00:05:51.749 --> 00:05:51.759 align:start position:0%
+you know a non-preemptable resource or
+ 
+
+00:05:51.759 --> 00:05:53.670 align:start position:0%
+you know a non-preemptable resource or
+device<00:05:52.160><c> or</c><00:05:52.320><c> piece</c><00:05:52.560><c> of</c><00:05:52.800><c> code</c>
+
+00:05:53.670 --> 00:05:53.680 align:start position:0%
+device or piece of code
+ 
+
+00:05:53.680 --> 00:05:55.430 align:start position:0%
+device or piece of code
+is<00:05:53.919><c> being</c><00:05:54.160><c> accessed</c><00:05:54.560><c> within</c><00:05:54.880><c> a</c><00:05:54.960><c> critical</c>
+
+00:05:55.430 --> 00:05:55.440 align:start position:0%
+is being accessed within a critical
+ 
+
+00:05:55.440 --> 00:05:57.749 align:start position:0%
+is being accessed within a critical
+section<00:05:55.919><c> and</c><00:05:56.080><c> all</c><00:05:56.240><c> of</c><00:05:56.319><c> them</c><00:05:56.560><c> need</c><00:05:56.720><c> to</c><00:05:56.880><c> wait</c>
+
+00:05:57.749 --> 00:05:57.759 align:start position:0%
+section and all of them need to wait
+ 
+
+00:05:57.759 --> 00:06:00.309 align:start position:0%
+section and all of them need to wait
+for<00:05:57.919><c> the</c><00:05:58.080><c> critical</c><00:05:58.560><c> section</c><00:05:59.199><c> to</c><00:05:59.360><c> finish</c>
+
+00:06:00.309 --> 00:06:00.319 align:start position:0%
+for the critical section to finish
+ 
+
+00:06:00.319 --> 00:06:02.790 align:start position:0%
+for the critical section to finish
+for<00:06:00.479><c> the</c><00:06:00.560><c> low</c><00:06:00.800><c> priority</c><00:06:01.280><c> thread</c><00:06:02.080><c> to</c><00:06:02.240><c> finish</c>
+
+00:06:02.790 --> 00:06:02.800 align:start position:0%
+for the low priority thread to finish
+ 
+
+00:06:02.800 --> 00:06:04.870 align:start position:0%
+for the low priority thread to finish
+executing<00:06:03.360><c> the</c><00:06:03.520><c> critical</c><00:06:04.080><c> section</c><00:06:04.560><c> as</c><00:06:04.720><c> you</c>
+
+00:06:04.870 --> 00:06:04.880 align:start position:0%
+executing the critical section as you
+ 
+
+00:06:04.880 --> 00:06:08.230 align:start position:0%
+executing the critical section as you
+can<00:06:05.039><c> see</c><00:06:05.360><c> over</c><00:06:05.680><c> here</c>
+
+00:06:08.230 --> 00:06:08.240 align:start position:0%
+ 
+ 
+
+00:06:08.240 --> 00:06:10.230 align:start position:0%
+ 
+now<00:06:08.479><c> let</c><00:06:08.720><c> us</c><00:06:09.199><c> look</c><00:06:09.520><c> at</c>
+
+00:06:10.230 --> 00:06:10.240 align:start position:0%
+now let us look at
+ 
+
+00:06:10.240 --> 00:06:13.749 align:start position:0%
+now let us look at
+uh<00:06:10.639><c> look</c><00:06:10.880><c> more</c><00:06:11.199><c> at</c><00:06:11.360><c> priority</c><00:06:11.840><c> inversion</c>
+
+00:06:13.749 --> 00:06:13.759 align:start position:0%
+uh look more at priority inversion
+ 
+
+00:06:13.759 --> 00:06:16.390 align:start position:0%
+uh look more at priority inversion
+so<00:06:14.000><c> when</c><00:06:14.240><c> a</c><00:06:14.319><c> resource</c><00:06:15.360><c> consider</c><00:06:15.840><c> a</c><00:06:15.919><c> resource</c>
+
+00:06:16.390 --> 00:06:16.400 align:start position:0%
+so when a resource consider a resource
+ 
+
+00:06:16.400 --> 00:06:19.350 align:start position:0%
+so when a resource consider a resource
+that<00:06:16.560><c> needs</c><00:06:16.800><c> to</c><00:06:16.960><c> be</c><00:06:17.120><c> shared</c><00:06:17.520><c> in</c><00:06:17.600><c> the</c>
+
+00:06:19.350 --> 00:06:19.360 align:start position:0%
+that needs to be shared in the
+ 
+
+00:06:19.360 --> 00:06:21.830 align:start position:0%
+that needs to be shared in the
+exclusive<00:06:20.000><c> mode</c><00:06:20.560><c> exclusive</c><00:06:21.120><c> mode</c><00:06:21.360><c> basically</c>
+
+00:06:21.830 --> 00:06:21.840 align:start position:0%
+exclusive mode exclusive mode basically
+ 
+
+00:06:21.840 --> 00:06:25.110 align:start position:0%
+exclusive mode exclusive mode basically
+means<00:06:22.080><c> only</c><00:06:22.400><c> one</c><00:06:22.720><c> task</c><00:06:23.120><c> can</c><00:06:23.520><c> own</c><00:06:23.759><c> it</c>
+
+00:06:25.110 --> 00:06:25.120 align:start position:0%
+means only one task can own it
+ 
+
+00:06:25.120 --> 00:06:27.749 align:start position:0%
+means only one task can own it
+so<00:06:25.280><c> it</c><00:06:25.440><c> is</c><00:06:25.600><c> possible</c><00:06:26.080><c> that</c><00:06:26.319><c> a</c><00:06:26.479><c> task</c><00:06:27.360><c> a</c><00:06:27.520><c> high</c>
+
+00:06:27.749 --> 00:06:27.759 align:start position:0%
+so it is possible that a task a high
+ 
+
+00:06:27.759 --> 00:06:29.909 align:start position:0%
+so it is possible that a task a high
+priority<00:06:28.319><c> task</c><00:06:28.639><c> particularly</c>
+
+00:06:29.909 --> 00:06:29.919 align:start position:0%
+priority task particularly
+ 
+
+00:06:29.919 --> 00:06:33.510 align:start position:0%
+priority task particularly
+may<00:06:30.160><c> be</c><00:06:30.319><c> blocked</c><00:06:30.720><c> by</c><00:06:30.960><c> a</c><00:06:31.039><c> lower</c><00:06:31.360><c> priority</c><00:06:31.919><c> task</c>
+
+00:06:33.510 --> 00:06:33.520 align:start position:0%
+may be blocked by a lower priority task
+ 
+
+00:06:33.520 --> 00:06:35.990 align:start position:0%
+may be blocked by a lower priority task
+which<00:06:33.759><c> is</c><00:06:33.919><c> already</c><00:06:34.319><c> holding</c><00:06:34.639><c> the</c><00:06:34.800><c> resource</c>
+
+00:06:35.990 --> 00:06:36.000 align:start position:0%
+which is already holding the resource
+ 
+
+00:06:36.000 --> 00:06:37.670 align:start position:0%
+which is already holding the resource
+so<00:06:36.160><c> what</c><00:06:36.400><c> will</c><00:06:36.560><c> happen</c><00:06:36.880><c> is</c><00:06:37.039><c> because</c><00:06:37.360><c> a</c><00:06:37.440><c> low</c>
+
+00:06:37.670 --> 00:06:37.680 align:start position:0%
+so what will happen is because a low
+ 
+
+00:06:37.680 --> 00:06:39.430 align:start position:0%
+so what will happen is because a low
+priority<00:06:38.160><c> task</c><00:06:38.479><c> is</c><00:06:38.560><c> holding</c><00:06:38.880><c> the</c><00:06:39.039><c> resource</c>
+
+00:06:39.430 --> 00:06:39.440 align:start position:0%
+priority task is holding the resource
+ 
+
+00:06:39.440 --> 00:06:41.350 align:start position:0%
+priority task is holding the resource
+the<00:06:39.520><c> high</c><00:06:39.759><c> priority</c><00:06:40.319><c> task</c><00:06:40.720><c> will</c><00:06:40.960><c> remain</c>
+
+00:06:41.350 --> 00:06:41.360 align:start position:0%
+the high priority task will remain
+ 
+
+00:06:41.360 --> 00:06:42.309 align:start position:0%
+the high priority task will remain
+waiting
+
+00:06:42.309 --> 00:06:42.319 align:start position:0%
+waiting
+ 
+
+00:06:42.319 --> 00:06:44.150 align:start position:0%
+waiting
+this<00:06:42.560><c> is</c><00:06:42.720><c> something</c><00:06:43.120><c> that</c><00:06:43.280><c> we</c><00:06:43.440><c> have</c><00:06:43.680><c> seen</c><00:06:44.080><c> in</c>
+
+00:06:44.150 --> 00:06:44.160 align:start position:0%
+this is something that we have seen in
+ 
+
+00:06:44.160 --> 00:06:47.189 align:start position:0%
+this is something that we have seen in
+the<00:06:44.319><c> previous</c><00:06:44.800><c> slide</c>
+
+00:06:47.189 --> 00:06:47.199 align:start position:0%
+ 
+ 
+
+00:06:47.199 --> 00:06:49.830 align:start position:0%
+ 
+right<00:06:47.840><c> that</c><00:06:48.080><c> the</c><00:06:48.560><c> what</c><00:06:48.800><c> you</c><00:06:48.960><c> see</c><00:06:49.199><c> over</c><00:06:49.440><c> here</c><00:06:49.759><c> in</c>
+
+00:06:49.830 --> 00:06:49.840 align:start position:0%
+right that the what you see over here in
+ 
+
+00:06:49.840 --> 00:06:51.189 align:start position:0%
+right that the what you see over here in
+the<00:06:50.000><c> diagram</c>
+
+00:06:51.189 --> 00:06:51.199 align:start position:0%
+the diagram
+ 
+
+00:06:51.199 --> 00:06:53.350 align:start position:0%
+the diagram
+is<00:06:51.360><c> that</c><00:06:51.520><c> the</c><00:06:51.599><c> high</c><00:06:51.759><c> priority</c><00:06:52.319><c> task</c><00:06:52.639><c> th</c><00:06:53.199><c> is</c>
+
+00:06:53.350 --> 00:06:53.360 align:start position:0%
+is that the high priority task th is
+ 
+
+00:06:53.360 --> 00:06:58.710 align:start position:0%
+is that the high priority task th is
+waiting<00:06:53.759><c> for</c><00:06:53.919><c> the</c><00:06:54.080><c> low</c><00:06:54.319><c> priority</c><00:06:54.880><c> task</c><00:06:55.599><c> tl</c>
+
+00:06:58.710 --> 00:06:58.720 align:start position:0%
+ 
+ 
+
+00:06:58.720 --> 00:07:00.629 align:start position:0%
+ 
+so<00:06:58.960><c> now</c><00:06:59.199><c> let</c><00:06:59.440><c> us</c>
+
+00:07:00.629 --> 00:07:00.639 align:start position:0%
+so now let us
+ 
+
+00:07:00.639 --> 00:07:03.270 align:start position:0%
+so now let us
+define<00:07:01.120><c> another</c><00:07:01.520><c> term</c><00:07:01.840><c> known</c><00:07:02.080><c> as</c><00:07:02.400><c> unbounded</c>
+
+00:07:03.270 --> 00:07:03.280 align:start position:0%
+define another term known as unbounded
+ 
+
+00:07:03.280 --> 00:07:05.029 align:start position:0%
+define another term known as unbounded
+priority<00:07:03.840><c> inversion</c>
+
+00:07:05.029 --> 00:07:05.039 align:start position:0%
+priority inversion
+ 
+
+00:07:05.039 --> 00:07:06.950 align:start position:0%
+priority inversion
+what<00:07:05.280><c> you</c><00:07:05.440><c> just</c><00:07:05.759><c> saw</c><00:07:06.000><c> in</c><00:07:06.080><c> the</c><00:07:06.240><c> previous</c><00:07:06.639><c> slide</c>
+
+00:07:06.950 --> 00:07:06.960 align:start position:0%
+what you just saw in the previous slide
+ 
+
+00:07:06.960 --> 00:07:08.870 align:start position:0%
+what you just saw in the previous slide
+is<00:07:07.120><c> bounded</c><00:07:07.599><c> priority</c><00:07:08.080><c> inversion</c><00:07:08.560><c> but</c><00:07:08.800><c> we</c>
+
+00:07:08.870 --> 00:07:08.880 align:start position:0%
+is bounded priority inversion but we
+ 
+
+00:07:08.880 --> 00:07:10.710 align:start position:0%
+is bounded priority inversion but we
+will<00:07:09.039><c> talk</c><00:07:09.280><c> about</c><00:07:09.599><c> unbounded</c><00:07:10.160><c> priority</c>
+
+00:07:10.710 --> 00:07:10.720 align:start position:0%
+will talk about unbounded priority
+ 
+
+00:07:10.720 --> 00:07:11.990 align:start position:0%
+will talk about unbounded priority
+inversion
+
+00:07:11.990 --> 00:07:12.000 align:start position:0%
+inversion
+ 
+
+00:07:12.000 --> 00:07:14.830 align:start position:0%
+inversion
+so<00:07:12.240><c> consider</c><00:07:12.720><c> the</c><00:07:12.960><c> following</c>
+
+00:07:14.830 --> 00:07:14.840 align:start position:0%
+so consider the following
+ 
+
+00:07:14.840 --> 00:07:17.830 align:start position:0%
+so consider the following
+situation<00:07:15.919><c> a</c><00:07:16.080><c> low</c><00:07:16.319><c> priority</c><00:07:16.880><c> task</c><00:07:17.280><c> is</c><00:07:17.440><c> holding</c>
+
+00:07:17.830 --> 00:07:17.840 align:start position:0%
+situation a low priority task is holding
+ 
+
+00:07:17.840 --> 00:07:20.390 align:start position:0%
+situation a low priority task is holding
+a<00:07:17.919><c> resource</c><00:07:18.400><c> right</c><00:07:18.639><c> so</c><00:07:18.880><c> task</c><00:07:19.280><c> tl</c>
+
+00:07:20.390 --> 00:07:20.400 align:start position:0%
+a resource right so task tl
+ 
+
+00:07:20.400 --> 00:07:23.430 align:start position:0%
+a resource right so task tl
+is<00:07:20.560><c> holding</c><00:07:20.960><c> a</c><00:07:21.039><c> resource</c>
+
+00:07:23.430 --> 00:07:23.440 align:start position:0%
+is holding a resource
+ 
+
+00:07:23.440 --> 00:07:25.029 align:start position:0%
+is holding a resource
+so<00:07:23.680><c> let's</c><00:07:23.840><c> see</c><00:07:24.000><c> if</c><00:07:24.080><c> it's</c><00:07:24.240><c> holding</c><00:07:24.560><c> a</c><00:07:24.639><c> resource</c>
+
+00:07:25.029 --> 00:07:25.039 align:start position:0%
+so let's see if it's holding a resource
+ 
+
+00:07:25.039 --> 00:07:26.790 align:start position:0%
+so let's see if it's holding a resource
+will<00:07:25.280><c> add</c><00:07:25.440><c> an</c><00:07:25.680><c> arrow</c><00:07:25.919><c> from</c><00:07:26.080><c> the</c><00:07:26.160><c> resource</c><00:07:26.560><c> to</c>
+
+00:07:26.790 --> 00:07:26.800 align:start position:0%
+will add an arrow from the resource to
+ 
+
+00:07:26.800 --> 00:07:28.150 align:start position:0%
+will add an arrow from the resource to
+tl
+
+00:07:28.150 --> 00:07:28.160 align:start position:0%
+tl
+ 
+
+00:07:28.160 --> 00:07:31.830 align:start position:0%
+tl
+and<00:07:28.479><c> a</c><00:07:28.560><c> high</c><00:07:28.800><c> priority</c><00:07:29.280><c> task</c><00:07:29.680><c> is</c><00:07:29.840><c> waiting</c>
+
+00:07:31.830 --> 00:07:31.840 align:start position:0%
+and a high priority task is waiting
+ 
+
+00:07:31.840 --> 00:07:34.469 align:start position:0%
+and a high priority task is waiting
+okay
+
+00:07:34.469 --> 00:07:34.479 align:start position:0%
+ 
+ 
+
+00:07:34.479 --> 00:07:37.189 align:start position:0%
+ 
+so<00:07:34.720><c> then</c><00:07:34.960><c> the</c><00:07:35.199><c> key</c><00:07:35.440><c> point</c><00:07:35.840><c> is</c>
+
+00:07:37.189 --> 00:07:37.199 align:start position:0%
+so then the key point is
+ 
+
+00:07:37.199 --> 00:07:38.469 align:start position:0%
+so then the key point is
+that
+
+00:07:38.469 --> 00:07:38.479 align:start position:0%
+that
+ 
+
+00:07:38.479 --> 00:07:40.309 align:start position:0%
+that
+if<00:07:38.560><c> the</c><00:07:38.720><c> high</c><00:07:38.960><c> priority</c><00:07:39.440><c> task</c><00:07:39.759><c> in</c><00:07:39.840><c> this</c><00:07:40.080><c> case</c>
+
+00:07:40.309 --> 00:07:40.319 align:start position:0%
+if the high priority task in this case
+ 
+
+00:07:40.319 --> 00:07:42.710 align:start position:0%
+if the high priority task in this case
+th<00:07:40.720><c> so</c><00:07:40.880><c> we</c><00:07:40.960><c> are</c><00:07:41.039><c> referring</c><00:07:41.440><c> to</c><00:07:41.599><c> as</c><00:07:41.759><c> t2</c><00:07:42.160><c> and</c><00:07:42.240><c> t1</c>
+
+00:07:42.710 --> 00:07:42.720 align:start position:0%
+th so we are referring to as t2 and t1
+ 
+
+00:07:42.720 --> 00:07:43.589 align:start position:0%
+th so we are referring to as t2 and t1
+also
+
+00:07:43.589 --> 00:07:43.599 align:start position:0%
+also
+ 
+
+00:07:43.599 --> 00:07:46.230 align:start position:0%
+also
+or<00:07:43.840><c> let</c><00:07:43.919><c> us</c><00:07:44.000><c> say</c><00:07:44.240><c> th</c><00:07:44.720><c> is</c><00:07:44.879><c> waiting</c>
+
+00:07:46.230 --> 00:07:46.240 align:start position:0%
+or let us say th is waiting
+ 
+
+00:07:46.240 --> 00:07:50.950 align:start position:0%
+or let us say th is waiting
+for<00:07:46.560><c> tl</c><00:07:46.960><c> to</c><00:07:47.120><c> become</c><00:07:47.440><c> free</c>
+
+00:07:50.950 --> 00:07:50.960 align:start position:0%
+ 
+ 
+
+00:07:50.960 --> 00:07:52.629 align:start position:0%
+ 
+so<00:07:51.199><c> what</c><00:07:51.440><c> could</c><00:07:51.759><c> happen</c><00:07:52.160><c> is</c><00:07:52.319><c> that</c><00:07:52.479><c> an</c>
+
+00:07:52.629 --> 00:07:52.639 align:start position:0%
+so what could happen is that an
+ 
+
+00:07:52.639 --> 00:07:55.029 align:start position:0%
+so what could happen is that an
+intermediate<00:07:53.199><c> priority</c><00:07:53.759><c> task</c><00:07:54.400><c> so</c><00:07:54.560><c> let's</c><00:07:54.800><c> call</c>
+
+00:07:55.029 --> 00:07:55.039 align:start position:0%
+intermediate priority task so let's call
+ 
+
+00:07:55.039 --> 00:07:57.430 align:start position:0%
+intermediate priority task so let's call
+it<00:07:55.280><c> ti</c>
+
+00:07:57.430 --> 00:07:57.440 align:start position:0%
+it ti
+ 
+
+00:07:57.440 --> 00:07:59.670 align:start position:0%
+it ti
+which<00:07:57.680><c> does</c><00:07:58.000><c> not</c><00:07:58.240><c> need</c><00:07:58.479><c> the</c><00:07:58.639><c> resource</c><00:07:59.280><c> can</c>
+
+00:07:59.670 --> 00:07:59.680 align:start position:0%
+which does not need the resource can
+ 
+
+00:07:59.680 --> 00:08:01.990 align:start position:0%
+which does not need the resource can
+basically<00:08:00.319><c> preempt</c><00:08:00.800><c> the</c><00:08:00.879><c> low</c><00:08:01.039><c> priority</c><00:08:01.599><c> task</c>
+
+00:08:01.990 --> 00:08:02.000 align:start position:0%
+basically preempt the low priority task
+ 
+
+00:08:02.000 --> 00:08:03.350 align:start position:0%
+basically preempt the low priority task
+from<00:08:02.160><c> the</c><00:08:02.400><c> cpu</c>
+
+00:08:03.350 --> 00:08:03.360 align:start position:0%
+from the cpu
+ 
+
+00:08:03.360 --> 00:08:05.830 align:start position:0%
+from the cpu
+not<00:08:03.680><c> from</c><00:08:03.840><c> the</c><00:08:03.919><c> resource</c><00:08:04.319><c> that</c><00:08:04.560><c> it</c><00:08:04.720><c> is</c><00:08:04.879><c> holding</c>
+
+00:08:05.830 --> 00:08:05.840 align:start position:0%
+not from the resource that it is holding
+ 
+
+00:08:05.840 --> 00:08:07.909 align:start position:0%
+not from the resource that it is holding
+but<00:08:06.000><c> can</c><00:08:06.319><c> preempt</c><00:08:06.720><c> the</c><00:08:06.800><c> low</c><00:08:07.039><c> priority</c><00:08:07.599><c> task</c>
+
+00:08:07.909 --> 00:08:07.919 align:start position:0%
+but can preempt the low priority task
+ 
+
+00:08:07.919 --> 00:08:10.550 align:start position:0%
+but can preempt the low priority task
+from<00:08:08.160><c> the</c><00:08:08.319><c> cpu</c><00:08:08.800><c> and</c><00:08:08.960><c> it</c><00:08:09.120><c> can</c><00:08:09.280><c> execute</c>
+
+00:08:10.550 --> 00:08:10.560 align:start position:0%
+from the cpu and it can execute
+ 
+
+00:08:10.560 --> 00:08:12.469 align:start position:0%
+from the cpu and it can execute
+so<00:08:10.720><c> we</c><00:08:10.879><c> can</c><00:08:11.120><c> have</c><00:08:11.360><c> hundreds</c><00:08:11.919><c> of</c><00:08:12.080><c> such</c>
+
+00:08:12.469 --> 00:08:12.479 align:start position:0%
+so we can have hundreds of such
+ 
+
+00:08:12.479 --> 00:08:14.950 align:start position:0%
+so we can have hundreds of such
+intermediate<00:08:13.199><c> priority</c><00:08:13.680><c> tasks</c><00:08:14.560><c> which</c><00:08:14.800><c> will</c>
+
+00:08:14.950 --> 00:08:14.960 align:start position:0%
+intermediate priority tasks which will
+ 
+
+00:08:14.960 --> 00:08:16.710 align:start position:0%
+intermediate priority tasks which will
+preempt<00:08:15.360><c> the</c><00:08:15.440><c> low</c><00:08:15.599><c> priority</c><00:08:16.080><c> task</c><00:08:16.479><c> and</c><00:08:16.560><c> they</c>
+
+00:08:16.710 --> 00:08:16.720 align:start position:0%
+preempt the low priority task and they
+ 
+
+00:08:16.720 --> 00:08:18.629 align:start position:0%
+preempt the low priority task and they
+will<00:08:16.960><c> keep</c><00:08:17.199><c> on</c><00:08:17.360><c> executing</c>
+
+00:08:18.629 --> 00:08:18.639 align:start position:0%
+will keep on executing
+ 
+
+00:08:18.639 --> 00:08:21.029 align:start position:0%
+will keep on executing
+but<00:08:19.120><c> the</c><00:08:19.280><c> high</c><00:08:19.520><c> priority</c><00:08:20.000><c> task</c><00:08:20.400><c> will</c><00:08:20.560><c> not</c><00:08:20.800><c> get</c>
+
+00:08:21.029 --> 00:08:21.039 align:start position:0%
+but the high priority task will not get
+ 
+
+00:08:21.039 --> 00:08:22.230 align:start position:0%
+but the high priority task will not get
+to<00:08:21.199><c> execute</c>
+
+00:08:22.230 --> 00:08:22.240 align:start position:0%
+to execute
+ 
+
+00:08:22.240 --> 00:08:24.629 align:start position:0%
+to execute
+the<00:08:22.400><c> reason</c><00:08:22.800><c> being</c><00:08:23.199><c> that</c><00:08:23.520><c> it</c><00:08:23.680><c> has</c><00:08:24.160><c> another</c>
+
+00:08:24.629 --> 00:08:24.639 align:start position:0%
+the reason being that it has another
+ 
+
+00:08:24.639 --> 00:08:27.189 align:start position:0%
+the reason being that it has another
+dependency<00:08:25.440><c> other</c><00:08:25.759><c> than</c><00:08:25.919><c> the</c><00:08:26.080><c> cpu</c>
+
+00:08:27.189 --> 00:08:27.199 align:start position:0%
+dependency other than the cpu
+ 
+
+00:08:27.199 --> 00:08:29.189 align:start position:0%
+dependency other than the cpu
+on<00:08:27.440><c> the</c><00:08:27.520><c> low</c><00:08:27.759><c> priority</c><00:08:28.319><c> task</c><00:08:28.639><c> which</c><00:08:28.800><c> is</c><00:08:28.960><c> still</c>
+
+00:08:29.189 --> 00:08:29.199 align:start position:0%
+on the low priority task which is still
+ 
+
+00:08:29.199 --> 00:08:31.430 align:start position:0%
+on the low priority task which is still
+holding<00:08:29.520><c> on</c><00:08:29.680><c> to</c><00:08:29.840><c> the</c><00:08:29.919><c> resource</c>
+
+00:08:31.430 --> 00:08:31.440 align:start position:0%
+holding on to the resource
+ 
+
+00:08:31.440 --> 00:08:34.149 align:start position:0%
+holding on to the resource
+so<00:08:31.680><c> sadly</c><00:08:32.479><c> it</c><00:08:32.719><c> is</c><00:08:32.880><c> not</c><00:08:33.120><c> able</c><00:08:33.440><c> to</c><00:08:33.599><c> relinquish</c>
+
+00:08:34.149 --> 00:08:34.159 align:start position:0%
+so sadly it is not able to relinquish
+ 
+
+00:08:34.159 --> 00:08:36.149 align:start position:0%
+so sadly it is not able to relinquish
+the<00:08:34.320><c> resource</c><00:08:34.800><c> because</c><00:08:35.200><c> it</c><00:08:35.360><c> is</c><00:08:35.519><c> not</c><00:08:35.760><c> getting</c>
+
+00:08:36.149 --> 00:08:36.159 align:start position:0%
+the resource because it is not getting
+ 
+
+00:08:36.159 --> 00:08:37.990 align:start position:0%
+the resource because it is not getting
+cpu<00:08:36.640><c> time</c>
+
+00:08:37.990 --> 00:08:38.000 align:start position:0%
+cpu time
+ 
+
+00:08:38.000 --> 00:08:40.070 align:start position:0%
+cpu time
+why<00:08:38.240><c> is</c><00:08:38.399><c> it</c><00:08:38.479><c> not</c><00:08:38.719><c> getting</c><00:08:38.959><c> cpu</c><00:08:39.360><c> time</c><00:08:39.599><c> because</c>
+
+00:08:40.070 --> 00:08:40.080 align:start position:0%
+why is it not getting cpu time because
+ 
+
+00:08:40.080 --> 00:08:42.870 align:start position:0%
+why is it not getting cpu time because
+other<00:08:40.479><c> intermediate</c><00:08:41.039><c> priority</c><00:08:41.680><c> tasks</c>
+
+00:08:42.870 --> 00:08:42.880 align:start position:0%
+other intermediate priority tasks
+ 
+
+00:08:42.880 --> 00:08:45.110 align:start position:0%
+other intermediate priority tasks
+are<00:08:43.120><c> evicting</c><00:08:43.599><c> it</c><00:08:43.760><c> from</c><00:08:43.919><c> the</c><00:08:44.080><c> cpu</c><00:08:44.720><c> and</c><00:08:44.880><c> they</c>
+
+00:08:45.110 --> 00:08:45.120 align:start position:0%
+are evicting it from the cpu and they
+ 
+
+00:08:45.120 --> 00:08:49.670 align:start position:0%
+are evicting it from the cpu and they
+are<00:08:45.279><c> executing</c>
+
+00:08:49.670 --> 00:08:49.680 align:start position:0%
+ 
+ 
+
+00:08:49.680 --> 00:08:52.630 align:start position:0%
+ 
+so<00:08:49.839><c> an</c><00:08:50.160><c> example</c><00:08:50.880><c> of</c><00:08:51.120><c> unbounded</c><00:08:52.000><c> priority</c>
+
+00:08:52.630 --> 00:08:52.640 align:start position:0%
+so an example of unbounded priority
+ 
+
+00:08:52.640 --> 00:08:55.670 align:start position:0%
+so an example of unbounded priority
+inversion<00:08:53.279><c> will</c><00:08:53.440><c> be</c><00:08:53.600><c> something</c><00:08:54.000><c> like</c><00:08:54.240><c> this</c>
+
+00:08:55.670 --> 00:08:55.680 align:start position:0%
+inversion will be something like this
+ 
+
+00:08:55.680 --> 00:08:59.829 align:start position:0%
+inversion will be something like this
+so<00:08:56.080><c> uh</c><00:08:56.320><c> let</c><00:08:56.560><c> me</c><00:08:56.800><c> uh</c>
+
+00:08:59.829 --> 00:08:59.839 align:start position:0%
+ 
+ 
+
+00:08:59.839 --> 00:09:01.430 align:start position:0%
+ 
+you<00:09:00.000><c> know</c><00:09:00.160><c> slightly</c><00:09:00.720><c> proceed</c><00:09:01.120><c> through</c><00:09:01.279><c> the</c>
+
+00:09:01.430 --> 00:09:01.440 align:start position:0%
+you know slightly proceed through the
+ 
+
+00:09:01.440 --> 00:09:05.350 align:start position:0%
+you know slightly proceed through the
+animation<00:09:02.080><c> then</c><00:09:02.320><c> i</c><00:09:02.480><c> will</c><00:09:02.720><c> show</c><00:09:02.880><c> you</c>
+
+00:09:05.350 --> 00:09:05.360 align:start position:0%
+ 
+ 
+
+00:09:05.360 --> 00:09:07.509 align:start position:0%
+ 
+so<00:09:05.600><c> so</c><00:09:05.760><c> let</c><00:09:06.000><c> us</c><00:09:06.160><c> now</c><00:09:06.480><c> understand</c><00:09:07.040><c> so</c><00:09:07.200><c> let</c><00:09:07.360><c> us</c>
+
+00:09:07.509 --> 00:09:07.519 align:start position:0%
+so so let us now understand so let us
+ 
+
+00:09:07.519 --> 00:09:09.509 align:start position:0%
+so so let us now understand so let us
+say<00:09:07.760><c> that</c><00:09:08.080><c> we</c><00:09:08.320><c> have</c>
+
+00:09:09.509 --> 00:09:09.519 align:start position:0%
+say that we have
+ 
+
+00:09:09.519 --> 00:09:12.870 align:start position:0%
+say that we have
+uh<00:09:10.160><c> you</c><00:09:10.320><c> know</c><00:09:10.560><c> we</c><00:09:10.800><c> have</c><00:09:11.360><c> a</c>
+
+00:09:12.870 --> 00:09:12.880 align:start position:0%
+uh you know we have a
+ 
+
+00:09:12.880 --> 00:09:15.430 align:start position:0%
+uh you know we have a
+a<00:09:13.040><c> high</c><00:09:13.279><c> priority</c><00:09:13.920><c> task</c><00:09:14.399><c> t1</c>
+
+00:09:15.430 --> 00:09:15.440 align:start position:0%
+a high priority task t1
+ 
+
+00:09:15.440 --> 00:09:18.389 align:start position:0%
+a high priority task t1
+and<00:09:15.680><c> the</c><00:09:15.760><c> lowest</c><00:09:16.160><c> priority</c><00:09:16.640><c> task</c><00:09:17.040><c> is</c><00:09:17.200><c> d6</c>
+
+00:09:18.389 --> 00:09:18.399 align:start position:0%
+and the lowest priority task is d6
+ 
+
+00:09:18.399 --> 00:09:21.030 align:start position:0%
+and the lowest priority task is d6
+which<00:09:18.720><c> has</c><00:09:19.200><c> held</c><00:09:19.519><c> a</c><00:09:19.600><c> resource</c>
+
+00:09:21.030 --> 00:09:21.040 align:start position:0%
+which has held a resource
+ 
+
+00:09:21.040 --> 00:09:23.430 align:start position:0%
+which has held a resource
+so<00:09:21.279><c> when</c><00:09:21.519><c> t1</c><00:09:22.000><c> comes</c><00:09:22.320><c> it</c><00:09:22.480><c> will</c><00:09:22.720><c> not</c><00:09:22.880><c> be</c><00:09:23.120><c> able</c><00:09:23.279><c> to</c>
+
+00:09:23.430 --> 00:09:23.440 align:start position:0%
+so when t1 comes it will not be able to
+ 
+
+00:09:23.440 --> 00:09:25.590 align:start position:0%
+so when t1 comes it will not be able to
+execute<00:09:24.080><c> because</c><00:09:24.480><c> the</c><00:09:24.560><c> resource</c><00:09:25.040><c> is</c><00:09:25.200><c> held</c><00:09:25.440><c> by</c>
+
+00:09:25.590 --> 00:09:25.600 align:start position:0%
+execute because the resource is held by
+ 
+
+00:09:25.600 --> 00:09:27.829 align:start position:0%
+execute because the resource is held by
+t6<00:09:26.080><c> so</c><00:09:26.240><c> it</c><00:09:26.320><c> will</c><00:09:26.480><c> wait</c>
+
+00:09:27.829 --> 00:09:27.839 align:start position:0%
+t6 so it will wait
+ 
+
+00:09:27.839 --> 00:09:30.150 align:start position:0%
+t6 so it will wait
+but<00:09:28.000><c> then</c><00:09:28.320><c> what</c><00:09:28.480><c> will</c><00:09:28.640><c> happen</c><00:09:29.040><c> is</c><00:09:29.440><c> a</c><00:09:29.600><c> bunch</c><00:09:29.920><c> of</c>
+
+00:09:30.150 --> 00:09:30.160 align:start position:0%
+but then what will happen is a bunch of
+ 
+
+00:09:30.160 --> 00:09:32.470 align:start position:0%
+but then what will happen is a bunch of
+other<00:09:30.560><c> intermediate</c><00:09:31.120><c> priority</c><00:09:32.000><c> priority</c>
+
+00:09:32.470 --> 00:09:32.480 align:start position:0%
+other intermediate priority priority
+ 
+
+00:09:32.480 --> 00:09:34.470 align:start position:0%
+other intermediate priority priority
+tasks<00:09:32.800><c> will</c><00:09:33.040><c> come</c>
+
+00:09:34.470 --> 00:09:34.480 align:start position:0%
+tasks will come
+ 
+
+00:09:34.480 --> 00:09:36.790 align:start position:0%
+tasks will come
+who<00:09:34.720><c> have</c><00:09:34.880><c> a</c><00:09:35.040><c> lower</c><00:09:35.360><c> priority</c><00:09:35.920><c> than</c><00:09:36.160><c> t</c><00:09:36.399><c> one</c><00:09:36.640><c> but</c>
+
+00:09:36.790 --> 00:09:36.800 align:start position:0%
+who have a lower priority than t one but
+ 
+
+00:09:36.800 --> 00:09:39.030 align:start position:0%
+who have a lower priority than t one but
+a<00:09:36.880><c> higher</c><00:09:37.200><c> priority</c><00:09:37.760><c> than</c><00:09:38.000><c> t</c><00:09:38.240><c> six</c>
+
+00:09:39.030 --> 00:09:39.040 align:start position:0%
+a higher priority than t six
+ 
+
+00:09:39.040 --> 00:09:41.030 align:start position:0%
+a higher priority than t six
+so<00:09:39.200><c> they</c><00:09:39.360><c> will</c><00:09:39.600><c> all</c><00:09:39.839><c> execute</c><00:09:40.320><c> as</c><00:09:40.480><c> you</c><00:09:40.640><c> can</c><00:09:40.800><c> see</c>
+
+00:09:41.030 --> 00:09:41.040 align:start position:0%
+so they will all execute as you can see
+ 
+
+00:09:41.040 --> 00:09:43.910 align:start position:0%
+so they will all execute as you can see
+the<00:09:41.200><c> blue</c><00:09:41.519><c> they</c><00:09:41.680><c> will</c><00:09:41.920><c> all</c><00:09:42.160><c> execute</c>
+
+00:09:43.910 --> 00:09:43.920 align:start position:0%
+the blue they will all execute
+ 
+
+00:09:43.920 --> 00:09:45.990 align:start position:0%
+the blue they will all execute
+finally<00:09:44.399><c> at</c><00:09:44.560><c> one</c><00:09:44.800><c> point</c><00:09:45.120><c> t6</c><00:09:45.519><c> will</c><00:09:45.680><c> get</c><00:09:45.839><c> the</c>
+
+00:09:45.990 --> 00:09:46.000 align:start position:0%
+finally at one point t6 will get the
+ 
+
+00:09:46.000 --> 00:09:47.750 align:start position:0%
+finally at one point t6 will get the
+time<00:09:46.240><c> to</c><00:09:46.399><c> execute</c><00:09:46.800><c> so</c><00:09:46.959><c> it</c><00:09:47.040><c> will</c><00:09:47.200><c> unlock</c><00:09:47.600><c> the</c>
+
+00:09:47.750 --> 00:09:47.760 align:start position:0%
+time to execute so it will unlock the
+ 
+
+00:09:47.760 --> 00:09:49.430 align:start position:0%
+time to execute so it will unlock the
+critical<00:09:48.160><c> resource</c>
+
+00:09:49.430 --> 00:09:49.440 align:start position:0%
+critical resource
+ 
+
+00:09:49.440 --> 00:09:51.190 align:start position:0%
+critical resource
+and<00:09:49.680><c> that</c><00:09:50.000><c> is</c><00:09:50.240><c> when</c>
+
+00:09:51.190 --> 00:09:51.200 align:start position:0%
+and that is when
+ 
+
+00:09:51.200 --> 00:09:53.110 align:start position:0%
+and that is when
+you<00:09:51.440><c> will</c><00:09:51.680><c> see</c><00:09:51.920><c> that</c>
+
+00:09:53.110 --> 00:09:53.120 align:start position:0%
+you will see that
+ 
+
+00:09:53.120 --> 00:09:58.310 align:start position:0%
+you will see that
+d6<00:09:53.920><c> sorry</c><00:09:54.240><c> t1</c><00:09:54.720><c> will</c><00:09:54.880><c> get</c><00:09:55.040><c> a</c><00:09:55.200><c> chance</c><00:09:55.519><c> to</c><00:09:56.000><c> execute</c>
+
+00:09:58.310 --> 00:09:58.320 align:start position:0%
+d6 sorry t1 will get a chance to execute
+ 
+
+00:09:58.320 --> 00:09:59.350 align:start position:0%
+d6 sorry t1 will get a chance to execute
+so<00:09:58.560><c> this</c>
+
+00:09:59.350 --> 00:09:59.360 align:start position:0%
+so this
+ 
+
+00:09:59.360 --> 00:10:01.910 align:start position:0%
+so this
+phenomenon<00:10:00.240><c> is</c><00:10:00.480><c> known</c><00:10:00.800><c> as</c><00:10:00.959><c> an</c><00:10:01.120><c> unbounded</c>
+
+00:10:01.910 --> 00:10:01.920 align:start position:0%
+phenomenon is known as an unbounded
+ 
+
+00:10:01.920 --> 00:10:03.509 align:start position:0%
+phenomenon is known as an unbounded
+priority<00:10:02.399><c> inversion</c>
+
+00:10:03.509 --> 00:10:03.519 align:start position:0%
+priority inversion
+ 
+
+00:10:03.519 --> 00:10:05.350 align:start position:0%
+priority inversion
+as<00:10:03.839><c> opposed</c><00:10:04.160><c> to</c><00:10:04.320><c> a</c><00:10:04.399><c> simple</c><00:10:04.800><c> priority</c>
+
+00:10:05.350 --> 00:10:05.360 align:start position:0%
+as opposed to a simple priority
+ 
+
+00:10:05.360 --> 00:10:07.990 align:start position:0%
+as opposed to a simple priority
+inversion<00:10:05.920><c> that</c><00:10:06.560><c> i</c><00:10:06.640><c> was</c><00:10:06.880><c> discussing</c><00:10:07.680><c> you</c><00:10:07.839><c> know</c>
+
+00:10:07.990 --> 00:10:08.000 align:start position:0%
+inversion that i was discussing you know
+ 
+
+00:10:08.000 --> 00:10:10.630 align:start position:0%
+inversion that i was discussing you know
+just<00:10:08.240><c> before</c><00:10:08.640><c> the</c><00:10:09.040><c> previous</c><00:10:09.440><c> slide</c>
+
+00:10:10.630 --> 00:10:10.640 align:start position:0%
+just before the previous slide
+ 
+
+00:10:10.640 --> 00:10:12.630 align:start position:0%
+just before the previous slide
+so<00:10:10.800><c> here</c><00:10:11.120><c> what</c><00:10:11.279><c> will</c><00:10:11.519><c> happen</c><00:10:11.839><c> is</c><00:10:12.000><c> that</c><00:10:12.160><c> a</c><00:10:12.240><c> very</c>
+
+00:10:12.630 --> 00:10:12.640 align:start position:0%
+so here what will happen is that a very
+ 
+
+00:10:12.640 --> 00:10:15.509 align:start position:0%
+so here what will happen is that a very
+large<00:10:13.040><c> number</c><00:10:13.279><c> of</c><00:10:13.519><c> tasks</c><00:10:14.000><c> can</c><00:10:14.320><c> execute</c>
+
+00:10:15.509 --> 00:10:15.519 align:start position:0%
+large number of tasks can execute
+ 
+
+00:10:15.519 --> 00:10:17.910 align:start position:0%
+large number of tasks can execute
+before<00:10:16.079><c> actually</c><00:10:16.560><c> t1</c><00:10:17.279><c> which</c><00:10:17.440><c> is</c><00:10:17.519><c> the</c><00:10:17.600><c> highest</c>
+
+00:10:17.910 --> 00:10:17.920 align:start position:0%
+before actually t1 which is the highest
+ 
+
+00:10:17.920 --> 00:10:20.069 align:start position:0%
+before actually t1 which is the highest
+priority<00:10:18.399><c> task</c><00:10:18.640><c> can</c><00:10:18.880><c> execute</c>
+
+00:10:20.069 --> 00:10:20.079 align:start position:0%
+priority task can execute
+ 
+
+00:10:20.079 --> 00:10:21.990 align:start position:0%
+priority task can execute
+and<00:10:20.240><c> the</c><00:10:20.399><c> reason</c><00:10:20.880><c> is</c><00:10:21.200><c> because</c><00:10:21.600><c> of</c><00:10:21.760><c> this</c>
+
+00:10:21.990 --> 00:10:22.000 align:start position:0%
+and the reason is because of this
+ 
+
+00:10:22.000 --> 00:10:24.630 align:start position:0%
+and the reason is because of this
+resource<00:10:22.480><c> dependency</c><00:10:23.279><c> on</c><00:10:23.600><c> cr</c>
+
+00:10:24.630 --> 00:10:24.640 align:start position:0%
+resource dependency on cr
+ 
+
+00:10:24.640 --> 00:10:27.110 align:start position:0%
+resource dependency on cr
+so<00:10:24.880><c> this</c><00:10:25.120><c> is</c><00:10:25.279><c> known</c><00:10:25.519><c> as</c><00:10:25.839><c> unbounded</c><00:10:26.480><c> priority</c>
+
+00:10:27.110 --> 00:10:27.120 align:start position:0%
+so this is known as unbounded priority
+ 
+
+00:10:27.120 --> 00:10:30.550 align:start position:0%
+so this is known as unbounded priority
+inversion
+
+00:10:30.550 --> 00:10:30.560 align:start position:0%
+ 
+ 
+
+00:10:30.560 --> 00:10:31.509 align:start position:0%
+ 
+so
+
+00:10:31.509 --> 00:10:31.519 align:start position:0%
+so
+ 
+
+00:10:31.519 --> 00:10:32.949 align:start position:0%
+so
+what<00:10:31.760><c> is</c><00:10:31.839><c> the</c><00:10:32.000><c> number</c><00:10:32.320><c> of</c><00:10:32.480><c> priority</c>
+
+00:10:32.949 --> 00:10:32.959 align:start position:0%
+what is the number of priority
+ 
+
+00:10:32.959 --> 00:10:34.870 align:start position:0%
+what is the number of priority
+inversions<00:10:33.440><c> suffered</c><00:10:33.839><c> by</c><00:10:34.000><c> a</c><00:10:34.079><c> high</c><00:10:34.320><c> priority</c>
+
+00:10:34.870 --> 00:10:34.880 align:start position:0%
+inversions suffered by a high priority
+ 
+
+00:10:34.880 --> 00:10:35.990 align:start position:0%
+inversions suffered by a high priority
+task
+
+00:10:35.990 --> 00:10:36.000 align:start position:0%
+task
+ 
+
+00:10:36.000 --> 00:10:38.470 align:start position:0%
+task
+it<00:10:36.240><c> actually</c><00:10:36.800><c> can</c><00:10:36.959><c> be</c><00:10:37.200><c> too</c><00:10:37.440><c> many</c><00:10:37.920><c> in</c><00:10:38.000><c> the</c><00:10:38.160><c> sense</c>
+
+00:10:38.470 --> 00:10:38.480 align:start position:0%
+it actually can be too many in the sense
+ 
+
+00:10:38.480 --> 00:10:40.310 align:start position:0%
+it actually can be too many in the sense
+it<00:10:38.640><c> can</c><00:10:38.800><c> be</c><00:10:38.959><c> large</c><00:10:39.360><c> enough</c>
+
+00:10:40.310 --> 00:10:40.320 align:start position:0%
+it can be large enough
+ 
+
+00:10:40.320 --> 00:10:42.150 align:start position:0%
+it can be large enough
+which<00:10:40.560><c> will</c><00:10:40.720><c> actually</c><00:10:41.120><c> cause</c><00:10:41.360><c> it</c><00:10:41.519><c> to</c><00:10:41.680><c> miss</c><00:10:41.920><c> its</c>
+
+00:10:42.150 --> 00:10:42.160 align:start position:0%
+which will actually cause it to miss its
+ 
+
+00:10:42.160 --> 00:10:44.389 align:start position:0%
+which will actually cause it to miss its
+deadline
+
+00:10:44.389 --> 00:10:44.399 align:start position:0%
+deadline
+ 
+
+00:10:44.399 --> 00:10:47.190 align:start position:0%
+deadline
+and<00:10:44.640><c> the</c><00:10:44.800><c> only</c><00:10:45.200><c> fault</c><00:10:45.519><c> of</c><00:10:45.680><c> it</c><00:10:46.000><c> is</c><00:10:46.560><c> that</c><00:10:46.800><c> it</c><00:10:47.040><c> is</c>
+
+00:10:47.190 --> 00:10:47.200 align:start position:0%
+and the only fault of it is that it is
+ 
+
+00:10:47.200 --> 00:10:49.269 align:start position:0%
+and the only fault of it is that it is
+unfortunate
+
+00:10:49.269 --> 00:10:49.279 align:start position:0%
+unfortunate
+ 
+
+00:10:49.279 --> 00:10:50.710 align:start position:0%
+unfortunate
+for<00:10:49.519><c> it</c><00:10:49.760><c> of</c><00:10:49.920><c> course</c>
+
+00:10:50.710 --> 00:10:50.720 align:start position:0%
+for it of course
+ 
+
+00:10:50.720 --> 00:10:53.030 align:start position:0%
+for it of course
+that<00:10:50.959><c> one</c><00:10:51.200><c> of</c><00:10:51.279><c> the</c><00:10:51.519><c> lower</c><00:10:51.839><c> priority</c><00:10:52.399><c> tasks</c><00:10:52.880><c> in</c>
+
+00:10:53.030 --> 00:10:53.040 align:start position:0%
+that one of the lower priority tasks in
+ 
+
+00:10:53.040 --> 00:10:55.509 align:start position:0%
+that one of the lower priority tasks in
+the<00:10:53.120><c> case</c><00:10:53.440><c> of</c><00:10:53.519><c> the</c><00:10:53.680><c> previous</c><00:10:54.160><c> example</c>
+
+00:10:55.509 --> 00:10:55.519 align:start position:0%
+the case of the previous example
+ 
+
+00:10:55.519 --> 00:10:58.069 align:start position:0%
+the case of the previous example
+the<00:10:55.680><c> lowest</c><00:10:56.079><c> priority</c><00:10:56.640><c> task</c><00:10:57.040><c> d6</c><00:10:57.600><c> is</c><00:10:57.680><c> holding</c>
+
+00:10:58.069 --> 00:10:58.079 align:start position:0%
+the lowest priority task d6 is holding
+ 
+
+00:10:58.079 --> 00:10:59.509 align:start position:0%
+the lowest priority task d6 is holding
+on<00:10:58.240><c> to</c><00:10:58.399><c> the</c><00:10:58.480><c> resource</c>
+
+00:10:59.509 --> 00:10:59.519 align:start position:0%
+on to the resource
+ 
+
+00:10:59.519 --> 00:11:01.269 align:start position:0%
+on to the resource
+and<00:10:59.680><c> because</c><00:11:00.079><c> of</c><00:11:00.160><c> that</c><00:11:00.399><c> everybody</c><00:11:00.880><c> gets</c><00:11:01.200><c> to</c>
+
+00:11:01.269 --> 00:11:01.279 align:start position:0%
+and because of that everybody gets to
+ 
+
+00:11:01.279 --> 00:11:03.990 align:start position:0%
+and because of that everybody gets to
+execute<00:11:01.839><c> other</c><00:11:02.079><c> than</c><00:11:02.320><c> t1</c>
+
+00:11:03.990 --> 00:11:04.000 align:start position:0%
+execute other than t1
+ 
+
+00:11:04.000 --> 00:11:06.150 align:start position:0%
+execute other than t1
+so<00:11:04.160><c> one</c><00:11:04.399><c> of</c><00:11:04.480><c> the</c><00:11:04.560><c> most</c><00:11:04.800><c> celebrated</c><00:11:05.519><c> examples</c>
+
+00:11:06.150 --> 00:11:06.160 align:start position:0%
+so one of the most celebrated examples
+ 
+
+00:11:06.160 --> 00:11:09.430 align:start position:0%
+so one of the most celebrated examples
+in<00:11:06.320><c> this</c><00:11:06.560><c> case</c><00:11:06.880><c> is</c><00:11:07.040><c> a</c><00:11:07.120><c> mars</c><00:11:07.519><c> pathfinder</c>
+
+00:11:09.430 --> 00:11:09.440 align:start position:0%
+in this case is a mars pathfinder
+ 
+
+00:11:09.440 --> 00:11:11.190 align:start position:0%
+in this case is a mars pathfinder
+so<00:11:09.680><c> those</c><00:11:10.000><c> who</c>
+
+00:11:11.190 --> 00:11:11.200 align:start position:0%
+so those who
+ 
+
+00:11:11.200 --> 00:11:14.470 align:start position:0%
+so those who
+you<00:11:11.360><c> know</c><00:11:11.920><c> are</c><00:11:12.160><c> my</c><00:11:12.399><c> age</c><00:11:12.720><c> would</c><00:11:12.959><c> know</c><00:11:14.079><c> that</c><00:11:14.320><c> the</c>
+
+00:11:14.470 --> 00:11:14.480 align:start position:0%
+you know are my age would know that the
+ 
+
+00:11:14.480 --> 00:11:16.949 align:start position:0%
+you know are my age would know that the
+mars<00:11:14.880><c> pathfinder</c><00:11:15.519><c> was</c><00:11:15.760><c> a</c><00:11:15.920><c> rover</c>
+
+00:11:16.949 --> 00:11:16.959 align:start position:0%
+mars pathfinder was a rover
+ 
+
+00:11:16.959 --> 00:11:19.430 align:start position:0%
+mars pathfinder was a rover
+right<00:11:17.200><c> which</c><00:11:17.440><c> was</c><00:11:17.760><c> meant</c><00:11:18.079><c> to</c>
+
+00:11:19.430 --> 00:11:19.440 align:start position:0%
+right which was meant to
+ 
+
+00:11:19.440 --> 00:11:20.870 align:start position:0%
+right which was meant to
+you<00:11:19.600><c> know</c><00:11:19.680><c> which</c><00:11:19.920><c> was</c><00:11:20.000><c> sent</c><00:11:20.240><c> to</c><00:11:20.399><c> mars</c><00:11:20.720><c> and</c>
+
+00:11:20.870 --> 00:11:20.880 align:start position:0%
+you know which was sent to mars and
+ 
+
+00:11:20.880 --> 00:11:22.630 align:start position:0%
+you know which was sent to mars and
+there<00:11:21.120><c> it</c><00:11:21.200><c> was</c><00:11:21.360><c> meant</c><00:11:21.600><c> to</c><00:11:21.760><c> scan</c><00:11:22.000><c> the</c><00:11:22.160><c> martian</c>
+
+00:11:22.630 --> 00:11:22.640 align:start position:0%
+there it was meant to scan the martian
+ 
+
+00:11:22.640 --> 00:11:23.910 align:start position:0%
+there it was meant to scan the martian
+surface
+
+00:11:23.910 --> 00:11:23.920 align:start position:0%
+surface
+ 
+
+00:11:23.920 --> 00:11:27.350 align:start position:0%
+surface
+so<00:11:24.160><c> that</c><00:11:24.480><c> did</c><00:11:24.720><c> have</c><00:11:25.040><c> some</c><00:11:25.360><c> bugs</c><00:11:26.079><c> of</c><00:11:26.320><c> this</c><00:11:26.560><c> kind</c>
+
+00:11:27.350 --> 00:11:27.360 align:start position:0%
+so that did have some bugs of this kind
+ 
+
+00:11:27.360 --> 00:11:29.190 align:start position:0%
+so that did have some bugs of this kind
+right<00:11:27.920><c> which</c>
+
+00:11:29.190 --> 00:11:29.200 align:start position:0%
+right which
+ 
+
+00:11:29.200 --> 00:11:31.430 align:start position:0%
+right which
+you<00:11:29.360><c> know</c><00:11:29.519><c> led</c><00:11:29.760><c> to</c><00:11:30.079><c> a</c><00:11:30.160><c> significant</c><00:11:30.800><c> disruption</c>
+
+00:11:31.430 --> 00:11:31.440 align:start position:0%
+you know led to a significant disruption
+ 
+
+00:11:31.440 --> 00:11:34.550 align:start position:0%
+you know led to a significant disruption
+in<00:11:31.600><c> its</c><00:11:31.920><c> performance</c>
+
+00:11:34.550 --> 00:11:34.560 align:start position:0%
+ 
+ 
+
+00:11:34.560 --> 00:11:37.350 align:start position:0%
+ 
+so<00:11:34.800><c> coming</c><00:11:35.200><c> to</c><00:11:35.440><c> an</c><00:11:35.680><c> example</c><00:11:36.640><c> suppose</c><00:11:37.120><c> that</c>
+
+00:11:37.350 --> 00:11:37.360 align:start position:0%
+so coming to an example suppose that
+ 
+
+00:11:37.360 --> 00:11:38.389 align:start position:0%
+so coming to an example suppose that
+tasks
+
+00:11:38.389 --> 00:11:38.399 align:start position:0%
+tasks
+ 
+
+00:11:38.399 --> 00:11:42.310 align:start position:0%
+tasks
+you<00:11:38.480><c> know</c><00:11:38.720><c> tau</c><00:11:38.959><c> 1</c><00:11:39.200><c> and</c><00:11:39.360><c> tau</c><00:11:39.680><c> 3</c><00:11:40.000><c> or</c><00:11:40.160><c> t</c><00:11:40.320><c> 1</c><00:11:40.560><c> and</c><00:11:40.720><c> d</c><00:11:40.959><c> 3</c>
+
+00:11:42.310 --> 00:11:42.320 align:start position:0%
+you know tau 1 and tau 3 or t 1 and d 3
+ 
+
+00:11:42.320 --> 00:11:44.150 align:start position:0%
+you know tau 1 and tau 3 or t 1 and d 3
+shares<00:11:42.640><c> some</c><00:11:42.800><c> data</c><00:11:43.200><c> which</c><00:11:43.440><c> is</c><00:11:43.519><c> an</c><00:11:43.680><c> exclusive</c>
+
+00:11:44.150 --> 00:11:44.160 align:start position:0%
+shares some data which is an exclusive
+ 
+
+00:11:44.160 --> 00:11:46.150 align:start position:0%
+shares some data which is an exclusive
+mode<00:11:44.480><c> in</c><00:11:44.560><c> the</c><00:11:44.720><c> sense</c><00:11:45.279><c> the</c><00:11:45.519><c> data</c><00:11:45.920><c> is</c><00:11:46.000><c> the</c>
+
+00:11:46.150 --> 00:11:46.160 align:start position:0%
+mode in the sense the data is the
+ 
+
+00:11:46.160 --> 00:11:47.829 align:start position:0%
+mode in the sense the data is the
+critical<00:11:46.640><c> resource</c>
+
+00:11:47.829 --> 00:11:47.839 align:start position:0%
+critical resource
+ 
+
+00:11:47.839 --> 00:11:50.069 align:start position:0%
+critical resource
+and<00:11:48.079><c> it</c><00:11:48.240><c> is</c><00:11:48.399><c> accessed</c><00:11:48.800><c> within</c><00:11:49.120><c> a</c><00:11:49.200><c> critical</c>
+
+00:11:50.069 --> 00:11:50.079 align:start position:0%
+and it is accessed within a critical
+ 
+
+00:11:50.079 --> 00:11:52.310 align:start position:0%
+and it is accessed within a critical
+section
+
+00:11:52.310 --> 00:11:52.320 align:start position:0%
+section
+ 
+
+00:11:52.320 --> 00:11:54.230 align:start position:0%
+section
+so<00:11:52.560><c> access</c><00:11:52.880><c> to</c><00:11:53.040><c> the</c><00:11:53.200><c> data</c><00:11:53.600><c> itself</c><00:11:54.079><c> is</c>
+
+00:11:54.230 --> 00:11:54.240 align:start position:0%
+so access to the data itself is
+ 
+
+00:11:54.240 --> 00:11:57.190 align:start position:0%
+so access to the data itself is
+restricted<00:11:54.800><c> using</c><00:11:55.120><c> a</c><00:11:55.200><c> sema</c><00:11:55.519><c> 4x</c>
+
+00:11:57.190 --> 00:11:57.200 align:start position:0%
+restricted using a sema 4x
+ 
+
+00:11:57.200 --> 00:11:59.509 align:start position:0%
+restricted using a sema 4x
+so<00:11:57.440><c> each</c><00:11:57.760><c> task</c><00:11:58.160><c> would</c><00:11:58.399><c> end</c><00:11:58.560><c> up</c><00:11:58.800><c> executing</c><00:11:59.360><c> the</c>
+
+00:11:59.509 --> 00:11:59.519 align:start position:0%
+so each task would end up executing the
+ 
+
+00:11:59.519 --> 00:12:01.509 align:start position:0%
+so each task would end up executing the
+following<00:12:00.000><c> code</c><00:12:00.240><c> which</c><00:12:00.480><c> is</c><00:12:00.560><c> to</c><00:12:00.720><c> do</c><00:12:00.959><c> some</c><00:12:01.120><c> local</c>
+
+00:12:01.509 --> 00:12:01.519 align:start position:0%
+following code which is to do some local
+ 
+
+00:12:01.519 --> 00:12:03.509 align:start position:0%
+following code which is to do some local
+work
+
+00:12:03.509 --> 00:12:03.519 align:start position:0%
+work
+ 
+
+00:12:03.519 --> 00:12:04.949 align:start position:0%
+work
+wait<00:12:04.000><c> for</c>
+
+00:12:04.949 --> 00:12:04.959 align:start position:0%
+wait for
+ 
+
+00:12:04.959 --> 00:12:08.949 align:start position:0%
+wait for
+semaphore<00:12:05.760><c> x</c><00:12:06.480><c> so</c><00:12:06.720><c> px</c><00:12:07.200><c> actually</c><00:12:07.600><c> if</c><00:12:07.760><c> you</c>
+
+00:12:08.949 --> 00:12:08.959 align:start position:0%
+semaphore x so px actually if you
+ 
+
+00:12:08.959 --> 00:12:10.870 align:start position:0%
+semaphore x so px actually if you
+you<00:12:09.120><c> know</c><00:12:09.279><c> if</c><00:12:09.600><c> this</c><00:12:09.839><c> is</c><00:12:10.000><c> the</c><00:12:10.160><c> terminology</c><00:12:10.800><c> that</c>
+
+00:12:10.870 --> 00:12:10.880 align:start position:0%
+you know if this is the terminology that
+ 
+
+00:12:10.880 --> 00:12:12.629 align:start position:0%
+you know if this is the terminology that
+you'll<00:12:11.120><c> use</c>
+
+00:12:12.629 --> 00:12:12.639 align:start position:0%
+you'll use
+ 
+
+00:12:12.639 --> 00:12:15.829 align:start position:0%
+you'll use
+so<00:12:12.800><c> it'll</c><00:12:13.040><c> basically</c><00:12:13.519><c> wait</c><00:12:13.920><c> for</c>
+
+00:12:15.829 --> 00:12:15.839 align:start position:0%
+so it'll basically wait for
+ 
+
+00:12:15.839 --> 00:12:18.470 align:start position:0%
+so it'll basically wait for
+the<00:12:16.079><c> semaphore</c><00:12:16.560><c> to</c><00:12:16.720><c> become</c><00:12:17.040><c> free</c>
+
+00:12:18.470 --> 00:12:18.480 align:start position:0%
+the semaphore to become free
+ 
+
+00:12:18.480 --> 00:12:20.870 align:start position:0%
+the semaphore to become free
+then<00:12:18.800><c> access</c><00:12:19.200><c> the</c><00:12:19.360><c> shared</c><00:12:19.680><c> resource</c><00:12:20.560><c> right</c>
+
+00:12:20.870 --> 00:12:20.880 align:start position:0%
+then access the shared resource right
+ 
+
+00:12:20.880 --> 00:12:22.829 align:start position:0%
+then access the shared resource right
+access<00:12:21.200><c> the</c><00:12:21.360><c> shared</c>
+
+00:12:22.829 --> 00:12:22.839 align:start position:0%
+access the shared
+ 
+
+00:12:22.839 --> 00:12:25.190 align:start position:0%
+access the shared
+resource<00:12:23.920><c> so</c><00:12:24.160><c> i</c><00:12:24.399><c> just</c><00:12:24.560><c> cleared</c><00:12:24.959><c> up</c><00:12:25.040><c> the</c>
+
+00:12:25.190 --> 00:12:25.200 align:start position:0%
+resource so i just cleared up the
+ 
+
+00:12:25.200 --> 00:12:27.750 align:start position:0%
+resource so i just cleared up the
+clutter<00:12:25.680><c> on</c><00:12:25.760><c> the</c><00:12:25.920><c> slide</c>
+
+00:12:27.750 --> 00:12:27.760 align:start position:0%
+clutter on the slide
+ 
+
+00:12:27.760 --> 00:12:30.389 align:start position:0%
+clutter on the slide
+so<00:12:28.240><c> uh</c><00:12:28.639><c> at</c><00:12:28.880><c> this</c><00:12:29.200><c> point</c>
+
+00:12:30.389 --> 00:12:30.399 align:start position:0%
+so uh at this point
+ 
+
+00:12:30.399 --> 00:12:33.269 align:start position:0%
+so uh at this point
+after<00:12:30.800><c> accessing</c><00:12:31.279><c> the</c><00:12:31.440><c> shared</c><00:12:31.760><c> resource</c>
+
+00:12:33.269 --> 00:12:33.279 align:start position:0%
+after accessing the shared resource
+ 
+
+00:12:33.279 --> 00:12:35.190 align:start position:0%
+after accessing the shared resource
+the<00:12:33.440><c> semaphore</c><00:12:34.000><c> is</c><00:12:34.160><c> freed</c><00:12:34.480><c> in</c><00:12:34.560><c> the</c><00:12:34.720><c> sense</c><00:12:35.040><c> that</c>
+
+00:12:35.190 --> 00:12:35.200 align:start position:0%
+the semaphore is freed in the sense that
+ 
+
+00:12:35.200 --> 00:12:37.509 align:start position:0%
+the semaphore is freed in the sense that
+mr4<00:12:35.680><c> is</c><00:12:35.839><c> signaled</c>
+
+00:12:37.509 --> 00:12:37.519 align:start position:0%
+mr4 is signaled
+ 
+
+00:12:37.519 --> 00:12:39.509 align:start position:0%
+mr4 is signaled
+this<00:12:37.760><c> is</c><00:12:38.000><c> traditional</c><00:12:38.639><c> operating</c><00:12:39.120><c> systems</c>
+
+00:12:39.509 --> 00:12:39.519 align:start position:0%
+this is traditional operating systems
+ 
+
+00:12:39.519 --> 00:12:40.790 align:start position:0%
+this is traditional operating systems
+literature
+
+00:12:40.790 --> 00:12:40.800 align:start position:0%
+literature
+ 
+
+00:12:40.800 --> 00:12:42.949 align:start position:0%
+literature
+and<00:12:40.959><c> then</c><00:12:41.200><c> the</c><00:12:41.360><c> thread</c><00:12:41.760><c> can</c><00:12:41.920><c> do</c><00:12:42.160><c> more</c><00:12:42.399><c> of</c><00:12:42.560><c> local</c>
+
+00:12:42.949 --> 00:12:42.959 align:start position:0%
+and then the thread can do more of local
+ 
+
+00:12:42.959 --> 00:12:46.310 align:start position:0%
+and then the thread can do more of local
+work<00:12:43.440><c> right</c><00:12:43.680><c> after</c><00:12:44.079><c> accessing</c><00:12:44.480><c> the</c><00:12:44.639><c> resource</c>
+
+00:12:46.310 --> 00:12:46.320 align:start position:0%
+work right after accessing the resource
+ 
+
+00:12:46.320 --> 00:12:48.790 align:start position:0%
+work right after accessing the resource
+so<00:12:46.480><c> if</c><00:12:46.639><c> i</c><00:12:46.800><c> were</c><00:12:46.959><c> to</c><00:12:47.120><c> visualize</c><00:12:47.760><c> the</c><00:12:47.920><c> same</c>
+
+00:12:48.790 --> 00:12:48.800 align:start position:0%
+so if i were to visualize the same
+ 
+
+00:12:48.800 --> 00:12:50.470 align:start position:0%
+so if i were to visualize the same
+what<00:12:49.120><c> we</c><00:12:49.279><c> would</c><00:12:49.519><c> see</c>
+
+00:12:50.470 --> 00:12:50.480 align:start position:0%
+what we would see
+ 
+
+00:12:50.480 --> 00:12:52.550 align:start position:0%
+what we would see
+is<00:12:50.639><c> that</c><00:12:50.880><c> let's</c><00:12:51.040><c> say</c><00:12:51.360><c> thread</c><00:12:51.680><c> is</c><00:12:51.839><c> doing</c><00:12:52.079><c> some</c>
+
+00:12:52.550 --> 00:12:52.560 align:start position:0%
+is that let's say thread is doing some
+ 
+
+00:12:52.560 --> 00:12:54.870 align:start position:0%
+is that let's say thread is doing some
+local<00:12:52.959><c> work</c><00:12:53.600><c> it</c><00:12:53.839><c> gets</c>
+
+00:12:54.870 --> 00:12:54.880 align:start position:0%
+local work it gets
+ 
+
+00:12:54.880 --> 00:12:56.870 align:start position:0%
+local work it gets
+access<00:12:55.279><c> to</c><00:12:55.440><c> the</c><00:12:55.600><c> resource</c><00:12:56.079><c> so</c><00:12:56.240><c> it</c><00:12:56.399><c> does</c><00:12:56.639><c> some</c>
+
+00:12:56.870 --> 00:12:56.880 align:start position:0%
+access to the resource so it does some
+ 
+
+00:12:56.880 --> 00:12:58.949 align:start position:0%
+access to the resource so it does some
+work<00:12:57.279><c> on</c><00:12:57.440><c> the</c><00:12:57.600><c> resource</c>
+
+00:12:58.949 --> 00:12:58.959 align:start position:0%
+work on the resource
+ 
+
+00:12:58.959 --> 00:13:01.350 align:start position:0%
+work on the resource
+but<00:12:59.200><c> let</c><00:12:59.360><c> us</c><00:12:59.519><c> say</c><00:12:59.760><c> then</c>
+
+00:13:01.350 --> 00:13:01.360 align:start position:0%
+but let us say then
+ 
+
+00:13:01.360 --> 00:13:04.389 align:start position:0%
+but let us say then
+a<00:13:01.600><c> higher</c><00:13:02.000><c> priority</c><00:13:02.560><c> thread</c><00:13:02.880><c> preempts</c><00:13:03.440><c> it</c>
+
+00:13:04.389 --> 00:13:04.399 align:start position:0%
+a higher priority thread preempts it
+ 
+
+00:13:04.399 --> 00:13:06.949 align:start position:0%
+a higher priority thread preempts it
+so<00:13:04.560><c> the</c><00:13:04.639><c> higher</c><00:13:05.040><c> priority</c><00:13:05.680><c> thread</c><00:13:06.079><c> then</c><00:13:06.320><c> does</c>
+
+00:13:06.949 --> 00:13:06.959 align:start position:0%
+so the higher priority thread then does
+ 
+
+00:13:06.959 --> 00:13:09.110 align:start position:0%
+so the higher priority thread then does
+local<00:13:07.360><c> work</c><00:13:07.680><c> but</c><00:13:07.920><c> for</c><00:13:08.079><c> some</c><00:13:08.320><c> reason</c><00:13:08.639><c> it</c><00:13:08.800><c> gets</c>
+
+00:13:09.110 --> 00:13:09.120 align:start position:0%
+local work but for some reason it gets
+ 
+
+00:13:09.120 --> 00:13:10.949 align:start position:0%
+local work but for some reason it gets
+blocked
+
+00:13:10.949 --> 00:13:10.959 align:start position:0%
+blocked
+ 
+
+00:13:10.959 --> 00:13:12.790 align:start position:0%
+blocked
+right<00:13:11.200><c> so</c><00:13:11.360><c> why</c><00:13:11.519><c> does</c><00:13:11.680><c> it</c><00:13:11.839><c> get</c><00:13:12.079><c> blocked</c><00:13:12.399><c> it</c><00:13:12.560><c> gets</c>
+
+00:13:12.790 --> 00:13:12.800 align:start position:0%
+right so why does it get blocked it gets
+ 
+
+00:13:12.800 --> 00:13:14.470 align:start position:0%
+right so why does it get blocked it gets
+blocked<00:13:13.200><c> because</c><00:13:13.440><c> it</c><00:13:13.600><c> needs</c><00:13:13.920><c> access</c><00:13:14.240><c> to</c><00:13:14.399><c> the</c>
+
+00:13:14.470 --> 00:13:14.480 align:start position:0%
+blocked because it needs access to the
+ 
+
+00:13:14.480 --> 00:13:16.870 align:start position:0%
+blocked because it needs access to the
+resource<00:13:15.040><c> and</c><00:13:15.200><c> this</c><00:13:15.440><c> is</c><00:13:15.519><c> there</c><00:13:15.839><c> with</c><00:13:16.480><c> thread</c>
+
+00:13:16.870 --> 00:13:16.880 align:start position:0%
+resource and this is there with thread
+ 
+
+00:13:16.880 --> 00:13:18.069 align:start position:0%
+resource and this is there with thread
+d3
+
+00:13:18.069 --> 00:13:18.079 align:start position:0%
+d3
+ 
+
+00:13:18.079 --> 00:13:19.829 align:start position:0%
+d3
+so<00:13:18.240><c> the</c><00:13:18.320><c> higher</c><00:13:18.639><c> priority</c><00:13:19.120><c> thread</c><00:13:19.360><c> cannot</c>
+
+00:13:19.829 --> 00:13:19.839 align:start position:0%
+so the higher priority thread cannot
+ 
+
+00:13:19.839 --> 00:13:21.590 align:start position:0%
+so the higher priority thread cannot
+proceed
+
+00:13:21.590 --> 00:13:21.600 align:start position:0%
+proceed
+ 
+
+00:13:21.600 --> 00:13:23.590 align:start position:0%
+proceed
+so<00:13:21.760><c> let's</c><00:13:22.000><c> say</c><00:13:22.240><c> after</c><00:13:22.639><c> this</c>
+
+00:13:23.590 --> 00:13:23.600 align:start position:0%
+so let's say after this
+ 
+
+00:13:23.600 --> 00:13:26.389 align:start position:0%
+so let's say after this
+thread<00:13:23.920><c> t3</c><00:13:24.399><c> starts</c><00:13:24.720><c> to</c><00:13:24.880><c> execute</c><00:13:25.680><c> so</c>
+
+00:13:26.389 --> 00:13:26.399 align:start position:0%
+thread t3 starts to execute so
+ 
+
+00:13:26.399 --> 00:13:29.110 align:start position:0%
+thread t3 starts to execute so
+so<00:13:26.560><c> when</c><00:13:26.800><c> it</c><00:13:26.959><c> is</c><00:13:27.040><c> executing</c><00:13:27.680><c> you</c><00:13:27.920><c> need</c><00:13:28.240><c> the</c><00:13:28.480><c> cpu</c>
+
+00:13:29.110 --> 00:13:29.120 align:start position:0%
+so when it is executing you need the cpu
+ 
+
+00:13:29.120 --> 00:13:31.110 align:start position:0%
+so when it is executing you need the cpu
+as<00:13:29.360><c> well</c><00:13:29.600><c> as</c><00:13:29.680><c> the</c><00:13:29.839><c> resource</c><00:13:30.320><c> so</c><00:13:30.480><c> it</c><00:13:30.560><c> continues</c>
+
+00:13:31.110 --> 00:13:31.120 align:start position:0%
+as well as the resource so it continues
+ 
+
+00:13:31.120 --> 00:13:33.590 align:start position:0%
+as well as the resource so it continues
+to<00:13:31.279><c> access</c><00:13:31.680><c> the</c><00:13:31.839><c> resource</c>
+
+00:13:33.590 --> 00:13:33.600 align:start position:0%
+to access the resource
+ 
+
+00:13:33.600 --> 00:13:35.750 align:start position:0%
+to access the resource
+after<00:13:34.000><c> that</c><00:13:34.240><c> the</c><00:13:34.399><c> resource</c><00:13:34.880><c> is</c><00:13:35.040><c> freed</c><00:13:35.519><c> once</c>
+
+00:13:35.750 --> 00:13:35.760 align:start position:0%
+after that the resource is freed once
+ 
+
+00:13:35.760 --> 00:13:37.590 align:start position:0%
+after that the resource is freed once
+the<00:13:35.920><c> resource</c><00:13:36.480><c> is</c><00:13:36.639><c> freed</c>
+
+00:13:37.590 --> 00:13:37.600 align:start position:0%
+the resource is freed
+ 
+
+00:13:37.600 --> 00:13:40.150 align:start position:0%
+the resource is freed
+the<00:13:37.760><c> higher</c><00:13:38.079><c> priority</c><00:13:38.639><c> task</c><00:13:39.040><c> which</c><00:13:39.279><c> is</c><00:13:39.680><c> task</c>
+
+00:13:40.150 --> 00:13:40.160 align:start position:0%
+the higher priority task which is task
+ 
+
+00:13:40.160 --> 00:13:42.069 align:start position:0%
+the higher priority task which is task
+t1<00:13:40.800><c> in</c><00:13:40.959><c> this</c><00:13:41.199><c> case</c>
+
+00:13:42.069 --> 00:13:42.079 align:start position:0%
+t1 in this case
+ 
+
+00:13:42.079 --> 00:13:44.069 align:start position:0%
+t1 in this case
+can<00:13:42.399><c> start</c><00:13:42.800><c> executing</c><00:13:43.440><c> so</c><00:13:43.600><c> it</c><00:13:43.680><c> will</c><00:13:43.839><c> get</c>
+
+00:13:44.069 --> 00:13:44.079 align:start position:0%
+can start executing so it will get
+ 
+
+00:13:44.079 --> 00:13:45.750 align:start position:0%
+can start executing so it will get
+access<00:13:44.399><c> to</c><00:13:44.560><c> the</c><00:13:44.639><c> resource</c><00:13:45.120><c> and</c><00:13:45.440><c> start</c>
+
+00:13:45.750 --> 00:13:45.760 align:start position:0%
+access to the resource and start
+ 
+
+00:13:45.760 --> 00:13:46.829 align:start position:0%
+access to the resource and start
+executing
+
+00:13:46.829 --> 00:13:46.839 align:start position:0%
+executing
+ 
+
+00:13:46.839 --> 00:13:49.350 align:start position:0%
+executing
+immediately<00:13:48.079><c> after</c><00:13:48.399><c> this</c><00:13:48.720><c> it</c><00:13:48.880><c> will</c><00:13:49.040><c> do</c><00:13:49.199><c> some</c>
+
+00:13:49.350 --> 00:13:49.360 align:start position:0%
+immediately after this it will do some
+ 
+
+00:13:49.360 --> 00:13:51.750 align:start position:0%
+immediately after this it will do some
+local<00:13:49.760><c> work</c><00:13:50.000><c> and</c><00:13:50.160><c> it</c><00:13:50.320><c> will</c><00:13:50.399><c> complete</c><00:13:51.199><c> once</c><00:13:51.519><c> it</c>
+
+00:13:51.750 --> 00:13:51.760 align:start position:0%
+local work and it will complete once it
+ 
+
+00:13:51.760 --> 00:13:52.949 align:start position:0%
+local work and it will complete once it
+completes
+
+00:13:52.949 --> 00:13:52.959 align:start position:0%
+completes
+ 
+
+00:13:52.959 --> 00:13:55.829 align:start position:0%
+completes
+assuming<00:13:53.440><c> t3</c><00:13:53.920><c> is</c><00:13:54.079><c> the</c><00:13:54.800><c> most</c><00:13:55.120><c> high</c><00:13:55.360><c> priority</c>
+
+00:13:55.829 --> 00:13:55.839 align:start position:0%
+assuming t3 is the most high priority
+ 
+
+00:13:55.839 --> 00:13:58.310 align:start position:0%
+assuming t3 is the most high priority
+process<00:13:56.320><c> right</c><00:13:56.639><c> now</c>
+
+00:13:58.310 --> 00:13:58.320 align:start position:0%
+process right now
+ 
+
+00:13:58.320 --> 00:14:00.389 align:start position:0%
+process right now
+so<00:13:58.480><c> what</c><00:13:58.720><c> will</c><00:13:58.880><c> happen</c><00:13:59.279><c> is</c><00:13:59.440><c> t3</c><00:13:59.839><c> will</c><00:14:00.079><c> start</c>
+
+00:14:00.389 --> 00:14:00.399 align:start position:0%
+so what will happen is t3 will start
+ 
+
+00:14:00.399 --> 00:14:03.829 align:start position:0%
+so what will happen is t3 will start
+executing<00:14:01.519><c> so</c><00:14:01.680><c> it</c><00:14:01.839><c> will</c><00:14:02.079><c> start</c><00:14:02.480><c> accessing</c><00:14:03.040><c> the</c>
+
+00:14:03.829 --> 00:14:03.839 align:start position:0%
+executing so it will start accessing the
+ 
+
+00:14:03.839 --> 00:14:05.509 align:start position:0%
+executing so it will start accessing the
+it<00:14:04.000><c> will</c><00:14:04.240><c> sorry</c><00:14:04.560><c> it</c><00:14:04.720><c> will</c><00:14:04.880><c> start</c><00:14:05.120><c> doing</c><00:14:05.279><c> some</c>
+
+00:14:05.509 --> 00:14:05.519 align:start position:0%
+it will sorry it will start doing some
+ 
+
+00:14:05.519 --> 00:14:07.750 align:start position:0%
+it will sorry it will start doing some
+local<00:14:05.839><c> work</c><00:14:06.160><c> and</c><00:14:06.240><c> then</c><00:14:06.480><c> it</c><00:14:06.639><c> will</c><00:14:06.800><c> complete</c>
+
+00:14:07.750 --> 00:14:07.760 align:start position:0%
+local work and then it will complete
+ 
+
+00:14:07.760 --> 00:14:10.150 align:start position:0%
+local work and then it will complete
+so<00:14:08.000><c> this</c><00:14:08.240><c> shows</c><00:14:08.560><c> you</c><00:14:09.199><c> the</c><00:14:09.440><c> interaction</c>
+
+00:14:10.150 --> 00:14:10.160 align:start position:0%
+so this shows you the interaction
+ 
+
+00:14:10.160 --> 00:14:13.990 align:start position:0%
+so this shows you the interaction
+between<00:14:11.040><c> t1</c><00:14:11.600><c> and</c><00:14:11.839><c> task</c><00:14:12.240><c> 1</c><00:14:12.480><c> and</c><00:14:12.639><c> task</c><00:14:13.040><c> 3.</c>
+
+00:14:13.990 --> 00:14:14.000 align:start position:0%
+between t1 and task 1 and task 3.
+ 
+
+00:14:14.000 --> 00:14:16.629 align:start position:0%
+between t1 and task 1 and task 3.
+fair<00:14:14.320><c> task</c><00:14:14.639><c> 1</c><00:14:14.880><c> has</c><00:14:14.959><c> a</c><00:14:15.040><c> higher</c><00:14:15.360><c> priority</c><00:14:16.079><c> but</c><00:14:16.480><c> it</c>
+
+00:14:16.629 --> 00:14:16.639 align:start position:0%
+fair task 1 has a higher priority but it
+ 
+
+00:14:16.639 --> 00:14:18.069 align:start position:0%
+fair task 1 has a higher priority but it
+gets<00:14:16.959><c> blocked</c><00:14:17.279><c> there</c><00:14:17.440><c> is</c><00:14:17.519><c> a</c><00:14:17.600><c> priority</c>
+
+00:14:18.069 --> 00:14:18.079 align:start position:0%
+gets blocked there is a priority
+ 
+
+00:14:18.079 --> 00:14:21.030 align:start position:0%
+gets blocked there is a priority
+inversion<00:14:19.120><c> because</c><00:14:19.600><c> task</c><00:14:19.920><c> 3</c><00:14:20.240><c> gets</c><00:14:20.480><c> access</c><00:14:20.880><c> to</c>
+
+00:14:21.030 --> 00:14:21.040 align:start position:0%
+inversion because task 3 gets access to
+ 
+
+00:14:21.040 --> 00:14:24.150 align:start position:0%
+inversion because task 3 gets access to
+a<00:14:21.120><c> resource</c><00:14:21.760><c> that</c><00:14:22.000><c> task</c><00:14:22.399><c> 1</c><00:14:22.639><c> actually</c><00:14:23.040><c> needs</c>
+
+00:14:24.150 --> 00:14:24.160 align:start position:0%
+a resource that task 1 actually needs
+ 
+
+00:14:24.160 --> 00:14:27.430 align:start position:0%
+a resource that task 1 actually needs
+at<00:14:24.320><c> a</c><00:14:24.399><c> later</c><00:14:24.720><c> point</c><00:14:24.959><c> of</c><00:14:25.120><c> time</c>
+
+00:14:27.430 --> 00:14:27.440 align:start position:0%
+ 
+ 
+
+00:14:27.440 --> 00:14:29.350 align:start position:0%
+ 
+so<00:14:27.600><c> if</c><00:14:27.760><c> i</c><00:14:27.839><c> were</c><00:14:28.079><c> to</c><00:14:28.240><c> look</c><00:14:28.399><c> at</c><00:14:28.560><c> two</c><00:14:28.880><c> priority</c>
+
+00:14:29.350 --> 00:14:29.360 align:start position:0%
+so if i were to look at two priority
+ 
+
+00:14:29.360 --> 00:14:31.590 align:start position:0%
+so if i were to look at two priority
+inversions<00:14:29.920><c> the</c><00:14:30.079><c> way</c><00:14:30.320><c> it</c><00:14:30.399><c> would</c><00:14:30.639><c> look</c><00:14:30.880><c> at</c><00:14:31.360><c> look</c>
+
+00:14:31.590 --> 00:14:31.600 align:start position:0%
+inversions the way it would look at look
+ 
+
+00:14:31.600 --> 00:14:32.629 align:start position:0%
+inversions the way it would look at look
+like
+
+00:14:32.629 --> 00:14:32.639 align:start position:0%
+like
+ 
+
+00:14:32.639 --> 00:14:34.470 align:start position:0%
+like
+is<00:14:32.800><c> that</c><00:14:33.040><c> task</c><00:14:33.360><c> three</c><00:14:33.600><c> will</c><00:14:33.760><c> do</c><00:14:33.920><c> some</c><00:14:34.079><c> local</c>
+
+00:14:34.470 --> 00:14:34.480 align:start position:0%
+is that task three will do some local
+ 
+
+00:14:34.480 --> 00:14:35.430 align:start position:0%
+is that task three will do some local
+work
+
+00:14:35.430 --> 00:14:35.440 align:start position:0%
+work
+ 
+
+00:14:35.440 --> 00:14:38.870 align:start position:0%
+work
+it<00:14:35.600><c> will</c><00:14:36.240><c> get</c><00:14:36.560><c> access</c><00:14:36.880><c> to</c><00:14:37.120><c> a</c><00:14:37.199><c> resource</c>
+
+00:14:38.870 --> 00:14:38.880 align:start position:0%
+it will get access to a resource
+ 
+
+00:14:38.880 --> 00:14:41.829 align:start position:0%
+it will get access to a resource
+and<00:14:39.120><c> then</c><00:14:39.360><c> it</c><00:14:39.519><c> will</c><00:14:39.600><c> get</c><00:14:39.839><c> blocked</c>
+
+00:14:41.829 --> 00:14:41.839 align:start position:0%
+and then it will get blocked
+ 
+
+00:14:41.839 --> 00:14:43.430 align:start position:0%
+and then it will get blocked
+so<00:14:42.000><c> it</c><00:14:42.160><c> will</c><00:14:42.240><c> get</c><00:14:42.399><c> blocked</c><00:14:42.720><c> for</c><00:14:42.959><c> exactly</c><00:14:43.360><c> the</c>
+
+00:14:43.430 --> 00:14:43.440 align:start position:0%
+so it will get blocked for exactly the
+ 
+
+00:14:43.440 --> 00:14:45.269 align:start position:0%
+so it will get blocked for exactly the
+same<00:14:43.760><c> reason</c><00:14:44.079><c> that</c><00:14:44.240><c> it</c><00:14:44.399><c> didn't</c><00:14:44.639><c> get</c><00:14:44.880><c> access</c><00:14:45.120><c> to</c>
+
+00:14:45.269 --> 00:14:45.279 align:start position:0%
+same reason that it didn't get access to
+ 
+
+00:14:45.279 --> 00:14:47.030 align:start position:0%
+same reason that it didn't get access to
+the<00:14:45.440><c> resource</c>
+
+00:14:47.030 --> 00:14:47.040 align:start position:0%
+the resource
+ 
+
+00:14:47.040 --> 00:14:49.430 align:start position:0%
+the resource
+but<00:14:47.279><c> in</c><00:14:47.440><c> this</c><00:14:47.760><c> case</c><00:14:48.079><c> we</c><00:14:48.320><c> are</c><00:14:48.560><c> looking</c><00:14:48.959><c> more</c><00:14:49.199><c> at</c>
+
+00:14:49.430 --> 00:14:49.440 align:start position:0%
+but in this case we are looking more at
+ 
+
+00:14:49.440 --> 00:14:51.829 align:start position:0%
+but in this case we are looking more at
+an<00:14:49.680><c> unbounded</c><00:14:50.560><c> priority</c><00:14:51.040><c> inversion</c><00:14:51.519><c> kind</c><00:14:51.760><c> of</c>
+
+00:14:51.829 --> 00:14:51.839 align:start position:0%
+an unbounded priority inversion kind of
+ 
+
+00:14:51.839 --> 00:14:53.189 align:start position:0%
+an unbounded priority inversion kind of
+scenario
+
+00:14:53.189 --> 00:14:53.199 align:start position:0%
+scenario
+ 
+
+00:14:53.199 --> 00:14:55.509 align:start position:0%
+scenario
+where<00:14:53.440><c> an</c><00:14:53.600><c> intermediate</c><00:14:54.240><c> task</c><00:14:54.639><c> which</c><00:14:54.880><c> is</c><00:14:55.040><c> task</c>
+
+00:14:55.509 --> 00:14:55.519 align:start position:0%
+where an intermediate task which is task
+ 
+
+00:14:55.519 --> 00:14:59.750 align:start position:0%
+where an intermediate task which is task
+2<00:14:56.320><c> starts</c><00:14:56.720><c> to</c><00:14:56.880><c> execute</c><00:14:58.079><c> in</c><00:14:58.240><c> the</c><00:14:58.399><c> sense</c><00:14:58.720><c> it</c><00:14:58.880><c> does</c>
+
+00:14:59.750 --> 00:14:59.760 align:start position:0%
+2 starts to execute in the sense it does
+ 
+
+00:14:59.760 --> 00:15:02.150 align:start position:0%
+2 starts to execute in the sense it does
+its<00:15:00.240><c> local</c><00:15:00.639><c> work</c>
+
+00:15:02.150 --> 00:15:02.160 align:start position:0%
+its local work
+ 
+
+00:15:02.160 --> 00:15:05.910 align:start position:0%
+its local work
+and<00:15:02.800><c> so</c><00:15:03.040><c> which</c><00:15:03.279><c> is</c><00:15:03.600><c> neither</c><00:15:04.000><c> t1</c><00:15:04.399><c> nor</c><00:15:04.720><c> t3</c><00:15:05.680><c> in</c><00:15:05.760><c> the</c>
+
+00:15:05.910 --> 00:15:05.920 align:start position:0%
+and so which is neither t1 nor t3 in the
+ 
+
+00:15:05.920 --> 00:15:07.430 align:start position:0%
+and so which is neither t1 nor t3 in the
+sense<00:15:06.240><c> that</c><00:15:06.480><c> you</c><00:15:06.560><c> know</c><00:15:06.720><c> the</c><00:15:06.800><c> resource</c><00:15:07.279><c> is</c>
+
+00:15:07.430 --> 00:15:07.440 align:start position:0%
+sense that you know the resource is
+ 
+
+00:15:07.440 --> 00:15:09.509 align:start position:0%
+sense that you know the resource is
+still<00:15:07.680><c> captured</c><00:15:08.160><c> by</c><00:15:08.320><c> t3</c><00:15:08.800><c> and</c><00:15:08.880><c> because</c><00:15:09.199><c> of</c><00:15:09.279><c> that</c>
+
+00:15:09.509 --> 00:15:09.519 align:start position:0%
+still captured by t3 and because of that
+ 
+
+00:15:09.519 --> 00:15:11.750 align:start position:0%
+still captured by t3 and because of that
+t1<00:15:09.920><c> is</c><00:15:10.000><c> waiting</c><00:15:10.639><c> the</c><00:15:10.800><c> most</c><00:15:11.040><c> high</c><00:15:11.279><c> priority</c>
+
+00:15:11.750 --> 00:15:11.760 align:start position:0%
+t1 is waiting the most high priority
+ 
+
+00:15:11.760 --> 00:15:12.790 align:start position:0%
+t1 is waiting the most high priority
+process
+
+00:15:12.790 --> 00:15:12.800 align:start position:0%
+process
+ 
+
+00:15:12.800 --> 00:15:15.910 align:start position:0%
+process
+but<00:15:13.040><c> after</c><00:15:13.360><c> t2</c><00:15:13.760><c> completes</c><00:15:14.320><c> again</c><00:15:14.880><c> t3</c><00:15:15.440><c> task</c><00:15:15.680><c> 3</c>
+
+00:15:15.910 --> 00:15:15.920 align:start position:0%
+but after t2 completes again t3 task 3
+ 
+
+00:15:15.920 --> 00:15:17.269 align:start position:0%
+but after t2 completes again t3 task 3
+gets<00:15:16.160><c> to</c><00:15:16.240><c> execute</c>
+
+00:15:17.269 --> 00:15:17.279 align:start position:0%
+gets to execute
+ 
+
+00:15:17.279 --> 00:15:19.269 align:start position:0%
+gets to execute
+which<00:15:17.600><c> as</c><00:15:17.760><c> you</c><00:15:17.839><c> can</c><00:15:18.000><c> see</c><00:15:18.240><c> is</c><00:15:18.399><c> a</c><00:15:18.639><c> long</c><00:15:18.959><c> time</c>
+
+00:15:19.269 --> 00:15:19.279 align:start position:0%
+which as you can see is a long time
+ 
+
+00:15:19.279 --> 00:15:20.629 align:start position:0%
+which as you can see is a long time
+later
+
+00:15:20.629 --> 00:15:20.639 align:start position:0%
+later
+ 
+
+00:15:20.639 --> 00:15:22.870 align:start position:0%
+later
+it<00:15:20.800><c> works</c><00:15:21.120><c> with</c><00:15:21.279><c> the</c><00:15:21.440><c> resource</c><00:15:22.320><c> then</c><00:15:22.639><c> it</c>
+
+00:15:22.870 --> 00:15:22.880 align:start position:0%
+it works with the resource then it
+ 
+
+00:15:22.880 --> 00:15:25.030 align:start position:0%
+it works with the resource then it
+relinquishes<00:15:23.600><c> the</c><00:15:23.760><c> resource</c>
+
+00:15:25.030 --> 00:15:25.040 align:start position:0%
+relinquishes the resource
+ 
+
+00:15:25.040 --> 00:15:27.350 align:start position:0%
+relinquishes the resource
+task<00:15:25.440><c> one</c><00:15:25.760><c> begins</c><00:15:26.240><c> it</c><00:15:26.399><c> works</c><00:15:26.720><c> on</c><00:15:26.800><c> the</c><00:15:26.880><c> resource</c>
+
+00:15:27.350 --> 00:15:27.360 align:start position:0%
+task one begins it works on the resource
+ 
+
+00:15:27.360 --> 00:15:29.590 align:start position:0%
+task one begins it works on the resource
+does<00:15:27.600><c> some</c><00:15:27.760><c> local</c><00:15:28.079><c> work</c><00:15:28.399><c> and</c><00:15:28.480><c> completes</c>
+
+00:15:29.590 --> 00:15:29.600 align:start position:0%
+does some local work and completes
+ 
+
+00:15:29.600 --> 00:15:32.629 align:start position:0%
+does some local work and completes
+so<00:15:29.759><c> this</c><00:15:30.000><c> is</c><00:15:30.240><c> exactly</c><00:15:30.800><c> how</c><00:15:31.199><c> you</c><00:15:31.279><c> can</c><00:15:31.600><c> have</c>
+
+00:15:32.629 --> 00:15:32.639 align:start position:0%
+so this is exactly how you can have
+ 
+
+00:15:32.639 --> 00:15:36.150 align:start position:0%
+so this is exactly how you can have
+unbounded<00:15:33.440><c> priority</c><00:15:34.000><c> inversions</c>
+
+00:15:36.150 --> 00:15:36.160 align:start position:0%
+unbounded priority inversions
+ 
+
+00:15:36.160 --> 00:15:39.110 align:start position:0%
+unbounded priority inversions
+so<00:15:36.399><c> in</c><00:15:36.480><c> this</c><00:15:36.639><c> case</c><00:15:36.880><c> we</c><00:15:37.040><c> see</c><00:15:37.279><c> two</c>
+
+00:15:39.110 --> 00:15:39.120 align:start position:0%
+so in this case we see two
+ 
+
+00:15:39.120 --> 00:15:41.269 align:start position:0%
+so in this case we see two
+so<00:15:39.360><c> of</c><00:15:39.519><c> course</c><00:15:39.759><c> if</c><00:15:40.000><c> the</c><00:15:40.240><c> for</c><00:15:40.480><c> an</c><00:15:40.639><c> unbounded</c>
+
+00:15:41.269 --> 00:15:41.279 align:start position:0%
+so of course if the for an unbounded
+ 
+
+00:15:41.279 --> 00:15:42.870 align:start position:0%
+so of course if the for an unbounded
+situation
+
+00:15:42.870 --> 00:15:42.880 align:start position:0%
+situation
+ 
+
+00:15:42.880 --> 00:15:44.870 align:start position:0%
+situation
+what<00:15:43.120><c> will</c><00:15:43.279><c> happen</c><00:15:43.680><c> is</c><00:15:43.759><c> that</c><00:15:44.000><c> instead</c><00:15:44.399><c> of</c><00:15:44.480><c> one</c>
+
+00:15:44.870 --> 00:15:44.880 align:start position:0%
+what will happen is that instead of one
+ 
+
+00:15:44.880 --> 00:15:46.550 align:start position:0%
+what will happen is that instead of one
+intermediate<00:15:45.440><c> task</c><00:15:45.680><c> there'll</c><00:15:45.920><c> be</c><00:15:46.000><c> a</c><00:15:46.079><c> bunch</c><00:15:46.399><c> of</c>
+
+00:15:46.550 --> 00:15:46.560 align:start position:0%
+intermediate task there'll be a bunch of
+ 
+
+00:15:46.560 --> 00:15:48.389 align:start position:0%
+intermediate task there'll be a bunch of
+intermediate<00:15:47.199><c> tasks</c>
+
+00:15:48.389 --> 00:15:48.399 align:start position:0%
+intermediate tasks
+ 
+
+00:15:48.399 --> 00:15:51.590 align:start position:0%
+intermediate tasks
+where<00:15:48.720><c> again</c><00:15:49.120><c> t3</c><00:15:50.000><c> gets</c><00:15:50.320><c> the</c><00:15:50.880><c> resource</c><00:15:51.360><c> but</c>
+
+00:15:51.590 --> 00:15:51.600 align:start position:0%
+where again t3 gets the resource but
+ 
+
+00:15:51.600 --> 00:15:55.430 align:start position:0%
+where again t3 gets the resource but
+gets<00:15:52.000><c> preempted</c><00:15:52.560><c> by</c><00:15:52.839><c> t1</c><00:15:53.920><c> t1</c><00:15:54.399><c> blocks</c><00:15:54.959><c> and</c><00:15:55.199><c> after</c>
+
+00:15:55.430 --> 00:15:55.440 align:start position:0%
+gets preempted by t1 t1 blocks and after
+ 
+
+00:15:55.440 --> 00:15:57.670 align:start position:0%
+gets preempted by t1 t1 blocks and after
+that<00:15:55.680><c> a</c><00:15:55.759><c> bunch</c><00:15:56.160><c> of</c><00:15:56.320><c> other</c><00:15:56.560><c> intermediate</c><00:15:57.199><c> tasks</c>
+
+00:15:57.670 --> 00:15:57.680 align:start position:0%
+that a bunch of other intermediate tasks
+ 
+
+00:15:57.680 --> 00:15:58.949 align:start position:0%
+that a bunch of other intermediate tasks
+execute
+
+00:15:58.949 --> 00:15:58.959 align:start position:0%
+execute
+ 
+
+00:15:58.959 --> 00:16:02.870 align:start position:0%
+execute
+a<00:15:59.199><c> long</c><00:15:59.519><c> long</c><00:15:59.839><c> time</c><00:16:00.160><c> later</c><00:16:00.639><c> t3</c><00:16:01.120><c> executes</c>
+
+00:16:02.870 --> 00:16:02.880 align:start position:0%
+a long long time later t3 executes
+ 
+
+00:16:02.880 --> 00:16:05.110 align:start position:0%
+a long long time later t3 executes
+and<00:16:03.120><c> then</c>
+
+00:16:05.110 --> 00:16:05.120 align:start position:0%
+and then
+ 
+
+00:16:05.120 --> 00:16:07.430 align:start position:0%
+and then
+what<00:16:05.360><c> we</c><00:16:05.519><c> see</c><00:16:05.759><c> is</c><00:16:06.079><c> that</c><00:16:06.320><c> at</c><00:16:06.800><c> this</c><00:16:07.040><c> point</c><00:16:07.279><c> of</c>
+
+00:16:07.430 --> 00:16:07.440 align:start position:0%
+what we see is that at this point of
+ 
+
+00:16:07.440 --> 00:16:08.470 align:start position:0%
+what we see is that at this point of
+time
+
+00:16:08.470 --> 00:16:08.480 align:start position:0%
+time
+ 
+
+00:16:08.480 --> 00:16:12.069 align:start position:0%
+time
+again<00:16:08.800><c> t1</c><00:16:09.279><c> executes</c><00:16:09.839><c> it</c><00:16:09.920><c> gets</c><00:16:10.639><c> the</c><00:16:10.800><c> resource</c>
+
+00:16:12.069 --> 00:16:12.079 align:start position:0%
+again t1 executes it gets the resource
+ 
+
+00:16:12.079 --> 00:16:15.110 align:start position:0%
+again t1 executes it gets the resource
+and<00:16:12.160><c> then</c><00:16:12.399><c> it</c><00:16:12.560><c> finishes</c><00:16:13.519><c> its</c><00:16:13.839><c> local</c><00:16:14.160><c> work</c>
+
+00:16:15.110 --> 00:16:15.120 align:start position:0%
+and then it finishes its local work
+ 
+
+00:16:15.120 --> 00:16:16.790 align:start position:0%
+and then it finishes its local work
+but<00:16:15.360><c> it's</c><00:16:15.519><c> very</c><00:16:15.759><c> well</c><00:16:16.000><c> possible</c><00:16:16.480><c> that</c><00:16:16.639><c> it</c>
+
+00:16:16.790 --> 00:16:16.800 align:start position:0%
+but it's very well possible that it
+ 
+
+00:16:16.800 --> 00:16:18.870 align:start position:0%
+but it's very well possible that it
+misses<00:16:17.199><c> its</c><00:16:17.360><c> deadline</c><00:16:18.079><c> because</c><00:16:18.480><c> it</c><00:16:18.639><c> got</c>
+
+00:16:18.870 --> 00:16:18.880 align:start position:0%
+misses its deadline because it got
+ 
+
+00:16:18.880 --> 00:16:20.949 align:start position:0%
+misses its deadline because it got
+delayed<00:16:19.279><c> for</c><00:16:19.519><c> such</c><00:16:19.759><c> a</c><00:16:19.920><c> large</c><00:16:20.240><c> period</c><00:16:20.639><c> right</c><00:16:20.800><c> if</c>
+
+00:16:20.949 --> 00:16:20.959 align:start position:0%
+delayed for such a large period right if
+ 
+
+00:16:20.959 --> 00:16:23.590 align:start position:0%
+delayed for such a large period right if
+you<00:16:21.040><c> see</c><00:16:21.440><c> such</c><00:16:21.680><c> a</c><00:16:21.839><c> large</c><00:16:22.160><c> period</c><00:16:22.639><c> for</c><00:16:22.800><c> which</c>
+
+00:16:23.590 --> 00:16:23.600 align:start position:0%
+you see such a large period for which
+ 
+
+00:16:23.600 --> 00:16:27.110 align:start position:0%
+you see such a large period for which
+it<00:16:23.839><c> got</c><00:16:24.079><c> delayed</c>
+
+00:16:27.110 --> 00:16:27.120 align:start position:0%
+ 
+ 
+
+00:16:27.120 --> 00:16:28.470 align:start position:0%
+ 
+so<00:16:27.279><c> what</c><00:16:27.519><c> happened</c><00:16:27.839><c> with</c><00:16:28.000><c> the</c><00:16:28.160><c> mars</c>
+
+00:16:28.470 --> 00:16:28.480 align:start position:0%
+so what happened with the mars
+ 
+
+00:16:28.480 --> 00:16:31.670 align:start position:0%
+so what happened with the mars
+pathfinder<00:16:29.360><c> is</c><00:16:29.519><c> that</c><00:16:29.759><c> it</c><00:16:29.920><c> landed</c><00:16:30.320><c> on</c><00:16:30.480><c> mars</c>
+
+00:16:31.670 --> 00:16:31.680 align:start position:0%
+pathfinder is that it landed on mars
+ 
+
+00:16:31.680 --> 00:16:36.389 align:start position:0%
+pathfinder is that it landed on mars
+on<00:16:31.759><c> the</c><00:16:31.839><c> martian</c><00:16:32.320><c> surface</c><00:16:32.720><c> on</c><00:16:32.800><c> july</c><00:16:33.199><c> 4th</c><00:16:33.519><c> 1997.</c>
+
+00:16:36.389 --> 00:16:36.399 align:start position:0%
+on the martian surface on july 4th 1997.
+ 
+
+00:16:36.399 --> 00:16:38.710 align:start position:0%
+on the martian surface on july 4th 1997.
+so<00:16:37.040><c> this</c><00:16:37.279><c> part</c><00:16:37.600><c> went</c><00:16:37.839><c> seamlessly</c><00:16:38.480><c> in</c><00:16:38.560><c> the</c>
+
+00:16:38.710 --> 00:16:38.720 align:start position:0%
+so this part went seamlessly in the
+ 
+
+00:16:38.720 --> 00:16:40.389 align:start position:0%
+so this part went seamlessly in the
+sense<00:16:38.959><c> it</c><00:16:39.120><c> bounced</c><00:16:39.600><c> onto</c><00:16:39.839><c> the</c><00:16:40.000><c> martian</c>
+
+00:16:40.389 --> 00:16:40.399 align:start position:0%
+sense it bounced onto the martian
+ 
+
+00:16:40.399 --> 00:16:43.189 align:start position:0%
+sense it bounced onto the martian
+surface<00:16:41.120><c> with</c><00:16:41.519><c> airbags</c>
+
+00:16:43.189 --> 00:16:43.199 align:start position:0%
+surface with airbags
+ 
+
+00:16:43.199 --> 00:16:45.509 align:start position:0%
+surface with airbags
+it<00:16:43.360><c> deployed</c><00:16:44.000><c> a</c><00:16:44.160><c> rover</c>
+
+00:16:45.509 --> 00:16:45.519 align:start position:0%
+it deployed a rover
+ 
+
+00:16:45.519 --> 00:16:47.509 align:start position:0%
+it deployed a rover
+which<00:16:45.839><c> gathered</c><00:16:46.320><c> and</c><00:16:46.480><c> transmitted</c><00:16:47.120><c> a</c><00:16:47.279><c> large</c>
+
+00:16:47.509 --> 00:16:47.519 align:start position:0%
+which gathered and transmitted a large
+ 
+
+00:16:47.519 --> 00:16:50.389 align:start position:0%
+which gathered and transmitted a large
+amount<00:16:47.839><c> of</c><00:16:48.000><c> data</c><00:16:48.320><c> back</c><00:16:48.560><c> to</c><00:16:48.880><c> earth</c><00:16:50.079><c> which</c>
+
+00:16:50.389 --> 00:16:50.399 align:start position:0%
+amount of data back to earth which
+ 
+
+00:16:50.399 --> 00:16:52.470 align:start position:0%
+amount of data back to earth which
+included<00:16:50.880><c> you</c><00:16:50.959><c> know</c><00:16:51.199><c> quite</c><00:16:51.440><c> phenomena</c>
+
+00:16:52.470 --> 00:16:52.480 align:start position:0%
+included you know quite phenomena
+ 
+
+00:16:52.480 --> 00:16:55.590 align:start position:0%
+included you know quite phenomena
+panoramic<00:16:53.279><c> iconic</c><00:16:53.759><c> pictures</c><00:16:54.320><c> of</c><00:16:54.560><c> mars</c>
+
+00:16:55.590 --> 00:16:55.600 align:start position:0%
+panoramic iconic pictures of mars
+ 
+
+00:16:55.600 --> 00:16:57.990 align:start position:0%
+panoramic iconic pictures of mars
+uh<00:16:55.920><c> that</c><00:16:56.160><c> we</c><00:16:56.320><c> you</c><00:16:56.480><c> know</c><00:16:56.639><c> that</c><00:16:56.800><c> we</c><00:16:57.040><c> have</c><00:16:57.600><c> so</c><00:16:57.759><c> all</c>
+
+00:16:57.990 --> 00:16:58.000 align:start position:0%
+uh that we you know that we have so all
+ 
+
+00:16:58.000 --> 00:17:01.269 align:start position:0%
+uh that we you know that we have so all
+of<00:16:58.160><c> this</c><00:16:58.399><c> is</c><00:16:59.040><c> curtsy</c><00:16:59.440><c> pathfinder</c>
+
+00:17:01.269 --> 00:17:01.279 align:start position:0%
+of this is curtsy pathfinder
+ 
+
+00:17:01.279 --> 00:17:03.189 align:start position:0%
+of this is curtsy pathfinder
+so<00:17:01.519><c> these</c><00:17:01.759><c> are</c><00:17:02.000><c> again</c><00:17:02.240><c> you</c><00:17:02.399><c> know</c><00:17:02.800><c> another</c>
+
+00:17:03.189 --> 00:17:03.199 align:start position:0%
+so these are again you know another
+ 
+
+00:17:03.199 --> 00:17:05.189 align:start position:0%
+so these are again you know another
+panoramic<00:17:03.839><c> view</c><00:17:04.079><c> of</c><00:17:04.160><c> the</c><00:17:04.240><c> martian</c><00:17:04.720><c> surface</c>
+
+00:17:05.189 --> 00:17:05.199 align:start position:0%
+panoramic view of the martian surface
+ 
+
+00:17:05.199 --> 00:17:08.630 align:start position:0%
+panoramic view of the martian surface
+you<00:17:05.280><c> can</c><00:17:05.520><c> see</c><00:17:05.679><c> the</c><00:17:05.839><c> martian</c><00:17:06.319><c> soil</c><00:17:06.720><c> the</c><00:17:06.880><c> rocks</c>
+
+00:17:08.630 --> 00:17:08.640 align:start position:0%
+you can see the martian soil the rocks
+ 
+
+00:17:08.640 --> 00:17:11.110 align:start position:0%
+you can see the martian soil the rocks
+but<00:17:08.959><c> unfortunately</c><00:17:09.760><c> it</c><00:17:09.919><c> began</c><00:17:10.319><c> experiencing</c>
+
+00:17:11.110 --> 00:17:11.120 align:start position:0%
+but unfortunately it began experiencing
+ 
+
+00:17:11.120 --> 00:17:13.990 align:start position:0%
+but unfortunately it began experiencing
+total<00:17:11.520><c> system</c><00:17:11.919><c> resets</c>
+
+00:17:13.990 --> 00:17:14.000 align:start position:0%
+total system resets
+ 
+
+00:17:14.000 --> 00:17:15.429 align:start position:0%
+total system resets
+each<00:17:14.240><c> of</c><00:17:14.400><c> these</c>
+
+00:17:15.429 --> 00:17:15.439 align:start position:0%
+each of these
+ 
+
+00:17:15.439 --> 00:17:17.669 align:start position:0%
+each of these
+resulted<00:17:16.079><c> in</c><00:17:16.240><c> the</c><00:17:16.319><c> loss</c><00:17:16.640><c> of</c><00:17:16.720><c> data</c><00:17:17.120><c> because</c><00:17:17.520><c> in</c>
+
+00:17:17.669 --> 00:17:17.679 align:start position:0%
+resulted in the loss of data because in
+ 
+
+00:17:17.679 --> 00:17:19.110 align:start position:0%
+resulted in the loss of data because in
+the<00:17:17.760><c> system</c><00:17:18.160><c> reset</c>
+
+00:17:19.110 --> 00:17:19.120 align:start position:0%
+the system reset
+ 
+
+00:17:19.120 --> 00:17:23.029 align:start position:0%
+the system reset
+some<00:17:19.439><c> data</c><00:17:19.760><c> was</c><00:17:20.000><c> getting</c><00:17:20.400><c> lost</c>
+
+00:17:23.029 --> 00:17:23.039 align:start position:0%
+ 
+ 
+
+00:17:23.039 --> 00:17:25.029 align:start position:0%
+ 
+so<00:17:23.199><c> the</c><00:17:23.360><c> newspapers</c><00:17:24.160><c> reported</c><00:17:24.720><c> these</c>
+
+00:17:25.029 --> 00:17:25.039 align:start position:0%
+so the newspapers reported these
+ 
+
+00:17:25.039 --> 00:17:27.990 align:start position:0%
+so the newspapers reported these
+failures<00:17:25.679><c> as</c><00:17:25.919><c> software</c><00:17:26.400><c> glitches</c>
+
+00:17:27.990 --> 00:17:28.000 align:start position:0%
+failures as software glitches
+ 
+
+00:17:28.000 --> 00:17:29.350 align:start position:0%
+failures as software glitches
+and<00:17:28.319><c> you</c><00:17:28.400><c> know</c>
+
+00:17:29.350 --> 00:17:29.360 align:start position:0%
+and you know
+ 
+
+00:17:29.360 --> 00:17:31.110 align:start position:0%
+and you know
+basically<00:17:29.919><c> the</c><00:17:30.000><c> way</c><00:17:30.240><c> that</c><00:17:30.320><c> the</c><00:17:30.480><c> failures</c><00:17:30.960><c> got</c>
+
+00:17:31.110 --> 00:17:31.120 align:start position:0%
+basically the way that the failures got
+ 
+
+00:17:31.120 --> 00:17:32.950 align:start position:0%
+basically the way that the failures got
+reported<00:17:31.679><c> is</c><00:17:31.840><c> that</c><00:17:31.919><c> the</c><00:17:32.080><c> computer</c><00:17:32.559><c> was</c><00:17:32.720><c> trying</c>
+
+00:17:32.950 --> 00:17:32.960 align:start position:0%
+reported is that the computer was trying
+ 
+
+00:17:32.960 --> 00:17:35.029 align:start position:0%
+reported is that the computer was trying
+to<00:17:33.039><c> do</c><00:17:33.280><c> many</c><00:17:33.520><c> things</c><00:17:33.840><c> at</c><00:17:34.000><c> once</c>
+
+00:17:35.029 --> 00:17:35.039 align:start position:0%
+to do many things at once
+ 
+
+00:17:35.039 --> 00:17:38.470 align:start position:0%
+to do many things at once
+and<00:17:35.200><c> it</c><00:17:35.360><c> was</c><00:17:35.520><c> not</c><00:17:35.760><c> able</c><00:17:36.000><c> to</c><00:17:36.160><c> do</c><00:17:36.400><c> that</c>
+
+00:17:38.470 --> 00:17:38.480 align:start position:0%
+and it was not able to do that
+ 
+
+00:17:38.480 --> 00:17:40.470 align:start position:0%
+and it was not able to do that
+so<00:17:38.640><c> the</c><00:17:38.799><c> real-time</c><00:17:39.440><c> kernel</c><00:17:39.840><c> that</c><00:17:40.000><c> was</c><00:17:40.240><c> used</c>
+
+00:17:40.470 --> 00:17:40.480 align:start position:0%
+so the real-time kernel that was used
+ 
+
+00:17:40.480 --> 00:17:43.909 align:start position:0%
+so the real-time kernel that was used
+was<00:17:40.720><c> vx</c><00:17:41.120><c> works</c><00:17:41.840><c> by</c><00:17:42.080><c> wind</c><00:17:42.320><c> river</c><00:17:42.720><c> systems</c>
+
+00:17:43.909 --> 00:17:43.919 align:start position:0%
+was vx works by wind river systems
+ 
+
+00:17:43.919 --> 00:17:46.549 align:start position:0%
+was vx works by wind river systems
+and<00:17:44.240><c> rma</c><00:17:44.640><c> scheduling</c><00:17:45.200><c> was</c><00:17:45.360><c> used</c><00:17:46.000><c> so</c><00:17:46.160><c> we</c><00:17:46.320><c> are</c><00:17:46.480><c> an</c>
+
+00:17:46.549 --> 00:17:46.559 align:start position:0%
+and rma scheduling was used so we are an
+ 
+
+00:17:46.559 --> 00:17:49.110 align:start position:0%
+and rma scheduling was used so we are an
+expert<00:17:46.960><c> in</c><00:17:47.120><c> rma</c><00:17:47.520><c> by</c><00:17:47.679><c> this</c><00:17:47.919><c> point</c>
+
+00:17:49.110 --> 00:17:49.120 align:start position:0%
+expert in rma by this point
+ 
+
+00:17:49.120 --> 00:17:51.350 align:start position:0%
+expert in rma by this point
+so<00:17:49.360><c> pathfinder</c><00:17:50.160><c> contained</c>
+
+00:17:51.350 --> 00:17:51.360 align:start position:0%
+so pathfinder contained
+ 
+
+00:17:51.360 --> 00:17:53.830 align:start position:0%
+so pathfinder contained
+an<00:17:51.520><c> information</c><00:17:52.160><c> bus</c><00:17:52.799><c> which</c><00:17:53.039><c> was</c><00:17:53.200><c> basically</c><00:17:53.679><c> a</c>
+
+00:17:53.830 --> 00:17:53.840 align:start position:0%
+an information bus which was basically a
+ 
+
+00:17:53.840 --> 00:17:55.669 align:start position:0%
+an information bus which was basically a
+shared<00:17:54.160><c> memory</c><00:17:54.480><c> right</c><00:17:54.720><c> a</c><00:17:54.799><c> bus</c><00:17:55.120><c> with</c><00:17:55.280><c> a</c><00:17:55.360><c> shared</c>
+
+00:17:55.669 --> 00:17:55.679 align:start position:0%
+shared memory right a bus with a shared
+ 
+
+00:17:55.679 --> 00:17:56.950 align:start position:0%
+shared memory right a bus with a shared
+memory
+
+00:17:56.950 --> 00:17:56.960 align:start position:0%
+memory
+ 
+
+00:17:56.960 --> 00:17:58.789 align:start position:0%
+memory
+and<00:17:57.440><c> this</c><00:17:57.679><c> was</c><00:17:57.919><c> used</c><00:17:58.160><c> for</c><00:17:58.400><c> passing</c>
+
+00:17:58.789 --> 00:17:58.799 align:start position:0%
+and this was used for passing
+ 
+
+00:17:58.799 --> 00:18:01.270 align:start position:0%
+and this was used for passing
+information<00:17:59.520><c> between</c><00:18:00.000><c> the</c><00:18:00.160><c> different</c>
+
+00:18:01.270 --> 00:18:01.280 align:start position:0%
+information between the different
+ 
+
+00:18:01.280 --> 00:18:02.870 align:start position:0%
+information between the different
+components<00:18:01.840><c> of</c><00:18:01.919><c> the</c><00:18:02.080><c> spacecraft</c><00:18:02.720><c> the</c>
+
+00:18:02.870 --> 00:18:02.880 align:start position:0%
+components of the spacecraft the
+ 
+
+00:18:02.880 --> 00:18:04.870 align:start position:0%
+components of the spacecraft the
+processing<00:18:03.360><c> components</c><00:18:04.000><c> memory</c><00:18:04.400><c> components</c>
+
+00:18:04.870 --> 00:18:04.880 align:start position:0%
+processing components memory components
+ 
+
+00:18:04.880 --> 00:18:06.710 align:start position:0%
+processing components memory components
+storage<00:18:05.360><c> components</c><00:18:06.000><c> and</c>
+
+00:18:06.710 --> 00:18:06.720 align:start position:0%
+storage components and
+ 
+
+00:18:06.720 --> 00:18:10.710 align:start position:0%
+storage components and
+sensing<00:18:07.200><c> components</c>
+
+00:18:10.710 --> 00:18:10.720 align:start position:0%
+ 
+ 
+
+00:18:10.720 --> 00:18:13.590 align:start position:0%
+ 
+so<00:18:11.120><c> the</c><00:18:11.360><c> vx</c><00:18:11.840><c> works</c><00:18:12.400><c> real</c><00:18:12.720><c> time</c><00:18:13.120><c> operating</c>
+
+00:18:13.590 --> 00:18:13.600 align:start position:0%
+so the vx works real time operating
+ 
+
+00:18:13.600 --> 00:18:15.830 align:start position:0%
+so the vx works real time operating
+system
+
+00:18:15.830 --> 00:18:15.840 align:start position:0%
+system
+ 
+
+00:18:15.840 --> 00:18:18.150 align:start position:0%
+system
+so<00:18:16.000><c> the</c><00:18:16.160><c> vxworks</c><00:18:16.880><c> operating</c><00:18:17.360><c> system</c><00:18:17.760><c> can</c><00:18:18.000><c> be</c>
+
+00:18:18.150 --> 00:18:18.160 align:start position:0%
+so the vxworks operating system can be
+ 
+
+00:18:18.160 --> 00:18:19.909 align:start position:0%
+so the vxworks operating system can be
+run<00:18:18.400><c> in</c><00:18:18.480><c> trace</c><00:18:18.880><c> mode</c>
+
+00:18:19.909 --> 00:18:19.919 align:start position:0%
+run in trace mode
+ 
+
+00:18:19.919 --> 00:18:23.430 align:start position:0%
+run in trace mode
+where<00:18:20.160><c> it</c><00:18:20.320><c> captures</c><00:18:21.120><c> and</c><00:18:21.280><c> it</c><00:18:21.520><c> logs</c>
+
+00:18:23.430 --> 00:18:23.440 align:start position:0%
+where it captures and it logs
+ 
+
+00:18:23.440 --> 00:18:25.430 align:start position:0%
+where it captures and it logs
+so<00:18:23.600><c> why</c><00:18:23.840><c> do</c><00:18:23.919><c> you</c><00:18:24.080><c> log</c><00:18:24.320><c> the</c><00:18:24.559><c> log</c><00:18:24.880><c> for</c><00:18:25.039><c> future</c>
+
+00:18:25.430 --> 00:18:25.440 align:start position:0%
+so why do you log the log for future
+ 
+
+00:18:25.440 --> 00:18:27.750 align:start position:0%
+so why do you log the log for future
+debugging<00:18:26.000><c> and</c><00:18:26.160><c> analysis</c>
+
+00:18:27.750 --> 00:18:27.760 align:start position:0%
+debugging and analysis
+ 
+
+00:18:27.760 --> 00:18:29.750 align:start position:0%
+debugging and analysis
+interesting<00:18:28.400><c> system</c><00:18:28.880><c> events</c><00:18:29.280><c> such</c><00:18:29.520><c> as</c>
+
+00:18:29.750 --> 00:18:29.760 align:start position:0%
+interesting system events such as
+ 
+
+00:18:29.760 --> 00:18:31.830 align:start position:0%
+interesting system events such as
+context<00:18:30.160><c> switches</c>
+
+00:18:31.830 --> 00:18:31.840 align:start position:0%
+context switches
+ 
+
+00:18:31.840 --> 00:18:34.549 align:start position:0%
+context switches
+the<00:18:32.080><c> use</c><00:18:32.320><c> of</c><00:18:32.480><c> synchronization</c><00:18:33.280><c> objects</c><00:18:34.080><c> and</c>
+
+00:18:34.549 --> 00:18:34.559 align:start position:0%
+the use of synchronization objects and
+ 
+
+00:18:34.559 --> 00:18:36.950 align:start position:0%
+the use of synchronization objects and
+interrupts
+
+00:18:36.950 --> 00:18:36.960 align:start position:0%
+interrupts
+ 
+
+00:18:36.960 --> 00:18:39.190 align:start position:0%
+interrupts
+so<00:18:37.200><c> the</c><00:18:37.360><c> engineers</c><00:18:37.919><c> of</c><00:18:38.400><c> jet</c><00:18:38.640><c> propulsion</c>
+
+00:18:39.190 --> 00:18:39.200 align:start position:0%
+so the engineers of jet propulsion
+ 
+
+00:18:39.200 --> 00:18:42.789 align:start position:0%
+so the engineers of jet propulsion
+laboratory<00:18:40.000><c> they</c><00:18:40.160><c> spent</c><00:18:40.559><c> hours</c><00:18:41.039><c> running</c>
+
+00:18:42.789 --> 00:18:42.799 align:start position:0%
+laboratory they spent hours running
+ 
+
+00:18:42.799 --> 00:18:44.950 align:start position:0%
+laboratory they spent hours running
+an<00:18:42.960><c> exact</c><00:18:43.360><c> replica</c><00:18:43.919><c> of</c><00:18:44.000><c> the</c><00:18:44.160><c> spacecraft</c><00:18:44.880><c> in</c>
+
+00:18:44.950 --> 00:18:44.960 align:start position:0%
+an exact replica of the spacecraft in
+ 
+
+00:18:44.960 --> 00:18:46.230 align:start position:0%
+an exact replica of the spacecraft in
+the<00:18:45.120><c> lab</c>
+
+00:18:46.230 --> 00:18:46.240 align:start position:0%
+the lab
+ 
+
+00:18:46.240 --> 00:18:48.310 align:start position:0%
+the lab
+and<00:18:46.480><c> they</c><00:18:46.799><c> were</c><00:18:47.120><c> able</c><00:18:47.360><c> to</c><00:18:47.520><c> replicate</c><00:18:48.160><c> the</c>
+
+00:18:48.310 --> 00:18:48.320 align:start position:0%
+and they were able to replicate the
+ 
+
+00:18:48.320 --> 00:18:51.029 align:start position:0%
+and they were able to replicate the
+precise<00:18:48.960><c> conditions</c><00:18:49.679><c> under</c><00:18:50.000><c> which</c>
+
+00:18:51.029 --> 00:18:51.039 align:start position:0%
+precise conditions under which
+ 
+
+00:18:51.039 --> 00:18:54.630 align:start position:0%
+precise conditions under which
+a<00:18:51.200><c> reset</c><00:18:51.760><c> occurred</c>
+
+00:18:54.630 --> 00:18:54.640 align:start position:0%
+ 
+ 
+
+00:18:54.640 --> 00:18:57.669 align:start position:0%
+ 
+so<00:18:55.039><c> uh</c><00:18:55.600><c> what</c><00:18:55.760><c> we</c><00:18:56.000><c> need</c><00:18:56.160><c> to</c><00:18:56.320><c> focus</c><00:18:56.799><c> on</c><00:18:57.039><c> or</c><00:18:57.360><c> rather</c>
+
+00:18:57.669 --> 00:18:57.679 align:start position:0%
+so uh what we need to focus on or rather
+ 
+
+00:18:57.679 --> 00:18:59.510 align:start position:0%
+so uh what we need to focus on or rather
+they<00:18:57.919><c> focused</c><00:18:58.400><c> on</c>
+
+00:18:59.510 --> 00:18:59.520 align:start position:0%
+they focused on
+ 
+
+00:18:59.520 --> 00:19:01.990 align:start position:0%
+they focused on
+was<00:18:59.760><c> the</c><00:18:59.840><c> vxworks</c><00:19:00.720><c> mutex</c><00:19:01.360><c> object</c><00:19:01.760><c> which</c><00:19:01.919><c> is</c>
+
+00:19:01.990 --> 00:19:02.000 align:start position:0%
+was the vxworks mutex object which is
+ 
+
+00:19:02.000 --> 00:19:04.470 align:start position:0%
+was the vxworks mutex object which is
+the<00:19:02.160><c> lock</c><00:19:02.480><c> object</c>
+
+00:19:04.470 --> 00:19:04.480 align:start position:0%
+the lock object
+ 
+
+00:19:04.480 --> 00:19:06.710 align:start position:0%
+the lock object
+so<00:19:04.720><c> basically</c><00:19:05.280><c> this</c><00:19:05.600><c> accepts</c><00:19:06.160><c> a</c><00:19:06.320><c> boolean</c>
+
+00:19:06.710 --> 00:19:06.720 align:start position:0%
+so basically this accepts a boolean
+ 
+
+00:19:06.720 --> 00:19:09.750 align:start position:0%
+so basically this accepts a boolean
+parameter<00:19:07.679><c> which</c><00:19:07.919><c> essentially</c><00:19:08.480><c> says</c>
+
+00:19:09.750 --> 00:19:09.760 align:start position:0%
+parameter which essentially says
+ 
+
+00:19:09.760 --> 00:19:11.669 align:start position:0%
+parameter which essentially says
+feather<00:19:10.160><c> priority</c><00:19:10.640><c> inheritance</c><00:19:11.280><c> should</c><00:19:11.440><c> be</c>
+
+00:19:11.669 --> 00:19:11.679 align:start position:0%
+feather priority inheritance should be
+ 
+
+00:19:11.679 --> 00:19:13.510 align:start position:0%
+feather priority inheritance should be
+performed<00:19:12.160><c> or</c><00:19:12.320><c> not</c>
+
+00:19:13.510 --> 00:19:13.520 align:start position:0%
+performed or not
+ 
+
+00:19:13.520 --> 00:19:15.110 align:start position:0%
+performed or not
+so<00:19:13.760><c> if</c><00:19:13.840><c> you</c><00:19:14.000><c> go</c><00:19:14.160><c> back</c><00:19:14.480><c> go</c><00:19:14.640><c> back</c><00:19:14.880><c> to</c><00:19:14.960><c> the</c>
+
+00:19:15.110 --> 00:19:15.120 align:start position:0%
+so if you go back go back to the
+ 
+
+00:19:15.120 --> 00:19:17.750 align:start position:0%
+so if you go back go back to the
+previous<00:19:15.520><c> lecture</c><00:19:15.919><c> on</c><00:19:16.080><c> rma</c>
+
+00:19:17.750 --> 00:19:17.760 align:start position:0%
+previous lecture on rma
+ 
+
+00:19:17.760 --> 00:19:19.909 align:start position:0%
+previous lecture on rma
+we<00:19:17.919><c> did</c><00:19:18.160><c> talk</c><00:19:18.480><c> a</c><00:19:18.559><c> little</c><00:19:18.799><c> bit</c><00:19:19.039><c> about</c><00:19:19.440><c> priority</c>
+
+00:19:19.909 --> 00:19:19.919 align:start position:0%
+we did talk a little bit about priority
+ 
+
+00:19:19.919 --> 00:19:21.430 align:start position:0%
+we did talk a little bit about priority
+inheritance
+
+00:19:21.430 --> 00:19:21.440 align:start position:0%
+inheritance
+ 
+
+00:19:21.440 --> 00:19:23.590 align:start position:0%
+inheritance
+there<00:19:21.840><c> of</c><00:19:21.919><c> course</c><00:19:22.160><c> the</c><00:19:22.400><c> key</c><00:19:22.640><c> idea</c><00:19:22.960><c> was</c><00:19:23.200><c> that</c><00:19:23.440><c> if</c>
+
+00:19:23.590 --> 00:19:23.600 align:start position:0%
+there of course the key idea was that if
+ 
+
+00:19:23.600 --> 00:19:25.990 align:start position:0%
+there of course the key idea was that if
+a<00:19:23.679><c> low</c><00:19:23.919><c> priority</c><00:19:24.559><c> thread</c>
+
+00:19:25.990 --> 00:19:26.000 align:start position:0%
+a low priority thread
+ 
+
+00:19:26.000 --> 00:19:28.789 align:start position:0%
+a low priority thread
+is<00:19:26.240><c> blocking</c><00:19:26.720><c> a</c><00:19:26.880><c> high</c><00:19:27.120><c> priority</c><00:19:27.679><c> thread</c>
+
+00:19:28.789 --> 00:19:28.799 align:start position:0%
+is blocking a high priority thread
+ 
+
+00:19:28.799 --> 00:19:30.549 align:start position:0%
+is blocking a high priority thread
+for<00:19:28.960><c> whatever</c><00:19:29.440><c> reason</c>
+
+00:19:30.549 --> 00:19:30.559 align:start position:0%
+for whatever reason
+ 
+
+00:19:30.559 --> 00:19:33.110 align:start position:0%
+for whatever reason
+then<00:19:30.799><c> the</c><00:19:30.880><c> low</c><00:19:31.120><c> priorities</c><00:19:31.679><c> threads</c><00:19:32.559><c> priority</c>
+
+00:19:33.110 --> 00:19:33.120 align:start position:0%
+then the low priorities threads priority
+ 
+
+00:19:33.120 --> 00:19:35.350 align:start position:0%
+then the low priorities threads priority
+is<00:19:33.200><c> temporarily</c><00:19:33.919><c> jacked</c><00:19:34.240><c> up</c>
+
+00:19:35.350 --> 00:19:35.360 align:start position:0%
+is temporarily jacked up
+ 
+
+00:19:35.360 --> 00:19:36.950 align:start position:0%
+is temporarily jacked up
+such<00:19:35.679><c> that</c><00:19:35.919><c> you</c><00:19:36.000><c> know</c><00:19:36.160><c> these</c><00:19:36.480><c> priority</c>
+
+00:19:36.950 --> 00:19:36.960 align:start position:0%
+such that you know these priority
+ 
+
+00:19:36.960 --> 00:19:39.510 align:start position:0%
+such that you know these priority
+inversions<00:19:37.679><c> don't</c><00:19:38.000><c> occur</c><00:19:38.640><c> in</c><00:19:38.720><c> the</c><00:19:38.880><c> sense</c><00:19:39.280><c> no</c>
+
+00:19:39.510 --> 00:19:39.520 align:start position:0%
+inversions don't occur in the sense no
+ 
+
+00:19:39.520 --> 00:19:42.070 align:start position:0%
+inversions don't occur in the sense no
+other<00:19:40.000><c> intermediate</c><00:19:40.559><c> thread</c><00:19:40.880><c> is</c><00:19:41.120><c> able</c><00:19:41.440><c> to</c>
+
+00:19:42.070 --> 00:19:42.080 align:start position:0%
+other intermediate thread is able to
+ 
+
+00:19:42.080 --> 00:19:44.630 align:start position:0%
+other intermediate thread is able to
+swap<00:19:42.480><c> it</c><00:19:42.640><c> out</c>
+
+00:19:44.630 --> 00:19:44.640 align:start position:0%
+swap it out
+ 
+
+00:19:44.640 --> 00:19:46.950 align:start position:0%
+swap it out
+so<00:19:44.799><c> it</c><00:19:44.880><c> was</c><00:19:45.120><c> clear</c><00:19:45.360><c> to</c><00:19:45.520><c> the</c><00:19:45.600><c> jpl</c><00:19:46.400><c> engineers</c>
+
+00:19:46.950 --> 00:19:46.960 align:start position:0%
+so it was clear to the jpl engineers
+ 
+
+00:19:46.960 --> 00:19:49.909 align:start position:0%
+so it was clear to the jpl engineers
+that<00:19:47.120><c> if</c><00:19:47.280><c> we</c><00:19:47.440><c> turn</c><00:19:47.760><c> on</c><00:19:48.000><c> priority</c><00:19:48.480><c> inheritance</c>
+
+00:19:49.909 --> 00:19:49.919 align:start position:0%
+that if we turn on priority inheritance
+ 
+
+00:19:49.919 --> 00:19:54.310 align:start position:0%
+that if we turn on priority inheritance
+then<00:19:50.160><c> these</c><00:19:50.400><c> resets</c><00:19:50.880><c> will</c><00:19:51.039><c> be</c><00:19:51.120><c> prevented</c>
+
+00:19:54.310 --> 00:19:54.320 align:start position:0%
+ 
+ 
+
+00:19:54.320 --> 00:19:55.830 align:start position:0%
+ 
+so<00:19:54.640><c> because</c><00:19:55.200><c> you</c><00:19:55.280><c> know</c><00:19:55.440><c> this</c><00:19:55.600><c> was</c><00:19:55.760><c> a</c>
+
+00:19:55.830 --> 00:19:55.840 align:start position:0%
+so because you know this was a
+ 
+
+00:19:55.840 --> 00:19:58.230 align:start position:0%
+so because you know this was a
+configuration<00:19:56.480><c> time</c><00:19:56.720><c> parameter</c><00:19:57.600><c> and</c><00:19:57.840><c> it</c><00:19:57.919><c> was</c>
+
+00:19:58.230 --> 00:19:58.240 align:start position:0%
+configuration time parameter and it was
+ 
+
+00:19:58.240 --> 00:19:59.909 align:start position:0%
+configuration time parameter and it was
+off<00:19:58.559><c> so</c><00:19:58.720><c> that</c><00:19:58.960><c> is</c><00:19:59.120><c> why</c>
+
+00:19:59.909 --> 00:19:59.919 align:start position:0%
+off so that is why
+ 
+
+00:19:59.919 --> 00:20:01.750 align:start position:0%
+off so that is why
+they<00:20:00.080><c> conjectured</c><00:20:00.799><c> that</c><00:20:00.960><c> these</c><00:20:01.120><c> resets</c><00:20:01.600><c> are</c>
+
+00:20:01.750 --> 00:20:01.760 align:start position:0%
+they conjectured that these resets are
+ 
+
+00:20:01.760 --> 00:20:03.270 align:start position:0%
+they conjectured that these resets are
+happening<00:20:02.159><c> because</c><00:20:02.559><c> tasks</c><00:20:02.880><c> are</c><00:20:02.960><c> missing</c>
+
+00:20:03.270 --> 00:20:03.280 align:start position:0%
+happening because tasks are missing
+ 
+
+00:20:03.280 --> 00:20:05.430 align:start position:0%
+happening because tasks are missing
+their<00:20:03.440><c> deadlines</c>
+
+00:20:05.430 --> 00:20:05.440 align:start position:0%
+their deadlines
+ 
+
+00:20:05.440 --> 00:20:08.390 align:start position:0%
+their deadlines
+so<00:20:05.679><c> they</c><00:20:06.159><c> uploaded</c><00:20:06.720><c> a</c><00:20:06.799><c> short</c><00:20:07.120><c> c</c><00:20:07.360><c> program</c><00:20:07.840><c> which</c>
+
+00:20:08.390 --> 00:20:08.400 align:start position:0%
+so they uploaded a short c program which
+ 
+
+00:20:08.400 --> 00:20:11.270 align:start position:0%
+so they uploaded a short c program which
+had<00:20:08.640><c> these</c><00:20:08.880><c> initialization</c><00:20:09.679><c> parameters</c>
+
+00:20:11.270 --> 00:20:11.280 align:start position:0%
+had these initialization parameters
+ 
+
+00:20:11.280 --> 00:20:13.510 align:start position:0%
+had these initialization parameters
+right<00:20:11.520><c> and</c><00:20:11.679><c> they</c><00:20:11.840><c> were</c><00:20:12.480><c> global</c><00:20:12.880><c> variables</c><00:20:13.440><c> to</c>
+
+00:20:13.510 --> 00:20:13.520 align:start position:0%
+right and they were global variables to
+ 
+
+00:20:13.520 --> 00:20:15.909 align:start position:0%
+right and they were global variables to
+the<00:20:13.679><c> overall</c><00:20:14.080><c> pathfinder</c><00:20:14.720><c> ecosystem</c>
+
+00:20:15.909 --> 00:20:15.919 align:start position:0%
+the overall pathfinder ecosystem
+ 
+
+00:20:15.919 --> 00:20:17.909 align:start position:0%
+the overall pathfinder ecosystem
+so<00:20:16.080><c> they</c><00:20:16.240><c> uploaded</c><00:20:16.720><c> a</c><00:20:16.799><c> short</c><00:20:17.039><c> c</c><00:20:17.280><c> program</c><00:20:17.760><c> and</c>
+
+00:20:17.909 --> 00:20:17.919 align:start position:0%
+so they uploaded a short c program and
+ 
+
+00:20:17.919 --> 00:20:21.190 align:start position:0%
+so they uploaded a short c program and
+executed<00:20:18.559><c> it</c><00:20:18.720><c> on</c><00:20:18.880><c> the</c><00:20:18.960><c> spacecraft</c>
+
+00:20:21.190 --> 00:20:21.200 align:start position:0%
+executed it on the spacecraft
+ 
+
+00:20:21.200 --> 00:20:23.110 align:start position:0%
+executed it on the spacecraft
+so<00:20:21.600><c> not</c><00:20:21.760><c> on</c><00:20:21.919><c> the</c><00:20:22.000><c> spacecraft</c><00:20:22.559><c> on</c><00:20:22.640><c> the</c><00:20:22.720><c> rover</c>
+
+00:20:23.110 --> 00:20:23.120 align:start position:0%
+so not on the spacecraft on the rover
+ 
+
+00:20:23.120 --> 00:20:26.470 align:start position:0%
+so not on the spacecraft on the rover
+basically
+
+00:20:26.470 --> 00:20:26.480 align:start position:0%
+ 
+ 
+
+00:20:26.480 --> 00:20:29.430 align:start position:0%
+ 
+so<00:20:26.720><c> then</c>
+
+00:20:29.430 --> 00:20:29.440 align:start position:0%
+ 
+ 
+
+00:20:29.440 --> 00:20:31.510 align:start position:0%
+ 
+this<00:20:29.760><c> did</c><00:20:30.159><c> solve</c><00:20:30.480><c> the</c><00:20:30.640><c> issue</c><00:20:31.039><c> to</c><00:20:31.200><c> a</c><00:20:31.280><c> large</c>
+
+00:20:31.510 --> 00:20:31.520 align:start position:0%
+this did solve the issue to a large
+ 
+
+00:20:31.520 --> 00:20:34.710 align:start position:0%
+this did solve the issue to a large
+extent<00:20:32.400><c> so</c><00:20:32.559><c> it</c><00:20:32.720><c> also</c><00:20:33.039><c> tells</c><00:20:33.360><c> you</c><00:20:33.600><c> that</c><00:20:33.919><c> in</c><00:20:34.159><c> such</c>
+
+00:20:34.710 --> 00:20:34.720 align:start position:0%
+extent so it also tells you that in such
+ 
+
+00:20:34.720 --> 00:20:37.190 align:start position:0%
+extent so it also tells you that in such
+you<00:20:34.799><c> know</c><00:20:34.960><c> sensitive</c><00:20:35.520><c> systems</c>
+
+00:20:37.190 --> 00:20:37.200 align:start position:0%
+you know sensitive systems
+ 
+
+00:20:37.200 --> 00:20:39.190 align:start position:0%
+you know sensitive systems
+how<00:20:37.440><c> much</c><00:20:37.679><c> of</c><00:20:37.840><c> a</c><00:20:38.000><c> problem</c><00:20:38.480><c> is</c><00:20:38.640><c> priority</c>
+
+00:20:39.190 --> 00:20:39.200 align:start position:0%
+how much of a problem is priority
+ 
+
+00:20:39.200 --> 00:20:41.350 align:start position:0%
+how much of a problem is priority
+inversion<00:20:39.760><c> and</c><00:20:40.000><c> unbounded</c><00:20:40.799><c> priority</c>
+
+00:20:41.350 --> 00:20:41.360 align:start position:0%
+inversion and unbounded priority
+ 
+
+00:20:41.360 --> 00:20:42.710 align:start position:0%
+inversion and unbounded priority
+inversion
+
+00:20:42.710 --> 00:20:42.720 align:start position:0%
+inversion
+ 
+
+00:20:42.720 --> 00:20:44.710 align:start position:0%
+inversion
+so<00:20:42.960><c> solution</c><00:20:43.440><c> for</c><00:20:43.679><c> a</c><00:20:43.840><c> simple</c><00:20:44.240><c> priority</c>
+
+00:20:44.710 --> 00:20:44.720 align:start position:0%
+so solution for a simple priority
+ 
+
+00:20:44.720 --> 00:20:46.950 align:start position:0%
+so solution for a simple priority
+inversion<00:20:45.280><c> is</c>
+
+00:20:46.950 --> 00:20:46.960 align:start position:0%
+inversion is
+ 
+
+00:20:46.960 --> 00:20:49.430 align:start position:0%
+inversion is
+that<00:20:47.440><c> we</c><00:20:47.600><c> need</c><00:20:47.760><c> to</c><00:20:48.000><c> first</c><00:20:48.320><c> you</c><00:20:48.480><c> know</c><00:20:48.880><c> analyze</c>
+
+00:20:49.430 --> 00:20:49.440 align:start position:0%
+that we need to first you know analyze
+ 
+
+00:20:49.440 --> 00:20:51.110 align:start position:0%
+that we need to first you know analyze
+and<00:20:49.520><c> we'll</c><00:20:49.840><c> look</c><00:20:50.159><c> at</c>
+
+00:20:51.110 --> 00:20:51.120 align:start position:0%
+and we'll look at
+ 
+
+00:20:51.120 --> 00:20:52.950 align:start position:0%
+and we'll look at
+the<00:20:51.360><c> fact</c><00:20:51.600><c> that</c><00:20:51.760><c> the</c><00:20:51.840><c> longest</c><00:20:52.240><c> duration</c><00:20:52.799><c> for</c>
+
+00:20:52.950 --> 00:20:52.960 align:start position:0%
+the fact that the longest duration for
+ 
+
+00:20:52.960 --> 00:20:54.789 align:start position:0%
+the fact that the longest duration for
+which<00:20:53.200><c> a</c><00:20:53.280><c> simple</c><00:20:53.600><c> priority</c><00:20:54.080><c> inversion</c><00:20:54.559><c> can</c>
+
+00:20:54.789 --> 00:20:54.799 align:start position:0%
+which a simple priority inversion can
+ 
+
+00:20:54.799 --> 00:20:59.029 align:start position:0%
+which a simple priority inversion can
+occur
+
+00:20:59.029 --> 00:20:59.039 align:start position:0%
+ 
+ 
+
+00:20:59.039 --> 00:21:01.110 align:start position:0%
+ 
+it<00:20:59.280><c> is</c><00:20:59.440><c> essentially</c><00:21:00.000><c> upper</c><00:21:00.320><c> bounded</c><00:21:00.799><c> unless</c>
+
+00:21:01.110 --> 00:21:01.120 align:start position:0%
+it is essentially upper bounded unless
+ 
+
+00:21:01.120 --> 00:21:03.510 align:start position:0%
+it is essentially upper bounded unless
+of<00:21:01.280><c> course</c><00:21:01.440><c> there</c><00:21:01.600><c> are</c><00:21:01.760><c> intermediate</c><00:21:02.400><c> tasks</c>
+
+00:21:03.510 --> 00:21:03.520 align:start position:0%
+of course there are intermediate tasks
+ 
+
+00:21:03.520 --> 00:21:05.430 align:start position:0%
+of course there are intermediate tasks
+by<00:21:03.679><c> the</c><00:21:03.840><c> maximum</c><00:21:04.400><c> amount</c><00:21:04.799><c> of</c><00:21:04.960><c> time</c><00:21:05.200><c> that</c><00:21:05.360><c> the</c>
+
+00:21:05.430 --> 00:21:05.440 align:start position:0%
+by the maximum amount of time that the
+ 
+
+00:21:05.440 --> 00:21:07.669 align:start position:0%
+by the maximum amount of time that the
+lower<00:21:05.840><c> priority</c><00:21:06.320><c> task</c><00:21:06.720><c> needs</c><00:21:06.960><c> to</c><00:21:07.120><c> access</c><00:21:07.520><c> the</c>
+
+00:21:07.669 --> 00:21:07.679 align:start position:0%
+lower priority task needs to access the
+ 
+
+00:21:07.679 --> 00:21:10.470 align:start position:0%
+lower priority task needs to access the
+resource<00:21:08.400><c> and</c><00:21:08.559><c> that</c><00:21:08.799><c> too</c><00:21:08.960><c> exclusively</c>
+
+00:21:10.470 --> 00:21:10.480 align:start position:0%
+resource and that too exclusively
+ 
+
+00:21:10.480 --> 00:21:13.110 align:start position:0%
+resource and that too exclusively
+in<00:21:10.640><c> the</c><00:21:10.799><c> sense</c><00:21:11.120><c> that</c><00:21:11.360><c> if</c><00:21:12.000><c> we</c><00:21:12.240><c> assume</c><00:21:12.640><c> the</c><00:21:12.799><c> worst</c>
+
+00:21:13.110 --> 00:21:13.120 align:start position:0%
+in the sense that if we assume the worst
+ 
+
+00:21:13.120 --> 00:21:14.070 align:start position:0%
+in the sense that if we assume the worst
+case
+
+00:21:14.070 --> 00:21:14.080 align:start position:0%
+case
+ 
+
+00:21:14.080 --> 00:21:16.149 align:start position:0%
+case
+which<00:21:14.320><c> is</c><00:21:14.480><c> that</c><00:21:14.640><c> the</c><00:21:14.720><c> low</c><00:21:14.960><c> priority</c><00:21:15.520><c> task</c>
+
+00:21:16.149 --> 00:21:16.159 align:start position:0%
+which is that the low priority task
+ 
+
+00:21:16.159 --> 00:21:18.710 align:start position:0%
+which is that the low priority task
+immediate<00:21:16.480><c> got</c><00:21:16.799><c> access</c><00:21:17.120><c> to</c><00:21:17.200><c> the</c><00:21:17.360><c> resource</c>
+
+00:21:18.710 --> 00:21:18.720 align:start position:0%
+immediate got access to the resource
+ 
+
+00:21:18.720 --> 00:21:20.710 align:start position:0%
+immediate got access to the resource
+and<00:21:19.039><c> exactly</c><00:21:19.600><c> at</c><00:21:19.760><c> that</c><00:21:20.000><c> point</c><00:21:20.240><c> of</c><00:21:20.400><c> time</c><00:21:20.559><c> the</c>
+
+00:21:20.710 --> 00:21:20.720 align:start position:0%
+and exactly at that point of time the
+ 
+
+00:21:20.720 --> 00:21:22.789 align:start position:0%
+and exactly at that point of time the
+high<00:21:20.880><c> priority</c><00:21:21.360><c> task</c><00:21:21.760><c> came</c>
+
+00:21:22.789 --> 00:21:22.799 align:start position:0%
+high priority task came
+ 
+
+00:21:22.799 --> 00:21:25.110 align:start position:0%
+high priority task came
+it<00:21:23.039><c> tried</c><00:21:23.440><c> to</c>
+
+00:21:25.110 --> 00:21:25.120 align:start position:0%
+it tried to
+ 
+
+00:21:25.120 --> 00:21:26.789 align:start position:0%
+it tried to
+immediately<00:21:25.679><c> grab</c><00:21:25.919><c> the</c><00:21:26.080><c> resource</c><00:21:26.480><c> and</c><00:21:26.640><c> it</c>
+
+00:21:26.789 --> 00:21:26.799 align:start position:0%
+immediately grab the resource and it
+ 
+
+00:21:26.799 --> 00:21:27.669 align:start position:0%
+immediately grab the resource and it
+couldn't
+
+00:21:27.669 --> 00:21:27.679 align:start position:0%
+couldn't
+ 
+
+00:21:27.679 --> 00:21:29.669 align:start position:0%
+couldn't
+then<00:21:27.919><c> it</c><00:21:28.240><c> the</c><00:21:28.480><c> amount</c><00:21:28.799><c> of</c><00:21:28.960><c> time</c><00:21:29.200><c> that</c><00:21:29.440><c> it</c><00:21:29.520><c> will</c>
+
+00:21:29.669 --> 00:21:29.679 align:start position:0%
+then it the amount of time that it will
+ 
+
+00:21:29.679 --> 00:21:31.830 align:start position:0%
+then it the amount of time that it will
+wait<00:21:30.159><c> will</c><00:21:30.320><c> be</c><00:21:30.720><c> exactly</c><00:21:31.120><c> the</c><00:21:31.280><c> time</c><00:21:31.520><c> that</c><00:21:31.679><c> the</c>
+
+00:21:31.830 --> 00:21:31.840 align:start position:0%
+wait will be exactly the time that the
+ 
+
+00:21:31.840 --> 00:21:34.070 align:start position:0%
+wait will be exactly the time that the
+low<00:21:32.000><c> priority</c><00:21:32.559><c> task</c>
+
+00:21:34.070 --> 00:21:34.080 align:start position:0%
+low priority task
+ 
+
+00:21:34.080 --> 00:21:39.029 align:start position:0%
+low priority task
+will<00:21:34.240><c> be</c><00:21:34.480><c> accessing</c><00:21:34.960><c> the</c><00:21:35.120><c> resource</c>
+
+00:21:39.029 --> 00:21:39.039 align:start position:0%
+ 
+ 
+
+00:21:39.039 --> 00:21:41.430 align:start position:0%
+ 
+so<00:21:39.360><c> in</c><00:21:39.600><c> many</c><00:21:39.919><c> ways</c><00:21:40.400><c> a</c><00:21:40.559><c> simple</c><00:21:40.880><c> priority</c>
+
+00:21:41.430 --> 00:21:41.440 align:start position:0%
+so in many ways a simple priority
+ 
+
+00:21:41.440 --> 00:21:43.430 align:start position:0%
+so in many ways a simple priority
+inversion<00:21:42.000><c> can</c><00:21:42.159><c> be</c><00:21:42.320><c> tolerated</c><00:21:43.039><c> if</c><00:21:43.200><c> this</c>
+
+00:21:43.430 --> 00:21:43.440 align:start position:0%
+inversion can be tolerated if this
+ 
+
+00:21:43.440 --> 00:21:46.070 align:start position:0%
+inversion can be tolerated if this
+duration<00:21:44.080><c> is</c><00:21:44.240><c> not</c><00:21:44.559><c> too</c><00:21:44.799><c> large</c>
+
+00:21:46.070 --> 00:21:46.080 align:start position:0%
+duration is not too large
+ 
+
+00:21:46.080 --> 00:21:47.110 align:start position:0%
+duration is not too large
+right
+
+00:21:47.110 --> 00:21:47.120 align:start position:0%
+right
+ 
+
+00:21:47.120 --> 00:21:49.909 align:start position:0%
+right
+and<00:21:47.760><c> so</c><00:21:48.000><c> what</c><00:21:48.240><c> we</c><00:21:48.400><c> can</c><00:21:48.559><c> do</c><00:21:48.799><c> is</c><00:21:48.960><c> we</c><00:21:49.120><c> can</c><00:21:49.280><c> look</c><00:21:49.520><c> at</c>
+
+00:21:49.909 --> 00:21:49.919 align:start position:0%
+and so what we can do is we can look at
+ 
+
+00:21:49.919 --> 00:21:51.750 align:start position:0%
+and so what we can do is we can look at
+engineering<00:21:50.480><c> solutions</c>
+
+00:21:51.750 --> 00:21:51.760 align:start position:0%
+engineering solutions
+ 
+
+00:21:51.760 --> 00:21:54.149 align:start position:0%
+engineering solutions
+where<00:21:51.919><c> we</c><00:21:52.240><c> limit</c><00:21:52.559><c> the</c><00:21:52.799><c> time</c><00:21:53.039><c> for</c><00:21:53.280><c> which</c><00:21:53.520><c> a</c><00:21:53.679><c> task</c>
+
+00:21:54.149 --> 00:21:54.159 align:start position:0%
+where we limit the time for which a task
+ 
+
+00:21:54.159 --> 00:21:57.029 align:start position:0%
+where we limit the time for which a task
+executes<00:21:55.120><c> this</c><00:21:55.360><c> critical</c><00:21:55.840><c> section</c>
+
+00:21:57.029 --> 00:21:57.039 align:start position:0%
+executes this critical section
+ 
+
+00:21:57.039 --> 00:21:58.950 align:start position:0%
+executes this critical section
+in<00:21:57.200><c> a</c><00:21:57.280><c> certain</c><00:21:57.600><c> sense</c><00:21:58.000><c> we</c><00:21:58.240><c> work</c><00:21:58.640><c> on</c><00:21:58.799><c> the</c>
+
+00:21:58.950 --> 00:21:58.960 align:start position:0%
+in a certain sense we work on the
+ 
+
+00:21:58.960 --> 00:22:01.510 align:start position:0%
+in a certain sense we work on the
+resources<00:21:59.600><c> and</c><00:21:59.679><c> we</c><00:21:59.840><c> reduce</c><00:22:00.240><c> the</c><00:22:00.480><c> time</c>
+
+00:22:01.510 --> 00:22:01.520 align:start position:0%
+resources and we reduce the time
+ 
+
+00:22:01.520 --> 00:22:03.510 align:start position:0%
+resources and we reduce the time
+for<00:22:01.760><c> which</c><00:22:02.000><c> the</c><00:22:02.240><c> different</c><00:22:02.640><c> tasks</c><00:22:03.039><c> actually</c>
+
+00:22:03.510 --> 00:22:03.520 align:start position:0%
+for which the different tasks actually
+ 
+
+00:22:03.520 --> 00:22:06.950 align:start position:0%
+for which the different tasks actually
+use<00:22:03.760><c> the</c><00:22:03.919><c> resource</c><00:22:04.400><c> exclusively</c>
+
+00:22:06.950 --> 00:22:06.960 align:start position:0%
+use the resource exclusively
+ 
+
+00:22:06.960 --> 00:22:09.190 align:start position:0%
+use the resource exclusively
+so<00:22:07.200><c> in</c><00:22:07.360><c> this</c><00:22:07.679><c> case</c>
+
+00:22:09.190 --> 00:22:09.200 align:start position:0%
+so in this case
+ 
+
+00:22:09.200 --> 00:22:09.909 align:start position:0%
+so in this case
+with
+
+00:22:09.909 --> 00:22:09.919 align:start position:0%
+with
+ 
+
+00:22:09.919 --> 00:22:12.630 align:start position:0%
+with
+efficient<00:22:10.640><c> resource</c><00:22:11.200><c> design</c>
+
+00:22:12.630 --> 00:22:12.640 align:start position:0%
+efficient resource design
+ 
+
+00:22:12.640 --> 00:22:16.630 align:start position:0%
+efficient resource design
+with<00:22:12.960><c> careful</c><00:22:13.440><c> programming</c><00:22:14.080><c> that</c><00:22:14.320><c> takes</c><00:22:14.960><c> such</c>
+
+00:22:16.630 --> 00:22:16.640 align:start position:0%
+with careful programming that takes such
+ 
+
+00:22:16.640 --> 00:22:19.270 align:start position:0%
+with careful programming that takes such
+situations<00:22:17.360><c> and</c><00:22:17.440><c> scenarios</c><00:22:18.159><c> into</c><00:22:18.400><c> account</c><00:22:19.039><c> or</c>
+
+00:22:19.270 --> 00:22:19.280 align:start position:0%
+situations and scenarios into account or
+ 
+
+00:22:19.280 --> 00:22:21.029 align:start position:0%
+situations and scenarios into account or
+into<00:22:19.520><c> consideration</c>
+
+00:22:21.029 --> 00:22:21.039 align:start position:0%
+into consideration
+ 
+
+00:22:21.039 --> 00:22:23.510 align:start position:0%
+into consideration
+a<00:22:21.200><c> simple</c><00:22:21.600><c> priority</c><00:22:22.159><c> inversion</c><00:22:22.960><c> involving</c>
+
+00:22:23.510 --> 00:22:23.520 align:start position:0%
+a simple priority inversion involving
+ 
+
+00:22:23.520 --> 00:22:25.270 align:start position:0%
+a simple priority inversion involving
+only<00:22:23.840><c> two</c><00:22:24.080><c> tasks</c>
+
+00:22:25.270 --> 00:22:25.280 align:start position:0%
+only two tasks
+ 
+
+00:22:25.280 --> 00:22:29.270 align:start position:0%
+only two tasks
+where<00:22:25.600><c> essentially</c><00:22:26.080><c> one</c><00:22:26.400><c> task</c><00:22:26.799><c> is</c><00:22:26.960><c> grabbing</c>
+
+00:22:29.270 --> 00:22:29.280 align:start position:0%
+where essentially one task is grabbing
+ 
+
+00:22:29.280 --> 00:22:33.270 align:start position:0%
+where essentially one task is grabbing
+a<00:22:29.679><c> resource</c><00:22:30.240><c> and</c><00:22:30.400><c> for</c><00:22:30.559><c> the</c><00:22:30.640><c> duration</c><00:22:31.280><c> of</c><00:22:31.360><c> the</c>
+
+00:22:33.270 --> 00:22:33.280 align:start position:0%
+a resource and for the duration of the
+ 
+
+00:22:33.280 --> 00:22:35.110 align:start position:0%
+a resource and for the duration of the
+you<00:22:33.440><c> know</c><00:22:33.600><c> time</c><00:22:33.919><c> that</c><00:22:34.080><c> the</c><00:22:34.240><c> resource</c><00:22:34.720><c> is</c><00:22:34.799><c> being</c>
+
+00:22:35.110 --> 00:22:35.120 align:start position:0%
+you know time that the resource is being
+ 
+
+00:22:35.120 --> 00:22:37.750 align:start position:0%
+you know time that the resource is being
+used<00:22:35.520><c> or</c><00:22:35.760><c> processed</c><00:22:36.240><c> whatever</c><00:22:36.559><c> you</c><00:22:36.720><c> may</c><00:22:36.960><c> call</c>
+
+00:22:37.750 --> 00:22:37.760 align:start position:0%
+used or processed whatever you may call
+ 
+
+00:22:37.760 --> 00:22:40.789 align:start position:0%
+used or processed whatever you may call
+the<00:22:37.919><c> high</c><00:22:38.080><c> priority</c><00:22:38.640><c> task</c><00:22:38.960><c> is</c><00:22:39.039><c> waiting</c>
+
+00:22:40.789 --> 00:22:40.799 align:start position:0%
+the high priority task is waiting
+ 
+
+00:22:40.799 --> 00:22:43.270 align:start position:0%
+the high priority task is waiting
+such<00:22:41.120><c> a</c><00:22:41.200><c> situation</c><00:22:41.840><c> is</c><00:22:41.919><c> not</c><00:22:42.159><c> a</c><00:22:42.240><c> big</c><00:22:42.480><c> deal</c><00:22:42.720><c> in</c><00:22:42.880><c> a</c>
+
+00:22:43.270 --> 00:22:43.280 align:start position:0%
+such a situation is not a big deal in a
+ 
+
+00:22:43.280 --> 00:22:44.390 align:start position:0%
+such a situation is not a big deal in a
+in<00:22:43.440><c> a</c><00:22:43.600><c> sense</c>
+
+00:22:44.390 --> 00:22:44.400 align:start position:0%
+in a sense
+ 
+
+00:22:44.400 --> 00:22:46.630 align:start position:0%
+in a sense
+our<00:22:44.720><c> deadlines</c><00:22:45.200><c> and</c><00:22:45.360><c> our</c><00:22:45.520><c> safety</c><00:22:45.919><c> margins</c><00:22:46.400><c> can</c>
+
+00:22:46.630 --> 00:22:46.640 align:start position:0%
+our deadlines and our safety margins can
+ 
+
+00:22:46.640 --> 00:22:50.310 align:start position:0%
+our deadlines and our safety margins can
+be<00:22:46.880><c> adjusted</c><00:22:47.600><c> to</c><00:22:48.159><c> take</c><00:22:48.320><c> that</c><00:22:48.559><c> into</c><00:22:48.799><c> account</c>
+
+00:22:50.310 --> 00:22:50.320 align:start position:0%
+be adjusted to take that into account
+ 
+
+00:22:50.320 --> 00:22:52.070 align:start position:0%
+be adjusted to take that into account
+right<00:22:50.480><c> so</c><00:22:50.720><c> in</c><00:22:50.880><c> a</c><00:22:51.039><c> certain</c><00:22:51.360><c> sense</c><00:22:51.679><c> it's</c><00:22:51.840><c> not</c><00:22:52.000><c> a</c>
+
+00:22:52.070 --> 00:22:52.080 align:start position:0%
+right so in a certain sense it's not a
+ 
+
+00:22:52.080 --> 00:22:54.310 align:start position:0%
+right so in a certain sense it's not a
+big<00:22:52.320><c> deal</c>
+
+00:22:54.310 --> 00:22:54.320 align:start position:0%
+big deal
+ 
+
+00:22:54.320 --> 00:22:56.710 align:start position:0%
+big deal
+however<00:22:54.799><c> unbounded</c><00:22:55.440><c> priority</c><00:22:55.919><c> inversion</c><00:22:56.559><c> is</c>
+
+00:22:56.710 --> 00:22:56.720 align:start position:0%
+however unbounded priority inversion is
+ 
+
+00:22:56.720 --> 00:22:59.350 align:start position:0%
+however unbounded priority inversion is
+a<00:22:56.880><c> different</c><00:22:57.679><c> you</c><00:22:57.760><c> know</c><00:22:57.919><c> is</c><00:22:58.080><c> a</c><00:22:58.240><c> problem</c>
+
+00:22:59.350 --> 00:22:59.360 align:start position:0%
+a different you know is a problem
+ 
+
+00:22:59.360 --> 00:23:03.510 align:start position:0%
+a different you know is a problem
+in<00:22:59.520><c> its</c><00:22:59.919><c> in</c><00:23:00.080><c> a</c><00:23:00.159><c> separate</c><00:23:00.640><c> class</c>
+
+00:23:03.510 --> 00:23:03.520 align:start position:0%
+ 
+ 
+
+00:23:03.520 --> 00:23:05.430 align:start position:0%
+ 
+so<00:23:03.679><c> we</c><00:23:03.840><c> have</c><00:23:04.000><c> already</c><00:23:04.400><c> discussed</c><00:23:04.880><c> this</c><00:23:05.200><c> for</c><00:23:05.360><c> a</c>
+
+00:23:05.430 --> 00:23:05.440 align:start position:0%
+so we have already discussed this for a
+ 
+
+00:23:05.440 --> 00:23:08.549 align:start position:0%
+so we have already discussed this for a
+low<00:23:05.679><c> priority</c><00:23:06.240><c> task</c><00:23:06.640><c> holds</c><00:23:07.120><c> a</c><00:23:07.280><c> resource</c>
+
+00:23:08.549 --> 00:23:08.559 align:start position:0%
+low priority task holds a resource
+ 
+
+00:23:08.559 --> 00:23:10.870 align:start position:0%
+low priority task holds a resource
+a<00:23:08.720><c> high</c><00:23:08.960><c> priority</c><00:23:09.440><c> task</c><00:23:09.840><c> is</c><00:23:10.000><c> waiting</c><00:23:10.559><c> on</c><00:23:10.799><c> the</c>
+
+00:23:10.870 --> 00:23:10.880 align:start position:0%
+a high priority task is waiting on the
+ 
+
+00:23:10.880 --> 00:23:12.390 align:start position:0%
+a high priority task is waiting on the
+resource<00:23:11.440><c> that</c><00:23:11.679><c> is</c>
+
+00:23:12.390 --> 00:23:12.400 align:start position:0%
+resource that is
+ 
+
+00:23:12.400 --> 00:23:13.909 align:start position:0%
+resource that is
+right<00:23:12.640><c> so</c><00:23:12.799><c> the</c><00:23:12.880><c> resource</c><00:23:13.360><c> is</c><00:23:13.440><c> with</c><00:23:13.600><c> a</c><00:23:13.679><c> low</c>
+
+00:23:13.909 --> 00:23:13.919 align:start position:0%
+right so the resource is with a low
+ 
+
+00:23:13.919 --> 00:23:15.830 align:start position:0%
+right so the resource is with a low
+priority<00:23:14.400><c> task</c><00:23:14.640><c> and</c><00:23:14.799><c> high</c><00:23:14.960><c> priority</c><00:23:15.440><c> task</c><00:23:15.760><c> is</c>
+
+00:23:15.830 --> 00:23:15.840 align:start position:0%
+priority task and high priority task is
+ 
+
+00:23:15.840 --> 00:23:17.750 align:start position:0%
+priority task and high priority task is
+waiting
+
+00:23:17.750 --> 00:23:17.760 align:start position:0%
+waiting
+ 
+
+00:23:17.760 --> 00:23:20.310 align:start position:0%
+waiting
+and<00:23:18.000><c> then</c><00:23:18.240><c> an</c><00:23:18.559><c> intermediate</c><00:23:19.280><c> priority</c><00:23:19.840><c> task</c>
+
+00:23:20.310 --> 00:23:20.320 align:start position:0%
+and then an intermediate priority task
+ 
+
+00:23:20.320 --> 00:23:21.830 align:start position:0%
+and then an intermediate priority task
+which<00:23:20.559><c> does</c><00:23:20.720><c> not</c><00:23:20.960><c> need</c><00:23:21.200><c> the</c><00:23:21.360><c> resource</c>
+
+00:23:21.830 --> 00:23:21.840 align:start position:0%
+which does not need the resource
+ 
+
+00:23:21.840 --> 00:23:23.750 align:start position:0%
+which does not need the resource
+preempts<00:23:22.320><c> the</c><00:23:22.480><c> low</c><00:23:22.640><c> priority</c><00:23:23.200><c> task</c><00:23:23.520><c> and</c><00:23:23.679><c> it</c>
+
+00:23:23.750 --> 00:23:23.760 align:start position:0%
+preempts the low priority task and it
+ 
+
+00:23:23.760 --> 00:23:25.830 align:start position:0%
+preempts the low priority task and it
+can<00:23:24.000><c> and</c><00:23:24.240><c> it</c><00:23:24.400><c> executes</c>
+
+00:23:25.830 --> 00:23:25.840 align:start position:0%
+can and it executes
+ 
+
+00:23:25.840 --> 00:23:27.909 align:start position:0%
+can and it executes
+because<00:23:26.320><c> there</c><00:23:26.559><c> can</c><00:23:26.799><c> be</c><00:23:26.880><c> an</c><00:23:27.039><c> unlimited</c><00:23:27.600><c> number</c>
+
+00:23:27.909 --> 00:23:27.919 align:start position:0%
+because there can be an unlimited number
+ 
+
+00:23:27.919 --> 00:23:30.390 align:start position:0%
+because there can be an unlimited number
+of<00:23:28.080><c> such</c><00:23:28.320><c> intermediate</c><00:23:28.960><c> tasks</c>
+
+00:23:30.390 --> 00:23:30.400 align:start position:0%
+of such intermediate tasks
+ 
+
+00:23:30.400 --> 00:23:31.990 align:start position:0%
+of such intermediate tasks
+and<00:23:30.640><c> you</c><00:23:30.799><c> know</c><00:23:30.880><c> these</c><00:23:31.120><c> are</c><00:23:31.200><c> periodic</c><00:23:31.679><c> tasks</c>
+
+00:23:31.990 --> 00:23:32.000 align:start position:0%
+and you know these are periodic tasks
+ 
+
+00:23:32.000 --> 00:23:33.430 align:start position:0%
+and you know these are periodic tasks
+right<00:23:32.159><c> so</c><00:23:32.320><c> you</c><00:23:32.400><c> can't</c><00:23:32.640><c> say</c><00:23:32.799><c> that</c><00:23:32.960><c> you</c><00:23:33.039><c> know</c><00:23:33.200><c> one</c>
+
+00:23:33.430 --> 00:23:33.440 align:start position:0%
+right so you can't say that you know one
+ 
+
+00:23:33.440 --> 00:23:35.590 align:start position:0%
+right so you can't say that you know one
+task<00:23:33.760><c> you</c><00:23:33.919><c> execute</c><00:23:34.400><c> and</c><00:23:34.480><c> it</c><00:23:34.720><c> is</c><00:23:34.799><c> done</c><00:23:35.200><c> because</c>
+
+00:23:35.590 --> 00:23:35.600 align:start position:0%
+task you execute and it is done because
+ 
+
+00:23:35.600 --> 00:23:37.350 align:start position:0%
+task you execute and it is done because
+it<00:23:35.679><c> can</c><00:23:35.919><c> appear</c><00:23:36.320><c> once</c><00:23:36.559><c> again</c><00:23:36.880><c> after</c><00:23:37.200><c> its</c>
+
+00:23:37.350 --> 00:23:37.360 align:start position:0%
+it can appear once again after its
+ 
+
+00:23:37.360 --> 00:23:38.950 align:start position:0%
+it can appear once again after its
+period
+
+00:23:38.950 --> 00:23:38.960 align:start position:0%
+period
+ 
+
+00:23:38.960 --> 00:23:40.950 align:start position:0%
+period
+so<00:23:39.200><c> this</c><00:23:39.440><c> is</c><00:23:39.600><c> when</c><00:23:39.840><c> you</c><00:23:40.000><c> can</c><00:23:40.159><c> have</c><00:23:40.400><c> a</c><00:23:40.559><c> large</c>
+
+00:23:40.950 --> 00:23:40.960 align:start position:0%
+so this is when you can have a large
+ 
+
+00:23:40.960 --> 00:23:42.789 align:start position:0%
+so this is when you can have a large
+delay<00:23:41.279><c> which</c><00:23:41.440><c> will</c><00:23:41.679><c> cause</c><00:23:41.919><c> the</c><00:23:42.080><c> high</c><00:23:42.240><c> priority</c>
+
+00:23:42.789 --> 00:23:42.799 align:start position:0%
+delay which will cause the high priority
+ 
+
+00:23:42.799 --> 00:23:48.390 align:start position:0%
+delay which will cause the high priority
+task<00:23:43.120><c> to</c><00:23:43.279><c> miss</c><00:23:43.520><c> its</c><00:23:44.000><c> deadline</c>
+
+00:23:48.390 --> 00:23:48.400 align:start position:0%
+ 
+ 
+
+00:23:48.400 --> 00:23:50.390 align:start position:0%
+ 
+so<00:23:48.640><c> a</c><00:23:48.799><c> quick</c><00:23:49.120><c> graphic</c><00:23:49.520><c> about</c><00:23:49.840><c> unbounded</c>
+
+00:23:50.390 --> 00:23:50.400 align:start position:0%
+so a quick graphic about unbounded
+ 
+
+00:23:50.400 --> 00:23:52.470 align:start position:0%
+so a quick graphic about unbounded
+priority<00:23:50.880><c> inversions</c><00:23:51.520><c> we</c><00:23:51.679><c> have</c><00:23:51.840><c> already</c><00:23:52.159><c> seen</c>
+
+00:23:52.470 --> 00:23:52.480 align:start position:0%
+priority inversions we have already seen
+ 
+
+00:23:52.480 --> 00:23:54.070 align:start position:0%
+priority inversions we have already seen
+that<00:23:52.799><c> i</c><00:23:52.880><c> will</c><00:23:53.120><c> not</c>
+
+00:23:54.070 --> 00:23:54.080 align:start position:0%
+that i will not
+ 
+
+00:23:54.080 --> 00:23:57.190 align:start position:0%
+that i will not
+describe<00:23:54.559><c> this</c><00:23:54.880><c> more</c><00:23:55.520><c> but</c><00:23:56.159><c> the</c><00:23:56.400><c> key</c><00:23:56.640><c> idea</c><00:23:57.039><c> is</c>
+
+00:23:57.190 --> 00:23:57.200 align:start position:0%
+describe this more but the key idea is
+ 
+
+00:23:57.200 --> 00:23:59.590 align:start position:0%
+describe this more but the key idea is
+that<00:23:57.600><c> tl</c><00:23:58.000><c> the</c><00:23:58.159><c> low</c><00:23:58.320><c> priority</c><00:23:58.880><c> task</c><00:23:59.200><c> holds</c><00:23:59.440><c> the</c>
+
+00:23:59.590 --> 00:23:59.600 align:start position:0%
+that tl the low priority task holds the
+ 
+
+00:23:59.600 --> 00:24:00.630 align:start position:0%
+that tl the low priority task holds the
+resource
+
+00:24:00.630 --> 00:24:00.640 align:start position:0%
+resource
+ 
+
+00:24:00.640 --> 00:24:03.510 align:start position:0%
+resource
+th<00:24:01.039><c> waits</c><00:24:01.360><c> for</c><00:24:01.600><c> it</c><00:24:01.760><c> and</c><00:24:01.840><c> these</c><00:24:02.159><c> are</c><00:24:02.400><c> all</c><00:24:02.640><c> the</c>
+
+00:24:03.510 --> 00:24:03.520 align:start position:0%
+th waits for it and these are all the
+ 
+
+00:24:03.520 --> 00:24:08.470 align:start position:0%
+th waits for it and these are all the
+intermediate<00:24:04.159><c> tasks</c><00:24:04.720><c> which</c><00:24:04.960><c> enjoy</c><00:24:05.279><c> the</c><00:24:05.440><c> party</c>
+
+00:24:08.470 --> 00:24:08.480 align:start position:0%
+ 
+ 
+
+00:24:08.480 --> 00:24:09.830 align:start position:0%
+ 
+so<00:24:08.720><c> naturally</c>
+
+00:24:09.830 --> 00:24:09.840 align:start position:0%
+so naturally
+ 
+
+00:24:09.840 --> 00:24:11.830 align:start position:0%
+so naturally
+the<00:24:10.080><c> number</c><00:24:10.400><c> of</c><00:24:10.559><c> priority</c><00:24:11.039><c> inversions</c><00:24:11.679><c> is</c>
+
+00:24:11.830 --> 00:24:11.840 align:start position:0%
+the number of priority inversions is
+ 
+
+00:24:11.840 --> 00:24:15.029 align:start position:0%
+the number of priority inversions is
+important<00:24:12.320><c> in</c><00:24:12.480><c> such</c><00:24:12.720><c> a</c><00:24:12.799><c> problem</c>
+
+00:24:15.029 --> 00:24:15.039 align:start position:0%
+important in such a problem
+ 
+
+00:24:15.039 --> 00:24:17.430 align:start position:0%
+important in such a problem
+because<00:24:15.520><c> it</c><00:24:15.679><c> can</c><00:24:15.840><c> become</c><00:24:16.320><c> unbounded</c><00:24:17.039><c> it</c><00:24:17.200><c> can</c>
+
+00:24:17.430 --> 00:24:17.440 align:start position:0%
+because it can become unbounded it can
+ 
+
+00:24:17.440 --> 00:24:20.390 align:start position:0%
+because it can become unbounded it can
+cause<00:24:17.760><c> a</c><00:24:17.840><c> task</c><00:24:18.159><c> to</c><00:24:18.320><c> miss</c><00:24:18.559><c> its</c><00:24:18.720><c> deadline</c>
+
+00:24:20.390 --> 00:24:20.400 align:start position:0%
+cause a task to miss its deadline
+ 
+
+00:24:20.400 --> 00:24:22.870 align:start position:0%
+cause a task to miss its deadline
+in<00:24:20.559><c> the</c><00:24:20.640><c> worst</c><00:24:21.039><c> case</c><00:24:21.679><c> the</c><00:24:21.840><c> high</c><00:24:22.080><c> priority</c><00:24:22.559><c> task</c>
+
+00:24:22.870 --> 00:24:22.880 align:start position:0%
+in the worst case the high priority task
+ 
+
+00:24:22.880 --> 00:24:25.430 align:start position:0%
+in the worst case the high priority task
+will<00:24:23.039><c> have</c><00:24:23.120><c> to</c><00:24:23.279><c> wait</c><00:24:23.600><c> indefinitely</c>
+
+00:24:25.430 --> 00:24:25.440 align:start position:0%
+will have to wait indefinitely
+ 
+
+00:24:25.440 --> 00:24:27.029 align:start position:0%
+will have to wait indefinitely
+which<00:24:25.679><c> means</c><00:24:25.919><c> it</c><00:24:26.080><c> will</c><00:24:26.240><c> miss</c><00:24:26.480><c> its</c><00:24:26.640><c> deadline</c>
+
+00:24:27.029 --> 00:24:27.039 align:start position:0%
+which means it will miss its deadline
+ 
+
+00:24:27.039 --> 00:24:31.110 align:start position:0%
+which means it will miss its deadline
+for<00:24:27.279><c> sure</c><00:24:27.520><c> regardless</c><00:24:28.159><c> of</c><00:24:28.240><c> the</c><00:24:28.400><c> deadline</c>
+
+00:24:31.110 --> 00:24:31.120 align:start position:0%
+ 
+ 
+
+00:24:31.120 --> 00:24:35.590 align:start position:0%
+ 
+so<00:24:31.440><c> we</c><00:24:31.840><c> end</c><00:24:32.559><c> this</c><00:24:32.880><c> lecture</c><00:24:33.360><c> here</c>
+
+00:24:35.590 --> 00:24:35.600 align:start position:0%
+so we end this lecture here
+ 
+
+00:24:35.600 --> 00:24:37.590 align:start position:0%
+so we end this lecture here
+just<00:24:35.840><c> by</c><00:24:36.080><c> posing</c><00:24:36.480><c> this</c><00:24:36.799><c> question</c><00:24:37.200><c> that</c><00:24:37.440><c> what</c>
+
+00:24:37.590 --> 00:24:37.600 align:start position:0%
+just by posing this question that what
+ 
+
+00:24:37.600 --> 00:24:42.310 align:start position:0%
+just by posing this question that what
+do<00:24:37.760><c> we</c><00:24:37.919><c> do</c><00:24:38.159><c> with</c><00:24:38.320><c> priority</c><00:24:38.880><c> inversion</c>
+
+00:24:42.310 --> 00:24:42.320 align:start position:0%
+ 
+ 
+
+00:24:42.320 --> 00:24:44.630 align:start position:0%
+ 
+what<00:24:42.559><c> do</c><00:24:42.720><c> we</c><00:24:42.880><c> do</c><00:24:43.120><c> with</c><00:24:43.440><c> unbounded</c><00:24:44.080><c> priority</c>
+
+00:24:44.630 --> 00:24:44.640 align:start position:0%
+what do we do with unbounded priority
+ 
+
+00:24:44.640 --> 00:24:47.909 align:start position:0%
+what do we do with unbounded priority
+inversion<00:24:46.000><c> and</c><00:24:46.240><c> what</c><00:24:46.880><c> exactly</c><00:24:47.520><c> are</c><00:24:47.679><c> the</c>
+
+00:24:47.909 --> 00:24:47.919 align:start position:0%
+inversion and what exactly are the
+ 
+
+00:24:47.919 --> 00:24:49.750 align:start position:0%
+inversion and what exactly are the
+solutions<00:24:48.960><c> right</c>
+
+00:24:49.750 --> 00:24:49.760 align:start position:0%
+solutions right
+ 
+
+00:24:49.760 --> 00:24:51.350 align:start position:0%
+solutions right
+so<00:24:50.000><c> these</c><00:24:50.240><c> are</c><00:24:50.400><c> things</c><00:24:50.640><c> that</c><00:24:50.799><c> we</c><00:24:50.960><c> would</c><00:24:51.200><c> like</c>
+
+00:24:51.350 --> 00:24:51.360 align:start position:0%
+so these are things that we would like
+ 
+
+00:24:51.360 --> 00:24:54.470 align:start position:0%
+so these are things that we would like
+to<00:24:51.600><c> explore</c><00:24:52.320><c> in</c><00:24:52.480><c> the</c><00:24:52.559><c> next</c><00:24:52.960><c> few</c><00:24:53.200><c> lectures</c>
+
+00:24:54.470 --> 00:24:54.480 align:start position:0%
+to explore in the next few lectures
+ 
+
+00:24:54.480 --> 00:24:56.310 align:start position:0%
+to explore in the next few lectures
+with<00:24:54.720><c> regards</c><00:24:55.120><c> to</c><00:24:55.279><c> what</c><00:24:55.440><c> are</c><00:24:55.600><c> the</c><00:24:55.679><c> protocols</c>
+
+00:24:56.310 --> 00:24:56.320 align:start position:0%
+with regards to what are the protocols
+ 
+
+00:24:56.320 --> 00:24:58.310 align:start position:0%
+with regards to what are the protocols
+to<00:24:56.480><c> take</c><00:24:56.720><c> care</c><00:24:57.039><c> of</c>
+
+00:24:58.310 --> 00:24:58.320 align:start position:0%
+to take care of
+ 
+
+00:24:58.320 --> 00:25:02.790 align:start position:0%
+to take care of
+these<00:24:58.640><c> problems</c>
+
+00:25:02.790 --> 00:25:02.800 align:start position:0%
+ 
+ 
+
+00:25:02.800 --> 00:25:11.940 align:start position:0%
+ 
+[Music]
+

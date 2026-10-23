@@ -1,0 +1,377 @@
+WEBVTT
+
+00:00.000 --> 00:23.000
+Welcome to lecture 4 where we will discuss the basics of real-time task scheduling.
+
+00:23.000 --> 00:27.640
+What we have seen up till now is that real-time tasks get generated due to
+
+00:28.680 --> 00:33.160
+certain events. They could be internal events, they could be external events.
+
+00:33.880 --> 00:38.840
+So we call them stimulus events and then the real-time system works on them
+
+00:40.200 --> 00:46.200
+and it produces a response. So then of course we have discussed a bunch of constraints on
+
+00:46.200 --> 00:53.480
+both stimuli and responses. For example, a task may get generated due to a temperature
+
+00:53.480 --> 00:58.440
+sensor sensing a high level and then of course something needs to be done with it and a response
+
+00:58.440 --> 01:05.320
+needs to be generated. So when a task is generated, so we will differentiate between three terms,
+
+01:05.320 --> 01:12.280
+a job, a job slice and a task but let us go with the task for the time being. So when it is
+
+01:12.280 --> 01:19.160
+generated we say that it is released or the task has arrived. So if we look at real-time task
+
+01:19.160 --> 01:25.640
+scheduling, so it essentially refers to the order in which the various tasks are executed.
+
+01:26.200 --> 01:31.240
+In the sense if we have a bunch of real-time tasks, this essentially says in which order
+
+01:31.880 --> 01:39.960
+these tasks are to be executed. This is the primary method of actually enforcing real-time
+
+01:39.960 --> 01:47.240
+deadlines in a real-time operating system and this is what is used to meet task deadlines.
+
+01:47.240 --> 01:54.600
+So scheduling is the main approach. Obviously, for obvious reasons, the scheduler is the
+
+01:54.600 --> 01:59.160
+main component, is the most important component of a real-time operating system.
+
+02:01.000 --> 02:09.880
+So now let us define these things carefully. A job is a unit of work. For example,
+
+02:09.880 --> 02:13.080
+it could be a computation, a file read, a message transmission.
+
+02:14.760 --> 02:22.120
+It is an instance of a task. In a sense, a task is a sequence of jobs, similar jobs
+
+02:22.120 --> 02:27.880
+and typically when we are talking of a periodic task as is the case with most real-time tasks,
+
+02:28.440 --> 02:35.480
+then each one of them is a job. So at one point the task is released or it arrives.
+
+02:35.480 --> 02:41.480
+So the real-time operating system does not take it up for execution immediately. It takes some time.
+
+02:43.080 --> 02:50.520
+So after that it starts to execute and then there is a relative deadline
+
+02:50.520 --> 02:54.280
+with respect to the time at which the task was released.
+
+02:57.080 --> 03:02.840
+So now let us come to a task instance. A task instance is the same as a job. So we will use
+
+03:02.840 --> 03:07.160
+these terms interchangeably. At some points of time we may say task instance,
+
+03:07.800 --> 03:15.480
+at some points of time we may say job. So a task typically recurs a large number of times.
+
+03:16.200 --> 03:22.280
+Each time it is triggered by an event. The event could be an aperiodic event, it could be a
+
+03:22.280 --> 03:31.320
+sporadic event or it could be a periodic event. So every time a task recurs, we say that an instance
+
+03:31.320 --> 03:39.080
+of the task has been generated or a job has been generated. So a periodic task will basically have
+
+03:39.080 --> 03:49.880
+these periodic jobs or task instances one after the other. The ith time a task t recurs, we will
+
+03:49.880 --> 03:57.560
+say that task instance ti is said to have arrived. So we will use the term ti or we may alternatively
+
+03:57.560 --> 04:03.640
+use the term ti. So it does not matter which one we use but at least one of them will be used. So
+
+04:03.640 --> 04:10.760
+this will be used to indicate the fact that the ith instance of the task, so this is when a task
+
+04:10.760 --> 04:16.440
+has multiple jobs. The task may be a single short task in the sense it has a single job.
+
+04:16.440 --> 04:22.200
+But let us say that is not the case which is typically the case in real-time systems.
+
+04:22.840 --> 04:32.040
+Then we will say that ith time a task t recurs, we will either call it ti or ti of this type.
+
+04:35.960 --> 04:40.600
+So there are two kinds of deadlines. There is an absolute deadline and a relative deadline.
+
+04:41.240 --> 04:48.600
+An absolute deadline is almost never used. So there is as such no reason for using it other than
+
+04:48.600 --> 04:55.160
+in some rare oddball cases here and there where the deadline is specified from t equal to 0.
+
+04:55.160 --> 05:01.720
+So we typically specify the deadline from the occurrence or arrival of the task which is at
+
+05:01.720 --> 05:11.800
+time t. So we count it from there and so this is the relative deadline. And so typically when we
+
+05:11.800 --> 05:17.000
+use the term d, we are talking about the relative deadline from the starting of the task.
+
+05:19.080 --> 05:24.360
+So the response time is basically from the release time, it is a time, so let us say at this point
+
+05:24.360 --> 05:34.840
+of time, the task arrived. So after it arrived, it will be taken up sometime later. So the task
+
+05:34.840 --> 05:40.680
+instance arrived, I should be slightly careful with the terms. So job arrived or the task instance
+
+05:40.680 --> 05:49.720
+arrived. So after that, the entire job is completed. So the duration of time from the
+
+05:49.720 --> 05:54.440
+arrival till the completion is known as the response time. So at this point of time,
+
+05:54.440 --> 06:01.240
+the results are produced. So for soft real-time tasks, the response time has to be minimized.
+
+06:01.240 --> 06:08.200
+It did not be less than the deadline. But for hard real-time tasks, as long as the task completes
+
+06:08.200 --> 06:13.480
+within its deadline, we are fine, we are happy. So I can draw a big broad smile like this.
+
+06:14.520 --> 06:18.600
+So we have talked about three kinds of tasks, periodic, sporadic and aperiodic.
+
+06:19.640 --> 06:24.920
+So in periodic tasks, the task repeats after a certain fixed time interval. So what happens
+
+06:24.920 --> 06:31.720
+is you have one task instance, p units of time later, you have the second task instance, p units
+
+06:31.720 --> 06:37.080
+of time later, you have the third task instance, so on and so forth. So a vast majority of real-time
+
+06:37.080 --> 06:44.600
+tasks are periodic. Then we have sporadic tasks which recur at random instances. But the point is
+
+06:44.600 --> 06:49.960
+that between two task instances, there is a minimum separation. So there is some discipline.
+
+06:51.160 --> 06:56.520
+This discipline is broken and things are really in the wild with aperiodic tasks where two tasks
+
+06:56.520 --> 07:02.280
+can come exactly at the same point, two instances of the same task can come exactly at the same
+
+07:02.280 --> 07:09.800
+point of time. So that is an aperiodic task. So the phase of a task is like this, that it is
+
+07:09.800 --> 07:17.640
+possible that after t equal to 0, for phi units, the task does not arrive and then the task arrives.
+
+07:18.360 --> 07:24.200
+And then let us say if it is a periodic task, it repeats every p time units. So in this case,
+
+07:24.200 --> 07:34.600
+phi is the phase. So what is the example of a phase? So let us say that after 2000 milliseconds,
+
+07:36.440 --> 07:44.120
+phi equal to 2000 in the rocket, the task for correcting the track of the rocket starts and
+
+07:44.120 --> 07:49.240
+this recurs every 50 milliseconds from then on. So in this case, the period is 50.
+
+07:54.360 --> 08:00.520
+Each instance of the task requires a processing time of 8 milliseconds which means that its
+
+08:00.520 --> 08:07.160
+relative deadline is 50 milliseconds. Out of that, any 8 milliseconds can be used to finish the task.
+
+08:09.960 --> 08:15.080
+So there are some very important scheduling terminologies that we will like to look at.
+
+08:16.120 --> 08:20.120
+So there is something called a valid schedule and there is something called a feasible schedule.
+
+08:20.120 --> 08:28.360
+So in a valid schedule, at most one task is assigned to a processor at a time. So which
+
+08:28.360 --> 08:33.800
+basically means that if I have a single processor, there are multiple tasks which are meant to run on
+
+08:33.800 --> 08:42.280
+that processor. At any point of time, only one task is running. Furthermore, no task is scheduled
+
+08:42.280 --> 08:48.040
+before it is ready. In the sense, this is common sense. Before a task arrives, it cannot be scheduled
+
+08:48.040 --> 08:55.160
+to run on the processor. And if there are any precedence relationships between tasks across tasks
+
+08:55.800 --> 09:02.440
+or there is a precedence relationship between or there is a task requires certain resources and
+
+09:02.440 --> 09:07.480
+those resources are not free, then the task cannot run. So when the task runs, in a sense,
+
+09:07.480 --> 09:14.280
+it acquires those resources. So these are all common sense. These are all completely
+
+09:14.280 --> 09:19.960
+common sense constraints where the first constraint is that look for a task to run,
+
+09:19.960 --> 09:26.920
+the processor has to be free, the resources have to be free and you clearly cannot run a task before
+
+09:26.920 --> 09:33.080
+it is ready. This is a valid schedule, common sense valid schedule. A feasible schedule is
+
+09:34.200 --> 09:40.360
+a valid schedule plus one in which all the tasks meet their respective time constraints
+
+09:40.360 --> 09:46.280
+or their deadlines. So as we have discussed in a real-time system, every task comes along
+
+09:46.280 --> 09:53.720
+with its deadline. So in a valid schedule where every task meets its deadline, from a valid schedule,
+
+09:53.720 --> 10:05.720
+so valid plus observing all the deadlines, deadline compatibility if I were to write,
+
+10:06.360 --> 10:11.480
+that will make it a feasible schedule.
+
+10:17.560 --> 10:21.880
+So a few more important terminologies. So we will talk about a proficient scheduler.
+
+10:23.240 --> 10:30.920
+So a scheduler S1 is as proficient as another scheduler S2 if all the tasks or whichever task
+
+10:31.160 --> 10:38.120
+S2 can feasibly schedule or create a feasible schedule for, I can take exactly the same set
+
+10:39.080 --> 10:46.120
+and S1 can also create a feasible schedule for those tasks. So then this will make S1
+
+10:46.120 --> 10:53.080
+at least as proficient as S2 and S1 of course maybe can schedule some set of tasks which S2 cannot,
+
+10:53.080 --> 10:59.640
+then in that case S1 will kind of become more proficient. But at least here I am saying that
+
+10:59.640 --> 11:05.800
+S1 is greater than equal to because we do not know. But as long as whatever S2 can feasibly
+
+11:05.800 --> 11:11.880
+schedule if S1 can do that, it is more proficient than S2. So similarly if you have another
+
+11:11.880 --> 11:18.840
+relationship where S2 is, it has the same proficiency or more proficient than S1
+
+11:18.840 --> 11:22.600
+because the reverse relationship holds, then we can say that both are equivalent.
+
+11:23.480 --> 11:28.840
+Maybe I should use three lines here, which means that they are equally proficient schedulers,
+
+11:28.840 --> 11:36.840
+which means a task set, a set of tasks can be feasibly scheduled by both of them or there is
+
+11:36.840 --> 11:42.280
+no set of tasks which one can feasibly schedule and the other one cannot. So clearly you would
+
+11:42.280 --> 11:48.360
+want a scheduler to be as proficient as possible. What is an optimal scheduler?
+
+11:49.960 --> 11:57.400
+An optimal scheduler can feasibly schedule any task set and any other scheduler can schedule
+
+11:57.400 --> 12:02.440
+in the sense that there is no scheduler in the world which is more proficient than an optimal
+
+12:02.440 --> 12:09.960
+scheduler. So that is our aim to design an optimal scheduler. Then of course there are
+
+12:09.960 --> 12:14.840
+scheduling points at different points on timeline we may want to compute a schedule
+
+12:14.840 --> 12:18.120
+but the scheduler makes a decision regarding what should I run next.
+
+12:19.160 --> 12:23.720
+So of course there are two broad paradigms, clock driven and event driven.
+
+12:23.720 --> 12:30.440
+So in a clock driven scheduler the scheduling points are decided by a periodic timer,
+
+12:30.440 --> 12:35.320
+so that is clock driven. Then there is event driven where at certain points,
+
+12:35.320 --> 12:44.120
+let us say a certain event comes up. For example a task either arrives or a task finishes execution
+
+12:44.120 --> 12:51.560
+and at those points I compute my schedule, so both have their benefits. So clock driven
+
+12:52.200 --> 12:58.280
+ensures that I am periodically updating the schedule but again I may be doing some wasted
+
+12:58.280 --> 13:05.160
+work. Event driven is slightly more efficient in the sense it reduces the work if I exactly
+
+13:05.160 --> 13:11.800
+know which events I am talking about. So real-time task scheduling as you have seen is the crux of
+
+13:11.800 --> 13:18.840
+any real-time system. Significant amount of research has been devoted to creating these
+
+13:18.840 --> 13:24.600
+schedulers for both uniprocessors and multiprocessors, distributed systems as well.
+
+13:26.360 --> 13:29.960
+And task scheduling on uniprocessors, the research of course is very old,
+
+13:29.960 --> 13:36.760
+it started in the 70s and 80s. So the real-time task schedulers can as we have discussed
+
+13:37.960 --> 13:45.640
+be divided into two types, clock and event driven and we will have to kind of look at both.
+
+13:45.640 --> 13:56.120
+So the summary of schedulers is that either for the clock driven it could be an endless loop,
+
+13:57.080 --> 14:00.040
+in the event driven scheduler there are no tasks that is pulled.
+
+14:01.800 --> 14:07.880
+This is time driven, it is cyclic but in this case it is not the case. And of course you know
+
+14:07.880 --> 14:16.360
+we could have other attributes of schedulers as well in the sense that you can have multi-rate
+
+14:16.360 --> 14:21.400
+schedulers in the sense you could have tasks with different periods. So in that sense
+
+14:22.440 --> 14:26.520
+you could have one scheduler for fast task, one for slow task but then of course you will have
+
+14:26.520 --> 14:31.720
+to manage the resource contention and you can take priorities into account and of course you
+
+14:31.720 --> 14:45.240
+can take device interrupts into account that whenever an interrupt comes we make a scheduling.
+
