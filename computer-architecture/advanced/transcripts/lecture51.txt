@@ -1,0 +1,1949 @@
+[00:00] [Music]
+[00:12] thank you
+[00:21] welcome to the third lecture on
+[00:22] reliability so we will discuss in this
+[00:25] lecture parameter variation and hard
+[00:28] errors in agings as you will see these
+[00:30] are all related in
+[00:32] kind of the same way
+[00:35] so let's look at the vlsi design process
+[00:37] to begin with
+[00:39] so what we do is we consider a large
+[00:41] wafer so 20 to 30 centimeters in
+[00:43] diameter roughly in a one foot
+[00:46] so we coat it with a photoresist
+[00:49] then what we do is that so photoresist
+[00:53] if I would look at it this would look
+[00:55] like this side view would be like this
+[00:58] sorry uh
+[01:00] maybe let me clear off the ink
+[01:03] and
+[01:11] and then you know we have this
+[01:13] photoresist over here
+[01:16] so what happens is that we quote it with
+[01:18] it and then we have a light source
+[01:21] so the light source basically what it
+[01:24] does is that
+[01:26] you put a mask over here
+[01:29] it's a pattern gets printed on the photo
+[01:31] resist
+[01:33] and the pattern that gets so this is an
+[01:36] optical pattern but the photoresist is
+[01:38] something that reacts with light
+[01:40] so then structures on the vlsi circuit
+[01:42] form of course it could be you know a
+[01:44] kind of a positive
+[01:46] reaction or a negative in the sense the
+[01:48] parts that are exposed could change
+[01:49] their form
+[01:51] will the path that is exposed always
+[01:53] stay in their form but then the point is
+[01:54] that when I wash out
+[01:58] the
+[02:00] photoresist with an acid what gets
+[02:02] washed out the parts that are exposed or
+[02:04] not
+[02:05] so what I do is I apply a solvent and I
+[02:08] wash it out this process is known as
+[02:10] etching
+[02:11] and with with etching what happens is
+[02:13] either the paths that are exposed they
+[02:16] wash out or the parts that are not
+[02:18] exposed they wash out in any in either
+[02:20] case it doesn't matter
+[02:21] right at least from a logical point of
+[02:24] view but of course physically it matters
+[02:26] a lot
+[02:27] so what happens is let us assume that
+[02:29] the parts that are washed out are the
+[02:31] parts that were exposed so the point is
+[02:33] that we have patterns like this if we
+[02:35] look at it from the side so you have
+[02:37] patterns you'll have trenches
+[02:39] so the trench is where the basic silicon
+[02:41] is exposed otherwise the basic silicon
+[02:43] is not exposed
+[02:45] now let's say to dopa region We can
+[02:49] spray a dopant you know in a gas gaseous
+[02:51] form
+[02:53] so it can either be an n-type gas or a
+[02:56] p-type gas right in a phosphorus type
+[02:59] Boron type
+[03:00] we allow the dopants to kind of permeate
+[03:03] into the Silicon so get either n-type
+[03:05] dot dot P type Dot
+[03:08] and then uh basically what we do is that
+[03:12] we again you know wash out the rest of
+[03:14] the areas and then we can create oxide
+[03:16] layers Again by a similar process
+[03:20] so what we are basically doing is that
+[03:23] we are creating regions of doped regions
+[03:26] of let's say n-type dough P type and
+[03:29] then n-type you know that would make a
+[03:31] transistor and then on top of that we
+[03:35] can create a silicon dioxide layer then
+[03:38] implant metal on top of it the idea is
+[03:41] the same we do this thing that I just
+[03:43] described over and over again where we
+[03:46] coat it with a photoresist we expose
+[03:49] light to parts of it then we wash out
+[03:52] the rest
+[03:54] or we wash out the parts that have been
+[03:56] exposed in this case we are assuming
+[03:58] that we wash out the parts that have
+[04:00] been exposed then we kind of
+[04:03] spray dopants or spray metal in a
+[04:05] gaseous form
+[04:07] that forms a metal layer
+[04:09] right and or that forms a dopant layer
+[04:13] and we keep on doing that so with this
+[04:15] we can create a multi-layer chip this is
+[04:17] the broad idea
+[04:18] so we are essentially patterning and
+[04:21] then patterning so on and so forth
+[04:23] basically using light and chemical
+[04:24] solvents that's the broad idea that you
+[04:27] first coat it with a photosensitive
+[04:30] material known as a photoresist
+[04:32] you apply light to it how do you do that
+[04:34] well you have a light source
+[04:36] and then in front of the light source
+[04:38] you put a mask
+[04:39] so the mask will block some light and
+[04:41] let the rest pass through
+[04:43] the light that hits the photoresist it
+[04:46] reacts with it it changes its chemical
+[04:47] structure
+[04:48] then we basically wash out parts of the
+[04:51] photoresist and expose the parts that
+[04:54] have been washed out to essentially a
+[04:57] different kind of an environment a
+[04:59] gaseous environment where
+[05:00] dopants can percolate or metal can get
+[05:03] deposited
+[05:07] so there's some basic questions right so
+[05:09] the idea basically here is that you are
+[05:12] making an Engraving
+[05:14] right so that that's the broad idea
+[05:17] that you are making an engraving so so
+[05:21] of course I would like to
+[05:22] make a small correction to what I just
+[05:25] said
+[05:26] it is not necessary to use a gaseous
+[05:28] medium all the time it could also be a
+[05:30] liquid medium where the liquid you know
+[05:32] can seep in into the areas that are
+[05:36] where the photoresist has been removed
+[05:38] right so the process of removal is
+[05:40] called etching so let's not care about
+[05:42] whether you know it's a gaseous effusion
+[05:45] or a liquid effusion but the key idea is
+[05:47] that you have removed parts of the
+[05:48] photoresist these parts are exposed and
+[05:51] this is where something can be
+[05:52] accumulated
+[05:53] what can be accumulated could be a
+[05:55] dopant or could be a metal or could be
+[05:57] silicon dioxide
+[05:59] it depends on what exactly we want to
+[06:01] create
+[06:03] so the question is that we are
+[06:05] essentially engraving the surface of the
+[06:08] dye or the surface of the dye with the
+[06:10] photoresist on top of it
+[06:12] we are creating a very fine engraving in
+[06:15] the sense we want to create very very
+[06:16] thin lines and these lines are
+[06:18] essentially you know a couple of
+[06:20] nanometers right
+[06:21] so can such a fine engraving be done
+[06:24] with a plant knife well let me ask this
+[06:26] question let's say there's a 10
+[06:28] nanometer feature right which means that
+[06:31] you know it's end to end it's only 10
+[06:32] nanometers wide can you do it with 193
+[06:36] nanometer light or 157 nanometer light
+[06:38] well the answer is no right because the
+[06:41] point is that
+[06:43] you are using light whose wavelength is
+[06:46] substantially more than the size of the
+[06:49] feature that you are trying to create of
+[06:51] course now we have as of writing this
+[06:54] book uh we have gone down to around 7
+[06:57] nanometers so in this case we are not
+[06:59] using 157 nanometer light we are using
+[07:02] light which is
+[07:04] you know at a much lower wavelength
+[07:09] so for these Ultra small features we are
+[07:11] using 13.5 nanometer light which is an
+[07:14] UltraViolet range and of course you know
+[07:16] we this will go down to let's say maybe
+[07:18] three nanometers or Beyond but the idea
+[07:20] still is that the wavelength Lambda of
+[07:22] light is significantly more than the
+[07:25] size of the feature that we want to
+[07:27] create right beat 193 157 or 13.5 it
+[07:31] doesn't matter in all cases we are using
+[07:34] light
+[07:35] whose wavelength is much much more four
+[07:38] times five times ten times more than the
+[07:43] create hence there will be imperfections
+[07:45] because light cannot accurately let's
+[07:48] say we want to draw a rectangle on
+[07:49] Silicon that's not going to happen
+[07:51] what's going to happen is that the
+[07:52] corners will get rounded what you will
+[07:54] have is something like this
+[07:56] so we need to further understand that
+[07:59] along with the limitations of light
+[08:01] there are limitations of atomic
+[08:05] particles as well like an atom is
+[08:08] roughly one angstrom 0.1 nanometers so
+[08:11] 10 nanometer feature is roughly 100
+[08:13] atoms laid side by side
+[08:16] and 10 20 atoms going here and there is
+[08:18] not a big deal but that would
+[08:21] create a plus or minus 10 difference in
+[08:24] the feature size of the feature
+[08:26] which would have significant
+[08:29] consequences in terms of the electrical
+[08:31] parameters of the design that we are
+[08:33] creating it could have a very different
+[08:35] threshold voltage for instance
+[08:38] so even placing these atoms side by side
+[08:40] we can't be that accurate our doping
+[08:42] process is not all that great plus we
+[08:45] are using light with a significantly
+[08:47] higher wavelength as opposed to the
+[08:49] Future size
+[08:50] so all of these things contribute to
+[08:53] process variation which is basically
+[08:55] what we want to print is not what we
+[08:58] actually print right what we want is not
+[09:00] what we get
+[09:01] and there are imperfections in the
+[09:03] fabrication process mainly because of
+[09:05] the wavelength of light
+[09:08] and also because of the fact that we are
+[09:10] trying to Place atoms side by side and
+[09:13] placing them side by side
+[09:15] that accurately is not possible there
+[09:18] are bound to be inaccuracies in the
+[09:21] system
+[09:23] so parameter variation is something that
+[09:26] cross that considers process variation
+[09:29] which we just described
+[09:32] which is imperfections in the
+[09:33] fabrication process but also along with
+[09:36] that variations in the runtime
+[09:38] conditions
+[09:40] right what kind of runtime conditions we
+[09:42] will see let's first look at process
+[09:44] variation then we will look at the
+[09:46] others
+[09:47] so process variation as I have said
+[09:49] because of light because of dopant
+[09:51] density right so when you're placing
+[09:53] atoms what do you want you want at all
+[09:55] the places that let's say the Silicon is
+[09:58] exposed let's say n atoms go through
+[10:01] but one atom is a very small quantity
+[10:04] right it's a tenth of an nanometer or a
+[10:06] half a nanometer maximum
+[10:08] so the point is that you can never
+[10:11] achieve such a uniformed open density
+[10:13] that you will assume or you can assume
+[10:15] that the same number of atoms are going
+[10:17] to seep in
+[10:19] so that will lead to some manufacturing
+[10:22] related process variation process
+[10:24] related variation
+[10:26] which will vary of course die to die
+[10:28] different dyes different Wafers and
+[10:30] within the die like within a single CPU
+[10:32] you will have some variation
+[10:35] and you will have
+[10:38] some variation even at a very small
+[10:40] scale like even in let's say 10
+[10:42] transistors you will have some variation
+[10:44] so you can broadly divide it into two
+[10:46] parts systematic and random
+[10:49] where systematic are basically you know
+[10:51] this low frequency variations throughout
+[10:53] the die like a high region over here and
+[10:56] a low region over there and random is
+[10:58] something that you see even at a very
+[11:00] small
+[11:02] scale right one transistor will
+[11:04] fundamentally be different than the
+[11:06] transistor beside it so that's random
+[11:08] variation we'll discuss the reasons
+[11:10] behind them but these are the two broad
+[11:12] types
+[11:13] then we can have variation in a supply
+[11:16] voltage which is a part broader part of
+[11:18] the parameter variation umbrella where
+[11:21] we could have IR drops because the high
+[11:23] current draw where the power grid will
+[11:25] have an IR drop
+[11:26] and as I said ldi DT drops so we can
+[11:29] call it ldi DT which is because of the
+[11:32] inductance so because the power grid has
+[11:35] an inductance by the lenses law it will
+[11:37] oppose any change in current it will
+[11:39] apply a back EMF
+[11:41] which will cause issues with the supply
+[11:43] voltage and then of course temperature
+[11:45] so go back to chapter 12 you will have
+[11:48] high temperature regions low temperature
+[11:49] regions and then you know different
+[11:52] temperature values lead to different
+[11:54] transistor speeds which lead to
+[11:56] different values of the leakage
+[11:58] so the leakage feedback loop also comes
+[12:00] into play but fundamentally by and large
+[12:03] the temperature variation
+[12:05] across the chip
+[12:07] will impact the performance right
+[12:09] because in general higher the
+[12:12] temperature higher is the leakage in
+[12:14] some for some technologies transistors
+[12:16] speed up for some others they slow down
+[12:18] but in any case this does lead to
+[12:20] variation in the combination of all
+[12:22] three is quite deadly it's called pvt
+[12:24] variation process voltage temperature
+[12:26] all being a part of
+[12:28] the overall parameter variation umbrella
+[12:32] so if we look at systematic variation
+[12:35] which was like this component or the
+[12:37] process variation
+[12:39] so this is uh you know a graph that we
+[12:41] generated
+[12:42] so we divided a chip into million grid
+[12:45] points and we kind of have the
+[12:48] leakage power variation map in arbitrary
+[12:50] units so you can see systematic regions
+[12:53] of let's say low leakage power High
+[12:55] leakage power High leakage power
+[12:58] basically means a low threshold voltage
+[13:00] right that's what it means so again you
+[13:03] know you see these systematic regions
+[13:05] right so this let's say this region
+[13:07] these are all systematic variations
+[13:09] right so because there is a correlation
+[13:12] in space
+[13:13] and this is happening because of the
+[13:15] precisely because of the wave nature of
+[13:18] light and diffraction and so on
+[13:20] let us now look at the sources of
+[13:22] systematic variation there are primarily
+[13:25] two one we have been talking about quite
+[13:28] a bit which is the wave nature of light
+[13:31] but there are other simpler sources as
+[13:34] well so let's look at the first one
+[13:37] it's called chemical mechanical
+[13:39] polishing or CMP so CMP is a you know
+[13:42] it's a Bonafide part of the chip
+[13:45] manufacturing process
+[13:47] so what happens is that in a large wafer
+[13:50] all the areas are not filled with
+[13:52] silicon or sorry or not filled with
+[13:55] wires and transistors and so on
+[13:58] there are some empty areas mainly
+[14:00] because we couldn't Place anything there
+[14:02] so what happens is that in subsequent
+[14:04] processing these empty areas are soft
+[14:06] they are not filled with metal so these
+[14:09] empty areas you know can sort of get
+[14:11] squished
+[14:13] so there is a need to look at each of
+[14:15] these areas and kind of bolster them
+[14:19] increase their structural strength
+[14:22] so to increase their structural strength
+[14:24] what is done is if this is an empty area
+[14:26] they kind of create these cuboids of
+[14:30] copper cuboids or metal of course they
+[14:33] are not connected and they are not
+[14:34] charged but essentially these are like
+[14:36] columns whose main job is to
+[14:39] hold the area and give it structural
+[14:41] strength
+[14:43] what happens whenever we do a metallic
+[14:46] fill is that there is a need to kind of
+[14:48] smooth it out
+[14:52] such that you know the entire layer
+[14:55] roughly has the same thickness right so
+[14:58] in this case fundamentally we are
+[14:59] altering the thickness of the layer for
+[15:02] even other things like photoresist and
+[15:04] etching and so on along with see along
+[15:06] with this filling
+[15:09] we are
+[15:11] changing the thickness of the layers we
+[15:13] would like to homogenize it so to
+[15:15] homogenize it what we do is we polish
+[15:17] the surface both mechanically we kind of
+[15:19] grind it and also we use chemical
+[15:21] solvents in spite of that because of the
+[15:24] varying mechanical properties of the
+[15:27] layer
+[15:28] the thickness if I were to look at a
+[15:31] cross-sectional view would be something
+[15:33] like this right it would not be uniform
+[15:35] in spite of doing these fields and so on
+[15:38] and in spite of chemical mechanical
+[15:40] pollution the thickness will not be
+[15:42] uniform
+[15:43] so we will have a layer with varying
+[15:46] thickness so the thickness would vary
+[15:48] regardless of whatever we do and this
+[15:51] would be a systematic variation there
+[15:53] would be a special component to the
+[15:54] correlation
+[15:55] this would be a systematic variation and
+[16:00] this variation arises after the chemical
+[16:03] mechanical polishing process is over
+[16:05] hence we call it CMP related variation
+[16:08] even though the real reason is that not
+[16:10] all parts of the Silicon are equally
+[16:12] strong we try to make some path strong
+[16:15] and then we try to polish and after all
+[16:17] of that still some variation is left in
+[16:20] terms of the thickness and that leads to
+[16:22] a variation in electrical properties
+[16:23] ultimately that's the only thing that
+[16:26] matters from a high level variation and
+[16:28] electrical properties and this in this
+[16:31] case arises because of varying thickness
+[16:34] now if you look at the wave nature of
+[16:36] light well we are aware of what we
+[16:39] studied in our classical physics
+[16:41] that the wavelength of light Lambda is
+[16:44] much larger than the feature size as we
+[16:46] have been arguing
+[16:49] so there is a rally resolution limit
+[16:51] Beyond which we can't fabricate reliably
+[16:54] so this is Lambda divided by the
+[16:56] numerical aperture so lot of tricks are
+[16:58] done to change the numerical aperture
+[17:00] and so on
+[17:01] but pretty much when we go below the
+[17:04] rally resolution limit will not be able
+[17:06] to fabricate
+[17:07] our structures accurately Corners will
+[17:10] get rounded lines will not remain
+[17:12] straight the wave nature of light will
+[17:15] become apparent right so these
+[17:18] photolithographic effects primarily
+[17:21] because of the wave nature of light
+[17:23] are systematic in character there is a
+[17:27] spatial correlation
+[17:28] hence this is the second source of
+[17:30] systematic variation both this as well
+[17:32] as this
+[17:34] random variation on the other hand
+[17:36] happens for a
+[17:39] diametrically opposite reason
+[17:42] we had a problem with the wave nature of
+[17:44] light now lo and behold we have a
+[17:47] problem with a particle nature of light
+[17:48] as well
+[17:50] so how is this
+[17:52] problematic well it's problematic like
+[17:55] this that if I want to fabricate a
+[17:58] smooth line
+[17:59] then what I need is I need a uniform
+[18:02] Photon flux throughout the life
+[18:05] but a photon
+[18:07] if you think about it is a
+[18:10] is a discrete
+[18:13] fundamental particle right say Photon
+[18:15] might strike here may not strike here
+[18:17] may strike here may not May strike here
+[18:20] but then the next one may be here
+[18:22] so the photon flux will not be regular
+[18:25] regardless of whatever we do and this is
+[18:28] a straight corollary or the particle
+[18:30] nature of light
+[18:32] that's the reason fabricating a smooth
+[18:34] line is tough the edges will be will
+[18:37] have what is called lineage roughness or
+[18:39] ler
+[18:41] and this will arise the moment because
+[18:44] light will not fall
+[18:46] you know regularly so the moment we uh
+[18:50] expose the photoresist to the light and
+[18:52] we etch it out we'll simply see lines
+[18:54] with very very irregular edges and this
+[18:57] will contribute to random variation
+[18:59] because as you can see this is not
+[19:02] systematic but even neighboring
+[19:03] transistors will have different values
+[19:05] for their line edges and that would
+[19:08] manifest in different electrical
+[19:11] properties as well
+[19:13] so again the atom the atoms and
+[19:16] placement becomes important you consider
+[19:18] five nanometer feature it's 50 atoms
+[19:20] side by side
+[19:22] can you ever achieve this level of
+[19:24] accuracy well you won't be because this
+[19:27] means that if let's say I have a small
+[19:28] exposed area of the
+[19:31] silicon there is no photoresist here
+[19:33] I want exactly 50 items to kind of see
+[19:37] pin and create a doped region
+[19:39] which is let's say n-type though you
+[19:42] know that's not gonna happen
+[19:44] right how do you say you need very very
+[19:46] uniform dope and density
+[19:49] right and even for the gate thickness
+[19:50] let's say the gate thicknesses are very
+[19:52] low incidentally the silicon dioxide
+[19:55] layer is only three to two to three
+[19:56] nanometers and it's very hard to have
+[19:59] this kind of process control
+[20:01] that is exact and when it's not going to
+[20:05] be exact you will have varying
+[20:07] electrical parameters even across
+[20:09] neighboring transistors
+[20:10] which would basically lead
+[20:14] to random variation because after all
+[20:17] you know at the atomic scale things are
+[20:20] very
+[20:21] uncertain right so there is a degree of
+[20:23] non-determinism and uncertainty recall
+[20:26] the Heisenberg's uncertainty principle
+[20:29] and that is why placing them so
+[20:31] accurately is difficult
+[20:37] so the examples would be like this that
+[20:39] look this is an example of a systematic
+[20:42] variation where we don't have a sharp
+[20:44] corner we have a rounded corner
+[20:47] right so you just see the rounding so
+[20:49] this is all systematic variation random
+[20:52] variations will be lineage roughness
+[20:53] which is this
+[20:56] there is an additive nature of process
+[20:58] variation in the sense
+[21:00] that in any component right any time we
+[21:04] see something like a threshold voltage
+[21:05] or something we can roughly divide it
+[21:08] into additive componences approximate
+[21:10] but works quite well
+[21:12] we'll have a diet to die variation plus
+[21:14] a within die variation whatever is the
+[21:16] parameter Delta is any parameter of
+[21:18] Interest
+[21:19] and die to die it is die to die plus the
+[21:22] within dye can be broken into two parts
+[21:24] the P random and systematic right random
+[21:27] part systematic part die to right part
+[21:31] so let's now try to create a
+[21:33] mathematical model to model variation
+[21:36] so we have seen the alpha power law the
+[21:39] alpha power law we have seen earlier
+[21:42] and I would like to bring that file so
+[21:44] we had seen this in the dvfs part in the
+[21:46] Ed Square part the gate delay is
+[21:49] essentially proportional to the
+[21:51] effective Channel length right so it's
+[21:54] not exactly a channel length but you
+[21:56] have to look at the depletion regions
+[21:57] and so on so there's a term called an
+[21:59] effective Channel length
+[22:01] the supply voltage the mobility of the
+[22:04] carriers which is typically varies
+[22:07] as temperature to the power minus 1.5
+[22:09] which means higher the temperature lower
+[22:12] is the mobility especially in Silicon
+[22:15] right so
+[22:17] and then V minus vth to the power Alpha
+[22:21] right so V is again the supply voltage
+[22:23] the threshold voltage and Alpha is a
+[22:26] constant which is why this is called
+[22:27] Alpha power law because Alpha pretty
+[22:30] much tells you how this would behave in
+[22:32] older days of course vth was Far smaller
+[22:35] than V and Alpha was roughly 2. so this
+[22:38] was basically roughly V by V Square
+[22:40] which is 1 by V
+[22:42] so essentially it was inversely
+[22:44] proportional to the supply voltage that
+[22:46] that's not true now
+[22:48] so uh the threshold voltage furthermore
+[22:52] the vth can be modeled as vth0
+[22:57] minus
+[23:00] 2.5 millivolts so let me assume that the
+[23:02] unit is millivolts
+[23:04] multiplied with the delta T that change
+[23:07] in temperature so as the temperature
+[23:08] increases by 10 degree Celsius or 10
+[23:11] Kelvin same thing
+[23:13] the threshold voltage which is normally
+[23:16] 100 to 150 millivolts would decrease by
+[23:18] as much as 25 millivolts which would
+[23:20] change the character of the circuit
+[23:22] quite drastically
+[23:24] so what happens is that with higher
+[23:26] temperature
+[23:28] right the mobility goes down
+[23:31] right the vth goes down
+[23:34] but because it goes down minus vth kind
+[23:37] of goes up so this Factor over here goes
+[23:39] up
+[23:40] so essentially there are two opposing
+[23:42] factors the mobility going down and V
+[23:44] minus vth to the power Alpha going up
+[23:46] because Alpha is between
+[23:48] 1.1 and 1.5 so these opposing factors
+[23:52] don't really you know you have to see
+[23:54] which one dominates whether they cancel
+[23:56] each other out or not and which one
+[23:58] really dominates
+[24:00] in some cases as I said with higher
+[24:03] temperature the circuits can get slower
+[24:04] or faster it all depends on the mutual
+[24:07] balance of the mobility and V minus vth
+[24:10] to the power Alpha
+[24:12] so in general uh you know there is
+[24:18] kind of a consensus that at least in
+[24:20] conventional Technologies with
+[24:22] increasing temperature transistor slow
+[24:24] down right that's sort of a consensus
+[24:26] but again as I said with different
+[24:27] Technologies this changes right so this
+[24:31] is you know always
+[24:33] look at what these factors are for the
+[24:36] current technology but don't take this
+[24:38] statement in face value
+[24:42] so then the gate delay is pretty much
+[24:44] you know as I said dependent on these
+[24:46] factors so keeping them in mind let's
+[24:48] move forward now the important part is
+[24:50] that as I increase the temperature the
+[24:52] threshold voltage goes down
+[24:54] which basically means the leakage power
+[24:56] goes up right so increasing temperature
+[24:59] increases the leakage part which further
+[25:01] increases temperature so on and so forth
+[25:06] so systematic variation basically you
+[25:09] know the model that we'll discuss is the
+[25:11] various model
+[25:13] the various model basically says that
+[25:15] the vth and the effective length of the
+[25:17] channel are linearly related to each
+[25:19] other
+[25:20] furthermore it assumes the variation in
+[25:23] the effective length of the channel is
+[25:25] half that or vth so just Computing the
+[25:27] variation of vth is good enough
+[25:31] so from the ideal parameters let D be
+[25:34] the deviation the vth will be vth zero
+[25:37] the sum deviation into vth zero right so
+[25:40] basically we will see what this
+[25:41] deviation is in the second
+[25:43] but the key idea is that the threshold
+[25:46] voltage at any point of time let's say
+[25:48] that D corresponds to change in
+[25:51] then it would basically be you know some
+[25:56] constant into you know some deviation on
+[26:00] top of vth0 right
+[26:02] so this is the Baseline and on top of
+[26:04] the Baseline there will be some
+[26:05] deviation right
+[26:07] and or let us say that the deviation
+[26:09] would be because of voltage so again
+[26:11] this is nevertheless be at deviation and
+[26:13] this Factor D is the important one
+[26:16] so to compute it what we do is we
+[26:18] discretize the surface of a die into a
+[26:20] 2d grid so we have a lot of cells and
+[26:23] cross hand cells
+[26:28] so we say that let X be a vector that
+[26:31] contains deviation for each grid cell so
+[26:33] deviation in this case the dimensionless
+[26:35] quantitative let this be just be the
+[26:38] deviation for each grid cell see this is
+[26:40] 0 means that the threshold voltage is
+[26:42] same as the Baseline
+[26:44] if it's let's say 0.1 it means it's 110
+[26:46] percent that of the Baseline so let's
+[26:48] just be a division it's a dimensionless
+[26:50] quantity
+[26:52] so in this case if you have n Square n
+[26:54] cross n if you have n Square grid cells
+[26:56] then X will have n Square elements right
+[26:59] it will be one huge column Vector with n
+[27:02] Square elements but each element
+[27:05] contains the deviation
+[27:07] now what I do is that if I what I can do
+[27:11] is I can compute
+[27:13] I can assume that the elements are sort
+[27:16] of distributed
+[27:18] normally right so we'll have a
+[27:21] covariance matrix so this is a standard
+[27:23] multi-normal multivariate normal
+[27:25] distribution
+[27:26] where this is kind of like a you know
+[27:29] a multi-dimensional version of the
+[27:31] standard gaussian or normal distribution
+[27:33] where as you can see we have the same
+[27:36] parameters just design slightly
+[27:38] differently
+[27:40] so this is the determinant of the
+[27:41] covariance Matrix the inverse of The
+[27:43] covariance Matrix
+[27:45] so we have a mean Matrix over here where
+[27:47] x minus mu transfers this is a classic
+[27:50] bilinear form
+[27:52] Fair we have x minus mu transpose times
+[27:54] this Matrix times x minus mu so again
+[27:57] you know for a simple 2D case it becomes
+[28:00] a regular version this is a multivariate
+[28:02] case
+[28:03] so this basically says which is a
+[28:06] reasonably accurate assumption
+[28:08] that the vector X where this comprises
+[28:13] the deviation of all the cells
+[28:16] on the diagram
+[28:18] follow the multivariate normal
+[28:21] and furthermore there is some special
+[28:24] correlation which we will discuss in a
+[28:25] second
+[28:26] so the spatial correlation basically
+[28:28] says that if there is a deviation in one
+[28:30] grid cell it is kind of related to the
+[28:33] deviations in the adjacent adjoining
+[28:35] grid cells
+[28:38] so given the fact that we have this
+[28:41] so let me just discuss the terms again
+[28:43] mu is the mean Vector Sigma is the
+[28:47] so we assume that the covariance right
+[28:50] so of course I am assuming a little bit
+[28:52] of statistical background here
+[28:54] the covariance is isotropic in the sense
+[28:57] it does not depend on the direction or
+[28:59] it is the same in all directions
+[29:02] the assumption that we are making
+[29:06] is that it only depends on the euclidean
+[29:09] distance between two grid cells first is
+[29:11] the independent of the directions sorry
+[29:14] same in all directions this way this way
+[29:16] this way all same
+[29:18] the covariance of these deviations
+[29:21] across to get cells grid cells is only
+[29:23] dependent on the distance between them
+[29:25] that's it
+[29:27] so rho UV which can be defined as
+[29:32] the correlation the classic correlation
+[29:35] right there is a Pearson's correlation
+[29:37] is essentially the covariance of two
+[29:40] random variables divided by their
+[29:42] variances
+[29:43] so most of the literature in this area
+[29:46] actually talks in terms of the
+[29:49] correlation which you can see is very
+[29:51] nicely related to the covariance
+[29:53] it is basically a covariance divided
+[29:55] divided by the product of the
+[29:58] standard deviation Sigma U and sigma V
+[30:00] where the standard deviation is the
+[30:03] square root of the variance right
+[30:06] so uh we will now discuss so this
+[30:09] correlation structure
+[30:11] is needless to say related to the
+[30:13] covariance structure and the correlation
+[30:15] structure basically says that the
+[30:17] deviation D at any grid cell
+[30:20] is in a sense related to all of its
+[30:22] adjoining grid cells and overall the
+[30:25] overall distribution is multivariate
+[30:27] normal but there is some sort of a
+[30:30] spatial correlation because you know we
+[30:32] are talking about systematic variation
+[30:34] in this case
+[30:36] so before I proceed to the next slide
+[30:38] which is slide number 52
+[30:41] I would not blame you if you don't
+[30:43] understand anything or what I just said
+[30:46] because this requires some background in
+[30:48] statistics
+[30:50] so before I proceed let me tell you what
+[30:53] is it that you need to understand let's
+[30:55] say the last one or two slides and
+[30:58] definitely the next 5 or 10 additional
+[31:00] slides
+[31:01] so as I said this part is mathematically
+[31:04] slightly heavy
+[31:05] and I really won't blame you if you are
+[31:08] not able to understand but let's look at
+[31:10] the concepts variance
+[31:15] standard deviation
+[31:19] I mean
+[31:22] the normal distribution normal
+[31:24] distribution the regular
+[31:27] gaussian as well as the multivariate
+[31:29] portion right so that's important
+[31:32] right so the multivariate gaussian would
+[31:34] use the determinant
+[31:37] complex stuff
+[31:42] then of course we would like to
+[31:44] understand the covariance and covariance
+[31:47] and the correlation
+[31:49] so this much of basic statistics is
+[31:52] required to understand it so in layman's
+[31:55] terms what we are doing is that we are
+[31:58] seeing that look if I consider the
+[31:59] threshold voltage
+[32:01] at every point of a grid so I have
+[32:05] discretized the die surface into the
+[32:07] Grid at every cell right at every single
+[32:10] cell let's say at this cell there is a
+[32:13] deviation
+[32:14] if the deviation is 0 it means that the
+[32:16] value is same as the Baseline but
+[32:18] otherwise there is some deviation
+[32:20] so if I consider all the values in
+[32:22] entirety it follows a multi-dimensional
+[32:25] or a multivariate gaussian distribution
+[32:29] in a sense it is normally distributed
+[32:31] with a certain covariance structure so
+[32:33] this is important this is a very
+[32:35] important addition to this distribution
+[32:37] what is this covariance structure the
+[32:41] covariance basically says how the values
+[32:43] in adjoining cells are related
+[32:45] this is perhaps the only thing that you
+[32:48] need to understand even though your
+[32:49] statistics is weak so this covariance
+[32:52] basically in a sense captures this
+[32:54] spatial relationship
+[32:57] and the covariance is very well
+[33:00] related to another related concept
+[33:04] called the correlation
+[33:05] and they are related like this that you
+[33:07] just divide
+[33:09] Sigma u v which is the covariance
+[33:12] between random variables u and v
+[33:15] which in our case is basically the
+[33:17] relationship or the covariance between
+[33:19] the deviations at location U and
+[33:22] location V by their standard deviations
+[33:25] you will get the correlation the
+[33:28] correlation in general is a better term
+[33:30] to work with because it is dimensionless
+[33:34] right and uh the code the correlation
+[33:38] as I said is kind of we can think of it
+[33:42] as a proxy to this covariance here
+[33:45] so typically the spherical correlation
+[33:48] Matrix is used or a spherical
+[33:51] correlation relationship is used
+[33:53] to
+[33:54] characterize the correlation structure
+[33:57] in a systematic variation in an
+[33:59] environment with systematic variation
+[34:02] again I did use a fair amount of loaded
+[34:06] in case you were not able to understand
+[34:08] kindly look at all of these Concepts and
+[34:11] come back to these slides again
+[34:13] these are simple Concepts if you have
+[34:15] the statistical background
+[34:18] and if you have been able to pick it up
+[34:19] you should have no difficulty in
+[34:21] understanding this slide and the next
+[34:23] one
+[34:24] this is what the next slide looks like
+[34:27] let's make an assumption which is
+[34:29] reasonably well founded in practice
+[34:32] that the standard deviation is the same
+[34:34] for all great sense
+[34:36] if this can be assumed which as I said
+[34:39] is not a very bizarre assumption
+[34:42] we can say that let this be Sigma CIS or
+[34:44] Sigma systematic
+[34:47] now if I look at the covariance and
+[34:49] correlation matrices
+[34:51] then I can simply use this equation over
+[34:53] here
+[34:54] and say that the covariance UV is Sigma
+[34:58] C Square y Sigma c squared because Sigma
+[35:01] U Sigma V but both are equal to Sigma
+[35:03] Six
+[35:04] right
+[35:05] this is Sigma U is equal to Sigma CIS
+[35:08] and sigma V is equal to Sigma CIS
+[35:11] so Sigma C Square Times rho U
+[35:14] so for various and many of the other
+[35:16] tools the correlation Matrix is
+[35:18] important and it uses the spherical
+[35:21] correlation function
+[35:22] which basically says that given a grid
+[35:25] cell
+[35:25] I
+[35:27] kind of divide the grid cells into two
+[35:31] worlds one within a distance of R and
+[35:33] one outside resistance of r
+[35:35] outside a distance of R this correlation
+[35:38] is zero which means you can think of
+[35:40] them as like absolutely uncorrelated
+[35:42] covariance is zero
+[35:44] foreign
+[35:48] you can basically say
+[35:52] that
+[35:55] it varies as per this cubic function 1
+[35:59] minus 3 R by 2 5 plus r Cube by 2 Phi
+[36:02] Cube
+[36:03] right uh so sorry uh not within a
+[36:06] distance of r with the distance of Phi I
+[36:08] stand corrected so so let me explain
+[36:11] that part again so what I do is I divide
+[36:14] all the grid cells starting from one
+[36:17] starting from the point that I'm
+[36:18] interested in into two types one within
+[36:22] a radius of 5 and the other ones outside
+[36:25] the radius of 5.
+[36:27] so if R is greater than equal to 5
+[36:30] then I say that the correlation is zero
+[36:33] they are uncorrelated but within the
+[36:36] radius of Phi I make it vary like this
+[36:40] this is called a spherical function
+[36:42] because you can look at the cubes over
+[36:46] so we say that there is a spherical
+[36:49] distribution which I think okay I don't
+[36:52] think I've plotted it but pretty much
+[36:54] you know this would look like a regular
+[36:56] cubic function
+[36:59] and incidentally when R is equal to Phi
+[37:03] this value would become equal to when R
+[37:05] is equal to 5 this value will become
+[37:07] equal to 0. but the key idea is that
+[37:11] there is a
+[37:13] you know there is a degradation here
+[37:16] and the correlation function is very
+[37:18] interesting in the sense that it
+[37:20] basically says
+[37:26] as you keep on increasing so let's see
+[37:30] what happens if the if R is zero
+[37:33] so if R is 0 then this term is 0 this
+[37:36] term is 0 the correlation is one
+[37:38] right which means this is the highest
+[37:39] possible correlation you can have and
+[37:42] then we have a decreasing function
+[37:44] and finally it decreases down to zero
+[37:46] which means that you are the most
+[37:47] related to the cells around you
+[37:50] then you are slightly less related to
+[37:52] the cells
+[37:53] slightly further away so on and so forth
+[37:57] so the spherical correlation Matrix
+[37:59] essentially determines the covariance
+[38:01] structure and the covariance structure
+[38:03] directly gets fed into here
+[38:05] into the overall multivariate normal
+[38:08] distribution so this is how the entire
+[38:11] systematic variation Matrix is modeled
+[38:15] so if you were to actually plot this
+[38:18] function
+[38:19] the way that this function would look
+[38:21] like
+[38:22] is very interesting if this is the
+[38:25] x-axis
+[38:26] and this is the value of Phi
+[38:31] and this is the
+[38:35] right and of course R is varying this
+[38:38] way and this is rho r
+[38:41] it will pretty much look something like
+[38:43] this
+[38:44] then it will become strictly zero so
+[38:46] this value of course is one
+[38:52] then it will become strictly 0 at 5. so
+[38:55] what we can see is a reducing
+[38:56] correlation with the radius gradually
+[38:58] kind of smooth smoothing out to 0 at the
+[39:02] end
+[39:04] So Random variation is
+[39:08] slightly easier to model we don't have
+[39:10] such complex math
+[39:12] so L effective and vth are not linearly
+[39:15] related anymore
+[39:17] so they are modeled as in a separate
+[39:19] regular single variable univariate
+[39:22] normal distributions
+[39:24] for a simple normal distribution without
+[39:26] all of that covariance matrices and so
+[39:28] on looks like this
+[39:30] where uh you know as a regular normal
+[39:33] thing but we have a random distribution
+[39:35] parameter here Sigma Rand Square
+[39:38] so of course Sigma CIS and sigma Rand
+[39:41] are typically assumed to be the same or
+[39:43] slightly different but that's a very
+[39:44] process specific thing
+[39:46] but we can combine the systematic and
+[39:49] random variation
+[39:50] to arrive at the standard deviation for
+[39:53] the total variation which is Sigma Rand
+[39:55] square plus Sigma C square the square
+[39:58] root of that this is a standard
+[39:59] variation combining formula for a sum of
+[40:02] gaussian or normally distributed random
+[40:05] variables this is the standard formula
+[40:07] that you get
+[40:10] so how would you use various for
+[40:13] statistical timing analysis so mind you
+[40:16] we are introducing this term for the
+[40:18] first time this is very different from
+[40:20] static timing analysis it is statistical
+[40:23] timing analysis the reason being that
+[40:26] let's say I have a sequence of gates
+[40:27] like this
+[40:29] I really don't know how long a gate will
+[40:31] take right it depends upon
+[40:34] its systematic variation component
+[40:36] random variation component
+[40:38] but whatever is the delay we can come up
+[40:41] with some distribution of the delay
+[40:44] so the assumptions are that let's assume
+[40:47] Sigma CIS is equal to Sigma and that's
+[40:49] what various assumes but again it's not
+[40:50] a hard and fast assumption
+[40:52] and let's assume that Sigma total
+[40:55] divided by mu is 0.09
+[40:57] right so then we know how to compute
+[41:00] Sigma cessn right from the previous
+[41:02] formula
+[41:04] so essentially consider a large number
+[41:07] of process variation Maps compute the
+[41:10] systematic component using the spherical
+[41:12] correlation compute the random component
+[41:16] then what we can do is for a given
+[41:19] functional unit or for a given set of
+[41:21] gates
+[41:21] we can assume it's fairly small so it
+[41:23] will have a constant systematic
+[41:25] component but a varying random component
+[41:28] so essentially if this takes a random
+[41:30] amount of time this takes a random
+[41:31] amount all of these are normally
+[41:33] distributed
+[41:35] then essentially the sum of
+[41:38] random variables is also a random
+[41:40] variable
+[41:41] so we can model the timing paths as
+[41:44] normal distributions and as I said the
+[41:47] sum of
+[41:48] normal distribution is also a normal
+[41:50] distribution where the
+[41:53] who mean is the sum of the individual
+[41:55] means
+[41:57] and the variance is a sum of the
+[41:59] individual variances
+[42:03] of course you can have multiple timing
+[42:05] paths in a circuit
+[42:08] and one of them will be the critical
+[42:10] path so we can take the maximum but here
+[42:12] is the point to note
+[42:14] that the maximum of a sequence of
+[42:18] the maximum of a set of normally
+[42:20] distributed random variables is not
+[42:22] normally distributed
+[42:24] so it can follow
+[42:26] you know it typically follows a dumbbell
+[42:29] but again it's not normally distributed
+[42:31] there are approximations but it's not
+[42:34] not normally distributed
+[42:36] so with this with some critical path
+[42:39] information and some assumptions
+[42:41] we can arrive at the distribution of the
+[42:44] delay of the circuit
+[42:46] for a given variation map which
+[42:48] basically means for the circuit we
+[42:49] assume a constant systematic component
+[42:52] because you know well it's not the full
+[42:55] circuit but the part of the circuit or
+[42:56] some functional unit
+[42:58] we assume a constant systematic
+[43:00] component and for the random Parts as I
+[43:03] said we just sum there delays up
+[43:07] and a sum of
+[43:08] gaussian delays is also a gaussian delay
+[43:12] so essentially normal distribution
+[43:14] gaussian distribution are the same hence
+[43:16] the terms are being used interchangeably
+[43:19] of course as I said I won't blame people
+[43:22] for not understanding this there's a lot
+[43:24] of probability and statistics
+[43:26] and finally we find the critical path
+[43:28] the longest path and the longest
+[43:30] path is essentially the maximum of
+[43:32] gaussian variables which is not caution
+[43:37] so now that we have the math established
+[43:41] people can take a deep breath the hard
+[43:43] part is over right so whatever is left
+[43:46] will kind of go soft on people
+[43:49] so as I said for systematic variation
+[43:52] only thing that needs to be done is
+[43:54] generate
+[43:55] thousands of systematic variation maps
+[43:57] and ensure that a given circuit works
+[44:00] for all of them
+[44:01] for random variation instead of static
+[44:05] timing analysis we need statistical
+[44:07] timing analysis
+[44:08] which as discussed in the previous slide
+[44:10] you find the delay distribution of a
+[44:12] gate add the normally distributed random
+[44:16] variables you will find the
+[44:19] distributions for every path in the
+[44:21] circuit find the
+[44:24] maximum of these random variables where
+[44:26] a random variable is the delay of a path
+[44:28] so essentially is the max of
+[44:31] a bunch of path delays so let's say path
+[44:33] delay for
+[44:35] path ibpi is the max of Pi
+[44:39] and that would basically give you some
+[44:41] sort of a distribution like this and
+[44:43] then you choose a save point and set
+[44:45] that to be a clock period right so be
+[44:48] conservative in this
+[44:49] that is how you would take care of
+[44:53] and systematic variation as I said a lot
+[44:55] of simulation is required
+[44:57] now the key point is that now I have
+[45:00] combined systematic I've combined random
+[45:02] I have some idea of the distribution of
+[45:06] the worst case delay and have chosen a
+[45:08] frequency
+[45:09] all of that is very good but the fact is
+[45:12] that if I don't do anything to cut the
+[45:14] source which is if I don't do anything
+[45:16] to reduce the variation
+[45:19] what will happen
+[45:21] is that my frequency will go down I'll
+[45:24] be too conservative
+[45:26] and my frequency will have to be set to
+[45:30] a value which is quite low
+[45:32] and I will lose a lot of performance
+[45:34] hence I should look at methods
+[45:37] to basically
+[45:39] reduce variation as much as possible so
+[45:42] let's look at a few strategies
+[45:44] one of the most effective strategies is
+[45:46] optimal or sorry Optical proximity
+[45:48] correction or OPC
+[45:51] what I do is instead of if let's say
+[45:53] this is the shape that I want to
+[45:55] fabricate
+[45:56] instead of trying to fabricate this I
+[45:59] try to fabricate another shape
+[46:01] which means I pre-distort the shape such
+[46:04] that what is printed on Silicon is
+[46:06] similar to this
+[46:08] so I try to print this
+[46:10] and then so I take this then I kind of
+[46:14] pre-distorted as for a known algorithm
+[46:18] and once I do that I arrive at this as
+[46:20] you can see the corner just because the
+[46:22] corners are rounded I add more silicon
+[46:24] at the corners
+[46:25] just because this corner you know can
+[46:29] you can I have more light I kind of take
+[46:31] some silicone away
+[46:32] so I create this structure out of this
+[46:36] now when I try to print it on Silicon
+[46:38] I'll get something closer to what I
+[46:40] originally wanted
+[46:42] so the pre-distortion in a certain sense
+[46:44] is helping
+[46:46] I could do other things as well
+[46:49] let us look at few of the other
+[46:51] mechanisms
+[46:53] so one is off access elimination so what
+[46:56] happens is that we have a mask
+[46:58] then we have a light source where light
+[47:01] falls on the mask
+[47:03] so the parts that allow the light to
+[47:06] pass through
+[47:07] essentially an image is formed
+[47:09] and then the lens focuses it on the
+[47:12] wafer right so so that's how it works
+[47:17] so uh
+[47:19] traditional knowledge would suggest or
+[47:21] conventional knowledge would suggest
+[47:23] that if let's say this is the mask the
+[47:25] light source should be at the center so
+[47:28] then you know kind of
+[47:30] that's when the maximum amount of light
+[47:32] will hit it and that's when
+[47:33] the maximum amount of energy will be
+[47:36] transmitted to the wafer
+[47:38] but sadly in the nanometer world
+[47:42] a central placement is not
+[47:44] the most efficient
+[47:47] instead you want to place it slightly to
+[47:50] the side which is off axis
+[47:53] so what happens is that because of the
+[47:55] phenomenon of diffraction
+[47:57] more diffraction orders right so what
+[48:00] happens in diffraction if you see the
+[48:01] side view then a lot of signal at the
+[48:03] center then a little bit more here this
+[48:06] so essentially I can capture more
+[48:09] diffraction than other side is also like
+[48:10] that so I can capture more orders
+[48:14] if let's say go slightly off axis as
+[48:17] expect uh in comparison to slightly
+[48:20] being on access on axis would be
+[48:22] something like this
+[48:24] right so in this case I would capture
+[48:26] more diffraction orders in a sense more
+[48:29] light will actually hit the wafer if
+[48:31] there is a slight amount of displacement
+[48:33] as opposed to
+[48:35] placing it on axis
+[48:37] which kind of is counterintuitive but as
+[48:40] I said in the wave World many of these
+[48:42] things actually start making sense
+[48:45] the other is sub resolution assist
+[48:47] features
+[48:50] so what happens is that if I just
+[48:53] you know if let's say this is the shape
+[48:56] on my mask then what will actually get
+[48:59] printed will be something like this
+[49:04] perhaps or something like this
+[49:07] so this basically means that light is
+[49:09] kind of not hitting this region right
+[49:11] and even if it's hitting this region
+[49:13] it's still kind of irregular
+[49:15] so of course you can say that I can use
+[49:17] the optimal Optical proximity correction
+[49:20] or OPC and try to fabricate something
+[49:23] but what I can also do the other
+[49:25] approach is to have these tiny features
+[49:28] over here
+[49:29] which literally are tiny
+[49:31] in the sense that nothing will get
+[49:32] printed here
+[49:34] right the main reason being that their
+[49:37] very very narrow
+[49:39] but some light would still escape and
+[49:41] that light would kind of hit this region
+[49:43] over here that would create a fuller
+[49:46] feature and this would appear somewhat
+[49:48] like this somewhat very very rectangular
+[49:51] ish
+[49:53] so because it will be somewhat like a
+[49:55] rectangle and this area will get some
+[49:57] light because of the assist feature and
+[50:00] the assist feature itself will not be
+[50:02] printed because it is sub resolution sub
+[50:05] resolution meaning that it is smaller
+[50:07] than the smallest feature that you can
+[50:09] print
+[50:10] so it will not like by itself contribute
+[50:13] to the noise but will have helpful
+[50:14] effect on
+[50:16] the nearby or adjoining structures in
+[50:18] the sense it can fill up for the
+[50:20] shortfall of light so in this case as I
+[50:23] said instead of you know dog bone like
+[50:25] shape it'll kind of be slightly Fuller
+[50:28] because of this again a neat idea to
+[50:31] increase the amount of light that is
+[50:33] available in regions that are not
+[50:34] getting enough light
+[50:37] the other is phase shift masking
+[50:41] also known as esm
+[50:44] so what happens is that let us say I
+[50:47] want to print something
+[50:50] so then what will happen is that you
+[50:53] know I want to print something here but
+[50:55] this boundary is kind of fuzzy right
+[50:57] right either it's this way or some
+[51:00] assist features but I'm just not able to
+[51:03] like create a boundary between two
+[51:05] structures and if they're close enough
+[51:07] what will happen is that they may
+[51:08] actually merge because in a light from
+[51:10] both sides will kind of bring them very
+[51:13] very close so the crosstalk between them
+[51:15] will be high
+[51:16] so what I want is that in this region
+[51:19] right this region over here I don't want
+[51:22] any structure to get printed
+[51:25] if I don't want anything to get printed
+[51:27] what I can do is that I can have a phase
+[51:31] shift material
+[51:33] switch will basically shift the phase by
+[51:37] 180 degrees
+[51:39] so how can I do that well one way that I
+[51:42] can do that is that I can have
+[51:45] uh varying thickness
+[51:49] of the Mask right such that or let's say
+[51:52] some other material above the mask
+[51:54] which will essentially ensure that there
+[51:56] is a phase shift of 180 degrees so as
+[51:58] you can see you know there is some
+[52:00] variance in let's say this region where
+[52:02] there is and this region so they are not
+[52:05] at the same thickness level so there is
+[52:08] a phase shift No Doubt
+[52:09] so in the intervening region so this
+[52:12] would be like this would correspond to
+[52:13] the interview winning region over here
+[52:15] sorry over here
+[52:17] so here what would happen is that you
+[52:20] would have light which is 180 degrees
+[52:21] out of phase because it is 180 degree is
+[52:25] out of phase instead of this structure
+[52:27] the both the structures would still look
+[52:29] like this because some additional
+[52:32] material was you know something
+[52:34] additional was happening in between both
+[52:38] which was essentially this region over
+[52:40] here but then I kind of sent light
+[52:45] that was
+[52:47] 180 degrees out of phase
+[52:50] because it was out of phase there was
+[52:52] destructive interference in these
+[52:54] regions
+[52:55] so effectively no light reached here as
+[52:57] a result the contrast is much better and
+[52:59] this joining that I was seeing which was
+[53:01] basically something like this
+[53:04] right so this will not happen as a
+[53:07] result this additional crosstalk will
+[53:09] not happen because essentially this
+[53:11] region right gets kind of cut out
+[53:13] because of Light which is 180 degrees
+[53:15] out of phase so this enhances the
+[53:18] contrast uh otherwise what will happen
+[53:20] is they both get together you'll have a
+[53:22] lot of crosstalk and other faults or
+[53:24] they may just get connected but that's
+[53:26] not going to happen because of the phase
+[53:28] shift masking technique so essentially
+[53:30] what we are doing is that our mask
+[53:32] has a varying thickness or could have a
+[53:34] different material which is inducing
+[53:36] this phase shift hence the name
+[53:40] architectural Solutions are no doubt
+[53:42] possible so different regions of the
+[53:45] chip could have different degrees of
+[53:47] variation that of course goes without
+[53:49] seeing so this would be the systematic
+[53:51] component or variation
+[53:54] so what I can obviously do is I can do
+[53:56] frequency binning which is that
+[53:58] essentially you know take a large wafer
+[54:01] cut it into Dice and essentially see
+[54:03] their maximum frequency so different uh
+[54:08] dies or different chips that come out of
+[54:10] a single wafer would have different
+[54:13] frequencies I can just measure at what
+[54:16] frequency is working correctly and
+[54:17] assign that
+[54:18] create Separate dvfs Tables
+[54:21] and create dedicated voltage frequency
+[54:25] Islands within the chip
+[54:28] so what I can do is let's see even given
+[54:30] a single chip I can see that look this
+[54:33] part so maybe it could be a set of
+[54:34] course or cash Banks or whatever run at
+[54:37] a certain voltage frequency pair
+[54:41] another region runs at a different
+[54:43] voltage frequency pair so on and so
+[54:46] forth
+[54:50] so we have discussed parameter variation
+[54:52] and some broad ways of looking
+[54:54] at parameter variation I would just like
+[54:58] to add one more thing before I go to the
+[55:00] next point which is hard errors and
+[55:02] aging
+[55:03] so one more thing that can be done is
+[55:05] called body biasing or let's say
+[55:06] adaptive body biasing
+[55:08] let me just tell you in a second what it
+[55:11] is
+[55:12] so
+[55:13] it could be you know adaptive or
+[55:14] non-adaptive we will discuss both
+[55:18] so the idea is very simple
+[55:20] the idea is that I can have regions of
+[55:23] the chip
+[55:24] and in regions of the chip
+[55:27] I will let's say because of my
+[55:29] systematic component I'll have a certain
+[55:31] variation at certain threshold voltage
+[55:33] but the threshold voltage is sensitive
+[55:37] to or is a function of the body to
+[55:39] Source voltage
+[55:40] so what I can do is that I can change
+[55:43] the body to Source voltage
+[55:45] which will again impact the threshold
+[55:47] voltage which again you know can make
+[55:50] the transistor faster
+[55:52] or can make the transistors lower but
+[55:54] less leakier so I can move a transistor
+[55:57] in both the directions by changing the
+[55:59] body voicing value
+[56:01] and also I can have different supply
+[56:03] voltages for every place if not maybe
+[56:06] perhaps the same frequency but different
+[56:08] voltages to compensate for the variation
+[56:10] so these are knobs that are available to
+[56:13] me so what are the knobs I can set the
+[56:15] frequency of each region the supply
+[56:17] voltage of each region the body to
+[56:20] source of each region this can help me
+[56:23] compensate to a large extent to whatever
+[56:27] damage process variation and later on at
+[56:30] run time parameter parameter variation
+[56:33] has created
+[56:35] so coming to hard errors and aging
+[56:39] we need to understand that processors
+[56:41] age over time the same way human beings
+[56:44] age albeit in a somewhat very
+[56:48] you know
+[56:49] complicated fashion
+[56:51] so we look at by far the most common
+[56:53] aging mechanism as of today which is
+[56:56] negative bias temperature instability
+[56:59] so what happens is that in the Silicon
+[57:03] substrate the Silicon chip production
+[57:05] process
+[57:07] hydrogen is extensively used
+[57:10] so many of the Silicon atoms which are
+[57:13] kind of at the surface of the substrate
+[57:14] just below the sio2 layer
+[57:17] will have hydrogen atoms there
+[57:20] and will have the sih bonds including a
+[57:25] few you know silicon if your recall can
+[57:27] make four bonds
+[57:28] maybe some would be with hydrogen atom
+[57:30] some with of course other silicon atoms
+[57:32] but there could be a few dangling
+[57:35] all right so so where basically you know
+[57:37] it is searching for
+[57:39] hydrogen
+[57:41] so now what happens is that when we have
+[57:44] a negative charge because it's a
+[57:46] negative bias
+[57:48] protons which again you know are there
+[57:51] in the system because of hydrogen
+[57:54] move towards the surface right so they
+[57:56] kind of move here here just move up
+[57:59] they remain in the surface and the
+[58:02] moment they find a dangling silicon Bond
+[58:04] they combine with silicon here
+[58:07] and they kind of get incorporated into
+[58:10] the Silicon lattice right so this is the
+[58:13] way that proton and many protons also
+[58:17] just come and they kind of remain
+[58:19] unattached so this leaves a net positive
+[58:22] charge on the Silicon surface which in
+[58:24] terms of protons and the negative and
+[58:28] the gate on the other side which of
+[58:30] course I'm not showing in this case is a
+[58:32] negative bias so recall that this would
+[58:34] happen for pmos transistors primarily it
+[58:37] would not happen to
+[58:39] and most transistors right so the most
+[58:42] transistor the gate has a lower voltage
+[58:44] in nmos at least as compared to the
+[58:46] substrate it has a higher row
+[58:49] so what would happen is that uh
+[58:52] positive charge because of the Silicon
+[58:54] atoms if this is the substrate and
+[58:56] either of the region so there is a net
+[58:59] positive charge over here
+[59:01] this is the sio2 layer
+[59:06] so once you know you remove a gate
+[59:08] voltage what will happen is that
+[59:11] uh of course this will go back but this
+[59:15] phase is known as the stress phase
+[59:18] right so because what will happen is
+[59:22] uh that uh
+[59:25] let me repeat this once again uh what
+[59:28] really happens is that because protons
+[59:30] move up and they find a stable home over
+[59:33] here because they can sort of get
+[59:36] incorporated into the Silicon lattice
+[59:38] they stay there
+[59:39] and this leads to the accumulation of
+[59:42] positive charge and this is known as
+[59:44] stressing
+[59:45] why stressing because you are
+[59:47] permanently changing the charge equation
+[59:49] over here by having positive charge
+[59:53] even if I remove the stress which means
+[59:55] that even if I disconnect the supply
+[59:58] some of the modifications in terms of
+[60:00] protons getting absorbed into the
+[60:02] lattice would still remain
+[60:04] as a result the threshold voltage would
+[60:06] kind of at least change right some
+[60:10] effects can be reversed and some effects
+[60:12] are permanent but some change will
+[60:14] happen to the threshold voltage which is
+[60:17] kind of again not similar to aging
+[60:20] once of course we remove the gate
+[60:22] voltage you can argue that some of the
+[60:24] protons should kind of get
+[60:26] you know out of the Silicon lattice and
+[60:28] then should go back and so on some of
+[60:29] that does happen but some damage is
+[60:32] still permanent which is why we say that
+[60:34] this is an aging effect
+[60:36] so T stress is the time for which the
+[60:39] gate voltage was negative with respect
+[60:41] to the source this is the stressing time
+[60:43] this is when the protons are actively
+[60:45] moving up
+[60:47] t-rec is the time that we give for the
+[60:49] recovery so what has been shown again
+[60:51] these are approximate equations that the
+[60:54] change in the threshold voltage Delta
+[60:56] vth
+[60:58] is proportional to the time that you are
+[61:00] stressing for to the power 0.25
+[61:05] so this basically means that it's sort
+[61:08] of a weak function of the stressing time
+[61:10] but if nonetheless there
+[61:13] the recovery which is again the amount
+[61:15] of voltage that you recover
+[61:20] varies like this it is 1 minus
+[61:23] square root of a function times T Rank
+[61:26] by T rack plus T stress is kind of
+[61:28] getting normalized by T stress too in a
+[61:31] certain way but the key idea over here
+[61:34] is that clearly the recovery time and
+[61:36] the stresses and the de-stress time the
+[61:39] ratio
+[61:40] is important but of course after a
+[61:42] certain point as you can see when T-Rex
+[61:44] becomes kind of infinite then this would
+[61:47] translate and become one
+[61:49] so this would become roughly
+[61:50] proportional to 1 minus square root of
+[61:52] ETA so that essentially tells you that
+[61:55] some damage still persists
+[61:59] so similar to nbti which is again you
+[62:02] know related to this hydrogen uh
+[62:05] atoms sorry hydrogen molecules breaking
+[62:08] and protons coming up
+[62:10] there is another method known as what
+[62:12] carrier in injection which is primarily
+[62:15] a leakage current as we have seen
+[62:17] which is the charge carriers kind of
+[62:19] become fast they gain sufficient kinetic
+[62:21] energy
+[62:22] to essentially jump the channel gate
+[62:25] boundary so this is the channel this is
+[62:26] the gate and you have these carriers
+[62:29] right in this case if it's negative then
+[62:31] holes will kind of jumps here like this
+[62:33] in this case protons and electrons can
+[62:36] also come in the reverse field
+[62:39] so in this case of course you know holes
+[62:40] and protons are much bigger quantities
+[62:42] so they cannot make a jump
+[62:45] but typically electrons are the ones
+[62:47] that get pushed in
+[62:49] so they can get permanently lodged in
+[62:52] the sio2 layer right within the gate so
+[62:55] it can be a transfer either way this way
+[62:56] or that way
+[62:58] in either case electrons can get
+[63:00] permanently lost within the gate mainly
+[63:02] because you know they are moving at such
+[63:03] a high velocity that they will get
+[63:06] trapped in here a few
+[63:08] furthermore what could happen is that
+[63:10] they could collide with the sih bond so
+[63:12] the channel get interface
+[63:14] and again you know they could maybe take
+[63:16] the proton out they could change the
+[63:18] chemical structure
+[63:21] so any such change of electrons get lost
+[63:23] here Will essentially raise the
+[63:26] threshold voltage making the transistor
+[63:27] slower
+[63:28] this method does not show any recovery
+[63:31] unlike nbti
+[63:33] in this case electrons kind of get
+[63:35] permanently lodged in here change its
+[63:38] inherent electrical charge
+[63:40] there is very little recovery and in
+[63:43] this case the change in the threshold
+[63:44] voltage is a much stronger function of
+[63:46] the time
+[63:47] which is basically the switching time to
+[63:50] the power 1.5
+[63:52] so it's a much stronger function the
+[63:55] reason being that uh
+[63:57] you know this this is the fundamentally
+[64:00] a more powerful mechanism but of course
+[64:01] here the constants of proportionality
+[64:04] also do matter
+[64:07] so ultimately what happens is that after
+[64:10] aging aging aging and aging
+[64:12] there is a fatal fault so finally you
+[64:15] know a fault happens
+[64:17] where essentially the system or parts of
+[64:19] the system completely break it up
+[64:22] so one such fault mechanism is
+[64:25] electromigration
+[64:26] which we will discuss stress migration
+[64:29] thermal cycling and dielectric breakdown
+[64:32] so all of these are basically you know
+[64:34] products of Aging until you have
+[64:36] absolute failure and the model that will
+[64:39] be used to describe them will be the
+[64:40] ramp model the ramp model for hard
+[64:44] errors a hard error means a total
+[64:46] uh you know the where there's a total
+[64:49] breakdown a transistor or a wire is
+[64:50] totally broken down
+[64:52] so that is a hardware so you can never
+[64:54] recover from a hardware
+[64:58] so electromagnation the idea is like
+[65:02] that if that's it this is a wire
+[65:05] what will happen is that over time
+[65:08] if that's the electrons are flowing in
+[65:10] this direction
+[65:12] so they will of course flow
+[65:15] but they will drag a little bit of the
+[65:17] metal atoms along with them
+[65:19] so over time what will happen is one
+[65:21] side will become fat
+[65:23] and one side will become thin
+[65:26] so this will kind of become like this
+[65:30] you know kind of like this right
+[65:34] so this part over here will become very
+[65:37] thin
+[65:38] of course the resistance will increase
+[65:41] but then it can snap
+[65:44] so basically
+[65:46] it can snap and then
+[65:49] and the fat end can then also go and
+[65:52] connect with other wires
+[65:54] so you'll have an open circuit here
+[65:57] and you will have a short circuit here
+[66:00] so this is known as electromagnet short
+[66:02] term in extension of electron migration
+[66:06] by the mean time to failure is
+[66:08] proportional to of course the current
+[66:10] density this is the current per unit
+[66:12] area normalized of course
+[66:15] uh then multiplied with this term
+[66:19] so you will see many variants of this
+[66:22] term
+[66:23] for all of these equations so these
+[66:25] equations incidentally are known as the
+[66:28] blacks equations
+[66:29] so basically you would need so they will
+[66:33] all be of the form one by KT
+[66:35] or some constant like a t where the
+[66:38] constant here is the activation energy
+[66:39] needed for electron Migration by K is a
+[66:43] Boldman's constant and T is the
+[66:44] temperature in Kelvin right so almost
+[66:46] all of these temperatures actually for
+[66:48] the next four or five slides all of them
+[66:50] are in kelvids
+[66:52] so this is the broad
+[66:54] equation so you see as the temperature
+[66:57] increases the overall term decreases
+[67:00] right so the mptf basically decreases as
+[67:04] the temperature increases
+[67:06] so what we can say is that with
+[67:08] increasing temperature kind of
+[67:10] exponentially the mttf reduces or the
+[67:14] mean time to failure reduces or the
+[67:16] failure rate increases
+[67:17] this is one more reason why high
+[67:19] temperatures are a bad idea
+[67:23] stress migration
+[67:25] similar idea
+[67:27] but of course here it is not for wires
+[67:30] but it is for contacts so what happens
+[67:33] is when an interconnect is making a
+[67:36] contact
+[67:38] either with the i o pins or with other
+[67:42] on-chip structures
+[67:44] then the different parts of the contract
+[67:46] sorry contact
+[67:48] could have this slightly different
+[67:49] material so they will have different
+[67:51] thermal expansion and contraction rates
+[67:54] so that will create some amount of
+[67:56] thermal stresses which can then migrate
+[67:58] so they will kind of migrate throughout
+[68:00] the body of the interconnect because it
+[68:02] could be like between two contact
+[68:03] structures
+[68:05] so these stresses will migrate and
+[68:08] ultimately stresses lead to cracks
+[68:11] right so stress migration will
+[68:13] essentially lead to Atomic migration
+[68:15] you'll again have you know thin fats and
+[68:17] so on and cracks and finally the wire
+[68:19] especially near the contacts will break
+[68:21] down
+[68:23] so if this is the
+[68:25] broad idea so of course in this case the
+[68:28] reasons are more mechanical as opposed
+[68:31] to electrical so the equations are
+[68:32] similar
+[68:34] so what we basically do is that we take
+[68:37] a look at the temperature in this case
+[68:40] it is subtracted from a very high
+[68:41] Baseline
+[68:43] if we see the same term repeat here also
+[68:47] and the term here of course this
+[68:49] constant is different this is for stress
+[68:51] migration
+[68:52] for copper interconnects is 0.9 for
+[68:55] other interconnects it will have other
+[68:56] values but this is the constant that we
+[69:00] have over here
+[69:01] see here again as the temperature
+[69:03] increases the mttf decreases kind of in
+[69:06] a similar fashion
+[69:08] again one more big incentive to keep the
+[69:11] temperature low because this can affect
+[69:15] the reliability quite significantly
+[69:19] time dependent dielectric breakdown so
+[69:22] the idea here is that in current
+[69:24] transistors
+[69:25] if let's say this is the channel right
+[69:28] then the die electric layer over here
+[69:33] is quite thin
+[69:36] right so the silicon dioxide layer is
+[69:38] quite thin so you have a polysilicon
+[69:39] gate and you have a contact
+[69:41] so what happens is at this layer as such
+[69:44] is very thin it's only several
+[69:46] nanometers
+[69:48] so because of that there is a fair
+[69:49] amount of electron tunneling
+[69:52] kind of through and flow so we have
+[69:54] discussed the leakage current mechanisms
+[69:57] so if you were related to tunneling and
+[69:59] here the idea was we had one quantum
+[70:01] mechanical tunneling and one more
+[70:03] tunneling because of kinetic energy so
+[70:05] in both cases there is a lot of electron
+[70:07] thoroughfare in that sense
+[70:10] so ultimately what would happen is it
+[70:12] will change the chemical structure of
+[70:14] the dielectric
+[70:15] so it will become more porous to
+[70:17] electrons ultimately becoming a
+[70:19] conductive conducting path so this is
+[70:22] known as dielectric breakdown
+[70:25] so here again we have an mptf number for
+[70:28] this a mean time to fill your number
+[70:30] this is of course the
+[70:33] you know it's proportional to the
+[70:35] voltage so higher the voltage lower the
+[70:37] mttf makes sense because higher the
+[70:39] voltage you know greater will be the
+[70:41] electron flow
+[70:42] and then this is a complex function of
+[70:45] temperature but the basic idea is as
+[70:46] temperature increases the mttf of time
+[70:49] dependent dielectric breakdown this
+[70:52] reduces and this also reduces white
+[70:54] considerable right so that is the idea
+[70:58] thermal cycling
+[71:01] this is exclusively for the solder
+[71:03] joints so where you have the solder
+[71:05] joints in the packaging right so where
+[71:07] it is kind of connected to the rest of
+[71:10] the board
+[71:11] so this solder joins experience
+[71:14] expansion and contraction ultimately as
+[71:17] I said they develop cracks then they
+[71:20] have metal fatigue and they fail
+[71:22] so this is true for you know all kinds
+[71:25] of metallic joints it's just not limited
+[71:27] to solder joints but if you consider
+[71:29] shoulder joints and they're unique
+[71:30] Alloys that are used in the solder
+[71:33] joints then of course you will have
+[71:36] expansion contraction and you will
+[71:38] develop cracks
+[71:40] and the constants will be different in
+[71:43] the equation but broadly if this is the
+[71:45] main time to failure again it's uh
+[71:49] a function of the temperature higher is
+[71:51] the temperature
+[71:53] right lower is the mean time to failure
+[71:56] which is a bad thing
+[71:57] so in this case Q and T ambient so T
+[72:00] ambient is basically the ambient
+[72:02] temperature the outside temperature
+[72:03] right the normal temperature where you
+[72:07] know you are you have the chip in the
+[72:09] room without the heating effect of the
+[72:10] chip
+[72:11] Q is an exponent and T is the
+[72:14] temperature and the relationship is
+[72:15] quite obvious it's in fact it has been
+[72:17] like this for the last few equations as
+[72:20] well
+[72:21] so if you look at processor failures
+[72:24] because of
+[72:26] a combination all of these mechanisms
+[72:28] hard errors which is kind of the end
+[72:31] point of Aging but in aging of course we
+[72:33] didn't discuss the interconnect models
+[72:35] but in hard errors we discuss the
+[72:37] interconnect models aging was more about
+[72:39] a reduction in a transistor's life
+[72:42] right that was what aging was about
+[72:46] but in any case if you kind of take the
+[72:49] sum total of everything we will see that
+[72:51] there is this infant mortality phase
+[72:52] which means that some processors which
+[72:55] have designed effects lets a lot of
+[72:56] variation or so on they would fail at
+[72:59] the time of burning itself what is
+[73:01] burned in we have discussed this
+[73:03] so after a chip has been packaged
+[73:06] in some cases before it has been
+[73:08] packaged it's kind of taken to an oven
+[73:10] there you really raise the temperature
+[73:12] and then you do testing over there
+[73:15] then what happens is many of these
+[73:18] faults
+[73:19] kind of become
+[73:21] more visible more prominent they kind of
+[73:23] come to they can in a sense they come
+[73:25] out and they close it
+[73:27] so you can clearly see that if I in an
+[73:29] extreme region right or any faults
+[73:32] coming out if that's the case the chip
+[73:34] is distorted
+[73:36] if a chip passes this Burning part it
+[73:38] will have a normal life for quite some
+[73:40] time until ultimately aging takes over
+[73:43] and some or other hard error happens so
+[73:45] a chip normally has a 7 to 10 year life
+[73:49] so you can have many failure rate models
+[73:51] you could say it is exponentially
+[73:53] distributed normally distributed but
+[73:55] typically exponential and log normal are
+[73:58] the most common distributions for a log
+[74:00] normal distribution looks something like
+[74:01] this with a heavy tail so this captures
+[74:04] the infant mortality part sorry I mean
+[74:06] including the peak this captures it and
+[74:09] then of course you know gradually
+[74:10] towards the end ultimately it fails
+[74:13] so you can assume that a processor with
+[74:15] many parts is a series failure system
+[74:17] especially if you don't have any
+[74:19] redundancy so if any one of them fills
+[74:22] the entire processor goes
+[74:25] so what are the methods to as such uh
+[74:27] tolerate hard errors
+[74:30] well the standard method is reduced
+[74:35] so reducing temperature in a very
+[74:37] dramatically reduces the mttf mainly
+[74:41] because of the
+[74:43] Expressions that we saw and we saw the
+[74:45] exponential relationship of temperature
+[74:48] the other is that you know to stop
+[74:50] Electro migration if let's say this is
+[74:53] your copper wire
+[74:54] you in a sense you give it a coating
+[74:57] right you you give it a covering
+[75:00] of something like tantalum nitride so
+[75:03] what this will do is in a sense it's
+[75:04] going to hold the wire together right
+[75:06] it's like a it's like putting the wire
+[75:08] in a hollow cylinder where the cylinder
+[75:11] is tight it will not allow parts of the
+[75:13] wire to kind of fatten up and you will
+[75:16] not have extrusions and short circuits
+[75:18] Extrusion is basically part of the wire
+[75:20] coming out it'll kind of hold the wire
+[75:22] in place it's more like you know
+[75:24] uh some sort of a restraint
+[75:27] so this can be done it will stop the
+[75:30] diffusion of of course copper items and
+[75:32] nearby structures and if a part of the
+[75:34] wire doesn't get fat then the other part
+[75:36] will automatically not get thin so it
+[75:38] will limit the effects of electron
+[75:39] electron migration
+[75:41] other is that in the memory you keep a
+[75:45] few additional rows which are otherwise
+[75:46] unmapped
+[75:48] but let's say you know these three rows
+[75:49] are mapped this row is not mapped if any
+[75:52] one of the row develops a fault then
+[75:54] kind of you
+[75:55] in your have a smart decoder which will
+[75:58] remap this address to over here such
+[76:00] that this you know the backup row will
+[76:03] have the data for the original row
+[76:06] because original row is not out of
+[76:07] service right it developed a fault you
+[76:10] decommission it something like virtual
+[76:12] memory you remap it to another book
+[76:16] the other is that if possible you work
+[76:18] in a degraded mode which means that you
+[76:22] reduce the number of cores
+[76:24] or you reduce the number of functional
+[76:27] units if let's say one Adder develops a
+[76:29] forward try to survive with the other
+[76:31] additives there are eight ports more
+[76:33] developer fault run the processor with
+[76:35] four quotes so on and so forth
+[76:38] so the last slide we always love to see
+[76:41] this slide
+[76:42] so uh we discussed five main things here
+[76:45] first we discussed transient errors and
+[76:48] soft errors which were particle strikes
+[76:51] due to neutrons or alpha particles which
+[76:54] create a current pulse which flips a bit
+[76:57] then we discussed inductive noise which
+[77:00] is basically when there is resonance
+[77:01] because of the chips activity and the
+[77:04] inherent resonant frequency of the power
+[77:06] grid that is when the impedance gets
+[77:09] maximized and your voltage spikes and
+[77:11] these spikes can be quite damaging
+[77:14] so they can make transistors very slow
+[77:17] and you may have timing faults
+[77:21] we could have designed faults and
+[77:23] processors you know plain old bugs
+[77:26] many a Time compiler writers OS writers
+[77:29] issue workarounds and patches which in a
+[77:32] sense handicaps a part of the system
+[77:33] such that at least one of the conditions
+[77:36] for the bug will not get triggered
+[77:39] process variation big issues we did a
+[77:41] lot of math talked about systematic
+[77:43] variation random variation
+[77:46] transistors do age over time we have HCI
+[77:50] in nbti so these are of course
+[77:52] transistor level models that are
+[77:54] interconnect level models including hard
+[77:56] errors hard error is the final so
+[77:58] finally you know when an interconnect
+[78:00] completely gets snapped or a transistor
+[78:02] completely dies it results in a heart
+[78:04] error right so that's the reason it's an
+[78:06] error it's not a fault
+[78:08] so we discuss their relationship and we
+[78:10] understand how important temperature
+[78:11] control is in the overall reliability of
+[78:16] thank you very much so this chapter ends

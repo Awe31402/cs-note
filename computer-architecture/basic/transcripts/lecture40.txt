@@ -1,0 +1,1786 @@
+[00:00] [Music]
+[00:34] Let us now do exactly the same thing on
+[00:38] a weekly consistent
+[00:40] machine. So, uh what was the problem
+[00:43] again? The problem was to add n numbers
+[00:45] in parallel, right? So, that's always
+[00:48] the case. So, in the previous lecture,
+[00:50] we added n numbers in
+[00:53] parallel on a sequentially consistent
+[00:55] machine. That was easy. So all that we
+[00:58] did is that we initialized our partial
+[01:00] sum arrays and then uh so we basically
+[01:04] did some initialization then fanned out
+[01:07] a couple of threads. Each thread
+[01:09] computed a partial sum for a chunk of
+[01:12] the
+[01:12] array and uh subsequently uh we wrote
+[01:17] some code to ensure that all the threads
+[01:19] are finished. We added the partial sums
+[01:21] and got the result. So uh all of this
+[01:24] was done in the previous lecture which
+[01:26] is the previous part the second part of
+[01:28] this chapter. Now this being the third
+[01:30] part we'll do exactly the same solve
+[01:32] exactly the same problem which is
+[01:37] uh to uh ensure that
+[01:41] uh we are able to do the same which is
+[01:44] add n numbers in parallel on a weekly
+[01:48] consistent machine. So what again is the
+[01:51] difference between SC's which is
+[01:53] sequentially consistent and weekly
+[01:55] consistent. So a sequentially consistent
+[01:58] machine all the threads respect program
+[02:01] order which means that given a thread
+[02:04] it'll have some load instructions and
+[02:06] store instructions right so all the
+[02:08] memory instructions complete in the same
+[02:10] order as they are you know specified in
+[02:13] the program of the thread right in
+[02:15] program order. But in a weekly
+[02:18] consistent system, this exact program
+[02:21] order need not be followed. Particularly
+[02:24] when we are dealing with different
+[02:26] addresses for same address of course we
+[02:28] need to follow because cache coherence
+[02:31] uh so I should rather use the word
+[02:33] coherence. Memory coherence is always
+[02:36] followed in all systems. They can have
+[02:37] different consistency models but
+[02:40] coherence is always followed. and also
+[02:42] what is called single thread
+[02:44] semantics which basically means if I
+[02:47] read wrote something in the past I
+[02:49] should either read that value or a later
+[02:51] value uh that is always followed so
+[02:54] that's the reason for a single thread
+[02:56] these things are not relevant but
+[02:59] especially when there are multiple
+[03:00] threads what can happen on a weekly
+[03:02] consistent machine is like this that if
+[03:05] I'm writing x= 1 and y= 1 other threads
+[03:09] might see this in a different order
+[03:11] Right? Uh so basically you know when we
+[03:15] are looking at memory operations to
+[03:17] different addresses not the same address
+[03:19] mind you uh in that case uh in a weekly
+[03:24] consistent machine an ordering per se is
+[03:26] not guaranteed to force an ordering we
+[03:29] can have a fence instruction here. So
+[03:32] the fence instruction basically says
+[03:34] that it will execute only after all the
+[03:37] memory instructions before it in the
+[03:40] same thread have completed and once the
+[03:42] fence instruction ends only then will
+[03:46] all the instructions after it in program
+[03:48] order actually begin. So that's how you
+[03:50] force an
+[03:51] order. So why again are we discussing
+[03:55] this? Well, so being a computer
+[03:58] scientist, we cannot always rely on
+[04:00] frameworks like OpenMP, right? You know,
+[04:02] OpenMP is great, but we should first
+[04:05] know how it is written. Point number
+[04:08] one. Point number two is that tomorrow,
+[04:11] you know, if you have a different kind
+[04:12] of machine in which maybe you're not
+[04:14] getting good performance with OpenMP,
+[04:16] you might want to, you know, directly
+[04:18] program at the level of the machine
+[04:19] itself. So that's why it's always good
+[04:22] to know more about the internals of
+[04:26] hardware as well as software. So let's
+[04:29] see let's try to solve this on a weekly
+[04:31] consistent machine which is uh you know
+[04:34] almost all the machines uh support a
+[04:36] model
+[04:38] uh which is you know weak to different
+[04:41] extents. Uh so but we are not in a
+[04:43] position to discuss that. But let's
+[04:45] assume that a machine is the weakest
+[04:48] right? Weakest means orders are not
+[04:50] respected but they do have a fence. So
+[04:53] if you write a if you write code
+[04:55] assuming the weakest possible
+[04:57] consistency it will always run on a
+[04:59] machine where the consistency is
+[05:01] slightly stronger in a sense some more
+[05:03] orderings are respected. So se so
+[05:06] basically SC sequential consistency is
+[05:10] strongest and uh at the lower end we
+[05:13] have weak consistency which is the
+[05:14] weakest. So high performance servers
+[05:17] always have this right and SC is ideal.
+[05:21] So nobody has it because it has a lot of
+[05:24] restrictions. It's not possible to get
+[05:27] very good performance with
+[05:28] SC. So that's the reason uh if you write
+[05:31] any program for this it should run on
+[05:34] all systems that are
+[05:35] strong. So without further ado let's
+[05:38] start. So we can declare our variables
+[05:40] partial sums finished the numbers array.
+[05:43] So we have seen all of this. So I'll
+[05:44] just skip. We initialize all the
+[05:47] elements and partial sums and finish to
+[05:51] zero.
+[05:52] Now here is an extra instruction which
+[05:55] we did not have in the code uh which uh
+[06:00] you know solve this problem for an SC
+[06:02] machine. So what we want the reason we
+[06:05] want to have a fence here is before we
+[06:07] start all the parallel
+[06:09] threads we have to ensure that uh all
+[06:16] our memory accesses are done right all
+[06:19] our memory accesses are done all all our
+[06:21] initialization is done and all the
+[06:24] memory accesses part of this is done so
+[06:26] the only way we can do it is that we
+[06:28] assume there is a function called fence
+[06:30] okay this is an assumption in reality
+[06:32] the C language language does not have a
+[06:34] function called fence but we can always
+[06:36] write a function and inside that we can
+[06:39] have a fence instruction which is there
+[06:42] uh so uh this is there in almost all
+[06:46] instruction sets but it need not be
+[06:48] called fence for example you know in the
+[06:51] x86 instruction set we have something
+[06:54] called lock cmp compare and exchange
+[07:03] uh or or just log exchange and you can
+[07:06] have two registers as arguments but uh
+[07:11] you know as long as a log prefix is
+[07:13] there it pretty much works as a fence.
+[07:16] So this assembly instruction can be
+[07:18] embedded inside the fence function but
+[07:20] just to keep matters simple let's assume
+[07:23] that we have a fence function which has
+[07:25] a fence inside
+[07:27] it. So once this fence is executed,
+[07:30] we'll know that the initialization is
+[07:32] done and all the threads can see the
+[07:34] initialization. So you know all
+[07:36] reordering per se will be taken care
+[07:42] of. Now let's start the parallel
+[07:45] section. So here again we make the same
+[07:46] assumptions as we did in the code for an
+[07:50] SC execution. So you can go back to that
+[07:53] slide set and see what this meant. What
+[07:56] this meant is that we just fork off n uh
+[07:59] parallel copies of this code and each
+[08:02] code gets its unique thread ID which is
+[08:04] a number which varies from 0 to n minus
+[08:07] one. So the same assumption we had in
+[08:10] openmpp or not changed that assumption
+[08:12] per se. Now what we know for sure is
+[08:16] that when we actually spawn off the
+[08:18] parallel threads all the initialization
+[08:20] is done because we have had a fence
+[08:22] after it. So we can now happily define a
+[08:25] starting and ending index for you know
+[08:28] there's a large array. Uh we can look at
+[08:31] the chunk that has been assigned to the
+[08:32] current thread. So this will start at
+[08:35] the start
+[08:39] index
+[08:41] and it'll end here at the end index. So
+[08:45] we can just add all the numbers within
+[08:47] this block. So uh we have
+[08:51] uh we have a for loop where we just uh
+[08:55] add all the numbers and save it in
+[08:56] partial sums my id which is the thread
+[08:59] id for the thread which is doing this.
+[09:01] So different threads of course will have
+[09:03] different thread ids. So they will write
+[09:05] to different indices of the partial sums
+[09:08] array.
+[09:11] So uh after this once the partial sums
+[09:14] array is done this data has to be
+[09:17] transferred to one more thread which
+[09:19] will actually add all the partial sums
+[09:21] but it's possible that we might actually
+[09:23] transfer but you know this right some of
+[09:26] these rightes can get reordered in the
+[09:28] sense that this thread will work fine
+[09:30] but the other thread might not actually
+[09:32] see the latest update to partial sums
+[09:35] because maybe the message with the
+[09:36] latest update to partial sums you know
+[09:38] that'll be a right message will somehow
+[09:41] or somewhere get stuck in the memory
+[09:44] system. It might not reach the location.
+[09:46] So as a result, you know, we'll not get
+[09:49] to see it. So I just want to reiterate a
+[09:51] point one more time, you know, without
+[09:54] making it very boring that there is
+[09:57] never a problem in a single thread
+[09:59] execution in the sense that last time
+[10:02] that partial sums was written, you'll of
+[10:04] course have the value because you're
+[10:07] doing a plus equal to. So it is never
+[10:09] the case that a single thread will never
+[10:11] perceive any kind of reordering that
+[10:13] will work correctly because assumptions
+[10:16] of coherence are there and that will
+[10:18] ensure that the last time we wrote two
+[10:20] partial sums that ID is that value is
+[10:22] there over here so we can just keep
+[10:25] adding it's only a different thread
+[10:27] might meet miss some of these updates
+[10:30] that's the reason it is necessary to
+[10:32] issue a fence instruction such that all
+[10:35] the updates to the partial sums sorry I
+[10:37] mean in specific the last
+[10:40] update that gets written in memory to
+[10:43] the to its memory location such that all
+[10:45] the threads can see it. So after the
+[10:48] fence instruction we know that partial
+[10:51] sums has been written to. So we uh set
+[10:55] uh the value of done in the sense uh we
+[10:59] set the
+[11:00] value to done and we set finished my id
+[11:04] is equal to 1 which means that the
+[11:07] current thread has finished.
+[11:12] Now uh what we want to do
+[11:16] uh is
+[11:17] that uh we uh have to check with a for
+[11:21] loop that all the threads have finished
+[11:24] or not. If they have then we just add up
+[11:26] the partial sums. So this for loop is
+[11:29] easy. We have seen something very very
+[11:31] similar in the case of a sequentially
+[11:33] consistent system as well.
+[11:36] Uh so what we saw over there is that we
+[11:40] have a flag variable. We iterate through
+[11:44] all the threads. If in any thread the
+[11:48] finished flag is equal to
+[11:51] zero which basically means uh that the
+[11:54] thread has not finished. So we set flag
+[11:57] to be zero. And then
+[12:00] uh uh we basically
+[12:03] break and uh so break basically means
+[12:06] that we sort of break out of this for
+[12:07] loop and we come over here and uh after
+[12:12] that uh we see that the flag is zero
+[12:15] because one of the threads are not
+[12:16] finished. So that's the reason we go
+[12:18] back. So we will keep on iterating this
+[12:21] doh while loop until all every single
+[12:25] time this if statement fails. This
+[12:27] will fail when all the threads have
+[12:31] actually finished. So at that time we
+[12:33] come to this sequential section and uh
+[12:36] we read all the partial sums we add them
+[12:39] to the result and we compute the final
+[12:41] result.
+[12:43] So one thing that is extremely extremely
+[12:46] noteworthy over here is how exactly does
+[12:49] it work and how exactly is it different
+[12:52] from the OpenMP and the sequential
+[12:54] version. So we have already seen how the
+[12:56] se SC version is different from openmpp
+[13:00] but the main differences here are uh as
+[13:03] follows. So we first have a fence
+[13:06] instruction. So, so recall that we had
+[13:08] done the same thing in an SC machine
+[13:11] with a variable. So, we read that
+[13:14] variable. But since SC preserves the
+[13:16] order, just seeing that a variable has
+[13:18] been updated also guaranteed that the
+[13:20] initialization is done. We can't do the
+[13:23] same here. So you know if this is the
+[13:26] initialization and this is setting some
+[13:28] done variable equal to one and if
+[13:32] another thread sees
+[13:35] if done is equal to equal to one it'll
+[13:38] sort of start
+[13:40] executing. You know this is not good
+[13:42] enough in a weekly consistent system.
+[13:44] The reason being that it is true done
+[13:46] can be one but maybe some of the updates
+[13:49] here have actually not reached
+[13:51] memory. Right? So if here we are
+[13:54] accessing some of this data, we might
+[13:56] not actually get to see it. That's the
+[13:59] reason the right strategy or the right
+[14:01] approach is somewhat different and on a
+[14:04] weekly consistent system and the right
+[14:07] strategy is something like
+[14:09] this that uh after doing the
+[14:14] initialization we put a fence over
+[14:19] here. So the fence ensures that we are
+[14:21] completely done and after the fence
+[14:25] finishes means that all the values here
+[14:28] have been written to memory. So what we
+[14:31] do is we again go we start a new thread
+[14:33] and a new thread whatever it reads it'll
+[14:35] get the right value. Right? That is one
+[14:38] change. Then the other change is we
+[14:41] write the partial sums to memory and we
+[14:44] do a fence and then we set finish to be
+[14:47] equal to one.
+[14:49] So since coherence is a global property
+[14:52] across all models right. So since we are
+[14:55] writing one to finished my
+[14:58] id the completion aomium of corance
+[15:01] guarantees that ultimately all the
+[15:03] threads will be able to see that
+[15:05] finished my ID has been set to one. Once
+[15:08] they get to see that finished my ID has
+[15:11] been set to one means that this
+[15:13] instruction has executed. This also
+[15:16] means that the fence is executed because
+[15:18] unless the fence would have
+[15:20] executed the processor would not have
+[15:22] executed this instruction as a property
+[15:24] of the fence and the fact that the fence
+[15:27] is done means that the partial sums has
+[15:29] been written correctly. All right. So
+[15:34] what we do here
+[15:38] uh is that we uh basically so so recall
+[15:42] that we you you know we check for
+[15:44] finished but we could not have put the
+[15:47] finished instruction over here that
+[15:48] would have been wrong right that would
+[15:51] have been completely wrong and I'll tell
+[15:53] you in a second
+[16:00] why you know assume we had an
+[16:02] instruction here that would have been
+[16:04] wrong. The reason being that another
+[16:06] thread would have seen finished my ID
+[16:08] equal to 1. So let's assume that's the
+[16:10] last thread that could have proceeded
+[16:12] just by seeing the status of this. But
+[16:15] it's also possible that the last update
+[16:17] to partial sums might not have actually
+[16:19] reached memory. So that would have
+[16:21] caused a problem and the computation
+[16:23] would have been wrong. So but what we
+[16:25] did is we did something smarter. We put
+[16:27] a fence between partial sums and
+[16:29] finished. And since ultimately all the
+[16:32] threads will be able to see this update
+[16:34] because of coins. Once I see finish to
+[16:37] be equal to my finished my ID to be
+[16:39] equal to
+[16:40] one I will be sure that the fence has
+[16:44] completed executing otherwise you know
+[16:47] this instruction would not have
+[16:48] executed. That's a property of the
+[16:50] fence. Since the fence has finished
+[16:53] partial sums must have completed an
+[16:56] update to partial sums must have
+[16:57] completed. as a result I'll get the
+[17:00] right value. That's exactly what I do
+[17:02] over
+[17:03] here that here we check for all the
+[17:06] finished flags and uh only when all of
+[17:10] them have been updated to one uh does
+[17:13] this you know for loop finish without a
+[17:15] break and flag is one. So this dowhile
+[17:18] loop we come out of it and then we
+[17:20] compute the result which is guaranteed
+[17:22] to be the correct value. So what are the
+[17:25] main differences? Well, the main
+[17:26] difference is two fence instructions
+[17:29] primarily, right? Two fence instructions
+[17:32] that we added. That that is the primary
+[17:36] difference. And the most important thing
+[17:39] to keep in
+[17:40] mind is that in any weekly consistent
+[17:44] system, you know, the most IQ inensive
+[17:46] thing is where to place the fence
+[17:48] instructions. They have to be placed at
+[17:50] exactly the right point. Otherwise, the
+[17:52] final result might be can be wrong.
+[17:57] So this up till now what we have been
+[17:59] presenting is more of a logical or a
+[18:01] conceptual or abstract view of memory of
+[18:04] what exactly it should be. So we defined
+[18:07] coherence and consistency looked at
+[18:10] their properties and definitely looked
+[18:11] at some
+[18:12] examples. Let us now consider a physical
+[18:15] view of memory which is how exactly the
+[18:18] memory works right the
+[18:21] internals. So let's define two terms.
+[18:24] first a shared cache and a private
+[18:26] cache. So shared cache is where one
+[18:29] caches cache is actually shared by all
+[18:31] the processors. So it's basically one
+[18:34] large you know cache which all the
+[18:36] processors can access. It's it's a
+[18:39] monolith. A private cache is where each
+[18:42] processor or set of processors right
+[18:44] have their own private cache. So let's
+[18:46] look at example A. In this case, the L1
+[18:50] cache is
+[18:51] shared and the L2 cache is also shared,
+[18:55] right? Uh in this example, the L1 cache
+[18:58] is private. So the L1 cache is private
+[19:01] to each processor or each code and the
+[19:04] L2 cache is shared. And in this case,
+[19:07] the L1 is private and the L2 is also
+[19:09] private, right? L1 is private and the L2
+[19:13] cache is also private.
+[19:16] So you know this can be done. Uh so they
+[19:20] have different trade-offs. So let's see
+[19:22] uh what the trade-offs are
+[19:28] like. So let's compare a private cache
+[19:31] and a shared
+[19:33] cache. So uh if you just go back to the
+[19:36] previous slide here. So we can see that
+[19:40] well one advantage of a private cache is
+[19:43] that a shared cache has to be
+[19:45] large and uh a private caches can each
+[19:49] single private cache can actually be
+[19:51] small because if one processor you know
+[19:54] is accessing a part of an array that
+[19:55] small part of the array can be stored
+[19:57] over here. uh another part of the array
+[19:59] can be stored over here and the shared
+[20:02] cache of course has to save the entire
+[20:04] array but uh cache size scaling with
+[20:08] size you know it prefers smaller the
+[20:10] better. So in that size the area of a
+[20:13] private cache at least of each single
+[20:15] private cache is low. Uh whereas the
+[20:17] area of a larger shared cache is higher
+[20:20] in terms of speed. Of course smaller the
+[20:22] cache faster it is. And since this is
+[20:25] one big large cache uh it is slower.
+[20:28] Proximity to the processor. Well yes uh
+[20:31] a private cache is closer to the
+[20:33] processor and a shared cache is farther
+[20:36] because well a shared cache has to be
+[20:38] close equally close to all processors
+[20:40] which makes it slight you know further
+[20:43] away from each individual processors in
+[20:45] that sense it's slightly far away.
+[20:48] Scalability in size well
+[20:51] uh this uh essentially means that a
+[20:54] private cache cannot become very large.
+[20:55] We'll see why. and data replication.
+[20:59] Well, data replication and complexity is
+[21:01] something that we need to discuss now.
+[21:03] So, let's go ahead and
+[21:05] discuss. So, what happens is that when
+[21:09] you have one shared cache, this is uh
+[21:12] you know clearly the simplest design.
+[21:14] So, in this case, if I write to variable
+[21:17] X, then no problem. I can go ahead and
+[21:20] write to X. Then if processor 2 wants to
+[21:23] read variable X then what it will do is
+[21:26] that it will issue a read instruction to
+[21:28] variable X it'll get the value processor
+[21:31] N wants to do it it'll do the same but
+[21:35] in this case the situation is
+[21:38] different in this
+[21:40] case well we need to design some scheme
+[21:44] but essentially where is where will
+[21:46] variable X be stored so variable X has
+[21:48] to be stored somewhere right so maybe
+[21:50] you X is stored over here. So the first
+[21:53] question is how does processor one know
+[21:56] that X is stored over here? There has to
+[21:58] be some way of finding that
+[22:01] out. Well uh if processor one wants to
+[22:04] write to X, it might end up actually
+[22:07] creating a separate copy of X. So you
+[22:10] know there'll be now two copies of X,
+[22:11] one here and one there. Now if processor
+[22:14] N wants to read X, who supplies it the
+[22:16] data? Does it get this X or does it get
+[22:19] that X? And how does it know which copy
+[22:22] of X is more recent? Right? So we will
+[22:25] have many of these complexities and we
+[22:28] still have to devise a mechanism which
+[22:31] will ensure that this you know ensemble
+[22:34] collection of private L1 caches maybe
+[22:37] let me clean the screen.
+[22:40] We need to design some sort of a system
+[22:43] that will ensure that this collection of
+[22:48] L1
+[22:49] caches behaves in exactly the same
+[22:53] manner as a shared L1 cache observes the
+[22:56] rules of coherence as well as
+[22:59] consistency. You know the part any
+[23:01] particular model that the processor
+[23:03] follows. But for any external he should
+[23:06] think
+[23:07] of a cache as a cache which basically
+[23:10] means a set of memory locations with
+[23:13] values whether it is shared or it's a
+[23:16] collection of private ces caches should
+[23:19] be absolutely invisible to any external
+[23:23] observer and this means that these
+[23:26] caches need to run some protocol such
+[23:29] that they're able to behave in exactly
+[23:31] the same manner as a shared L1 cache.
+[23:34] Right? So this will introduce additional
+[23:36] complexity here. Again all of these L1's
+[23:39] need to look like a single shared L1 and
+[23:42] all of these L2s need to look as a
+[23:44] single shared L2. So this is
+[23:46] complicated.
+[23:48] uh we need to as we shall see we need to
+[23:50] do something but an external should
+[23:52] observer should be you know I mean
+[23:55] unless he does something more uh any
+[23:59] program should behave as if it's running
+[24:01] on a simple system with one large shared
+[24:03] L1 and one large shared L2 in fact any
+[24:06] program should not even see that it
+[24:07] should just see the memory system as a
+[24:09] black box where for every variable there
+[24:12] is a unique address you can write to it
+[24:13] you can read from it
+[24:16] uh the axioms of coherence are always
+[24:18] preserved, right? This is always the
+[24:20] case that coherence is always
+[24:22] respected in terms of memory
+[24:24] consistency. Well, there are different
+[24:26] kinds of models sequential, weak and a
+[24:29] spectrum of models between sequent
+[24:31] sequential and weak. So, whatever be the
+[24:33] model that particular model is
+[24:36] respected,
+[24:38] right? Those are two things that we
+[24:40] want.
+[24:43] So in terms of trade-off well in private
+[24:45] cache it is possible that you know in
+[24:48] each one of those private caches in this
+[24:50] ellipse you know variable X can be there
+[24:53] here also it can be there here also then
+[24:55] of course we need to do something to uh
+[24:58] ensure that you know we are able to
+[25:00] locate the most recent copy. But yes,
+[25:03] replication can
+[25:05] happen. And uh in terms of complexity,
+[25:09] well the complexity is high uh because
+[25:12] we need to have some method of providing
+[25:14] coherence among caches which is called
+[25:16] cache corance. Shared cache relatively
+[25:19] complexity is low and also you know
+[25:21] because we need to run a protocol the
+[25:24] scalability in size which means that we
+[25:26] cannot have a very large cache
+[25:30] uh comprising of private caches alone
+[25:34] because the complexity will become very
+[25:35] high. So that's the reason you know they
+[25:37] are not very scalable in the sense they
+[25:39] cannot increase to very high sizes but a
+[25:42] shared cache can of course it'll be
+[25:43] large and slow right so that can also
+[25:47] there is this issue of access so assume
+[25:49] if we have 32
+[25:51] processors and if each processor can
+[25:54] send a read or write request in a cycle
+[25:56] we need 32 access ports right we need 32
+[25:59] connections and 32 access ports is
+[26:02] absolutely impractical because having 32
+[26:04] ports will make the area of the cache
+[26:07] increase by 500 times. You know 500 is
+[26:10] an overstatement but significantly right
+[26:13] large enough significant enough to make
+[26:15] this design
+[26:17] non-feasible but since the traffic
+[26:19] between L1 and L2 is significantly lower
+[26:22] because L1 filters most of the accesses
+[26:24] L2 can possibly be shared but not L1
+[26:27] because it'll have too many access ports
+[26:31] but L2 you know L2 only talks to L1 here
+[26:33] and maybe talks to a larger L3 or main
+[26:37] memory at the bottom.
+[26:41] Right. So, uh what typically is done is
+[26:44] that the L1 level typically has private
+[26:47] caches and here again you know the main
+[26:49] thing is access port. So if you have one
+[26:52] large L1 cache it'll be too slow. So we
+[26:55] will not be able to also put it close to
+[26:57] every processor and it'll span the
+[26:59] entire chip. So basically reading one
+[27:01] value will might take tens of cycles. So
+[27:04] that's the reason we have these small
+[27:06] you know what are called subcaches or
+[27:09] cache banks uh that are close to each
+[27:12] processor but they
+[27:13] behave as if they are a large shared L1
+[27:18] cache that's a separate issue and the L2
+[27:22] cache can be shared
+[27:24] uh so since L1's filter out most of the
+[27:27] requests the L2 cache does not need that
+[27:30] many access ports so that's the reason
+[27:31] in principle it can be shared
+[27:35] And that is typically also what happens
+[27:37] in commercial processors. The L1 level
+[27:40] has private caches and L2 and beyond
+[27:42] have shared caches. So the from this
+[27:44] trade-off table it would also be clear
+[27:47] that uh having a large L2 is fine
+[27:49] because it's not accessed very
+[27:51] frequently. So you'll have to uh look at
+[27:54] you know different factors as hit
+[27:56] latency and miss rates and so on. But L1
+[28:00] level you definitely need private caches
+[28:02] because the traffic is so high right a
+[28:05] shared cache will not be able to support
+[28:08] it. So uh let's look at shared caches
+[28:13] first because it's simple. So assume a 4
+[28:15] mgaby
+[28:17] cache. So it will have a massive tag
+[28:19] array and a data array right. So the
+[28:22] lookup operation will become very slow.
+[28:25] In addition, we might have a lot of
+[28:27] contention because it'll be necessary to
+[28:29] make this a multiported structure. As we
+[28:31] just discussed, multiported basically
+[28:34] means there are many parallel accesses,
+[28:36] simultaneous concurrent accesses in the
+[28:38] same cycle. And more are the number of
+[28:42] ports, more is the area and more is the
+[28:45] power.
+[28:47] So the solution that is a standard
+[28:49] solution is that we divide a cash into
+[28:51] banks or subbanks and each such bank is
+[28:55] a subcache you smaller
+[28:58] cash. So let's look at some math. So 4
+[29:02] mgabyte is 2 ^ 22 bytes. So let us have
+[29:06] 16
+[29:07] banks. We can then use
+[29:11] uh sorry not bytes it should be
+[29:15] bits. We can use bits 19 to 22 19 20 21
+[29:19] and 22 four bits to choose the bank
+[29:23] address. Right? We have 16 banks. So we
+[29:24] need four bits. So we can choose these
+[29:26] four bits to choose the bank address. We
+[29:29] can then access the corresponding bank.
+[29:33] And uh so since four bits are set in a
+[29:35] 32-bit addressing system uh that there
+[29:39] are 28 bits remaining. So we can use
+[29:41] that to access the corresponding bank.
+[29:43] The bank itself can be direct mapped or
+[29:46] can be set associative doesn't matter
+[29:48] and we can perform a regular cache
+[29:50] lookup. So the standard approach with
+[29:52] shared caches is that to support
+[29:55] multiple ports
+[29:57] uh what we do is that we take the entire
+[30:01] you know physical address space and we
+[30:03] divide it let's say into you know in
+[30:06] this case 16 chunks. So we just divide
+[30:07] it and how do we know you know which
+[30:09] chunk a given address belongs to? Well
+[30:12] we can take a look at bits bit numbers
+[30:15] 19 to 22. So these four bits will map to
+[30:19] 16 separate banks. So the banks you know
+[30:21] the banks itself can be organized as a
+[30:24] matrix. So let's say that you know we
+[30:27] have 16 banks and let's say a request
+[30:30] maps to this bank based on these four
+[30:32] bits. We can directly send a message to
+[30:35] this bank. So this bank will contain all
+[30:38] the addresses whose bits 19 to 22 have a
+[30:41] fixed common value.
+[30:44] So this gives us well so uh one way of
+[30:49] multiporting is this approach where
+[30:51] basically we are dividing the physical
+[30:54] address space distributing them among
+[30:56] banks. So most likely multi multiple
+[30:59] requests will actually go to different
+[31:00] banks. So we can satisfy many such
+[31:03] requests in parallel. That's the broad
+[31:05] idea. Even though in the worst case all
+[31:08] of these requests might end up coming to
+[31:10] the same bank in which case there'll be
+[31:11] a lot of contention.
+[31:14] So in spite of this you know in spite of
+[31:18] this
+[31:20] uh technique in shared caches they are
+[31:22] nevertheless slow. Uh let me maybe just
+[31:25] go back and tell you why they are slow.
+[31:27] So well look these banks are distributed
+[31:29] all over the
+[31:31] chip and uh let's say that there's a
+[31:33] processor over here and it needs to
+[31:36] access something which is there in this
+[31:37] bank. Then a signal has to go from one
+[31:40] corner to another corner and the
+[31:42] response has to come back. This can take
+[31:44] well over 50 cycles. So this will make
+[31:47] it extremely slow. So that's the reason
+[31:49] we want to keep most of the commonly
+[31:51] accessed data close to the processor. So
+[31:54] this will still not work at the L1
+[31:57] level. At the L2 level, it's
+[31:58] nevertheless fine that we split the
+[32:00] address space uh map each segment of the
+[32:03] address space to a bank and spread the
+[32:06] banks all over. So of course given an
+[32:08] address it bank might be nearby might be
+[32:10] far away and uh so we nevertheless we
+[32:14] locate its bank send a message to it and
+[32:16] get the data back. So the L2 so there
+[32:19] are also other ways of kind of
+[32:21] optimizing this latency but at the L2
+[32:24] level by and large it's a fine idea at
+[32:27] the L1 level we have to go for a private
+[32:29] cache kind of solution. So the private
+[32:32] cache solution is that let's consider
+[32:35] the most common approach. Each processor
+[32:38] has a private L1 cache which others
+[32:40] cannot access which is nice and close to
+[32:42] it. And all of the L1
+[32:45] caches
+[32:47] at right the processor sees this group
+[32:50] of L1 caches right this collection of L1
+[32:53] caches as one large logical
+[32:58] cache. Okay. So basically it sort of
+[33:02] appears to the processor and a
+[33:05] hypothetical external observer standing
+[33:09] outside the cache that this entire
+[33:11] collection is exactly the same as a
+[33:13] shared L1 cache. You know no difference
+[33:15] at all. So the axioms of coins
+[33:18] hold as I said this set appears to be
+[33:21] one
+[33:22] cache. So what does one cache mean? So a
+[33:26] distributed cache which is our case now
+[33:29] with private caches needs to be
+[33:32] perceived as a single array of bytes by
+[33:34] all threads. So when can problems
+[33:36] happen? Let's see. Let's assume that
+[33:39] thread number one uh to the global
+[33:42] variable x is writing 1 2 and 3 and
+[33:45] thread number two is writing four five
+[33:47] and six.
+[33:50] Right? So thread
+[33:53] T3 reads X twice and thread T3 and uh
+[33:58] thread T4 also reads X twice into
+[34:01] registers. Right? We're assuming these
+[34:03] temporary local variables are mapped to
+[34:05] registers. The is it possible that the
+[34:08] pair T1 T2 reads 2 and four? Well, that
+[34:11] is very well possible because this
+[34:14] instruction can execute then this and
+[34:17] then this and in the middle you know
+[34:19] first T1 will read this value and then
+[34:21] T2 will read this. This is perfectly
+[34:24] possible. Can T3 T4 be equal to 42 if we
+[34:28] ignore this result? Well, technically
+[34:31] yes. Uh because T3 the first T3 can read
+[34:34] the value of this right and T4 can read
+[34:37] the value of this right.
+[34:40] But now I is are both of them
+[34:44] possible? Unfortunately not because we
+[34:47] need to see the same order of
+[34:49] updates for each address across all the
+[34:52] threads. Right? So that's the order axim
+[34:55] of corance. So one uh thread cannot
+[34:58] observe uh two uh you know x to have
+[35:01] first the value of two and then four and
+[35:03] the other thread cannot observe the
+[35:06] value four and then two. This violates
+[35:09] our order aim which we have discussed in
+[35:11] a great amount of depth in the previous
+[35:14] slide set. So this is absolutely not
+[35:17] possible. So since the order axiom is
+[35:19] violated this problem uh this issue uh
+[35:24] or you know this particular outcome is
+[35:27] not valid. So any system that obeys cash
+[35:29] corance will not allow this
+[35:33] outcome. But the question is how do we
+[35:35] ensure that this outcome does not
+[35:37] happen? How do we ensure
+[35:38] coherence? Is there a potentially a
+[35:41] problem if multiple threads read or
+[35:43] write at the same time? Well, the answer
+[35:44] is no. What are the things that we care
+[35:47] about? Well, we care about completion
+[35:49] and order. So, we basically care about
+[35:52] the order of writes to a single
+[35:53] location. Reading is just fine. There is
+[35:56] no problem with reading. So, what
+[35:59] matters is completion, which means a
+[36:01] right ultimately completes. And the
+[36:03] order of rights to the same location is
+[36:06] perceived by everybody in the same
+[36:08] order also. So that's the reason rights
+[36:11] in a sense are more important. Now let's
+[36:14] take a look at the third point which is
+[36:17] you will always read the same data as
+[36:20] long as there are no intervening rights
+[36:22] and uh the reading of the order of reads
+[36:25] does not matter right uh you know that's
+[36:29] uh more important
+[36:33] uh so maybe I should add it over here
+[36:35] that the order of read operations per se
+[36:38] does not matter as long as there are no
+[36:40] intervening rights.
+[36:44] Right. So, so that is important. So, so
+[36:47] what we are trying to say is we're
+[36:48] trying to ensure coherence but we still
+[36:50] have not figured out a mechanism. We are
+[36:52] just looking at some broad insights. The
+[36:55] insight is first writes after complete
+[36:57] and their order matters because the same
+[36:59] order has to be seen by everybody. But
+[37:02] between two intervening rights to the
+[37:04] same address, the order of reads is
+[37:06] immaterial because we'll always get the
+[37:08] value of the latest right.
+[37:12] So what is the big deal with rights in a
+[37:15] coherence kind of in a system with
+[37:17] coherence? Well, so rightites need to
+[37:20] have a global ordering of course with
+[37:22] respect to a single address and the
+[37:25] global ordering means that all threads
+[37:27] have to see them in the same order again
+[37:29] you know with respect to a single
+[37:32] address. So the way we can implement
+[37:35] this is that we can uh acquire access to
+[37:40] an exclusive
+[37:41] resource and then so an exclusive
+[37:43] resource well what's the definition it's
+[37:46] a resource which can be anything which
+[37:48] can be acquired by any one request you
+[37:51] know either read or write request at any
+[37:53] point of time.
+[37:55] So the idea here is let us designate a
+[37:59] bus which is a set of copper wires as an
+[38:01] exclusive resource which means that any
+[38:04] request originating from any thread can
+[38:07] get exclusive access to the bus but it's
+[38:10] only one thread at a time.
+[38:13] Furthermore, let's assume that the read
+[38:16] write request that has exclusive access
+[38:19] to the bus can use it to transmit a
+[38:23] message to
+[38:25] uh other caches in a distributed cache
+[38:28] and thus you know affect a read or
+[38:30] write. So let's look at this in some
+[38:32] deeper
+[38:34] detail. So uh what we are essentially
+[38:37] trying to say is that we will have our
+[38:40] caches. So let's have all our caches.
+[38:43] And of course, one cache is connected to
+[38:45] its
+[38:47] processor. Let all of them be connected
+[38:51] via a set of copper wires. And let's
+[38:54] call the set of copper wires the bus.
+[38:56] The bus itself is passive. But let's
+[39:00] also have a bus
+[39:05] controller which gives one of these
+[39:07] caches. Right? This is a copper wire. So
+[39:09] multiple caches cannot write to the bus
+[39:12] in parallel. So you'll give one of these
+[39:14] caches exclusive control. So what will
+[39:16] happen is that each of these caches will
+[39:18] request the controller for exclusive
+[39:20] control. The controller will apply its
+[39:22] own
+[39:23] algorithms. And the most important thing
+[39:25] is that one of these caches has to be
+[39:28] given exclusive rights over the bus such
+[39:31] that it can use it to transmit messages.
+[39:33] So this will also ensure a global
+[39:35] ordering with respect to requests
+[39:38] because who got access to the bus
+[39:40] when. What we are further saying is that
+[39:43] the order of reads does not matter but
+[39:45] the order of rights definitely does
+[39:48] matter and the reason it matters is
+[39:50] basically because everybody needs to see
+[39:53] the same order for a given
+[39:55] location. So the what we shall see is
+[39:58] that the mutual exclusivity what is the
+[40:00] meaning of mutual exclusivity? It means
+[40:02] that the bus can be acquired by any one
+[40:06] request at any point of time that will
+[40:10] help us. So let's take a look at the
+[40:12] Snoopy protocol which is exactly along
+[40:15] the lines of the diagram that I was
+[40:17] drawing. So this is you know we there
+[40:19] are two broad methods of cache go in
+[40:22] Snoopy and directory. Directory is
+[40:25] slightly more difficult. So it is sort
+[40:27] of a stretch activity for us.
+[40:30] We will not discuss it as a part of this
+[40:33] slid set even though I'll just give you
+[40:34] a little bit of an idea. We'll mainly
+[40:37] discuss Snoopy because it's nice and
+[40:39] simple. Directory follows the same
+[40:41] overall concepts but it's otherwise very
+[40:44] different. So, so let's try to uh look
+[40:47] at a very simple system where the
+[40:49] private cache is L1 and there's a shared
+[40:52] bus. So, all the caches are connected to
+[40:55] a potential multi-reader single writer
+[40:57] bus. What does this mean?
+[40:59] This means that if this cache is writing
+[41:02] something on the bus, everybody else can
+[41:06] see it and read it. Right? So in that
+[41:07] sense, it's multi-reader
+[41:10] uh and single writer, which means that
+[41:11] one of the caches writes, which one
+[41:13] depends on who has exclusive control
+[41:15] over the
+[41:16] bus and then the rest of the caches
+[41:19] read. So what we have been uh talking
+[41:22] about all the time is that the order of
+[41:24] rights does matter. That's important.
+[41:26] Order of reads does not matter.
+[41:29] And since the order of rights matters,
+[41:31] the mutual exclusivity of the bus, which
+[41:34] means that only one request can hold on
+[41:36] to it for the sake of
+[41:38] writing, will help us induce an order on
+[41:42] the right operations, which is exactly
+[41:44] what's happening here that we have a set
+[41:47] of copper wires. One of the caches gets
+[41:51] control of the bus. So, it can use it to
+[41:53] write on the bus and the rest can read
+[41:55] it. The bus essentially can broadcast
+[41:59] data, right? Uh so if one of the
+[42:04] coursees, you know, one of the
+[42:05] processors and it caches uh sorry, if
+[42:08] one of the caches writes to the bus, the
+[42:11] rest of the caches can of course read
+[42:13] it. So this is the broadcast capability
+[42:16] of the bus and also all the caches
+[42:18] connected to the bus will see exactly
+[42:20] the same order of messages, right?
+[42:22] Because you know once you transmit
+[42:25] everybody reads it. So they will see
+[42:26] exactly the same order and also they
+[42:29] will see all the messages. This will
+[42:30] also ensure that no message ever gets
+[42:34] lost. Let us look at the right update
+[42:37] protocol which is one of the simplest
+[42:39] protocols for maintaining coherence
+[42:41] among private caches. So we start out
+[42:44] like this that we tag each cach line
+[42:49] with a state. Uh so I'll just tell you
+[42:52] what it is. So for every cache line in a
+[42:56] uh private L1 cache. So assume that we
+[43:00] have uh different L1 caches which are
+[43:03] private but all of them together observe
+[43:06] cache coherence and they need to look
+[43:08] like one big coherent L1 cache. So what
+[43:12] we do is that in each of these L1
+[43:15] caches in the tag array along with the
+[43:19] tag we store an optional
+[43:30] state along with the tag the optional
+[43:32] state that we store can have three
+[43:34] values. So it can be modified which
+[43:37] means that after getting this particular
+[43:40] line it has been written by the current
+[43:43] processor. It can be shared which means
+[43:45] that it is not
+[43:47] modified and it can be invalid which is
+[43:49] I which means that this particular line
+[43:52] associated with this entry is not
+[43:55] valid. Right? So we have three states MS
+[43:58] and I. So it's also called MSI
+[44:01] uh write update cache corance protocol.
+[44:04] So since you have three states to encode
+[44:06] them you'll require two bits. So these
+[44:08] two bits can be stored over
+[44:11] here. So now when there is a right what
+[44:14] we do is that we broadcast it to all the
+[44:17] processors. All right. So if let's say
+[44:19] all the processors and essentially all
+[44:21] the processors and their caches. So what
+[44:24] we do is that uh if there is a right in
+[44:26] this cache then we basically send it to
+[44:29] all the other caches right and we're
+[44:31] assuming that you know one processor has
+[44:34] one L1 there's one to one mapping so we
+[44:37] broadcast it to everybody
+[44:39] else so then the all the caches inside
+[44:42] this cache group will update their data
+[44:45] and they will thus see the same order of
+[44:47] rights right uh not just for one
+[44:50] location but across all the locations
+[44:52] and the Main reason being that how will
+[44:54] we broadcast? We will write it to the
+[44:57] shared bus over here. So let's say since
+[45:00] the shared bus can only be acquired by
+[45:02] one writing cache at a time. So what we
+[45:05] can do is that we
+[45:07] can if one cache writes the rest will
+[45:11] get to read it. Similarly in the next
+[45:13] cycle maybe this cache will write and
+[45:15] the rest of the caches will get to read
+[45:17] it. So the order in which the shared bus
+[45:19] is acquired will be the same as the
+[45:22] order of writes. So that's the reason
+[45:24] all the processors will see the same
+[45:26] order of rights to different memory
+[45:30] locations. So this is
+[45:33] good. Now what we do is let's consider
+[45:35] the case of a read. So as you can see
+[45:37] the order axiom will automatically get
+[45:40] satisfied by this mechanism. And also if
+[45:43] we ensure that if we are trying to write
+[45:45] we'll ultimately get the bus then also
+[45:47] the completion axum will get
+[45:54] satisfied. Now let us consider a a read.
+[45:58] So this should rather be a read miss
+[46:00] right? So so basically if we're trying
+[46:02] to read a data and we find it. So let's
+[46:05] say the processor is trying to read some
+[46:07] data and it finds that data within its
+[46:12] L1 cache. So what it will do is it'll
+[46:15] directly go to the L1 cache and read
+[46:16] that data. For example, if a processor
+[46:19] is trying to read the value of variable
+[46:22] X, then what it will do and the it'll
+[46:26] ask its L1 if it has uh the memory
+[46:29] address uh containing variable X. If it
+[46:32] has it, it'll directly read the data.
+[46:35] Otherwise, if there is a read miss,
+[46:37] right? You're trying to read, but you're
+[46:39] not able to get it. Then we broadcast
+[46:41] the readmiss to all the caches again on
+[46:44] the Snoopy bus. And we basically ask
+[46:47] everybody if they have the block, right?
+[46:50] So if any cache has the block, it sends
+[46:53] a copy of the block again over the
+[46:55] shared bus. Otherwise we are sure that
+[46:58] this is not there with any of the other
+[47:00] caches. So we basically read it from the
+[47:03] lower
+[47:04] level. So so let's see what's the
+[47:07] advantage of doing this. So let's look
+[47:09] at a slightly uh at a slightly higher
+[47:13] level. So what is essentially happening
+[47:15] in this protocol is that it is possible
+[47:19] that the same memory location will be
+[47:22] there in multiple caches. So it is
+[47:24] possible that uh let me again clean it
+[47:27] and
+[47:31] redraw. So it is possible that if I have
+[47:34] multiple L1s
+[47:56] If I multiple L1 caches, it is possible
+[47:59] that uh the variable X is also here, the
+[48:03] variable X is also here and the variable
+[48:06] X is also here. Right? It's a global
+[48:08] variable. So there is a memory address
+[48:10] associated with it. to ensure that all
+[48:13] of these copies are kept up to date. If
+[48:16] any of the processors rights to variable
+[48:18] X, it puts that right on the shared bus
+[48:22] which is connected to all the caches.
+[48:25] So, right. So, this is the shared
+[48:29] bus. So, it basically broadcasts the
+[48:31] right to everybody. So, everybody gets
+[48:33] an upto-date copy. Now let's say the
+[48:35] processor that is associated with this
+[48:38] L1 cache, it decides to read the value
+[48:40] of variable X, it is guaranteed to get
+[48:43] the most upto-ate
+[48:45] copy. So uh it'll basically get the
+[48:49] right value. However, if there is a read
+[48:51] miss, which means we are trying to write
+[48:54] but uh well uh we are not able uh if
+[48:58] there's a read miss means we are trying
+[48:59] to read but the variable X is not here.
+[49:02] So I should rather say read
+[49:05] miss. What we would do in this case it
+[49:08] is that we'll broadcast a request to
+[49:10] everybody. If any of the other caches
+[49:12] has the data then we are supposed to get
+[49:15] it from it again via the bus right and
+[49:19] uh then uh we can read we can keep a
+[49:21] local copy of X. So that's how multiple
+[49:23] copies get created and then we can read
+[49:25] it. So the advantage here is uh that uh
+[49:31] well so one advantage of cache corance
+[49:33] always is that we can get the data from
+[49:35] a sister cache and you know sister
+[49:38] caches different caches at the same
+[49:40] level also it will be incorrect to
+[49:42] actually go to the lower level and ask
+[49:44] the L2 because a more upto-ate value
+[49:46] might be there in another L1
+[49:49] cache. So given the fact that this basic
+[49:52] protocol has been explained which is
+[49:54] very simple you know if you want me to
+[49:57] explain in two lines the two lines would
+[49:58] be when you are
+[50:00] writing send the right to all the
+[50:03] processors when you're reading if you
+[50:05] find the value in your local cache take
+[50:07] it otherwise send a readmiss to all the
+[50:10] other caches sister caches and if
+[50:14] anybody has the block take it now while
+[50:18] evicting a block that has been modified
+[50:20] So, so basically you know when you are
+[50:22] evicting a block the block can either be
+[50:24] modified or unmodified. So if it has
+[50:26] been modified let us write it to the
+[50:29] lower level which in this case would be
+[50:32] L2. Otherwise so uh well why do we need
+[50:35] to write it to L2? Well uh there's a
+[50:37] simple reason. So let me again do a
+[50:40] little bit of cleaning. So what we have
+[50:43] at least in our current example is that
+[50:45] we have an L1 cache. Then we have our
+[50:48] shared
+[50:51] bus and we have
+[50:54] our L2
+[50:57] cache. Now assume that we are trying to
+[51:00] evict a block you know the block that is
+[51:02] containing variable X we're trying to
+[51:03] evict it from L1.
+[51:06] So if the block is not modified you know
+[51:09] so if the block is
+[51:11] unmodified then of course we can throw
+[51:13] it out because an upto-date copy will
+[51:15] always be there in the L2 cache or at a
+[51:17] lower level but if the block has been
+[51:21] modified then uh and we just cannot
+[51:24] evict it because it has to be written
+[51:26] down to a lower level and at this point
+[51:28] we are not really sure if other caches
+[51:30] other sister caches have another copy of
+[51:33] the block. So instead of asking them
+[51:36] it's a better idea that if the block is
+[51:38] modified then we directly write it to
+[51:41] the L2
+[51:43] cache. Right? So this ensures that all
+[51:45] our modifications at L1 level get
+[51:48] reflected at the lower level whenever
+[51:50] they have
+[51:52] to. So let's look at a simple state
+[51:55] diagram. So this is a state diagram of a
+[51:58] cache line right. So you recall that in
+[52:01] the tag array along with every tag we
+[52:05] add an additional state which is two
+[52:08] bits. Two bits to encode three states M
+[52:10] S and I right S. So I should rather call
+[52:13] this ST right? ST for
+[52:16] state. So uh let's see. So uh initially
+[52:19] we start in the invalid
+[52:22] state. Then let's say that we get a
+[52:24] readmiss which means we're trying to
+[52:25] read this variable. It's not there.
+[52:27] we'll broadcast the
+[52:29] readmiss. So either we'll get the value
+[52:32] from another cache or from the lower
+[52:34] level doesn't matter. So then we'll
+[52:36] transition to the S state or the shared
+[52:38] state. So the shared state basically
+[52:41] tells us that we have the data but this
+[52:44] current cache has not modified the data
+[52:47] yet. After this as long as we can just
+[52:51] keep on reading it'll remain in the
+[52:52] shared state. So, so basically the uh
+[52:57] uh the format over here is
+[53:00] uh essentially the message that we need
+[53:02] to send or the message that we get and
+[53:04] the action taken. So if we just want to
+[53:07] read and we have a read hit then we
+[53:09] don't have to do anything. We just
+[53:11] continue to remain in the shared
+[53:13] state. However, if let's say there is a
+[53:16] necessity to evict the data, we can
+[53:20] seamlessly evict it because we have not
+[53:22] modified it. So we will transition to
+[53:24] the invalid state and subsequently the
+[53:26] cache might decide to put another line
+[53:29] in the place of the current
+[53:31] line. Now let's assume that we decide to
+[53:34] write to this line. Right? So now let's
+[53:36] assume that the processor that owns this
+[53:38] L1 cache uh so so uh well I'll make one
+[53:44] important point one minute later but uh
+[53:48] let me just continue. Uh so let's assume
+[53:51] that this processor over here wants to
+[53:53] write to this L1
+[53:55] cache. So then uh what will happen is
+[53:59] that since the line is there we'll have
+[54:01] a right hit. But to keep all the other
+[54:04] copies up to date if there are any we
+[54:06] don't know at this point we just
+[54:08] broadcast the right to all the other
+[54:10] caches such that they can update
+[54:12] themselves and uh we transition to the M
+[54:16] state which means a modified state.
+[54:19] After this well we can keep on reading
+[54:22] and uh if there is a right hit which
+[54:25] means that we want to write well we just
+[54:28] happily go and write and we broadcast
+[54:30] the right
+[54:32] uh such that all the other copies can
+[54:34] keep themselves
+[54:36] updated. Now the same thing well similar
+[54:38] things h happens over here. If we decide
+[54:40] to evoke this line since we have
+[54:43] modified it we need to write it down to
+[54:45] the lower level. So we do what is called
+[54:47] a write back to the lower level cache.
+[54:49] In this case it's an L2 cache and we
+[54:52] transition to the I state. The reason we
+[54:54] do that is because we don't want our
+[54:56] updates to get lost. So it is possible
+[54:58] that another cache has a copy of the
+[55:01] latest data but we we don't know that.
+[55:04] So to be on the safer side we write it
+[55:06] back to the lower level.
+[55:08] So one transition we're missing which is
+[55:10] assume that the line is an an invalid
+[55:12] state but there is a right miss which
+[55:14] means we want to write a line and the
+[55:16] line gets populated over here then we
+[55:19] broadcast a right miss on the
+[55:22] bus and uh so let's see let's assume
+[55:26] there's one L1 and one more
+[55:28] L1 right this is the
+[55:31] bus and one more L1 cache and let us
+[55:34] assume that L1 wants to write to X so it
+[55:36] wants to set X to
+[55:38] five. So what does it need to do? Well,
+[55:41] it if it has X, then it can happily
+[55:43] write five over there and broadcast the
+[55:45] right. That is fine. If it does not have
+[55:47] X, what is it supposed to do? This is
+[55:50] one of the most important points where
+[55:52] students make mistakes. And recall that
+[55:55] we had a similar discussion when we were
+[55:58] discussing caches. So let me first sort
+[56:00] of bring in this discussion. This is a
+[56:03] point that I was trying to make a minute
+[56:04] ago, but I sort of held myself back
+[56:07] because this is the most complicated
+[56:09] aspect of the
+[56:11] protocol. So it would be I thought it
+[56:13] would be desirable to discuss this at
+[56:15] the end. So what I'm essentially trying
+[56:18] to say is that let's assume an L1 cache.
+[56:22] So in L1 cache, assume that the line
+[56:23] size is 64
+[56:26] bytes. when we do a single store and if
+[56:29] it's a 32-bit address you know it's a if
+[56:31] it's a 32-bit system we might write to
+[56:34] only four bytes but what we do is that
+[56:37] the L1 actually requests the L2 cache
+[56:41] right for 64 bytes we get the entire
+[56:46] block from the L2 and then uh we put
+[56:49] this block in L1 and in this block we
+[56:52] write to some you you know one of the
+[56:56] four. So one of the sequences of four
+[56:59] bytes within this block. So if the block
+[57:03] is 64
+[57:05] bytes, we might write to this chunk of
+[57:07] four bytes or we might write to this
+[57:09] chunk of four bytes. But the main aim is
+[57:11] to get the block first. So the question
+[57:13] is why did we do it? We had answered
+[57:15] this question in chapter 9. But let me
+[57:18] answer this question once again for you.
+[57:23] So the answer to the question was that
+[57:25] well uh we cannot directly go ahead and
+[57:28] write it because you know even in an
+[57:30] empty block if we we can't just go ahead
+[57:33] and write four bytes because we need to
+[57:36] then keep track of which four bytes were
+[57:38] written and this can get very
+[57:39] complicated. That's the reason we first
+[57:42] fetch the old copy of the block and then
+[57:45] uh make a change on it which is write to
+[57:47] you know the four bytes that we want to
+[57:49] write to. So this is why we fetch an
+[57:52] entire block in one go. So same logic
+[57:54] holds over here that assume that I am uh
+[57:58] in the invalid state which means I don't
+[58:00] have the data then I put in a right miss
+[58:03] on the bus. So I get the block either
+[58:06] from another sister cache or from the
+[58:08] lower level. Right? So I basically
+[58:10] broadcast a right miss and I get the
+[58:12] block from somewhere and after that I
+[58:15] perform the right. So it's exactly the
+[58:16] same logic that I need to get the old
+[58:19] copy of the block first and perform the
+[58:21] right. All right. So I'm deliberately
+[58:24] going slightly fast here because this
+[58:27] logic has been discussed threadbear in
+[58:30] chapter 9. So you can go back to it. But
+[58:32] the important point is that uh
+[58:36] whenever uh we uh want to write we first
+[58:40] get the entire block which can be 64
+[58:43] bytes or 128 bytes and then we write to
+[58:46] four bytes or 8 bytes within
+[58:48] it. So there are two uh so this is the
+[58:51] basic protocol. So let me again clean up
+[58:54] screen. There are two things. So
+[58:56] whenever we do a write we have to
+[58:58] broadcast the data. That's the reason
+[59:00] it's called a right update
+[59:02] protocol. This
+[59:04] is technically speaking not a very good
+[59:08] idea. The reason for this is that you
+[59:10] know you can have a lot of writes in a
+[59:12] program that'll lead to a lot of traffic
+[59:14] on the bus. There's one more blue box
+[59:17] that I've added that says that for any
+[59:19] write
+[59:21] message received sorry not messages it
+[59:24] should be message received from another
+[59:27] cache you know via the bus right so so
+[59:30] you know I receive any right message in
+[59:31] either the shared state or in the
+[59:33] modified state via the bus which means
+[59:36] another cache is writing to it I simply
+[59:38] update my value so this is the update in
+[59:41] the write update protocol all right so
+[59:44] the more details are there in the book
+[59:46] but we can uh proceed for the time
+[59:49] being. So uh what is the main problem in
+[59:52] the right update protocol? The main
+[59:54] problem is that we need to broadcast
+[59:57] data on every right which is technically
+[60:03] speaking not the right thing to do
+[60:05] because we might have too much of
+[60:07] traffic on the
+[60:09] bus and uh also the bus is a single
+[60:12] shared resource. the bus might get
+[60:14] clogged and that might lead to
+[60:16] additional
+[60:18] slowdown.
+[60:21] So there is basically a need to have a
+[60:25] protocol which is you know lighter in
+[60:26] terms of traffic. So here is a basic
+[60:29] insight that we use to create a new
+[60:32] protocol called the write invalidate
+[60:34] protocol. Not write update but write
+[60:36] invalidate. So let us assume that if a
+[60:39] block is there in the M state with some
+[60:42] cache you know so we sort of creating a
+[60:44] new protocol you know so new protocol
+[60:46] the states mean different things so let
+[60:49] us assume that if a block is there in
+[60:51] the m state with some cache then no
+[60:53] other cache contains a valid copy of the
+[60:55] block we didn't make this assumption in
+[60:58] the right update protocol but let's make
+[60:59] it now that you know if it it can be
+[61:02] there in the m state you know one block
+[61:05] right one block address can only be in M
+[61:08] state in only one cache. So this we will
+[61:11] show will ensure that we can write
+[61:13] without any broadcasting. The rest of
+[61:15] the logic remains well more or less I
+[61:18] won't say the same but more or less the
+[61:20] same right I would maybe add more or
+[61:23] less over here
+[61:26] uh you know sort of to make things
+[61:28] slightly
+[61:32] clearer. So uh one more thing. So we are
+[61:35] assuming that our system diagram is like
+[61:38] this. Actually let me just go back. Uh
+[61:41] we are assuming that our system diagram
+[61:43] is like this that uh we are implementing
+[61:46] cache coins at the level of the L1
+[61:49] caches and below the shared bus we have
+[61:53] a large L2 cache. But this need not be
+[61:56] the case. So we can uh implement
+[61:58] coherence technically speaking at any
+[62:00] level. So we can also have private L2
+[62:03] caches and implement coherence between
+[62:05] them. It is just that uh you know it's
+[62:08] typically not done and uh but it can be
+[62:11] done and you know there's nothing that
+[62:13] is stopping it. So we can implement
+[62:15] coherence at any level. So that's since
+[62:18] we using L1 I have used the words uh
+[62:21] processor and cache interchangeably but
+[62:24] in a different version of slides this
+[62:26] should actually be caches. So uh uh this
+[62:30] I'll update for but but for the time
+[62:32] being let's assume that the word
+[62:34] processor and cache is being used
+[62:36] interchangeably even though you know to
+[62:38] make it generic I will remove
+[62:40] it. All right. So let's look at the
+[62:43] right invalidate protocol. So the write
+[62:46] invalidate protocol uh has a similar
+[62:49] thing. So we're looking at a similar MSI
+[62:52] protocol over here which is nice and
+[62:55] simple. So in this case what we do is we
+[62:59] do exactly the same thing
+[63:01] uh with every tag entry in the tag array
+[63:04] we associate a state since there are
+[63:06] three states uh we need two bits to
+[63:08] encode the state so we have msni so this
+[63:12] is a state transition diagram for
+[63:14] actions taken by the processor right uh
+[63:16] so so basically when a processor sends
+[63:18] something to the L1 cache what
+[63:20] happens so uh we of course always start
+[63:23] in the I state so let's assume that
+[63:26] we're trying to
+[63:27] read a variable we don't find it. So we
+[63:31] have a readmiss. So we broadcast the
+[63:34] readmiss on the shared bus and if any
+[63:37] other sister cache has the data it sends
+[63:40] the data to
+[63:41] us. So we transition to the shared
+[63:43] state. The shared state means more or
+[63:46] less the same thing uh in both the
+[63:49] protocols. So from the shared state if
+[63:51] you want to evict the line we can always
+[63:54] do that because we have not written to
+[63:56] the line the block right line and block
+[63:59] again being used
+[64:00] interchangeably. So since we have not
+[64:03] written to the block we can happily
+[64:04] evict it which is this point. The second
+[64:08] point is if we want to read it we can
+[64:10] always keep reading right there is no
+[64:13] problem in that. Now let's assume that
+[64:16] we want to write to this particular
+[64:21] block. So in the write invalidate
+[64:23] protocol what we have to do is we have
+[64:25] to in a sense seek permission from the
+[64:27] rest of the caches to write to this
+[64:29] block. So uh if you want to write of
+[64:32] course it will be a right hit because
+[64:33] the block is currently there with this
+[64:35] cache. So we will then broadcast a write
+[64:38] message to the rest of the caches. So if
+[64:41] this is you know one cache over here you
+[64:44] know C and all the other caches you know
+[64:47] C1 C2 to maybe C
+[64:50] N we want to write over here then we
+[64:53] sort of send the right message to all
+[64:55] the other caches that we want to write
+[64:57] here. So what so when we write we also
+[65:01] transition to the M state. So recall the
+[65:03] assumption that we have made that any
+[65:05] line can be in the M state in only one
+[65:08] cache.
+[65:10] So what the other uh caches will
+[65:13] basically do is that they will uh
+[65:17] invalidate the line or essentially set
+[65:19] the value of their line to uh I right
+[65:23] set the state to I. So they'll make a
+[65:25] transition if there's another cache has
+[65:27] it in the M state will go from M to I.
+[65:30] If another cache has the line in the
+[65:33] shared state it'll again go from S to I.
+[65:36] So we are basically
+[65:38] ensuring that no other cache has a
+[65:41] copy. After doing that once we are in M
+[65:45] state we can keep on reading and writing
+[65:47] mind you without sending. So these are
+[65:50] empty without sending any message. So no
+[65:53] messages are sent once we are in the M
+[65:56] state. We can read and write as much as
+[65:58] we can because we are sure that no other
+[66:01] cache has a copy. So there is no need to
+[66:03] maintain any kind of
+[66:06] coherence. Now when we are in the M
+[66:08] state and we evict the line which is
+[66:11] this since we have written to the line
+[66:14] the same logic applies we write it back
+[66:15] to the lower level and similarly uh we
+[66:19] will transition from the I state to the
+[66:21] M state when we are trying to write but
+[66:23] we don't have the line so we'll send a
+[66:26] write miss request. So the right miss
+[66:29] request will first go to all the caches.
+[66:31] If any of the cache has a copy of the
+[66:33] line, it'll transition to the invalid
+[66:35] state and give us the block exactly the
+[66:38] same way that we did it in the right
+[66:40] update
+[66:41] protocol. Then we
+[66:45] uh basically take the block and we write
+[66:47] to it. So as you can see you know the
+[66:49] rest of the protocol is more or less the
+[66:53] same. You know there is no major
+[66:55] differences as such. It is the main
+[66:59] difference if you actually think about
+[67:01] it is the way that we handle writes in
+[67:04] our system. In the write invalidate
+[67:06] protocol when we want to write we
+[67:09] transition to the M state and after that
+[67:12] we don't send any messages. So that's
+[67:14] one more important difference that you
+[67:16] know when we write we don't send any
+[67:18] messages. So there's no update that is
+[67:21] happening and that is because uh we uh
+[67:25] are guaranteed that no other cache has a
+[67:27] copy. So if you take a look at the next
+[67:30] diagram which is a state transition
+[67:32] diagram for events that are received
+[67:33] from the bus. So let's look at the
+[67:37] shared state first.
+[67:39] So the shared state literally means
+[67:41] shared which means that the same
+[67:43] variable can be there in multiple caches
+[67:47] in a readonly mode which means the
+[67:49] caches can read it but cannot write to
+[67:51] it. So x can be here here and here. So
+[67:54] their respective processes
+[67:56] processors can read the value of x.
+[67:59] There is no problem. Now assume that
+[68:01] there is a new cache which wants the
+[68:04] value of x. Well, it'll then send a
+[68:06] readmiss message on the bus to all the
+[68:08] other caches. One of the caches will
+[68:12] whoever gets access to the bus first
+[68:15] will send the value of X to this cache.
+[68:19] Right? So this is how we respond to a
+[68:22] readmiss.
+[68:23] However, if let's say that uh another
+[68:28] processor just writes
+[68:31] uh you know another processor simply
+[68:34] writes to uh this particular line right
+[68:38] you know wants to write you know seeks
+[68:40] permission to write so in this
+[68:43] case so in this case uh if we just go
+[68:46] back to the previous slide the messages
+[68:49] that are sent on the bus are either
+[68:50] right miss means that I don't have the
+[68:52] data So send the block to me or write
+[68:55] hit means I have the data but I have the
+[68:57] data in the shared state. So I need
+[68:59] exclusive access. So then a right hit
+[69:02] message is sent. So sorry this should be
+[69:05] right hit.
+[69:08] So what will happen is that if a block
+[69:11] is in the shared state and it gets a
+[69:13] right miss or a right hit message on the
+[69:16] bus then the first thing is it needs to
+[69:18] transition to the I state which
+[69:20] basically means that if another pro uh
+[69:23] cache is writing the current cache has
+[69:25] to throw the data
+[69:27] out. Now there are two kinds of messages
+[69:30] that can come from the bus. So if a
+[69:32] right miss message is coming this means
+[69:34] that the other the writing processor
+[69:36] does not have the block so the block
+[69:39] needs to be
+[69:40] sent. So uh the block will be sent. If a
+[69:44] right hitate message comes it means that
+[69:46] the other cache has the block but it
+[69:49] does not have the block with the right
+[69:51] permissions which means it's there in
+[69:53] the S state not in the M state. In this
+[69:56] case nothing needs to be done. We just
+[69:58] need to transition to the I state.
+[70:01] Similarly, if I consider uh the M state,
+[70:04] the modified state, there are two kinds
+[70:06] of messages that I can get. I can
+[70:09] definit I will never get a right hit
+[70:11] message here because no other cache can
+[70:13] have uh another copy of this block. But
+[70:17] I can get a read miss and a right miss.
+[70:20] So if I get a readmiss message means
+[70:21] some other cache is trying to read this.
+[70:24] So what I can do is I can send the
+[70:27] data. Okay? So I can send the block and
+[70:31] also uh transition to the s state. The
+[70:34] reason that I do it is because it is not
+[70:37] possible that uh you know one block can
+[70:40] be there in an M state in one cache and
+[70:42] an S state in another cache. So in the M
+[70:45] state it can be there in only one cache.
+[70:47] So that's the reason. So you know it's
+[70:49] sort of something like this that if I
+[70:51] have this line in the M state here and
+[70:54] this line here in the I state and
+[70:57] subsequently from I I try to move to the
+[70:59] shared state because I want to read it
+[71:02] is not possible that the same block will
+[71:04] be there in the M state in this cache
+[71:06] and in the shared state in this cache.
+[71:09] So this also needs to transition to S.
+[71:12] And since
+[71:15] uh this block is trying to read uh well
+[71:18] we need to send the data and also we
+[71:20] need to do a write back to the lower
+[71:23] level which is L2 and the reason we do
+[71:26] that is basically because we want to
+[71:29] seamlessly evict data from the shared
+[71:31] state. So if you would recall from the
+[71:33] shared state when we want to evict data
+[71:36] in a sense throw data
+[71:38] out what we do is that we just throw it
+[71:42] out we don't do any writing so we want
+[71:44] to do exactly the same so whatever new
+[71:46] data we have written in the M state
+[71:48] we'll ensure that it is up to date with
+[71:51] the L2 cache the lower level and that's
+[71:54] the reason we do a write back and also
+[71:56] send the data to the requesting cache
+[71:59] now assume that another process
+[72:01] wants to has a right miss. So write miss
+[72:05] basically means that it's it is trying
+[72:08] to write. So it'll transition to the M
+[72:10] state. So in this case the only thing
+[72:13] that needs to be done is we need to send
+[72:15] the data to it such that it'll at least
+[72:17] get the entire contents of the block and
+[72:20] it can overwrite it.
+[72:22] So the summary of our discussion is
+[72:25] somewhat like this that as compared to
+[72:28] the right update
+[72:29] protocol which sent uh data on the bus
+[72:34] all the time whenever there is a right
+[72:36] uh we used to broadcast the data to all
+[72:38] the other caches and they used to update
+[72:40] themselves. This per se has a lot of
+[72:43] traffic and a lot of power consumption.
+[72:45] This is inefficient.
+[72:47] What is much better is our current
+[72:49] approach, our MSI approach. And the
+[72:53] important
+[72:54] insight in our MSI approach
+[72:57] is that
+[73:00] uh if let's say a given block is there
+[73:03] in the M state with some cache, no other
+[73:05] cache has a copy of the block in any
+[73:08] valid state which is S or M. So this
+[73:11] ensures that uh if we write to it we can
+[73:15] keep on writing without any
+[73:17] interference. So uh we then have the
+[73:20] shared state but shared state means that
+[73:22] we have read only access to a block and
+[73:24] we cannot write to it. To write to it we
+[73:26] have to transition from s to m and when
+[73:29] we do this transition we send uh write
+[73:32] miss and write hit messages on the bus.
+[73:34] So uh this ensures that other caches
+[73:37] that might have a copy of the block will
+[73:39] all transition to the invalid
+[73:41] state. Now the question is
+[73:45] uh sorry now the question is like
+[73:49] this that what is the uh you know proof
+[73:54] of correctness of the right invalidate
+[73:56] protocol. Does it follow the cache
+[73:59] coherence axioms which are that right
+[74:02] completes you know the completeness aom
+[74:06] so let's look at this so for a right to
+[74:08] complete which means that I issue a
+[74:10] right and ultimately it has to happen
+[74:13] what do I need to do what I need to do
+[74:16] is that first I need to get access to
+[74:18] the bus right and I need to put either a
+[74:22] right hit or a right miss request on the
+[74:25] bus after that I'm more or less done. So
+[74:28] of course you know since if the bus is
+[74:29] fair in the sense it ensures that you
+[74:32] know no request stars forever then we
+[74:36] will a right will always come on the bus
+[74:37] and it'll always succeed. So this is
+[74:40] guaranteed. Now let us look at the order
+[74:43] axum which says that rights to the same
+[74:45] location are seen in the same order by
+[74:48] all the
+[74:48] processors. So the order axiom is also
+[74:51] maintained. The reason being that you
+[74:53] know consider any location consider
+[74:55] variable X. So the cache line that
+[74:58] contains variable
+[75:00] X for any request to write to it it
+[75:02] needs to set it in the M state modified
+[75:05] state. So since one cache can only have
+[75:09] the line in a modified state and no
+[75:12] other cache will have a copy. So if we
+[75:15] just track the order in which caches get
+[75:17] this line in the modified
+[75:20] state then this order is globally
+[75:23] visible because you essentially go to
+[75:24] the modified state by sending messages
+[75:26] on the bus which is a central
+[75:29] resource. So pretty much the order in
+[75:32] which we enter the modified
+[75:34] state for this particular line
+[75:37] determines the order of writes to this
+[75:39] particular memory location. memory
+[75:41] location containing
+[75:42] X and this is
+[75:46] uh same across all processors. So all
+[75:48] the processors will see the same order
+[75:50] of rights to the same location. So this
+[75:53] axiom also
+[75:54] holds. So now we have looked at two very
+[75:57] basic protocols, two very basic MSI
+[76:00] protocols, write update and write
+[76:01] invalidate. Write update is somewhat
+[76:04] expensive in terms of messages and
+[76:06] power. However, it is simple. It just
+[76:09] keeps multiple copies and updates them
+[76:12] uh on every right of course. Write
+[76:15] invalidate is slightly more complicated
+[76:19] not very complicated though and it uh
+[76:23] has a far fewer number of messages. In
+[76:25] that sense it is more efficient and is
+[76:27] typically
+[76:29] preferred. So now I'll give you a very
+[76:32] very brief cursory idea of another
+[76:34] protocol called the directory protocol.
+[76:36] So we'll not discuss this. I'll just
+[76:38] give you an idea that something like
+[76:41] exists. So what we have is that all the
+[76:44] messages sent on the shared bus are
+[76:46] essentially broadcasts be it a right hit
+[76:48] right miss read miss and these are
+[76:51] expensive also if we have 32 or 64
+[76:54] processors and one shared bus the shared
+[76:57] bus will become the bottleneck.
+[77:00] So the insight that we see that we get
+[77:04] from most programs is that most blocks
+[77:07] are cached by a few caches not very
+[77:09] many. So let us have a directory which
+[77:12] is a special structure that maintains a
+[77:15] list of all the sharers for each block.
+[77:17] All the caches that contain that
+[77:20] block. Then let the directory send
+[77:22] messages to only the sharers for a block
+[77:24] when there is a state change. And of
+[77:26] course we can dynamically update the
+[77:28] list of sharers. So this per se is a far
+[77:31] more efficient protocol because it
+[77:33] avoids the broadcast altogether. But
+[77:35] this is better taught in an advanced
+[77:37] course on computer
+[77:40] architecture. All right. So we have done
+[77:42] most of the heavy hard work of looking
+[77:45] at MD multiprocessors. So we have looked
+[77:48] at coherence. We have looked at
+[77:49] consistency of very difficult stuff. We
+[77:52] have looked at sequential consistency.
+[77:54] We looked at weak consistency. We have
+[77:56] looked at the right update cache
+[77:58] governorance
+[78:00] protocol. We have looked at the right
+[78:03] invalidate cache governorance protocol.
+[78:06] So we have done genuinely done a lot of
+[78:08] hard work and all of these are actually
+[78:11] you know advanced concepts in computer
+[78:13] architecture. But the reason they need
+[78:15] to be taught to students now is because
+[78:18] the era of parallel processors or
+[78:21] multi-core processors has begun. In
+[78:23] fact, it has begun long back at least 7
+[78:26] or 8 years ago at least in
+[78:28] 2010. But
+[78:31] now uh you know no undergraduate
+[78:33] curriculum is complete at least without
+[78:36] some understanding of how parallel
+[78:38] processors actually work and in any
+[78:42] decent understanding uh definitely it is
+[78:46] necessary for a student to understand
+[78:48] sequential consistency weak consistency
+[78:51] and these write update and write
+[78:53] invalidate cache governance protocols.
+[78:55] So now we'll go to fundamentally simpler
+[78:58] stuff multi-threading vector process and
+[79:00] interconnects.

@@ -1,0 +1,1206 @@
+[00:00] [Music]
+[00:22] welcome to lecture eight
+[00:24] of the chapter coherence consistency and
+[00:30] transactional memory
+[00:31] in multi-processor systems
+[00:34] so in this lecture we will discuss the
+[00:37] different methods to detect data races
+[00:39] in a program
+[00:41] so if you would have looked at the
+[00:42] previous lecture you would have
+[00:44] realized that a data race is a fundament
+[00:47] is a
+[00:48] is an inherent property of a program
+[00:51] regardless of the memory model
+[00:53] so the aim is to find a data race in a
+[00:56] program
+[01:00] so the question is how do we detect data
+[01:02] races right
+[01:04] so what we need is we need an algorithm
+[01:06] that tests a piece of code for data
+[01:08] races
+[01:10] so this means that it needs to exercise
+[01:13] all possible control paths give it all
+[01:15] possible inputs
+[01:17] create as many interleavings as possible
+[01:21] and finally what we have proven
+[01:25] in the last chapter is that if there is
+[01:26] a database in a program it will
+[01:27] definitely show up in an sc execution
+[01:31] if it shows up in an sc execution
+[01:35] then either so this basically motivated
+[01:39] us or gave us an algorithm or a method
+[01:41] of how to create these interleavings
+[01:43] because if you think about it if there's
+[01:45] a complex memory model
+[01:47] and we are creating interleaving sas per
+[01:49] the memory model that's going to be
+[01:51] a lot of work but if we assume sc then
+[01:54] creating interleaving some different
+[01:55] executions is far easier
+[01:58] but even with that right uh
+[02:01] we need to exercise as many paths as
+[02:03] possible and conclusively prove that
+[02:05] there is no data rays
+[02:06] and that is quite hard i mean there are
+[02:10] two ways of course
+[02:11] but both the ways are reasonably hard
+[02:14] we will discuss the easier one so one is
+[02:16] a static approach where
+[02:18] we analyze the code using a compiler and
+[02:21] try to find
+[02:22] out if there is a data race or not so
+[02:24] this is computationally hard it's not
+[02:26] easy to prove
+[02:27] so what is computationally hard well
+[02:29] that is formally dealt with in a course
+[02:31] on computational complexity
+[02:34] but let's just say that within a
+[02:36] polynomial number of
+[02:39] tries we are not going to get the answer
+[02:42] right and in some some of these problems
+[02:44] are also
+[02:45] so hard to solve
+[02:49] that it is also possible that you know
+[02:51] if we start solving it
+[02:53] the algorithm may never terminate so
+[02:56] that's the reason what we do is we do a
+[02:58] dynamic approach
+[02:59] where we instrument the program
+[03:01] instrumenting basically means we just
+[03:03] report which variables we are reading
+[03:05] and writing to
+[03:06] and try to see if there is a data race
+[03:08] right and so if you run a program
+[03:10] millions of times if there is a data
+[03:13] race there is a very high likelihood
+[03:15] that it will show up
+[03:17] so i'll discuss two algorithms one is
+[03:19] the algorithm based on log sets
+[03:22] and the other is the algorithm based on
+[03:24] vector clocks
+[03:25] right so first i will discuss the
+[03:27] algorithm based on log sims
+[03:30] so let us define these two terms here lb
+[03:32] and lt
+[03:35] say lv is the set of logs held by
+[03:38] a given memory location so this is
+[03:40] something that our algorithm has to
+[03:41] simulate
+[03:43] and lt is a set of logs held by a thread
+[03:45] t
+[03:46] again our algorithm will have to
+[03:48] simulate this so lock is identified by
+[03:51] the lock address
+[03:52] in the sense that every lock has unique
+[03:54] lock address
+[03:55] which as we have seen in the previous
+[03:57] lectures
+[03:58] we atomically set an unset
+[04:04] so after each act after each access to
+[04:06] memory location v
+[04:07] we modify the log set so what we do is
+[04:11] we compute an
+[04:13] so lt of course is the logs currently
+[04:15] held by the
+[04:16] by the thread t so what we do is we
+[04:19] compute lv
+[04:20] is equal to we said lv equal to
+[04:25] lv intersection lt which basically means
+[04:28] that initially
+[04:29] if let's say we assume that every
+[04:32] location
+[04:33] is associated with all possible knobs
+[04:37] okay right so initially let's say the
+[04:40] set of all possible locks is infinity
+[04:43] so what will happen is let's say the
+[04:45] first thread comes and it accesses this
+[04:47] memory location
+[04:48] this will essentially be infinitely
+[04:50] intersection all the logs held by lt
+[04:53] which will automatically become lt and
+[04:55] subsequently this set will get more and
+[04:57] more and more refined
+[04:59] which basically means that for every
+[05:01] lock variable
+[05:03] we want to find those mock addresses
+[05:06] that you have to acquire those logs that
+[05:09] you have to acquire
+[05:11] to access this location over here
+[05:14] so let's say that we have found out that
+[05:16] maybe you know logs a b
+[05:18] and c are what you need to acquire but
+[05:21] then let's say another thread comes by
+[05:22] which is only acquired
+[05:24] blocks b and c then when we compute an
+[05:27] intersection between these two sets we
+[05:29] realize that okay maybe lock a is not
+[05:32] required
+[05:32] because the second thread didn't have
+[05:34] lock a in its acquired log set
+[05:37] so let's remove this and let's set lb as
+[05:42] bnc so what we do is that we continue
+[05:47] simulating this algorithm so the key
+[05:50] thing is that at the end of the program
+[05:54] for every variable for every shared
+[05:57] variable its log set should not be empty
+[05:59] if this log set is empty it basically
+[06:01] means that some thread has accessed this
+[06:03] variable
+[06:05] without actually acquiring any log
+[06:09] or it is the case that
+[06:14] there are two accesses to the same
+[06:17] but the intersection of the log sets is
+[06:20] none
+[06:21] so this effectively means that the
+[06:23] variable is not protected by the same
+[06:25] set of lots
+[06:30] so what is the standard approach the
+[06:31] standard approach for using the log set
+[06:34] algorithm is to add annotations to the
+[06:36] multi-threaded code
+[06:39] so these annotations are the ones that
+[06:41] help track the log set
+[06:42] in the sense the annotations are added
+[06:45] to every read and write of a shared
+[06:46] variable and the moment we have a read
+[06:49] and write we track the log sets
+[06:51] and furthermore when we acquire a lock
+[06:53] by a thread or we release a lock
+[06:55] the knock sides of the threads are also
+[06:58] tracked
+[06:59] so lots of threads are initially empty
+[07:01] and the log sets of every
+[07:02] variable is initially infinite right so
+[07:05] for each variable it's lock set and htmp
+[07:07] has all the locks
+[07:09] so when the thread acquires a lock we
+[07:11] add the lock to its lock set when it
+[07:13] releases we remove as the program
+[07:16] executes for every variable v
+[07:18] lb keeps getting updated at the end
+[07:22] if there is a variable with an empty log
+[07:24] set
+[07:25] maybe it is involved in a database so we
+[07:27] will see that there could be many
+[07:29] instances where
+[07:30] actually it is not but it is possibly
+[07:32] involved in a database
+[07:33] right so basically
+[07:38] this also means that if the log set is
+[07:40] empty it means that there is no
+[07:41] synchronization between accesses to the
+[07:44] but as i said all such
+[07:49] instances where the log set is empty are
+[07:51] not harmful there are some harmless ones
+[07:53] as well
+[07:54] so we will discuss that
+[07:57] so there are of course a notion of false
+[07:59] positives
+[08:01] in the sense we will detect many
+[08:02] scenarios that are actually not data
+[08:05] risks for example
+[08:07] the basic algorithm will slag a database
+[08:09] for read-only variables right
+[08:12] so let's look at some of these patterns
+[08:14] where you will see that a problem will
+[08:16] be flagged
+[08:17] for example when we are initializing a
+[08:21] we will typically initialize variables
+[08:23] without using logs
+[08:25] right so the first axis some thread at
+[08:28] the beginning will just
+[08:28] initialize so that
+[08:32] may not use locks but they'll be flagged
+[08:34] by a problem by our system which is not
+[08:36] the case
+[08:37] we'll have some read only variables
+[08:39] which are just written once during
+[08:40] initialization and subsequently they are
+[08:42] only read
+[08:43] again that will be flagged as a problem
+[08:45] but that's still not the case
+[08:47] and a reader writer pattern will
+[08:49] multiple threads read a variable
+[08:51] currently
+[08:52] concurrently right see even that
+[08:55] will be flagged as an issue but
+[08:58] that's also not the case right so
+[09:01] basically once
+[09:02] the reader writer patent would be that a
+[09:05] writer writes for a variable multiple
+[09:08] readers keep reading to it that's not a
+[09:11] problem
+[09:13] okay so to ensure that these read-only
+[09:16] variables which are constants the reader
+[09:18] writer pattern and the initialization
+[09:20] pattern
+[09:21] all these patterns are effectively
+[09:23] captured we need to do something
+[09:26] so here is what we do
+[09:30] so we have a modified state diagram for
+[09:32] each variable
+[09:34] so for every variable we have this state
+[09:36] diagram what is fsm
+[09:38] where the variable starts at the start
+[09:40] state
+[09:43] the first access to the variable has to
+[09:45] be right
+[09:46] right because you know the first access
+[09:48] you have to initialize the value of the
+[09:51] so that has to be right so moment we
+[09:53] have a right to the variable
+[09:55] the variable moves to the exclusive
+[09:57] state which means it is the exclusive
+[09:59] property of one thread
+[10:01] in that state all the accesses by the
+[10:04] same thread
+[10:05] whether it's a read access or a write
+[10:07] access
+[10:09] so after the thread has made all the
+[10:11] accesses
+[10:14] right or or outputting in other words if
+[10:18] you are in the exclusive state
+[10:19] regardless of the reader right by the
+[10:21] same thread we will still continue to
+[10:23] remain clear
+[10:25] right so there is no problem up till
+[10:26] this point
+[10:29] now if there is a lead by a different
+[10:31] thread then this could possibly signal
+[10:33] the reader writer pattern
+[10:35] so from here we'll go to the shared
+[10:37] state well shared states the connotation
+[10:39] is similar to cash currents
+[10:41] where if there are reads reads reads and
+[10:43] reads
+[10:44] we will continue to be in the shared
+[10:46] state so here again there is no problem
+[10:50] okay because this shared state for us
+[10:54] is the reader writer pattern where you
+[10:55] write once and then you keep on reading
+[11:04] the problem arises when there is a right
+[11:07] by a different thread
+[11:09] which means that we are starting a
+[11:11] regular shared axis
+[11:13] so there is a right by a different
+[11:15] thread either when the variable is in
+[11:16] the exclusive state
+[11:18] which means that other threads also are
+[11:20] showing an interest in the variable
+[11:22] or from the shared state so when this
+[11:25] happens we enter the modified state
+[11:27] and in the modified state our regular
+[11:30] log set algorithm runs
+[11:32] okay so in this case our regular log set
+[11:35] based algorithm
+[11:36] that runs because if we think about it
+[11:39] we have covered all the basic cases so
+[11:41] the initialization state
+[11:43] is exclusive so we don't detect any data
+[11:45] logs here
+[11:46] right so go back to the three things
+[11:48] that we said
+[11:50] read only variables so read only
+[11:51] variables and also reader writer
+[11:53] patterns
+[11:54] both are being captured by the shared
+[11:56] state but let's see if other threats are
+[11:59] writing to the variable
+[12:01] then of course there is an issue
+[12:04] and in this case we enter the modified
+[12:07] state and we remain here for
+[12:08] every subsequent access right whether it
+[12:11] is a read or write it doesn't matter we
+[12:13] remain here
+[12:14] in the modified state right for all
+[12:16] subsequent accesses
+[12:18] and then we run the regular log set
+[12:21] algorithm
+[12:22] right on the modifiers
+[12:29] so this completed the log set algorithm
+[12:31] for us
+[12:32] so so what are the key takeaway points
+[12:35] right so let me just go back once again
+[12:37] so the key takeaway points are it's a
+[12:38] simple algorithm
+[12:40] where all that we do is we dynamically
+[12:43] track lv
+[12:44] which is the vector of logs held by
+[12:48] a variable or vector of logs required to
+[12:53] access a variable and lt which is the
+[12:55] locks held by a thread
+[12:58] every time there is an axis we just
+[13:00] compute this
+[13:03] but as i said that would give us too
+[13:05] many of these false positives
+[13:08] so that's the reason what we do is that
+[13:10] the first write weight note
+[13:12] and then subsequently reads the other
+[13:14] threads also we ignore so that filters
+[13:16] out a lot of the false positive cases
+[13:19] and the moment there is a right way
+[13:21] another thread it comes to the modified
+[13:24] and subsequently we run the log set
+[13:25] algorithm so in this case this prunes
+[13:27] out a large number of false positives
+[13:30] so there is incidentally a huge body of
+[13:32] research there is a
+[13:34] great amount of literature that talks
+[13:36] about different kinds of databases
+[13:38] false positives false negatives and so
+[13:41] on
+[13:42] but i'll not get into that i'll just
+[13:43] tell you that the key idea of
+[13:45] introducing the fsm was
+[13:47] to prune out some of these false
+[13:49] positives right so it's that we can
+[13:50] remain with
+[13:52] a finer set
+[13:55] right of possible databases
+[13:58] the other idea is a direct
+[14:02] import or inspiration from the world of
+[14:04] distributed systems
+[14:06] so here we can think of a classical
+[14:08] multi-threaded execution environment
+[14:10] as a distributed system in a distributed
+[14:14] system there is no
+[14:15] notion of global time okay
+[14:19] so every thread has a local clock and
+[14:21] there is as such
+[14:22] no notion of a global time so what we
+[14:26] have is we have a bunch of local types
+[14:29] and whenever there is an interaction
+[14:30] between threads the local clocks are
+[14:32] updated
+[14:33] and as i said the local there is a
+[14:35] certain rule for the local clocks if
+[14:37] let's say that there are n threads and
+[14:40] each thread has its local clock
+[14:42] there is a certain rule of interaction
+[14:44] and you know that binds these local
+[14:46] clocks
+[14:47] because as such there is no global time
+[14:49] case
+[14:51] so assume there are n threads each
+[14:53] thread what it does it maintains an n
+[14:55] element vector
+[14:56] is called this vector clock so each
+[14:59] local clock in this case is not a scalar
+[15:01] but if there are n threads then each
+[15:03] such local clock
+[15:04] is actually an n element vector which is
+[15:07] known as its vector plot
+[15:10] okay
+[15:13] let's say thread i is vector clock is vi
+[15:18] let v i j which is basically the jth
+[15:21] element of e i let it be the best
+[15:24] estimate
+[15:25] of j's local growth
+[15:29] okay right so let v i j be the best
+[15:33] estimate of
+[15:34] j is local right
+[15:37] and uh so the so the key important point
+[15:42] over here is that
+[15:47] the element vii this is the only element
+[15:51] which is accurate because this is i's
+[15:52] estimate of its own local
+[15:54] cloth which is bound to be the most
+[15:56] accurate
+[15:57] but for any other element which is not
+[15:59] equal to i
+[16:01] such as v i j this is essentially i
+[16:05] estimate of j's local clock which of
+[16:08] course may not be that up to date or may
+[16:10] not be that accurate
+[16:11] but that said and then vi is is local
+[16:14] clock
+[16:15] and that is known as a vector clock so
+[16:17] we will use this
+[16:18] logic to detect data races
+[16:23] so what we can do is that we can define
+[16:25] some more terminology
+[16:27] and kind of define an algebra on vector
+[16:32] so two vector clocks are said to be
+[16:34] equal when all that components are equal
+[16:36] so we say that vi is equal to bj if and
+[16:39] only
+[16:40] for all k which means for all elements v
+[16:43] i k
+[16:43] is equal to p j k two vector clocks are
+[16:47] totally ordered
+[16:48] so the precedence symbol over here
+[16:50] indicates a total order
+[16:52] for number one they are not equal and
+[16:55] there exists a k
+[16:57] sorry for all k for all k means for all
+[17:00] elements v a cubed less than equal to v
+[17:02] j
+[17:03] k so let me explain this again v
+[17:06] i is less than v j or precedes v j
+[17:10] if and only if v i and v j are not equal
+[17:13] and for all elements v i k is less than
+[17:16] equal to p j q
+[17:18] so we can also have this kind of
+[17:19] precedes or is the same or less than
+[17:21] equal to
+[17:25] so this basically means that either vi
+[17:27] and vj are equal
+[17:28] or the or symbol vi proceeds within
+[17:35] so two vector clocks may not always be
+[17:37] comparable
+[17:38] in the sense it is possible that i'll
+[17:40] give you two examples so let's say that
+[17:42] vi
+[17:43] is equal to three four five
+[17:47] and v j is equal to four five six
+[17:53] in this case you can confidently say
+[17:56] that vi precedes pg
+[18:01] however
+[18:04] if let's say bi is equal to same three
+[18:07] four
+[18:08] five
+[18:12] p j is equal to
+[18:16] 2 5 6. so in this case it
+[18:20] one thing is clear that for all alpha
+[18:22] let's say first element
+[18:23] 3 is greater than 2 but for the second
+[18:25] element 4 is less than 5
+[18:27] so vi and vj in this case are not
+[18:31] it is not the case that vi is less than
+[18:33] vj or is not the case that vj is less
+[18:35] than vi
+[18:37] so in this case they are not comparable
+[18:39] so as i said two vector blocks may not
+[18:41] always be comparable
+[18:42] but if there are if they are comparable
+[18:45] there are some interesting properties we
+[18:46] will look into this
+[18:48] but this is the broad idea of the
+[18:50] relationships between vector clocks so
+[18:53] as i said what again is a vector clone
+[18:55] well we can consider each thread a
+[18:58] process
+[18:59] process is a basic entity in a
+[19:01] distributed system
+[19:03] every process is independent we can
+[19:05] think of every thread as a process
+[19:07] even though the terminology is quite
+[19:09] different
+[19:10] a process an operating system means
+[19:12] something else a process in
+[19:14] a distributed system means something
+[19:15] else but in this case we are talking
+[19:18] about processes
+[19:19] in distributed systems
+[19:22] so given our definition of vector clause
+[19:27] let us also define the motion of a
+[19:29] message
+[19:30] a message represents an interaction
+[19:33] between two threads
+[19:35] writes an interaction in a classical
+[19:36] distributed system would be
+[19:39] that let's say you know one thread sends
+[19:41] a message
+[19:42] to another thread over the network that
+[19:45] would be a classical interaction
+[19:48] however in the multi-core system
+[19:52] we do not have such kind of interactions
+[19:55] but we have another kind of interactions
+[19:57] which are nonetheless interactions
+[20:00] so say if a thread i accesses a variable
+[20:03] in memory
+[20:05] then it will basically update its state
+[20:08] that is
+[20:08] conceptual and then thread j accesses
+[20:12] the variable
+[20:12] and its state so this is a valid
+[20:15] interaction that falls under the
+[20:17] theoretical definition of a message
+[20:19] which means that you know if thread i
+[20:22] writes to a variable
+[20:24] and thread j reads it right
+[20:27] so even though it's not a direct message
+[20:29] but thread i wrote a
+[20:31] value and thread j read it so that's an
+[20:34] interaction so we have already
+[20:36] looked at this in previous lectures it
+[20:39] is called a happens before relationship
+[20:41] and such happens for relationships can
+[20:43] easily be
+[20:46] enforced or fortified in the memory
+[20:49] model where if we set x
+[20:50] equal to one and another thread reads t
+[20:52] one equal to x
+[20:54] there is a happens before relationship
+[20:55] between them right subject to the
+[20:57] constraints
+[20:58] imposed by the memory model so that
+[21:01] doesn't matter
+[21:02] but because we are primarily looking at
+[21:04] sc over here
+[21:06] so once we have it happens before models
+[21:08] that would technically count as
+[21:09] a message so the moment we have such
+[21:13] messages so let's say that it doesn't
+[21:15] matter either indirectly through memory
+[21:17] or directly by a message
+[21:20] right a message is sent from thread i to
+[21:22] thread j
+[21:24] so here is what we are going to do right
+[21:27] so what is the idea the idea is that
+[21:29] thread i
+[21:30] is sending a message to thread j where a
+[21:33] message is defined
+[21:34] in a generic fashion in a generic sense
+[21:37] as it was done
+[21:38] in on the previous slide so what we do
+[21:41] is we
+[21:42] increment the local block of i for
+[21:44] example
+[21:46] we implement vii so whatever was its
+[21:49] value we just do a plus plus
+[21:51] so this indicates that we are
+[21:54] starting a new event
+[21:57] so this is done anytime before sending a
+[22:01] right so before sending a message
+[22:03] increment the clock and after receiving
+[22:05] right so j would also do that for vjj
+[22:10] so this is basically indicating that any
+[22:12] time there is either a message send or a
+[22:14] receive event
+[22:16] we increment our local blocks right
+[22:18] switches bii and bjj respectively
+[22:22] now let's say that thread i sends a
+[22:24] message to thread j
+[22:26] when j receives the message along with
+[22:28] incrementing its local clock which has
+[22:30] already been mentioned over here
+[22:32] it updates its vector clock as follows
+[22:36] so for all k v j k is set as follows
+[22:41] it's the maximum of v i k and v all
+[22:44] right
+[22:44] so the maximum of these two quantities v
+[22:47] i k and e j
+[22:47] k so basically think of this that you
+[22:50] know v i
+[22:52] is something that is being sent along
+[22:54] with the message
+[22:56] vj is the local flock then we compute
+[22:59] this max operation over here
+[23:02] and the final result is used to
+[23:05] increment vj is used to replace vj
+[23:09] so what is the key idea here the key
+[23:11] idea here is that if let's say thread i
+[23:13] is sending a message to thread j
+[23:16] it is going to first increment its local
+[23:18] clock before sending
+[23:19] and then send the timestamp
+[23:23] okay timestamp is the value of his
+[23:25] vector clock along with the message
+[23:28] what vj will do is that the moment it
+[23:31] gets the message it will increment its
+[23:32] local clock
+[23:34] and along with that merge both the
+[23:36] vector clocks vi
+[23:38] which has come along with the message
+[23:40] and feature which is its own clock
+[23:42] merging would basically mean that
+[23:45] element wise take the maximum
+[23:48] why would you do that the reason you
+[23:50] would do that
+[23:51] is that this would ensure that the
+[23:54] receiver is
+[23:54] at least as up to date as the sender
+[23:57] okay so this should ensure that the
+[24:01] receiver is at least
+[24:02] so maybe i should add the dump at least
+[24:04] over here
+[24:07] the receiver is at least as up to date
+[24:10] as the sender in the sense the
+[24:11] receiver's view
+[24:13] is not older than the sender's view
+[24:14] because whatever the sender has seen
+[24:17] right off the system that is the
+[24:19] receiver at least has seen that much if
+[24:21] not more
+[24:23] right and along with that it is also
+[24:25] recording an additional received event
+[24:27] all right so this is the key idea of
+[24:31] merging a vector clocks where the moment
+[24:33] there is a message from i to j
+[24:36] what j will do is it will take vi
+[24:39] which is is time stamp and merge it with
+[24:41] its own
+[24:42] which is just computer element wise
+[24:44] maximum and element twice maximum
+[24:47] that would basically tell j that it has
+[24:49] the most up-to-date
+[24:51] view of the system when we are
+[24:52] considering only i and j
+[24:54] as compared to i it has taken eyes
+[24:56] updates and merged with its own
+[25:00] so what about vector clocks and
+[25:02] causality well we have been looking at
+[25:04] causality in the previous lectures
+[25:06] as well causality basically means the
+[25:08] event i happened and that led to event g
+[25:11] and event j led to event key
+[25:13] so we have a causal dependence
+[25:16] so let's say that there is a happens
+[25:18] before relationship between events ei
+[25:20] and ej
+[25:21] we will use vector clocks to track this
+[25:24] interaction
+[25:25] so if we have event ei and event j
+[25:29] let the time
+[25:32] of the event in thread i
+[25:38] be time v i and in thread j it'll be
+[25:41] time please j
+[25:43] so we will have the following
+[25:44] relationship and this relationship is
+[25:46] being
+[25:48] shown without proof so it is basically
+[25:51] saying that let there be for thread i
+[25:53] and event ei
+[25:54] and for thread j let there be an event
+[25:57] ej
+[25:58] which is happening respectively at times
+[26:00] vi and vc
+[26:03] if let's say vi precedes vg
+[26:07] then we can say that there is a happens
+[26:09] before relationship between ei and ej
+[26:12] similarly if there is a happens before
+[26:14] relationship between a i and ej
+[26:16] then vi is less than vg so one side is
+[26:19] easy to prove the other side is slightly
+[26:21] harder
+[26:22] so if there is a happens before
+[26:23] relationship between ei and ej
+[26:26] then it means that there will be several
+[26:28] intermediate nodes
+[26:30] and because happens before relationship
+[26:32] is a transitive relationship
+[26:34] so there will be several intermediate
+[26:35] nodes and for each one of them
+[26:38] if let's say this is k and k dash and so
+[26:42] the moment i is sending a message to k
+[26:46] we will have v i precedes
+[26:49] v k so this is my definition this is
+[26:53] basically the way
+[26:55] as you can see that in this case the
+[26:56] moment i is sending a message to j
+[26:59] so this is automatically implying that
+[27:00] after we are doing this max merging
+[27:03] v i is precedes vj right so this follows
+[27:06] the simple logic of the max so once we
+[27:09] have this
+[27:11] we have v k then we have v k dash so on
+[27:14] and so forth
+[27:15] until v j and since is a transitive
+[27:18] relationship we have vi
+[27:20] precedes vj it is also easy to prove
+[27:24] in the reverse direction that a vi
+[27:27] precedes vj
+[27:28] that will not happen unless there is a
+[27:31] chain of
+[27:32] happens before dependencies and the
+[27:35] chain of happens before dependencies
+[27:37] will ensure the
+[27:39] other direction will ensure this as well
+[27:41] so as we have said we have proven the
+[27:43] other the upper direction first the
+[27:46] lower one is also easy to prove
+[27:49] so why does this happen this happens
+[27:51] because the receiver has all the senders
+[27:53] updates
+[27:54] and without a chain that happens for
+[27:56] edges the two vector clocks would remain
+[27:58] incomparable
+[28:00] but since they're income since they are
+[28:03] a chain of happens before relationships
+[28:05] would exist
+[28:07] but there is of course you know there
+[28:08] are many proofs of this fact
+[28:10] but one thing that you know you need to
+[28:14] kind of
+[28:14] believe me is that if vi precedes vj
+[28:18] there is a happens for relationship and
+[28:20] vice versa as well
+[28:22] so this is a very famous and classical
+[28:24] result of distributed systems
+[28:27] and the vector clock is also known as
+[28:30] lamport's vector clock
+[28:35] so let us now look at the vector clock
+[28:37] based algorithm to detect
+[28:39] data races so we will use all the
+[28:42] concepts
+[28:43] that we have studied in the previous
+[28:44] slides
+[28:47] so the terminology is like this let ct
+[28:51] be the vector clock of the current
+[28:53] thread right this is quite similar to
+[28:56] the lockset algorithm
+[28:59] let cl be the vector clock of the
+[29:01] current lock so in this case
+[29:04] we assign a vector lock a vector clock
+[29:06] with a current thread
+[29:08] and a vector clock with a current lock
+[29:10] for the lock in consideration
+[29:13] rb is the read clock of a variable v and
+[29:15] w b is the right clock of variable v so
+[29:17] with every variable we have two clocks a
+[29:19] read clock and a right
+[29:21] and tid is a thread id
+[29:25] so let us now look at the log operation
+[29:27] so in the log
+[29:28] operation here here is what we do
+[29:32] so what we do right uh here
+[29:37] that the first thing that we do is that
+[29:38] we increment
+[29:41] the current time of the thread which is
+[29:43] basically ct tid
+[29:45] so recall that ct is the vector clock of
+[29:48] the current thread
+[29:50] so we go to its tidath element and we
+[29:53] increment it
+[29:54] which is quite similar to what we were
+[29:56] doing
+[29:57] when we were sending a message so in
+[29:59] this case we are doing something
+[30:00] very very similar after incrementing the
+[30:05] current clock of the thread here is what
+[30:08] we do
+[30:10] we do ct union cn
+[30:14] okay so ct union cl
+[30:17] is basically nothing but the max
+[30:18] operation
+[30:20] okay so we perform the max operation
+[30:23] with
+[30:23] the vector clock of the lock that we are
+[30:25] acquiring
+[30:26] and this is set as the value of both ct
+[30:30] and as well as the value of both cn
+[30:32] so in the sense that the current thread
+[30:34] can have some clock
+[30:36] the lock can have some clock we compute
+[30:38] the max of both
+[30:40] which is nothing but the union operation
+[30:42] that i've shown
+[30:44] right so it's a think of it as a
+[30:45] modified union operation and then
+[30:47] finally
+[30:48] the max operation is used to
+[30:52] set the values of ct and cl so consider
+[30:55] this as a rendezvous point
+[30:57] which means that at this point the lock
+[31:00] and the thread
+[31:01] their information is up to date so after
+[31:04] doing this rendezvous
+[31:05] we set the in lock field of ct so in
+[31:09] in in this case a vector plot is an
+[31:10] additional field as well
+[31:12] called in log which means that it is
+[31:14] within a critical section
+[31:16] so we set this to true exiting a lock or
+[31:20] releasing a lock or exiting a critical
+[31:22] section is quite
+[31:23] easy
+[31:27] in this case we unlock so we set the
+[31:29] value of n lock to false which basically
+[31:31] means we unlock
+[31:33] or we release the lock
+[31:37] so what is the most important point here
+[31:40] or the operative part
+[31:42] is that we actually do a review between
+[31:45] the thread
+[31:45] and the lock which means that we perform
+[31:48] a max operation and set them to be the
+[31:50] same
+[31:51] which essentially indicates to us that
+[31:54] now both the thread and the lock are
+[31:58] at the same point right they are up to
+[32:00] date
+[32:03] okay so now let's keep going forward
+[32:05] let's look at the read operation
+[32:09] so when we are reading something if we
+[32:11] are not reading a variable
+[32:13] within the scope of a lock right so if
+[32:16] not ct dot
+[32:17] n log
+[32:20] then what we do is that we increment the
+[32:23] vector clock
+[32:25] of ct right so being uh we set ctt id as
+[32:29] ctt id plus one this is only in the case
+[32:31] when this is not being done
+[32:33] within the scope of a critical section
+[32:35] otherwise there is no reason we will not
+[32:37] enter this if statement subsequently we
+[32:41] check
+[32:43] at the we check the right clock of a
+[32:47] the right clock of a variable should
+[32:50] proceed or be equal to ct
+[32:53] here is what this means if no thread has
+[32:56] overwritten the value
+[32:57] after the transaction started then the
+[33:00] read is successful
+[33:04] let me explain this in a different
+[33:06] manner
+[33:07] so let us say that there was a right to
+[33:11] and the program is properly synchronized
+[33:14] which means that there was a happens
+[33:15] before relationship to a synchronization
+[33:20] and then there was an interaction
+[33:22] between synchronization operations
+[33:24] again another happens before
+[33:25] relationship
+[33:27] and then at this point we are doing the
+[33:29] read
+[33:33] so at this point so when we acquired the
+[33:36] lock this time
+[33:38] we set our thread clock and the lock
+[33:41] and the clock of the lock to be both
+[33:43] equal to c3
+[33:45] so because of the chain of happens
+[33:47] before relationships and the property of
+[33:49] the vector
+[33:49] clock if let's say there is no data race
+[33:53] between them
+[33:54] then this chain of happens before
+[33:55] relationships will hold
+[33:57] which means that the right clock should
+[34:00] either
+[34:01] proceed or be equal to ct so we will
+[34:03] discuss when it will be equal to
+[34:05] so that comes later but it should
+[34:07] definitely proceed for this interaction
+[34:11] this relationship should definitely hold
+[34:15] if this relationship is not folding then
+[34:17] this means
+[34:19] from this relationship i'll show you
+[34:20] which one
+[34:22] from this relationship right
+[34:26] so if let's say wb is not preceding ct
+[34:30] this means that between this right and
+[34:32] this read
+[34:34] right which is essentially to the same
+[34:35] variable there
+[34:37] is no chain of happens before edges and
+[34:40] if there is no chain of happens before
+[34:41] edges then it's a data race
+[34:43] so we directly come over here so we can
+[34:45] declare a data rates
+[34:47] but if there is a chain of happens
+[34:49] before edges
+[34:50] then by the property of vector clocks
+[34:53] we'll have wv
+[34:54] proceed ct there is a case where they
+[34:56] will be equal but i will discuss that
+[34:58] later
+[34:59] right so let's assume that if it
+[35:01] precedes or it's equal to ct
+[35:03] then the access is safe there is no
+[35:05] problem right
+[35:07] so the access is safe we enter the body
+[35:10] of the loop
+[35:11] right so in this case there is no data
+[35:13] rays so
+[35:14] in the body of the loop what we do is
+[35:16] that we
+[35:18] timestamp the value of the variable with
+[35:21] the current time of the thread which
+[35:23] means that any subsequent
+[35:25] access to the variable will definitely
+[35:28] see the fact that the current thread had
+[35:30] accessed the variable
+[35:31] all right so that's the reason that we
+[35:35] compute rb union ct which is something
+[35:37] we always do in this case you the union
+[35:39] represents the max operation
+[35:41] right and then we set its value to rv
+[35:45] which ensures that forever
+[35:48] this fact is being recorded that this
+[35:50] particular access was made
+[35:52] so now if we just come back right we can
+[35:55] put
+[35:55] this discussion in the correct
+[35:57] perspective
+[35:58] i'm just erasing the ink on the slide
+[36:02] you can clearly see that why we are time
+[36:05] stamping the lock
+[36:07] right so why we are time stamping the
+[36:09] lock here with the time stamp
+[36:11] of the thread the reason is that we are
+[36:13] basically telling the lock
+[36:15] and essentially we are telling the world
+[36:18] that
+[36:18] a certain thread acquired the lock at
+[36:22] this point of time and at that point of
+[36:23] time this was the value of the vector
+[36:26] so that later on if let's say there is a
+[36:28] lock acquire a lock
+[36:29] release and then the second lock
+[36:31] acquired
+[36:33] then the second lock acquired its vector
+[36:36] clock will be strictly greater than the
+[36:38] first vector cloud so if this is v1 and
+[36:41] then this is v2
+[36:42] we can happily say that v1 will proceed
+[36:44] v2
+[36:46] the reason being that there is a there
+[36:48] is a setup happens before edges
+[36:51] and the setup happens before edges are
+[36:53] being recorded by the fact
+[36:54] that we are time stamping the lock axis
+[36:58] right so the subsequent lock axis the
+[37:01] subsequent successful lock axis
+[37:03] will have the same max operation and
+[37:06] that will
+[37:07] essentially ensure that v1 precedes v2
+[37:10] which means that it happens before edge
+[37:12] between log accesses
+[37:14] is automatically guaranteed and if you
+[37:17] look at again this relationship over
+[37:19] here
+[37:20] you can see the relationship between the
+[37:21] precedence of vector clocks
+[37:23] and the happens before relationship so
+[37:26] this is why we timestamp
+[37:28] the locks write the acquire of the lock
+[37:31] such that any subsequent acquire
+[37:33] will have a greater timestamp because it
+[37:37] will have a greater timestamp we can
+[37:38] automatically infer that happens before
+[37:42] furthermore what we do is we timestamp
+[37:44] every read operation
+[37:45] so that let's say if tomorrow there is a
+[37:47] write we can find in the
+[37:50] read and write were causally related or
+[37:52] not like in this case
+[37:54] if we find that the right and let's say
+[37:56] the
+[37:57] timestamp of the thread which is when it
+[37:59] acquired the lock if they are not
+[38:01] causally related
+[38:02] which means that we don't have an
+[38:03] interaction like this where
+[38:06] there is a synchronization edge and then
+[38:08] we read
+[38:09] then we can say that if there is no
+[38:10] causal relationship there is a data race
+[38:12] and we can quickly declare a data is
+[38:16] we can do something quite similar for
+[38:19] writes
+[38:20] so the idea is again the same if the
+[38:22] write is not happening in the context of
+[38:24] a critical section
+[38:26] then we increment the time of the thread
+[38:28] the local time of the thread by one we
+[38:30] have already seen this
+[38:32] the new part is this so this is what
+[38:34] looks at
+[38:36] the caution relationship
+[38:40] between the right clock of the variable
+[38:42] and the
+[38:43] current time of the thread so as we have
+[38:46] argued
+[38:48] that any previous write to the variable
+[38:51] has to either be equal to the current
+[38:53] time of the thread or preceded
+[38:55] if that's not happening this means there
+[38:57] is no
+[38:58] happens before relationship between the
+[39:01] earlier night
+[39:02] and the lock acquire event of the
+[39:04] current
+[39:06] critical section and given that there is
+[39:09] no happens before relationship
+[39:12] that's why this is not folding so if
+[39:14] this is not folding we clicking
+[39:15] we quickly declare a database right
+[39:18] because it should hold
+[39:19] which means that all preceding rights
+[39:23] right just go back to the lecture on
+[39:24] data races
+[39:26] all preceding rights have to have a
+[39:28] happens before relationship
+[39:30] with the lock acquire operation that
+[39:32] started this critical section
+[39:34] and that will be captured by this
+[39:38] if this relationship doesn't hold
+[39:41] then it automatically means that there
+[39:43] is no happens before relationship so
+[39:44] this means there is a data rates
+[39:47] similarly right if i look at the read
+[39:52] right so in the case of rights we care
+[39:54] about earlier reads
+[39:56] as well right so basically two reads you
+[39:59] know their ordering doesn't matter
+[40:00] but moment there is a write we care
+[40:02] about the ordering of the right with
+[40:04] earlier reads as well as earlier writes
+[40:06] so similarly read clock also should have
+[40:09] happens before relationship with the
+[40:11] current clock of the thread
+[40:14] if and happens before relationship is
+[40:16] not existing
+[40:18] then there is a problem and we declare a
+[40:19] data race but if there is a happens
+[40:21] for relationship then what we do is that
+[40:24] we timestamp
+[40:26] the variable uh both of its blocks the
+[40:29] read clock and the right clock with the
+[40:31] current time
+[40:32] and of course the current time
+[40:36] so we don't discard any updates that are
+[40:38] there so essentially we take a union
+[40:39] operation a max operation
+[40:41] to rv union ct and wv union
+[40:44] ct right so union in this case is not
+[40:46] regular union but it's the vector clock
+[40:48] max operation
+[40:50] that we have been describing
+[40:55] so here if you look at this so having rb
+[40:58] union ct is not
+[41:01] technically required even though it has
+[41:03] been written to make it look slightly
+[41:05] elegant
+[41:06] given that rb precedes ct anyway rb
+[41:09] union ct will be equal to ct because
+[41:11] every element
+[41:12] is less than equal to the corresponding
+[41:14] element of ct so we would have very well
+[41:16] written
+[41:16] rb is being set to the current time
+[41:20] and wb is being set to the current time
+[41:22] that also would be correct
+[41:24] so the important point is that any time
+[41:26] we do a write access
+[41:28] the right clock is being set to the
+[41:29] current type and subsequently if you do
+[41:32] a read within the same thread
+[41:34] then w wave in wv will be equal to ct
+[41:37] that is the reason here we have the
+[41:39] preceding and equal to as well
+[41:41] all right so what's the key idea well
+[41:44] the key idea
+[41:45] if i were to explain it in yet another
+[41:48] different way
+[41:50] is basically that whenever i'm doing a
+[41:52] read or write
+[41:53] right so let's say when i'm doing a
+[41:54] write i look at its preceding read clock
+[41:57] and write clock
+[41:58] which could have been set in a different
+[42:00] critical section both of these blocks
+[42:04] have to have a happens before
+[42:07] with the current time of the thread if
+[42:09] they don't have a happens before
+[42:12] then this indicates a data race and if
+[42:15] they have one that will be easily
+[42:17] captured with these two expressions
+[42:19] and then what we do is we update the
+[42:21] times of the read and write times
+[42:23] and if we are reading then we do not
+[42:27] check the read clock but we just checked
+[42:29] the previous right clock
+[42:31] and that needs to have a happens before
+[42:33] relationship with the current time
+[42:35] and that is easily captured by this
+[42:38] expression over here
+[42:40] which let me erase the ink is easily
+[42:42] captured by this expression
+[42:46] so what happens is we can set rbs
+[42:49] rb union ct so actually the reason that
+[42:51] i have
+[42:58] kept the union operation over here
+[43:01] and not set rb as ct well the reason is
+[43:04] that in this case we are not really
+[43:06] checking if rv precedes
+[43:08] ct or not plus doesn't have to there's a
+[43:11] reader writer pattern that allows
+[43:12] multiple concurrent readers
+[43:14] and if i'm reading i can continue to
+[43:16] read there is no problem
+[43:18] and so that's the reason there is no
+[43:20] need to check if are we precede ct in
+[43:22] this case
+[43:23] but we rather have this expression so to
+[43:28] keep it consistent here also this
+[43:30] expression has been used but here of
+[43:32] course as i have said
+[43:33] we could have directly set rb and w to
+[43:36] ct and that also would have been correct
+[43:40] so this is a fairly
+[43:43] simple algorithm and the crux of the
+[43:45] algorithm follows from this equation
+[43:48] where we are linking the precedence of
+[43:51] vector clocks to
+[43:52] a chain of happens before edges if that
+[43:55] is understood the rest is quite easy to
+[43:57] understand
+[43:58] where you can see that what is being
+[44:00] treated as a message
+[44:02] over here okay let me maybe explain this
+[44:05] slide in a slightly different manner so
+[44:08] what is actually being treated as a
+[44:09] message over here let's say between two
+[44:11] threads
+[44:13] is nothing but the synchronization edge
+[44:16] okay so what we are doing is that when
+[44:19] we are acquiring a lock
+[44:21] we are increasing our current counter
+[44:24] right so let's say there is a thread
+[44:25] like this it comes and it acquires a
+[44:28] lock over here
+[44:30] so after this point let's say its
+[44:33] counter is
+[44:33] vector clock is ct and the clock's locks
+[44:36] vector
+[44:37] clock is cl
+[44:41] so what is essentially happening over
+[44:43] here is that for both the lock
+[44:45] and the thread is a review point and if
+[44:48] the thread is successfully acquiring the
+[44:50] lock
+[44:52] you can think of this as a message
+[44:56] it's as if the thread and the lock are
+[44:58] sending a message to each other
+[45:00] right so there is a kind of conversation
+[45:03] between the thread and the lock they are
+[45:06] and both are saying that we need to
+[45:08] become equally as
+[45:10] up-to-date so that is why they merge
+[45:14] their information
+[45:15] which is a union right and then
+[45:18] both ct and cl become equal to ct union
+[45:22] cl so
+[45:22] so they come to the same point which
+[45:24] means that any subsequent acquire of the
+[45:28] if let's say the vector clock of that is
+[45:30] v2 and vector clock of this one is v1
+[45:32] there is a strict precedence
+[45:33] relationship all right
+[45:35] and this is being used
+[45:38] in both the the read part and the right
+[45:42] part so we read a variable
+[45:43] only check the previous write clock on
+[45:45] the previous read clause
+[45:47] and the previous read clock is no doubt
+[45:49] updated but updated in this fashion
+[45:52] and let's say for a write operation we
+[45:54] check both the previous blocks
+[45:56] and there has to be happens for
+[45:58] relationship otherwise we declare
+[46:00] it iterates
+[46:04] okay so basically we have discussed a
+[46:06] very important component
+[46:08] of data race detection
+[46:11] now what is left is basically
+[46:16] transactional memory is a new paradigm
+[46:18] where it is much
+[46:19] easier to actually write parallel
+[46:21] programs
+[46:22] so we will discuss transactional memory
+[46:26] next
+[46:36] you

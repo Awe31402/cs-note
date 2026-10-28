@@ -1,0 +1,1355 @@
+[00:00] n
+[00:06] [Music]
+[00:34] welcome to chapter 11 in this chapter we
+[00:37] shall discuss multiprocessor systems
+[00:40] which are Computing systems that have
+[00:42] multiple processors in
+[00:44] them so this is the 11th chapter of the
+[00:47] book computer organization and
+[00:49] architecture so the slides are meant to
+[00:51] be used along with the
+[00:54] textbook so we'll have six broad
+[00:56] sections over here so we'll discuss
+[00:58] first the overview of what processors
+[01:00] are a little bit about a law called the
+[01:03] am amdel
+[01:04] law uh something uh a little bit so mind
+[01:07] you multiprocessors are again uh part of
+[01:10] advanced computer architecture courses
+[01:14] uh nevertheless we'll discuss a little
+[01:15] bit of current multiprocessing
+[01:17] technology we'll move to multi-threading
+[01:20] Vector processors and finally we'll
+[01:22] discuss uh about the interconnects the
+[01:25] wires that are used to connect multiple
+[01:28] processing elements within a single
+[01:29] process
+[01:31] so let's first take a look at the
+[01:33] motivation so what we see on this graph
+[01:37] is
+[01:38] that uh on the x axis we have the date
+[01:42] which starts from
+[01:44] 1999 and uh ends in
+[01:47] 2012 and on the Y AIS we have the clock
+[01:50] frequency in
+[01:52] megahertz so what we see is that in 2001
+[01:55] most of the processors were roughly in
+[01:57] the 1 to 2 GHz range
+[02:01] uh so by 20034 we started having
+[02:04] processors you know
+[02:07] within uh 1500 mahz to 4,000 MHz range
+[02:11] so of course there was some outliers at
+[02:13] some points of time but what we can see
+[02:16] is broadly over the last 10 12
+[02:18] years all the processors that have been
+[02:21] released are in this region so this
+[02:24] region is basically between uh 1 and2
+[02:28] and 3 and2 GHz so it's essentially uh
+[02:30] this region over here so this region is
+[02:34] between 1 and2 and 3 and2 GHz so as we
+[02:37] discussed in chapter 9 there are some
+[02:39] fundamental limitations to increasing
+[02:41] the frequency so the most important
+[02:44] reason is of course
+[02:46] power so power is proportional to the
+[02:48] cube of frequency so you increase the
+[02:51] frequency two times the power will
+[02:52] increase eight times so that's the
+[02:54] reason we can't increase the frequency
+[02:56] anymore as a result the frequency is
+[02:59] kind of sat saturated to somewhere you
+[03:01] know between 2 and 3 GHz for Server
+[03:03] class
+[03:05] processors so similarly let's take a
+[03:08] look at another uh graph in this graph
+[03:13] uh the x-axis is the
+[03:16] date again in the same range between
+[03:18] 1999 and
+[03:21] 2012 uh so the y-axis is the performance
+[03:24] the way we compute performan is like
+[03:26] this it's a spec 2006 score so I'll tell
+[03:29] you little little bit about what this
+[03:30] score
+[03:33] is so spec stands for the system
+[03:35] performance evaluation
+[03:38] Cooperative so this organization has
+[03:40] created a set of benchmarks so they are
+[03:43] known as a spec benchmarks so there are
+[03:44] two uh classes of benchmarks one is the
+[03:47] spec in
+[03:49] benchmarks right so they are called the
+[03:50] spec CPU specint benchmarks let me write
+[03:53] it
+[03:54] spec
+[03:56] int and the other are the spec floating
+[03:59] point
+[04:00] benchmarks
+[04:07] uh the spec floating Point
+[04:10] benchmarks so uh the spec in benchmarks
+[04:14] pretty much measure uh the performance
+[04:16] of a CPU so the performance is measured
+[04:19] like this
+[04:20] that uh the Baseline is some
+[04:23] CPU uh you know some 20-year-old slow
+[04:27] CPU so they measure the Baseline
+[04:30] performance on that CPU and after that
+[04:34] uh what they do is that they take a
+[04:36] given CPU a current contemporary CPU run
+[04:39] the same set of programs and for each
+[04:41] set of programs the performance is
+[04:43] defined as the ratio of the execution
+[04:45] times uh on both the CPUs the new one
+[04:48] and the old one and after that we just
+[04:51] take for all the benchmarks we compute
+[04:53] these ratios and we take their geometric
+[04:55] mean so that is the spec score so what
+[04:58] we see is that this performance which is
+[05:01] essentially the spec score has been
+[05:04] increasing till around 2009 or
+[05:07] so 2008 actually but after that it has
+[05:10] kind of saturated so the performance per
+[05:14] processor the performance per pipeline
+[05:17] has not really been increasing so nute
+[05:20] reader will also notice that you know
+[05:23] the frequency between let's say this
+[05:25] point and this point remain the same but
+[05:28] the performance increased by 7 time so
+[05:30] that's mainly because of you know
+[05:31] computer architecture tricks so things
+[05:34] like uh better cash management policies
+[05:37] more bigger caches and uh you know many
+[05:40] many other kinds of tricks that we have
+[05:42] studied better forwarding paths uh
+[05:44] issuing multiple instructions in
+[05:46] parallel so by doing all of these things
+[05:49] computer architecture has pretty much
+[05:51] given us a you know between let's say
+[05:53] this point and uh this point computer
+[05:56] architecture has given us a 7x speed up
+[06:00] but after that our performance is pretty
+[06:02] much
+[06:03] saturating and the reason for that is
+[06:05] that computer architecture has reached
+[06:07] its limits so beyond that a single core
+[06:11] uh sorry a single processor a processor
+[06:12] and a core are the same thing uh this
+[06:16] performance is not increasing let's say
+[06:18] after 2010 right so this has sort of
+[06:21] stopped it has
+[06:24] saturated so is computer architecture
+[06:26] dead well the answer is no so it's not
+[06:31] dead so uh what was happening is that
+[06:34] you know as transistors were getting
+[06:35] smaller we were traditionally able to
+[06:37] fit in more transistors per chip so but
+[06:40] now we need to use these extra
+[06:44] transistors uh to add more processors
+[06:48] per chip so instead so previously there
+[06:50] was one processor right so One processor
+[06:52] has only one pipeline so uh prior to
+[06:56] 20067 uh one chip had only one processor
+[06:59] now a chip will actually have multiple
+[07:01] processor so if this is a chip it will
+[07:03] actually have you know it can have more
+[07:06] than 1 2 4 8 16 right uh so we can add
+[07:10] more processors per chip and instead of
+[07:13] adding extra
+[07:14] features uh you know per the per
+[07:16] processor we can add more processors per
+[07:18] chip so this will make a genuine
+[07:21] multiprocessor so each of these
+[07:22] processors is called a
+[07:25] core so a multiprocessor of this type is
+[07:29] also also called a
+[07:37] multicore so this is also called a
+[07:39] multicore processor where we add
+[07:41] multiple processes per
+[07:42] chip so the generic term here is
+[07:46] multi-processing so the term
+[07:48] multi-processing refers to multiple
+[07:50] processors working in parallel so there
+[07:53] a kind of a generic definition and it
+[07:55] can refer to multiple processors in the
+[07:57] same chip or processors across different
+[07:59] physical chips right so a multicore
+[08:02] processor so a multicore mind you so
+[08:04] this is should be maybe underlined is a
+[08:07] specific type of
+[08:09] multiprocessor that contains all of its
+[08:11] constituent processors in on the same
+[08:13] chip right so all the processors each
+[08:16] processor having you know one pipeline
+[08:17] each are on the same chip and each such
+[08:20] processor is known as a core so the word
+[08:23] multicore is fairly hot these days
+[08:24] multicore and many core which basically
+[08:27] means having multiple process elements
+[08:30] per chip so this is a subset of the
+[08:33] global multiprocessor
+[08:35] space so let us Define some broad terms
+[08:39] here so let us Define uh symmetric
+[08:42] multiprocessing first so this Paradigm
+[08:46] treats uh all the constituent processors
+[08:49] in a multiprocessor system as the same
+[08:51] right so if you have let's say multicore
+[08:54] processor and you know you have four
+[08:56] cores so we are essentially treating all
+[08:59] four four of them are same and no core
+[09:01] is particularly more privileged than the
+[09:03] other they also have equal access to the
+[09:06] resources of the system they have equal
+[09:08] access to privileged software like the
+[09:10] operating system and IO devices like the
+[09:13] mouse or the
+[09:14] keyboard so such kind of systems are
+[09:16] called s SMP systems or symmetric
+[09:19] multiprocessing
+[09:21] systems so in comparison we can have
+[09:24] asymmetric multiprocessing systems so
+[09:28] this paradigm does not treat all the
+[09:31] constituent processors in a
+[09:32] multiprocessor system as the same right
+[09:34] so it this is important all the
+[09:36] processors are not treated as the same
+[09:39] so maybe one of these is treated as
+[09:41] special in as a master and AR rest are
+[09:43] sort of treated as slaves right so there
+[09:46] is typically one master processor which
+[09:48] has exclusive control over the operating
+[09:51] system and IO devices and over the rest
+[09:53] of the processors as well so the job of
+[09:56] the mastered processor is to assign work
+[09:59] to the slave
+[10:01] processors uh the slave processors take
+[10:04] work from the master processor and do
+[10:07] some kind of work on
+[10:09] behalf not not on behalf but pretty much
+[10:12] for the master processor so we can say
+[10:14] that this is the master here and these
+[10:16] are the
+[10:17] slaves so typically symmetric
+[10:20] multiprocessing is far more common right
+[10:22] so basically you know symmetric multi
+[10:24] proing is far more common and asymmetric
+[10:27] multiprocessing is not not that common
+[10:30] but you know things can change this is
+[10:32] the reality today things can change
+[10:35] tomorrow so let us discuss Mo's law so
+[10:38] Mo's law is a law in a sense it cannot
+[10:40] be proven it does not have a proof it's
+[10:43] just an empirical
+[10:44] observation so let's start with this
+[10:46] fact so a processor in a cell phone
+[10:48] today is 1.6 million times faster than
+[10:53] the IBM 360 which was a state-ofthe-art
+[10:55] you know processing computer in the' 60s
+[10:59] so the size of this was pretty much like
+[11:01] one big room and the size of a cell
+[11:03] phone
+[11:04] processor would be what 0.5 CM by5 CM or
+[11:09] maybe 1 cm by 1 cm right that's the
+[11:11] maximum that it would be so pretty much
+[11:15] you know over the years uh there has
+[11:17] been a tremendous amount of
+[11:19] miniaturization and
+[11:22] also uh processors have become millions
+[11:24] of times faster so why is this the case
+[11:27] because transistors in the 60s and 7s
+[11:30] were several millimet long but now they
+[11:33] are several nanometers long so millimet
+[11:36] is 10 the^ minus 3 m and nanometers 10^
+[11:40] - 9 so transistors are pretty much
+[11:42] become a million times smaller and a
+[11:44] million times faster as well in addition
+[11:48] so since transistors are getting smaller
+[11:50] they're getting faster and more power
+[11:52] efficient so essentially smaller is the
+[11:54] transistor the more faster it
+[11:57] becomes the more power efficient it
+[12:08] becomes right and of course you know
+[12:11] smaller it also becomes
+[12:14] smaller so as the transistor becomes
+[12:16] smaller we can fit in uh more
+[12:18] transistors per
+[12:20] chip so as we can fit in more
+[12:22] transistors per chip you know we can do
+[12:24] more things so uh What mo said Garden Mo
+[12:28] was the co founder of in Intel is one of
+[12:31] the major uh computer processor
+[12:34] companies so he was a co-founder of
+[12:48] Intel uh so he said that the number of
+[12:50] transistors per chip will double roughly
+[12:52] every two years so he had actually
+[12:54] initially said in his time it'll doubly
+[12:56] every year sorry it'll double every year
+[12:59] so gradually the rate of Technology
+[13:01] scaling uh slightly slowed down so
+[13:03] instead of doubling every year it
+[13:05] doubled every 18 months and now it is
+[13:07] doubling roughly every 2 years so this
+[13:09] is known as Mo's law but what should we
+[13:11] understood that originally Garden Mo had
+[13:13] said it'll double roughly every year but
+[13:16] that has gradually changed but by and
+[13:19] large every 1 to two years or so the
+[13:22] number of transistors per chip
+[13:27] doubles all right so so so this is what
+[13:31] I've been discussing in the last slide
+[13:32] that initially he said it'll double
+[13:34] every year it has become two years
+[13:36] henceforth so let's say the let's define
+[13:39] the term the feature size which of
+[13:41] course has this more formal
+[13:44] definition uh but let's for the sake of
+[13:46] Simplicity Define it like this the size
+[13:48] of the smallest structure that can be
+[13:50] accurately fabricated on a chip so if
+[13:53] you would see in 2001 this was around
+[13:56] 130 nanom so every 2 years
+[14:00] 357 it came down 90 65 45 so the
+[14:04] interesting thing to note if is that if
+[14:06] I divide 130 by 90 I get square &lt; TK of
+[14:10] 2 roughly approximately right again here
+[14:14] so which means that
+[14:16] if the size of a structure that I can
+[14:19] print is decreasing by square root of
+[14:20] two so in both the dimensions if there
+[14:23] is a shrinkage of square &lt; TK of two in
+[14:25] this Dimension and square otk of two in
+[14:26] this Dimension then the area will
+[14:29] roughly become half right so then the
+[14:32] area of the structure which in this case
+[14:35] is a transistor will roughly become half
+[14:38] right 1 by &lt; tk2 * 1 by &lt; tk2 is half so
+[14:42] roughly you know uh the feature sizes
+[14:45] have been decreasing uh with a ratio of
+[14:48] run2 which is
+[14:51] 1.414 uh from 2001 you know from even
+[14:54] before that from the' 60s but let's take
+[14:56] a look at the last 15 years so between
+[14:59] 2005 and 2007 again 65 to 45 45 32 22 14
+[15:05] so
+[15:06] 2017 uh which is this year in which your
+[15:10] video is being recorded So 2017 the
+[15:13] projection is that we will hit 10 nanom
+[15:16] so that is the
+[15:18] projection so it is again you know
+[15:20] slightly slowed down but uh we are at
+[15:23] this point so know that 10 nanom is
+[15:25] really small one atom is point 1 nanom
+[15:30] roughly right so 10 nanometers is pretty
+[15:32] much 100 atoms wide and that's very very
+[15:38] small so uh let's move forward and
+[15:41] Define two more terms once again so uh
+[15:44] so what have we defined up till now we
+[15:46] have defined strongly uh you know sorry
+[15:49] symmetric multiprocessors s smps we have
+[15:52] defined uh asymmetric multiprocessors
+[15:55] where's a master and in the rest of the
+[15:57] processor are slaves
+[16:01] now let's define Loosely coupled
+[16:02] multiprocessing and strongly coupled
+[16:04] multiprocessing which are again you know
+[16:06] two separate
+[16:08] paradigms so in Loosely coupled
+[16:10] multiprocessing what we
+[16:12] do is that we run multiple unrelated
+[16:16] programs in parallel on a multiprocessor
+[16:19] and so this is known as Loosely coupled
+[16:20] so the coupling between programs which
+[16:23] means the exchange of information
+[16:25] between different programs is pretty
+[16:28] much not there or is very little as
+[16:31] compared to that we can have strongly
+[16:33] coupled
+[16:34] multiprocessing in which we run a set of
+[16:40] can be a multicore may not be a
+[16:42] multicore and the programs between
+[16:44] themselves they share their data they
+[16:46] share their code they share their file
+[16:48] and network connections and almost all
+[16:50] other kinds of resources are shared
+[16:52] between the programs so this is known as
+[16:55] strongly coupled multiprocessing because
+[16:57] this allows the programs to cooperate
+[17:00] and together achieve some together
+[17:02] achieve a bigger
+[17:04] objective right so this is what happens
+[17:06] in strongly coupled
+[17:08] multiprocessing that uh the programs can
+[17:10] cooperate between themselves and achieve
+[17:13] a bigger objective so uh most
+[17:16] multiprocessing systems are typically
+[17:18] biased towards implementing strongly
+[17:21] coupled multiprocessing because this is
+[17:23] number one more complicated and also it
+[17:25] has more benefits
+[17:29] so uh on these lines we can Define two
+[17:32] more paradigms so in any kind of a
+[17:35] strongly coupled system would typically
+[17:37] Implement shared memory even though it
+[17:39] is not 100% necessary but typically you
+[17:43] would Implement a paradigm called shared
+[17:44] memory right for a strongly coupled
+[17:47] system let me write it down
+[18:09] so for a strongly coupled system we
+[18:10] would typically Implement shared memory
+[18:13] so which means that all the programs
+[18:15] would share the virtual address space so
+[18:17] they can uh communicate between each
+[18:20] other so when two programs share their
+[18:22] address space these separate programs
+[18:25] are also known as threads so we shall
+[18:27] use so they are software thread to be
+[18:29] specific but we'll call them threads for
+[18:31] the time being so when two programs
+[18:33] share their virtual address space they
+[18:35] are called threads and the mechanism of
+[18:39] sharing virtual address spaces is called
+[18:41] shared memory and these threads can
+[18:44] communicate with each other by either
+[18:46] reading so by reading and writing and or
+[18:50] writing values from two shared memory so
+[18:54] this is a you know fairly popular
+[18:55] Paradigm for essentially in a multiple
+[18:59] programs are running and let's call them
+[19:01] threads they're essentially seeing a
+[19:03] same unified view of
+[19:07] memory and same unified view of uh since
+[19:11] they're seeing the unified view of
+[19:12] memory they seeing the same unified view
+[19:14] of other systems as well like the io
+[19:17] system right uh the hard
+[19:21] disk the hard disk drive so they're
+[19:24] seeing a unified view of the rest as
+[19:27] well uh
+[19:29] again to the Loosely coupled Paradigm we
+[19:32] have message passing so in message
+[19:35] passing programs communicate between
+[19:37] each other by sending and receiving
+[19:39] messages so they don't share the address
+[19:41] space or they don't share IO devices or
+[19:45] other uh aspects or you know other
+[19:47] artifacts of a processing system it is
+[19:50] just that they communicate between each
+[19:52] other via an intricate uh set of
+[19:55] messages so they don't share any memory
+[19:57] addresses right so so that's the main
+[20:01] difference so we will look at writing
+[20:02] programs in both the paradigms which is
+[20:04] shared memory if the address space is
+[20:06] shared which means that they're looking
+[20:08] at the same set of memory addresses and
+[20:11] message passing where the different
+[20:12] programs or the different threads can
+[20:14] only send messages between each
+[20:17] other all right so let's write a you
+[20:19] know just to get a feel of what a
+[20:21] parallel program looks like and how
+[20:24] these different threads or processes so
+[20:27] recall that a process is a running
+[20:28] instance of a program a thread is also a
+[20:32] running instance of a program but
+[20:33] different threads can share the address
+[20:36] space whereas different processes
+[20:38] typically do not so you know different
+[20:40] in a process and a thread
+[21:03] the address space in the process is
+[21:05] different the address space in the case
+[21:07] of a thread is
+[21:12] the is the same all right so the
+[21:15] important this is the important
+[21:17] distinction that should be remembered
+[21:19] that for different processes uh the
+[21:21] address space is different whereas for
+[21:23] Threads it is the
+[21:26] same all right so let me remove move the
+[21:29] writing on this page and uh we can
+[21:34] proceed so let the question be that
+[21:36] let's write a program using shared
+[21:38] memory to add n numbers in
+[21:41] parallel so let the number of parallel
+[21:44] subprograms where uh I'm defining a
+[21:47] subprogram as a thread or I can rather
+[21:49] say a thread actually uh might be
+[21:52] slightly easier uh to understand
+[22:01] so the number of different threads be
+[22:03] num threads so the problem problem here
+[22:06] is that we have all the array in all the
+[22:08] sorry all the numbers in an array called
+[22:10] numbers so this contains all the numbers
+[22:13] that need to be added so it contains num
+[22:17] size entries so assume the num size is a
+[22:20] fairly large number so if num size is a
+[22:21] million to add all the Million numbers
+[22:24] it'll pretty much take
+[22:26] million iterations of a fall Loop
+[22:29] however if we have 10 threads then the
+[22:32] approach that we can follow is that we
+[22:35] can take a look at this big aray we can
+[22:38] divide it into 10 equal
+[22:41] parts and uh each part we can assign it
+[22:44] to a separate processor a separate core
+[22:47] and that can get the partial sum which
+[22:49] is a sum of this part of the array
+[22:52] similarly one more partial sum which is
+[22:54] a sum of this part of the array one more
+[22:56] partial sum one more and one one more
+[22:59] then we can just add
+[23:01] them so after adding all the partial
+[23:04] sums we can get the final sum so this is
+[23:07] the typical uh logic of a parallel
+[23:09] program that we wish to write where we
+[23:11] shall take all the partial sums and
+[23:14] we'll get a final sum and the way that
+[23:17] we get these partial sums is that we'll
+[23:19] take the entire array split it into
+[23:21] equally sized portions each portion will
+[23:24] assign to a separate processing elements
+[23:27] separate processing element the
+[23:29] processing element will add all the
+[23:31] numbers within its assigned portion for
+[23:33] example a processor in this portion will
+[23:36] add all the numbers that is that are
+[23:39] assigned to it and uh similarly this
+[23:44] chunk will be added by a processor which
+[23:47] is assigned to this junk and after that
+[23:50] we'll add all the partial sums so each
+[23:52] of these sums as a partial sum so we'll
+[23:53] add them to get the final sum so we'll
+[23:57] use the open MP EXT exension to C++
+[23:59] which is a parallel shared memory
+[24:02] extension so let's uh look at the code
+[24:05] so let us Define array partial sums n
+[24:09] where n uh we are assuming is the number
+[24:12] of threads all
+[24:14] right uh so
+[24:17] uh so in here we are assuming that that
+[24:20] there is a number of threads num threads
+[24:30] so then let's define the numbers array
+[24:32] numbers with size elements where size
+[24:35] can be a very large number and let the
+[24:37] final result be zero and when you're
+[24:38] doing the addition let's not worry about
+[24:40] overflows and you know all such special
+[24:43] cases those can be taken care of that's
+[24:45] not a big deal so let's initialize the
+[24:47] arrays which is particularly the numbers
+[24:49] array and let's now once we have done
+[24:52] that let us now fan out the jobs to the
+[24:55] multiple
+[24:56] processors so the parallel section which
+[24:58] is in yellow is shown like this so
+[25:01] there's a parallel directive in open MP
+[25:04] called hash pragma so hash pragma starts
+[25:06] a parallel section and so hash pragma om
+[25:11] onm for
+[25:13] openmp parallel so parallel means that
+[25:17] this piece of the code between this
+[25:19] curly bracket and this curly bracket uh
+[25:22] if there are n threads n processing
+[25:24] elements n separate copies will be
+[25:26] created and one copy will go to each
+[25:29] processing element all right and after
+[25:32] that once all the processing elements
+[25:34] finish then we will come out of this
+[25:37] parallel section and again enter a
+[25:39] sequential section so mind you by this
+[25:41] time all the parallel activity is
+[25:44] over so the you can think of it that
+[25:47] there is a sequential section of the
+[25:48] code after that we get this hash pragma
+[25:51] om parallel so pretty much n parallel
+[25:54] threads are spawned spawn means they are
+[25:56] started right and parallel threads and
+[26:00] each thread is assigned a quanta work
+[26:02] which is this piece of the code and all
+[26:04] of them finish and the final result is
+[26:07] written to the result
+[26:12] variable so uh now since you know all
+[26:16] the threads are looking at the same
+[26:17] piece of code how do they know that they
+[26:19] are actually different well so we have a
+[26:22] openmp call called om get thread num
+[26:25] which gives the current processor ID
+[26:28] which is essentially a number between 0
+[26:30] and N minus
+[26:32] one right so which is you know in C
+[26:35] style a 0 between number between 0 and N
+[26:37] minus one so each processor is assigned
+[26:41] a unique number in this set from 0 to n
+[26:43] minus one which is the thread ID or the
+[26:46] processor uh process ID processor ID uh
+[26:50] same thing and so then this gets stored
+[26:52] in my ID so basically one of the
+[26:54] parallel threads will get zero one of
+[26:56] them will get one one of them will get
+[26:59] two one of them will get n minus one and
+[27:01] so on that is how they know that who
+[27:03] they
+[27:03] are after this so once we know our ID
+[27:07] and since there are end different chunks
+[27:09] we can find out the indices start and
+[27:11] end indices of the chunk that is
+[27:13] assigned to the current thread so this
+[27:16] can be done so the size of each chunk is
+[27:18] size divided by n so the starting index
+[27:21] we can take it as my ID time size by n
+[27:24] which will give you the starting index
+[27:26] in the numbers array so for the first
+[27:29] thread my ID will be zero so the
+[27:31] starting index is
+[27:33] zero after that the end
+[27:35] index which is the last index + one will
+[27:39] be start index plus size divided by n so
+[27:42] this is where we need to
+[27:43] end so then what we can do is we can
+[27:46] have a we can have a for Loop that will
+[27:51] iterate between start index you know J
+[27:54] uh sorry this thing instead of jdx sorry
+[27:57] should be J
+[27:59] uh since you use jdx is better idx let's
+[28:04] call this as
+[28:05] jdx and let us call this as jdx sorry
+[28:11] jdx okay so uh what we shall do is that
+[28:15] we will loop from so so mind you you
+[28:18] know all the J's so even this I've
+[28:20] changed to J
+[28:23] DX okay so for INT jdx is integer of
+[28:28] course so it starts from start idx it
+[28:30] goes till end idx minus one jdx ++ so
+[28:35] what we do is that we for my partial
+[28:38] sums so partial sums is again an array
+[28:40] an array of n elements so given the
+[28:43] current thread which is indicated by my
+[28:46] ID which is a unique identifier for the
+[28:48] thread uh for partial sums the my ID
+[28:52] element of the partial sums array we add
+[28:55] the current number the current element
+[28:59] in the numbers array to it so mind you
+[29:01] this is initialized to zero so we
+[29:03] basically get the partial sum which is a
+[29:05] sum of all the elements in the current
+[29:07] chunk of the array we add all of them to
+[29:10] get the partial sum which is stored in
+[29:12] the partial sums
+[29:14] array so similarly the rest of the
+[29:17] threads do the same so the second thread
+[29:20] would do the same the fourth thread
+[29:21] would do the same the N minus 1 thread
+[29:25] would also do the same that it would
+[29:29] find the start and end indices of its
+[29:31] chunk then it would add all the elements
+[29:33] and save it in its partial sums entry so
+[29:36] by the end of the parallel section which
+[29:39] is pretty much this point over here we
+[29:42] have a partial sums array which has n
+[29:44] entries each entry stores a partial sump
+[29:47] of a unique disjoint chunk of the
+[29:50] numbers are then what we need to do is
+[29:52] we just need to go through this array
+[29:55] and add up all the partial sums so the
+[29:57] way to do it is that we again have a for
+[30:00] Loop for INT idx going from 0 till n we
+[30:04] do result plus equal to partial sums idx
+[30:07] which means that we add all the partial
+[30:10] sums and save it in the result
+[30:14] variable that's what we do so finally we
+[30:17] get the result uh in this fashion so so
+[30:21] what is the uh you know the broad
+[30:23] picture here the broad picture here is
+[30:26] the parallel section and creating the
+[30:28] parallel section is very easy we just
+[30:30] use the hash pragma om parallel
+[30:33] directive so then we take a look at
+[30:36] different chunks of the numbers array we
+[30:38] add all the elements in each chunk and
+[30:42] then we add all the partial sums of
+[30:45] course uh so in this case uh the
+[30:48] parallelism is coming from the fact that
+[30:50] all the additions are being done in
+[30:52] parallel right so this is also called a
+[30:54] scatter operation because essentially
+[30:56] you are scattering the addition among
+[30:58] the
+[30:59] threads right and subsequently what we
+[31:02] are doing is we are gathering all the
+[31:04] partial sums and we are sort of adding
+[31:06] them together right so this option is
+[31:09] this operation is also called a gather
+[31:11] or it's also called a reduce so we're
+[31:14] reducing all the partial sums to one
+[31:16] value which is the final sum it's called
+[31:19] either gather or reduce and we take all
+[31:21] of them and we add so basically this
+[31:24] operation of getting the final result
+[31:27] you know final sum s this operation is
+[31:30] sequential whereas adding all the
+[31:32] partial sums is parallel so if you have
+[31:34] a million you know let's say if you have
+[31:37] a Million numbers then then this
+[31:39] parallel section will give us a massive
+[31:41] speed up even though there is a
+[31:43] sequential section which is slow but the
+[31:46] parallel section will give us a huge
+[31:47] speed up so we'll uh end up speeding up
+[31:51] our program by a significant
+[31:56] factor or all
+[31:59] right so let us now discuss the notion
+[32:01] of threads so what we do here in openmp
+[32:05] is that we spawn a set of separate
+[32:09] threads threads have some unique
+[32:12] properties so a thread of course is an
+[32:14] instance of the running program but it
+[32:16] shares its address space with other
+[32:18] threads as we have
+[32:19] discussed it has its own program because
+[32:22] it's a process in itself it has its own
+[32:24] set of registers and its own stack but
+[32:28] just that the rest of the you know
+[32:29] constants readon variables data
+[32:32] allocated on the Heap Global variables
+[32:34] all of these things can be shared across
+[32:36] threads so a single process can contain
+[32:39] multiple threads and threads will
+[32:42] communicate with each other by writing
+[32:44] values to memory uh sorry this will go
+[32:48] away or via synchronization operations
+[32:51] so this is an advanced concept but this
+[32:53] uh essentially means if we go back to
+[32:56] the previous slide it essentially means
+[32:59] that all of these
+[33:00] threads after completing the parallel
+[33:03] section all of these threads in a sense
+[33:04] meet over
+[33:06] here and then all of the threads are
+[33:09] killed and the thread that was other
+[33:13] than of course the thread that was
+[33:14] running the sequential part so that
+[33:16] continues so they can you know
+[33:18] synchronize between each other they can
+[33:21] communicate with each other by reading
+[33:24] and writing values to memory so this is
+[33:28] what threads can
+[33:30] do so for this particular
+[33:33] program uh the way that the threads have
+[33:35] been spawn is like this that we started
+[33:37] with one thread which we call the parent
+[33:39] thread the parent thread executed on its
+[33:42] own for some
+[33:43] time after that when we entered this
+[33:46] part the open mp uh hash pragma om
+[33:50] parallel part where all the parallel
+[33:52] threads were
+[33:53] spawn so at that time all of these
+[33:57] parallel threads were started each one
+[33:59] of them take took care of a different
+[34:03] portion of the aray and after all the
+[34:06] parallel threads finished what happened
+[34:08] is a thread join operation so a thread
+[34:11] join operation is essentially one
+[34:13] operation where you wait for all the
+[34:15] threads that have been spawned to
+[34:18] finish and once all of them complete the
+[34:21] parent thread can take over so he waited
+[34:25] for all all the threads all the child
+[34:27] threads all the worker threads to
+[34:28] complete which means that all of them
+[34:31] computed their partial sums once they
+[34:34] did that all the partial sums sums were
+[34:37] added to get the final sum the final
+[34:40] result this was done again by a single
+[34:43] thread called the parent thread and then
+[34:46] the program
+[34:49] terminated so now let's take a look at
+[34:51] doing the same thing using a message
+[34:53] passing system so a message passing
+[34:56] system would typically used in a Loosely
+[34:58] coupled multiprocessor Loosely coupled
+[35:01] system where we have multiple
+[35:04] processes and the only thing that a
+[35:06] process can do is it can send a message
+[35:09] you know either unicast means to one uh
+[35:12] receiver and multicast means to multiple
+[35:15] receivers right multiple rece receivers
+[35:17] these are the two things that can be
+[35:18] done that a process can send a message
+[35:21] either unicast message or a multicast
+[35:24] message to another process similarly can
+[35:28] receive a unicast or a multicast message
+[35:31] from another
+[35:37] process so let's take a look at an
+[35:39] example let's write a message passing
+[35:41] based program to again I again do the
+[35:44] same thing which is to add a set of
+[35:46] numbers right so which is to add a set
+[35:49] of numbers in parallel so let's make
+[35:52] appropriate assumptions so let us assume
+[35:55] that all the numbers are stored in the
+[35:56] array numbers and this array is
+[35:58] available with all the N processors so
+[36:01] all the capital N processors have a copy
+[36:04] of the array numbers and let's also
+[36:07] assume that the number of elements in
+[36:08] the numbers array is size size can be
+[36:11] 100,00
+[36:12] 10,000 so for the sake of
+[36:15] Simplicity let us assume that size is
+[36:18] divisible by n so uh if we have let's
+[36:21] say 100 separate processes so size can
+[36:25] be let's say 10,000 which is divisible
+[36:28] by
+[36:29] n so let us use a dialect that is
+[36:31] similar to the popular popular parallel
+[36:34] programming framework MPI so again you
+[36:37] know the program that I'm showing is not
+[36:39] MPI because MPI has you know many more
+[36:43] interest intrinsic things which actually
+[36:45] need not be mentioned for the sake of
+[36:47] Simplicity but the program that I'm
+[36:49] showing is somewhat inspired by
+[36:53] MPI all right so let's see so the first
+[36:56] thing would be that let let start all
+[36:58] the parallel processes so there n
+[37:01] parallel process let's start all of
+[37:03] them so after that each process would
+[37:06] execute this part of the code so this
+[37:08] part of the code henceforth would be
+[37:10] common to each and every
+[37:13] process so basically so so you can
+[37:16] assume that you know this part was
+[37:17] sequential this was the sequential part
+[37:21] and uh you know henceforth the parallel
+[37:25] part begins right so pretty much you
+[37:28] know after this
+[37:29] point uh the remaining part of the code
+[37:33] is uh executed by n processes same code
+[37:37] gets replicated end times so after this
+[37:39] you know if this is a part of the code
+[37:42] so then you know the same code will get
+[37:47] replicated end times and each process
+[37:51] would start from here so the first thing
+[37:54] that we would do is that we'll get a ID
+[37:56] of the process which is get my process
+[37:59] ID different processes will get
+[38:01] different IDs so one process uh will get
+[38:06] zero one will get one and so basically
+[38:09] from one to sorry from 0 to n minus one
+[38:13] n separate IDs will be given one per
+[38:15] each
+[38:18] process so after this the different
+[38:21] processes which have gotten different
+[38:23] IDs via this function call will start
+[38:26] and compute the partial sums so since
+[38:30] for each process my ID is different so
+[38:33] they will of course compute different
+[38:34] partial sums so we'll have a start index
+[38:37] and end index similar to our openmp
+[38:39] program the start index will be my ID
+[38:42] time size divided by n so why size
+[38:45] divided by n because size is the total
+[38:47] number of entries in the array and N is
+[38:50] the number of processes so size byn is
+[38:53] the number of entries that each process
+[38:55] needs to uh you know each process needs
+[38:58] to pretty much add so the start index is
+[39:01] my ID times size by n and n index is
+[39:05] start index plus size by n so it is one
+[39:07] chunk of the
+[39:09] array we initialize the value partial
+[39:12] sum to zero so mind do you know since
+[39:14] they the different pieces of code so
+[39:16] they are not sharing any variables
+[39:17] they're not sharing absolutely there's
+[39:19] no sharing in terms of
+[39:21] variables so what we do is that uh we
+[39:25] say int partial sum being uh zero and
+[39:29] then we uh add the that chunk of the
+[39:32] array starting from start index to end
+[39:35] index we add that chunk of the array so
+[39:38] we just have a for Loop that iterates
+[39:41] from the starting index start idx to end
+[39:44] idx and we just add the numbers to the
+[39:47] variable partial
+[39:49] sum after that all the nonroot nodes
+[39:53] send their partial sums to the root and
+[39:55] we say that the node with id0 let's
+[39:58] treat it as the root right so a node
+[40:01] with ID Z let's treat it as a root and
+[40:03] the rest as non-
+[40:05] root so if my ID is not equal to zero
+[40:08] what I do is I
+[40:10] send zero so I basically send a message
+[40:13] to node number zero which is the root
+[40:16] and uh I send my value of the partial
+[40:18] sum to the root and after that the other
+[40:22] processes will finish so it's also the
+[40:24] same model that we have one process the
+[40:26] same one process proc spawns you know n
+[40:29] other processes all of them
+[40:34] execute and then you know all of them
+[40:38] complete and after they complete we
+[40:40] again add up all the partial sums so the
+[40:43] same model so now for the root what we
+[40:46] do
+[40:47] is we set the variable sum equal to the
+[40:51] partial sum that the root node has
+[40:52] computed so mind you the root node was
+[40:55] also part of the computation in the
+[40:57] previous stage and say its ID is zero so
+[41:00] it was Computing its part of the array
+[41:02] it was processing its part of the array
+[41:05] so it uh for the partial sum the root
+[41:07] has computed uh that gets saved inside
+[41:11] the variable
+[41:12] sum after that for the rest of the
+[41:15] process IDs which is p ID from 1 to n
+[41:19] minus one we run a for Loop and so the
+[41:23] fall Loop uh goes somewhat like this
+[41:26] that in each iteration of the for Loop
+[41:28] we uh we invoke the receive
+[41:31] call and the receive basically
+[41:34] sends uh uh the argument to re receive
+[41:38] is a constant any source which means
+[41:41] that if any other process is sending a
+[41:43] message let's receive the message that
+[41:46] that process is sending and let's assume
+[41:48] that the message only contains the
+[41:50] partial sum so we'll do sum plus equal
+[41:52] to the partial sum that is being sent by
+[41:55] that
+[41:55] source and let's say that no Source has
+[41:58] sent uh its data then the receive call
+[42:01] will just wait till somebody sends so uh
+[42:04] since there are a total of n processes
+[42:07] we are designating the zero process as
+[42:10] the root process so there are n n minus
+[42:13] one processes remaining so the root
+[42:15] expects n minus one messages so if this
+[42:18] is the root it is expecting n minus one
+[42:21] messages to come to it with the other n
+[42:24] minus one partial sums so that's the
+[42:26] reason we run a for loop from 1 to n
+[42:29] minus one and we get n minus one
+[42:31] messages we extract the partial sums in
+[42:34] them and we add them to the sum
+[42:37] variable so the sum variable is what
+[42:41] contains the final result then we shut
+[42:43] down all the processes you know just in
+[42:45] case they already haven't so we just
+[42:47] shut down the rest of the processes and
+[42:50] we return sum so sum is the final sum of
+[42:55] all the elements of the array that is
+[42:57] the return
+[43:02] variable all right so this speed of uh
+[43:05] this uh piece of code is also very
+[43:07] simple it is somewhat on the same lines
+[43:11] as the code uh for open MP so let me
+[43:14] just erase the ink on the slide and uh
+[43:16] explain broad parts of it
+[43:19] again so what we do is that initially we
+[43:22] start with the sequential portion where
+[43:24] we spawn all the parallel processes and
+[43:27] and after that the rest of the code you
+[43:28] know the rest of all of the code this
+[43:31] part is sort of common between uh sorry
+[43:34] yeah uh so this part of the code is
+[43:36] common between all the processes but of
+[43:39] course you know the code behaves
+[43:40] differently for different processes
+[43:43] mainly uh in this line so when we when a
+[43:46] process wants to know what its ID is it
+[43:49] calls the function get my process ID and
+[43:51] depending upon ID of the process you can
+[43:53] get any number between 01 and minus one
+[43:56] so we have arbitrarily
+[43:58] designated the process with id0 as the
+[44:02] root and the rest of the processes as
+[44:04] non Roots then what we do is that a
+[44:07] process adds its chunk of the array
+[44:10] computes a partial sum and if it's not
+[44:13] the root it sends the partial sum to the
+[44:15] root node which are zero the root node
+[44:18] runs a for Loop for n minus1 iterations
+[44:22] in each iterations since there are n
+[44:24] processes and the root is one of them it
+[44:27] expects n minus one messages from the
+[44:29] rest of the processes so what it does is
+[44:32] that it runs a for Loop for n minus1
+[44:35] iterations it receives n minus one
+[44:37] messages any Source means that you know
+[44:40] we are not specifying who we need to
+[44:42] receive a message from and as long as we
+[44:45] receive a message so after it gets n
+[44:47] minus one messages extracts the partial
+[44:50] sums from them adds them to the sum
+[44:52] variable which is our final result then
+[44:55] we shut down all the processes and we
+[44:57] return some as the result of the program
+[45:00] so as you can see both openmp as well as
+[45:04] uh MPI MPI based programs right
+[45:09] something you know this this are dialect
+[45:11] inspired by
+[45:12] MPI broadly speaking they the same
+[45:15] structure the same structure is that we
+[45:18] initially have a one thread which
+[45:20] sequentially does some work after that
+[45:23] we invoke a set of parallel threads
+[45:27] which do a lot of work in
+[45:29] parallel and then all the parallel
+[45:32] threats then there's a necessity for a
+[45:33] reduce operation where we take the
+[45:36] results produced by all the parallel
+[45:38] threads and in a sense merge them so
+[45:41] this is again done
+[45:42] sequentially so in openmp we essentially
+[45:45] used shared variables for
+[45:48] communication and in a Loosely processed
+[45:50] system um uh you know in
+[45:54] a uh Loosely coupled system
+[45:58] uh we can't use variables but we can
+[45:59] send messages between processes that
+[46:02] will do the
+[46:04] job all right so now that we have seen
+[46:07] this let's take a look at a very very
+[46:09] important law called amul's law and the
+[46:12] Flyn taxonomy so let's discuss this
+[46:15] before uh moving
+[46:17] forward so up till now let's just
+[46:19] quickly summarize our discussion so if
+[46:22] you have P parallel processors where
+[46:24] essentially one parallel processor is
+[46:25] running one thread each
+[46:27] in ideal case we can expect a speed up
+[46:30] of P because this means that we have
+[46:33] taken our problem and we have been able
+[46:36] to split it perfectly right into P equal
+[46:38] parts and each of them has been given to
+[46:41] One processor so basically instead of
+[46:44] taking T units of time is now taking T
+[46:47] by P units of
+[46:49] time however this will not be the case
+[46:52] the reason this will not be the case is
+[46:54] because let's quickly go back and take a
+[46:56] look at this diagram so in this diagram
+[46:59] as we can see that in an execution
+[47:02] sometimes it's true that you know you
+[47:04] can have uh P separate processes or
+[47:09] threads but uh it is possible that in an
+[47:12] execution a large part of
+[47:15] time large part or small part but at
+[47:18] least some fraction of the time can go
+[47:20] in sequential execution where only a
+[47:22] single thread is executing the code and
+[47:26] parallel processes are not there so
+[47:28] that's the reason whatever our speed up
+[47:29] will be it'll be less than ideal speed
+[47:32] up P because you know no program is that
+[47:37] good that it can take the input and sort
+[47:40] of exactly split it into P parts and uh
+[47:45] run all p in parallel without any
+[47:47] sequential portion so that is typically
+[47:49] not the case so not all problems are
+[47:52] parallelizable to that
+[47:54] extent so since that is not the
+[47:57] case amel's law tries to capture this so
+[48:01] it says let's assume a program takes T
+[48:03] old units of time let us divide
+[48:08] uh you know T old into two parts
+[48:10] sequential and parallel should rather be
+[48:13] let us divide
+[48:14] it into two parts sequential and
+[48:17] parallel the sequential
+[48:21] portion uh let's call it uh so let the
+[48:24] sequential portion be T old multiplied
+[48:26] by F SEC which means a fraction of time
+[48:30] that you are in sequential mode and let
+[48:32] the parallel portion will thus be T old
+[48:35] multiplied by 1 minus fraction of
+[48:37] sequential 1us F
+[48:40] SEC so it's only the parallel portion
+[48:43] that actually gets sped up P times right
+[48:46] it's not the sequential portion that has
+[48:48] a speed up because you know the
+[48:50] potentially parallel speed uh portion
+[48:52] can actually be divided among P threads
+[48:57] and each of them sort of given 1 by P of
+[48:59] the work so they will finish it in
+[49:02] parallel so assuming that our
+[49:04] parallelisation is fairly perfect in the
+[49:05] sense all the threads have the same
+[49:08] amount of work the formula that comes is
+[49:11] T new which means T after
+[49:13] parallelization is old is equal to T old
+[49:17] * f secc plus so so so mind you this is
+[49:21] the sequential
+[49:22] portion and this part was the previous
+[49:25] parallel portion
+[49:27] but since now the parallel portion of
+[49:29] the work is being divided among P
+[49:31] threads equally the time will reduce by
+[49:34] a factor of P so thus this will become 1
+[49:37] - F SEC /
+[49:39] P hence the equation for the time taken
+[49:42] with
+[49:43] parallelization so this is the equation
+[49:45] for the time taken with parallelization
+[49:47] the speed up is thus so where the speed
+[49:49] up is defined as T old which is T old
+[49:53] means T with a sequential execution by T
+[49:57] uh sorry by T
+[49:59] new the time with parallel execution so
+[50:01] if we do a little bit of algebra this
+[50:04] will come out to be the
+[50:06] result that t old divided by T new is
+[50:10] one by F SEC + 1 - F SEC by P so what is
+[50:16] f SEC again so it is basically the
+[50:19] fraction of time
+[50:42] so there a fraction of time in
+[50:44] sequential
+[50:45] execution and what is p the p is the
+[50:48] number of parallel processor so if you
+[50:50] assume that if we assume that P is equal
+[50:52] to 1 then in this case f SEC + 1 - F SEC
+[50:56] they'll cancel out so the speed up will
+[50:58] be one which means that we have not
+[51:00] gained anything and that is an sort of
+[51:03] obvious result because if there's only
+[51:05] one processor then we'll not gain
+[51:07] anything but let's say if we have two
+[51:09] processors then of course the maths will
+[51:12] change so in that case the speed up will
+[51:15] be 1 - F SEC ided by 2 so this quantity
+[51:20] so F SEC is a fraction mind you so
+[51:22] basically 0 is less than F SEC is less
+[51:26] than equ Al to 1 so in this case you
+[51:29] know this will this sum will come down
+[51:31] to one so s will become greater than 1
+[51:34] which means that there'll be a net speed
+[51:35] up so as we increase the number of
+[51:38] processors what will happen is that this
+[51:40] term the time spent in parallel mode
+[51:43] will actually come down to zero right so
+[51:46] as P tends to
+[51:49] Infinity what will happen is that the
+[51:51] speed up the maximum possible speed up
+[51:53] will tend to 1 by F sec
+[51:57] so this is also another Common Sense
+[52:00] result what it tells us is that if I you
+[52:03] know have a lot of parallel processing
+[52:05] happening so what will actually
+[52:07] determine the time is the time spent in
+[52:10] sequential mode when there is only one
+[52:12] thread uh that will determine the time
+[52:16] and why do you need uh one thread to
+[52:18] execute in sequential mode because of
+[52:20] course you know data structures have to
+[52:21] be initialized and once all the parallel
+[52:24] threads have produced the result you
+[52:27] have to sort of aggregate the partial
+[52:29] results and come up with a final result
+[52:31] and this is a sequential process you'll
+[52:34] have one thread this cannot be split
+[52:36] into different parallel Parts well parts
+[52:38] of it can but in general it cannot be
+[52:40] split into different parallel
+[52:43] parts so that is the reason that
+[52:45] parallel programs will still have a
+[52:47] certain sequential component and that is
+[52:50] the reason for fsec so what is the
+[52:52] definition of fsec again is a fraction
+[52:54] of time
+[52:56] uh that is uh you know purely sequential
+[52:59] which cannot be parallelized and 1 - F
+[53:02] SEC is the fraction of time in a program
+[53:05] which can be parallelized if if we
+[53:07] parallelize it for example if p is equal
+[53:09] to 3 then the fraction of time will
+[53:11] reduce to a third the reason is that we
+[53:15] can evenly that work corresponding to
+[53:18] this fraction of time can be evenly
+[53:20] divided among the
+[53:22] threads so the amel's law is not a comp
+[53:26] licated or difficult law at all it's
+[53:29] actually a very very simple law in that
+[53:32] sense and it's you know it's absolute
+[53:34] common sense if you think about it it
+[53:37] basically says that look this is the
+[53:39] speed up for a class of programs that
+[53:43] have a sequential section and a parallel
+[53:45] section the parallel section can in
+[53:48] principle in theory be parallelized or
+[53:51] broken up among different processing
+[53:54] elements and thus we can have a higher
+[53:56] speed up but of course the final limiter
+[53:59] is the size of the sequential
+[54:02] section so now uh let's plot a graph so
+[54:05] let's consider multiple values of fsec
+[54:08] and let's compute speed up versus number
+[54:10] of processors so the x-axis here is the
+[54:13] number of
+[54:20] processors so let's consider uh so uh
+[54:24] the three terms here are actually the
+[54:26] sequential portions
+[54:31] fsec so let's consider a program so so
+[54:34] you know when you consider the execution
+[54:36] of a program so the way that fsec is
+[54:39] calculated is something like this that
+[54:41] let's execute a program with a single
+[54:43] process so now let's consider regions of
+[54:47] the code which cannot be parallelized or
+[54:50] broken up between distributed to
+[54:52] different
+[54:53] processors so let's say these are these
+[54:55] regions of the code right so it turns
+[54:59] out that let's say if I add this
+[55:02] up then you know these regions of the
+[55:04] code cannot be parallelized so they are
+[55:06] consequently sequential so this is f
+[55:10] secc which is equal to 0 so let this be
+[55:14] 2.25 this means that these two parts of
+[55:18] execution can in principle be broken
+[55:20] down into as many parts as we want so of
+[55:24] course you know the formula the real
+[55:25] world formula not not as simple as that
+[55:28] but let's theoretically assume that the
+[55:30] execution between you know these two
+[55:32] points can be broken down and
+[55:34] distributed and given to as many
+[55:35] processors as we want so this is the
+[55:38] parallel portion which is 1 minus F secc
+[55:41] that is the portion of a program's
+[55:43] execution which can be
+[55:45] parallelized now when you parallelize
+[55:48] this so let's say that you know the time
+[55:51] that a program was taking with a single
+[55:53] processor is T old so t * .25 is the
+[56:00] part and the parallel part with a single
+[56:03] processor of course is T * 75 right the
+[56:08] potentially parallel
+[56:09] part if Let's see we divide this part of
+[56:13] the program these parts of the program
+[56:16] among 10 processors then this part will
+[56:18] get divided by 10 so the total time will
+[56:21] be this plus this which is exactly
+[56:23] amel's law so now if fsec is
+[56:27] 10% as we see that if you increase the
+[56:30] number of processors you know there's a
+[56:31] little little bit of a speed up so speed
+[56:34] up is
+[56:35] always you know in comparison with a
+[56:38] sequential execution the speed up with
+[56:40] parallel
+[56:41] execution will increase maybe till you
+[56:44] know this point and then it'll somewhat
+[56:45] saturate and saturate at 10 why 10
+[56:50] because you know this as this tends to
+[56:52] Infinity the sorry as this tends to
+[56:55] Infinity
+[56:57] uh you this will become zero so what
+[56:58] will dominate is the sequential part and
+[57:01] since since this is 10% so
+[57:03] basically uh F SEC is 1 by 10 and from
+[57:08] the previous equation the speed up will
+[57:09] be equal to 10 right at the limiting
+[57:12] case which is this
+[57:14] case now if we decrease F SEC and make
+[57:18] 5% what we see is that till at least 60
+[57:21] 70 processors we can scale and in 5%
+[57:24] also the maximum theoretical speed up is
+[57:28] 20 but it's taking time to reach 20 but
+[57:31] at least after this point that much of
+[57:33] Advantage is not there and this would be
+[57:39] roughly uh looks more than 75 maybe 80
+[57:43] maybe 80 processor so beyond this you
+[57:45] know we can't scale further now if you
+[57:48] make the sequential part
+[57:50] 2% then we see that we can have a lot of
+[57:54] speed up until at least 200 processors
+[57:57] we can have a speed up of 40 and with 2%
+[58:00] the maximum possible speed up is 1x
+[58:03] 02 which is equal to
+[58:06] 50 so of course we have not reached 50
+[58:08] yet but we are close enough but with 200
+[58:11] processors we can get a fairly fast
+[58:13] speed up so the most important point to
+[58:16] note here is that pretty much the speed
+[58:19] up in a parallel system is dominated by
+[58:22] the sequential part if we have a lot of
+[58:25] parallel resources
+[58:27] so fsec pretty much determines whether
+[58:30] we are sorry at here at here or at here
+[58:36] so let's say if we write a program in
+[58:38] such a way that its sequential portion
+[58:39] is very very small which means that the
+[58:42] portion which cannot be parallelized is
+[58:44] very very small we potentially can get a
+[58:47] huge speed up if we have a lot of
+[58:50] processors however if the sequential
+[58:53] portion is high then having a lot of
+[58:54] processor will not help because they
+[58:56] will anyway remain idle for a somewhat
+[58:59] larger portion of
+[59:01] time so this is essentially what amel's
+[59:04] law tells us is to get speed up reduce
+[59:07] the sequential portion and then
+[59:09] parallelize as much as
+[59:12] possible so the conclusion is that we
+[59:14] are limited by the size of the
+[59:16] sequential section for a very large
+[59:19] number of processors the parallel
+[59:20] section can actually become uh you know
+[59:24] very very small so that that's the
+[59:26] reason ideally a parallel no no the
+[59:29] parallel section okay sorry for a very
+[59:32] large number of processor the parallel
+[59:34] section
+[59:35] should instead of saying is actually you
+[59:37] know you should say
+[59:42] uh okay okay okay okay uh so so what we
+[59:46] can rather say is let me just cut this
+[59:50] uh I should uh rearticulate myself so
+[59:53] what essentially we are seeing is that a
+[59:55] speed up is equal to 1 / f SEC + 1 - F
+[60:02] SEC by n where 1 minus F SEC byn is the
+[60:05] execution time spent in the parallel
+[60:07] section and N is the number of
+[60:10] processors so if n is actually very high
+[60:13] for a very large number of processes if
+[60:15] let's say n tends to Infinity then this
+[60:18] term will tend to zero so which means
+[60:20] the time spent executing the parallel
+[60:23] section will actually be very small so
+[60:25] the entire speed up will thus be
+[60:26] dominated by this sequential term which
+[60:29] is what we have already mentioned that's
+[60:31] the reason ideally a parallel workload
+[60:33] should have a very small sequential
+[60:35] section and this all depends on the
+[60:38] nature of the workload and and the
+[60:40] algorithm writer so the more you
+[60:42] parallelize the better it is as per
+[60:44] amel's
+[60:46] law all right so now uh I'll introduce
+[60:50] something called the Flint
+[60:51] classification so this is a method of
+[60:53] classifying different kinds of
+[60:55] multiprocessor
+[60:56] systems so uh let's first Define two
+[61:00] different terms an instruction stream
+[61:02] and a data
+[61:03] stream instruction steam stream refers
+[61:06] to the set of instructions that are
+[61:07] executed by the different
+[61:10] processes and a data stream refers to
+[61:12] the data values that the instructions
+[61:15] process so Flynn defines four kinds four
+[61:18] types of multiprocessors s SD s IMD Mis
+[61:22] and MD so pretty much instruction data
+[61:25] remain the same
+[61:26] so s means single instruction single
+[61:29] data simd single instruction multiple
+[61:32] data it's also called simd MISD is
+[61:36] multiple instruction single data and M
+[61:38] IMD is multiple instruction multiple
+[61:40] data

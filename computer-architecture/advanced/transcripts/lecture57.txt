@@ -1,0 +1,1597 @@
+[00:00] [Music]
+[00:12] welcome to the third lecture in this
+[00:15] series so we will talk about
+[00:19] Hardware architectures
+[00:21] and
+[00:23] Hardware architectures are very
+[00:25] important because they capture the
+[00:27] degree of reuse
+[00:29] right
+[00:31] so they capture the degree of reuse they
+[00:33] are the reason for the prevalence and
+[00:35] prominence of cnns the reason being that
+[00:39] you know the maths was established long
+[00:41] back it was established in the 80s and
+[00:43] 90s
+[00:44] but the reason that they are you know so
+[00:47] prevalent as of today is because we have
+[00:49] the hardware right so we should never
+[00:51] forget that fact that Hardware is the
+[00:53] most important so of course as we have
+[00:56] discussed it could be two kinds of reuse
+[00:59] vehicle of temporal reuse where you know
+[01:02] because of stationarity we keep on
+[01:04] using using reusing the same data so we
+[01:08] keep reusing it as much as possible
+[01:11] then of course spatial reuse which
+[01:14] basically means that if let's say we
+[01:16] have computed something
+[01:18] so then we kind of pass that semi
+[01:21] partially computed value
+[01:23] between different PS of
+[01:27] the accelerator and finally you know
+[01:30] once it is fully computed we send it
+[01:33] back
+[01:34] so a knife algorithm would be that we
+[01:40] get something
+[01:42] and then we write it to memory again we
+[01:45] read it back compute write it to memory
+[01:47] so on and so forth but if I want to
+[01:50] reuse it spatially what I do is that I
+[01:53] read it once
+[01:54] do as much as I can with it and then
+[01:56] write it back
+[01:59] so here also we'll use the same motion
+[02:01] that we used for software which was in
+[02:03] the previous section but of course here
+[02:06] what we will do is that we may slightly
+[02:08] change the ordering of the loops to make
+[02:10] it more Hardware friendly but note that
+[02:13] our notion is not it doesn't capture
+[02:15] everything right it's not that
+[02:17] using our notation you can exactly
+[02:21] design Hardware so you would need you
+[02:23] know more things
+[02:24] it is representational it holds more for
+[02:28] software than Hardware but still it
+[02:30] gives you an idea how is it that I would
+[02:33] like to do the competition
+[02:35] so as I said you know the disclaimer is
+[02:37] that for Hardware the notation is not
+[02:39] complete it may not capture all aspects
+[02:42] of the data flow so that should be kept
+[02:44] in mind
+[02:46] so what we will do is we will look at
+[02:48] two different methods of
+[02:51] transferring data in Hardware
+[02:54] one is broadcast
+[02:56] so which is where I send a value to all
+[02:59] the PS in the same cycle right so we are
+[03:02] thinking of an accelerator to broadly be
+[03:05] an array of peas
+[03:07] so if this is an accelerator we are
+[03:10] assuming that there are a lot of peas
+[03:12] inside it's like a large 2D array of
+[03:15] peas
+[03:16] needless to say
+[03:18] easy to implement
+[03:20] but it's quite hard to guarantee that
+[03:23] you know we are having good timing
+[03:25] because you know it's a large
+[03:27] accelerator and you need to ensure that
+[03:29] the data reaches all the peas at the
+[03:31] same point of time
+[03:32] and that is going to be hard
+[03:36] so there might be a small amount of
+[03:38] clock skew clock's Q basically means
+[03:40] that the clock arrives at different
+[03:43] points of time in the individual piece
+[03:45] which may affect the timing so if I were
+[03:48] to look at the timing
+[03:50] then I would kind of like put a big big
+[03:53] big exclamation mark over here saying
+[03:56] that look don't do that instead
+[03:59] try to minimize the clock skew use the
+[04:03] same clock no one is stopping you from
+[04:05] doing that
+[04:07] but what you would do is that whenever
+[04:09] you have a clock cycle boundary a
+[04:12] Negative Edge
+[04:13] you send the data to a neighboring p and
+[04:17] don't broadcast so if you have a
+[04:18] neighboring P you send the data to it
+[04:20] let it do something with it and then
+[04:22] send the data either down or to its
+[04:25] neighbor right either downward neighbor
+[04:26] or rightward neighbor
+[04:28] so on and so forth so in this case you
+[04:30] don't require tight synchronization
+[04:33] and what you will be able to do is that
+[04:36] even if you know
+[04:38] the slight issues with the clock you
+[04:40] will still be able to manage that now
+[04:42] it's a far more scalable design
+[04:46] keeping this in mind let's take a look
+[04:49] at our weight stationary architecture
+[04:51] so if you would recall from when we were
+[04:54] discussing these notations right way
+[04:57] back from there
+[04:58] so it was broadly looking like this
+[05:01] where we go image wise
+[05:04] output Channel wise of course in
+[05:06] parallel input Channel voice and
+[05:08] parallel
+[05:09] right and then rows columns and then the
+[05:13] filters
+[05:14] so what we can do is if I were to
+[05:16] realize this in Hardware what I would do
+[05:18] is that I would create an array of piece
+[05:20] where the blue part over here is a local
+[05:22] buffer
+[05:24] and we are assuming in this case the
+[05:26] data is Flowing along both the rows and
+[05:29] the columns right both the rows and
+[05:31] columns but we will have an additional
+[05:33] Arrow column wise which indicates two
+[05:36] things which will gradually become clear
+[05:39] to you what you know how we
+[05:41] differentiate between the two scenarios
+[05:46] so in this case what we are doing is
+[05:49] that for a given image
+[05:51] we are parallelizing the output channel
+[05:52] so what we are ending up doing is that
+[05:56] we are dedicating a column a column of
+[05:59] to each output channel so as you can see
+[06:01] they are connected right all of them are
+[06:03] connected but the transfer is happening
+[06:06] from p e to P so of course one way of
+[06:09] doing that would be that instead of a
+[06:12] single wire we show a connection from
+[06:14] here to here and then a connection from
+[06:16] here to here
+[06:18] so well that could be done but that
+[06:20] would again be a very uh
+[06:23] you know a very s minute small detail it
+[06:27] is a better idea to have
+[06:30] you know think about this conceptually
+[06:32] so to have arrows between one p the next
+[06:35] one this p and the next one so on and so
+[06:38] forth
+[06:40] so this would be a true systolic
+[06:42] transfer so what happens in this case is
+[06:45] that since we are parallelizing this
+[06:47] channel wise the data for different
+[06:49] channels
+[06:51] the matrices right for the different
+[06:53] channels they arrive
+[06:55] row wise so c one C two c three C four
+[06:59] and the filter weights are already
+[07:02] cached within the local buffer over here
+[07:04] so that is why it's a weight stationery
+[07:07] or a filter stationary architecture
+[07:12] so I repeat because the way it's a
+[07:14] weight stationary architecture the
+[07:17] weights are cached here so then the job
+[07:19] of each PE is to take an input data
+[07:22] a computer convolution with the weights
+[07:25] here
+[07:26] that would create a partial sum
+[07:29] ah partially computed data so basically
+[07:32] the final output is the sum of all of
+[07:34] that partially computed data
+[07:36] so what would happen is that the
+[07:38] partially computer data would flow from
+[07:40] this P to the next p then uh it will
+[07:45] basically let's say if x is coming and
+[07:48] this is computed y then what will go
+[07:51] here is X Plus y if this is computed Z
+[07:53] what will go is X Plus y plus Z
+[07:56] so if basically every P will take what
+[07:59] it is getting from the top add it to its
+[08:01] local convolved output and then send the
+[08:04] sum downwards
+[08:05] so the final answer would basically be
+[08:08] the
+[08:09] value of the first of map K1
+[08:14] similar would happen for K2 so of course
+[08:17] every
+[08:19] filter every local buffer over here
+[08:21] would store the filter corresponding to
+[08:23] the unique input output pair so in this
+[08:26] case it is C3 and K2 that is the unique
+[08:30] input output pair for which the filter
+[08:33] is being stored
+[08:37] so then
+[08:40] Channel over here every output Channel
+[08:43] over here will correspond to a column
+[08:45] and the values will be computed like
+[08:48] this like this and like this
+[08:50] so this is the true systolic computation
+[08:52] because the input values are coming row
+[08:55] wise
+[08:56] the filters are cached in the local
+[08:59] buffers of the piece respective piece
+[09:03] and finally an output is being computed
+[09:08] so as you can see there are four phases
+[09:10] in this computation which is a
+[09:11] representative
+[09:12] computation with systolic arrays where
+[09:15] you are loading the filter weights in
+[09:16] each P from the global buffer GB is
+[09:19] global buffer
+[09:21] a block of pixels are being sent along
+[09:23] each row which are if map pixels
+[09:26] each P is Computing its local
+[09:29] convolution
+[09:30] and then as we said we are adding the
+[09:33] values produced by each column
+[09:35] so there here of course there are two
+[09:37] options one is this systolic addition
+[09:39] other is that because additions are
+[09:42] being done in parallel you kind of have
+[09:44] a tree of addits and that does the job
+[09:47] of addition of course that is
+[09:49] kind of breaks this regular structure so
+[09:52] the trio of adders is not a great idea
+[09:54] but it's again not a very uncommon idea
+[09:57] so you could either have as I said a
+[09:59] systolic transfer or a tree of adults
+[10:02] for doing it even though I personally
+[10:04] would like to argue against anything
+[10:06] that breaks the regularity of a systolic
+[10:08] array
+[10:09] and you may want to argue that addition
+[10:12] is a parallel process
+[10:14] so why should I
+[10:16] kind of sequentialize it but then I will
+[10:18] say that look at the same time you can
+[10:21] do other work how to do that we will
+[10:22] discuss slightly later but again you
+[10:25] know having a regular structure keeps
+[10:28] things simple
+[10:30] if I were to look at the input
+[10:32] stationary architecture that would look
+[10:34] slightly differently at least the way it
+[10:36] has been we have been presenting it
+[10:39] again go image wise
+[10:41] look at essentially a chunk ah
+[10:45] block of pixels
+[10:48] right then for a given output Channel
+[10:51] what you do is that you keep the entire
+[10:53] chunk
+[10:54] Ed right for all the input channels so
+[10:57] basically this would keep a chunk cached
+[11:00] for all the input channels right and
+[11:03] then what you would do is that
+[11:06] you broadcast the filter bits all right
+[11:10] so basically you just broadcast the
+[11:12] filter weight so the filter weights are
+[11:14] broadcast to each and every PE
+[11:16] once that happens each and every P
+[11:19] computes its respective
+[11:22] convolutions
+[11:24] okay
+[11:25] and once the respective convolutions are
+[11:28] computed
+[11:30] then they are streamed out via these
+[11:32] columns so we stream the output and the
+[11:34] output corresponds to
+[11:36] the output channels
+[11:40] so in this case what is happening is
+[11:43] that we are taking a large image
+[11:45] we are kind of breaking that into chunks
+[11:48] right and then basically let's say each
+[11:51] chunk of course you know it will not be
+[11:54] one because what normally happens is
+[11:55] that we have multiple if maps and these
+[11:58] is maps are kind of fed into one CNN
+[12:01] layer right
+[12:03] so for each is map you are taking the
+[12:05] corresponding chunk and your kind of
+[12:06] storing all of these this this this this
+[12:09] all of these in the same p
+[12:12] so then what you do is that you compute
+[12:14] all the outputs or one output Channel
+[12:18] all the like output chunk values for one
+[12:20] output Channel let's say K1 once K1 is
+[12:24] fully done you move to K2 so on and so
+[12:27] so the filter as we have seen is a
+[12:30] function of the input channel number and
+[12:32] the output channel number
+[12:34] so at least
+[12:36] for a large part of the computation
+[12:38] the output channel number is fixed right
+[12:41] so when because we fully finish one
+[12:43] output Channel and move to the next as
+[12:46] this particular construct would suggest
+[12:49] so what happens is that we look at an
+[12:52] area
+[12:54] and different areas are cached in
+[12:57] different local buffers corresponding to
+[12:59] different input channels
+[13:01] then we just broadcast all the filters
+[13:03] corresponding to let's say if you have
+[13:05] fixed output Channel
+[13:07] then for each input Channel we just
+[13:10] broadcast the filters all of them
+[13:12] locally compute their convolutions keep
+[13:14] the partially computed results with them
+[13:17] and then finally they have the
+[13:20] output right the value for the output
+[13:22] Channel at least for
+[13:25] the particular chunk that they are
+[13:26] interested in that is available
+[13:29] then all of that is kind of streamed out
+[13:31] to this common output line and the final
+[13:34] of map is created and it is written to
+[13:36] memory
+[13:37] so this is one of the ways of realizing
+[13:41] input stationarity
+[13:43] I would say it is not the best way in
+[13:45] the sense there are better possible
+[13:48] methods but as we have said you know our
+[13:50] job is not to teach the best possible
+[13:53] method there are a lot of tools notably
+[13:56] time Loop to
+[13:58] investigate this so it essentially looks
+[14:00] at a large number of different
+[14:02] combinations and finds the best one for
+[14:04] you so that's not really our aim here
+[14:06] but our aim here is to look at simple
+[14:08] representative examples as we have just
+[14:10] seen
+[14:11] where in this case the filter we
+[14:13] broadcast an input we keep stationary
+[14:17] similarly what we could do is we could
+[14:19] have a different is architecture
+[14:22] where again we go image wise we look at
+[14:24] a chunk
+[14:26] in this case what we do
+[14:29] is that we parallelize this based on the
+[14:32] input Channel
+[14:33] we consider output sequential which
+[14:35] anyway we are doing earlier also
+[14:39] and then we keep
+[14:41] for a given input Channel we keep a
+[14:45] chunk stationary so let's see if this is
+[14:47] uh input Channel C1
+[14:51] so what we do is that we keep a chunk
+[14:54] stationary over here over here so just
+[14:56] read this it's pre-filled inputs for a
+[14:58] single if map tile so for a single tile
+[15:01] we kind of keep it stationary like this
+[15:04] so then what happens is that the filter
+[15:06] weights
+[15:07] for a given output Channel K are
+[15:11] broadcast like this corresponding to
+[15:12] channel C1 C2 C3 and C4
+[15:15] so what will happen basically is
+[15:19] that the filter weights will go here and
+[15:21] then we'll compute the convolutions
+[15:25] then for a given chunk right
+[15:29] what will happen is that because they
+[15:31] correspond to different channels and
+[15:33] they have all been convolved with the
+[15:34] respective filter widths
+[15:36] the value of the output is nothing but a
+[15:39] sum of this this plus this plus this
+[15:41] plus this which is similar to the
+[15:44] earlier weight stationary or filter
+[15:46] stationary architecture that we had
+[15:49] where basically each of the piece was
+[15:51] Computing a partial sum and the final
+[15:54] result was a sum of these individual
+[15:57] partial sums so here also we are doing
+[16:00] the same so what are we doing let's say
+[16:03] for a given chunk of an image we will
+[16:06] have part of it in C1 then same Chunk in
+[16:09] C2 same in C3
+[16:12] we will kind of convolve it with let's
+[16:14] say the filter c1k
+[16:17] write a function of C C two k
+[16:20] and C 3 K right so we will convolve
+[16:23] these with this
+[16:24] so what we do is that we keep the
+[16:26] respective input stationary here in the
+[16:29] local buffers we send these filters down
+[16:32] so what happens is for a given input
+[16:35] region the different partial sums are
+[16:37] computed which is like this kind of
+[16:39] convolved with this this convolved with
+[16:41] this and the final output is nothing but
+[16:44] the sum of these right
+[16:49] so this sum is achieved via this
+[16:52] systolic addition so the final output
+[16:54] comes out at the end so I do understand
+[16:57] that this may be kind of a difficult
+[16:59] thing for many people to visualize
+[17:03] right mainly because there are a lot of
+[17:06] interconnected Concepts and you will
+[17:07] have to go back to our previous lecture
+[17:09] which was lecture number two to
+[17:11] understand the maths behind the CNN the
+[17:15] master equation and how we arrive from
+[17:18] there to this equation so we have
+[17:19] actually come a long way and I would not
+[17:22] blame anyone if you are not able to
+[17:24] understand what I am saying right now so
+[17:26] what you should do is read the book so
+[17:28] the book as I said
+[17:31] is available freely in at least a
+[17:34] preprint readable version
+[17:36] and look at that look at the previous
+[17:40] two videos in this slide and then you
+[17:43] can come back to this point so here the
+[17:46] key idea is as opposed to a broadcast we
+[17:49] are using a systolic addition to compute
+[17:51] the output
+[17:54] now let's look at
+[17:56] the OS architecture
+[17:59] architecture what we do is we store one
+[18:01] of map corresponding to a given HW
+[18:04] region right corresponding to an H dash
+[18:07] W style right we are kind of storing it
+[18:10] one in each local buffer
+[18:14] so then what we do is we steam the
+[18:16] inputs for the same coordinates for the
+[18:18] same H1 W1 coordinates what we will have
+[18:22] is for the different input channels
+[18:23] we'll have different matrices right so
+[18:27] basically if we have you know Capital C
+[18:29] channels then we will have Capital C
+[18:32] matrices which are streamed one after
+[18:34] the other this way
+[18:36] and similarly the filters are also
+[18:38] streamed downwards where the filter for
+[18:40] a column corresponds to a given
+[18:43] output a given output channel so in this
+[18:46] case what we are doing is that we are
+[18:48] parallely in parallel dividing the tiles
+[18:50] among the piece
+[18:52] parallelizing the output channel so we
+[18:54] can see one column for K1 one for K2 one
+[18:57] for K3 one for K4 then sequentially we
+[19:00] are reading the
+[19:03] Capital C channels which we are doing
+[19:06] this way
+[19:07] and they are colliding at the right time
+[19:09] with the filters in each of these piece
+[19:12] once that is done
+[19:15] all that we do is we achieve a systolic
+[19:18] transfer
+[19:19] right so they are colliding and then we
+[19:21] kind of read the values out via the
+[19:24] columns so in this case there is no
+[19:25] great systolic transfer because the
+[19:28] output The partially computed output
+[19:30] stays here the input gets streamed the
+[19:33] filter gets streamed right the filters
+[19:36] get streamed I'm sorry then they Collide
+[19:39] here the output is computed so they
+[19:41] don't remain here but they kind of get
+[19:43] streamed through the bottom and they get
+[19:45] written to memory
+[19:47] so I deliberately went slightly fast
+[19:49] because I am assuming that you have
+[19:51] understood the previous few slides in
+[19:53] case you haven't then the first two
+[19:55] lectures should be looked at more
+[19:57] thoroughly before you come here
+[19:59] right because they established the maths
+[20:01] and our notation and clearly here we are
+[20:04] sending Capital C tiles via each root
+[20:07] because you know it's a single tile but
+[20:09] there are capital c tiles
+[20:11] because we have that many input channels
+[20:13] so they are coming one after the other
+[20:15] in Via this root
+[20:18] so last but not least the row stationary
+[20:21] architecture which is also the simplest
+[20:23] so this is super easy so what we do is
+[20:26] we take a row of the input a row of the
+[20:28] filter row of the input row of the
+[20:29] filter so let's say that you know our
+[20:32] filter has three rows
+[20:34] The Three cross three filter so we take
+[20:36] a long input
+[20:37] and we take a small filter
+[20:39] again three rows so our job is to
+[20:42] convolve H1 with R1 H2 with r two H
+[20:45] three with R3
+[20:47] so we do that
+[20:49] then what we do is we Slide the filter
+[20:51] down
+[20:52] and we convert H2 with R1 H3 with R2 H4
+[20:57] with R3 again we slide it down and we
+[21:00] convert so we have the results of three
+[21:03] different convolutions over here
+[21:06] again understanding this should not be a
+[21:08] big deal if you have understood the
+[21:10] original equation
+[21:11] so the arrangement of data here can be
+[21:14] represented as a matrix as H1 H2 H3
+[21:18] h2h3h4
+[21:21] h3h4h5 as you can see H 1 2 3 2 3 4 3 4
+[21:26] 5.
+[21:28] so then what we do is in the next cycle
+[21:30] once we have done processing this Matrix
+[21:33] we again re reload rows from the input
+[21:36] so we have H4 H5 H6 H5 H6 H7 868788 and
+[21:42] we keep doing the same convolutions over
+[21:45] and over and over again so of course
+[21:48] this process is being done with a single
+[21:50] filter but you have multiple filters
+[21:52] then the computation has to be done for
+[21:55] every channel filter pair
+[21:58] right so that has to be done
+[22:01] once we have done this for every if map
+[22:03] of map pair which can be achieved with
+[22:07] many parallel units
+[22:09] and of course you know
+[22:11] will have a lot of peas parallel units
+[22:13] and as complicated dispatcher so once
+[22:16] all of this is done we will be able to
+[22:18] compute all the OS Maps
+[22:21] so this was simple
+[22:23] and the RS architecture of the full
+[22:25] system again if I were to show you would
+[22:28] be the same where I go image wise I
+[22:30] parallelize it based on the KC pair
+[22:33] output Channel input Channel pair
+[22:36] and then what I do is I parallelize the
+[22:38] row space for every row I compute a
+[22:42] if you can think about it we can also
+[22:44] cache the filters also right so
+[22:47] basically we can kind of extend this
+[22:49] over here
+[22:50] so the choice is ours I'm not you know
+[22:53] dictating more than that
+[22:55] but if I were to quickly just do a read
+[22:57] through this
+[22:59] so it would basically be that I first
+[23:01] parallelize on the basis of input output
+[23:05] then on the basis of filters and if map
+[23:08] rows
+[23:10] and in each P I essentially need to
+[23:12] compute a set of 1D convolutions which
+[23:16] is nothing but a long
+[23:19] is map Rule and a short filter row so I
+[23:24] need to compute a set of long 1D
+[23:28] right so we need a bunch of many many of
+[23:31] these 1D convolution units
+[23:36] so once that has been done we are left
+[23:38] with only one choice which is not to
+[23:41] reuse anything at all
+[23:43] so not reusing anything at all is an
+[23:46] option it's called No local reuser nlr
+[23:50] so in this case what I am doing is it's
+[23:54] a simple diagram
+[23:55] let's understand this I go image wise
+[23:58] output Channel wise input Channel wise
+[24:02] so of course I parallelized the input
+[24:05] and so then I have multiple input
+[24:07] channels for each one of them
+[24:09] I essentially stream in data streaming
+[24:12] filter data and I'm done
+[24:14] how do I achieve this in practice
+[24:16] well in practice for a given image what
+[24:19] I do is that I send C1
+[24:23] and then basically that is the image
+[24:27] data then I send the filters also for a
+[24:30] certain output Channel
+[24:32] I convolve it at the same time I add I
+[24:36] sorry I convolve nc2 with fkc2
+[24:39] right I achieve this convolution as well
+[24:42] right so maybe we'll just fix this and
+[24:47] uh
+[24:49] so the key idea is that I am doing this
+[24:52] convolution at the same time I am doing
+[24:54] this at the same time I am doing this
+[24:56] so all that I do is I do a systolic
+[24:59] addition across the piece on the same
+[25:01] row so in the same row I just do a
+[25:04] systolic addition which is all that I
+[25:06] need to do so we simultaneously compute
+[25:09] the convolutions for each input Channel
+[25:12] and we just add them in a systolic
+[25:13] fashion which is all that I need to do
+[25:17] right so I am not
+[25:21] doing any reuse any great amount of
+[25:24] reviews I'm just adding them that's all
+[25:26] and then I forget it
+[25:28] so we are now reached an interesting
+[25:31] point where we have covered the space of
+[25:33] CNN architectures so as I said as of
+[25:36] today the most popular tool for
+[25:38] architecture exploration CNN
+[25:40] architecture explanation is time Loop
+[25:43] so you can take a look at it as far as I
+[25:46] know it is freely downloadable and
+[25:48] available
+[25:50] so now we will look at what is it that
+[25:52] happens inside a PE how do you compute
+[25:55] these convolutions because the Crux is
+[25:57] basically take a 2d region and take a
+[26:00] filter and you convolve them
+[26:02] which of course can devolve to something
+[26:04] simpler as a kernel you take a 1D row
+[26:08] you take a smaller one liter of filter
+[26:10] and create a 2d conversation out of a
+[26:13] bunch of 1D convolutions so that again
+[26:16] is a
+[26:17] possibility which we will look at
+[26:20] let us now look at 1D convolutions
+[26:24] so the main aim of looking at 1D
+[26:26] convolutions is that if we can design
+[26:28] efficient hardware for implementing 1D
+[26:33] then we can
+[26:34] reuse the same hardware and create a 2d
+[26:37] convolution Hardware which is Trivial
+[26:39] it's not very difficult
+[26:41] and the Heart of the 1D congregation is
+[26:43] again very simple we have seen this
+[26:45] several times
+[26:46] which is that for all I
+[26:48] compute y i is equal to essentially a
+[26:52] sum of products n products
+[26:55] so by basically for every filter width
+[26:57] from the 0x to the N minus 1 8 filter
+[26:59] weight I multiply with x i plus J where
+[27:03] this and this are one dimensional varies
+[27:06] and with that I get y i so of course you
+[27:09] know towards the end you need to take
+[27:11] care of hello pixels and so on so we
+[27:13] have seen that so the key idea is that
+[27:15] if this is X and then we kind of want to
+[27:17] compute a convolution in this range then
+[27:20] only sum of these pixels which are not
+[27:21] in the range so we assume that they are
+[27:23] zero
+[27:25] so the key idea here is that we want to
+[27:27] design a theory or design a theory for
+[27:31] constructing efficient Hardware
+[27:35] where this can furthermore be used for
+[27:39] creating larger Primitives to
+[27:41] reconvolution 3D convolutions so on and
+[27:43] so forth
+[27:46] so if I were to visualize the process of
+[27:48] convolution it would be basically a
+[27:51] sliding window over here
+[27:53] for X is a one-dimensional array W is a
+[27:57] one dimensional array
+[27:59] so what we do is that we convolve it
+[28:01] with the first location here so this is
+[28:03] y1
+[28:05] we again move this over here
+[28:07] again this is Y2
+[28:10] again this is Y3 so on and so forth that
+[28:14] every for every step it's a point wise
+[28:18] multiplication and then we are adding
+[28:20] all the partial products to come up with
+[28:22] the final result
+[28:27] so uh what I can do is that the same
+[28:29] thing the same thing that I did over
+[28:31] here I'll create what is called a
+[28:33] semi-systolic array so what is this
+[28:35] systolic array and a semi-systolic array
+[28:37] let's keep this for a later point of
+[28:40] time when we will discuss what these are
+[28:43] but the key idea is that what I would
+[28:46] like to essentially do
+[28:47] is that I would like to create a basic
+[28:50] element
+[28:52] right a fair this is a register
+[28:55] and this element over here is a
+[28:57] multiplier
+[28:59] which is doing two things right so this
+[29:01] is not a normal multiplier but it's a
+[29:03] slightly special multiplier in the
+[29:05] census multiplying No Doubt
+[29:07] but it is also propagating the value of
+[29:11] x towards the right right so there's a
+[29:13] propagation part and there is a
+[29:15] multiplication part
+[29:17] so what we do is that if I look at these
+[29:20] four units we uh permanently store W1 W2
+[29:24] W3 and W 4 assuming that W is a Four
+[29:27] Element one dimensional array right so
+[29:31] three four five six seven doesn't matter
+[29:33] so we have of course discussed odd
+[29:35] number sized
+[29:37] filters earlier but again as I said
+[29:40] that's not important
+[29:42] so here what we do is that I keep this
+[29:44] here so if you see uh the values keep
+[29:47] flowing in from the
+[29:49] left hand side towards the right
+[29:52] the moment X1 approaches all that we do
+[29:55] is we multiply send W1 times X1 over
+[29:58] here send W3 times x 3 over here this
+[30:05] so on and so forth and here we have its
+[30:08] quick tree of adders so because we could
+[30:11] have four of these W's or five six seven
+[30:13] ten whatever so the tree of these adders
+[30:16] will essentially take all of these
+[30:18] values and add them up quickly in a tree
+[30:20] like factor and that would be the final
+[30:21] output in this case y1
+[30:24] so this would happen in the first time
+[30:26] step in a second time step all the
+[30:29] values will flow to the right right one
+[30:33] step to the right because this is in the
+[30:35] resistor so the next cycle this will go
+[30:38] here and you know this of course will go
+[30:39] out and X3 will come here
+[30:42] so what we would end up doing is we
+[30:44] would end up Computing this result over
+[30:49] the result over here is nothing but the
+[30:52] value Y2 because we are convolving W1
+[30:55] with x 2 W 2 with x 3 so on and so forth
+[30:58] so we are essentially doing y two so of
+[31:00] course here you would notice we are
+[31:02] starting accounts from one it will make
+[31:05] our lives slightly easier right so this
+[31:07] again is a little bit of Liberty that is
+[31:09] being taken over here right a computer
+[31:12] scientists won't like it but
+[31:15] we are taking this Liberty for the ease
+[31:17] of explanation
+[31:19] similarly we compute Y3 so on and so
+[31:21] forth so basically the final values come
+[31:24] out of this tree of adults and this tree
+[31:26] of adders is on the critical path
+[31:27] because it will think about it this is a
+[31:30] very fast unit this is a very fast unit
+[31:32] but the tree of adders depending upon
+[31:35] how large is the filter size this could
+[31:37] be the bottleneck so this is something
+[31:39] that we are in principle not very happy
+[31:42] with
+[31:44] so the problems as I said with the
+[31:46] design is nothing but the three of added
+[31:49] switches to a problem
+[31:51] so this will unnecessarily it will make
+[31:54] the pipeline stages kind of unbalanced
+[31:56] and increase the clock period unless of
+[31:58] course we decide to pipeline the tree of
+[32:00] adders which we can
+[32:01] so what we can do is that we can add
+[32:05] registers or flip flops in the middle
+[32:07] like here in one layer here at it here
+[32:09] and so on can be done but it turns out
+[32:12] that there are better ways of doing it
+[32:16] so but let's first look at one more idea
+[32:19] for a semi-systolic architecture which
+[32:22] is to broadcast the weights
+[32:25] so in this case what we do is that we
+[32:29] basically send all our inputs so this
+[32:32] would have x 1 x 2 x 3 x 4 x 5 Etc
+[32:35] and uh what we would do is that we would
+[32:38] broadcast W1 first so this would compute
+[32:41] W1 into X1 and store it here
+[32:44] then you do W2 X2 so then the next cycle
+[32:48] it would compute y1 plus equal to right
+[32:51] thus equal to being the most important W
+[32:53] 2 into x 2 so on and so forth
+[32:56] once y1 has been computed you get the
+[32:59] result which you can read out why do you
+[33:01] can read out Y3 y4 Wi-Fi Etc
+[33:05] and then Y6 so six results you can read
+[33:08] out at the same time
+[33:09] and then again you read six more at the
+[33:12] same time so on and so forth right so so
+[33:15] this is the key this is the big broad
+[33:18] idea of doing this
+[33:20] so here of course broadcast is involved
+[33:22] and again we are not happy with the
+[33:24] broadcast mechanism
+[33:26] because what will happen is that is the
+[33:28] same wire right it's the same wire it's
+[33:30] like one long wire connected to both
+[33:33] here here here here and so on it will
+[33:36] have a massive rcd because you know
+[33:38] there will be some capacitance over here
+[33:40] some over here all of that is in
+[33:42] parallel so it'll add up so essentially
+[33:44] charging the entire
+[33:46] uh entire wire will take quite some time
+[33:48] so again we are not very happy with this
+[33:50] design but this is still a valid
+[33:52] alternative design
+[33:54] so in this case uh by broadcasting rates
+[33:57] we can still get our job done
+[34:02] so one of the pros and cons of this
+[34:04] design
+[34:06] that we either have a causal three of
+[34:09] addits
+[34:10] or we broadcast
+[34:12] we will work in parallel
+[34:15] so the broadcasting process itself may
+[34:17] have a large RC delay so we don't like
+[34:19] you know these parallel wires like this
+[34:22] not a good idea we don't like it we also
+[34:25] don't like an added tree so again you
+[34:26] know both take a lot of time and they
+[34:29] kind of you know imbalance our pipeline
+[34:31] so what we would want is that we would
+[34:33] want a systolic architecture that does
+[34:35] not have these structures and between
+[34:37] any two combinational units there is no
+[34:39] direct Connection in this case there was
+[34:41] so these adders were connected to each
+[34:43] other directly
+[34:44] so what we would want is that between
+[34:47] any two combinational units let's add us
+[34:50] multipliers whatever there is always a
+[34:52] register if that's the case we are happy
+[34:55] and if you would see that will not
+[34:57] imbalance our Pipeline and that is
+[34:59] called as systolic array
+[35:02] so uh the first thing is that can we
+[35:05] take one of our previous
+[35:07] semi-systolic arrays so this was
+[35:10] why was it semi-systolic well it's
+[35:12] obvious that you know we kind of have
+[35:15] broadcast like connections or
+[35:17] semi-systolic by definition because you
+[35:20] can you know think of this input and
+[35:21] this input they are connected no
+[35:22] register in between
+[35:25] so uh can we automatically convert or
+[35:28] CMS is probably carrying into a systolic
+[35:31] so the point is that can we take the
+[35:33] previous Network and then kind of remove
+[35:35] those broadcast connections that we are
+[35:37] we don't seem to be very happy with
+[35:41] so it turns out that we can do something
+[35:43] like this so let's look at it
+[35:46] so what we can basically do is that we
+[35:49] can send the weights from the left
+[35:52] we can send the inputs from the right
+[35:55] we can hope or expect that they would
+[35:58] collide with each other at exactly the
+[36:00] right points of time
+[36:02] and this unit over here will make it
+[36:05] more special so in this case what will
+[36:07] happen is that
+[36:08] the weights will keep getting
+[36:10] transferred this way
+[36:12] and the input server will not get
+[36:14] transferred this way they'll get
+[36:15] transferred via a register but again you
+[36:18] know uh
+[36:20] inputs will go like this
+[36:22] so so in this case uh what's happening
+[36:25] is that the weights are kind of walking
+[36:27] through so so this is still not you know
+[36:30] this is still not a
+[36:32] traditional systolic array but we are
+[36:34] getting there but if we just take a look
+[36:36] at it what you will see is that the
+[36:38] weights are kind of kind of getting a
+[36:40] walk over in the sense the W1 weight is
+[36:42] still getting broadcasted right so we
+[36:45] are taking the same old broadcast
+[36:46] network but we have just converted it
+[36:48] into a different fashion
+[36:50] and we are searching for an automatic
+[36:52] method of converting a semi-systolic
+[36:55] array into a systolic array so what we
+[36:57] did is that earlier broadcast like
+[37:00] connection which was over here we are
+[37:03] still having the same but we are kind of
+[37:05] making it this is kind of think of it as
+[37:07] an intermediate step before we convert
+[37:10] this fully into a systolic array so in
+[37:13] this case what we are doing is that if
+[37:16] you take a look at this unit let me just
+[37:17] clear off the Clutter on the slide
+[37:20] the weights are kind of flowing through
+[37:22] these units right so in this case in W1
+[37:25] pretty much instantaneously the waves
+[37:27] are reaching here which is nothing but a
+[37:29] broadcast connection right so you see
+[37:31] the weights are flowing there is no
+[37:33] register or clock in between so
+[37:35] instantaneously they flow right till the
+[37:37] end but the inputs are kind of going one
+[37:40] step at a time
+[37:42] and the rest of the logic is exactly the
+[37:44] same when you multiply y w 1 into X1
+[37:47] store it here next cycle W2 comes store
+[37:50] it here so on and so forth and then uh
+[37:54] you know all of them do the same thing
+[37:56] and then you know all of them get done
+[37:58] at the same point of time once they are
+[38:01] done we read them out and again we will
+[38:03] do W so sorry y seven y eight y nine so
+[38:06] so this process will continue
+[38:09] so this is again so this network by the
+[38:12] way which is nothing but a kind of a
+[38:15] intermediate stage or kind of a
+[38:17] rendition of this network which was a
+[38:19] pure broadcast we converted it to this
+[38:22] and you can clearly see why it is not
+[38:24] systolic because there is a
+[38:27] combinational unit here there is a
+[38:28] combinational unit here which looks like
+[38:31] this
+[38:31] and there is no register in between them
+[38:34] so in between them there is no register
+[38:36] at all and this is what is creating the
+[38:39] problem
+[38:40] so if we can kind of convert this to a
+[38:42] systolic Network then what will happen
+[38:45] is that we will not have these long
+[38:47] paths so designing the hardware will
+[38:50] become much easier because Hardware
+[38:52] wants balanced pipeline stages
+[38:56] so there is a re-timing Lemma which will
+[38:58] allow us to do this sorry I forgot to
+[39:00] mention the title so the retiling Lemma
+[39:03] will allow us to convert
+[39:06] a semi-systolic array into a systolic
+[39:09] array automatically
+[39:12] so let's look at the retiring Lemma and
+[39:14] let's take our semi-systolic Network
+[39:17] which we just designed which is over
+[39:19] here and let's try to convert that so
+[39:22] what we want to do is we want to create
+[39:24] a graph based representation where the
+[39:26] combinational units are the nodes and
+[39:28] the nodes are connected by edges
+[39:31] and the weight of each Edge represents
+[39:33] the number of registers in the
+[39:38] so in this case what we were seeing is
+[39:41] that if you have this CU and this CU
+[39:43] there is an edge between them whose
+[39:45] weight is one because there is one
+[39:47] register and again between these the
+[39:50] weight is 0 because there is a weight
+[39:52] so you can say this is the way it is one
+[39:54] there is one register one one one one
+[39:56] one zero zero zero zero and basically
+[39:59] from here to Here There is a graph and
+[40:02] this indicates that it is one
+[40:05] so what is basically happening is that
+[40:07] the weights are flowing right and
+[40:10] basically inputs are flowing
+[40:14] so we designate one node as the host
+[40:16] which is basically uh if you look at
+[40:19] this right so pretty much you can say
+[40:21] that you have any wedge that you go
+[40:24] you are finally you know kind of coming
+[40:26] uh here you know towards the host so you
+[40:29] just create a dummy node called the host
+[40:31] and we will see the W node called The
+[40:33] Host will play a very important role we
+[40:35] will see how
+[40:39] so the properties of such graphs is that
+[40:41] in a semi-systolic graph you will always
+[40:43] have some zero weight edges because
+[40:46] there will be a pair of cus or
+[40:49] combinational units that don't have a
+[40:51] register between them
+[40:53] in systolic networks or systolic graphs
+[40:56] you will never have a zero weight Edge
+[41:01] so basically what we see here is that
+[41:04] you know to begin with we don't have any
+[41:07] negative weightage right as a result
+[41:10] there are no negative weight Cycles
+[41:12] so we know from you know our study of
+[41:15] algorithms that whenever you do not have
+[41:16] a negative weight Edge it is possible to
+[41:19] find shortest paths
+[41:23] so basically the idea now is that we
+[41:26] will use some of these ideas and we will
+[41:29] try to convert a semi-systolic graph to
+[41:31] a systolic graph using some of the
+[41:33] things that I just mentioned such that
+[41:35] we have an alternative graph where every
+[41:38] Edge
+[41:40] has an non-zero weight which is what we
+[41:43] want
+[41:45] so the basic idea of re-timing is like
+[41:48] this let us assume this is a combination
+[41:50] unit and we have by just entering it and
+[41:53] you're just exiting it
+[41:58] so what we will do is that let us say
+[42:01] that these edges have some weights for
+[42:02] the sake of Simplicity I have assumed it
+[42:04] is zero
+[42:06] so what we can do is we can add a lag of
+[42:08] K which basically means that to all
+[42:10] incoming edges I would add k
+[42:13] and to all outgoing edges I would
+[42:15] subtract there right so then the rest of
+[42:19] the world will not be able to make any
+[42:21] difference because any path that is
+[42:22] going through this CU you are adding K
+[42:25] you are subtracting case any path that
+[42:27] you're going here it's path weight
+[42:28] Remains the Same
+[42:30] but in the immediate neighborhood what
+[42:33] you are doing is that you are adding a
+[42:34] lag of key which basically translates to
+[42:37] adding K to all the incoming edges and
+[42:40] subtracting K from all the outgoing
+[42:42] edges
+[42:43] right so this is the meaning of adding a
+[42:46] lag similarly you can add a lead of K
+[42:48] which is the reverse subtract K here and
+[42:51] add K here
+[42:53] other nodes needless to say will not
+[42:55] perceive the difference because any path
+[42:57] that is traveling through the CU has a
+[42:59] plus k and a minus K attached or
+[43:01] associated with it
+[43:04] so what is the effect of lags on the
+[43:07] edge of it right
+[43:09] so if I look at the weight of this Edge
+[43:12] the new weight of the edge is basically
+[43:14] the old weight of the edge
+[43:16] plus the lag of the head because you are
+[43:18] adding something over here minus the lag
+[43:20] of the tail because I added something
+[43:22] here by taking away something from here
+[43:24] so the new weight is the old weight of
+[43:26] the Edge Plus the lag of the head minus
+[43:28] the lag of the tail
+[43:31] so the idea is can we find a lag
+[43:33] function because in this case as you can
+[43:35] see the rest of the world doesn't care
+[43:37] such that the edge weight of every Edge
+[43:40] is greater than equal to 0.
+[43:43] right if we can do that the resulting
+[43:45] network is semi system
+[43:47] right so for basically if we can do that
+[43:49] this will be a semi-systolic array
+[43:52] and the point is that if we can find if
+[43:55] we can somehow kind of
+[43:58] you know add more registers or kind of
+[44:00] move the registers which basically means
+[44:02] add a lags such that it is greater than
+[44:04] 0 for every Edge it becomes a
+[44:07] systolic Network which is what we want
+[44:09] because we do not want
+[44:11] two combinational units to be connected
+[44:14] together with a wire right this is
+[44:16] something that we don't want what we
+[44:18] want is that they are always separated
+[44:20] by a register
+[44:23] so uh I had discussed this earlier but
+[44:27] what we could do is that we could take a
+[44:30] look at this once again
+[44:32] that if there are no
+[44:35] uh so it's it's easy to prove that look
+[44:38] if you are not you know
+[44:41] changing any weights or something
+[44:42] finding a shortest path will is always
+[44:46] possible because there are no negative
+[44:47] weight edges or Cycles
+[44:49] so as I said we will keep on using this
+[44:51] result and you will also use one more
+[44:53] result
+[44:54] which is that if there are no zero
+[44:56] weight Cycles in the sense you don't
+[44:57] have a cycle which is like this right
+[45:00] there are no zero weight Cycles
+[45:03] uh so basically the thing is that the
+[45:06] original network if it doesn't have a
+[45:07] zero weight cycle then any network where
+[45:09] you add these lags will not have a zero
+[45:12] weight cycle
+[45:13] so this is something that you know is
+[45:15] there in text on retiming and it's kind
+[45:18] of easy to prove
+[45:21] let me give a hint of the proof so the
+[45:23] idea is that if you take any cycle and
+[45:26] you just add them then because of this
+[45:28] equation over here the lags will all
+[45:31] cancel out right so basically if you
+[45:33] just go over here all the lags that you
+[45:35] add will cancel out so the sum of the
+[45:38] new weights will be equal to the sum of
+[45:40] the old weights and of course as I said
+[45:41] this will cancel out in a cycle
+[45:44] so basically the original Network didn't
+[45:46] have zero weight cycle then the new
+[45:49] network after adding lags will not have
+[45:52] a zero weight cycle so we'll use this
+[45:54] result hang on to it
+[45:57] so here are the steps to convert a
+[45:59] network into a systolic Network given a
+[46:03] semi-systolic network which is the type
+[46:05] that we have seen so what we did is
+[46:07] first we had an approximate Network
+[46:09] which was like this at broadcast
+[46:11] connections
+[46:12] we converted it to something like this
+[46:14] which is the same thing still
+[46:16] semicostolic but we just added the
+[46:19] combinational units where the weights
+[46:21] kind of pass through
+[46:23] easier to convert converted this to a
+[46:25] graph
+[46:26] which is it would look like this we
+[46:28] added a dummy Force Mode
+[46:31] and then finally we did some proving of
+[46:34] some simple theorems
+[46:36] so then we come at uh so now the idea is
+[46:39] that we want to convert the
+[46:40] semi-systolic network or the
+[46:42] semi-systolic graph
+[46:43] so what we do is given graph G we
+[46:46] compute G minus 1 which means we
+[46:48] subtract 1 from every age bit so Edge
+[46:51] weight was 0 we make it minus one if
+[46:53] it's 5 we make it 4 so on and so forth
+[46:57] so let us assume it does not have a
+[46:59] negative weight cycle right
+[47:01] so then I Define the lag V or the lag of
+[47:04] a Vertex v as the weight of the shortest
+[47:07] path from V to the force in the graph G
+[47:10] minus 1.
+[47:12] so of course here you will have to take
+[47:14] a look at traditional algorithms so any
+[47:16] graph that does not have a negative rate
+[47:18] cycle
+[47:19] is guaranteed to have a shortest path
+[47:21] which can be found using the Bellman
+[47:23] Ford algorithm
+[47:27] foreign
+[47:32] is guaranteed to have a shortest path so
+[47:34] you find the path from V to the host in
+[47:36] the graph T minus 1.
+[47:40] so the weight of the edge e right
+[47:43] basically which is from U to V in G
+[47:46] minus 1
+[47:47] is basically the old weight e minus 1.
+[47:51] now what we do is that we have computed
+[47:53] a large function on top of it
+[47:55] and the lag function in this case
+[47:57] corresponds to the shortest paths as we
+[47:59] have said the shortest path to the host
+[48:03] so the lag of U
+[48:05] is less than equal to Old way T minus 1
+[48:08] is the weight of the edge in G minus 1
+[48:11] plus lag of V
+[48:14] and so then we basically from this we
+[48:18] get this relationship over here
+[48:23] so proving this is quite simple so lag
+[48:26] of V is basically the rate of the
+[48:28] shortest path from V to The Host
+[48:30] so basically the shortest path of U
+[48:34] will either go via the U to V root or
+[48:38] take some other paths to The Host
+[48:40] so the weight of the path from going
+[48:44] from U to V and V to the host is nothing
+[48:46] but lag V which is the shortest path
+[48:48] from V plus old weight e minus 1 because
+[48:50] we are Computing the shortest paths on J
+[48:53] minus one so this is the weight of this
+[48:55] path right the LHS over here old way T
+[48:58] minus 1 plus lag V is nothing but the
+[49:01] weight of this long path however lag of
+[49:03] U which is the shortest path from U
+[49:05] could either be this path or could be
+[49:07] some other path whatever its weight may
+[49:09] be is less than equal to the weight of
+[49:11] this path which is obvious this follows
+[49:13] from the where the shortest paths are
+[49:16] defined that any path from U to the host
+[49:18] is guaranteed
+[49:21] to be
+[49:22] its weight is guaranteed to be less than
+[49:24] equal to this path
+[49:26] because otherwise you know the thing is
+[49:29] that otherwise you know this would be
+[49:30] the shortest so either it is this path
+[49:32] in which case there is equality or
+[49:35] another shorter path exists
+[49:37] I can do a little bit of algebra and
+[49:39] kind of you know arrange these like this
+[49:42] the weight of the new weight or the the
+[49:44] new weight of the edge
+[49:46] is nothing but new way T is old way t
+[49:49] plus lag V minus lag U which is
+[49:51] something that we have established
+[49:52] earlier and from this equation over here
+[49:55] we see that new weight e is greater than
+[49:58] equal to 1 or greater than 0 which means
+[50:00] that the new network is systolic right
+[50:02] so this is exactly what we wanted to
+[50:04] establish
+[50:06] so this basically means that assuming uh
+[50:09] so we take G the graph we compute the
+[50:11] graph G minus 1
+[50:13] and then uh we compute the shortest
+[50:16] paths to the host if there is no
+[50:18] negative weight cycle using the Bellman
+[50:21] then what we do is we compute a new
+[50:23] weight of each edges old way t plus lag
+[50:26] V minus log U and this is guaranteed to
+[50:29] be greater than equal to 1 given the
+[50:31] properties of the shortest paths
+[50:33] and the way that we would actually
+[50:35] convert is that we would then add you
+[50:38] know these registers between u and v to
+[50:40] make it a systolic Network
+[50:44] so let us now consider the other case
+[50:46] what if there is a negative weight cycle
+[50:48] in J minus 1 well what we need to do now
+[50:50] is that we need to slow down the network
+[50:52] or create an alternative Network which
+[50:55] is slower but will not have a negative
+[50:58] so what we do is that we create a
+[51:00] network kg which is nothing but you take
+[51:04] each and every Edge weight in g n we
+[51:07] multiply it by a factor k
+[51:09] and we choose the smallest such case
+[51:11] such that kg minus 1 does not have a
+[51:13] negative weight cycle which means that
+[51:15] if G minus 1 has a negative weight cycle
+[51:17] we don't consider it we consider 2G
+[51:19] minus 1. if that has a negative weight
+[51:22] cycle we consider 3G minus 1 so on and
+[51:26] so what's the implication of this
+[51:29] so implication of this is at the moment
+[51:31] we multiply a network or its Edge
+[51:33] weights by a factor of K it slows down
+[51:36] the network which means previously if
+[51:38] there was one register on an edge now
+[51:40] there will be two registers which means
+[51:42] that if the delay was one cycle it will
+[51:44] become two cycles effectively your
+[51:46] network gets lowered down by a factor of
+[51:48] K which is something that you may not
+[51:50] like
+[51:54] so if I come back to my example right
+[51:58] and I look at the semi-systolic graph
+[52:01] over here so this would be the graph G
+[52:04] which is our running example which is
+[52:06] the one that we have been considering up
+[52:08] till now
+[52:11] if I compute G minus 1 just look at the
+[52:13] previous one I just subtract minus 1
+[52:15] from each then all the ones become 0 and
+[52:18] all the zeros become minus one
+[52:20] unfortunately there are negative weight
+[52:22] Cycles like this one whose weight is -1
+[52:26] so I compute 2G minus 1
+[52:29] 2G minus 1 there are no negative weight
+[52:31] Cycles because this is a zero weight
+[52:33] cycle but it's not a negative weight
+[52:35] cycle so so there are no negative weight
+[52:38] Cycles all right so this
+[52:42] basically means that I am safe because
+[52:46] I can work with it because shortest
+[52:49] paths are defined
+[52:53] so what I can do is now I can compute
+[52:55] the shortest paths to the host I can
+[52:57] annotate each of these nodes with its
+[52:59] lag value compute the lag value of this
+[53:01] this this this this this this this this
+[53:03] this and a lags happen to be minus 1
+[53:06] minus 2 minus 3 minus 4 minus 5 and
+[53:09] minus 6.
+[53:12] so then what I can do is I can do the
+[53:14] re-timing which is nothing but new
+[53:16] weight is equal to Old weight plus lag V
+[53:18] minus lag U for a
+[53:20] for an edge that is going from U to V
+[53:23] so in this case what I would do is that
+[53:26] you know if you would look at this
+[53:31] uh so this is the graph 2G minus one so
+[53:34] if I let's say see this this is let's
+[53:36] say U and this is V then lag V minus lag
+[53:39] U is actually plus one
+[53:41] uh so what I would do is that
+[53:45] I would annotate them like this
+[53:51] so if I consider this u and v then lag V
+[53:54] minus lag U is basically minus 1 minus
+[53:57] minus 2 which is equal to plus one
+[54:01] and if I take the old weight so the old
+[54:03] weight of this Edge was zero so the new
+[54:05] weight would be 0 Plus 1. so then enter
+[54:08] the and similarly let's say for this one
+[54:10] uh the new weight would again be
+[54:13] different see I am I've just shown one
+[54:16] example
+[54:19] so so then you would find after doing
+[54:22] all of this the new weights would become
+[54:24] 2 2 2 2 1 1 1 1 1 1 and so on so
+[54:28] basically our new network over here
+[54:31] has basically
+[54:36] uh it has slowed down so all the ones so
+[54:39] because we multiply it by two or new
+[54:41] network did slow down
+[54:43] but what has basically happened is all
+[54:45] the ones became twos so so if I look at
+[54:48] these arrows over here because they
+[54:50] started at the same point and ended at
+[54:52] the same point lag U and lag V were the
+[54:54] same so I'll just write this equation
+[54:56] once again new weight e
+[54:59] is equal to Old weight e
+[55:03] plus lag V minus lag U
+[55:11] so if we look at these edges they start
+[55:13] and end at the same place so lag V minus
+[55:16] log view is zero but because we
+[55:17] multiplied everything by 2 uh so all the
+[55:20] ones which were there all of these
+[55:22] weights became two but these were 0 to
+[55:24] begin with so 2 into 0 is 0 but lag V
+[55:27] minus log U was one
+[55:29] so that's the reason what happened is
+[55:31] that all of them became one
+[55:33] but if you just look at the final state
+[55:35] of this network over here yes it is
+[55:37] slowed down
+[55:38] but the good news is
+[55:40] that
+[55:42] there is a register
+[55:45] or a non-zero Edge weight between any
+[55:47] two combinational units so this network
+[55:49] is systolic all right so using a
+[55:53] retining theorem what we have done is
+[55:55] that we have converted a semi-systolic
+[55:57] network into a systolic Network and how
+[56:01] did we do that well so we took the
+[56:03] original graph
+[56:04] and of course we added our Edge weights
+[56:06] and a dummy host node and so on
+[56:09] then we considered the graph G minus 1.
+[56:12] if it didn't have a negative weight
+[56:15] cycle we went forward or we kept on
+[56:17] multiplying with two three four five
+[56:19] until we reach kg minus 1 smallest value
+[56:22] of K
+[56:23] such that it didn't have a negative
+[56:24] weight cycle so all the weights Etc got
+[56:27] multiplied and then what we did is we
+[56:30] computed the shortest path of every CU
+[56:32] to The Host
+[56:33] combinational unit to The Host
+[56:36] and then we computed The Edge weight
+[56:39] which is old weighty but old weight is
+[56:41] not for G the old weight is for the
+[56:44] graph kg right
+[56:46] uh so basically it's a slow down graph
+[56:48] right so old way T is the original
+[56:50] weight multiplied with k
+[56:52] plus lag V minus lag U so this ensured
+[56:56] given our retiring Lemma and the theorem
+[56:58] that we proved that the edge weights are
+[57:01] all
+[57:03] greater than equal to one which this
+[57:05] mean this makes it a systolic Network
+[57:08] so if I were to realize this network so
+[57:11] just see this and just see this you will
+[57:13] see both are equivalent
+[57:15] so the idea basically is over here that
+[57:19] what I do is that I add a register
+[57:21] between these combinational units a
+[57:24] register between this and this which was
+[57:25] not there earlier it is sorry this was
+[57:27] there earlier but this one was not there
+[57:30] one register between this and this so
+[57:32] there are no more broadcast connections
+[57:34] and then basically there are two
+[57:36] registers between
+[57:40] you know the Y connection that we had
+[57:42] there are two registers if I kind of go
+[57:44] back and show you the network that we
+[57:46] had you would see that we had fewer
+[57:49] registers in this case we have added
+[57:51] more registers in a sense this has
+[57:53] become a roundabout path like this and
+[57:55] there is a new register over here
+[57:57] so coming back to the same point over
+[58:00] here this is what a retiring Lemma has
+[58:02] given us
+[58:03] and again the units remain the same it
+[58:06] is just a network has gotten slowed down
+[58:08] by a factor of two so what we do is we
+[58:11] send the weight W1 and then we don't
+[58:14] send anything so this empty Square
+[58:15] stands for nothing again weight W2 then
+[58:18] we don't send anything
+[58:20] for the inputs again we don't send
+[58:22] anything then X4 and then don't send
+[58:24] anything then X5 so on and so forth
+[58:26] there's a gap of essentially one
+[58:28] such that both of them Collide at the
+[58:30] right time the values y1 Y2 Y3 y4
+[58:34] etcetera are all produced but again
+[58:36] there is a gap
+[58:38] so what we do is if I take time t equal
+[58:41] to 1 the only value I'm producing is X1
+[58:43] into W1
+[58:44] right over here
+[58:46] in the next time step I am producing X2
+[58:49] into W1 in the next time step I am
+[58:51] producing two values X3 into W1 and X2
+[58:54] into W2 but again I'm doing the addition
+[58:57] and I'm sending it via these registers
+[58:58] so this is something that someone should
+[59:01] look at offline and kind of verify that
+[59:03] you know they agree with
+[59:05] so by this time W1 would have come here
+[59:07] X4 would have come here they would
+[59:09] Collide at exactly the right time
+[59:10] instant
+[59:11] so I am doing these computations over
+[59:14] here finally I am doing these two and T
+[59:17] is equal to 6 I am doing this
+[59:20] so what's happening is that you know uh
+[59:23] it is taking more time I'm doing exactly
+[59:27] the same set of computations but my
+[59:28] throughput has reduced to half
+[59:31] so 50 of the time I'm not doing anything
+[59:33] so if we take a look at this
+[59:34] combinational unit
+[59:36] so I'm doing one multiplication then
+[59:39] nothing then I multiply an ad which is
+[59:41] what you know this is supposed to do
+[59:43] and then I am doing nothing then I'm
+[59:46] multiply and add and then I'm doing
+[59:48] nothing the same is true for the rest of
+[59:50] the units and in a sense Computing
+[59:53] exactly what I was Computing earlier but
+[59:56] in this case there is an idle time of
+[59:58] hundred percent
+[60:02] so again we wanted to gain performance
+[60:05] by converting a network from
+[60:06] sinusystolic to systole but we appear to
+[60:10] have you know made a really you know
+[60:12] balanced array with registers and
+[60:13] everything we are happy you know very
+[60:15] proud of that
+[60:16] but we seem to have lost 50 percent in
+[60:19] terms of performance
+[60:21] so what do we do
+[60:24] so basically what we could do is that we
+[60:26] could activate these functional units
+[60:28] only when you have valid data that could
+[60:30] save us power
+[60:32] fine we can save some power but what do
+[60:34] we do with performance
+[60:37] well the idea is that
+[60:40] we can increase the performance But
+[60:42] first you consider the original systolic
+[60:44] Network
+[60:46] so what you can do is that you can
+[60:50] perform two separate convolutions in
+[60:53] parallel right so what you could do is
+[60:56] that here you could put another set of
+[60:58] weights or maybe the same set of Weights
+[61:00] but a different set of data and here
+[61:03] again you could put you know another set
+[61:05] of data and compute two convolutions in
+[61:08] parallel so what would happen is they
+[61:09] would not interfere with each other
+[61:11] because as you can see you know there
+[61:13] are these bubbles that are there in the
+[61:15] pipeline right so in this case you would
+[61:17] compute one convolution
+[61:19] and then uh let's say for another set of
+[61:22] data again you know compute one more add
+[61:25] a partial sum here add a partial sum
+[61:29] so instead of the idea is that you could
+[61:31] still achieve the same throughput not 50
+[61:34] but hundred percent by using these kind
+[61:37] of empty cycles and unused Cycles in the
+[61:41] units by Computing another convolution
+[61:44] so that could be a different set of
+[61:45] weights and a different set of inputs so
+[61:47] the same set of widths and a different
+[61:49] set of inputs or same set of inputs and
+[61:51] a different set of weights
+[61:54] good so now our by interleaving these
+[61:58] two convolutions we can utilize the
+[62:00] ideal Cycles
+[62:02] and the key point is that we can our
+[62:05] throughput can get pumped from 50 to 100
+[62:08] percent
+[62:11] so this idea can of course be extended
+[62:14] to you know graphs of the form kg where
+[62:16] K is 2 3 4 5 6 where we can compute
+[62:19] multiple convolutions at the same point
+[62:21] of time and if and also when we are
+[62:23] tiling or when we are doing multiple one
+[62:26] day convolutions because it's part of a
+[62:28] 2d convolution then of course this can
+[62:30] be done quite easily
+[62:32] right and given the fact that you know
+[62:34] this approach aligns very well with row
+[62:37] stationary operations roast the row
+[62:39] stationary uh paradigm
+[62:43] a lot of designs are actually using the
+[62:46] row stationary Paradigm uh are using
+[62:49] such networks for implementing a row
+[62:52] stationary architecture
+[62:55] so 2D convolutions the idea is the same
+[62:59] uh what we basically do is that we
+[63:02] look at it row wise
+[63:05] so then we convolve rows X1 X2 X3 and
+[63:08] then we kind of add them to get the room
+[63:10] for y1
+[63:12] similarly we look at X 2 X 3 and X4
+[63:15] again we get Y2
+[63:16] same right x three x four x five get y 3
+[63:20] so on and so forth
+[63:23] do we have a direct approach for 2D
+[63:26] convolution which again could be
+[63:28] slightly wasteful right I am not denying
+[63:31] that it's not wasteful but can we have a
+[63:33] direct Matrix based approach because
+[63:35] again you need to think about it that 1D
+[63:38] convolution Hardware has come now but
+[63:41] for a long time gpus and other
+[63:44] accelerators did have
+[63:46] conventional matrix multiplication
+[63:48] Hardware so the question is can that be
+[63:50] used well the answer is yes so we will
+[63:53] not use systolic Aries but we may use
+[63:55] systolic arrays for matrix
+[63:57] multiplication but let's look at a
+[63:59] different way of doing 2D convolution
+[64:00] directly
+[64:04] so in this case we consider
+[64:08] X to be a 2d Matrix W to be a 2d Matrix
+[64:11] of filter weights
+[64:14] so the Crux is to realize
+[64:18] 2D convolution using a regular matrix
+[64:20] multiplication and the fact that matrix
+[64:23] multiplication is very common gpus are
+[64:25] optimized to deal with it
+[64:27] and there is also a lot of matrix
+[64:29] multiplication Hardware is always good
+[64:32] that even if you know there is a little
+[64:34] bit of wastage in terms of space we
+[64:37] convert this to an equivalent matrix
+[64:39] multiplication problem
+[64:41] so what is done here is that a doubly
+[64:44] block Circle and Matrix called X hat is
+[64:47] created
+[64:48] where the idea is that you arrange these
+[64:51] terms in such a way that the output is
+[64:54] nothing but a 2d convolution
+[64:57] so if you can see what we have done is
+[64:59] that we have
+[65:01] arrange them in this way so that w11
+[65:03] gets multiplied with this W 1 2 with
+[65:06] this W 2 1 with x21 and W 2 2 with x 2
+[65:09] 2. then what we do is in the next row we
+[65:12] multiply uh 1 1 and 1 2 with these two
+[65:17] entries and then we skip one entry and
+[65:19] then again we multiply with these two
+[65:22] so if you just work it out you will see
+[65:23] it is the same as a 2d convolution
+[65:26] exactly the same and this Matrix it has
+[65:30] been created in a special way such that
+[65:32] the result of The Matrix
+[65:34] multiplication
+[65:36] is basically
+[65:41] final output of the convolution so this
+[65:43] of course will be a
+[65:45] 1D output well so so why is that the
+[65:48] case because this is a 4 cross 8 Matrix
+[65:52] and this is a eight cross one Matrix so
+[65:55] the final output would be 4 cross 1 but
+[65:57] that can again be converted to 2D right
+[66:00] and we can use regular matrix
+[66:02] multiplication Hardware super optimized
+[66:04] for realizing this so this is again one
+[66:07] more way of computing 2D convolution
+[66:09] which is to instead of using a 1D
+[66:12] convolution as a basic kernel we use a
+[66:14] matrix
+[66:15] multiplier as the basic kernel
+[66:18] so now we are done with this part so in
+[66:20] the next lecture we'll talk about
+[66:22] optimizations and the memory system the
+[66:25] memory system which is kind of
+[66:27] specialized for ML accelerators we will
+[66:30] talk about that

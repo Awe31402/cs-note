@@ -1,0 +1,1211 @@
+[00:35] Let us now
+[00:36] discuss
+[00:37] the implementation of the
+[00:37] BEQ and BGT instructions.
+[00:39] Let me remind you that BEQ is a
+[00:42] branch if equal.  So, "
+[00:45] equality" means that the
+[00:47] equality flag bit is set,
+[00:48] meaning the last
+[00:49] comparison resulted
+[00:50] in equality.  GT
+[00:55] is used for the
+[00:56] BGT instruction, which
+[00:57] means that the last
+[00:59] comparison showed
+[01:00] that the first number (the
+[01:01] first operand) is
+[01:02] greater than the second.  So
+[01:05] let's
+[01:06] look at BEQ first.  Oh,
+[01:12] sorry, that should
+[01:13] be Q. Okay.  So, the
+[01:17] first thing we do
+[01:18] is check the
+[01:19] flag register.  We
+[01:24] call the
+[01:25] MBQ microinstruction
+[01:26] to check
+[01:27] flag E. Recall
+[01:29] that flag E is
+[01:30] also a microregister
+[01:31] accessible on the
+[01:32] shared bus.  So,
+[01:36] we compare the
+[01:37] E flag to
+[01:38] one.  If there is
+[01:41] equality, we
+[01:41] go to the
+[01:43] dot branch label.  Otherwise
+[01:46] —in general,
+[01:47] if there is no equality,
+[01:49] this instruction is
+[01:50] equivalent to noop.  Therefore,
+[01:52] we move on
+[01:53] to the next
+[01:54] instruction again.  We
+[01:55] move on to MB.  Begin,
+[01:57] which means, sorry,
+[01:58] here it should be again.
+[02:01] MB begin, which means
+[02:02] go to the beginning of the
+[02:03] preamble.  Uh...So,
+[02:10] let's say we're
+[02:11] doing a transition,
+[02:12] then what we need to
+[02:13] do is we've already
+[02:14] calculated the
+[02:15] transition target.  Let me remind you that the
+[02:17] transition target was
+[02:19] calculated at the
+[02:20] decoding stage.  The
+[02:21] jump target was
+[02:22] stored in a separate
+[02:23] microregister.  For
+[02:26] non-
+[02:27] jumping instructions, there is garbage there,
+[02:28] but for jump instructions, there
+[02:30] is a valid
+[02:31] jump target there.  We
+[02:34] move the
+[02:35] jump target to the PC register,
+[02:36] and then
+[02:37] jump again to the
+[02:38] next instruction
+[02:39] .  So, back to the start of
+[02:41] the preamble, but this
+[02:43] time during
+[02:44] the execution of the preamble,
+[02:45] we will see the updated
+[02:46] value of PC, which is
+[02:48] the target of the jump, not the
+[02:49] old PC + 4. So
+[02:51] the execution will start
+[02:52] from that point.    The
+[02:55] BGT instruction
+[02:56] is implemented in exactly the same way
+[02:57] .  Just
+[03:02] instead of comparing
+[03:03] the flag to one,
+[03:05] GT flag to
+[03:12] dot branch label;  otherwise,
+[03:13] we
+[03:14] jump to the
+[03:15] preamble, then
+[03:17] jump target to the PC, and
+[03:18] start executing
+[03:19] the preamble again for the
+[03:21] after the jump target.
+[03:26] Now let's
+[03:27] look at the
+[03:28] call instruction.    The
+[03:29] call statement is very
+[03:30] similar to the
+[03:31] jump statement, it just
+[03:32] requires
+[03:33] a little more work.
+[03:37] So, we need to
+[03:38] store the
+[03:40] instruction counter (PC) value
+[03:41] after the
+[03:42] calling instruction, i.e. the
+[03:43] next PC value,
+[03:44] in the return address register
+[03:46] .  If you
+[03:50] remember, in
+[03:51] the preamble, namely in the
+[03:52] third line, we have
+[03:53] already increased
+[03:54] the value of PC by four.
+[03:56] That is, we set the
+[03:58] current PC equal to the
+[03:59] old PC + 4. We have already
+[04:01] done this.  So the
+[04:03] current PC now
+[04:04] contains the value of the
+[04:06] old PC + 4. We don't
+[04:07] need to increase
+[04:08] it again.  We can
+[04:10] immediately write
+[04:11] it to the return address register
+[04:12] .  So we
+[04:15] transfer the contents to the
+[04:16] data microregister.
+[04:20] This is what should be
+[04:21] written to the
+[04:22] register file.  Then we
+[04:25] pass 15 to the
+[04:26] register source.  Why 15?
+[04:28] Because 15 is the
+[04:31] return address register identifier.  this is the
+[04:32] RA identifier and
+[04:35] at the same time we
+[04:36] send a
+[04:37] write command to the shared
+[04:39] bus.  Essentially, we
+[04:44] write the value of PC,
+[04:46] which is now PC +
+[04:48] 4, which is actually
+[04:54] the address of the next
+[04:56] instruction, into the
+[04:57] register file, namely the
+[04:59] 15th register (RA).  After
+[05:03] that, we can
+[05:04] move on to the
+[05:05] transition goal.  We
+[05:07] load the
+[05:08] jump target into the PC, which is
+[05:09] equivalent to the
+[05:10] jump command, and return to the
+[05:12] beginning of the preamble
+[05:13] to execute the
+[05:14] next instruction.
+[05:18] Next, let's look at the
+[05:19] ret instruction, which is
+[05:20] quite simple.  What
+[05:22] it does: we
+[05:25] read the 15th
+[05:26] return address register and
+[05:27] store its
+[05:29] contents in the
+[05:30] PC instruction counter.  So, we
+[05:34] load 15 into the
+[05:35] read source
+[05:37] using the
+[05:37] Move immediate instruction and
+[05:39] simultaneously send a
+[05:40] read command
+[05:42] to the bus.  We read
+[05:46] the register and the data
+[05:47] will become available in
+[05:48] the microregister reg val,
+[05:50] which will contain the
+[05:51] return address.  We
+[05:54] transfer this
+[05:55] value to PC.  After
+[06:00] return to the
+[06:01] beginning of the preamble and
+[06:02] execute the instruction
+[06:03] at the
+[06:04] return address.  Now
+[06:08] let's look at an example.
+[06:11] Let's change the
+[06:12] call instruction
+[06:13] so that it
+[06:14] stores the
+[06:15] return address on the stack
+[06:16] rather than in the return address register
+[06:17] .  We'll just
+[06:20] show the microcode.
+[06:22] We will not show the preamble, since
+[06:23] it is common to
+[06:24] all instructions.  So
+[06:27] , a stack-based call instruction
+[06:30] looks like this: the first thing
+[06:31] we need to
+[06:32] do is
+[06:33] read the value of the
+[06:34] current
+[06:35] stack pointer.  Then we
+[06:38] need to decrement the
+[06:39] stack pointer,
+[06:40] store the return address there
+[06:41] , and we
+[06:42] should return.
+[06:43] So let's
+[06:45] read the
+[06:46] stack pointer first.  The first thing we
+[06:48] need to do is
+[06:51] stack register identifier, i.e.
+[06:54] stack pointer register 14, to
+[06:55] the microregister reg source and
+[06:56] at the same time issue a
+[06:57] read command.  So
+[07:00] , we are actually
+[07:01] reading the
+[07:02] stack pointer value from the
+[07:04] SP register.
+[07:07] After we do this
+[07:08] , the value of the
+[07:10] stack pointer will be in the register
+[07:11] reg val, which is the output of the
+[07:12] read instruction of
+[07:15] the read microinstruction.  So now we're going to
+[07:20] decrement the value of reg
+[07:21] val by minus 4, which
+[07:22] essentially means we're
+[07:24] creating space on the
+[07:25] stack.  Assuming this is the
+[07:30] last element on the
+[07:31] stack, we decrement the
+[07:32] stack pointer by
+[07:33] four bytes, which is
+[07:34] the size of an
+[07:35] integer in a 32-
+[07:36] bit system, and
+[07:38] create new
+[07:39] free space where
+[07:40] we can store something.
+[07:44] So we're actually
+[07:45] decrementing the
+[07:46] stack pointer here.  We
+[07:47] first read
+[07:48] it and then
+[07:49] use the
+[07:50] mAD instruction to
+[07:51] add minus 4 to it.
+[07:53] We decrement the
+[07:55] stack pointer, and once
+[07:56] we do that,
+[07:58] that value becomes the
+[07:59] new
+[08:00] stack pointer value.
+[08:06] At the same time, we do
+[08:07] the following: since
+[08:08] we need to store something here
+[08:10] , we
+[08:10] send it to the
+[08:12] memory address register M, which is
+[08:13] the microregister M. So we
+[08:15] send it
+[08:16] there with a
+[08:17] simple Move instruction.
+[08:22] We send the
+[08:23] updated
+[08:24] stack pointer value, which
+[08:26] is the old SP minus 4, to the
+[08:27] M microregister using the
+[08:30] Move instruction.  We will need this
+[08:32] when we
+[08:35] let's go back.
+[08:37] Now that the
+[08:38] stack pointer has been updated, it
+[08:39] needs to be written
+[08:41] back to the
+[08:41] register file.  Isn't that right?
+[08:44] So what we're going to do is
+[08:45] we're going to write it
+[08:47] back.  Since we
+[08:49] are writing it backwards,
+[08:50] what register do we
+[08:51] write it in?  We
+[08:52] write it back
+[08:53] into what is stored
+[08:55] in red source.  Because 14, the
+[08:57] SP register identifier, was
+[08:59] saved in the red source.  And
+[09:01] we didn't
+[09:02] change the red source later.  So
+[09:03] the value 14 will
+[09:04] remain.    The
+[09:05] stack pointer
+[09:06] will remain.  Regal was
+[09:09] with this
+[09:10] mAD instruction, where we
+[09:11] actually calculated a
+[09:13] stack pointer that is equal to the
+[09:15] old SP minus 4.
+[09:18] So, that value
+[09:19] will be written back.
+[09:22] So, we will do it like this
+[09:24] : we will write the data to
+[09:25] reg data, which contains
+[09:26] the information to be
+[09:27] written, and at the same time
+[09:28] issue the
+[09:29] write command.  This will update
+[09:34] the value of the
+[09:35] stack pointer in the register
+[09:36] file, and the new
+[09:38] will be equal to
+[09:39] the old one minus 4.
+[09:43] Thus, the value in the register
+[09:44] file will be updated
+[09:45] .  After that,
+[09:52] write the
+[09:53] return address to the new
+[09:54] location on the stack we
+[09:55] just created, and this
+[09:56] address is contained in the
+[09:57] PC register.  The reason is
+[10:03] that if you
+[10:04] recall the third or
+[10:06] fourth instruction
+[10:07] in the preamble, we were
+[10:08] incrementing PC by
+[10:09] four, right?
+[10:11] So PC is equal to PC + 4.
+[10:16] We already had this part in the preamble.  So
+[10:17] let me
+[10:18] quickly go back
+[10:19] to the preamble and
+[10:20] show you.  Yes.  Here
+[10:22] we had M add PC4.
+[10:26] So, uh, yeah, back.
+[10:30] OK.  So, we've already
+[10:31] increased that by
+[10:32] four.  So
+[10:34] this contains the
+[10:35] return address.  So we
+[10:36] move this into the
+[10:37] MDR microregister and
+[10:39] save command
+[10:41] to the bus.  This ensures
+[10:44] that we save it at
+[10:45] that location on the stack.
+[10:48] Let's see how.  The
+[10:51] M register, which already contains
+[10:52] the address, now
+[10:53] also contains the location of the
+[10:55] stack pointer.  It was
+[10:57] done here.  So,
+[10:58] the address is correct.  And
+[11:00] now we transfer the data.
+[11:02] What kind of data is this?  This is the
+[11:05] return address value, which
+[11:06] is stored in the
+[11:07] current PC register.
+[11:10] It is transferred to the
+[11:12] MDR microregister, and we
+[11:13] simultaneously issue a
+[11:14] save command.  As
+[11:18] a result, the return address
+[11:19] is stored in the newly
+[11:21] created
+[11:22] stack location.  Now that we are
+[11:26] done, we
+[11:26] end execution
+[11:28] and go to the
+[11:29] beginning of the preamble,
+[11:30] calling the
+[11:31] MB microinstruction.
+[11:33] beginning.  This example
+[11:38] is illustrative;  it
+[11:39] represents a
+[11:40] range of optimizations and
+[11:41] complex instructions
+[11:43] that we can add
+[11:45] microprogramming mechanism,
+[11:46] and we can also
+[11:47] change the behavior of
+[11:48] current instructions.
+[11:53] For example,
+[11:53] let's say we
+[11:54] take a
+[11:56] call instruction that
+[11:56] changes the behavior to
+[11:58] actually write the
+[11:59] return address to the
+[12:00] stack, right?  Instead of the
+[12:01] RA register, and
+[12:02] similarly we will
+[12:03] have to change the
+[12:05] RET instruction.  But it's all
+[12:07] possible to do, and
+[12:09] actually quite
+[12:10] easy.  So, the important
+[12:15] point we
+[12:17] emphasize is that
+[12:17] by discovering the details of the
+[12:19] internal structure of the
+[12:20] processor, we can
+[12:21] implement new
+[12:22] instructions, make
+[12:23] existing ones work
+[12:24] differently, and this will help
+[12:26] us add many
+[12:27] additional,
+[12:27] extremely complex
+[12:29] mechanisms to our
+[12:30] processors.  Okay,
+[12:36] now that we've
+[12:36] covered most of
+[12:38] microprogramming,
+[12:39] let's take a quick
+[12:41] microcontroller or the
+[12:42] unit that executes these
+[12:43] microinstructions.
+[12:46] So, this is a shared bus.
+[12:48] Up until this point, we've
+[12:50] been looking at it as one
+[12:51] set of parallel
+[12:52] copper wires,
+[12:53] right?  That's the only way
+[12:56] looked at it.  We didn't
+[13:01] look at it any
+[13:02] differently, but now we're going
+[13:03] to create a more complex
+[13:05] structure and
+[13:05] see how it
+[13:06] works.  So the way
+[13:11] we design a
+[13:12] shared bus is that
+[13:15] actually have two buses,
+[13:16] one of which is a
+[13:17] write bus.  The write bus
+[13:19] is a set of copper
+[13:20] wires to which
+[13:21] all the
+[13:22] registers, excuse me,
+[13:23] microregisters, that
+[13:24] can write
+[13:25] data to it are connected.  So all the
+[13:27] decode registers
+[13:28] , like IR, RS1, RS2, RD, all
+[13:30] these
+[13:31] decode registers, the
+[13:32] PC register—they're all
+[13:33] connected to the
+[13:35] write bus.
+[13:36] Similarly, all
+[13:37] microregisters of the
+[13:38] register file, ADC, and
+[13:39] memory block
+[13:40] are also connected to the
+[13:41] write bus.  So they all
+[13:42] dump their
+[13:43] values ​​onto the
+[13:44] write bus.  Of course, not all of
+[13:46] them are activated
+[13:47] at the same time.  Therefore, we
+[13:48] have separate
+[13:49] activation signals for
+[13:50] each.  Only one
+[13:51] of these registers can
+[13:53] be activated.
+[13:54] The activated state
+[13:55] means that it can
+[13:56] write its
+[13:56] value to the
+[13:57] write bus, while the others
+[13:58] remain
+[13:59] inactive.  So,
+[14:00] we will need
+[14:01] separate
+[14:02] control signals for them.  I
+[14:03] didn't show this,
+[14:05] the details are in the book.
+[14:07] Afterwards, we do
+[14:08] the following: this is one of the
+[14:09] inputs from the write bus
+[14:10] that can go
+[14:12] to this multiplexer.
+[14:14] We call this
+[14:15] multiplexer a
+[14:16] transfer
+[14:16] multiplexer in the
+[14:17] book, mainly
+[14:19] because it transfers
+[14:20] data from the writer
+[14:21] to the reader.  That's it,
+[14:24] we don't use
+[14:25] any other
+[14:26] complicated
+[14:26] terminology.  In addition
+[14:29] , we have a
+[14:30] microcontroller.
+[14:32] The microcontroller
+[14:33] parses the
+[14:34] immediate
+[14:35] value field, just in
+[14:36] case we
+[14:37] use a micro
+[14:38] -immediate
+[14:39] value, like in the
+[14:40] MADD command or something
+[14:41] similar.  In this
+[14:44] case, the micro-
+[14:46] value is added
+[14:47] to any
+[14:48] register value
+[14:49] transmitted by the
+[14:50] write bus, and the added
+[14:51] value is the second
+[14:52] input, as in the
+[14:53] MAD instruction.
+[14:57] The result of adding
+[14:58] the micro-
+[14:59] value with the
+[15:00] micro-register value will be
+[15:01] sent as the
+[15:02] second input of the
+[15:04] multiplexer.  So
+[15:08] give you an example.
+[15:09] Suppose we
+[15:10] have
+[15:12] a microinstruction of type
+[15:13] m at address PC plus
+[15:15] four.  So, essentially,
+[15:16] PC will reset its value
+[15:18] to the write bus, and
+[15:19] the microconstant
+[15:20] is four.
+[15:22] Both values
+[15:23] will be added, and this will be the
+[15:24] result of
+[15:25] adding the second
+[15:26] input.  The constant itself
+[15:29] can be an input to
+[15:30] this
+[15:31] transmit multiplexer.  And this will be the
+[15:34] case with MUI, which we have
+[15:35] already seen.  Uh, we
+[15:38] saw M where it was,
+[15:40] yeah, that's where we saw
+[15:41] MUI, red source 14. So what
+[15:46] does mi do, let's
+[15:47] see.  In this
+[16:01] case, we take
+[16:02] a microregister and
+[16:03] move a constant to it
+[16:04] , and this
+[16:05] microconstant can
+[16:06] be one of the values
+[16:07] that are transferred from the
+[16:08] writer to the reader.
+[16:13] Therefore, it is also
+[16:14] one of the inputs of the
+[16:16] transmit multiplexer, which is
+[16:17] controlled by a set of
+[16:18] control signals,
+[16:19] which we will discuss
+[16:20] later.  Additionally,
+[16:24] to determine
+[16:26] whether a microinstruction
+[16:27] is an
+[16:28] MBQ jump instruction, there is
+[16:33] equality between a
+[16:34] constant and,
+[16:35] say, a value in a
+[16:36] register.  We also
+[16:41] have an equality comparison circuit here
+[16:42] , which
+[16:43] compares the value of a
+[16:44] constant and the
+[16:45] value of one of the
+[16:46] registers.  So it
+[16:50] compares the two, and,
+[16:53] uh, then what it
+[16:55] does is it generates an
+[16:59] equality signal.  If
+[17:02] there is equality, then the
+[17:03] transition signal m becomes
+[17:04] true, otherwise it is
+[17:05] false thereafter.
+[17:07] So, these are all
+[17:08] microregisters that
+[17:09] write to the
+[17:10] write bus.  On the
+[17:13] read bus, uh, the read bus
+[17:15] will essentially transfer
+[17:16] the value to
+[17:17] the microregister.  The
+[17:20] read bus will pass
+[17:22] the value to the PC, so in
+[17:23] a sense the PC can
+[17:24] be updated, and how will
+[17:26] it be updated?
+[17:27] Using any
+[17:29] of the
+[17:30] PC update mechanisms.  So, it will
+[17:33] receive a new
+[17:34] value from the
+[17:35] read bus, as well as
+[17:36] microregisters like MDR
+[17:38] , the value register, and
+[17:44] so on.  Therefore, all
+[17:47] other microregisters
+[17:48] associated with the
+[17:49] register file, ALU, and
+[17:51] can be updated with
+[17:53] values ​​from the
+[17:54] read bus.  They
+[17:55] will read data from the
+[17:57] read bus and
+[17:58] update themselves.
+[17:59] This is how we will build
+[18:00] our scheme.  OK.
+[18:04] So, there are two types, two
+[18:05] ways.  There are two
+[18:08] types
+[18:08] of microprogramming.
+[18:11] One is called
+[18:12] vertical
+[18:14] which has certain
+[18:14] advantages, and the other is
+[18:15] horizontal
+[18:16] microprogramming.
+[18:18] So, let's look at
+[18:19] a microinstruction and
+[18:20] how it is encoded.
+[18:22] So, this is one
+[18:23] specific way of
+[18:24] encoding
+[18:25] microinstructions.  In
+[18:26] this case, we
+[18:27] use three
+[18:28] bits for the
+[18:29] microinstruction type.
+[18:30] So we have eight
+[18:31] microinstructions.  We
+[18:32] need three bits.
+[18:34] Five bits for
+[18:34] source registers.
+[18:36] Actually, if
+[18:36] you count, we have
+[18:37] a lot of
+[18:38] source registers, right?
+[18:40] So essentially, five
+[18:43] source register, five bits
+[18:44] for the destination
+[18:45] register, 12 bits for the
+[18:46] micro-constant, and 10
+[18:49] jump target in the
+[18:50] microcode memory.  True?
+[18:53] Since we
+[18:54] assume that
+[18:55] the memory is not very
+[18:56] large.  And also,
+[18:58] you know, we
+[18:59] the memory is organized in
+[19:01] such a way that
+[19:02] each record has one
+[19:03] microinstruction.  So
+[19:05] we don't need to
+[19:06] jump from
+[19:07] one record to
+[19:08] another.  We don't
+[19:09] need to add
+[19:10] four.  We just
+[19:11] need to add one,
+[19:12] which means the next
+[19:13] entry.  So, 10 bits
+[19:15] means a table with
+[19:17] 1024 entries.  Thus
+[19:19] , 1024
+[19:20] microinstructions is the
+[19:21] size of all
+[19:22] microinstructions.  This is
+[19:24] the size of the
+[19:26] microcode sequences for all
+[19:27] instructions we
+[19:28] support.  Then we
+[19:30] can have a 10-bit
+[19:31] value for the
+[19:32] argument field.  Of these, three
+[19:33] bits can be for the
+[19:34] block identifier
+[19:35] .  So, for which
+[19:39] block are
+[19:40] the arguments intended—for a
+[19:42] register file, a
+[19:43] memory block, or an ADC, and the seven
+[19:44] bits—for the type of
+[19:45] operation we
+[19:46] want to perform.  This
+[19:51] part is a bit
+[19:52] redundant, but still
+[19:53] redundancy is
+[19:54] useful if you
+[19:55] want to expand
+[19:56] the design.  So the
+[19:59] total number
+[20:02] of bits is 10 + 10 =
+[20:05] 20, + 12 = 32, + 5 = 37, + 5 = 42, + 3
+[20:09] = 45. This is a 45-bit
+[20:12] instruction, we can
+[20:14] create a 45-bit
+[20:15] encoding for each
+[20:17] microinstruction.  What is
+[20:23] essentially needed to
+[20:24] process it is a
+[20:25] processor that will have a
+[20:27] microinstruction fetch stage.
+[20:31] They are in the textbook.
+[20:33] Then there will be a
+[20:34] decoding stage, where,
+[20:36] essentially, these 45 bits
+[20:37] are decoded, and then an
+[20:38] execution stage, where
+[20:41] the microinstruction is directly executed.
+[20:42] So, we need
+[20:43] at least a
+[20:44] three-stage
+[20:45] processor to
+[20:45] process it.  I won't
+[20:48] discuss this in
+[20:49] detail as it
+[20:50] is in the textbook and it would be a
+[20:51] repetition
+[20:52] as we already
+[20:53] covered a lot of
+[20:54] processor issues in the
+[20:55] last lecture.  So I
+[20:58] don't want to talk about the same thing over and over again
+[21:00] .  Another way
+[21:02] we can do this is
+[21:06] where we actually
+[21:06] eliminate the
+[21:08] decoding step.  So,
+[21:09] assume that...so
+[21:11] what does decoding give us
+[21:12] ?
+[21:12] Decoding gives us
+[21:14] the meaning of all the
+[21:16] right?  Well, in principle,
+[21:19] we can take all the
+[21:20] control signals, and
+[21:21] since for each
+[21:23] instruction we can
+[21:24] calculate its control
+[21:25] signals, we can
+[21:26] encode those
+[21:28] signals themselves.  For example,
+[21:32] consider
+[21:33] an instruction like M add PC
+[21:35] and 4. Then this would possibly
+[21:39] produce a long
+[21:40] list of control
+[21:41] signals, some zeros,
+[21:42] some ones, and so on.
+[21:45] So, the first way is
+[21:46] to encode M add separately
+[21:48] , PC register separately, and
+[21:49] four separately.  That's
+[21:52] all good.  But another
+[21:54] way could be that
+[21:56] we should of course
+[21:57] encode the
+[21:58] value 4 as an
+[22:00] immediate value, and for
+[22:01] the rest, just have a
+[22:03] signals that
+[22:04] will determine which
+[22:06] parts of the circuit are
+[22:07] active, as well as
+[22:08] the values ​​of the
+[22:09] read and write bus.
+[22:10] Control signals for the
+[22:13] transmission multiplexer, etc.  So
+[22:14] we don't
+[22:15] need a
+[22:15] decoding stage at all.  This
+[22:17] is called
+[22:20] where control signals
+[22:21] become a
+[22:21] direct
+[22:22] part of the
+[22:23] instruction encoding.  In this
+[22:25] case, we will have 10
+[22:28] branch target.  Okay, that's
+[22:29] perfectly acceptable.
+[22:32] We will have 12 bits for the
+[22:34] value of
+[22:35] the microinstruction and 10 bits
+[22:36] for the arguments.
+[22:38] Same format: 3 bits
+[22:40] for device ID, 7 bits
+[22:41] for opcode.
+[22:45] Also, instead of
+[22:46] these other fields, like
+[22:47] instruction type,
+[22:48] source, rest—well, those
+[22:50] three fields, right?  We
+[22:52] will get rid of this.
+[22:54] Instead, we will
+[22:54] have 33 bits—a
+[22:56] bit vector that
+[22:57] encodes all the control
+[22:58] signals.  Where
+[23:00] did these 33 come from?  Well,
+[23:02] readers should
+[23:02] take a look at the book.
+[23:04] There is a
+[23:04] detailed analysis there.  But in
+[23:08] short, the point is that
+[23:09] we completely
+[23:11] decoding step,
+[23:12] since the decoded
+[23:14] information will already be
+[23:16] instruction encoding.  So we
+[23:19] don't need a separate
+[23:20] decoding stage.  This
+[23:22] will actually be a
+[23:22] two-stage
+[23:23] processor: fetch and
+[23:25] execute.  The advantage is that
+[23:27] we avoid the
+[23:28] decoding step.
+[23:30] So, our logic
+[23:31] will be simpler and
+[23:32] processing will be faster.  This is
+[23:35] the advantage of
+[23:38] The disadvantage of
+[23:40] microprogramming
+[23:41] is that we
+[23:42] will have a longer
+[23:43] instruction.  More bits will be needed to
+[23:44] store one
+[23:45] instruction
+[23:47] .  So
+[23:48] 65 bits will be required
+[23:49] compared to 45 bits
+[23:51] for vertical
+[23:55] So, the first option
+[23:56] will require a larger
+[23:57] size, which is acceptable in some
+[23:59] cases, but
+[24:00] not in others.  But another more
+[24:02] important problem
+[24:04] would have to expose
+[24:06] all the details, including the
+[24:09] hardware control signals for the
+[24:10] firmware.  Yes?  So,
+[24:11] you know, if this is
+[24:13] hardware, and this is
+[24:14] firmware, where
+[24:14] all
+[24:16] our microcode is stored, previously
+[24:19] we would only disclose
+[24:20] the names of the microregisters
+[24:21] and things like that.  For
+[24:27] this was fine, but for
+[24:29] horizontal we
+[24:32] control signals, and this,
+[24:33] firstly, might be
+[24:34] too much from a
+[24:35] security point of view.  Secondly,
+[24:39] we have absolutely no
+[24:40] flexibility in changing
+[24:41] the design.  Even
+[24:44] if we change
+[24:45] the design slightly, these
+[24:46] control signals will change,
+[24:47] and as a result, the
+[24:48] firmware will become
+[24:49] useless.  Instead,
+[24:52] if we
+[24:52] use
+[24:54] microprogramming and
+[24:55] keep the register names and
+[24:57] identifiers
+[24:58] unchanged
+[24:59] , for example, we
+[25:01] still have PC, IR, RS1, RS2, etc.,
+[25:02] but if we make
+[25:03] internal changes and the
+[25:04] control signals
+[25:06] change, it will not
+[25:07] affect us
+[25:08] because we have a
+[25:09] decoding stage, and
+[25:10] this stage inside
+[25:11] the microprocessor (not the
+[25:13] microprocessor itself, but the
+[25:15] processor microcode block)
+[25:16] will generate the
+[25:18] control signals differently.  So
+[25:20] we still have some
+[25:21] freedom and flexibility.
+[25:24] In this case,
+[25:25] the level of freedom and
+[25:26] flexibility we
+[25:27] have is practically
+[25:28] zero.  The reason is
+[25:30] that we won't be able to
+[25:32] make any changes,
+[25:33] even if the hardware
+[25:35] changes minimally
+[25:36] and the control signals
+[25:37] change.  So there is a
+[25:38] clear
+[25:39] trade-off in
+[25:40] flexibility here.  If I
+[25:43] compare
+[25:45] as flexible and
+[25:46] vertical in terms of
+[25:47] instruction size.
+[25:52] In this case, it's
+[25:53] bad and it's good.
+[25:56] If I consider,
+[25:57] perhaps, speed and
+[25:58] complexity, then this is
+[26:04] good and this is bad.
+[26:07] If I consider the
+[26:08] flexibility of changing
+[26:10] or other simple
+[26:11] hardware details
+[26:12] ,
+[26:15] has no flexibility at all
+[26:16] , while
+[26:17] vertical microprogramming still
+[26:18] provides some
+[26:20] leeway.  So,
+[26:22] there is an
+[26:23] obvious trade-off between both approaches.    It
+[26:24] cannot be said that
+[26:26] one approach is strictly
+[26:27] better than another.  So this is
+[26:28] worth
+[26:29] remembering.  OK.  Here is a
+[26:35] brief description of the
+[26:37] microcode execution mechanism for a
+[26:38] vertically
+[26:39] microprogrammed
+[26:40] processor.  It's very
+[26:45] simple.  Therefore, we
+[26:46] will not discuss
+[26:47] it in all detail.
+[26:51] We have a micro-PC that
+[26:52] accesses the
+[26:53] firmware memory
+[26:54] and actually
+[26:55] increments,
+[26:56] scanning
+[26:57] it sequentially if there is no
+[26:58] transition.  It reads
+[27:03] each
+[27:04] microinstruction that
+[27:05] is sent to the
+[27:06] decoding unit, which
+[27:07] generates control
+[27:08] signals for the
+[27:09] execution unit.  The execution unit
+[27:11] uses these
+[27:12] control signals to
+[27:13] control the
+[27:14] data path as well as the
+[27:15] shared bus,
+[27:16] including the
+[27:17] transmit multiplexer.  And that's exactly how
+[27:21] execution is done.  In addition, the
+[27:23] data path sends the
+[27:24] opcode to a
+[27:25] specialized
+[27:26] block called a "
+[27:27] switch", which
+[27:28] tells the
+[27:29] microcode block which
+[27:30] address in the firmware memory to
+[27:32] go to.  This is one of
+[27:34] the inputs of this
+[27:35] multiplexer.
+[27:38] Additionally, we may have a
+[27:40] microtransition.  So we
+[27:42] can have a
+[27:43] transition goal.  So this could
+[27:45] go here.  OK.
+[27:47] So, this address
+[27:48] can definitely go
+[27:50] here.  And then by
+[27:53] default we
+[27:54] will add one
+[27:55] to the current micro-PC
+[27:57] , which means
+[27:57] the next micro-PC—
+[27:59] not four, but one,
+[28:00] because it is
+[28:01] instruction-by-instruction, not
+[28:02] byte-by-byte.  So
+[28:05] the micromultiplexer
+[28:06] will choose one of these
+[28:07] three targets and
+[28:07] determine the next
+[28:09] micro-PC.  This is actually an
+[28:12] extremely simple
+[28:13] processor that has a
+[28:14] fetch block here, a
+[28:16] decode block
+[28:17] here, and an execute block
+[28:18] here.  The
+[28:22] execution block actually
+[28:24] allows the circuit
+[28:24] to operate
+[28:25] using the control
+[28:26] signals
+[28:27] generated by the
+[28:28] decoding block on the
+[28:29] previous cycle.
+[28:33] That's really all that
+[28:35] can be said about it.
+[28:41] I just want to
+[28:42] clarify something.  There is
+[28:44] a little confusion
+[28:45] about the terms, but there
+[28:46] shouldn't be.  This
+[28:48] transition goal
+[28:49] is actually a
+[28:50] microtransition goal.  So
+[28:53] maybe I'll update this in
+[28:54] another version of the slides
+[28:55] that are available on my
+[28:57] website.  In fact,
+[29:00] the purpose of the microtransition should be specified here.
+[29:03] This is not a simple
+[29:04] RISC jump target, but a
+[29:07] firmware memory, which
+[29:08] essentially arises through the
+[29:09] MB and MBQ instructions.
+[29:14] So they will make
+[29:15] the microcode
+[29:16] one place to another.
+[29:17] So, this is exactly the goal of the
+[29:19] transition.  This is not the
+[29:20] simple goal of the
+[29:21] RISC transition that should be
+[29:22] kept in mind.  OK.  This is a
+[29:26] processor design for
+[29:29] that is just as simple
+[29:31] , but, well, even a little
+[29:32] simpler.  Most of
+[29:35] the scheme remains
+[29:36] unchanged.  We
+[29:38] still have a micro-PC here,
+[29:39] which provides value
+[29:40] for
+[29:41] firmware memory.  And
+[29:44] since all the control
+[29:45] signals are already
+[29:46] built
+[29:47] directly into
+[29:48] the microinstruction,
+[29:49] we only have a
+[29:50] fetch stage and an
+[29:51] execute stage.  Control
+[29:54] signals are sent
+[29:55] to the data path, where
+[29:56] they control the movement of
+[29:57] data, as well as the
+[29:59] transmission multiplexer.  Also,
+[30:02] we have, well, we
+[30:04] actually have two
+[30:04] multiplexers here.
+[30:11] So this
+[30:11] multiplexer
+[30:12] essentially gets the
+[30:13] microbranch target, well,
+[30:15] you know, it has to be a
+[30:16] microbranch target
+[30:17] so we don't confuse it with the
+[30:20] branch target microregister that we have
+[30:21] , which is actually
+[30:22] for simple
+[30:24] risc.  So, this is the target of
+[30:28] the microbranch, as well
+[30:29] as the typical
+[30:30] next microaddress
+[30:31] .  So we choose
+[30:34] one of them and, uh, that's
+[30:39] one thing, and in addition, what
+[30:41] we do is, uh, so
+[30:47] basically, you know how
+[30:48] we choose, so I'll
+[30:49] just tell you
+[30:50] why we have two
+[30:51] multiplexers here.  So,
+[30:53] we have one m1.  So
+[30:56] essentially, if the instruction
+[30:57] is a branch and, if
+[30:59] the branch is successful,
+[31:00] if it
+[31:01] executes, then we will
+[31:02] choose one of these.
+[31:06] Otherwise, you
+[31:07] know, if this
+[31:08] instruction is not a
+[31:09] branch and it
+[31:10] is not relevant, then
+[31:12] we essentially move
+[31:13] both the
+[31:14] branch target and the typical
+[31:15] next PC
+[31:16] of the firmware right
+[31:17] to
+[31:17] the micromultiplexer.
+[31:20] So yes, this part
+[31:21] could have been
+[31:22] designed differently,
+[31:23] but the basic idea behind these
+[31:25] two multiplexers is
+[31:26] that we
+[31:27] will
+[31:29] is M branch signal
+[31:29] mainly to
+[31:31] compare with the
+[31:32] value, which
+[31:34] is essentially the MBEQ.  With the
+[31:36] MBQ microinstruction,
+[31:38] register value with the
+[31:40] value.  So, this
+[31:41] will only be responsible
+[31:42] for that.  In addition,
+[31:45] for other cases we
+[31:47] use a
+[31:48] microbranch target,
+[31:49] say for
+[31:50] an instruction of type MB.
+[31:51] So we'll directly
+[31:53] use this in
+[31:54] the micromultiplexer,
+[31:55] and this will serve as a
+[31:56] default value,
+[31:57] which is a default
+[31:58] next
+[31:59] microprogram counter.
+[32:02] Additionally, we will send an
+[32:03] opcode to the
+[32:04] switch block, which
+[32:05] will generate the address in the
+[32:07] firmware memory that
+[32:08] we need to jump to
+[32:09] for this
+[32:11] simple disk instruction.  So we
+[32:12] need to choose
+[32:13] among these four
+[32:14] inputs.  Of course,
+[32:18] theoretically M1 MAX could be
+[32:19] removed and we
+[32:20] could just
+[32:21] leave the
+[32:22] microbranching target and the
+[32:24] typical value,
+[32:25] right?  Maybe it
+[32:29] could have been done.
+[32:30] We just thought
+[32:31] it would make the
+[32:32] control scheme a little more
+[32:33] complicated.  It was
+[32:35] a little easier
+[32:35] to design and
+[32:36] visualize.  This is the
+[32:38] reason why
+[32:39] this design was chosen.
+[32:40] And you know, there's no
+[32:41] other reason
+[32:43] why it couldn't be
+[32:44] removed.  It's just that
+[32:45] the logic would need to be
+[32:46] changed a little, but
+[32:47] it's still normal
+[32:48] .  And once we
+[32:50] select the next
+[32:52] PC, that can be fed to the
+[32:53] firmware counter, that is, the
+[32:55] next micro PC, we
+[32:56] can send
+[32:57] it to the
+[32:58] firmware counter.
+[33:01] OK.  So, this
+[33:03] brings us to
+[33:04] the end of the
+[33:06] microprogramming section,
+[33:07] and we'll next look at
+[33:08] how to make processors
+[33:09] and processor design
+[33:10] much more
+[33:11] efficient.  So,
+[33:13] in the next chapter,
+[33:14] namely the ninth, we
+[33:16] will look at a method
+[33:17] called "
+[33:17] pipelining".

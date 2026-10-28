@@ -1,0 +1,1171 @@
+[00:02] [Music]
+[01:14] welcome to the newly added chapter 6
+[01:17] this is a chapter on the risk 5 Assembly
+[01:20] Language which as of 2024 in fact I'm
+[01:24] recording this video on the Christmas
+[01:26] day of
+[01:28] 2024 r dis 5 is very very popular and it
+[01:33] is projected to be one of the most
+[01:36] popular instruction sets especially risk
+[01:39] instruction sets in the near
+[01:43] future so uh this is a part of uh the
+[01:47] second version of my book basic computer
+[01:50] architecture the entire book is
+[01:53] available for free at uh my homepage and
+[01:57] also accessible at uh this URL so
+[02:02] remember to put an HTTP and not an https
+[02:05] so the S causes a problem so it's just
+[02:08] HTTP so you can download the full PDF of
+[02:11] the book including this risk 5
+[02:14] chapter links to the YouTube videos
+[02:17] which is basically this video that we
+[02:18] are
+[02:19] recording the slides the software and
+[02:22] the solution manual everything is
+[02:24] available on this
+[02:26] website and the print version for people
+[02:29] like me who prefer print
+[02:31] books is available worldwide uh via
+[02:35] white Falcon and
+[02:37] Amazon so you can go to your local
+[02:40] Amazon site and you would find a copy of
+[02:43] this book and this can be purchased the
+[02:46] print version the pdf version is free
+[02:48] absolutely free it will continue to be
+[02:51] free and any updates will continue to
+[02:54] incorporate in the pdf version of the
+[02:58] book so so here is uh what we will do we
+[03:02] have six uh sorry five broad
+[03:04] sections so we have the risk five
+[03:07] Machine model that we'll discuss first
+[03:10] so we always do that and given the fact
+[03:13] that in this book we have already
+[03:14] covered three assembly languages so if
+[03:17] you would recall so we covered simple
+[03:20] risk right which was which is a very
+[03:23] simple uh risk Isa that we designed then
+[03:26] we covered uh the arm assembly language
+[03:29] and find finally
+[03:31] x86 so some amount of familiarity of
+[03:35] assembly languages is assumed so in case
+[03:38] there is a problem you can go to the
+[03:40] risk five sorry the simple risk chapter
+[03:43] and
+[03:45] uh kind of go through the same Concepts
+[03:48] again so because this is the you know
+[03:50] the fourth and the last Assembly
+[03:52] Language that is being introduced the
+[03:54] treatment is slightly brief right uh so
+[03:57] many details have been abstracted out
+[03:59] because in the last three chapters they
+[04:01] have kind of been discussed in depth any
+[04:04] doubts you go here to this chapter right
+[04:06] which is the basic Assembly Language
+[04:08] chapter so we will discuss integer
+[04:11] instructions memory control transfer
+[04:14] instructions floating point and finally
+[04:16] the
+[04:18] encoding so uh there's a little bit of a
+[04:20] change in the slides so new technology
+[04:23] keeps
+[04:25] coming so we used code Snippets that
+[04:28] were beautified with the carb app so
+[04:31] that is uh available at this website
+[04:34] here so we are more than thankful and
+[04:36] grateful to them for for uh having this
+[04:39] wonderful website so all the code
+[04:42] Snippets that you see have been
+[04:43] beautified with the app that is on their
+[04:46] website so without further Ado Let's uh
+[04:50] discuss the main reason for having a
+[04:53] modern IA so you need to understand that
+[04:56] you know from starting of this
+[04:59] millennium
+[05:00] no one really thought that an Isa is
+[05:02] something that is
+[05:04] important people thought that the field
+[05:07] of Isa
+[05:08] design is
+[05:10] mature and there is no need to design a
+[05:13] newer Isa because in any case you had
+[05:16] x86 which
+[05:18] was kind of the market leader it had all
+[05:21] CIS features then you had a bunch of
+[05:24] risk Isa starting from the power PC Isa
+[05:28] ultrapark
+[05:29] right for sun then of course you have
+[05:32] arm which is very
+[05:34] common so nobody felt a need for an
+[05:37] additional iy right because you have so
+[05:39] many so it turned out that for both
+[05:42] technical reasons as well as legal
+[05:44] reasons right both are important because
+[05:47] uh the arm Isa for instance is licensed
+[05:50] by
+[05:51] arm two companies so in a certain sense
+[05:54] it's a proprietary product so there are
+[05:58] reasons why there wasn't need to design
+[06:00] an Isa which was open in a sense anybody
+[06:04] can build a processor for that
+[06:06] Isa a few additional requirements it had
+[06:09] to be compatible with all kinds of
+[06:12] devices starting from small 32-bit
+[06:15] devices in fact also 16 bits 64 bits 128
+[06:19] bits right so you want it to also be
+[06:22] compatible with
+[06:24] servers no licensing requirement this
+[06:27] was a huge requirement
+[06:30] primarily because many of the
+[06:32] proprietary isas did not
+[06:35] allow a vendor or a company to build a
+[06:39] processor for that Isa without paying a
+[06:41] licensing fee and depending upon whom
+[06:44] you ask many would say that the
+[06:46] licensing fee was quite
+[06:49] High second it is necessary to build an
+[06:52] ecosystem around the ASAS you need a
+[06:54] large software development developer
+[06:57] community so they would create all the
+[07:00] bin utils like your assemblers and uh
+[07:02] you know object dumps
+[07:06] and static Library linking routines
+[07:09] Dynamic Library linking
+[07:10] routines and then of course
+[07:14] compilers and then someone has to Port
+[07:16] the Linux OS to risk
+[07:18] 5 so a lot of work had to be
+[07:22] done so given uh that so much of work
+[07:25] had to be done nobody wanted to invest
+[07:27] in something absolutely new
+[07:30] but clearly there was a requirement for
+[07:33] that number one because a lot of things
+[07:35] had been learned over the years so from
+[07:38] a technical and technological
+[07:39] perspective a new Isa was
+[07:42] needed right because as I said the
+[07:44] learnings had to be
+[07:46] incorporated second uh many kinds of new
+[07:50] accelerators were coming up and some Isa
+[07:53] support was required right maybe as an
+[07:56] extension so Vector extensions crypto
+[07:59] cryp graphic extensions a IML and so
+[08:02] on so the main idea was to sort of
+[08:05] create some sort of a modular Isa where
+[08:07] you have a base set of
+[08:09] instructions and then you sort of have
+[08:12] these you know add-on
+[08:13] modules that you can add depending upon
+[08:18] requirement so looking at this entire
+[08:21] complex landscape right so you need to
+[08:24] understand that designing a core stopped
+[08:27] being rocket science
+[08:29] let's say by the late '90s so even
+[08:31] University groups and you know mature
+[08:35] developers could design a core they had
+[08:37] the financial resources to fabricate it
+[08:40] but the reason they needed their own ISC
+[08:42] was primarily because they needed access
+[08:45] to a developer
+[08:46] community and uh some sort of an
+[08:50] ecosystem so Berkeley tried to seed that
+[08:52] ecosystem in
+[08:54] 2010 by creating this effort and in 2015
+[08:59] all the documents were released under
+[09:01] the Creative Commons license which is
+[09:04] reasonably permissive
+[09:06] license and now risk 5 is maintained by
+[09:09] the risk 5
+[09:11] Foundation which essentially encourages
+[09:14] open- Source uh hardware and software
+[09:17] development based on risk 5 let us now
+[09:21] look at the risk 5 Machine
+[09:24] model so in Risk
+[09:28] five uh we have different isas actually
+[09:31] so it's not one Isa but it's an Isa with
+[09:35] many flavors extensions and variants
+[09:38] right so this is not something that we
+[09:40] may be used to because whatever we have
+[09:42] seen up till now has kind of been a
+[09:45] single monolithic
+[09:49] Isa but the point is that this is not
+[09:52] like
+[09:54] that so uh the base Isa is
+[09:57] rv32 so as you can can see rv32 is the
+[10:01] base which basically means it has 32-bit
+[10:05] instructions and uh that to the basic
+[10:09] set then there is an embedded version so
+[10:13] the embedded version as we shall see is
+[10:15] somewhat restricted in what you can do
+[10:18] and what you can use so it's made for
+[10:21] smaller embedded uh
+[10:24] processors then uh for large server
+[10:27] class
+[10:28] machines the there is a 64-bit Isa which
+[10:31] again comes in two variants right so you
+[10:33] can have a 64-bit Mach uh Isa for a
+[10:37] server class machine and an embedded
+[10:39] variant particularly for high
+[10:42] performance uh embedded systems and then
+[10:45] of course a 128bit
+[10:48] Isa where the data path is really wide
+[10:51] so this is mostly for simd kind of
+[10:55] instructions where we want to pack a lot
+[10:58] of data it in the same memory
+[11:01] word so as of 2024 RV 64 and RV 128 are
+[11:07] not very
+[11:08] mature but rv32 is very mature and with
+[11:12] all these instruction sets we can have a
+[11:15] lot of these
+[11:18] extensions so for instance we can have
+[11:21] we have already seen the E extension for
+[11:23] the embedded
+[11:25] version the eye extension is standard so
+[11:27] most of the time this is not written
+[11:29] because you sort of assume it's there is
+[11:31] the base integer Isa that has very
+[11:35] basic integer instructions and load
+[11:38] store
+[11:39] instructions then we have the M
+[11:41] extension which is primarily for
+[11:44] multiplication and division because
+[11:47] these are not a part of the Bas Isa they
+[11:49] are not a part of this they are
+[11:53] separate then if we expect that
+[11:57] multi-threaded programs will be run or
+[11:59] there there be some kind of
+[12:00] multiprocessing so even if you run
+[12:02] single threaded programs but you have
+[12:04] the Linux kernel then that does still
+[12:08] have you know multiple processes that
+[12:09] are running at the same time so it would
+[12:12] still need support for Atomic
+[12:15] instructions so this is in a sense
+[12:17] considered standard in the sense that
+[12:19] even if you are not actually into
+[12:23] parallel processing you'll still run a
+[12:25] multitasking kernel and the multitasking
+[12:28] kernel would need internally Atomic
+[12:31] instructions so supporting this i m and
+[12:34] a are sort of
+[12:36] standard a lot of codes may not use
+[12:38] floating points so there is no need for
+[12:40] single Precision floating point or
+[12:42] double Precision there's no need unless
+[12:43] you're using
+[12:45] them the same holds true for Vector
+[12:48] instructions as well that there is no
+[12:51] need for them unless we are into
+[12:54] something like matrix multiplication or
+[12:56] AIML kind of codes so then uh Vector
+[13:00] instructions are
+[13:03] needed so if we talk more about
+[13:05] extensions are we as we have seen rv32 I
+[13:10] which is the integer extension let me
+[13:13] write it down this is
+[13:16] standard so this is something that we
+[13:18] have and this is the regular 32bit
+[13:22] IC RV 64i and RV 128 I are also
+[13:27] there and they are maturing and also
+[13:31] what we discussed is that the standard
+[13:33] set is integer multiplication division
+[13:36] instructions and atomic
+[13:38] instructions furthermore given an Isa
+[13:41] with its extensions let's call it Isa
+[13:45] Plus+ you can have basically a major
+[13:49] revision a major version because the
+[13:53] specifications keep changing right so
+[13:55] you can have a major and then p is a
+[13:57] delimiter
+[13:59] and then you can have a minor
+[14:02] version right so uh the if I write rv32
+[14:07] i1 P3 then the major version number is
+[14:10] one minor is three so what happens is
+[14:14] that the risk 5 Consortium periodically
+[14:17] on a regular basis Issues new
+[14:21] specifications so new versions of the
+[14:23] ISA are released periodically you know
+[14:26] with minor changes and tweaks so the
+[14:29] expectation is that Hardware designers
+[14:32] and also software writers who are
+[14:34] writing the software stack would update
+[14:37] their stack accordingly and most changes
+[14:41] are in a sense Backward Compatible which
+[14:45] basically means something that was
+[14:46] already executing will continue to
+[14:50] execute so sometimes what we do is we
+[14:52] take a bunch of these extensions so
+[14:54] let's say you know you have the integer
+[14:56] ice integer extension some addition
+[15:00] integers uh additional integer
+[15:02] instructions the floating Point
+[15:04] exception sorry extension uh the
+[15:07] synchronization uh instructions that
+[15:10] extension so you take a bunch of these
+[15:13] extensions and you sort of group them
+[15:15] and you create a master extension G so
+[15:18] rv32 G thus becomes the most popular
+[15:22] format for a large number of processors
+[15:26] where G is not one extension but rather
+[15:29] it is a collection of many different
+[15:33] extensions so it is a collection of the
+[15:36] integer instruction extension the
+[15:39] floating Point
+[15:42] instructions Atomic synchronization uh
+[15:45] instructions so on and so
+[15:48] forth so now the question is that what
+[15:52] if we run out of letters because if you
+[15:54] see here we have single letters and
+[15:56] there are only 26 such letters
+[15:59] so that is why the Zed or Z series was
+[16:02] introduced so what you can do is that
+[16:04] you can do this and then you can write a
+[16:07] lot so let's say if we write fa for
+[16:09] instance these are additional floating
+[16:12] Point instructions you can have
+[16:13] additional integer
+[16:15] instructions right additional memory
+[16:18] instructions and a lot of
+[16:20] that so in a certain
+[16:23] sense this is like an expander for
+[16:27] extensions where you can create create a
+[16:29] lot of custom
+[16:32] extensions and
+[16:34] uh this will ensure that the ISA is sort
+[16:37] of rich but it is not necessary for any
+[16:41] one implementation to support all the
+[16:43] extensions just support the standard
+[16:45] ones and the ones that you
+[16:47] need so now let's come to the embedded
+[16:50] and compressed versions but before we
+[16:52] talk about them we need to understand
+[16:55] that the instruction width has been set
+[16:58] to 3 2 bits even in wider formats like
+[17:02] even when the data path is 64 or 128
+[17:05] bits which basically means that the
+[17:07] register size and the memory address
+[17:09] size is 64 or 128 bits the instruction
+[17:13] size has still been kept to 32 bits for
+[17:15] the sake of compatibility ease of use
+[17:19] and so on and so forth but
+[17:22] sometimes there is a need to actually
+[17:26] have smaller instructions or
+[17:29] use fewer instructions in the
+[17:32] extension or use fewer registers so this
+[17:35] is mainly to reduce power and uh to also
+[17:39] have a smaller implementation of the
+[17:41] risk 5 processor so in this field two
+[17:44] versions stand out the embedded
+[17:47] version right or the the neonic E and
+[17:50] the compressed one
+[17:52] C so here what happens is that we do not
+[17:57] reduce the instruction WID it still
+[17:58] remain remains 32 bits so incidentally
+[18:01] people are thinking about having a wider
+[18:04] risk 5 Isa of having maybe a 48 or 64bit
+[18:08] Isa so you can go to the risk 5 site and
+[18:11] you will see that there are some
+[18:13] standards that are sort of being built
+[18:16] around this and they are at different
+[18:17] stages of majority so you can uh keep
+[18:21] tracking so maybe when uh you know you
+[18:25] you are looking at this video perhaps it
+[18:27] would have been released but at the
+[18:28] moment M so this is 26th of December
+[18:33] 2024 uh these
+[18:35] standards have not been fully
+[18:43] ratified so let's now come to the
+[18:46] compressed version so the compressed
+[18:48] version we actually reduce the width so
+[18:51] we actually reduce the weight from 32 to
+[18:54] 16 so this reduction is done
+[18:59] and instead of accessing the full set of
+[19:01] 32
+[19:03] registers we actually access only eight
+[19:06] registers right so we don't access the
+[19:08] full register set right so risk 5 has
+[19:13] it's a risk instruction set so it has a
+[19:15] lot of registers but we access only
+[19:18] eight also the instructions and op codes
+[19:21] that are supported is kind of limited
+[19:24] and risk five supports in general 12 or
+[19:27] 20 bit immediate values but in the
+[19:29] compressed form it is actually much
+[19:31] smaller so this is for Ultra small and
+[19:34] ultra low power processors they are the
+[19:37] ones who would actually benefit from the
+[19:39] compressed version of the
+[19:46] ISA so now let's take a look at the
+[19:49] integer
+[19:51] registers so there are 32 registers as
+[19:54] we have uh
+[19:56] mentioned so the first register is
+[19:59] called x0 so incidentally the registers
+[20:01] have two
+[20:02] names the registers are either x0 to X31
+[20:07] that's one way of addressing them the
+[20:10] other way which uh is actually preferred
+[20:14] right that's the way it should be is by
+[20:16] neonics so which means that you give it
+[20:19] another name the other name is
+[20:21] suggestive of its function for example
+[20:24] uh assembly languages have a very very
+[20:27] strict usage convention and that is
+[20:30] something that assemblers compilers
+[20:33] everybody follows the nemonic in a
+[20:36] sense represents and Carries that
+[20:41] convention so uh you will know when to
+[20:44] use which register when not to use it
+[20:46] and the neonic makes it very clear so
+[20:49] the first register is called
+[20:52] x0 this is a very you know this is a
+[20:56] novel concept this is new to risk 5 so
+[20:58] we have not seen this
+[21:00] earlier so this register is known as the
+[21:03] zero register because it is hardwired to
+[21:06] zero so we will see there are a lot of
+[21:09] uses of this
+[21:11] register and
+[21:14] uh you know it is extremely useful
+[21:17] starting from moving values to whatnot
+[21:19] but when we look at this register in use
+[21:22] we'll realize its power the rest are
+[21:25] sort of standard in the sense X1 is the
+[21:28] return
+[21:31] address and uh so it is called ra X2 is
+[21:35] the stack pointer we have seen that X3
+[21:38] is a global pointers this is like stack
+[21:41] pointer top of the stack and this is
+[21:43] like the bottom of the activation
+[21:45] window then we can have a thread pointer
+[21:48] which actually points to a local storage
+[21:50] area of a thread so if I consider a
+[21:53] thread it will have some area where it
+[21:56] stores its private variables that is
+[21:59] DP then uh we can have X5 to 7 which is
+[22:04] also the neonics
+[22:07] t012 so these are temporary registers
+[22:10] that are meant to be used inside a
+[22:12] function they are not
+[22:16] saved so they are not uh callar saved uh
+[22:20] or cly saved uh sorry uh I I just stand
+[22:26] corrected uh over here
+[22:29] so I would just like to amend what I
+[22:31] said uh a minute ago the the global
+[22:35] pointer is actually a pointer to a
+[22:38] region of global
+[22:41] variables so sometimes what happens is
+[22:44] that all the global variables are stored
+[22:47] in one location so the global pointer in
+[22:50] a sense points to that location and this
+[22:53] is useful especially if we have a lot of
+[22:55] global and static variables so then we
+[22:58] will have this one register that holds a
+[23:03] pointer to that and this is particularly
+[23:06] very useful in uh large programs
+[23:10] starting from operating systems
+[23:13] to you know reasonably large pieces of
+[23:16] software where access to some Global
+[23:18] table is needed all the
+[23:20] time so then we have uh let's come back
+[23:24] we have temporary registers that are not
+[23:27] saved and then we have the register s0
+[23:30] which is a saved register so this is the
+[23:33] frame pointer right which starts kind of
+[23:35] the current frame current
+[23:39] uh uh was what is also called an
+[23:41] activation block right so essentially
+[23:44] the area of the stack that stores the
+[23:46] state of the current functions
+[23:48] execution so s0
+[23:51] can act like a regular saved register or
+[23:54] like the frame
+[23:56] pointer then X9 which is S1 similarly is
+[24:01] a saved
+[24:02] register and then we have a bunch of
+[24:05] registers so we actually have eight
+[24:08] registers starting from X10 to x
+[24:13] 17 uh so which are for function
+[24:16] arguments and return values specifically
+[24:19] a0 and 1 can store both arguments as as
+[24:23] well as return values the reason that
+[24:25] two registers are provided is because
+[24:28] let's say we have a 32bit Isa and we
+[24:31] want to return 64 bits as is often the
+[24:34] case sometimes we multiply and the
+[24:36] product is 64 bits so that is why two
+[24:39] registers have been provided and then
+[24:42] the rest are for function argument so we
+[24:45] have a sufficient number of registers
+[24:48] for function
+[24:49] arguments then we have a few more
+[24:52] registers that are meant to be saved
+[24:53] across function invocations S2 to 11 and
+[24:57] finally a few more temporary
+[25:00] registers so as we can see we have 12
+[25:03] saved registers and seven temporary
+[25:07] registers from t0 to T6 so the temporary
+[25:10] registers are not saved but the S Series
+[25:13] are saved so essentially other than
+[25:16] these special ones where zero is super
+[25:19] special we have three series of
+[25:21] resistors s is the saved series T is the
+[25:25] temporary series not saved then we have
+[25:28] a A and A is for arguments and return
+[25:31] values where a z and one are
+[25:33] for return values as well so we can
+[25:36] refer to registers and assembly code
+[25:39] using their neonics or using these
+[25:42] register names X1 X2 X3 so just to
+[25:46] remind you x0 is hard wi to zero it's
+[25:49] also called the zero
+[25:51] register there is a dedicated PC
+[25:54] register which cannot be manipulated
+[25:56] directly but it sort of can indirectly
+[26:00] accessed uh this is a by Indian Isa in
+[26:03] the sense you can choose whether it is
+[26:05] little Indian or big Indian it is a by
+[26:08] Indian Isa that is another strength so
+[26:11] as I said you know whenever you do
+[26:13] something new you learn a
+[26:16] lot uh you incorporate whatever you have
+[26:19] learned and this is exactly what has
+[26:21] been done in the case of risk
+[26:27] five let let us now take a different
+[26:30] look at the space of
+[26:33] registers
+[26:35] so we have already said that there are
+[26:37] 32 registers in the risk 5 instruction
+[26:40] set and uh for RV 32 there are 32 bits
+[26:46] each for RV 64 each one of them is 64
+[26:50] bits as you can see so it's just that
+[26:51] the register becomes wider so recall
+[26:54] that in x86 also we had a similar
+[26:57] concept where
+[26:59] the registers used to become wider
+[27:02] as uh the data path size
+[27:06] increased and then RV 128 is when the
+[27:09] register becomes even
+[27:12] wider the PC as I said is a register
+[27:15] which cannot be directly manipulated but
+[27:17] it can be indirectly manipulated and
+[27:20] that too has different sizes based on
+[27:24] how wide the instruction set is
+[27:29] so we'll now come to our second part
+[27:31] which is the main integer
+[27:34] instructions so let's take a look at the
+[27:37] quintessential instruction which is
+[27:38] moving a value to a register right
+[27:41] that's maybe the first thing that anyone
+[27:43] would do while writing an assembly
+[27:46] program or moving the content of one
+[27:49] register to another which is again
+[27:52] something that one would do so this is
+[27:54] where the greatness of the zero register
+[27:57] comes in handy so the add I instruction
+[28:03] is essentially add immediate as you can
+[28:04] see the I stands for immediate this has
+[28:07] exactly the same semantics and the same
+[28:10] format as the other risk instructions
+[28:13] that we have
+[28:15] seen Rd is the destination rs1 is the
+[28:18] First Source m is the
+[28:21] immediate for example if I'm adding a
+[28:23] register and an immediate so then it'll
+[28:26] become the cont contents of
+[28:29] x0 which in this case is 0 + 5 and that
+[28:33] is transferred to
+[28:35] X1 so let me tell you in case you have
+[28:38] not
+[28:40] noticed that adding the immediate to
+[28:43] zero and then transferring it to a
+[28:45] register is nothing but moving the
+[28:48] contents of the immediate to the
+[28:50] register so in the sense that we do not
+[28:53] need a separate move instruction this is
+[28:57] not needed everything is folded and that
+[29:00] to you know very intelligently folded
+[29:01] into the same add immediate instruction
+[29:05] the reason being that one you know you
+[29:07] can use x0 or the zero or you can also
+[29:10] write zero here the zero
+[29:12] register anything added to zero is
+[29:15] essentially that
+[29:17] number so that is being transferred to
+[29:19] the destination
+[29:23] register which is over here so this is
+[29:26] tantum Mount to moving the value
+[29:28] of course you're not forced to use x0
+[29:31] here any other register can be used in
+[29:33] that case we are simply adding the
+[29:36] immediate value to the contents of the
+[29:38] register it's not moving but we are uh
+[29:43] kind of uh incrementing it by whatever
+[29:45] is the value in the immediate
+[29:48] field so this is one way of kind of
+[29:51] getting rid of one
+[29:53] instruction also we do not need a sub I
+[29:55] a sub a sub instruction is not needed
+[29:58] because the immediate is
+[30:00] signed so then there is a generic form
+[30:03] of this which is ADD then you can
+[30:06] specify two Source
+[30:08] registers so the contents of the two
+[30:10] Source registers will be added and that
+[30:13] will be transferred to
+[30:15] X1 here again a register move can be
+[30:17] accomplished if this is the zero
+[30:19] register then essentially we are moving
+[30:22] the contents of this to
+[30:25] this so as we can see there's this
+[30:28] nice trick that is packed in here which
+[30:31] is that if the First Source register is
+[30:34] zero it is tantamount to a regular
+[30:37] immediate move or a regular register
+[30:40] move that is exactly what it is nothing
+[30:44] more than that otherwise it's a simple
+[30:46] add
+[30:49] instruction so the other question is
+[30:51] that can I load an immediate
+[30:55] directly into a register
+[30:58] right that is the main
+[31:00] question so risk five supports in
+[31:03] general 12bit immediate so this
+[31:05] immediate over here is 12
+[31:07] bits right that is because you know you
+[31:10] need space for other registers so the
+[31:13] maximum space that we can afford in this
+[31:16] case is 12 bits but there is an Lui
+[31:19] instruction that can load at 20 bit
+[31:23] immediate so in a certain sense this is
+[31:26] what is being loaded and this will be
+[31:30] loaded in the upper 20 bits so if this
+[31:34] is a 32-bit
+[31:39] field whatever is being
+[31:42] loaded right so let's let's say count
+[31:44] from one makes our life uh slightly
+[31:49] easy so then this will essentially load
+[31:52] it
+[31:54] here so the rest of the contents from 1
+[31:57] to 12 will remain as they are it will
+[31:59] get loaded here the reason being that 1
+[32:02] to 12 is something that we can any way
+[32:05] kind of access and modify using the add
+[32:07] instructions so any move is basically
+[32:10] moving it to the lower 12
+[32:12] bits that is why the load upper
+[32:14] immediate Lei instruction essentially
+[32:17] targets the upper 20 bits which other
+[32:20] instructions like the ad instruction is
+[32:22] not targeting for example if we do Lu
+[32:25] Lui X15 the X1
+[32:28] we will load the value five no doubt but
+[32:31] that will be in the upper 20 bits which
+[32:34] is Stant Mount to left shifting five by
+[32:36] 12 positions so we take five and we kind
+[32:39] of left shift it by 12 positions and
+[32:41] bring it here and five is 101 so this
+[32:44] becomes one 1 and then the rest all are
+[32:48] zeros so what we see here is that if I
+[32:52] want to load 32 bits into a registor it
+[32:55] cannot be done via a single instruction
+[32:58] that is not possible that cannot be done
+[33:02] so I need two instructions where uh
+[33:05] maybe I'll use an ad or something for
+[33:06] the lower 20 bits and then an ly for the
+[33:09] upper 20 bits then only it can be
+[33:12] done of course many times you know this
+[33:16] is appears to be a bit too much but well
+[33:20] this is the best that we can do this is
+[33:21] a limitation of the instruction set that
+[33:26] is why a Pudo instruction has been
+[33:28] provided audo instruction is like a
+[33:31] directive to the assembler and in
+[33:34] reality it resolves to multiple machine
+[33:37] instructions in this case two machine
+[33:40] instructions where you create a li load
+[33:43] immediate sudo instruction where a full
+[33:46] 32bit immediate can be loaded into a
+[33:50] register but again this is not
+[33:52] translating to one machine
+[33:55] instruction it is translating to
+[33:58] two machine instructions one loads the
+[34:00] lower 12 bits one loads the upper 20
+[34:05] bits also kindly notice if you have not
+[34:09] noticed that in the first case we are
+[34:11] using the regular numbers X1 X2 X3 and
+[34:14] in the other case we are using the
+[34:16] neonic which is t0 temporary register
+[34:19] 0 and both can be used right so we have
+[34:23] also used both in our in these tables
+[34:27] but in the codes we have only used a
+[34:29] neonic because that is the right thing
+[34:31] to do and automatically if you use
+[34:34] neonic you will start following the
+[34:36] register usage convention that's why
+[34:38] it's always good to use them and it is
+[34:40] also always good if assembly code is
+[34:43] being written to use the pseudo
+[34:46] instructions that the assembler is
+[34:48] providing to make life easy but bear in
+[34:51] mind that this will resolve to multiple
+[34:54] machine instructions after the process
+[34:57] after the assembler has done its
+[35:00] job so we are now here uh looking at our
+[35:04] first piece of risk 5 code assembly code
+[35:08] and this has been beautified so this the
+[35:10] output of uh what the carbon app gave me
+[35:14] so in this case I want to add
+[35:16] two large numbers right this difficult
+[35:20] looking thing and this
+[35:22] one and then I would like to store it
+[35:25] somewhere in some register
+[35:30] so in this case uh what we do is that we
+[35:34] realize that a reasonably good starting
+[35:37] point is 496 into 100
+[35:43] 496 should be a familiar Beast up till
+[35:46] now so 496 is nothing but 2 ^
+[35:51] 12 right so it is
+[35:53] one and
+[35:55] then 12 zos
+[35:59] so basically this should ring a bell at
+[36:02] moment that in a 32-bit field the lower
+[36:06] bottom 12 the least significant 12 are
+[36:09] all zeros and then you have
+[36:12] one so what we do is that we
+[36:20] load an upper
+[36:23] immediate of
+[36:25] 100 so the moment we load an upper
+[36:28] immediate of 100 this actually becomes
+[36:31] 4096 0 0 and look at the first number
+[36:35] it's
+[36:36] 4099
+[36:39] 32 so if I
+[36:41] subtract then what I will get is
+[36:44] 332 so I will do an upper immediate load
+[36:48] here in t0 which will load this value
+[36:52] then I will add 332 to it with the add I
+[36:56] instruction and the moment I have done
+[36:59] that then I add this to t 0 so the new
+[37:02] value of t 0 contains this similarly
+[37:07] 49823 is not very far off I do exactly
+[37:11] the same with T1 and in this case I add
+[37:15] 223 so my T1 contains the value
+[37:19] 409
+[37:21] 823 finally what I do is I use the add
+[37:24] instruction to add t 0 and T1
+[37:28] which are nothing but these two values
+[37:30] 4099 32 and
+[37:33] 49823 respectively and store the result
+[37:36] in
+[37:38] T2 so this is an interesting use case
+[37:42] where the lii instruction has been used
+[37:45] ADI has been used and add has been
+[37:52] used so I can do the same I can do the
+[37:56] same okay using the liudo instruction so
+[38:00] I didn't uh in this case I don't require
+[38:03] those multiple instructions my life is
+[38:05] slightly easier so I use the sudo
+[38:08] instruction I do Li t0 so this
+[38:10] completely comes in t0 of course at
+[38:13] runtime it will resolve to multiple
+[38:16] machine
+[38:17] instructions similarly I use T1 and this
+[38:20] constant comes into
+[38:22] T1 finally both are added the moment
+[38:26] both are added the result can be saved
+[38:29] in T2 so you can clearly see the human
+[38:32] effort that this is
+[38:35] saving now if I look at the subtract
+[38:40] instruction so of course I would along
+[38:43] with the addition so so we have looked
+[38:45] at add and add I now I'm adding the
+[38:48] subtract instruction
+[38:50] here so the subtract instructions mind
+[38:53] you I don't need sub because the
+[38:55] immediate is signed but the subtract
+[38:57] instruction is
+[38:59] needed to subtract X2 - X3 in this case
+[39:03] or X3 from X2 so sub is needed and this
+[39:08] is a legitimate
+[39:10] instruction so let me just uh compute 4
+[39:14] + 5 - 19 this is not very hard at all so
+[39:18] what I do is I load 4 into t0 I already
+[39:22] know how to do it the way that I do it
+[39:25] is that I use the ADI instru ruction and
+[39:28] I add four to the register zero which
+[39:32] basically transfers four here then five
+[39:35] I add to zero to transfer it to T1 I add
+[39:40] them I get
+[39:41] T2 and then I want to subtract 19 but as
+[39:46] I said I don't have a subi instruction I
+[39:48] don't need it instead I use the ADI
+[39:51] instruction and I just add minus 19
+[39:54] which is tantamount to subtracting 19 so
+[39:57] in this case I add -19 to T2 and the
+[40:01] result is in T2 itself which is the
+[40:04] final
+[40:06] result so let us keep going
+[40:11] further let me now consider the
+[40:13] quintessential problem of swapping two
+[40:16] numbers that are in X1 and X2 again you
+[40:19] will see that the zero register x0 will
+[40:23] play a strong role it always does or at
+[40:26] least it is appearing
+[40:28] to always play a role so in this case
+[40:32] what I do is I transfer the value of X1
+[40:35] to
+[40:36] X3 and the easiest way of doing that is
+[40:39] I add X1 to x0 and then you know it
+[40:43] comes to X3
+[40:45] directly given the fact that the value
+[40:47] of X1 has been saved I transfer the
+[40:50] value of X2 to
+[40:52] X1 again via the same mechanism by
+[40:55] adding it with x0
+[40:59] given the value that X1 now has the SWA
+[41:01] value it is time for X2 so X2 gets the
+[41:04] old value of X1 which is stored in X3
+[41:07] and again using the same
+[41:10] mechanism right uh the add mechanism add
+[41:14] with the zero register this is
+[41:16] transferred to X2 so this is a quick and
+[41:18] easy way of actually swapping the values
+[41:22] into registers
+[41:27] so let's continue our journey so now we
+[41:30] will discuss multiplication and
+[41:33] division so multiplication and
+[41:37] division broadly follow the same
+[41:40] format so we are Mal div and REM Mal for
+[41:44] multiplication div for division REM for
+[41:48] remainder and then again same uh
+[41:52] destination
+[41:53] register so you multiply X2 X3 result is
+[41:57] is an X1 X2 divided by X3 result here is
+[42:01] an X1 as you can see and divide X2 by X3
+[42:07] integer division the remainder is an X1
+[42:09] so this is all integer
+[42:11] Division and if you would recall both
+[42:14] multiplication and division instructions
+[42:16] are part of the M
+[42:18] extension which is technically not a
+[42:21] standard extension right so this
+[42:25] extension
+[42:27] I I mean it depends on who you're asking
+[42:30] but this is not part of the base
+[42:31] instruction set but it is part of the
+[42:34] general instruction set so that includes
+[42:36] i m and
+[42:38] a so multiplication is kind of special
+[42:41] because if you're multiplying to 32bit
+[42:44] quantities the product would need 64
+[42:47] bits to
+[42:48] store so that is why there are two
+[42:51] variants of it multiplication H and
+[42:54] multiplication H is for high and U which
+[42:58] is for unsigned so always H is for high
+[43:00] the upper bits and U is for unsigned in
+[43:03] case we are doing unsigned
+[43:06] multiplication so these
+[43:08] instructions are can be used so you
+[43:12] multiply them and then this
+[43:14] instruction can be used to both multiply
+[43:17] as well as C uh as well as I'm sorry
+[43:19] compute the upper 32
+[43:22] bits sorry I yeah as well as compute the
+[43:26] upper 32 bits
+[43:28] bits so the upper 32 bits when they are
+[43:32] computed uh we would need obviously a
+[43:34] different instruction which is Mal or
+[43:36] Malu depending upon whether we are doing
+[43:40] regular multiplication or
+[43:43] unsigned now here is the greatness of
+[43:46] the risk 5 Isa so as I said you know
+[43:48] there are these small small things which
+[43:49] sort of make the ISS special let us say
+[43:53] that I want to multiply to 32bit numbers
+[43:55] and get the 64-bit product right in
+[43:58] mango so it is true that I will issue
+[44:01] two instructions Mal and malich Mal is
+[44:04] going to give me the bottom 32 so let's
+[44:07] call it 32 minus and malich is going to
+[44:11] give me the top 32 which is let's say 32
+[44:14] plus now this sort of sounds unfair that
+[44:18] to compute the 64bit result which the
+[44:20] hardware will have anyway I need to
+[44:23] invoke two instructions this is not fair
+[44:26] right because after all it's the same
+[44:28] single multiplication right it is just
+[44:31] that my output is not fitting within 32
+[44:34] bits that is why first time I extract
+[44:37] the lower 32 the next time I extract the
+[44:40] upper 32 bits which makes me do twice
+[44:43] the amount of work does not sound very
+[44:47] efficient so what the risk five
+[44:50] specification says is that the hardware
+[44:52] should dynamically
+[44:54] recognize that Mal and malich are are
+[44:57] two sort of consecutive successive
+[45:01] instructions and they're multiplying the
+[45:03] same thing if that is the case it'll
+[45:06] sort of fuse them to a single
+[45:10] instruction do one single multiplication
+[45:13] and write the
+[45:15] results to two registers the first one
+[45:19] is the output of Mal the second is the
+[45:22] output of
+[45:23] malet so in this way only one
+[45:27] multiplication will be done but the
+[45:28] entire 64 bits will be written in two
+[45:31] registers the first register will have
+[45:33] the bottom 32 bits and the second
+[45:36] register will have the top 32 bits so
+[45:39] this is one way of kind of saving one
+[45:42] multiplication which is a reasonable
+[45:44] amount of work given the time and power
+[45:47] that is
+[45:51] involved so division is slightly tricky
+[45:54] right if you see multiplication there
+[45:56] was no issue sign multiplication unsign
+[45:58] no
+[45:59] problem the only trick here was the
+[46:02] 64bit
+[46:04] thing but division there are more tricks
+[46:06] okay so the first thing is that unsigned
+[46:09] division no problem 4 divided by 3
+[46:12] positive numbers quotient is one
+[46:14] remainder is one no problem the question
+[46:17] is how do we Define what is the
+[46:19] semantics of the remainder when either
+[46:22] the dividend which is the first quantity
+[46:24] the one that you are dividing
+[46:27] and the divisor the second quantity one
+[46:29] that you are dividing by if one of them
+[46:31] is negative what do you do that's the
+[46:34] question so in a sense the standard
+[46:39] uh sort of semantics here is that you
+[46:43] round toward zero which is basically the
+[46:45] sign of the remainder is the same as the
+[46:48] sign of the
+[46:49] dividend so let's look at this you
+[46:53] divide 4 by Min -3
+[46:57] so if you divide 4 by minus
+[47:00] 3 then you can have kind of two
+[47:05] solutions right so this could either be
+[47:07] minus
+[47:09] 3
+[47:13] right right - 3 into sorry
+[47:17] -1 +
+[47:20] 1 or it could be -3 into
+[47:25] -2 right so that will make it + 6 +
+[47:30] -2
+[47:32] correct so so in this case this is 3 + 1
+[47:36] 4
+[47:38] right and uh in this case it is 6 - 2
+[47:42] which is four because the final result
+[47:46] has to be four because four is the
+[47:48] dividend so clearly what we do
+[47:52] here is that uh we would like to
+[47:58] uh we would like to essentially take
+[48:00] that quotient
+[48:02] here that in a sense is taking us
+[48:05] towards zero so minus one is more
+[48:08] towards zero so we choose
+[48:12] this right so we choose this so then the
+[48:16] remainder
+[48:17] becomes
+[48:19] one similarly let me divide -4 by
+[48:23] 3 so this would basically become 3 * -1
+[48:28] which is - 3 +
+[48:32] -1 the other solution would be 3
+[48:36] * - 2 which is - 6
+[48:41] +
+[48:43] 2 so in this case one of the quotients
+[48:46] needs to be chosen again we choose that
+[48:49] quotient which is going which is towards
+[48:52] zero which is minus1 so that is why we
+[48:55] choose minus1 and the remainer here
+[48:58] becomes minus one the remainder becomes
+[49:00] negative right this is another thing
+[49:02] that we need to keep in mind or we need
+[49:05] to bear in
+[49:07] mind so let me create some space for
+[49:10] myself and let me do a little bit of
+[49:13] erasing and then I'll come
+[49:20] back all right so now we have the last
+[49:25] case which is -4 /
+[49:29] -3 so again the choices in front of us
+[49:32] are again the same -3 into + 1 +
+[49:39] -1 and the other choice that we
+[49:42] have right is -3 into +
+[49:47] 2 so we'll make it - 6 + 2 which is
+[49:52] -4 so it's - 3 - 1 which is -4 - 6 + 2
+[49:56] which is min -4 again we take the
+[49:59] quotient towards Zer so that will be +
+[50:02] one right and uh then the remainder in
+[50:07] this case will become
+[50:09] minus1 so just if you have not noticed
+[50:12] the sign of the dividend and the sign of
+[50:14] the remainder is always the same this is
+[50:17] + 4 positive
+[50:20] positive positive
+[50:23] positive negative negative
+[50:27] negative negative so the sign of the
+[50:30] dividend and the sign of the remainder
+[50:33] is the
+[50:34] same and this is the you know the
+[50:38] classical rounding mode that integer
+[50:40] instructions in Risk 5 use so here also
+[50:45] the same trick can be played that
+[50:47] consecutive Division and remainder
+[50:50] instructions Fair clearly the dividend
+[50:53] and divisor are the same so you have a d
+[50:56] and you have a rem and you're doing the
+[50:58] same operation both of them can be
+[51:02] fused they can be fused into one and
+[51:05] clearly the results go to different
+[51:06] registers following the convention that
+[51:08] we just
+[51:11] showed so let's say I want to multiply 3
+[51:15] with Min
+[51:17] -7 so what I do is that I load 3 into T1
+[51:21] - 17 into T2 we are experts on this now
+[51:26] so so this is just 12 bits right so so
+[51:29] essentially it
+[51:30] is you know 12 bits it is not very hard
+[51:35] to find the range which is -
+[51:38] 248 to +
+[51:42] 247 so 496 numbers this is the range
+[51:46] there's well within the
+[51:47] range so then I load it in a register
+[51:50] then I multiply them and the result is
+[51:52] in T3
+[51:56] let me make my life slightly more
+[51:59] difficult let me compute 12 CU +
+[52:03] 1 well again the first thing that needs
+[52:06] to be done is that we need to load the
+[52:10] registers with the requisite
+[52:14] values so in this case what we do so we
+[52:17] have already seen the same script
+[52:19] playing several times so we load 1 in T1
+[52:24] 12 and T2 12 12 in
+[52:28] T3 so uh what we do is we set T3
+[52:34] as T2 * T2 so so on hindsight you know
+[52:40] this uh this uh line was not required so
+[52:44] I'll delete that uh but uh T3 is here T2
+[52:50] squ and then I multiply T3 with T2 again
+[52:56] and uh then this becomes 12 Cub I add 12
+[53:01] cube with the value stored in T1 which
+[53:04] is 1 store it in T4 so T4 becomes the
+[53:07] value 12 CU +
+[53:13] 1 so let us now look at another problem
+[53:17] similar one my dividing -50 by
+[53:20] 3 so here we load -50 into a temporary
+[53:24] register 3 into 1 more
+[53:27] T1 so this is the advantage of using
+[53:29] neonics that we stick
+[53:32] to uh the register usage convention this
+[53:35] does not allow us to kind of deviate
+[53:38] from it so the first is a regular
+[53:40] division where we divide t0 by T1 store
+[53:43] the result in T2 that's the quotient and
+[53:47] then the remainder is stored in
+[53:49] T3 so as we have argued
+[53:53] before the hardware recognizes that the
+[53:56] division and the remainder instructions
+[53:58] are consecutive so they are dynamically
+[54:01] fused
+[54:02] to be one instruction in Hardware One
+[54:08] Division so next we can take a look at
+[54:10] the bunch of logical instructions that
+[54:13] are there logical and shift all of them
+[54:16] look similar so I'm not
+[54:18] separately uh introducing them so you
+[54:21] have and and and I or and r i same
+[54:24] format as ADD zor and zor I shift left
+[54:29] logical shift right logical shift right
+[54:33] arithmetic so these three we have seen
+[54:35] shift left arithmetic doesn't exist
+[54:38] right so that nobody has that and then
+[54:41] there immediate uh variant SLI I Sr srli
+[54:46] and Sr AI so we will use this to
+[54:50] indicate right shift
+[54:55] arithmetic so the generic format of
+[54:57] shift instructions is like this the same
+[55:00] as ADD Rd rs1 R2 or Rd rs1 is First
+[55:04] Source and the
+[55:08] immediate so again a couple of examples
+[55:11] are due uh reasonably simple ones we
+[55:14] have been seeing them throughout the
+[55:16] bitwise r of A and B well uh load four
+[55:20] let's assume a is 4 B is 1 so load 4
+[55:23] into T1 and or it with one using the r i
+[55:28] or with immediate
+[55:31] instruction compute T1 is equal to T2 +
+[55:35] T3 * 4 so the moment we see Time 4 we
+[55:39] can see that a shift left can be
+[55:42] done right so Time 4 we can reduce the
+[55:45] string there's no reason to have a
+[55:48] multiplication if the same is achievable
+[55:50] using regular shifting
+[55:53] instructions so in this case we
+[55:55] initially ize the value of T3 initialize
+[55:58] the value of
+[56:00] T2 we shift it left by two positions
+[56:03] which is stand amount to multiplying T3
+[56:07] 4 and we store the result in
+[56:10] T4 which is then added to the contents
+[56:13] of
+[56:14] T2 and the result is in T1 and T1 is our
+[56:18] final answer so here clearly the moral
+[56:21] of the story is that multiplications are
+[56:23] slow
+[56:24] operations left shifts on the other hand
+[56:27] are much faster and are always preferred
+[56:30] as long as a power of two is
+[56:34] involved so we have now completed the
+[56:37] first part of the
+[56:39] lecture where we touched upon risk five
+[56:43] the introduction the need for risk five
+[56:45] right so obviously the need was as you
+[56:48] can see it's a reasonably
+[56:50] sophisticated instruction set so there
+[56:53] were technical reasons because we have
+[56:56] you know flavors and variants and
+[56:58] extensions right and of course you know
+[57:02] there was a strong legal aspect that it
+[57:05] was it is an open instruction set it
+[57:08] does not have the kind of license fees
+[57:10] that other instruction sets have so it
+[57:14] is actually meant to produce open
+[57:16] Hardware so in a certain sense it's like
+[57:18] the Linux of Hardware right the the
+[57:21] gnu licensing model for Hardware so that
+[57:25] is where uh the risk five movement and
+[57:28] I'm using the term movement
+[57:30] deliberately because the aim here is to
+[57:33] sort of look at a different kind of a
+[57:35] model something that open source and
+[57:38] free software did in the world of
+[57:39] software this is kind of like
+[57:43] that and then uh we looked at integer
+[57:46] instructions we looked at the registers
+[57:48] we looked at the very important role
+[57:50] that the zero register plays in the
+[57:53] sense that you don't need move
+[57:55] instruction
+[57:57] you just need add instructions that's
+[57:59] all that you
+[58:00] need so then we looked
+[58:03] at uh all variants of this so now what
+[58:07] we will do next which is in the second
+[58:10] lecture is control transfer and
+[58:12] memory then we will move on to
+[58:14] discussing floating Point
+[58:17] instructions and uh encoding the
+[58:20] instruction set so we always look at
+[58:23] this at the end so encoding the
+[58:26] instruction set basically would mean you
+[58:28] know appreciating how whatever we have
+[58:31] studied is fit within 32 bits so I will
+[58:36] see you in the second lecture of this
+[58:38] risk 5 Series

@@ -1,0 +1,1717 @@
+[00:00] [Music]
+[00:28] n
+[00:34] let us now discuss a new paradigm of
+[00:37] Designing multiprocessor systems uh we
+[00:40] call this multi-threading so the
+[00:42] approach in multi-threading is slightly
+[00:44] different it does not use as many
+[00:47] resources as a traditional multicore
+[00:50] processor and it is still regarded as
+[00:52] very efficient and multi-threading has
+[00:54] also been there since at least the last
+[00:56] 10 or 15 years and it has been more or
+[00:59] less adopted by large sections of the
+[01:02] processor
+[01:04] industry so uh recall that we have heard
+[01:08] the word thread before so we heard it in
+[01:10] the context of a running instance of a
+[01:13] program sorry uh we differentiated
+[01:17] between two terms at that point uh one
+[01:20] was a
+[01:22] process and the other was a thread so a
+[01:26] process again was defined as a running
+[01:28] instance of a program
+[01:30] however two processes in general do not
+[01:33] share the address space but two threads
+[01:37] actually can share the address space it
+[01:39] is possible for two threads in principle
+[01:42] to share the address space large parts
+[01:44] of the address space so multi-threading
+[01:47] is basically a design Paradigm that
+[01:50] proposes to run multiple threads on the
+[01:52] same pipeline so we have designed a
+[01:56] pipeline in uh in a previous chapter so
+[02:00] a pipeline of a modern processor is
+[02:02] typically more
+[02:03] complicated and uh our pipeline was able
+[02:06] to process only one instruction at a
+[02:09] time uh but uh modern processes can you
+[02:12] know uh process 3 four five six
+[02:16] instructions at a s at a time uh inside
+[02:20] a single stage so so they are far more
+[02:22] complicated but the basic idea Still
+[02:24] Remains the Same so uh in a
+[02:27] multi-threaded system typically what
+[02:29] happens is that a single pipeline can
+[02:32] execute instructions from multiple
+[02:34] threads at once so uh inside the
+[02:37] pipeline you will have instructions not
+[02:39] not just from one thread but you will
+[02:41] have them from multiple threads for
+[02:44] example if there are threads T1 to T4
+[02:48] you'll have some instructions of T1 some
+[02:50] of T2 some of T3 and some of T4 so the
+[02:54] pipeline will know how to execute
+[02:56] instructions for all of these four
+[02:58] threads so this will in a sense increase
+[03:01] our throughput because sometimes you
+[03:03] know it does happen uh typically when uh
+[03:06] we are accessing memory that assume that
+[03:09] in For Thread T1 it misses in L2 cache
+[03:12] so the request has to go all the way
+[03:14] down to main memory right so all the way
+[03:17] down to main memory the request needs to
+[03:19] go so for 200 or 300 Cycles T1 will not
+[03:22] be able to make any progress during this
+[03:25] time instead of idling we can get
+[03:28] instructions from other threads and
+[03:30] execute them so this will increase and
+[03:32] improve our net
+[03:34] throughput so with this Insight in mind
+[03:37] uh let's look at three kinds of
+[03:39] multi-threading coar grained fine
+[03:42] grained and
+[03:45] simultaneous so cor screen
+[03:47] multi-threading is the simplest of all
+[03:49] and idea is extremely simple uh the idea
+[03:52] is that if we let let's assume you know
+[03:54] our running example is that we want to
+[03:56] run uh four threads on a Pipeline and
+[04:01] the pipeline mind you is not as simple
+[04:03] as the one that we have designed but
+[04:05] it's a complicated pipeline which in
+[04:07] principle can also process multiple
+[04:10] instructions uh simultaneously in the
+[04:12] same cycle so uh so this is very simple
+[04:16] what we do is we run thread one for n
+[04:18] Cycles then we run thread two for n
+[04:20] cycles and so on so we continue in a
+[04:22] round robin fashion so uh basically what
+[04:25] a core screen system would actually do
+[04:28] is that it will read instructions from
+[04:31] thread let's say T1 uh for let's say n
+[04:34] Cycles where n can be let's say n is 10
+[04:38] subsequently uh it will read read
+[04:40] instructions from thread
+[04:41] T2 for the next 10 Cycles then T3 T4 and
+[04:46] then again T1 T2 T3 T4 and so on so one
+[04:50] advantage of this scheme is that this
+[04:52] scheme is simple to implement right and
+[04:55] it is true that one point at uh any
+[04:57] point of time you'll have multiple
+[04:59] instructions belonging to different
+[05:00] threads but hopefully they will be there
+[05:03] in different stages so managing the
+[05:06] pipeline will still be
+[05:07] easy the advantage of this is that just
+[05:10] in case thread D1 gets stuck uh we can
+[05:14] go to another thread or just in case
+[05:16] thread T1 uh uh you so basically it'll
+[05:21] basically get stuck if there are some
+[05:23] long latency memory operations so we can
+[05:26] quickly shift to other threads get some
+[05:28] work done and again come back to T1 our
+[05:31] basic Insight will hold over
+[05:34] here then we have uh so the
+[05:36] implementation is uh so so so let's take
+[05:39] a look at the way that uh this is
+[05:42] implemented so uh what are we doing we
+[05:45] are basically running T1 for some time
+[05:47] then we are running T2 for some time so
+[05:50] we are essentially changing the context
+[05:52] right so this is called the context
+[05:54] switch and what does the context contain
+[05:57] well the context is essentially the
+[05:59] program count counter and the
+[06:01] registers right so basically program
+[06:03] counter and the registers for the
+[06:04] different threads are different so when
+[06:07] we are running T1 uh basically T1 will
+[06:10] have its own PC registers temporary
+[06:12] values so when we suddenly load the
+[06:15] instructions of T2 we will have to store
+[06:18] the state of T1 its last program counter
+[06:21] and register similar to what we had done
+[06:24] in the case of interrupts but of course
+[06:26] in a far more efficient manner and then
+[06:28] we'll have to load the last stored state
+[06:30] of T2 which is its program counter and
+[06:33] registers right so this is called the
+[06:36] context switch this operation is called
+[06:37] a context switch changing the context
+[06:39] from T1 to T2 and of course it has some
+[06:43] overheads so let us consider a four-way
+[06:46] four-way means four threads course grain
+[06:49] empty means multi-threaded machine so a
+[06:51] four-way multi-threaded machine so it
+[06:53] will have uh so it needs to maintain
+[06:56] four program counters one for each
+[06:58] thread four register files one again for
+[07:01] each thread four Flags registers one for
+[07:05] each thread and it also needs to have a
+[07:08] separate context register which contains
+[07:12] the current thread ID so what do we have
+[07:14] instead of one PC we actually have four
+[07:16] PCS
+[07:18] right so these are our pcs one
+[07:24] 2 instead of one register file we'll
+[07:27] actually have
+[07:28] four
+[07:34] and so on right so then we will also
+[07:36] have one more special register called a
+[07:38] context register which will uh look at
+[07:41] which will store the thread that is
+[07:43] currently executing one or two or three
+[07:45] or four so if you want to have a very
+[07:47] very fast context switch uh which is
+[07:50] called zero overhead context
+[07:52] switching what
+[07:54] we can do is that we can design the
+[07:58] system with a fair amount of redundancy
+[08:00] as we have just shown where pretty much
+[08:03] the state of each of these threads is
+[08:05] maintained in its own PC and register
+[08:07] file so now let's assume that thread one
+[08:10] is executing if we want to execute
+[08:12] instructions of thread 2 we just change
+[08:15] one to
+[08:16] two so immediately the processor will
+[08:20] use the program counter and the register
+[08:22] file of thread number two so this is a
+[08:25] fairly fast way of uh performing a
+[08:28] context switch and quickly changing to
+[08:30] another thread and of course the
+[08:32] disadvantage of this scheme is that we
+[08:34] need additional space so as I said we
+[08:37] need to maintain multiple copies four
+[08:39] program counters four register files
+[08:41] depending upon the thread ID we choose
+[08:44] the appropriate program counter or
+[08:46] register file so of course there is some
+[08:48] overhead involved but this has been
+[08:51] shown to improve the throughput of the
+[08:54] overall system significantly especially
+[08:56] when we are running programs that have a
+[09:00] lot of memory activity or let's say you
+[09:02] know consider also such kind of programs
+[09:05] which have a lot of I/O activity so they
+[09:06] have four threads and one thread sends a
+[09:09] message over the network which takes a
+[09:11] long time uh for it to go and a long
+[09:14] time for it to get a response so during
+[09:16] the time this thread is actually waiting
+[09:18] for a response one more thread can take
+[09:22] over the resources of the pipeline that
+[09:25] it was executing in and it can start
+[09:28] executing its own instruction s so so in
+[09:31] this sense this is actually a good idea
+[09:34] and that's the reason many server
+[09:36] companies you know server processor
+[09:38] companies have actually adopted uh some
+[09:41] form of
+[09:43] multi-threading so uh let's look at the
+[09:46] same uh example the that I've been
+[09:51] mentioning uh with some concrete numbers
+[09:53] assume that thread one has an L2 Miss so
+[09:56] we need to wait for 200 Cycles which is
+[09:58] too much of an overhead that's the re
+[10:01] reason we schedule schedule thread
+[10:04] 2 now let us say that thread 2 has an L
+[10:07] to miss no problem go to thread three so
+[10:10] we can always have a very sophisticated
+[10:12] algorithm that switches every end Cycles
+[10:15] or when there is a long latency event
+[10:18] such as an L2 miss or you're waiting for
+[10:20] some IO event and that's taking forever
+[10:22] to come so whenever we have such an
+[10:24] event we can also switch so it is not
+[10:27] necessary that we'll have to wait for
+[10:29] nend Cycles before that if we
+[10:33] perceive that we are entering a long
+[10:35] period of questions a long idle period
+[10:37] we can switch to the next thread so the
+[10:40] aim is that we want to minimize the
+[10:42] number of idle cycles for the entire
+[10:44] system and maximize the throughput so
+[10:47] one you know very good example of the
+[10:50] usage of multi-threading would be a web
+[10:53] server so what a web server does is that
+[10:56] it has a processor and then of course it
+[10:58] has memory system and so on so let's say
+[11:01] this is the memory system and then it
+[11:03] has you know an array of hard diss right
+[11:06] hard diss are in know Big Blocks of
+[11:08] magnetic storage that store the web
+[11:11] pages so there are many many concr
+[11:14] requests for different web pages for
+[11:16] example if you access CNN.com or you
+[11:18] access any other website there are a lot
+[11:20] of websites and so users request for a
+[11:22] lot of uh you know websites and images
+[11:26] and videos and so on so in such case
+[11:29] this multi-threading is pretty useful
+[11:31] because the processor will quickly
+[11:32] process the instructions of the
+[11:34] request then send a message to either
+[11:38] the memory system or the hard disk to
+[11:40] fetch the file during that time the
+[11:43] thread is Idle so uh what will happen is
+[11:47] that uh it instead of it locking up the
+[11:50] processor it will execute the
+[11:52] instructions of one more thread that
+[11:55] thread will again do the same then we'll
+[11:57] move to the other thread and so in this
+[12:00] way we can actually minimize the number
+[12:02] of processing elements in our system and
+[12:05] take advantage of multi-threading to
+[12:07] have a smaller uh number of processors
+[12:11] and still get very very good
+[12:14] throughput now let's take a look at fine
+[12:16] grain multi-threading so this is almost
+[12:20] the same as course grain
+[12:21] multi-threading the only difference is
+[12:24] that the switching granularity which
+[12:25] means the time at which we switch is
+[12:28] actually much smaller it's of the range
+[12:31] of 1 to two cycles whereas that was in
+[12:33] the range of 10 20 30
+[12:36] Cycles so the advantage of fine grain
+[12:39] multi-threading is that it can take
+[12:41] advantage of very low latency events
+[12:44] such as maybe division or L1 cache
+[12:46] misses see consider the case of division
+[12:49] first so if you go back to when we were
+[12:51] discussing computer
+[12:53] arithmetic you would recall that
+[12:55] division was a very slow operation so
+[12:58] typically in it would take 10 plus
+[13:00] Cycles 10 15 cycles for a division to
+[13:03] actually happen and even an L1 cach Miss
+[13:07] might also take 10 or 15
+[13:09] Cycles so these are relatively low
+[13:12] latency events as compared to an L2 miss
+[13:15] or an IO request nevertheless it is
+[13:18] possible that a thread can still get
+[13:20] somewhat stuck because you know it's
+[13:23] doing a division operation and it has no
+[13:25] other instructions to execute so during
+[13:28] that time time we can bring in other
+[13:30] threads because if the divider is busy
+[13:33] the adder and multiplier are not busy so
+[13:36] they can then process the instructions
+[13:37] of other threads so keeping this in mind
+[13:41] uh fine grain
+[13:42] multi-threading uh does better in some
+[13:45] cases and we can minimize idle Cycles
+[13:48] even further but again this depends on
+[13:50] the particular
+[13:51] workload of course there are correctness
+[13:54] issues we can have instructions of two
+[13:56] threads two different threads some
+[13:59] simultaneously in the pipeline that's a
+[14:01] problem so you need to always keep in
+[14:04] mind this point over here uh always
+[14:07] always keep this in
+[14:09] mind that we never
+[14:12] forward uh or we never
+[14:16] interlock uh for instructions across
+[14:19] threads right so we never do any
+[14:21] forwarding or interlocking
+[14:23] activity uh for any instructions across
+[14:26] thread so it's we will never it will
+[14:28] never be the case that one instruction
+[14:31] will forward its results to another
+[14:34] instruction when they're across threats
+[14:36] so this is wrong and also you know we
+[14:39] will never stall one instruction because
+[14:41] of dependencies across
+[14:43] threads that is also wrong so all of
+[14:46] these things need to be kept in mind
+[14:48] when designing the pipeline so we'll
+[14:50] basically have different forwarding
+[14:52] units for uh the different thread so the
+[14:55] forwarding and interlock mechanism will
+[14:58] actually become very very complicated if
+[15:00] we have multiple threads because you
+[15:03] know we'll have to keep in mind
+[15:05] whether uh you know these instructions
+[15:08] belong to the same thread or not so yes
+[15:11] there are complexities involved but it
+[15:13] does make a lot of sense to still go
+[15:15] ahead with a multi-threaded processor
+[15:18] especially when we are dealing with uh
+[15:21] workloads such as a web server or a file
+[15:24] server you know some server which is
+[15:26] taking in a lot of requests doing Fair
+[15:29] long latency events like reading a web
+[15:31] page or a file from a disk and then
+[15:34] supplying it back to the user in such
+[15:36] cases multi-threading is a fantastic
+[15:39] idea now let's look at simultaneous
+[15:42] multi-threading which is the most
+[15:43] flexible of all and also the most
+[15:46] efficient so it is also the most
+[15:49] difficult to
+[15:50] implement so most modern processors have
+[15:53] actually have multiple issue
+[15:56] slots which means that we can issue uh
+[16:01] and you know we can issue and we can
+[16:03] execute multiple
+[16:05] instructions uh in the same cycle or
+[16:09] rather we can issue multiple
+[16:10] instructions to the functional units
+[16:13] simultaneously so for example a three
+[16:16] isue processor can fetch decode execute
+[16:19] three instructions per cycle so in our
+[16:21] traditional pipeline every Cycle One
+[16:23] instruction was getting in and if there
+[16:25] are no stalls one instruction was
+[16:27] getting out in an an N issue processor
+[16:30] every cycle n instructions will get
+[16:34] in and N instructions will get out right
+[16:39] so so we will see uh how to do this uh
+[16:42] well we'll actually not see this is part
+[16:43] of an advanced course but a little bit
+[16:46] of how this is done is there uh in the
+[16:48] book If you would see in a chapter on
+[16:50] pipelining but nevertheless let's assume
+[16:53] that in modern processor this is what
+[16:56] happens that we can send in multip mple
+[16:59] instructions together and also get
+[17:01] multiple instructions out together now
+[17:04] if a benchmark has low ILP a benchmark a
+[17:07] program has low instruction level
+[17:10] parallelism which means that it is not
+[17:12] possible to actually execute these many
+[17:15] instructions in parallel why will that
+[17:17] be the case because we can have
+[17:19] dependencies let me give an example of
+[17:21] some code let's assume that I have code
+[17:24] of this
+[17:27] form
+[17:41] so in this case there's a read after
+[17:43] write dependency like this there's a
+[17:46] read after right dependency over
+[17:50] here so
+[17:54] uh we basically we will not be able to
+[17:57] execute these three instructions in
+[17:59] parallel because there is a dependence
+[18:00] between them so in this case this
+[18:02] particular piece of code has low
+[18:05] instruction level parallelism it has low
+[18:07] ILP so in this case fine grained or
+[18:10] course grained multi-threading will not
+[18:11] really help because you know we have a
+[18:14] lot of uh dependencies between the
+[18:18] instructions so what do we do for this
+[18:21] case well what we can do in this case is
+[18:23] something else which is called
+[18:24] simultaneous multi-threading it's also
+[18:26] called smt so smt is a short form for
+[18:29] simultaneous
+[18:33] multi-threading so let us look at the
+[18:35] main idea of smt so what we do is that
+[18:38] if we have an issue processor we
+[18:41] partition the issue slots among threads
+[18:44] so let me go back to the previous
+[18:46] example so here in this thread we have
+[18:49] low ILP so what's happening is that we
+[18:51] have a you know the instructions are
+[18:54] totally dependent on each other right so
+[18:57] if that is the case then we can always
+[19:00] do one thing we can take thread one we
+[19:02] can
+[19:03] thread thread two and let's assume that
+[19:06] it's instructions have you know are
+[19:09] extremely dependent the N instruction is
+[19:11] dependent on N minus 1 so we can't you
+[19:14] know look at
+[19:17] uh uh executing two instructions in
+[19:20] parallel that's all right so let's
+[19:22] assume even the other uh thread is
+[19:25] also that badly behaved what we we can
+[19:29] do is that we can actually send
+[19:30] instructions of both of these separate
+[19:33] threads into the pipeline together so
+[19:36] the pipeline for example can
+[19:39] then fetch decode issue execute these
+[19:42] two instructions together because they
+[19:44] can be executed in parallel because they
+[19:46] belong to multiple threads then we can
+[19:50] execute these two instructions together
+[19:53] they also can be executed in parallel
+[19:55] because they belong to different threads
+[19:58] and their predecessor instructions are
+[20:00] done similarly these two and so on so in
+[20:03] this case also we have been able to in a
+[20:07] sense double the throughput with in know
+[20:10] extremely badly behaved code and this is
+[20:14] one advantage of what an smt machine can
+[20:17] do which a CO grain and fine grain
+[20:19] multi-threading machine cannot do the
+[20:22] way we do it is that we partition the
+[20:23] issue slots among the threads and we
+[20:26] sort of make it very flexible so for
+[20:28] example in the same cycle we can either
+[20:30] issue two instructions for thread
+[20:34] one uh and issue one instruction for
+[20:37] thread 2 and issue one instruction for
+[20:39] thread three so this can be done so if
+[20:42] it's a four-way smt machine which means
+[20:45] that uh you know
+[20:48] it can uh manage four thread
+[20:51] simultaneously and also it's a four-way
+[20:53] four issue smt right so it can manage
+[20:56] four thread simultaneously and can issue
+[20:58] for instruction simultaneously we can
+[21:01] decide to partition the issue slots
+[21:03] among the threads such that the
+[21:05] throughput of the overall system is
+[21:07] maximized of course we need very smart
+[21:10] instruction selection logic and we have
+[21:13] to balance different issues fairness and
+[21:15] throughput so we don't want to be
+[21:17] partial to any thread we don't want to
+[21:19] be biased towards some other thread so
+[21:21] those issues
+[21:23] notwithstanding this is actually a very
+[21:25] good idea and that's the reason most
+[21:28] commercial
+[21:29] processors such as starting from Intel
+[21:32] Pentium 4 onwards Intel Zeon uh IBM
+[21:36] power 7 uh all of them Implement some
+[21:40] flavor of simultaneous
+[21:43] multi-threading so uh let's take a look
+[21:45] at this diagram this diagram actually
+[21:48] tells us
+[21:49] all uh oops sorry this C should have
+[21:52] been over
+[21:54] here so this diagram uh tells us almost
+[21:58] everything thing about what we need to
+[21:59] know about multi-threading so let's
+[22:03] assume that the rows are actually time
+[22:06] so the rows are Cycles so this is uh
+[22:09] Cycle One cycle 2 cycle 3 and the time
+[22:11] flows downwards so uh these rows are
+[22:16] cycles and the columns and for each case
+[22:19] we assume a fourway multi-threaded
+[22:24] machine in a
+[22:26] fourway 4 issue multi threaded
+[22:31] machine right so we so we can handle
+[22:33] four-way means we can handle four
+[22:36] threads at the same time simultaneously
+[22:39] we can handle four threads so that makes
+[22:41] it four-way in addition each of these
+[22:44] are four issue machines so four issue
+[22:46] means we can uh Issue four instructions
+[22:50] together right into the pipeline we can
+[22:52] send four instructions together that's
+[22:54] the reason each of these diagrams has
+[22:57] four column s where the columns are
+[23:00] basically the issue
+[23:11] slots all right so uh let all the
+[23:14] instructions belonging to thread one be
+[23:17] green all the instructions belonging to
+[23:19] thread two be this color pinkish all the
+[23:23] instructions belonging to thread 3 be
+[23:25] blue and all the instructions belonging
+[23:28] to thread four be this
+[23:30] color which looks like somewhere purple
+[23:33] and maroon to me let's for the time
+[23:35] being uh let me call it
+[23:38] purple so what a core screen
+[23:40] multi-threading system would actually do
+[23:43] is that it would execute instructions
+[23:47] belonging to the same
+[23:48] thread uh for N Cycle so let's assume uh
+[23:52] you know just to keep the diagram simple
+[23:54] n is2 so you would see that first it is
+[23:58] executing instructions of thread
+[24:00] one then it executes instructions of
+[24:03] thread 2 then thread three and thread
+[24:06] four so the all of these white slots are
+[24:09] unused slots right uh and why do we have
+[24:14] unused slots we have unused slots unused
+[24:17] issue slots because you know it was not
+[24:20] possible to find in instructions
+[24:23] belonging to thread one that could have
+[24:24] been executed in these slots why were we
+[24:27] not able to to find instructions well we
+[24:30] were not able to find instructions
+[24:32] because their operant were not ready
+[24:34] right so their predecessor instructions
+[24:37] that are supposed to generate values for
+[24:40] them those instructions are not executed
+[24:43] so we simply did not find enough
+[24:45] instructions of one thread that we could
+[24:48] execute in parallel consequently we
+[24:50] wasted issue slots and that's the reason
+[24:53] we have many of these white
+[24:55] squares in comparison we can do M grain
+[24:59] multi-threading so here instead of every
+[25:01] two cycles we switch every one cycle
+[25:03] between the threads so we first execute
+[25:05] thread one then thread two uh then
+[25:08] thread three uh then thread four again
+[25:11] we come back to thread one thread 2 uh
+[25:15] thread three and thread four so as you
+[25:18] can see this situation does not improve
+[25:21] significantly in fact uh these two
+[25:25] diagrams actually have the same number
+[25:27] of white squar
+[25:29] which which basically tells
+[25:31] us uh that you know we have not been
+[25:34] able to do very well in terms of
+[25:36] reducing the amount of idle work and of
+[25:39] course you know I've not factored in uh
+[25:41] the effect of short latency or long
+[25:44] latency operations otherwise you know
+[25:47] there would have been some amount of
+[25:48] difference because
+[25:51] uh uh it's possible you know consider
+[25:55] thread one right so in thread one initi
+[25:58] we have two instructions ready so that's
+[26:00] the reason in Cycle One both course
+[26:02] grain and fine grain multi-threading uh
+[26:05] systems will execute the same number of
+[26:07] instructions but it's possible that here
+[26:10] we find three instructions to be ready
+[26:12] but by this time maybe you know one more
+[26:14] instruction is ready because its
+[26:16] predecessor is done so in in a sense
+[26:19] fine grain has a potential to be better
+[26:21] even though I've not shown it in the
+[26:23] diagram but what is genuinely really
+[26:26] good is Sim anous multi-threading
+[26:29] because what we do is that in every
+[26:31] cycle we partition the issue slots among
+[26:34] the threads for example in the first
+[26:36] cycle we have
+[26:38] instructions uh which are which belong
+[26:41] to both thread one and thread 2
+[26:43] similarly in the second cycle we have
+[26:47] threads third cycle we decide we'll only
+[26:49] have instructions of thread
+[26:51] four so uh with a very very smart
+[26:54] scheduling scheme what we have
+[26:57] effectively done is that we have reduced
+[26:59] the number of white squares to only one
+[27:02] which means the amount of idling is very
+[27:04] little that's the reason we also get
+[27:06] done sooner with the instructions of all
+[27:08] the four threads and our throughput is
+[27:11] very high so this diagram should in a
+[27:14] sense show the superiority of
+[27:17] simultaneous multi-threading smt over
+[27:20] the other approaches mainly because in
+[27:22] the same cycle we are able to bring in
+[27:25] instructions from different threads and
+[27:27] smart decide the allocations and execute
+[27:30] them as a result you can see that we are
+[27:33] done much much sooner and we have a
+[27:35] great performance
+[27:38] Advantage so uh we will in a sense end
+[27:42] here but the important takeaway point is
+[27:45] that most modern processors support
+[27:47] simultaneous multi-threading and it's
+[27:50] it's a great idea uh to actually have it
+[27:53] and to use it and op sometimes operating
+[27:56] system show a different uh so for
+[27:58] example in this case if we have four-way
+[28:02] multi-threading some operating systems
+[28:04] depending upon how they are configured
+[28:06] can actually show that we have four
+[28:08] virtual CPUs right on the same physical
+[28:10] CPU so you know operating systems can
+[28:13] expose multi-threading uh in different
+[28:15] ways to the normal user and the most
+[28:18] common way is that every single uh you
+[28:21] know in a four-way multi-threading
+[28:23] system four virtual CPUs are exposed to
+[28:27] the the
+[28:29] programmer and then the programmer can
+[28:31] write regular code the way we have been
+[28:34] writing in this chapter right with
+[28:36] openmp with MPI or you know without any
+[28:40] parallel directives the way we wrote
+[28:42] code for a sequential and weekly
+[28:43] consistent system so in any way uh the
+[28:46] programmer can write code and execute on
+[28:49] this system and each uh thread in this
+[28:53] multi-threaded machine uh is pretty much
+[28:57] looks like a CPU to the programmer and
+[28:59] the
+[29:01] compiler all right now that we are done
+[29:04] with multi-threading let's take a look
+[29:06] at another Paradigm which is called
+[29:08] Vector processors so Vector processors
+[29:11] is not a mimd machine so so multi
+[29:13] threading was nevertheless still uh
+[29:16] MD so this is a simd paradigm single
+[29:19] instruction multiple data and for some
+[29:22] programs Vector processors are
+[29:23] absolutely fantastic so they used to be
+[29:26] the main stay of superc computers for a
+[29:29] long long time now even now also Vector
+[29:31] processors are very useful so we will
+[29:34] discuss Vector processors and also
+[29:36] Vector instructions Vector extensions to
+[29:39] normal instructions and uh we'll also
+[29:42] show a real life example and show how
+[29:44] useful uh Vector processing can actually
+[29:49] be let us now Define a vector
+[29:52] instruction so a vector instruction
+[29:54] instead of operating on you know single
+[29:56] pieces of data like regular
+[29:59] instructions it operates on an entire
+[30:01] array at a single point of time so
+[30:03] instead of one data item it operates an
+[30:06] arrays at a time for example we can have
+[30:09] Vector instructions to add or multiply
+[30:12] two arrays of data elementwise for
+[30:15] example if one
+[30:17] array is uh 1 2 3 4 and the other array
+[30:23] contains four elements 5 6 7
+[30:26] 8 then a vector in instruction can
+[30:29] process uh both the arrays a single
+[30:32] instruction can add the two arrays so it
+[30:34] will produce six 8 10 and
+[30:38] 12 so previously what we would have done
+[30:41] is that we maybe we would have written a
+[30:43] fall Loop or we would have had multiple
+[30:45] instructions uh to do ads at least we
+[30:48] would have required four ad
+[30:50] instructions but in this case a single
+[30:52] instruction will take care of such kind
+[30:55] of operations and such kind of
+[30:56] operations are actually very useful so
+[30:59] they can be used to perform all kinds of
+[31:01] array Matrix and linear algebra
+[31:04] operations in everything to do with
+[31:06] matrices which is pretty much the
+[31:09] Bedrock of many scientific applications
+[31:12] Graphics applications and data analytics
+[31:15] applications so all of these all of
+[31:18] these kinds of applications use linear
+[31:20] algebra as their core and that is
+[31:23] basically uh vector and Matrix
+[31:26] operations so vector and Matrix
+[31:29] operations will significantly
+[31:31] gain uh by having Vector
+[31:37] instructions so let's look at the
+[31:40] background uh Vector processors were
+[31:42] traditionally used in super computers so
+[31:45] these Vector instructions and processors
+[31:48] that support Vector instructions are
+[31:49] vector
+[31:51] processors so they were not used in
+[31:53] regular computers but they were used in
+[31:55] super computers meant for uh very
+[31:58] sophisticated
+[31:59] applications so you can read about uh
+[32:02] the processor called cray
+[32:05] one so cray uh was an early super
+[32:09] computer which had Vector
+[32:11] processing but subse subsequently you
+[32:13] know Vector processing is not just
+[32:15] limited to
+[32:16] cray uh it has come into other processes
+[32:20] as
+[32:21] well and it has Vector instructions have
+[32:23] found their way into mainstream
+[32:26] processors So the instructions so Main
+[32:27] stream processors such as x86
+[32:31] processors also support Vector
+[32:33] instructions so they have extensions to
+[32:35] their Isa to support Vector instructions
+[32:38] in that sense Vector processing has come
+[32:40] into regular mainstream processors so
+[32:43] for example Intel processors support the
+[32:47] MMX s 1 2 3 4 and AVX instruction
+[32:52] sets over and above the Baseline x86
+[32:55] which you all of us have studied
+[32:58] uh such that it is now possible that I
+[33:00] can take a regular Intel
+[33:02] processor and then I can run Vector
+[33:05] instructions on top of it so I can run
+[33:08] you know regular x86 instructions and
+[33:10] also Vector instructions like you know
+[33:13] SSC two instructions on it why would I
+[33:17] use the vector instructions I would use
+[33:20] them if I uh foresee a certain amount of
+[33:23] speed up uh on similar lines uh in AMD
+[33:28] has created its Vector instructions so
+[33:31] AMD has a 3D now Vector instruction
+[33:36] set and the 3D now uh instruction set uh
+[33:41] you know is somewhat conceptually
+[33:42] similar to MMX SS 1 2 3 4 and AVX uh so
+[33:47] that also extends amd's x86 support with
+[33:50] new
+[33:53] instructions so let us look at the
+[33:54] software interface of a vector
+[33:57] instruction
+[33:58] so we need to define a vector
+[34:00] register a vector register you know as
+[34:04] opposed to a scalar register can
+[34:06] actually contain multiple values an
+[34:07] array of
+[34:08] values for example 128bit registers in
+[34:13] the MMX instruction
+[34:16] set uh for example we have you know
+[34:18] 128bit registers in MMX instruction set
+[34:22] uh which is an which is a vector
+[34:24] extension to x86 right uh so it has has
+[34:28] 16 of such 128bit
+[34:31] resistors they are called
+[34:34] xmm0 uh to xmm 15 XM 01 2 3 4 till
+[34:41] 15 and uh each of these registers which
+[34:45] is in a 128
+[34:47] bit can hold uh four floating Point
+[34:51] values write the one floating point
+[34:53] value if you assume it is 32 bits so
+[34:56] four of these can can be held within one
+[34:59] of these
+[35:00] registers or additionally we can hold
+[35:03] eight 2 byte short integers so one
+[35:06] integer is 16 bits so eight of these can
+[35:08] be held within each of these Vector
+[35:11] resistors so one resistor is basically
+[35:14] an array so in one form of it it can
+[35:16] hold four floating Point values in other
+[35:20] form of it it can hold eight short
+[35:22] integers right for eight a total of
+[35:25] eight short integers so these are the
+[35:27] two forms of the vector of the xmm
+[35:31] resistors so the addition of vector
+[35:34] resistors is basically equivalent to
+[35:36] pairwise addition of each of the
+[35:37] individual elements so if let's say
+[35:39] there are two Vector resistors for each
+[35:42] we are assuming that they have four
+[35:51] values then uh we'll just add the values
+[35:55] pairwise so the final output will also
+[35:57] Al be a vector which will be stored in
+[36:00] one more Vector register and each of the
+[36:02] values so this value is a sum of this
+[36:04] and this so note that if I add these two
+[36:06] values no carry is transferred here this
+[36:09] does not happen right because for all
+[36:12] practical considerations these are
+[36:14] different values right so there is no
+[36:17] absolutely no movement of any carry
+[36:19] across uh you know this part of the
+[36:22] vector resistor and this part right they
+[36:24] are
+[36:25] separate finally the result which is is
+[36:27] this is saved in a vector register with
+[36:30] the same size which is 128 bits in this
+[36:34] case so this is one more visual look at
+[36:38] vector addition so let's assume uh that
+[36:42] we have Vector
+[36:44] resistors so let us add eight 128bit
+[36:47] regist Vector resists in simple
+[36:51] risk uh let the resistors be V r0 to vr7
+[36:56] so this vector Z Vector resistor 1 2 and
+[37:00] 7 so what we'll basically have is a
+[37:03] conceptual view when we are adding two
+[37:05] Vector resists VR1 and
+[37:07] VR2 what we basically add is we if they
+[37:10] if we assume they're containing multiple
+[37:12] Fields floating points or shots doesn't
+[37:14] matter the addition is always pairwise
+[37:17] if this is three and two this will be
+[37:19] five if this is 10 and 11 this will be
+[37:25] 21 so now let's take a look look at the
+[37:27] load and store operations of vector
+[37:29] registers this is difficult in the sense
+[37:32] that there are two ways of doing it and
+[37:34] both the ways are fairly different so
+[37:36] there are two
+[37:37] options one is that we assume that the
+[37:41] data elements that we want to load are
+[37:43] stored in contiguous locations so this
+[37:45] will make our life uh somewhat easy as
+[37:49] compared to other approaches this is the
+[37:52] easier one so let us Define the V dold
+[37:56] instruction v. LD is Vector load
+[37:59] instruction that uses this
+[38:01] assumption so let the semantics of this
+[38:04] be v. L Vector load VR1 and then a
+[38:07] memory address so here what we do is
+[38:10] that we go to the memory address and we
+[38:14] and we
+[38:15] load uh the
+[38:18] subsequent uh 16 bytes so one one starts
+[38:21] at R1 +
+[38:23] 12 uh one address another address starts
+[38:26] at R1 + 16 16 one at R1 + 20 and one at
+[38:29] R1 + 24 at each of these addresses we
+[38:33] load four bytes so we are assuming that
+[38:35] the total size of the vector register is
+[38:38] 16 bytes or uh alternatively 128
+[38:44] Bits And since the we're making an
+[38:47] assumption which is a strong assumption
+[38:50] that uh we want to load 16 consecutive
+[38:53] bytes of course in groups of four uh
+[38:56] from one area
+[38:58] uh from one memory area so basically we
+[39:01] are loading these four integers or four
+[39:03] floating Point values into a vector
+[39:06] resistor VR1 in this case right this is
+[39:09] a
+[39:10] semantics uh so this is simple the other
+[39:13] option is slightly more difficult but
+[39:14] not that difficult we assume here that
+[39:17] the elements are not saved in contigous
+[39:19] locations they're stored in any you know
+[39:21] any random location so such kind of an
+[39:24] access pattern is known as a scatter
+[39:26] gather access pattern the reason is that
+[39:29] the data is scattered in memory so the
+[39:32] load operation needs to gather all the
+[39:34] data and save it in a vector
+[39:37] register so let us Define a scatter
+[39:40] gather version of the load instruction
+[39:43] instead of v. LD as v. SG S for scatter
+[39:47] G for Gather v. sg. load so this will
+[39:51] use another Vector register that
+[39:54] contains the addresses of each of the
+[39:56] elements so the format of this uh
+[40:00] particular instruction will be something
+[40:02] like this V do sg.
+[40:07] LD VR1 and VR2 so VR1 is a vector
+[40:11] register that needs to be loaded and VR2
+[40:14] is the vector register that contains the
+[40:16] addresses so we assume a
+[40:19] 32-bit memory system then the four
+[40:22] addresses are in uh vr20 which is the
+[40:26] first four bytes VR2 1 the second four
+[40:29] bytes vr22 and VR2 3 so each of these is
+[40:33] an address so we need to access this
+[40:36] address and then get the value that is
+[40:38] stored in there so all of the values
+[40:40] come and then they populate the vector
+[40:44] register VR1 so in this case the
+[40:47] hardware needs to do more work so let me
+[40:50] maybe write it down so one clear
+[40:52] negative aspect is that the hardware
+[40:54] needs to do more work so it basically we
+[40:57] need to send four different memory
+[41:00] requests and they need to go to four
+[41:02] separate addresses fetch the
+[41:04] data whereas in the previous case uh we
+[41:07] might you know there would have been a
+[41:09] strong possibility that we would
+[41:11] actually find all the four data items
+[41:13] within the same cach bline within the
+[41:15] same cache block so that would make it
+[41:18] much easier and a single access would
+[41:20] suffice but in this case much more work
+[41:22] is involved nevertheless this
+[41:24] instruction also has some advantages but
+[41:27] particularly if you know our program
+[41:29] exhibits such kind of a scatter gather
+[41:31] kind of
+[41:33] behavior we can similarly Define two
+[41:36] Vector store
+[41:38] operations uh so one is a normal store
+[41:41] other is a scatter gather store so uh
+[41:44] the first argument of the store
+[41:47] operation is essentially the data that
+[41:49] needs to be stored and the second
+[41:51] argument are the
+[41:56] addresses
+[41:58] so in this case uh this a scatter gather
+[42:00] store so basically the elements of VR2
+[42:04] namely VR2 0 vr21 vr22 and vr23 contain
+[42:08] the addresses so at these addresses we
+[42:11] write the values in the vector register
+[42:14] VR1 which are the its elements 0 1 2 and
+[42:18] 3 we have another flavor of the same
+[42:21] instruction uh where again VR1 is a
+[42:25] vector register that contains the data
+[42:27] but instead of a scatter gather kind of
+[42:29] operation we give it a memory address
+[42:32] and we assume for the subsequent 16
+[42:35] bytes the data from VR1 is taken and
+[42:37] written so in this case
+[42:40] vr10 is uh so we take the contents of R1
+[42:44] at 12 that's where vr10 goes similarly
+[42:48] VR1 1's data 4 bytes goes to R1 + 16 17
+[42:52] 18 and 19 similarly for VR2 and vr12 and
+[42:56] VR1
+[42:58] three so Vector uh more about Vector
+[43:01] operations so we can Define more custom
+[43:03] operations on Vector registers for
+[43:06] example we can define a vector add
+[43:08] instruction to add two Vector resistors
+[43:10] we can define a vector multiply
+[43:12] instruction to multiply to Vector
+[43:14] resistors but mind you these are
+[43:16] pairwise so both of these are pairwise
+[43:19] addition and multiplication which means
+[43:22] that we consider each element of the
+[43:24] vector register and essentially add all
+[43:28] elements
+[43:30] separately we can also have other
+[43:32] operations which are there in Vector
+[43:34] instruction sets typically that we have
+[43:36] a vector operant and scalar operant and
+[43:38] we multiply the vector by a scalar for
+[43:41] example if we have the vector 1 2 3 we
+[43:44] multiply it by two so the final result
+[43:47] becomes 2 4 and
+[43:51] 6 so all of this is possible so modern
+[43:54] instruction sets have many many Vector
+[43:56] instructions
+[43:57] depending upon what is required
+[43:59] depending upon the programmer's
+[44:01] requirement so let us now consider an
+[44:04] example where we add uh two arrays of
+[44:07] floating Point numbers using Intel's SS
+[44:12] set so ssse is an extension of the x86
+[44:16] instruction set so it has Vector
+[44:19] capabilities so we have one floating
+[44:21] Point array a 1 B and 1 C the final aim
+[44:26] is to
+[44:27] essentially create a vector C which is
+[44:30] Vector a plus Vector B when elements are
+[44:33] added pairwise and we have n
+[44:35] elements so we are assuming that our
+[44:38] resistors are 128 bits wide so 128 bits
+[44:42] is 16 bytes so it's
+[44:45] essentially a sequence of 4 bytes where
+[44:49] one 4
+[44:50] by field is uh a 32bit field so this
+[44:54] contains one floating Point integer so
+[44:57] pretty much one vector registor which is
+[45:00] all of this one vector registor contains
+[45:05] four floating Point values so since we
+[45:08] can process four values together the
+[45:10] number of iterations that are required
+[45:12] is n ided 4 so that is a number of
+[45:16] iterations so this process of reducing
+[45:19] the number of iterations is called uh
+[45:21] strip mining so then we simply run a for
+[45:25] loop from I equal to 0 to I I mean z to
+[45:29] num it num iterations minus one so we
+[45:32] need to do several things the first
+[45:34] thing is that so let's consider the
+[45:37] first iteration right so we have the
+[45:40] pointers a b and c which look at
+[45:42] different memory regions and uh so let
+[45:45] us take the first four floating Point
+[45:48] numbers in a the first four floating
+[45:50] Point numbers in B let's add them
+[45:53] pairwise and then let's save the first
+[45:56] 16 bytes save them to the first 16 bytes
+[45:58] in C so the process of loading the
+[46:02] values uh is achieved by calling a
+[46:04] built-in function the GCC the GCC
+[46:07] compiler provides called underscore
+[46:10] mmore loore PS so this basically
+[46:15] encapsulates an assembly instruction and
+[46:19] the assembly instruction loads four
+[46:21] floating Point numbers from the current
+[46:24] pointer value a and saves it in the
+[46:28] vector register Val
+[46:30] one uh similarly the assembly
+[46:33] instruction loads for floating Point
+[46:35] numbers from the pointer B and saves it
+[46:38] in the vector register Val
+[46:41] 2 so the vector registers Val one and
+[46:44] Val two contain four floating Point
+[46:47] numbers each so then we perform the
+[46:49] vector addition uh so again there is a
+[46:53] buil-in function so each of these
+[46:55] built-in functions actually encapsulate
+[46:57] real assembly
+[46:58] instructions so just so that the
+[47:00] programmer does not have to use real
+[47:02] assembly these functions are provided
+[47:05] also later on if the programmer is using
+[47:07] these functions and instruction set
+[47:10] changes then the programmer's code at
+[47:12] least will not need to take care of that
+[47:15] so we have one more function underscore
+[47:18] mmcore addore PX mm basically stands for
+[47:22] MMX and in this case we're adding the
+[47:24] vector registers Val one and Val two
+[47:26] pair wise and the result is stored in
+[47:28] another Vector register
+[47:30] rest finally we need to store the result
+[47:34] in C which is the first 16 bytes of C so
+[47:37] we take this Vector register rest and
+[47:41] save it in C the first 16 bytes are
+[47:46] saved in C underscore mmcore store
+[47:48] underscore PS is the function so this is
+[47:51] a normal Vector store operation it's not
+[47:53] a scatter gather store operation per se
+[47:56] so this helps us store or right into the
+[48:00] first uh 16 bytes of C so now once we
+[48:05] have done that we have at least uh
+[48:08] processed the first four entries in each
+[48:10] of the arrays a b and c so then uh we
+[48:14] can simply update the pointers for a to
+[48:16] now Point here so let this be the new
+[48:18] value of a sorry uh let this be the new
+[48:22] value of a let this be the new value of
+[48:24] B let this be the new value of C so we
+[48:27] can do this we can continue the same
+[48:29] process so to do that we need to
+[48:31] increment the pointers in C so we do a
+[48:34] plus equal to 4 so since we already know
+[48:37] that a is an array of floating Point
+[48:39] numbers and each number is four bytes so
+[48:42] what we are doing is if let's say
+[48:45] capital A is the address of a we are
+[48:48] actually doing a plus equal to 16 right
+[48:51] so that's the way C works that c
+[48:53] essentially multiplies four with the
+[48:55] size of the data type contain within a
+[48:58] and same is the idea c means C language
+[49:01] not the C array uh similarly uh you know
+[49:05] for pointers B and C we essentially add
+[49:07] 16 4 * 4 because four bytes is the size
+[49:11] of a floating Point uh number so we add
+[49:14] 16 to uh the pointers B and C such that
+[49:17] they again come here again we consider
+[49:21] the first four bytes from
+[49:24] here we add them pair device and store
+[49:27] them in C and again we update the values
+[49:29] of a b and c so we continue this till uh
+[49:34] these entire arrays are scanned and uh
+[49:38] we add them pairwise and the results are
+[49:39] written into C so you're welcome to take
+[49:44] this program and run it it should run on
+[49:46] almost all systems on almost all Linux
+[49:49] and Unix like systems uh which run on uh
+[49:53] x86
+[49:54] processors so uh what you will see is
+[49:56] that this piece of code that uses Vector
+[49:59] instructions is roughly two times faster
+[50:02] so the speed difference is quite a bit
+[50:05] it's around 2X or two times faster and
+[50:08] it can actually be more so the modern
+[50:10] AVX instruction set also has 512-bit
+[50:13] registers so which means that we have
+[50:15] really really wide registers which can
+[50:17] be used by uh almost all programs that
+[50:21] have you know something to do with
+[50:22] linear algebra or arrays matrices so but
+[50:26] in this this code if you just run it you
+[50:28] will see a 2X speed up which is
+[50:29] significant in a 2X speed up getting it
+[50:32] with Hardware improvements will easily
+[50:34] take us you know five or six M law
+[50:36] Cycles or something like 15 years but
+[50:39] this you can easily
+[50:42] get uh just by changing the code from a
+[50:45] normal for Loop based addition to an
+[50:48] addition that uses these SS
+[50:52] instructions now let's consider if
+[50:55] statements in the world of vector
+[50:56] process so suppose we want to run the
+[50:58] following code snippet on each element
+[51:01] of a vector register which is if x is
+[51:05] less than 10 where X is the value mind
+[51:07] you it's not a vector it's a single
+[51:08] value so if x is less than 10 we'll have
+[51:12] x equal x + 10 so for example uh if we
+[51:16] have a vector register which is of the
+[51:17] form 1 11 2 and 16 so the final result
+[51:23] will be since 1 is less than 10 11 11 is
+[51:27] not
+[51:28] affected then since 2 is less than 10
+[51:31] we'll have 12 over here and 16 so let's
+[51:34] say this is what we want to
+[51:36] achieve so in this case let the input
+[51:38] Vector register be VR1 so let's first do
+[51:41] a vector comparision so let us compare
+[51:44] the vector register with a scalar which
+[51:46] in this case is 10 so what we will
+[51:49] actually do is we'll compare each
+[51:52] element in the vector register with 10
+[51:55] so we'll compare one with 10 11 with 10
+[51:57] 2 with 10 16 with
+[51:59] 10 subsequently what we will do so let's
+[52:03] consider the elements each of these we
+[52:06] are comparing with
+[52:08] 10 so we'll save the results of the
+[52:12] comparision in a vector Flags register
+[52:16] right a Flags register which contains
+[52:18] multiple values so in this case 1 is
+[52:21] less than 10 so this comparison is true
+[52:24] 11 is not less than 10 two is less than
+[52:27] 10 the comparison again true and 16 is
+[52:30] not less than 10 the comparision is
+[52:33] false so we'll essentially instead of
+[52:35] producing a single Flags
+[52:37] register uh we will produce a vector
+[52:40] Flags register which will hold the
+[52:42] result of the
+[52:43] comparision so in this case uh you know
+[52:47] so we can have uh what we had in our
+[52:50] pipeline uh which basically means that
+[52:53] we can
+[52:54] have uh you know a flags. e flag and uh
+[52:58] uh and a Flags sorry a flags. e field
+[53:01] and flags. GT field so it depends you
+[53:05] know we can there are many ways of
+[53:07] creating a flag register so here I'm
+[53:09] assuming that the flag register is just
+[53:12] containing a set of Boolean
+[53:14] variables of uh whether the comparision
+[53:18] was successful or not but there are many
+[53:21] ways but in general if you're comparing
+[53:23] VR1 and 10 it is actually better to have
+[53:26] two fields in the flags register e and
+[53:29] GT
+[53:32] right so uh let's do it anyway but uh
+[53:36] once we have a Flags registered which is
+[53:38] telling us the results of the last
+[53:40] comparison so essentially in our case we
+[53:42] can uh let me just go back so the flags
+[53:45] register you know doesn't matter what
+[53:47] Fields it has it is essentially
+[53:49] recording the case that in the first
+[53:51] case we had a less than equal to in the
+[53:54] second case we did not have a less than
+[53:55] equal to sorry not less than equal to
+[53:58] less than in the third case we had a
+[54:01] less than and in the fourth case we did
+[54:02] not have a less than so irrespective of
+[54:05] however we implement it this is the
+[54:07] information that we need to
+[54:10] capture now let's say a condition is
+[54:12] true then the predication predicated
+[54:16] instruction needs to get evaluated
+[54:18] otherwise it is replaced with a no op so
+[54:20] let's see let's see what this means
+[54:22] because this is fairly involved and will
+[54:24] require some discussion
+[54:27] so what we have seen on the previous
+[54:30] slide uh oops sorry uh what we have seen
+[54:34] on the previous
+[54:35] slide uh is that uh we compare each
+[54:40] element of
+[54:41] VR1 with 10 and then we produce a vector
+[54:47] form of the flags registor which has the
+[54:50] results of the comparision so we compare
+[54:52] 10 with each element so we'll have four
+[54:55] results but now that we have these
+[54:58] results what do we do now so if we have
+[55:01] these results so so one thing is that we
+[55:04] cannot run a small mini loop inside a
+[55:07] vector and do a separate test for each
+[55:09] and every entry so in a certain sense
+[55:12] this violates the core principle of
+[55:14] vector processors which basically tell
+[55:17] us that we should not do something
+[55:18] separately for each entry we should do
+[55:21] the same thing for every
+[55:23] entry so that's the reason for every
+[55:25] entry We compare here and we have the
+[55:27] results of the comparision Which is less
+[55:29] than not less than less than and not
+[55:31] less than I hope yeah that's right so uh
+[55:36] so now what do we do with it what we
+[55:38] want to do is that we want to set
+[55:42] VR1 as VR1 + 10 but not for all the
+[55:48] elements only for those elements that
+[55:51] that are less than 10 so go back to the
+[55:53] code only for those elements that are
+[55:55] less than 10 we want to add 10 to it not
+[55:58] for all the other elements so there has
+[56:01] to be some way of doing this right so
+[56:04] what we can do is we can take some
+[56:06] amount of inspiration from the arm Mya
+[56:09] which had similar predicated
+[56:11] instructions so let's first see what
+[56:13] happens in
+[56:14] arm so we had an instruction in arm
+[56:17] called add EQ or add
+[56:19] equal so the add EQ instruction uh took
+[56:24] R2 and R3
+[56:26] it added R2 and R3 the contents of R2
+[56:29] and R3 it added them and it saved the
+[56:32] result
+[56:34] in R1 right so in R1 the results the
+[56:38] result of the addition of R2 and R3 was
+[56:41] stored but there was an additional
+[56:43] caveat which was this EQ field this said
+[56:46] that if the previous comparision
+[56:47] resulted in an equality then only we do
+[56:50] this addition otherwise we don't do
+[56:52] anything at all so the previous so let's
+[56:55] assume that the the previous comparison
+[56:57] resulted in things being equal then we
+[57:00] will set R1 as R2 +
+[57:03] R3 how however the previous comparison
+[57:05] led to an
+[57:07] inequality then this instruction becomes
+[57:09] a noop which means that it doesn't do
+[57:12] anything right so that was our basic
+[57:15] philosophy of the add EQ instruction so
+[57:18] let me repeat If the previous
+[57:20] comparision right before add EQ if that
+[57:23] had resulted in an equality then only we
+[57:26] do this addition otherwise we don't do
+[57:30] anything so let us now Define a vector
+[57:33] form of this predicated instruction to
+[57:36] do what I just uh to do what we have set
+[57:38] out to do so in this case let's create
+[57:41] an instruction of the form V do p do add
+[57:45] where P between where you know this
+[57:48] condition is the
+[57:50] predicate for example we can say V do
+[57:53] lt.
+[57:55] add this basically means
+[57:58] that for all of those elements inside
+[58:01] the vector registor where the previous
+[58:04] comparision led to a less than we only
+[58:07] perform the addition for them so
+[58:09] basically it's a regular add instruction
+[58:11] for the elements in which the given
+[58:14] predicate Which is less than is true for
+[58:17] the rest of the elements the instruction
+[58:18] becomes a noop so let's look at some
+[58:21] common examples of predicates LT is less
+[58:23] than GT is greater than EQ is
+[58:29] equality so in our case if you want to
+[58:31] do this then the implementation of our
+[58:33] function actually becomes very easy so
+[58:36] we Define so if if let's say this is
+[58:39] what we want to do that given a vector
+[58:42] for every
+[58:44] element right so so mind you know this
+[58:47] is you want to uh implement this
+[58:49] function for every element of the vector
+[58:51] so if x is less than 10 we want to set X
+[58:54] is equal to x + 10
+[58:56] so in this case what we do is that the
+[58:59] first we
+[59:00] compare VR1 with
+[59:03] 10 so let's assume uh let's look at a
+[59:06] running example once
+[59:08] again uh it is one uh 11
+[59:13] 216 so let us consider uh the vector v
+[59:17] which is 1 11 2 and 16 let us compare
+[59:22] each of these elements with
+[59:25] 10
+[59:30] so in the first case if you if you just
+[59:32] consider from the point of view of the
+[59:34] predicate less than of course the
+[59:36] results are saved in a Flags register so
+[59:38] I'm not uh you know I'm not showing that
+[59:41] part but of course this spot is implicit
+[59:43] that the results are stored in the flags
+[59:45] register but if we just consider the
+[59:48] predicate less than then one is less
+[59:50] than true one is less than 10 so in a
+[59:52] sense it's true 11 is not less than than
+[59:56] 10 so this predicate is false is 2 less
+[59:59] than 10 well yes so this predicate is
+[60:02] true is 16 less than 10 well the answer
+[60:04] is no so this predicate is false so
+[60:07] basically at this point what we do is
+[60:11] that uh we Define we
+[60:16] add
+[60:18] uh we add
+[60:20] 10 uh to each and every element of VR1
+[60:23] I'm sorry this should be VR1 so we add
+[60:27] 10 to each and every element of
+[60:29] VR1 and uh we save the result in VR1 but
+[60:33] of course this is not a normal add
+[60:35] instruction it's a predicated add
+[60:37] instruction with a predicate LT which
+[60:40] means that when we'll actually perform
+[60:42] the addition we'll consider the elements
+[60:45] of
+[60:47] VR1 and uh so the elements of VR 1 will
+[60:51] be 1 11 12 and 16 so let me write that
+[60:54] once again
+[60:59] I will add this to
+[61:05] 10 so the result which is also
+[61:10] VR1 uh will depend upon the values of
+[61:14] the computed predicate which in which in
+[61:16] the first case is true so we'll go ahead
+[61:18] with the addition in the second case is
+[61:20] false so we will not do the addition so
+[61:22] the result will still be 11 because 11
+[61:24] is contained here
+[61:27] uh oop sorry this should not be 12 it
+[61:29] should be a
+[61:36] two so uh in the third case yes the
+[61:39] predicate is true because 2 is less than
+[61:41] 10 in this case we will also add 2 + 10
+[61:45] and make it 12 and in the fourth case
+[61:48] the predicate is false so we'll not do
+[61:50] some anything so the final result will
+[61:52] be 11 11 12 and 16
+[61:57] so so this is how we can actually
+[62:00] perform a vector comparison and then a
+[62:03] predicated Vector
+[62:06] add so what is the advantage of doing a
+[62:10] vector addition in this way well the
+[62:12] advantage is that we are completely
+[62:14] avoiding all kinds of for and while
+[62:16] Loops right so we are not iterating
+[62:19] through each and every element of the
+[62:21] vector rather you know we are treating
+[62:23] the vector as one Atomic hole
+[62:26] so basically you know the entire Vector
+[62:28] is being treated in an atomic
+[62:31] fashion so we treat the entire Vector as
+[62:34] one we can do a comparision we can also
+[62:36] Define a vector compare where we compare
+[62:37] the vector with one more Vector but the
+[62:40] important fact is that we have a vector
+[62:43] Flags register subsequently when we
+[62:46] Define any instruction of the form V Dot
+[62:49] the name of the predicate less than
+[62:51] greater than less than equal to doesn't
+[62:53] matter
+[62:54] anything and
+[62:58] uh the
+[62:59] add uh so in this
+[63:03] case you know add or sub or mal you know
+[63:06] doesn't
+[63:12] matter the important fact of the matter
+[63:15] is that you know any such instruction
+[63:17] first takes a look at what are the
+[63:19] computed predicates right for less than
+[63:22] we basically take a look at the flags
+[63:24] register and find out which of the
+[63:27] elements evaluated to a less than for
+[63:29] greater than we find which of the
+[63:30] elements evaluated to a greater than and
+[63:33] based on that for all the elements for
+[63:36] which we evaluated true we actually
+[63:38] perform the operation and for the rest
+[63:40] we don't so in this manner you know it
+[63:43] keeps the hardware very simple and
+[63:45] straightforward and so it does not
+[63:47] complicate the hardware at all basically
+[63:49] you can consider the flags as kind of a
+[63:51] mask where in some cases we perform the
+[63:54] operation in some for some some elements
+[63:56] we don't do anything at all so number
+[63:59] one it keeps the
+[64:01] hardware sorry Hardware
+[64:05] simple right in a number two it
+[64:13] eliminates so so this also eliminates
+[64:16] branches right all the branches that are
+[64:18] there in an if statement in a for Loop
+[64:22] and in a while loop all of these
+[64:24] branches are eliminated the hardware
+[64:26] remains simple of course we do a little
+[64:29] bit of extra work in the sense we
+[64:31] compute predicates for we you know we
+[64:34] take into account these false
+[64:37] predicates however the Simplicity of the
+[64:39] hardware and the elimination of a
+[64:41] branches is a massive plus so this can
+[64:44] also be done for small vectors for very
+[64:46] very large vectors as well but the the
+[64:49] mechanism of having predicated
+[64:51] instructions per se is very
+[64:54] powerful so now let's take a look at the
+[64:56] overall design of a vector processor so
+[64:58] some of the Salient points are like this
+[65:01] that we have a vector register file you
+[65:03] know so most of the common general
+[65:06] purpose processors also qualify as
+[65:09] Vector processors because they have
+[65:11] Vector
+[65:12] instructions they also have scalar and
+[65:15] Vector functional
+[65:17] units and unless we are converting a
+[65:19] vector to a scalar or vice versa we in
+[65:22] general do not forward values between
+[65:25] vector and scal instruction so so this
+[65:27] is one thing that's kept in
+[65:28] mind that in the pipeline you know
+[65:31] forwarding of values between the vector
+[65:34] path and the scalar path is not done
+[65:36] because typically you know the this need
+[65:38] will not arise and also the memory unit
+[65:41] has to be more sophisticated right the
+[65:45] memory unit and ALU to compute the
+[65:47] predicated instructions they need to be
+[65:49] more
+[65:50] sophisticated in particular the memory
+[65:52] unit needs support for regular Vector
+[65:57] operations you know regular operations
+[65:59] Vector operations and possibly scatter
+[66:02] gather Vector operations if they are
+[66:06] supported now let's take a quick detour
+[66:09] and look at Graphics
+[66:11] processors Graphics uh processors are
+[66:15] well they have some multi-threaded
+[66:17] features some Vector Pro features you
+[66:19] know it's a mix so before I explain this
+[66:22] diagram let me at least give you a very
+[66:24] very brief
+[66:26] and short uh overview of Graphics uh
+[66:31] processors so uh Graphics processors are
+[66:34] uh this is how they fit in that if we
+[66:37] have the standard processor you know the
+[66:39] CPU so typically you know in modern
+[66:42] systems where you have games and movies
+[66:44] and all of these things a lot of the
+[66:45] work of actually you know processing the
+[66:48] videos and generating the scenes has to
+[66:50] be outsourced to a dedicated processor
+[66:52] called a graphics processor right
+[66:56] so uh this can either be inside the chip
+[66:59] of the processor or can be outside it
+[67:01] doesn't matter it's a separate piece of
+[67:03] Hardware right and the major vendors of
+[67:05] graphics processor at least as of 2015
+[67:08] 16 17 are Nvidia Intel Intel has builts
+[67:13] its own Graphics processors and ATI AMD
+[67:17] so ATI was a company AMD acquired
+[67:21] it so uh you know graphics processor
+[67:24] original aim was just to you know
+[67:26] process videos and render scenes and
+[67:28] games and so on but later on uh computer
+[67:33] Architects realized that Graphics
+[67:36] processors have a massive numerical
+[67:38] capability so they can be used for doing
+[67:41] regular linear algebra and scientific
+[67:43] computations also and in fact they can
+[67:47] actually do it very very well so that's
+[67:50] how you know now instead of gpus or
+[67:53] called Graphics processing units we have
+[67:56] GP gpus so GP gpus where this stands for
+[68:00] a general purpose Graphics processing
+[68:03] unit right so G is for
+[68:07] General P is for
+[68:10] purpose and so we does have GP GP is for
+[68:13] general purpose and GPU is Graphics
+[68:15] Processing Unit so GP GPU so that is a
+[68:18] broad idea that in a GP GPU you have a
+[68:21] mix of everything they have mpmd style
+[68:24] which means you know you canun run
+[68:25] multiple jobs and then M you know
+[68:29] multiple jobs will will have different
+[68:31] instructions so that can happen we also
+[68:34] have simd kind of programming where
+[68:35] you'll have multiple threads with
+[68:37] exactly the same
+[68:38] instructions and you will also have fine
+[68:40] grain multi-threading so it's a mix of
+[68:42] all so we can't so actually the term
+[68:44] that Nvidia uses is simt is uh you know
+[68:47] same instruction multiple
+[68:49] threads but uh it does not matter what
+[68:53] exactly is the classification as long as
+[68:56] we broadly realize that well uh they are
+[68:58] different from traditional single core
+[69:00] processors because Graphics processors
+[69:02] will typically have many many small
+[69:04] course you know so they'll typically
+[69:05] have many many
+[69:07] course uh maybe 128 course or 256 course
+[69:11] where each core is very very
+[69:13] small so uh let's take a look at uh
+[69:16] briefly about the
+[69:18] background so modern computer systems
+[69:21] have a lot of Graphics intensive
+[69:24] tasks so these are computer games
+[69:27] computer AIT design uh particularly in
+[69:29] engineering
+[69:31] architecture high definition videos and
+[69:34] then you know desktop effects you would
+[69:36] have seen on especially Mac processors
+[69:39] that you know if you click a button then
+[69:41] IC can suddenly enlarge and so you know
+[69:44] there are a lot of very glitzy features
+[69:45] on a desktop itself and all of these
+[69:48] things happen with the help of Graphics
+[69:51] processors because if you let's say
+[69:53] disable your graphics processor you'll
+[69:55] certainly find that the desktop
+[69:57] experience is very jittery and slow and
+[70:00] sort of you know doesn't look
+[70:02] good so all aesthetic software features
+[70:05] in Games videos everything is all the
+[70:07] you know the has been contributed to us
+[70:11] by Graphics processors so since Graphics
+[70:14] plays a very very important role uh it
+[70:17] was observed that the amount of
+[70:18] processing required is very
+[70:20] high and furthermore we cannot tie up
+[70:24] the processor's resource sources in
+[70:25] doing Graphics because number one a
+[70:28] general purpose processor is not
+[70:29] tailored towards doing Graphics that's
+[70:32] Point number one otherwise you will
+[70:34] require a huge amount of processing
+[70:35] power and the second is that the
+[70:37] processor will get completely tied up so
+[70:39] it can't do other things that's the
+[70:41] reason use a dedicated graphics
+[70:44] processor so uh what does a
+[70:47] quintessential graphics processor
+[70:49] do so it processes a set of objects in a
+[70:53] game to essentially create a sequence of
+[70:55] scenes so the important thing is how
+[70:57] exactly does a game work so if you would
+[70:59] have seen these you know fantastic games
+[71:01] where there are features so there is one
+[71:03] mountain like this one more mountain
+[71:05] like this and one character uh sorry I'm
+[71:08] a bad drawing person so one character
+[71:10] keeps running this way jumps from one
+[71:12] mountain to the other and then you know
+[71:15] some other characters come and they
+[71:16] shoot bullets so you can have a lot of
+[71:18] action in a
+[71:19] game so uh the way that the game
+[71:22] developers write the game is that they
+[71:25] sort of create this high level uh rules
+[71:28] with how these individual characters
+[71:30] interact between themselves and the
+[71:33] environment subsequently after layers of
+[71:35] software still pretty high level
+[71:37] instructions go to the graphics
+[71:39] processor so what the processor would do
+[71:41] is that it processes a set of objects in
+[71:44] a game and it creates a sequence of
+[71:47] scenes also it automatically it is able
+[71:50] to apply shadow effects right Shadows of
+[71:52] characters elimination effects and what
+[71:56] it does is that a complicated 3D scene
+[71:59] it sort of change uh you know converts
+[72:02] it to a 2D image because ultimately a
+[72:04] monitor uh will show a 2D image right so
+[72:07] monitor let's say it's a 10 1024 by 768
+[72:11] monitor so it can only show that many
+[72:14] pixels so uh a complicated 3D scene with
+[72:18] lot of objects and characters is finally
+[72:20] converted to a 2D image and the 2D image
+[72:24] we can further add in a color
+[72:25] information you know the colors of faces
+[72:28] and we can add
+[72:29] textures right so for example wood has a
+[72:32] different texture metal has a different
+[72:33] texture so all of this can be done so we
+[72:36] can create a really really you know
+[72:38] visually vibrant scene and this will
+[72:40] essentially be passed on to the
+[72:43] monitor which will show the scene
+[72:46] Graphics processors also uh you know do
+[72:50] a little bit of physics in a sense you
+[72:52] know you would have seen some of these
+[72:53] movies like The Pirates to the Caribbean
+[72:56] and you know many many more Hollywood
+[72:58] and Bollywood movies uh where there are
+[73:01] lots and lots of effects so a lot of
+[73:03] these effects are actually computer
+[73:05] generated in the sense that you know
+[73:07] it's not real water or it's not not even
+[73:09] the case that the film crew has actually
+[73:12] gone to the middle of an ocean instead
+[73:16] what they have done is that they have uh
+[73:21] basically uh used a computer to create
+[73:24] all of the those scenes right create all
+[73:26] of those waterbased or you know
+[73:28] landbased scenes and uh Graphics
+[73:31] processors have a lot of role to play in
+[73:32] it in addition they do traditional stuff
+[73:36] also like play videos so they have an EG
+[73:38] 4 encoder and decoder to do the
+[73:42] job so a traditional pipeline of a
+[73:46] graphics processor this is the way uh
+[73:48] that it
+[73:49] looks uh so we have a set of shapes
+[73:53] objects rules and effects
+[73:55] so shapes can be the characters objects
+[73:57] can be well shapes can be things in the
+[73:59] background objects can be the characters
+[74:02] rules can be the way that they actually
+[74:05] interact and
+[74:07] uh then we can have you know FX are the
+[74:09] rules of
+[74:10] interaction so uh the first step is
+[74:13] actually vertex
+[74:15] processing so in vertex processing what
+[74:18] happens is that we perform basic
+[74:21] operations on shapes on all the shapes
+[74:24] and represent the entire scene
+[74:26] essentially via a set of triangles so
+[74:28] that is true in almost all uh Graphics
+[74:31] kind of operations where we take a
+[74:34] rather complicated scene and we break it
+[74:37] into
+[74:38] triangles subsequently what we do is
+[74:41] that these set of triangles which
+[74:43] incorporate pretty much all the rules
+[74:45] and all the effects are sent to a
+[74:47] rasterization engine so this engine will
+[74:51] convert all the fragments that we have
+[74:55] to basically
+[74:57] pixels in
+[75:00] addition uh so you know both of this
+[75:03] information of fragments as well as uh
+[75:06] you know so basically we'll take in take
+[75:07] in triangles and make small small
+[75:09] fragments of pixels right and these
+[75:12] fragments will go to a fragment
+[75:14] processing engine which will add
+[75:15] additional color and texture information
+[75:18] for example you know we will have a
+[75:20] small rectangular fragment and this can
+[75:22] be a piece of wood so the fragment
+[75:25] processing system will actually you know
+[75:27] make it look like it's a piece of
+[75:29] wood finally after doing that we'll
+[75:32] create a set of pixels which is just a
+[75:34] 2d array of pixels and this will go to
+[75:37] the frame buffer Processing Unit which
+[75:40] will send finally process this and send
+[75:42] it to the monitor which will finally
+[75:45] show the image so the frame buffer
+[75:48] processing also what it does is is that
+[75:50] it does the final uh you know it does
+[75:53] the final round of processing which
+[75:55] means if you just in case we have a 3D
+[75:57] scene with multiple layers where each
+[76:00] layer has gone through each of these
+[76:02] steps so then it adds additional depth
+[76:05] information and converts the 3D scene to
+[76:08] a 2d scene I mean it's not a 2d scene
+[76:12] but it's essentially a 2d array right
+[76:15] and the scene can be 3D but if you add a
+[76:17] little bit of depth information then
+[76:19] it'll make you know we'll get an idea
+[76:23] that actually we are watching a 3D movie
+[76:25] or a 3D game but in reality what our
+[76:28] monitor will actually show us is a 2d
+[76:31] Matrix of pixels so this will be done by
+[76:33] the frame buffer Processing Unit so this
+[76:36] is the traditional Graphics Pipeline and
+[76:40] uh almost all Graphics processors have a
+[76:43] similar way of processing images and
+[76:45] videos and
+[76:47] everything so uh that part is fine but
+[76:51] uh after this uh researchers realized
+[76:56] that with so much of numerical
+[76:57] capability we can use the graphics
+[76:59] processor to do other smarter things as
+[77:03] well such as you know general purpose
+[77:05] equation solving and scientific and
+[77:07] programming scientific
+[77:09] applications this lecture ends over here
+[77:12] so in the subsequent lecture we'll start
+[77:14] from this slide so we will not look at
+[77:18] the graphics part of the graphics
+[77:21] processor rather we'll treat the
+[77:23] graphics processor itself self as a
+[77:25] computational engine and we'll see that
+[77:28] how it can be used to actually do
+[77:31] complicated computational task in the
+[77:34] general purpose task so we'll start from
+[77:36] here

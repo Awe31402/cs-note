@@ -1,0 +1,2163 @@
+[00:35] Let us start this part by describing the
+[00:38] move instruction.
+[00:39] So, the move instruction is arguably the
+[00:41] most versatile instruction in the x86
+[00:45] instruction set.
+[00:47] So, it can actually do a lot.
+[00:49] So, in terms of RISC instructions, it
+[00:52] combines It's It's a combination of
+[00:54] three things.
+[00:55] So, in the Say, if you would recall in
+[00:58] the RISC instruction set,
+[01:00] we used to have a move instruction,
+[01:02] which was nowhere as powerful as this.
+[01:05] So, the move instruction in the RISC
+[01:07] instruction set
+[01:09] was actually moving the value of a
+[01:11] register or a constant to a register.
+[01:14] So, the
+[01:16] CISC move instruction does that.
+[01:18] So, we can think of it as a RISC move
+[01:20] plus
+[01:21] it's also a load.
+[01:23] So, it can load a value from memory and
+[01:25] put it in a register.
+[01:27] And it's also a store.
+[01:29] So, it can store
+[01:31] something from a register to a memory
+[01:33] address. So, the move instruction in x86
+[01:36] is equivalent
+[01:38] to a RISC move, a load, and a store all
+[01:40] combined into one.
+[01:43] So, what is the semantics? The semantics
+[01:45] is very simple.
+[01:47] Uh
+[01:48] the semantics is that uh
+[01:52] uh the move instruction takes two
+[01:54] operands.
+[01:55] The first operand is a source as well as
+[01:59] a destination.
+[02:01] Right?
+[02:02] So, it can either be a register or a
+[02:04] memory.
+[02:06] The second operand is clearly a source.
+[02:09] So, it can be a register, a memory, or
+[02:11] an immediate.
+[02:13] So,
+[02:14] as as
+[02:15] discussed in some of the earlier slides,
+[02:19] that most 86 instructions are actually
+[02:22] in a two-address format. They take two
+[02:25] operands, and the first operand is both
+[02:27] a source as well as a destination.
+[02:30] Uh so, so we shall see. This is standard
+[02:32] format for almost all instructions.
+[02:35] So, here the idea is like this. So,
+[02:38] within the move for the case of the move
+[02:40] instruction, we the
+[02:43] you know, the
+[02:44] the duality of a source and a
+[02:46] destination is not very important. So,
+[02:48] we'll not overstress on this aspect
+[02:51] here.
+[02:52] So, so let's consider an example. Let's
+[02:54] say we write move, MOV, EAX, {comma}
+[02:57] EBX.
+[02:59] So, in this case, this is very simple.
+[03:01] The first instruction is the
+[03:02] destination. The second Sorry, the first
+[03:05] operand
+[03:06] is the destination, and the second
+[03:07] operand is a source.
+[03:09] So, we move a value, the source value,
+[03:13] uh to the destination. The value of the
+[03:15] source to the destination.
+[03:18] So, this is extremely The move
+[03:19] instruction is very extremely versatile.
+[03:22] Instead of this,
+[03:24] I could have always written
+[03:27] uh num uh
+[03:30] something of this type.
+[03:32] So, in this case, this is actually a
+[03:35] memory address.
+[03:38] So, what we are doing
+[03:40] is that we are reading from memory.
+[03:43] Uh so, so
+[03:44] the first thing that we are doing is we
+[03:45] are computing the value of this
+[03:47] expression by accessing the registers
+[03:49] ESP and EAX.
+[03:51] Then we are accessing memory.
+[03:53] Uh we are reading 4 bytes and then we
+[03:56] are saving those 4 bytes in a register
+[03:59] So, this is a load.
+[04:01] I could have similarly
+[04:03] just interchanged both and maybe just
+[04:06] written
+[04:14] So, this actually would have been a
+[04:15] store
+[04:16] because we would have read the value of
+[04:18] EBX and put it in a
+[04:23] So, the former is an example of a load
+[04:26] and the latter
+[04:28] is an example of a store.
+[04:34] So, the move instruction can move values
+[04:36] between registers.
+[04:38] It can move a value from a register to
+[04:40] memory, which is the same as a store.
+[04:43] It can move a value from memory to a
+[04:45] register,
+[04:47] which is the same as a load. So, as you
+[04:49] can see, we have pretty much combined
+[04:53] the functionality of three RISC
+[04:55] instructions, a normal register or
+[04:57] constant move instruction,
+[04:59] a load and a store instruction all into
+[05:01] one.
+[05:03] Which makes this particular instruction
+[05:06] very interesting because if you just
+[05:07] know this,
+[05:09] we'll be able to write a lot of assembly
+[05:10] programs.
+[05:12] And mind you, the standard rules that we
+[05:14] discussed in the last few slides still
+[05:17] hold, which means that both the operands
+[05:19] cannot be
+[05:20] both the source operands cannot be
+[05:22] memory locations. So, which means that
+[05:24] we can't use this instruction
+[05:26] to move values between two memory
+[05:28] locations.
+[05:29] But other than that, we can easily
+[05:31] achieve a load and a store.
+[05:33] And every memory
+[05:35] operand will uh have the following form.
+[05:39] It'll start with a left square bracket,
+[05:42] end with a left square bracket, and the
+[05:45] value of the memory address will be
+[05:46] specified within the address.
+[05:49] Where we can have a base register, a
+[05:51] scaled index, and an offset.
+[05:54] And in x86 parlance, an offset is known
+[05:56] as a displacement.
+[06:00] Similarly, we have the move SX and move
+[06:02] ZX instructions.
+[06:05] So, the regular move instruction assumes
+[06:07] that the source and the destination are
+[06:08] the same size.
+[06:10] But the move SX and the move ZX
+[06:13] instructions
+[06:14] actually assume that the source and
+[06:16] destination have different sizes.
+[06:19] So, let us consider this. So, the
+[06:21] generic semantics is
+[06:24] that let's say we are trying to So, so
+[06:26] this sort of has a slightly restricted
+[06:28] semantics in the sense
+[06:30] that the first operand can only be a
+[06:31] register, and the second one has to be a
+[06:33] register or memory.
+[06:35] So, once this value is being moved over
+[06:37] here,
+[06:39] we can, for example, write move SX AX,
+[06:42] BX.
+[06:44] So, mind you, BX is a 16-bit register.
+[06:48] And
+[06:51] uh EAX is a 32-bit register.
+[06:55] So, what we do is that we read the value
+[06:57] of BX, and S stands for sign.
+[07:01] So, the S here
+[07:02] stands for sign, sign extend. So, we
+[07:04] sign extend extend the sign of BX,
+[07:08] and then we save it in EAX. So, the
+[07:11] second operand in this case can be
+[07:13] either 8 or 16 bits. That's fine.
+[07:16] And we extend the sign of BX and save it
+[07:18] in EAX.
+[07:20] Similarly, we have the move ZX
+[07:22] instruction,
+[07:23] where we don't extend the sign, but
+[07:25] treat it as an unsigned number.
+[07:27] So, we zero extend it, which means that
+[07:29] we add the we the MSB bits,
+[07:33] instead of them being replaced by the
+[07:34] sign bit,
+[07:36] they are replaced by the number zero.
+[07:38] And this number is stored in the
+[07:40] register EAX.
+[07:42] And uh so, in this case also the second
+[07:44] operand is can be either 8 or 16 bits.
+[07:48] But instead of extending the sign,
+[07:51] we treat the number in the smaller
+[07:53] register BX as unsigned
+[07:56] and replace the MSB bits. Sorry, don't
+[07:59] replace the MSB bits, but set the MSB
+[08:01] bits
+[08:02] to be zero.
+[08:06] that's
+[08:07] That's pretty much it. So it's a special
+[08:08] kind of move instruction where we're
+[08:10] moving
+[08:11] from a source
+[08:13] uh with which has a less number of bits
+[08:16] to a register that can accommodate more
+[08:18] bits. So the question is that those
+[08:20] extra bits,
+[08:21] what should they be set to?
+[08:23] These extra bits which are in the MSB
+[08:25] position in the case of SX are set to
+[08:28] the sign bit.
+[08:31] And uh so it means that the value is
+[08:33] maintained.
+[08:34] In the case of ZX, they are set to
+[08:37] zeros,
+[08:38] which is an unsigned extension.
+[08:43] All right. So we have seen the move
+[08:44] instruction, move SX and move ZX.
+[08:47] So let's now take a look at the exchange
+[08:50] instruction, XCHG.
+[08:53] So the exchange instruction is also very
+[08:55] important,
+[08:56] but we'll not be able to fully
+[08:58] understand the meaning of an exchange
+[09:00] instruction and why it is that important
+[09:03] till we actually reach chapter 11.
+[09:05] And even in chapter 11, we'll only
+[09:07] discuss a little bit of it. So an
+[09:09] exchange instruction is very useful
+[09:11] while writing parallel programs.
+[09:13] Uh so so we will discuss maybe a little
+[09:16] bit of exchange over there.
+[09:19] So the main idea is that exchange takes
+[09:21] two arguments,
+[09:22] uh two sources, which are also
+[09:24] destinations, by the way.
+[09:26] So uh
+[09:28] e uh so source one can be a register or
+[09:30] memory, and source two can be a register
+[09:32] or memory.
+[09:33] I can maybe write S1 and S2.
+[09:36] So for example, this can be but mind
+[09:38] you, both cannot be memory locations.
+[09:40] So, the same constraint still hold.
+[09:43] So, we can write exchange EAX and a
+[09:46] memory location EAX + EDI in square
+[09:49] brackets.
+[09:50] It'll essentially swap or exchange the
+[09:52] contents.
+[09:53] Uh so, the contents of EAX will come
+[09:55] here and the contents of this memory
+[09:58] location will come into EAX.
+[10:00] Right? So, it'll exchange the contents
+[10:02] of EAX and EAX + EDI. It'll just swap
+[10:05] the contents
+[10:07] of operand one and two.
+[10:09] So, what are the instructions you've
+[10:10] seen up till now? We have seen the move
+[10:12] series of instructions and exchange.
+[10:17] All right.
+[10:18] So, given the fact that we have seen
+[10:20] this,
+[10:21] uh there are some more instructions that
+[10:24] we need to see
+[10:26] to get a better idea of the memory and
+[10:30] the data movement uh instructions.
+[10:33] So, two of those instructions are push
+[10:35] and pop.
+[10:37] So, uh why do we have this? The reason
+[10:39] we have this is
+[10:41] because an x86 processor is explicitly
+[10:44] aware of the stack, unlike simple risk
+[10:47] where uh that was not the case.
+[10:50] So, an x86 processor is aware that the
+[10:52] stack pointer is stored in the register
+[10:53] ESP.
+[10:55] And uh so, that's the reason it defines
+[10:58] two
+[10:59] instructions called push and pop, which
+[11:01] take a single operand.
+[11:03] So, let's consider the push instruction.
+[11:05] It takes a single operand.
+[11:07] The operand can be a register, can be a
+[11:10] memory, or an immediate value, a
+[11:11] constant.
+[11:13] So, for example, we can say you push ECX
+[11:15] on the stack.
+[11:17] In this case, the value of So, this is
+[11:20] similar to this small code snippet over
+[11:23] here. This is exactly what the processor
+[11:25] would do.
+[11:26] So, given the fact that this is a CISC
+[11:29] instruction set, a single instruction
+[11:31] can actually do a lot. A single
+[11:33] instruction can do the same as four or
+[11:36] five equivalent uh RISC instructions.
+[11:39] Maybe sometimes even more.
+[11:41] So, what we would do is first we'll read
+[11:43] the value of ECX, but put it in
+[11:47] uh
+[11:48] a temp value.
+[11:50] Uh then we will decrement the stack
+[11:52] pointer by four.
+[11:54] Right? Because we are pushing it and
+[11:56] assuming a downward-growing stack.
+[11:58] And then the value of uh then what we
+[12:01] will do
+[12:02] is that we will access the new stack
+[12:05] location, and put in the value of ECX.
+[12:10] Now, let's consider the pop instruction.
+[12:13] So, the pop instruction does the
+[12:14] reverse. So, that's the reason
+[12:16] uh so so we'll see an explanation that
+[12:18] the same sequence of steps are just
+[12:19] written in reverse to make uh the
+[12:22] understanding easier.
+[12:24] Uh so, in the pop case, we can pop the
+[12:27] value from the top of the stack
+[12:29] and put it in a register or memory.
+[12:32] For example, let's say pop ECX.
+[12:34] So, just uh you know, these statements
+[12:36] are in reverse.
+[12:38] So, uh so first we read the value
+[12:41] under the stack pointer into a temporary
+[12:43] variable.
+[12:45] So, this is sort of an equivalent
+[12:47] uh programmatic explanation of what pop
+[12:51] Then we increment the stack pointer.
+[12:54] And then what we had read from the
+[12:55] stack,
+[12:57] we assign that to
+[12:59] ECX.
+[13:02] And this is definitely possible to write
+[13:04] this program without the temp variable,
+[13:06] but it is it has just been done to show
+[13:08] the order of actions of how what exactly
+[13:11] the processor would internally do.
+[13:13] And uh
+[13:15] but definitely, we can make the program
+[13:17] simpler if some of you are not happy
+[13:19] with three
+[13:21] uh sub-instructions, we can replace it
+[13:23] with two. But the basic idea would still
+[13:25] remain the same.
+[13:27] That uh we re-push the value onto the
+[13:30] stack and change the stack pointer.
+[13:32] In while pushing we decrement it and
+[13:34] while popping we in- increment the stack
+[13:37] pointer.
+[13:40] So, specifying memory operand sizes is
+[13:44] let's take a look at it.
+[13:46] So, the processor knows the size of a
+[13:48] register operand from the name of the
+[13:49] register. For example,
+[13:51] EAX is a 32-bit operand, we know that.
+[13:55] AX is a 16-bit operand, we know that.
+[13:57] And RAX is a 64-bit operand, we also
+[14:00] know that.
+[14:01] But, what about memory operand? So,
+[14:03] let's take a look at
+[14:05] some
+[14:06] uh instruction of the form push EAX.
+[14:09] So, in this case we read the value of
+[14:12] EAX, we get a 32-bit
+[14:16] Uh we access memory. We read some bytes
+[14:19] and push them onto the stack.
+[14:21] But, the question is how many bytes need
+[14:23] to be pushed? Is it two bytes, four
+[14:25] bytes, eight bytes, how many bytes?
+[14:28] So, that's the reason it is necessary to
+[14:30] provide a modifier to the push
+[14:32] instruction
+[14:33] such that especially when
+[14:36] we are trying to push
+[14:39] something into a memory address, we can
+[14:41] specify how many bytes need to be
+[14:43] pushed. This is not necessary for a
+[14:45] for a register,
+[14:47] but for a memory operand this is
+[14:49] necessary.
+[14:50] So, in this case we'll actually push 32
+[14:53] bits because we're using a D modifier
+[14:56] and D means
+[14:57] four bytes or 32 bits.
+[14:59] Similarly, we need to use modifiers for
+[15:02] other instructions such as pop when the
+[15:04] number of bytes that need to be
+[15:06] transformed are transfor- sorry,
+[15:08] transferred are not known. In the case
+[15:10] of a register, since we know its size,
+[15:13] we're assuming that we'll fill up the
+[15:14] entire register.
+[15:16] But, in the case where we are not really
+[15:18] sure because we are transferring
+[15:19] something from the stack to another
+[15:21] memory location,
+[15:23] we do not know for sure.
+[15:27] use this particular modifier over here,
+[15:30] such as dword, to say that we want to
+[15:32] push 32 bits.
+[15:36] Let me now discuss some of the common
+[15:38] modifier.
+[15:39] Depending upon the size, depending upon
+[15:42] the number of bits that need to be
+[15:44] transferred from memory, we can use
+[15:46] different kinds of modifiers with
+[15:48] instructions that access memory.
+[15:51] Uh the first modifier is byte. So, it
+[15:53] specifies that 8 bits or 1 byte
+[15:56] uh needs to be transferred.
+[16:02] The second modifier is word.
+[16:04] Uh so, it means that 16 bits need to be
+[16:07] transferred. So, I need to make a point
+[16:10] In simple RISC and in ARM, we assume
+[16:13] that a word is 32 bits or 4 bytes.
+[16:16] Uh so,
+[16:18] this is not correct in x86 because of
+[16:20] historical reasons.
+[16:22] So, in x86, a word is assumed to be 16
+[16:25] bits or 2 bytes. So, this is what a word
+[16:27] means in the context of x86.
+[16:31] So, we used the modifier dword or double
+[16:34] word in the last slide, slide number 27.
+[16:37] Uh in this case, we assume that we are
+[16:39] transferring 4 bytes or 32 bits.
+[16:43] To support the newest and latest 64-bit
+[16:46] instruction set,
+[16:47] we have the modifier qword, uh which is
+[16:50] quad word or 8 bytes or 64 bits.
+[16:54] So, after we have seen this, let's take
+[16:57] a look at this example over here, which
+[17:00] I have deliberately chosen as a slightly
+[17:03] complicated example.
+[17:05] So, we will take a look at four x86
+[17:08] assembly statements. And at the end, we
+[17:11] need to answer uh this question.
+[17:14] What is the value of EBX after uh these
+[17:17] four instructions? So, let's not take a
+[17:19] look at the answer
+[17:20] just right now.
+[17:22] So, the first So, let me maybe give you
+[17:25] 10 seconds for you to take a look at
+[17:28] these four instructions and work it out.
+[17:31] And after that, I'll work out each and
+[17:33] every instruction and show you the
+[17:35] steps.
+[17:46] All right. So, let's see. So, the first
+[17:49] instruction sets the register EAX
+[17:55] to 10.
+[17:57] So, this is nice and straightforward.
+[18:00] The second instruction moves EAX to the
+[18:04] location that the stack pointer points
+[18:06] to.
+[18:07] So, let's say the stack pointer points
+[18:08] to this location.
+[18:11] And since it's a downward growing stack,
+[18:13] which grows downwards towards lower
+[18:15] memory addresses,
+[18:17] what we do here is that we save
+[18:21] the value of EAX, which is 10,
+[18:25] to the location pointed to by the stack
+[18:29] Subsequently, what we do
+[18:31] is that
+[18:33] we take
+[18:35] the value that is contained in the
+[18:39] to
+[18:40] and push it again on the stack.
+[18:43] So, this particular instruction is
+[18:46] complicated, so I would like the readers
+[18:48] to pay special attention.
+[18:50] So, here what we do So, the first thing
+[18:52] in any push
+[18:54] instruction is we see what is the value
+[18:56] of the argument, you know, what is it
+[18:58] that needs to be pushed.
+[19:00] So, what needs to be pushed is a d word
+[19:02] or a double word or four bytes.
+[19:05] So, we need to read four bytes from the
+[19:08] current stack pointer.
+[19:09] So, the current stack pointer contains
+[19:11] 10. So, essentially, we are pushing 10.
+[19:16] So, what we do now, so if you take a
+[19:18] look at the pseudo code of push that was
+[19:20] explained a couple of slides ago,
+[19:23] what we now need to do is that we need
+[19:26] decrement the stack pointer by four.
+[19:29] In the new location, which is the next
+[19:31] location on the stack, we need to push
+[19:34] the value of 10,
+[19:36] which is what we just read.
+[19:39] Subsequently, the next instruction, so
+[19:42] the so now what is the current status?
+[19:44] The current status is that the stack
+[19:46] pointer
+[19:47] points to this location, which is the
+[19:49] next location. So, let's assume that the
+[19:51] memory address, the previous memory
+[19:54] address of the stack pointer was 1,000.
+[19:57] So, the current memory address of the
+[19:59] stack pointer is 1,004.
+[20:04] So, the next instruction, the last
+[20:06] instruction, reads the contents of the
+[20:08] memory address that the stack pointer
+[20:10] points to, which in this case is 10,
+[20:13] and the value of 10 is transferred to
+[20:15] EBX. So, what is the value of EBX at the
+[20:17] end of this code snippet? It is 10.
+[20:22] So, the important point to remember
+[20:24] is that in any push instruction, we
+[20:26] first read the value, read the value of
+[20:28] the operand
+[20:30] uh that we are trying to push, then we
+[20:32] decrement the stack pointer, and
+[20:34] essentially, in the new stack top, at
+[20:37] the new stack top, we push in the value.
+[20:40] So, this instruction, I deliberately
+[20:41] made it complex.
+[20:43] And what was the complexity? The
+[20:45] complexity was
+[20:47] that the argument of the push
+[20:50] was a memory address
+[20:54] that was determined by the current value
+[20:55] of the stack pointer. This is just to
+[20:57] ensure that
+[20:59] uh the understanding is clear. So, let
+[21:01] me just go back to the point where we
+[21:02] defined the push instruction. So, if you
+[21:04] see here,
+[21:06] we first read the value of the push
+[21:08] argument, whatever is being pushed into
+[21:11] a temporary variable.
+[21:12] Then we subtract the stack pointer.
+[21:15] And at the new location, we push in
+[21:17] this. So, the advantage of this is that
+[21:20] just in case this argument contains a
+[21:23] stack pointer, it'll get taken care of,
+[21:25] as we saw in
+[21:27] this particular example.
+[21:31] All right. So, now that we have taken a
+[21:33] look at the memory into the
+[21:35] instructions. So, the memory
+[21:37] instructions are basically move and its
+[21:38] variants,
+[21:40] uh exchange, push, and pop. Right? So,
+[21:42] let me just write it. Let me just go
+[21:44] back to the previous slide
+[21:46] and write
+[21:48] all the instructions that we have seen
+[21:49] up till now. So, we have seen move,
+[21:52] and we have additionally seen two of its
+[21:54] variants, SX and ZX.
+[21:57] We have also seen the exchange
+[21:59] instruction that exchanges
+[22:02] uh the values at two locations.
+[22:05] And then, uh we have seen the push and
+[22:08] pop instructions that are explicitly for
+[22:10] dealing with the stack.
+[22:13] The interesting thing is that in x86,
+[22:15] the hardware is explicitly aware of the
+[22:18] stack, and it uses the stack pointer.
+[22:20] This was not the case in other
+[22:22] architectures, not in simple risk and
+[22:24] arm. But in this case, the push
+[22:26] instruction actually reads the stack
+[22:28] pointer, decrements it.
+[22:31] Which is good.
+[22:33] So, now uh let's take a look at ALU
+[22:36] instructions. ALU instructions follow
+[22:38] exactly the same format
+[22:40] uh as we had discussed earlier when we
+[22:44] gave the generic format of two address
+[22:46] instructions.
+[22:48] So, they take two operands. The first
+[22:49] operand is the is the first source,
+[22:53] as well as the destination.
+[22:56] The second operand is the second source.
+[23:00] So, the first operand can uh be either a
+[23:02] register or a memory.
+[23:05] The second operand can either be a
+[23:06] register or a memory or an immediate or
+[23:09] a constant.
+[23:10] For example, if you have add EAX, EBX,
+[23:13] in this case the explanation is that we
+[23:16] are setting EAX equal to
+[23:19] EAX plus
+[23:23] So, mind you the same rules hold. The
+[23:25] rules are that both these operands, both
+[23:28] the source operands S1 and S2
+[23:31] cannot be memory operands. Only one of
+[23:33] them can be a memory operand.
+[23:35] Uh that's the first rule that we talked
+[23:38] about.
+[23:39] Uh so, and also the second rule is that
+[23:42] uh the first operand is a source as well
+[23:44] as a destination.
+[23:46] So, subtract instruction is similar.
+[23:48] It's add and sub. So, the names are also
+[23:50] similar.
+[23:51] And uh so, here also we set EAX equal to
+[23:54] EAX minus EBX.
+[23:57] Similar to ARM, so in ARM uh recall that
+[24:00] we had two instructions where we were
+[24:02] able to
+[24:04] uh add with a carry or subtract with a
+[24:07] borrow.
+[24:08] So, X86 is very similar. It also has the
+[24:11] ADC instruction.
+[24:13] The ADC instruction uh ADC EAX, EBX will
+[24:17] essentially set first add EAX plus EBX,
+[24:21] then add the value of the carry bit. So,
+[24:24] this is just to ensure that we can add
+[24:26] very large numbers
+[24:28] uh even if they don't fit within a
+[24:30] register.
+[24:31] So, we can add two pair of numbers. We
+[24:34] Sorry, we can add two numbers or a
+[24:35] single pair of numbers.
+[24:37] Uh then the carry bit can be saved, and
+[24:40] it can be used in a future addition.
+[24:43] Uh so, that's the reason this particular
+[24:46] instruction is EAX plus EBX plus the
+[24:49] value of the carry bit.
+[24:51] So, SBB the same thing. The ADC is add
+[24:54] with carry, and SBB is subtract with
+[24:59] So, let's consider an example SBB AX
+[25:02] EBX. So, we are setting EAX as
+[25:07] And this is minus the carry bit. So, in
+[25:10] this case, the carry bit actually works
+[25:13] as a borrow bit.
+[25:15] So, unlike ARM and x86,
+[25:18] the carry bit and the borrow bit
+[25:20] are the same and have the same
+[25:22] connotation.
+[25:24] So, basically, what we do, we first do a
+[25:26] regular subtraction and then we subtract
+[25:29] the borrow bit. We call it the carry
+[25:31] bit, but it can be interpreted as the
+[25:32] borrow bit as well.
+[25:34] Uh so, we do the subtraction in that
+[25:36] manner.
+[25:38] So, since this part we have seen earlier
+[25:40] also in chapter four, and for those
+[25:43] readers who have not uh read chapter
+[25:45] four,
+[25:46] uh let me just explain once again. So,
+[25:49] the main advantage of ADC and SBB is to
+[25:53] uh we can add numbers that are much
+[25:56] larger, add or subtract numbers that are
+[25:59] much larger than 4 bytes in the case of
+[26:02] a 32-bit OS. How would we do that? We'll
+[26:05] essentially save the numbers in a set of
+[26:07] registers, add one pair,
+[26:09] and then save the carry, use the carry
+[26:11] to add the second pair, and so on.
+[26:17] all right. So, uh
+[26:20] let's now take a look at
+[26:22] some simple one address single
+[26:27] operand instructions in the one address
+[26:30] format.
+[26:31] So, these are very uh handy and useful
+[26:34] actually. Uh so, the instructions are
+[26:36] INC for increment, DEC for decrement,
+[26:39] and NEG for negative. So, they take a
+[26:42] register or a memory as an argument.
+[26:45] So, in one case, we increment the value
+[26:47] of the register or the memory uh
+[26:49] location by one. In the case of DEC, we
+[26:52] subtract and in the case of neg,
+[26:54] uh what do we do? Uh we multiply the
+[26:57] number with minus one.
+[26:59] So, let's consider an example. Nothing
+[27:01] is complete without it.
+[27:03] Let's write an x86 assembly code snippet
+[27:06] to compute
+[27:07] EAX is equal to minus one times EAX plus
+[27:13] So, in this case, what do we do?
+[27:15] Uh since the value of EAX is changing,
+[27:17] what we do is that we first increment
+[27:19] EAX, which means
+[27:21] setting EAX to EAX plus one,
+[27:24] and then we
+[27:25] do call neg EAX, which means subtract
+[27:29] EAX plus one with minus one.
+[27:34] All right. Now, let's take a look at the
+[27:37] compare instruction. We always have a
+[27:39] compare instruction. We have to have
+[27:42] rather uh compare instruction. We can't
+[27:44] live without it.
+[27:46] So, a compare instruction's job is
+[27:49] exactly the same as was the case
+[27:53] uh in simple risk and arm. So, here we
+[27:56] compare two operands. Uh so, in this
+[27:59] case,
+[28:00] source one and source two.
+[28:06] So, the first operand can either be a
+[28:12] register or memory or an immediate.
+[28:15] Uh so, we need to compare both of them
+[28:17] and save the results in the flags
+[28:19] register, which as we saw comes with
+[28:21] different names, flags for 16-bit,
+[28:24] EFLAGS for 32-bits,
+[28:26] and RFLAGS for 64-bits. So, in this
+[28:29] case, if you're comparing EAX and EBX
+[28:31] plus four, so EBX plus four is actually
+[28:34] the memory address, so we're comparing
+[28:35] the contents at this memory address.
+[28:38] So, we compare both the values in EAX
+[28:41] and EBX plus four,
+[28:43] the
+[28:44] uh the memory operand corresponding to
+[28:45] EBX plus four,
+[28:47] and we set the flags.
+[28:49] Similarly, we can compare with an
+[28:50] immediate also. So, we compare the
+[28:52] contents of ECX with 10 and we set the
+[28:56] flags.
+[28:58] All right. Now, let's take a look at
+[29:00] multiplication and division
+[29:01] instructions. These instructions are
+[29:03] always complicated.
+[29:06] Uh but, they are not uh all that
+[29:09] difficult. They are similar to arm, but
+[29:11] there are certain complexities involved.
+[29:14] So, let's take a look at the IMUL
+[29:17] instruction in the single address
+[29:20] So, in the in the single operand form in
+[29:23] the one operand form, which is the first
+[29:24] one,
+[29:26] what do we have?
+[29:28] So, what we do is that if we call IMUL
+[29:31] ECX, so by default,
+[29:34] it multiplies the value in EAX with that
+[29:37] of ECX. So, that is a default behavior
+[29:40] that whatever is there in EAX, it'll
+[29:42] multiply it with ECX.
+[29:44] So, now in the case of a 32-bit
+[29:47] instruction set, if the value of EAX is
+[29:49] 32 bits and the value of ECX is
+[29:52] also being put into 32 bits,
+[29:55] so you can see that the product can in
+[29:58] theory be a large number, right? So, how
+[30:01] large can can the product be?
+[30:03] Let's assume it is two's complement. So,
+[30:05] basically in a two's complement system,
+[30:07] if you multiply -2 to the power 31 with
+[30:10] -2 to the power 31,
+[30:14] it is 2 to the power 62.
+[30:18] So, pretty much the product has to be
+[30:20] represented
+[30:22] in
+[30:23] in this case 63 bits. 63 is a bad
+[30:25] number, so let's take 64 bits, a power
+[30:27] of two.
+[30:29] Uh so, basically uh it is we will unless
+[30:32] we allocate 64 bits, there is a chance
+[30:36] that we'll have an overflow
+[30:38] uh if we multiply two numbers, which is
+[30:40] a problem.
+[30:42] So, in the single operand form, what we
+[30:44] will do is we'll multiply
+[30:46] whatever is the value given with the
+[30:48] value stored in EAX.
+[30:50] The final product will be 64 bits
+[30:53] and we will save the upper 32 bits in
+[30:55] EDX.
+[30:58] And we'll save the lower 32 bits in EAX.
+[31:02] All right, so what are we doing? We're
+[31:04] multiplying in this example EAX with
+[31:10] So, assume EAX contains the value
+[31:12] 17 and ECX contains the value 1,000.
+[31:17] We'll represent the product as a 64-bit
+[31:21] number.
+[31:23] All right, so the 64 bits is 8 bytes.
+[31:26] So, the upper 4 bytes
+[31:28] will have an upper 4 bytes and a lower 4
+[31:30] bytes, right? Most significant 4 bytes
+[31:33] and least significant 4 bytes.
+[31:35] So, the upper 4 bytes will get saved in
+[31:38] EDX
+[31:40] and the lower 4 bytes get saved in EAX.
+[31:48] All right, let's now consider the two
+[31:50] operand form.
+[31:53] So, the two operand form given in the
+[31:56] next slide
+[31:57] uh basically multiplies takes one
+[32:00] register as the first source and then it
+[32:02] multiplies the register with either the
+[32:04] contents of a register or a memory.
+[32:06] So, we multiply ECX with EAX + 4 uh that
+[32:10] this is the memory address, the contents
+[32:12] of it.
+[32:14] Uh so, in this case, what we do
+[32:18] uh is that we don't save a 64-bit
+[32:21] product.
+[32:22] Rather, what we do is we treat it as a
+[32:24] regular instruction, an absolutely
+[32:26] regular instruction similar to
+[32:29] uh you know, add and subtract and so on,
+[32:32] right? So, in this case, we'll just set
+[32:34] ECX as ECX * EAX + 4.
+[32:38] If there is an overflow, the overflow
+[32:39] flag will be set.
+[32:41] But we'll not save a 64-bit product.
+[32:44] We will simply take the first register,
+[32:46] treat it as the first register in this
+[32:48] case
+[32:49] is a source as well as a destination as
+[32:52] has been the case
+[32:53] for other uh ALU arithmetic logical
+[32:58] So, what we do is that we take
+[33:01] the first and second sources, multiply
+[33:03] them,
+[33:04] and save them at the location of the
+[33:06] first operand.
+[33:08] Now, let's consider a three-operand form
+[33:11] of the IMUL integer mul uh instruction.
+[33:15] So, in this case, we have a register.
+[33:16] The first operand is a register.
+[33:19] The second operand is a register or a
+[33:22] memory location.
+[33:24] The third operand is an immediate.
+[33:26] So, in this case, uh so, since it is a
+[33:29] CISC instruction set, we can take the
+[33:31] liberty
+[33:33] of having a lot of instructions, a lot
+[33:35] of different instruction formats, pretty
+[33:38] much, you know, whatever suits us.
+[33:40] So, in this case, what we do is that uh
+[33:44] the first operand is the destination.
+[33:48] Then, we'll have source one, the first
+[33:50] source, and the
+[33:51] second source.
+[33:53] So, what we do here
+[33:55] is that this is the first source
+[33:58] operand. We multiply this with five
+[34:01] because the last one is an immediate.
+[34:03] So, we multiply the first source with
+[34:05] five, which is an immediate.
+[34:07] And then, we store the result in the
+[34:09] first operand in the first operand,
+[34:11] which is a register.
+[34:13] So, these are pretty much the three
+[34:15] variants
+[34:17] of
+[34:18] uh the
+[34:20] IMUL instruction.
+[34:22] So, as you see, you know, these three
+[34:24] variants were chosen with a lot of care
+[34:26] and, you know, thoughtful consideration.
+[34:29] The first variant was chosen because in
+[34:33] some cases we might want to store a
+[34:35] 64-bit product.
+[34:37] And so that additional facility was
+[34:39] given. And this facility is there in the
+[34:41] arm instruction set as well.
+[34:44] In the second case, we want to treat
+[34:47] and implement an IMUL instruction the
+[34:49] same way as we have been implementing
+[34:51] other instructions like add and
+[34:52] subtract.
+[34:54] In the third case, designers realized
+[34:56] that maybe it is very common
+[34:59] that you multiply the contents of a
+[35:01] register or memory with an immediate and
+[35:03] save it in other register.
+[35:05] So, we should have an instruction for
+[35:07] it. So, that's the reason they have an
+[35:09] instruction for it.
+[35:13] All right, let's take a look at the IDIV
+[35:15] instruction which
+[35:18] is definitely complicated. So, let's go
+[35:21] back.
+[35:22] As you see, IDIV instruction takes a
+[35:24] single argument and this is exactly what
+[35:26] we'll expand in the next slide.
+[35:29] So, the IDIV instruction, the integer
+[35:31] divide instruction which
+[35:34] is complicated, we shall see why.
+[35:38] and and this is also one reason why the
+[35:40] original designers of the arm
+[35:42] instruction set, for the early arm
+[35:44] instruction set, not the later ones
+[35:47] did not have a divide instruction
+[35:48] because you know, it is somewhat
+[35:50] complicated.
+[35:52] And we'll see why and we'll also
+[35:54] correlate this with what we had done in
+[35:56] simple risk to sort of resolve the
+[35:59] issue.
+[36:01] So, here the idea is that we take a
+[36:03] single argument which can be a register
+[36:07] So, what would an example be? Something
+[36:08] like IDIV EBX.
+[36:12] So, if we div So, what we do is that we
+[36:15] consider a 64-bit number
+[36:17] in the case of a 32-bit instruction set
+[36:20] where the number is stored in EDX and
+[36:23] EAX. EDX stores the upper 4 bytes.
+[36:26] EAX stores the lower 4 bytes.
+[36:30] So, same see the logic is similar. If
+[36:33] you multiply two 4-byte numbers, the
+[36:35] product can at most be 8 bytes.
+[36:39] Right? So,
+[36:40] here what we do is that
+[36:43] we can That's the reason consider a
+[36:45] larger number and divide it by a smaller
+[36:51] it's sort of an exact analog of the
+[36:54] single address form of the IMUL
+[36:56] instruction.
+[36:57] Here we're assuming that the dividend,
+[36:59] the number that
+[37:01] we will divide is an 8-bit number. It's
+[37:04] stored in EDX and EAX with the upper
+[37:07] 4 bytes. So, let me maybe draw it. It'll
+[37:10] be easier to understand that way. If
+[37:12] this is the dividend,
+[37:14] we're assuming that the dividend itself
+[37:16] in this case
+[37:18] This case meaning the 32-bit instruction
+[37:21] case is 8 bytes.
+[37:23] The upper 4 bytes are in EDX.
+[37:26] The lower 4 bytes are in EAX.
+[37:30] Now, in this case we're dividing it by
+[37:32] the So, what is the divisor? The divisor
+[37:34] is this argument, which in this case is
+[37:38] Right? So, the divisor
+[37:41] is
+[37:43] source one.
+[37:47] So, once we divide,
+[37:50] so the
+[37:52] the main difficulty in a division
+[37:54] instruction is that
+[37:57] a division instruction actually produces
+[38:00] two results.
+[38:01] So, let's try to divide integer divide
+[38:05] 10 / 7.
+[38:07] So, in this case, the results There are
+[38:10] two results. One is the quotient, which
+[38:12] is one.
+[38:13] The other is the remainder, which is
+[38:15] three.
+[38:17] Similarly, another example to 15 / 7,
+[38:22] quotient is two
+[38:24] and remainder is one.
+[38:31] So, as we can see, that there are two
+[38:33] results. Essentially, we need two
+[38:35] registers to store them. One register to
+[38:37] store the quotient and one register to
+[38:39] store the remainder.
+[38:41] So, this makes our life very simple. So,
+[38:43] by default EAX will store the quotient
+[38:47] after an IDIV instruction. And EDX will
+[38:50] contain the remainder. So, you can sort
+[38:52] of think of EAX and EDX as a pair
+[38:55] that will come together
+[38:57] very, very often.
+[38:59] And uh so, in this case, EDX and EAX are
+[39:03] containing the dividend.
+[39:04] Then, they are getting overwritten.
+[39:07] So, EAX will ultimately contain the
+[39:09] quotient at the end. And EDX will
+[39:11] contain the remainder.
+[39:14] All right. So, let me just summarize
+[39:15] what's written here. The dividend
+[39:17] contains is contained in EDX EAX.
+[39:20] In a 32-bit instruction set, EDX
+[39:23] contains the upper 32 bits.
+[39:25] EAX contains the lower 32 bits.
+[39:29] Uh the input operand contains the
+[39:32] divisor.
+[39:34] Uh so, so which is basically either a
+[39:36] register or a memory address.
+[39:39] After the end of the division, EAX will
+[39:41] contain the quotient. EDX will contain
+[39:43] the remainder.
+[39:45] Right. So, this is very simple, but here
+[39:47] is one mistake that most students do.
+[39:50] And this is a very, very, very, very
+[39:53] important
+[39:54] point to keep in mind. So, let me put a
+[39:56] star and this is so important, let me
+[39:58] put on one more star.
+[39:59] Right. So, let me also write important
+[40:02] you know, just in case.
+[40:04] You know.
+[40:05] So, basically, what is the idea? The
+[40:08] idea is
+[40:10] if the dividend is positive
+[40:12] so, let's assume the dividend is 10.
+[40:14] So, in this case, EDX
+[40:17] would contain all zeros. And EAX would
+[40:20] contain
+[40:21] 10. And let's write 10 in hex,
+[40:24] which is 0xA.
+[40:28] What if
+[40:31] uh we have a number?
+[40:34] So, we have inside EAX, we have -10.
+[40:39] What do we do then?
+[40:40] So, here is the mistake that students
+[40:42] do. What should EDX contain?
+[40:45] What EDX should contain is that EDX
+[40:47] should contain all ones.
+[40:50] Because we're essentially sign extending
+[40:52] the number or extending the sign of the
+[40:55] number, which is which in this case is
+[40:57] -10, -10 represented in binary, of
+[41:00] course.
+[41:01] So, we're extending its sign from 32
+[41:03] bits to 64 bits. So, that's the reason
+[41:05] EDX should contain all ones.
+[41:08] Right? And if this is not the case, then
+[41:11] we will uh have a lot of trouble in the
+[41:14] sense if we set EDX to all zeros, that's
+[41:16] going to be wrong. And this is a large
+[41:19] source of bugs uh in the IDIV
+[41:23] And setting any number to all ones is
+[41:25] actually very easy. All that we do is
+[41:27] move
+[41:30] EDX,
+[41:32] -1. All This is all that needs to be
+[41:34] done. So, if a number is negative and it
+[41:37] is fitting within 32 bits, and the
+[41:39] number is within EAX,
+[41:41] all that needs to be done in the case of
+[41:43] a negative dividend is that we need to
+[41:46] extend the sign of EAX.
+[41:48] So, if EAX is positive,
+[41:51] what we do
+[41:55] uh we uh
+[41:58] uh set EDX to zero.
+[42:01] And if EDX if EAX is then negative,
+[42:07] what we do is that we set EDX to all
+[42:09] ones, extend the sign of EAX pretty
+[42:11] much. And the way that this can be done
+[42:13] is we move -1 into EDX.
+[42:17] So, this is
+[42:20] very, very important. It's a big source
+[42:22] of bugs. So, I uh request all readers,
+[42:25] listeners to keep this in mind.
+[42:28] All right. So, in this
+[42:30] the learning is never complete without
+[42:33] an example.
+[42:34] So, let's write an assembly code snippet
+[42:37] to divide -50 by 3.
+[42:40] And let us save the quotient in EAX and
+[42:43] the remainder in EDX.
+[42:46] So, -50, what do we need to do? We move
+[42:49] -50 into EAX. We extend its sign. We
+[42:52] move -1 into EDX.
+[42:55] We move 3 into EBX and we call the IDIV
+[42:59] instruction on EBX. Automatically,
+[43:04] the EAX will contain the quotient, which
+[43:07] in this case is -3. And EDX will contain
+[43:10] the remainder, which in this case is -2.
+[43:15] All right. So, now let's take a look at
+[43:16] logical instructions. So, logical
+[43:20] uh will do a Boolean bit manipulation.
+[43:23] The logical instructions that we have
+[43:26] are standard instructions that we have
+[43:28] seen in uh the case of
+[43:32] simple risk and in the case of ARM also.
+[43:35] Uh so, they are
+[43:39] and or and xor. So, these are the
+[43:41] standard
+[43:42] uh logical instructions that take two
+[43:44] source operands.
+[43:46] And we have the not instruction which
+[43:47] takes a single source operand. So, the
+[43:49] way that they work is very similar. The
+[43:51] and or and xor instructions work exactly
+[43:55] the same way as their other arithmetic
+[43:57] counterparts such as add and sub work.
+[43:59] So, the format is exactly the same.
+[44:02] The not instruction works the same way
+[44:04] as inc and dec
+[44:06] and other
+[44:08] single source arithmetic instructions.
+[44:12] So, in this case not of EAX, so it
+[44:14] basically take the value of EAX, compute
+[44:16] a bitwise complement, and store it in
+[44:19] EAX itself.
+[44:25] shift instructions. So, similar to
+[44:28] simple risk and arms, I'm not I'm
+[44:29] deliberately going slightly faster
+[44:32] because my assumption here is
+[44:36] that readers have an idea of what shift
+[44:39] instructions are.
+[44:41] And so, this idea has come from chapters
+[44:43] two and chapter three.
+[44:45] Because you know, I I have been saying
+[44:47] all the time it's not possible to
+[44:49] explain the concepts of the fundamentals
+[44:51] of assembly language
+[44:53] and a complex assembly language together
+[44:56] at the same time. It'll just make
+[44:58] understanding very hard.
+[45:00] So, if users are I'm sorry, if listeners
+[45:02] are still having difficulty,
+[45:04] they can always go back to chapter three
+[45:07] when simple risk was introduced, take a
+[45:09] look at shift instructions, and come
+[45:12] So, we have three shift instructions.
+[45:14] One is an SAR instruction, which is a
+[45:17] arithmetic shift right.
+[45:19] Shift arithmetic right, which is
+[45:21] essentially the same as
+[45:23] dividing a number by a power of two.
+[45:28] So, in this case, what we do
+[45:32] is that the format is that the first
+[45:35] operand, which is the source,
+[45:38] as well as the destination,
+[45:42] can be shifted with an immediate number,
+[45:45] which is a number of positions that you
+[45:46] need to shift with.
+[45:48] For example, writing SAR SAR EAX, 3 will
+[45:52] set EAX to EAX right shifted by three
+[45:55] places.
+[45:58] Similarly, we have the SHR, which is the
+[46:00] logical shift right, which is the same
+[46:02] as dividing the unsigned representation
+[46:06] by a power of two. So, let me write
+[46:08] maybe unsigned.
+[46:13] So, in this case, so we have always been
+[46:15] using the three right arrow convention.
+[46:17] So, the format is exactly the same SHR
+[46:19] EAX three as an example.
+[46:22] Here we set the value of EAX to EAX
+[46:25] right shifted in a logical manner where
+[46:28] the MSPs are being replaced with zeros,
+[46:30] not the sign bit.
+[46:32] All right?
+[46:33] Then we Then the shift left instruction
+[46:35] does not have an arithmetic and logical
+[46:37] counterpart. It is only one instruction.
+[46:40] So, the one instruction is actually two
+[46:42] codes, and both of them are equivalent.
+[46:44] SAL and SHL essentially are the same
+[46:48] So, this can be arithmetic left and
+[46:50] logical left are the same. So, the same
+[46:52] instruction SAL or SHL.
+[46:55] Format is the same.
+[46:57] First operand can be a register memory.
+[47:00] And the second operand can be an
+[47:02] immediate.
+[47:03] So, what we do is we do a logical shift
+[47:06] left. We take the register.
+[47:08] And we take a number. We set the
+[47:10] register as
+[47:12] EAX left shifted by
+[47:14] two places.
+[47:18] So, we use the left shift operand here.
+[47:21] So, it is important that the second
+[47:23] operand, the shift amount, needs to be
+[47:28] So, nothing is again
+[47:30] uh complete without
+[47:33] uh an example.
+[47:35] So, uh So, what is the output of this
+[47:38] particular code snippet?
+[47:41] So, let us consider
+[47:43] uh the This is a hex number, actually.
+[47:45] It sounds like an English word.
+[47:47] But, if we take a look, each and every
+[47:49] digit over here is a hexadecimal digit.
+[47:52] So, it is dead feet.
+[47:54] So, let us move this to EAX, and let us
+[47:57] shift it to the right by four places.
+[48:00] So, four places means pretty much by one
+[48:02] hex digit.
+[48:04] So, then the remaining the seven digits
+[48:07] at the end become dead fee. The question
+[48:10] is what is the MSB?
+[48:12] So, this is easy to find out because D
+[48:15] uh is actually 13 and 13's
+[48:19] representation is 1101.
+[48:22] So, the MSB is one.
+[48:25] So, the MSB is one. We in the case of an
+[48:28] arithmetic shift right, we just
+[48:29] replicate the MSB. So, we put in an F,
+[48:32] which is four ones.
+[48:36] Now, let's do the same thing but with a
+[48:38] logical shift right. In this case, the
+[48:40] only difference is
+[48:42] that the MS the most significant digit
+[48:46] is actually zero. So, the answer is 0x0
+[48:51] dead fee.
+[48:54] Since zero need not be explicitly
+[48:56] mentioned, we have not mentioned it. So,
+[48:58] the answer is 0x dead fee.
+[49:03] All right. So, now we have taken a look
+[49:05] at the machine model of x86 simple
+[49:09] integer instructions.
+[49:11] So, now we will proceed and take a look
+[49:13] at branch instructions.
+[49:20] The first thing that we need to note
+[49:21] about x86's branch instructions is that
+[49:25] branches are actually called jumps.
+[49:27] Anyway, there is nothing in a name.
+[49:30] As Shakespeare says, call a rose a
+[49:32] chrysanthemum.
+[49:34] A rose will remain a rose. So, branch
+[49:36] will remain a branch.
+[49:39] So, branches pretty much work the same
+[49:41] way as they worked in simple risk and in
+[49:44] arm.
+[49:45] So, here we have the jump instruction,
+[49:48] which is the unconditional branch.
+[49:50] So, we always jump to a label.
+[49:55] And the label uh essentially indicates
+[49:58] the instruction that we want to jump to.
+[50:01] So, in this case, if you're jumping to
+[50:02] label.foo,
+[50:04] it uh essentially means that we're
+[50:06] jumping to
+[50:08] uh the instruction
+[50:10] that is pointed to by the label.foo.
+[50:14] x86 also has a lot of conditional
+[50:19] So, we have I'm sorry, conditional
+[50:21] branches.
+[50:23] So, conditional branches are very
+[50:25] similar. So, recall that in ARM and
+[50:27] simple and x86, sorry, in ARM and simple
+[50:30] RISC,
+[50:31] uh the conditional branches were the
+[50:33] form B and then the condition code.
+[50:45] So, they were uh instructions of the
+[50:47] form BQ, BNE, and so on. So, in this
+[50:50] case, instead of a B, we have a J.
+[50:53] So, an instruction of the form JEQ
+[50:56] basically means a jump if equal.
+[50:59] And equal uh So, where does equal come
+[51:01] from? Well, the last instruction that
+[51:03] has set the flags
+[51:05] uh So, basically, there are some
+[51:06] flag-setting instructions. Compare is
+[51:08] one of those instructions which can set
+[51:10] the flags.
+[51:11] After that, there can be many
+[51:13] instructions. If these instructions, the
+[51:15] only condition is that they should not
+[51:17] set the flag
+[51:18] for this example, then we have JEQ.
+[51:21] And then uh the name of a label.
+[51:25] So, if the compare instruction here
+[51:28] led to an equality, then the JEQ
+[51:30] condition will be true,
+[51:32] and we will branch to the label.foo.
+[51:35] Otherwise, the program will just fall
+[51:37] through in a sense, so the next
+[51:39] instruction will be executed.
+[51:42] So, there are many kinds of conditions,
+[51:44] the same way as in ARM,
+[51:46] uh we had uh 15 conditions.
+[51:50] Uh we have many conditions also in x86.
+[51:54] So, the condition codes are like this.
+[51:55] So, all of these conditions code codes
+[51:57] come after J.
+[51:59] For example, JO would mean that branch
+[52:02] if there has been an overflow.
+[52:04] Right? In the last instruction which is
+[52:07] doing
+[52:08] some kind of an arithmetic of operation.
+[52:10] Similarly, JNO means no overflow.
+[52:15] Uh there are some comparison operators
+[52:17] for unsigned comparison.
+[52:19] Uh so, for unsigned less than, that is
+[52:21] called below.
+[52:24] Uh so, JB basically means jump if it's
+[52:27] less than in an unsigned sense.
+[52:30] And NB means not below.
+[52:33] Then we have two conditions, E and Z,
+[52:35] which are actually the same conditions.
+[52:38] So, they can be used interchangeably. No
+[52:40] problem in that. JE and JZ.
+[52:43] Which means that the last comparison or
+[52:46] the last flag setting instruction
+[52:50] should have resulted in an equality.
+[52:53] So, recall that how do we check for
+[52:55] equality? Essentially, when we are
+[52:57] comparing
+[52:58] two values A and B, you know, when two
+[53:00] values A and B are being compared,
+[53:03] what the processor actually does is that
+[53:05] it subtracts
+[53:07] B from A. So, it computes A minus B.
+[53:10] So, if A minus B is equal to zero,
+[53:13] it essentially means
+[53:15] that A is equal to B.
+[53:17] So, we have equality here.
+[53:19] And it is same as A minus B being equal
+[53:23] to zero. So, equal or zero is sort of
+[53:25] the same condition.
+[53:26] There are other flag setting
+[53:28] instructions as well.
+[53:30] So, essentially, there we see the value
+[53:33] of the result. If the result is zero,
+[53:35] this particular flag will be set.
+[53:38] So, the opposite of E and Z is NE and
+[53:40] NZ. So, that is we'll have to
+[53:44] instructions JNE and JNZ, which are also
+[53:47] totally equivalent.
+[53:56] So, we introduce the B flag here below
+[53:59] unsigned less than. So, BE is below or
+[54:02] equal
+[54:03] unsigned less than or equal.
+[54:08] Uh so, now we have So, after these
+[54:10] comparisons, we have another class of
+[54:15] condition codes. The condition codes are
+[54:17] S and NS. So, S basically means the sign
+[54:19] bit is one
+[54:21] uh or alternatively, the number is
+[54:23] negative.
+[54:25] NS means that the sign bit is zero,
+[54:26] which means that the number is zero or
+[54:28] positive.
+[54:29] So, recall that we had similar flags in
+[54:32] ARM also, PL and MI.
+[54:34] So, we have you know, very similar flags
+[54:36] in x86. So, this is the similarity
+[54:39] between the instruction sets between
+[54:40] simple RISC, ARM, and x86.
+[54:43] So, what we get to see over here is that
+[54:45] most of the core mechanisms such that
+[54:47] branches and condition codes
+[54:49] are similar and uh to a large extent
+[54:53] this they are also inspired from some
+[54:56] earlier designs.
+[54:59] But, the basic point to notice that the
+[55:01] difference between instruction sets
+[55:03] in a lot of cases is only superficial. A
+[55:05] lot of their
+[55:07] fundamental underlying mechanisms are
+[55:09] still the same.
+[55:12] Now, we have some signed operators, L
+[55:14] and LE.
+[55:16] Uh so, L means less than, signed less
+[55:18] than. This is a signed comparison.
+[55:21] LE means less than or equal, signed.
+[55:24] G and GE mean greater than and greater
+[55:27] than or equal.
+[55:29] All right. So, basically, a branch of
+[55:31] the form JG would mean jump if greater
+[55:33] than
+[55:34] and JGE would mean jump if greater than
+[55:36] or equal in a signed sense.
+[55:40] So now that we have seen these basic
+[55:42] condition codes,
+[55:44] we are all set
+[55:46] to write a program.
+[55:48] And uh so so this is an assembly
+[55:50] program. My assumption here again
+[55:54] is that readers have some familiarity of
+[55:57] assembly programs
+[55:59] from chapter three.
+[56:01] Otherwise, you know, this program I'll
+[56:03] I'll still explain all the steps,
+[56:05] but it might be slightly difficult. So
+[56:07] the example here is test
+[56:10] if a number in EAX is prime.
+[56:12] And they put the result back in EAX. So
+[56:14] result, what is the result typically?
+[56:16] It's a Boolean result. If the number is
+[56:19] prime, you essentially put one.
+[56:22] Right? One indicates that the number is
+[56:24] prime.
+[56:25] And zero
+[56:28] indicates that the number is not prime.
+[56:32] It's a Boolean Boolean result.
+[56:37] So what do we do? So so what is the
+[56:39] basic algorithm? How do we find if a
+[56:42] number is prime or not?
+[56:45] So what we do is let's say given a
+[56:46] number N. So here the assumption is the
+[56:48] number is large enough, so we don't want
+[56:50] any corner cases.
+[56:54] so given a number M we N, we divide it
+[56:56] by two, we divide it by three. So we
+[56:58] keep on dividing it till we reach N
+[57:00] minus one.
+[57:02] If any one of
+[57:05] the remainders
+[57:07] uh of these divisions is zero, this
+[57:09] means that it has a factor and which is
+[57:12] not either one or N itself.
+[57:15] As a result, the number is not prime.
+[57:18] So let's start with the first
+[57:21] index, which is two. See, I'm setting
+[57:23] EBX equal to two.
+[57:26] So now with the original number, which
+[57:29] we need to test if it is prime or not,
+[57:32] we're transferring that to ECX. So, ECX
+[57:34] will contain the original number. And
+[57:37] then we start a loop.
+[57:40] So, uh
+[57:44] is that since the original number is in
+[57:47] uh EAX now,
+[57:49] so this is required for for correct
+[57:52] divisions. Recall that the IDIV
+[57:55] actually needs a 64-bit number in EDX
+[57:59] and EAX.
+[58:01] So, what we do is since the original
+[58:03] number is in EAX also,
+[58:06] uh we can go ahead with the division,
+[58:08] but we need to set EDX. When the number
+[58:10] is positive,
+[58:12] the value of EDX will be zero because
+[58:14] we're just extending the sign of a
+[58:16] positive number.
+[58:17] And the sign bit of a positive number is
+[58:20] zero.
+[58:21] So, we move zero to EDX. This is needed
+[58:23] for division.
+[58:24] And then we go ahead with
+[58:27] the divide.
+[58:28] And we divide it with the value stored
+[58:30] in EBX, which is two,
+[58:32] for the first iteration.
+[58:36] Subsequently, we take a look at the
+[58:37] remainder, which is stored in EDX. So,
+[58:40] we compare this with zero.
+[58:43] If it is zero,
+[58:45] which means JE, we jump to {dot} not
+[58:50] So, not prime, the answer is very
+[58:51] simple. We move zero to EAX,
+[58:54] which means the number is not prime, and
+[58:56] we
+[58:56] exit.
+[58:59] Otherwise, we increment EBX.
+[59:03] So, from two, this will become three and
+[59:04] four and five and so on.
+[59:07] Then the value of EAX has also changed
+[59:09] because the the IDIV instruction puts
+[59:12] the quotient in EAX. So, recall
+[59:15] that the quotient is being put in EAX,
+[59:19] and the remainder
+[59:21] is being put in
+[59:27] So, uh what we do is since the value of
+[59:29] EAX has changed, we put back the set the
+[59:32] original value of EAX again.
+[59:34] We're transferring the contents of ECX
+[59:36] back to EAX. So, EAX gets restored.
+[59:40] Then, we compare EBX and EAX, which is
+[59:43] essentially the index
+[59:45] and the original number.
+[59:47] As long as the index that we are
+[59:50] dividing the original number by the
+[59:51] divisor
+[59:53] is less than the original number, JL,
+[59:56] we jump back over here. Jump if
+[60:00] less than. So, we jump back over here.
+[60:04] Otherwise, we reach the end of the loop.
+[60:06] At this point, we can compute that since
+[60:08] we didn't find any factors,
+[60:10] the number is prime.
+[60:12] I put one there,
+[60:14] and we jump to exit, which means we move
+[60:15] out of the program.
+[60:18] So, this program is simple. The program
+[60:21] is not very difficult
+[60:23] in terms of assembly statements. How
+[60:25] many do we have? 1 2 3 4 5 6 7 8 9 10
+[60:30] 11 12 13.
+[60:33] So, we have 13 assembly statements. It's
+[60:35] not
+[60:36] uh that difficult. And now, after I've
+[60:39] explained to it, it must be appearing
+[60:42] slightly more straightforward.
+[60:44] But, the question is that can students
+[60:47] who are listening to this lecture,
+[60:50] can they write such a program from
+[60:52] scratch?
+[60:53] Right? Given any
+[60:56] uh problem, can they write such a
+[60:58] program?
+[61:00] And that is unfortunately not going to
+[61:02] come by listening to such lectures or
+[61:04] reading books.
+[61:05] The only way that it's going to actually
+[61:07] happen is by practicing as much as
+[61:10] possible.
+[61:11] Cuz all of these things are pretty much
+[61:13] a function of practice.
+[61:15] So, what listeners need to do is that
+[61:18] they need to write hundreds of assembly
+[61:19] programs such that
+[61:21] they can write fairly good bug-free code
+[61:25] almost all the time in a very repeatable
+[61:28] reproducible fashion.
+[61:30] So, let's move ahead.
+[61:33] Uh so, what's left? What is left is
+[61:35] function call and return instructions.
+[61:38] So, the call and return instructions are
+[61:40] exactly the same as simple risk with
+[61:43] some differences.
+[61:45] So, the differences are like this. So,
+[61:48] let's first find out what is similar.
+[61:51] So, what is similar is So, we have a
+[61:53] call instruction. We always
+[61:55] The format is call and a label.
+[61:58] So, let's say we go to label.foo. .foo
+[62:01] is the beginning of the function.
+[62:04] Right? And so, recall that what was What
+[62:08] was simple risk and ARM doing?
+[62:11] What they were doing So, a call
+[62:12] instruction is just not a jump.
+[62:14] Something needs to be done with the
+[62:15] return address.
+[62:17] So, what simple risk and ARM were doing
+[62:19] is that the return address
+[62:22] was So, basically, call has something to
+[62:24] do with the return address. So, return
+[62:26] address in those ISAs was being put in
+[62:29] the return address register.
+[62:31] x86 does not do that.
+[62:34] It is rather stack-based. So, it pushes
+[62:36] the return address on the stack.
+[62:39] So, it knows the value. It knows which
+[62:40] register contains the stack pointer.
+[62:43] So, you It pushes the value of the
+[62:45] return address that is on the stack.
+[62:47] And then it jumps to the label. .foo.
+[62:51] Similarly, we have a zero address format
+[62:54] instruction called ret.
+[62:56] So, here we return to the address that
+[62:58] is saved on the top of the stack and we
+[63:00] pop the entry.
+[63:02] This is completely a stack-based system.
+[63:04] So, assume that this is a stack.
+[63:06] And then we have a call.
+[63:08] So, the return address gets saved on the
+[63:10] top of the stack and then we keep
+[63:12] moving.
+[63:13] Finally, what we need to do is we need
+[63:15] to kill the stack.
+[63:17] The return
+[63:18] will take the value of the return
+[63:19] address and
+[63:21] pop the stack.
+[63:26] So, what does a typical function in x86
+[63:29] do?
+[63:30] So, well, it needs to do similar things.
+[63:33] So, we recall that we have discussed
+[63:35] everything about functions
+[63:39] uh chapter three.
+[63:42] So, the idea is that first, before
+[63:44] calling a function, uh we need to
+[63:46] put all the arguments and so on
+[63:48] uh on the stack or in registers.
+[63:52] So, once a function begins, it extracts
+[63:54] the arguments from the stack.
+[63:57] It creates space on the stack to store
+[63:59] its own activation block.
+[64:01] It spills registers if required. So,
+[64:03] there there are the issue of
+[64:04] caller-saved and callee-saved comes into
+[64:06] play.
+[64:08] It calls other functions, does whatever
+[64:10] processing. So, it it does its own
+[64:12] logic. It implements its own logic.
+[64:15] Finally, after doing that, it puts the
+[64:17] return values either
+[64:20] uh you know, in designated places in
+[64:21] memory or in registers.
+[64:23] It restores the stack pointer and it
+[64:26] returns.
+[64:35] So, this is the example. Uh so, the idea
+[64:38] here is to write a recursive function.
+[64:41] So, users might wonder that why do we
+[64:43] always give recursive functions as
+[64:45] examples? Well, our aim of giving an
+[64:47] example
+[64:49] is to give the most difficult
+[64:51] examples.
+[64:53] So, I said a difficult example will
+[64:55] hopefully stimulate uh the reader to go
+[64:58] into depth.
+[65:01] So, the idea here is write a recursive
+[65:03] function
+[65:04] to compute the factorial of a number
+[65:07] which is greater than equal to one.
+[65:09] And the number is stored in EAX and save
+[65:11] the result in EBX. So, essentially
+[65:13] compute EAX factorial,
+[65:16] save it in EBX. And the function has to
+[65:18] be recursive.
+[65:19] What does a recursive function mean? It
+[65:21] basically means that the function is
+[65:24] calling itself.
+[65:29] All right. So, let's start.
+[65:33] Uh so, the name of the function is
+[65:35] factorial. So, we'll start So, where
+[65:37] whenever we jump, we'll essentially jump
+[65:38] to this point.
+[65:41] So, here we put one in EBX. So, this is
+[65:43] the default return value. So, recall
+[65:45] that zero factorial is one.
+[65:48] So, maybe I can write it over here.
+[65:51] Zero factorial
+[65:53] is What is this? This is essentially
+[65:55] equal to one.
+[65:57] One factorial is also equal to one.
+[66:01] Right? So, basically the default return
+[66:03] value, we put it in EBX.
+[66:05] And then we compare EAX with one.
+[66:09] If So, JZ, it can be JZ here or JE, it
+[66:12] doesn't matter at all.
+[66:14] So, if there's equality, we return. So,
+[66:16] we return if the input is equal to one.
+[66:20] So, which means that
+[66:21] uh the answer is one. So, we can just
+[66:24] return, and the answer will be there in
+[66:26] Otherwise, we go to the recursive step.
+[66:30] So, in the in the recursive step, we
+[66:32] push the value of EAX, which is the
+[66:34] value the number n,
+[66:36] right?
+[66:37] That we got. So, we're actually calling
+[66:39] it num over here.
+[66:41] So, the number num on the stack.
+[66:44] We decrement EAX.
+[66:47] And then we call the factorial function.
+[66:50] After calling the factorial function,
+[66:52] what is the expectation? The expectation
+[66:56] uh that uh
+[66:58] So, the the reason this is made in red
+[67:00] is because this is
+[67:02] uh these are the important instructions.
+[67:03] So, the expectation is that EBX
+[67:06] will contain
+[67:07] uh n minus one factorial.
+[67:11] So, what do we now do now? We pop EAX,
+[67:13] so bring it to read it back from the
+[67:15] stack.
+[67:19] we multiply.
+[67:21] Uh so, what does EAX contain at this
+[67:23] point? EAX contains the number n.
+[67:26] And what does EBX contain? EBX contains
+[67:28] n minus one factorial
+[67:30] times n.
+[67:32] So, we multiply n minus factorial times
+[67:34] n.
+[67:35] So, EBX will now contain
+[67:39] n factorial.
+[67:41] Right? A regular multiply instruction.
+[67:43] And then we return.
+[67:47] Uh so, so this is you know a simple
+[67:50] uh is it's a very very simple function
+[67:53] where we have a single push and a single
+[67:54] pop.
+[67:56] And what is the reason for
+[67:59] actually pushing EAX? Because we're
+[68:00] changing its value and we are sending it
+[68:03] to other function, and we need the value
+[68:06] at the end.
+[68:07] So, you can think of this as Well, it's
+[68:10] can be either the since only one value
+[68:14] is being used, it doesn't matter if it's
+[68:16] called caller saved or callee saved, but
+[68:17] essentially the value of EAX is
+[68:19] required.
+[68:20] And the value is being changed, so
+[68:22] before calling the function
+[68:25] uh we
+[68:27] uh essentially store it on the stack and
+[68:29] later on
+[68:31] restore it.
+[68:32] The reason the ret function works is
+[68:34] because we are Otherwise, uh every push
+[68:37] has a
+[68:40] has an accompanying pop instruction. So,
+[68:41] the size of the stack is otherwise not
+[68:43] being changed. So, when we do a ret
+[68:46] instruction, when we call the ret
+[68:49] it'll find the return address at the
+[68:51] stack top.
+[68:53] Which is this point. It'll pop the
+[68:56] return address and
+[68:58] go back to its original parent function.
+[69:01] So, this is a simple program.
+[69:04] It has three, four, five, six, seven,
+[69:06] eight, and nine instructions to compute
+[69:08] the factorial.
+[69:10] Even if I were to write it in C, it
+[69:12] would still take three, four lines,
+[69:14] depending upon how we count.
+[69:16] So, x86 assembly in that sense is not
+[69:19] all that inefficient.
+[69:21] It has many instructions, so you a lot
+[69:23] of cool things can be done.
+[69:25] It also has conditional instructions
+[69:27] similar to ARM. For example, in
+[69:29] conditional add or so on.
+[69:31] Uh so, they're called C moves
+[69:35] Uh so, I'm I'm not discussing them. Uh
+[69:37] so, you can see the x86 manual
+[69:40] that has hundreds of instructions, and a
+[69:42] lot of them have very, very cool
+[69:44] features.
+[69:45] But, I'm only discussing the main
+[69:49] So, here uh what's the trick? Well,
+[69:52] there are hardly any
+[69:53] important tricks. The only trick is
+[69:55] we're using the imul instruction, and
+[69:58] we are uh pushing and you know, saving
+[70:02] and restoring the value of EAX via the
+[70:05] Tho- those are the only take-home points
+[70:08] from this
+[70:09] uh algorithm.
+[70:11] So, implementing a function, what do we
+[70:14] do? We use push and pop instructions in
+[70:17] small functions like the one that we
+[70:18] showed.
+[70:21] Uh which is fine
+[70:23] uh because it worked. So, if you see in
+[70:26] the last one, we used a push instruction
+[70:28] and a pop.
+[70:31] For large functions that have a that
+[70:33] have, you know, lots of internal
+[70:34] variables and arguments,
+[70:36] it might be necessary to push and pop a
+[70:38] lot of values from the stack.
+[70:40] Fair enough.
+[70:42] For languages such as C++, that
+[70:44] dynamically declare local variables, so
+[70:46] what you have is in languages like C++,
+[70:50] uh a lot of local variables can be
+[70:52] declared even within the body of the
+[70:54] function. So, it sometimes becomes
+[70:56] difficult to keep track of the size of
+[70:58] the activation block. But, even at
+[71:00] compile time we would not know what is
+[71:02] the size of the activation block, right?
+[71:04] How many internal variables of the
+[71:06] function actually use?
+[71:07] So, at run time the size of the stack
+[71:10] needs to be varied.
+[71:12] So, x86 processors have a mechanism of
+[71:16] doing this.
+[71:17] So, what they do is that we uh this is
+[71:21] where we use the EBP register.
+[71:24] So, we save the starting value of ESP.
+[71:27] So, whenever a function whenever enter a
+[71:29] function, the value of the stack pointer
+[71:31] is called the starting value.
+[71:35] So, we save the starting value of ESP in
+[71:38] the EBP register.
+[71:39] As in the stack pointer is stored in the
+[71:41] base pointer register.
+[71:43] Uh so so let me maybe this might require
+[71:46] a little bit of explanation.
+[71:49] So, whenever we start a function
+[71:55] the first thing that we do is that we
+[71:57] set the EBP equal to the ESP.
+[72:01] And then we keep on growing the stack.
+[72:03] There are a lot of instructions. At the
+[72:05] end to restore the stack pointer back,
+[72:08] all that we do is ESP is equal to EBP.
+[72:11] So, that keeps our life very simple.
+[72:14] Because note that in x86 or in fact in
+[72:17] any other assembly language
+[72:20] before leaving a function, we need to
+[72:21] kill the activation block.
+[72:23] Killing the activation block is same as
+[72:25] restoring the stack pointer. So, let me
+[72:28] write it killing.
+[72:31] It shouldn't be killing. It should
+[72:32] actually be deleting, but that's okay.
+[72:34] Maybe deleting.
+[73:05] It's the same as restoring the stack
+[73:08] All right, so let's write a recursive
+[73:10] function for factorial without push and
+[73:13] pop instructions, right? So, let's not
+[73:16] use any push and pop instructions and
+[73:18] let's
+[73:20] write a recursive function for
+[73:21] factorial.
+[73:23] All right, so let's do one thing. Let's
+[73:25] get Let's assume that whoever calls the
+[73:28] factorial function
+[73:31] it puts the value of EAX, which contains
+[73:34] the number whose factorial needs to be
+[73:36] computed
+[73:40] Uh so so whatever is the stack pointer,
+[73:43] uh on the stack pointer we do that.
+[73:46] So, the assumption in x86 is like this.
+[73:49] It's slightly complicated.
+[73:51] If this is the stack pointer
+[73:54] See, if you read at the beginning of a
+[73:56] function if you read what is there
+[73:57] inside the stack pointer
+[73:59] you'll only get the return address,
+[74:01] because this is
+[74:03] what is the last thing that is done
+[74:05] before calling a function?
+[74:07] The last thing that is done is that
+[74:08] you'll have an instruction of the form
+[74:10] call factorial.
+[74:12] And immediately the control
+[74:14] will jump to the factorial function.
+[74:17] And that is when the return address will
+[74:19] be pushed on the stack. And the stack
+[74:21] pointer will point to it.
+[74:23] Just above the return address, which
+[74:25] means because the stack is downward
+[74:27] growing
+[74:28] so pretty much at ESP plus four, which
+[74:31] is this address
+[74:34] we have the opportunity of pushing in
+[74:37] arguments.
+[74:38] So, if you push in the value of EAX
+[74:41] we can the moment we enter the factorial
+[74:45] which is at this point, we can read ESP
+[74:47] plus four.
+[74:49] The stack pointer plus four.
+[74:51] Its contents would contain the value of
+[74:54] EAX,
+[74:55] which is essentially the value of the
+[74:58] And this we can transfer to the register
+[75:01] EAX.
+[75:02] So, let me repeat.
+[75:05] Uh, consider the function that is
+[75:07] calling the factorial function. What is
+[75:09] the last thing that it will do before
+[75:10] calling?
+[75:12] It will invoke the call instruction.
+[75:14] What does the call instruction do? The
+[75:16] call instruction decrements the stack
+[75:18] pointer and pushes the value of
+[75:24] So, before that, if we need to access
+[75:27] the stack of
+[75:28] the caller function,
+[75:30] it is possible for the caller to
+[75:33] uh, push the value of EAX on the stack,
+[75:37] which is push the value of any register
+[75:38] or any memory address, but in this case,
+[75:41] we're only concerned with EAX. So, push
+[75:44] the value of EAX, which is the number
+[75:46] num, on the stack. And then invoke the
+[75:48] call instruction.
+[75:50] So, when we reach here,
+[75:52] uh, ESP would point to the return
+[75:55] address, but ESP plus four
+[75:57] would point to a location within the
+[75:59] caller's activation block.
+[76:02] And there we can read the value of num
+[76:06] and store it in EAX.
+[76:08] Then what we can do, recall the star
+[76:10] star star, which are the new
+[76:13] We can push EBP.
+[76:16] Uh, so we can store the value of the
+[76:19] base pointer that was there
+[76:22] and transfer the value of the stack
+[76:24] pointer into the base pointer.
+[76:28] Well, subsequent instructions are the
+[76:29] same, setting the default return value,
+[76:32] comparing the number with one,
+[76:35] uh, jumping if there is an equality.
+[76:37] This is all the same.
+[76:39] Now, let's come to the recursive step.
+[76:43] In the recursive step, what I do is I
+[76:45] create some space on the stack. So, I
+[76:47] subtract eight from ESP,
+[76:50] which gives me space to put in
+[76:54] several things. Put in two integers.
+[76:59] So, at ESP plus four,
+[77:03] uh what I do is I put in the value of
+[77:05] EAX, which is the number.
+[77:07] Then, I decrement EAX.
+[77:13] at ESP, uh which is
+[77:17] essentially is let's me consider if this
+[77:19] is the stack pointer.
+[77:22] What I do?
+[77:23] So, assume that this is the old value of
+[77:25] the stack pointer,
+[77:28] which is at this instruction, prior to
+[77:30] this instruction.
+[77:32] This is pointing over here.
+[77:34] So, if we subtract it by eight, I'm
+[77:36] creating
+[77:37] positions.
+[77:39] I'm creating actually two spaces, two
+[77:42] slots,
+[77:43] to save two integers, right? If I'm
+[77:46] subtracting it by eight.
+[77:49] And a new stack pointer will point over
+[77:53] So, what I can do is at ESP plus four,
+[77:55] which is this location,
+[77:57] let me save the value of the current
+[78:01] Right? And then at ESP,
+[78:06] let me decrement the number by one and
+[78:08] save num minus one.
+[78:14] It might not be visible, so I'll just
+[78:16] write once again.
+[78:20] Then, I call the factorial function.
+[78:22] What that would do is that would do
+[78:24] exactly the same. Go to its ESP plus
+[78:27] four, which is this location.
+[78:31] Sorry. Uh so, basically what that would
+[78:33] do is it'll call the factorial function.
+[78:35] So, when you're calling the factorial
+[78:36] function, what will the stack look like?
+[78:39] At this point, when you're doing the
+[78:41] call instruction,
+[78:42] additionally, the return address will be
+[78:44] pushed.
+[78:46] Right? And the ESP, the stack pointer,
+[78:49] will point over here.
+[78:52] Inside the called function, we'll add
+[78:54] four to ESP and read num minus one and
+[78:57] compute its factorial.
+[79:00] So, after calling factorial,
+[79:03] what do we need to do? We need to
+[79:05] restore the value of EAX. So, just
+[79:08] take this instruction and
+[79:11] flip the arguments. So, ESP plus four is
+[79:13] restored. You're retrieving the input.
+[79:16] Finally, we do the multiplication. prod
+[79:18] equals prod times num.
+[79:21] Then, we have these two extra lines
+[79:23] here. So, we restore the stack pointer.
+[79:26] So, basically, whatever was there in
+[79:28] EBP, we put it into ESP.
+[79:31] And we restore the value of EBP by
+[79:33] popping it.
+[79:35] And we return.
+[79:38] So, in a nutshell, what did we achieve?
+[79:40] This program is exactly the same as this
+[79:43] program, right? But here, we are The
+[79:46] only difference is we're not using push
+[79:48] and pop instructions.
+[79:51] Instead, what we are doing is that we're
+[79:52] explicitly managing the stack.
+[79:55] So, in terms of hardware performance, it
+[79:57] will not be any different because push
+[79:59] and pop instructions actually
+[80:00] encapsulate a lot of functionality.
+[80:03] So, what we do is that we first So, the
+[80:05] main magic lies here is that we create
+[80:08] an activation block
+[80:10] with space to store two integers. So,
+[80:13] let me call it the activation block.
+[80:16] acti-
+[80:18] vation block. With space to store two
+[80:21] integers.
+[80:23] One of them
+[80:24] is the ESP plus four. So, new stack
+[80:27] pointer would point over here, ESP.
+[80:31] One of them is used for register
+[80:32] spilling. So, we are spilling the value
+[80:34] of EAX,
+[80:36] which essentially contains the original
+[80:39] The other one is being used to pass an
+[80:41] argument
+[80:43] to the
+[80:44] next function that will be called. So,
+[80:46] this has num
+[80:50] Right? Only two things.
+[80:52] Right? In the activation block, this is
+[80:55] a spilled register.
+[81:06] And this is
+[81:10] an argument
+[81:15] for the next function that we are
+[81:16] calling.
+[81:18] Then we call the next function, it works
+[81:19] in exactly the same way.
+[81:21] Then we restore EAX.
+[81:28] And we multiply. So, EBX at this point
+[81:30] is supposed to contain n minus one
+[81:33] EAX, so n Sorry, num minus one. My
+[81:37] mistake.
+[81:38] Num minus one factorial.
+[81:42] Right? And EAX is supposed to contain
+[81:45] num.
+[81:46] We multiply, and then we get num
+[81:49] Subsequently, the since we change the
+[81:51] stack pointer, whatever was the original
+[81:54] value saved in EBP, we move it to ESP.
+[81:57] And we restore the value of the base
+[81:58] pointer, and we return.
+[82:00] So, what are the extra instructions? The
+[82:02] extra instructions are these two.
+[82:05] Right? These two over here.
+[82:07] And the instructions to create the
+[82:09] activation block and manage it, which is
+[82:11] subtract eight from ESP.
+[82:16] move EAX to ESP plus four, move EAX to
+[82:19] ESP, and restore the value of EAX.
+[82:21] Right? Couple of extra instructions are
+[82:23] there.
+[82:25] So, do we need that many extra
+[82:27] instructions? If you see, we have seven
+[82:30] instructions that we're changing.
+[82:32] Do we need them? The answer is probably
+[82:34] no.
+[82:35] So, x86 is great in providing shortcuts.
+[82:38] So, the complexity that we saw in the
+[82:40] last example, that will not happen.
+[82:43] That's not required.
+[82:45] We have an enter instruction.
+[82:48] So, what the enter instruction does is
+[82:50] that it does a lot of things in one
+[82:54] It pushes the value of EBP onto the
+[82:57] stack. The value of the base pointer on
+[83:00] the stack.
+[83:02] It moves ESP to EBP. So, it saves the
+[83:04] value of the stack pointer in the base
+[83:07] And it subtracts from ESP whatever
+[83:10] argument has been specified here.
+[83:13] So, we here we have specified 32 bytes.
+[83:16] Uh so, it'll subtract 32 from ESP. So,
+[83:19] what is it doing? It's doing a lot of
+[83:20] things.
+[83:22] First,
+[83:23] it is doing the job of pushing EBP,
+[83:25] putting ESP to EBP, and So, the job of
+[83:29] this instruction, this instruction, and
+[83:31] this instruction
+[83:33] are all being done by one instruction.
+[83:36] Uh which is essentially storing the
+[83:39] value of EBP on the stack,
+[83:41] uh setting EBP to the stack pointer,
+[83:45] and creating the activation block by
+[83:47] deleting the size Sorry, by subtracting
+[83:50] the size of the activation block from
+[83:52] the stack pointer.
+[83:55] So, this is like a three-in-one kind of
+[83:58] All right. So, basically, this is what
+[84:00] it does. Push EBP, move ESP to EBP, and
+[84:04] subtract the stack size from ESP.
+[84:07] It's a standard sequence of operations.
+[84:08] So, we instead of having three
+[84:10] instructions for it,
+[84:12] the enter instruction that will do
+[84:13] actually all three.
+[84:16] Similarly, we have the leave
+[84:17] instruction, which will do the reverse.
+[84:21] So, it'll move the value of the base
+[84:23] pointer into the stack pointer.
+[84:25] Or in other words, restore the value of
+[84:29] It will pop EBP.
+[84:31] Which means restore the value of the
+[84:33] base pointer.
+[84:35] Which is also a standard sequence at the
+[84:37] end of a function.
+[84:38] Right? So, what does the leave do? The
+[84:40] leave instruction
+[84:42] does the job
+[84:44] of these two instructions over here.
+[84:47] Restore the stack pointer and the base
+[84:50] And the enter instruction does the job
+[84:52] of actually
+[84:54] storing the base pointer, setting the
+[84:56] base pointer equal to the stack pointer,
+[84:58] and creating the activation block. So,
+[85:00] pretty much these three instructions
+[85:03] are folded into one instruction called
+[85:06] enter.
+[85:08] And the only argument, well, the two
+[85:10] arguments the second argument is
+[85:12] slightly more complicated, but for all
+[85:14] practical purposes, we always set it to
+[85:17] The first argument is the size of the
+[85:19] activation block. Which in
+[85:21] this example is 32.
+[85:25] So, if we were to make write this
+[85:27] program, the previous program,
+[85:30] uh what do we have to do? All that we
+[85:33] have to do is we need to add only two
+[85:35] instructions and remove
+[85:37] all the other instructions. One
+[85:38] instruction would be this.
+[85:41] One more instruction would be this.
+[85:43] So, let me go back to the complicated
+[85:46] figure that we have complicated by
+[85:48] writing a lot of things. So, essentially
+[85:51] these three instructions get fused into
+[85:54] And these two get fused into one.
+[85:56] So, we can call the enter instruction,
+[85:59] which saves the base pointer and the
+[86:01] stack pointer,
+[86:03] and also creates an activation block of
+[86:05] size 8 bytes.
+[86:07] The rest of the code is the same.
+[86:09] Then we save the input on the stack.
+[86:12] Right? Saving the input on the stack is
+[86:14] essentially same as spilling.
+[86:16] Right, so we
+[86:19] know that the quality will change it.
+[86:22] Uh so
+[86:25] uh we we we are pretty much spilling it.
+[86:29] And then uh decrementing EAX and pushing
+[86:32] the argument, calling the function. All
+[86:34] of this is fine.
+[86:35] And at the end we call the leave
+[86:37] instruction, whose only job is to load
+[86:39] or
+[86:40] well, instead of load, maybe the word
+[86:42] restore would be better.
+[86:44] So, restore
+[86:45] ESP and EBP.
+[86:48] So, now you see that push and pop are
+[86:50] not always required. Well, they are good
+[86:52] ideas if the program is small and
+[86:55] simple.
+[86:56] And recall that pushes and pops have to
+[86:58] be exactly matched. So, if we have n
+[87:01] pushes,
+[87:02] we need to have n pops.
+[87:04] Right? Otherwise,
+[87:06] the stack will not remain the same and a
+[87:08] return instruction will not work.
+[87:11] And keeping track of the number of
+[87:13] pushes and pops in a complex function is
+[87:15] hard.
+[87:17] That's the reason what you do is that we
+[87:18] you save the starting state at the
+[87:20] beginning
+[87:21] with the enter instruction.
+[87:23] Then you do whatever you want to do with
+[87:27] And just before leaving, call the leave
+[87:29] instruction, which will restore the
+[87:30] value of the stack pointer and the base
+[87:34] And then you return.
+[87:36] So, why is this needed? The reason this
+[87:38] is needed is basically because we want
+[87:41] to completely delete the activation
+[87:42] block.
+[87:44] And when you return, the value of the
+[87:46] stack pointer
+[87:47] should be pointing to the return
+[87:50] address, because that is where we'll
+[87:51] read the return address from.
+[87:55] All right, so after taking a look at
+[87:57] enter and leave, so let me actually come
+[87:59] back for 2 seconds with enter and leave,
+[88:03] and then uh I'll again proceed further.
+[88:07] So, in complicated
+[88:09] programs where uh a lot of variables are
+[88:13] allocated space on the activation block
+[88:16] an activation block per se, you know, is
+[88:18] a large structure. So, let me call it
+[88:20] the AB.
+[88:21] And it it can have like 100 integers or
+[88:24] maybe, you know, more.
+[88:29] So, depending upon the paths that the
+[88:30] program takes, the size of the
+[88:32] activation block can vary.
+[88:34] So, instead of
+[88:36] monitoring it in a very fine-grained
+[88:38] manner
+[88:39] what is the ultimate thing that we need
+[88:41] to ensure that when the function
+[88:42] returns, this entire structure is
+[88:44] killed?
+[88:45] This is exactly what the enter
+[88:46] instruction and the leave instruction
+[88:48] allow you to do.
+[88:50] So, using them, using the enter as
+[88:55] one of the first instructions in the
+[88:56] function and leave as
+[88:58] one of the last instructions, like the
+[89:00] instruction just before ret
+[89:02] is actually a good idea and good x86
+[89:04] programming practice.
+[89:07] All right. So, now uh we will discuss
+[89:11] advanced memory instructions.

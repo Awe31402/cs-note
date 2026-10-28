@@ -1,0 +1,437 @@
+[00:00] n
+[00:06] [Music]
+[00:20] [Applause]
+[00:34] welcome back let's take a look at faster
+[00:37] multiplies namely an order login Square
+[00:43] multiplier so this is fairly simple to
+[00:46] construct so uh let's consider an nbit
+[00:49] multiplier and an nbit
+[00:51] multiplicand so if we write the
+[00:53] multiplier and the multiplicand
+[00:55] multiplier
+[00:57] here and the multiplicand here
+[01:00] so what we can do is we can construct n
+[01:04] uh small n partial sums for constructing
+[01:08] each partial sum is very simple and also
+[01:10] it can be done in parallel so whenever
+[01:12] we have a one we write uh the
+[01:15] multiplican as is if we have zero we
+[01:18] just write zeros and every partial sum
+[01:21] is offset by one position to the left as
+[01:24] compared to the partial sum before it so
+[01:27] if we are multiplying n Bits we'll have
+[01:29] n part partial sums small n mind
+[01:32] you so all and all of these partial sums
+[01:35] can be generated in parallel so this
+[01:38] partial sum can be generated
+[01:39] simultaneously with this which can be
+[01:41] generated simultaneously with this so
+[01:44] generating all the partial sums is very
+[01:46] easy it takes a constant amount of time
+[01:49] so after that we need to add n numbers
+[01:53] all
+[01:54] right so for adding n numbers what we
+[01:57] can do is we can have a tree of added
+[02:00] so we can add the first and second here
+[02:03] we can add the third and fourth numbers
+[02:05] here the N minus 2th and nus 3th numbers
+[02:09] here and uh so similarly we can have a
+[02:11] tree of
+[02:12] adders so uh if we take a look at the
+[02:16] sizes of the numbers the first partial
+[02:19] sum is n Bits long and uh the last
+[02:23] partial sum is uh 2 N - 1 uh bits long
+[02:28] right so this is n over here and N minus
+[02:32] one over here n minus one
+[02:35] zeros so at each level adding even 2N uh
+[02:40] you know even numbers with 2N bits would
+[02:42] take order of log 2N time which is the
+[02:44] same as order of logn time because we
+[02:47] ignore constants and even the base of
+[02:49] the log is not
+[02:51] important so after that we have uh login
+[02:55] levels right because in each level we
+[02:57] reduce the number of uh
+[03:01] numbers that we need to add by a factor
+[03:02] of two so now if we we realize that we
+[03:07] have login levels and each level takes
+[03:09] maximum of log of 2 end time because
+[03:11] they're 2N bit numbers which
+[03:14] is the same as longin because we always
+[03:17] ignore constants in our work so the
+[03:20] total time taken is the number of levels
+[03:23] right the number of
+[03:26] levels multiplied with the time per
+[03:29] level
+[03:30] which is login * login which is order of
+[03:32] login
+[03:34] Square so this is the complexity with a
+[03:38] new multiplier that we have and this is
+[03:41] significantly better than our previous
+[03:44] complexity which which was order of n
+[03:47] logn right so login square is much much
+[03:49] better than n logn so this is a far
+[03:52] faster multiplier in that sense but we
+[03:55] can do better we can do much better as
+[03:58] it turns out
+[04:00] so before we discuss how we can do
+[04:02] better it is important for me uh to
+[04:05] mention uh that there is a new kind of
+[04:08] device that we should use we can use and
+[04:11] we have to use it's a carry save
+[04:15] Adder so what the car carry save Adder
+[04:19] does is that uh it takes three numbers a
+[04:24] b and
+[04:25] c and it generates two numbers DNA such
+[04:29] that a a + B+ C is equal to D+ C so
+[04:33] essentially it takes three inputs which
+[04:36] are the three numbers and it produces
+[04:38] two numbers as output such that the sum
+[04:41] of d and e in this case is the same as
+[04:44] the sum of a plus b plus
+[04:47] C so the way that we can do it is like
+[04:50] this so uh let's consider a one bit
+[04:52] carry save adder or a CSA Adder so let
+[04:56] us add three bits a b and c such that
+[05:02] A + B + C is equal to 2D + C so D and E
+[05:07] are also single bits and this can be
+[05:09] done so I'll tell you why this can be
+[05:11] done so let us consider you know uh the
+[05:14] smallest values of a b and c and the
+[05:16] largest values so the smallest values
+[05:19] are 0 0 and 0 so we'll have d as 0o the
+[05:23] sum is zero and we'll have e is z if we
+[05:27] consider the largest values which are 1
+[05:30] 1 and 1 then the sum is 1 + 1 + 1 3
+[05:34] which is 1
+[05:35] 1 which is pretty much equal to 2 * 1 +
+[05:40] 1 so in this case D is 1 and E is
+[05:46] 1 so what we can do is that if we add A+
+[05:50] B+ C right so since we're adding three 1
+[05:55] bit numbers the potential output right
+[05:58] can be a two bit number as we just saw
+[06:00] in this
+[06:02] case if we let's say we can you know
+[06:04] conveniently set so in a two bit number
+[06:08] uh the left bit is the carry bit and the
+[06:10] right bit is the sum bit so you set this
+[06:12] bit to D and this bit to e then the
+[06:15] value of this number would be equal to
+[06:17] 2D +
+[06:20] e which is exactly what we
+[06:23] need so uh what we see is that in the
+[06:26] case of a 1 bit CSA Adder DN e
+[06:30] uh can be you know computed as follows
+[06:33] that D can be the carry bit right the
+[06:36] more significant bit and E can be the
+[06:39] sum bit which is the less significant
+[06:42] bit the Lesser uh significant bit in
+[06:45] that
+[06:46] sense so uh the so let me just explain
+[06:49] once again if you're adding three 1 bit
+[06:51] numbers a b and c the smallest value is
+[06:54] zero and the largest value is 1 + 1 + 1
+[06:57] which is 3 which is 1 1
+[07:01] so the final result will fit in two bits
+[07:03] so if I keep the two bits over here let
+[07:06] me do one thing so let me call the sum
+[07:09] bit which is this bit as e and let me
+[07:12] call the carry bit which is the more
+[07:14] significant bit as D so as we can see
+[07:17] the final result can also be expressed
+[07:20] as 2D + e which is exactly what we want
+[07:24] to
+[07:24] do right so this is exactly what we want
+[07:28] to do so we basically have have a + b +
+[07:30] C is equal to 2D + e so if now if I take
+[07:35] a look at the previous diagram what I
+[07:38] have done is I have taken three one bit
+[07:40] numbers and produced two numbers where
+[07:42] 2D can be t as capital D and small e can
+[07:45] be taught as thought as capital E so I
+[07:48] basically produced two numbers so the
+[07:50] sum of these two is equal to the sum of
+[07:53] these
+[07:54] three now let's do this for more bits
+[07:57] right at the moment a b and c were only
+[07:59] one bits each so let's consider uh wider
+[08:03] versions of a b and
+[08:06] c so let us do a little bit of algebra
+[08:12] uh compute the two numbers to compute
+[08:16] two numbers d and e such that A+ B+ C is
+[08:20] equal to D D+ C so the way that we will
+[08:24] do it is that we'll use the same logic
+[08:26] that was used here and uh we'll just uh
+[08:31] extend our
+[08:35] results so let us express a as a sum of
+[08:40] uh you know its bits so any number a can
+[08:44] be uh expressed as so let's me consider
+[08:47] a right then let the bits in a be A1 to
+[08:51] a n so let's let the number a be a
+[08:56] n to
+[08:58] A1 so this can be expressed as
+[09:36] this number here uh is a similarly uh we
+[09:41] can express B in the same way as a sum
+[09:44] of powers of two and each power is
+[09:46] Multiplied with the corresponding bit of
+[09:48] B and we can do the similar thing for
+[09:52] C then what we can do is we can group
+[09:54] all the terms together as a i + bi I + c
+[09:57] i and multiply m 2^ i- 1 so what we have
+[10:04] seen in the previous result for 1 bit
+[10:08] this can be expressed as 2 * 2di + EI uh
+[10:13] * 2^ i - 1 you know this is something
+[10:16] that exactly we have seen here so we can
+[10:19] do the same you know the same thing sum
+[10:21] of three bits is the is the same as sum
+[10:23] of two
+[10:24] numbers once we do the same we can uh
+[10:27] then so so this since we have seen in
+[10:29] the previous slide slide number 76 I'm
+[10:31] not
+[10:33] repeating once you have done this again
+[10:35] we can break up this expression over
+[10:37] here so we'll have two terms uh I = to 1
+[10:41] uh to n di I * 2^ I so this is one
+[10:45] binary number right which we can treat
+[10:48] as
+[10:49] D and this is one more number which we
+[10:53] can treat as
+[10:54] e right so what we see here is that We
+[10:59] have replaced the sum of A and B and C A
+[11:03] plus b plus C as two numbers d and
+[11:06] e right so let me just uh get rid of the
+[11:09] ink and you'll be able to see it
+[11:13] better uh Computing d&amp; is also very easy
+[11:17] uh the reason Computing it is very easy
+[11:19] is that we take uh uh so in parallel we
+[11:23] consider so since it's Hardware
+[11:25] everything is parallel so we consider
+[11:27] the corresponding aat bits
+[11:29] uh we add them so we get uh this uh d
+[11:34] and e where e is the sum bit as we have
+[11:37] seen just before in the previous slide
+[11:40] uh oops sorry yeah e is the sum bit and
+[11:43] D is the carry bit right so as we have
+[11:45] seen here we just add them
+[11:48] up uh then uh all that we need to do is
+[11:56] uh uh so so actually what we can do is
+[11:59] that you know here we can take the two
+[12:01] out and this will become di * 2 i - one
+[12:06] so this is one binary number which is
+[12:08] composed entirely out of the sum bits
+[12:10] where we but after adding individual
+[12:13] bits and this is one more binary number
+[12:15] which is composed entirely out of the
+[12:17] carry bits right carry that is obtained
+[12:20] by adding the three bits at the same
+[12:23] positions so once we get e e is as is
+[12:26] but once we get this number we just left
+[12:28] shift we multiply by two which means
+[12:30] left shifted by one position and we get
+[12:33] the number D so essentially Computing
+[12:35] both d and e can be done very quickly in
+[12:37] constant time or in order one time and
+[12:41] the way it is done is that we consider
+[12:43] the ith bit of all three numbers a b and
+[12:46] c we add three one bit
+[12:49] numbers this can be done in parallel so
+[12:51] we'll get a sum bit and a carry bit so
+[12:53] we form one number just with the sum
+[12:55] bits of all the uh you know individual
+[12:59] right and one more number with a carry
+[13:02] bits that we obtain by adding uh all
+[13:05] Triplets of numbers right of the form AI
+[13:08] B and CI and then we just take the
+[13:12] number that we get and left shift it by
+[13:14] one position which is to affect this
+[13:16] multiplication by
+[13:18] two and one number becomes D and the
+[13:20] other number becomes e so this can be
+[13:23] done uh so this particular step of
+[13:27] extracting the IET bit adding the the
+[13:29] three ith bits getting Di and EI all of
+[13:32] this can be done in parallel so this
+[13:34] takes constant time then forming the
+[13:37] number with these bits also takes
+[13:39] constant time and left shifting also
+[13:42] takes constant time so it's not an
+[13:44] issue right by one uh position so that's
+[13:48] the reason getting D plus C from a plus
+[13:50] b plus C the entire operation is a
+[13:52] constant time
+[13:54] operation so uh it's just a summary of
+[13:57] what we just discussed how do we
+[13:59] generate DNA will we add all the
+[14:01] corresponding sets of bits AI bi and CI
+[14:04] independently right simultaneously
+[14:07] independently and
+[14:09] simultaneously we set di to the carry
+[14:11] bit produced by adding AI bi and CI and
+[14:14] we set EI to the sum bit produced by
+[14:16] adding AI bi and CI so since all the
+[14:19] operations are done in parallel it takes
+[14:21] order of one
+[14:23] time so let's now discuss the wall
+[14:25] stream multiplier the idea is like this
+[14:28] that we generate n partial
+[14:31] sums so this as we have seen in the
+[14:33] previous example can be done very
+[14:35] quickly so this can be done in order of
+[14:37] one time where we generate the N partial
+[14:41] sums how do we do this we take a look at
+[14:44] each bit in the multiplier if it is one
+[14:46] the partial sum is a multiplic and of
+[14:48] course shifted by a certain number of
+[14:49] positions to the left otherwise the
+[14:52] partial sum is zero so this is exactly
+[14:55] what we do if the ith bitth in the
+[14:57] multiplier is zero the partial sum is
+[14:59] zero Pi is zero otherwise the pi is the
+[15:03] multiplicand left shifted by IUS one
+[15:07] positions if the I bit in the multiplier
+[15:10] is one so this can be done in parallel
+[15:13] once we have n partial sums we can use a
+[15:16] tree based Adder uh to uh affect the
+[15:20] multiplication the way this is done is
+[15:22] like this that we have a similar tree uh
+[15:26] as we had in the log n Square multiplier
+[15:31] uh so in this case uh what we do is that
+[15:34] we divide our n partial sums into groups
+[15:37] of three we have a carry save Adder a
+[15:40] CSA Adder that takes in three inputs and
+[15:44] that produces two
+[15:45] outputs so this Adder produces two
+[15:48] outputs and then the next Adder one
+[15:51] output is sent here and one more Adder
+[15:53] is sent to another carry save
+[15:56] Adder which takes two outputs from here
+[15:59] and uh the two outputs from the next uh
+[16:03] partial sum matter right from the next
+[16:06] CSA car save added so in this case if we
+[16:11] have uh so basically each uh carry save
+[16:15] added here is decreasing the number of
+[16:17] uh inputs by
+[16:20] 3x2 right so if there are uh 3x inputs
+[16:24] here there are 2x inputs in the next
+[16:26] level so what we do is that we create a
+[16:30] tree of adders where uh we start with
+[16:33] the partial sums and keep on adding them
+[16:35] so recall that the carave adder takes
+[16:37] three inputs and produces two outputs
+[16:40] where the sum of the outputs is the same
+[16:42] as the sum of the inputs then what we do
+[16:45] is that we keep on adding levels till we
+[16:48] finally have a case where we have only
+[16:51] two outputs and a sum of these two is
+[16:54] the sum of all the partial
+[16:56] sums so the approximate number of levels
+[16:59] that we will require is order of log of
+[17:03] n to the base 3x2 why 3x2 it is 3x2
+[17:08] because at every level we're decreasing
+[17:10] the number of uh partial sums by a
+[17:13] factor of 3x2 so we are just
+[17:17] adding and so ultimately uh we will
+[17:20] reach a point for the sum of all the
+[17:21] partial sums is just a sum of these two
+[17:24] numbers once we have two numbers we can
+[17:26] use a regular carry look ahead Adder
+[17:28] which again takes in order of login time
+[17:31] to add uh these two numbers so these two
+[17:34] numbers will be much larger and uh they
+[17:37] will have roughly 2 n Bits but that's
+[17:39] okay the complexity relation still holds
+[17:42] and then we'll get the final product so
+[17:45] let's now compute the total time of this
+[17:48] uh tree of CSA adders which is also
+[17:50] called a Wallace tree
+[17:51] multiplier so what we have is since we
+[17:54] have this you know tree over here the
+[17:57] tree has log of n to the base 3x2 levels
+[18:01] and each level takes order one time
+[18:03] because once CSA Adder runs in order one
+[18:06] time so the total time that is required
+[18:08] is order of log of n to the base 3x2
+[18:11] which is the same as order of log of N
+[18:14] and the reason
+[18:15] being that the base of log does not
+[18:17] matter because you know log to any base
+[18:21] and log to any other base the related
+[18:23] via a constant Factor so those constants
+[18:25] can be ignored so once we have order of
+[18:29] login levels and the time per level is
+[18:31] order one the total time required to
+[18:35] compute these two numbers let's call
+[18:37] them X and Y so here uh what we have is
+[18:40] x + y is the sum of all the partial
+[18:48] sums and the sum of all the partial sums
+[18:51] is essentially the product the result of
+[18:53] the multiplication which essentially we
+[18:56] are producing two numbers
+[18:58] uh whose sum is the final product final
+[19:01] product P so first thing that we do is
+[19:04] we add these n partial
+[19:06] sums to come up with two numbers X and Y
+[19:10] such that x + y is equal to P1 uh till
+[19:14] PN via a tree of carry save adders and
+[19:18] each carry save Adder takes order one
+[19:21] time and since we have login such levels
+[19:23] the total time is login and finally we
+[19:26] need to add X and Y with a carry look
+[19:28] Ahad had added which again takes login
+[19:30] time so as we can see the final result
+[19:33] we can get in order of login time so
+[19:37] this is the fastest possible multiplier
+[19:40] and this is very very commonly and
+[19:42] frequently used in commercial circuits
+[19:45] so as you can see this is very fast and
+[19:47] the reason it is fast is basically
+[19:50] because of this Gary save Adder right
+[19:53] you know had we not had the carry save
+[19:56] Adder it would have been difficult but
+[19:59] because we have this carry save Adder
+[20:01] which is a very fast unit which can take
+[20:03] in three inputs and produce two outputs
+[20:06] for the sum of the two outputs is the
+[20:08] same as the sum of three
+[20:09] inputs uh we are quickly you know we can
+[20:13] quickly reduce a sum of N numbers to a
+[20:15] sum of only two numbers within login
+[20:17] time and then we add the two numbers we
+[20:20] get the final product which is the
+[20:22] result of the
+[20:23] multiplication so we have achieved our
+[20:25] goal of having a login time multiplier
+[20:30] so this uh slide only summarizes what we
+[20:32] have discussed just a quick recap use an
+[20:35] array of CSA adders to add three numbers
+[20:38] to produce two numbers so we reduce the
+[20:40] set of numbers by 2/3 every level or we
+[20:43] divide it by 3 by two after of log n to
+[20:46] the base 3x2 levels we're left with only
+[20:49] two numbers we use a carry look ahead
+[20:52] added to add them this takes login time
+[20:55] so the total time as a result is login
+[21:00] so again the time complexity is login
+[21:02] this I'm skipping this slide because we
+[21:04] have already discussed the
+[21:07] content all right so what have we done
+[21:10] what we have done is that we have
+[21:12] focused on addition and multiplication
+[21:14] in this uh you know in the last uh three
+[21:18] lectures so now we'll move to other
+[21:20] things we'll move to division floating
+[21:23] Point addition floating Point
+[21:24] multiplication and floating Point
+[21:27] division so
+[21:29] uh because this was a long chapter I
+[21:31] divided the slides into uh two uh Subs
+[21:35] slides right two set of Subs slides one
+[21:37] is chapter 7 part one and you know so
+[21:40] you'll find one slide is chapter 7 part
+[21:43] one and other is chapter 7 part two so
+[21:46] what we'll do is we'll move to the next
+[21:48] slide set which is part two so we'll
+[21:50] discuss these four Topics in part two
+[21:54] and uh so the current part which is part
+[21:58] one is over

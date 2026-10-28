@@ -1,0 +1,1446 @@
+[00:02] [Music]
+[00:15] welcome to chapter five
+[00:17] in this chapter we will discuss
+[00:19] alternative approaches to
+[00:21] the issue and commit stages so issue and
+[00:24] commit
+[00:26] stages the way we have described in
+[00:27] chapter four
+[00:30] this has kind of been described in a
+[00:32] very simplistic manner
+[00:34] so a modern out of order processor is
+[00:35] way more complicated
+[00:37] than the basic description that has been
+[00:39] provided
+[00:40] in chapter four nevertheless
+[00:44] the aim here is to basically
+[00:48] look at some of the corner cases and
+[00:51] then
+[00:52] move on to a simpler design which of
+[00:54] course is less efficient
+[00:56] and then discuss uh
+[00:59] so i have the uh
+[01:02] i have the schedule over here and so
+[01:04] then we discuss
+[01:05] first we complicate our design then we
+[01:08] simplify it
+[01:09] and discuss something which is less
+[01:12] efficient
+[01:14] and finally we discuss compiler based
+[01:16] techniques
+[01:17] here of course we discuss a different
+[01:19] paradigm
+[01:20] where we discuss how to use
+[01:23] software based techniques that include
+[01:26] smart compilers
+[01:27] and profilers to generate efficient code
+[01:31] so in this chapter we do require some
+[01:34] background and the background is of
+[01:35] course chapter four
+[01:37] on the issue execute and commit stages
+[01:41] so we will start with out of order
+[01:42] pipelines this is something that is
+[01:44] required
+[01:46] so the for the background then of course
+[01:49] we need to know the wake up select
+[01:51] mechanism in great detail
+[01:53] and finally precise exceptions and
+[01:55] instruction commit
+[01:57] so the requirements for this chapter are
+[02:00] these three things which
+[02:01] you will get in chapter four
+[02:05] so in chapter five the main thing that
+[02:07] we look at is called
+[02:08] aggressive speculation where
+[02:12] we complicate things as you see this
+[02:14] nice looking painting over here
+[02:16] even with three or four simple crayons a
+[02:20] complicated
+[02:21] picture has been drawn something very
+[02:23] similar
+[02:24] will be done in hardware
+[02:27] where with our basic mechanisms so what
+[02:30] are the basic mechanisms when you think
+[02:32] about it in hardware we always joke
+[02:35] that hardware essentially has a set of
+[02:37] registers and a set of wires that's it
+[02:40] so whatever we do is just with registers
+[02:43] and wires
+[02:43] and with nothing else so with that we
+[02:46] implemented a host of stuff
+[02:49] so the biggest attraction in that sense
+[02:51] in the previous chapter which was
+[02:53] chapter 4
+[02:54] was branch prediction which is one form
+[02:57] of speculation
+[02:59] where if we detect that a branch has
+[03:01] been mispredicted
+[03:03] we flush the pipeline right
+[03:06] so we flush the pipeline and when do we
+[03:09] do that we wait for the miss predicted
+[03:11] branch to reach the
+[03:13] head of the reorder buffer at that point
+[03:16] we detect it and we flush the pipeline
+[03:20] this is not the only form of speculation
+[03:23] we have other kinds of speculation as
+[03:25] well
+[03:26] which we will discuss in this chapter
+[03:32] so these other kinds of speculation are
+[03:34] low latency speculation and value
+[03:36] speculation
+[03:38] which we will discuss uh in this
+[03:41] lecture and the idea here is simple
+[03:44] with low latency speculation it is that
+[03:46] we have different levels of memory
+[03:49] we have an l1 cache l2 cache main memory
+[03:52] and so on
+[03:53] so we have a memory hierarchy basically
+[03:56] so the pipeline is connected to the
+[03:58] uppermost level of memory which is fast
+[04:01] which we have assumed to take one or two
+[04:03] cycles
+[04:05] but that does not contain all the memory
+[04:07] locations
+[04:08] so then we have an l2 cache which
+[04:10] contains a superset
+[04:12] so we can make a guess that we will find
+[04:15] the value
+[04:16] in the l1 cache but if we don't find the
+[04:18] value we'll have to go to the l2 which
+[04:20] takes more time
+[04:22] but from the point of view the pipeline
+[04:23] when we do an early broadcast
+[04:27] we can as we shall see in some cases
+[04:30] in many cases rather we can make a guess
+[04:33] that we will find the load in the l1
+[04:35] cache and proceed
+[04:37] but what if our guess is wrong well we
+[04:39] will see what needs to be done
+[04:42] similarly we can also predict values so
+[04:44] recall that for
+[04:45] read after write dependencies which were
+[04:47] true dependencies we had not done
+[04:49] anything
+[04:50] we said that look it's a read after
+[04:52] write dependency we have a producer we
+[04:54] have a consumer the producer produces
+[04:56] the value the consumer consumes the
+[04:58] value
+[04:59] we have nothing to do right that was our
+[05:02] stand
+[05:04] but if we have a producing instruction
+[05:06] over here let's ip
+[05:08] which produces something that the
+[05:11] consumer instruction consumes
+[05:14] so if this is let's say a memory
+[05:16] location
+[05:17] or a register we can have a value
+[05:20] predictor if it is possible to predict
+[05:23] in this case we can run the producer and
+[05:25] consumer in parallel
+[05:27] and the dependency is broken of course
+[05:29] if the value prediction is wrong
+[05:32] so in this case is speculation because
+[05:34] we not only predict but we also move
+[05:35] forward
+[05:36] so that is speculation so the
+[05:38] speculation is wrong then of course
+[05:40] there is
+[05:41] trouble right we need to do something
+[05:44] so uh what do we need to do well we will
+[05:48] see but
+[05:49] the problem at hand is that in an
+[05:51] aggressive processor we do a lot of
+[05:54] guesswork
+[05:55] based on that we wake up our
+[05:57] instructions and we execute them
+[05:59] sometimes the guesswork turns out to be
+[06:01] wrong and in that case we need to do
+[06:03] something
+[06:03] that's the crux of our discussion
+[06:08] what are the types of aggressive
+[06:09] speculation well there are many many
+[06:11] types but these are clearly the most
+[06:13] common
+[06:14] one is address speculation where we try
+[06:16] to predict the address of a load
+[06:18] and we dispatch the load early
+[06:22] to the memory system such that all the
+[06:25] instructions that are dependent
+[06:26] on the load can be woken up
+[06:30] this is slightly more specific where we
+[06:32] predict the dependencies between loads
+[06:34] and stores
+[06:36] that allows us to do many things we can
+[06:38] send loads early
+[06:39] we can forward data between stores and
+[06:42] loads
+[06:43] bypassing unresolved stores
+[06:47] next is latency speculation where we
+[06:49] assume that a given access will hit
+[06:51] in the either in the load store queue or
+[06:54] in the data cache a hit means that
+[06:56] we will get the value right so a memory
+[06:58] access will take one cycle or two cycles
+[07:00] in the sense we know the latency
+[07:03] then we have a value prediction which of
+[07:06] course
+[07:07] is the hardest but it is the only way of
+[07:10] working around
+[07:11] read after write dependencies so
+[07:14] there is no way of actually solving read
+[07:17] after write dependencies
+[07:19] this problem the only way
+[07:22] that we can actually still get a high
+[07:25] ipc
+[07:26] in code that has such dependencies if we
+[07:29] somehow make the producer and the
+[07:31] consumer instructions run in parallel
+[07:34] this is possible if let's say the value
+[07:36] that the consumer instruction reads
+[07:39] that value is predicted and on the basis
+[07:42] of that we proceed
+[07:44] so this is known as a speculative
+[07:46] execution
+[07:49] and modern processors do
+[07:52] embody many many kinds of speculation
+[07:54] like this
+[07:55] but mind you with any kind of
+[07:57] speculation there is a chance of a
+[07:58] mistake
+[07:59] in that case something needs to be done
+[08:03] so let us look at our address
+[08:04] speculation so we have seen this before
+[08:08] so this diagram over here
+[08:12] we had seen something very similar
+[08:15] while we were predicting the outcome of
+[08:18] branches
+[08:20] so uh the predictor is generic so we had
+[08:22] discussed
+[08:23] this there also that is a generic
+[08:26] structure of a predictor
+[08:28] so let's say for a given memory address
+[08:30] if you want to predict the
+[08:32] address of the load or a store we can
+[08:35] use exactly the same structure where we
+[08:37] use the n least significant bits
+[08:40] we use it to access a table of two
+[08:42] raised to the power n
+[08:43] entries wherever there is a hit
+[08:47] you know if let's say there is a match
+[08:48] over here then there will be an address
+[08:50] over here and this we will use as the
+[08:52] load address can be the stored address
+[08:54] as well but
+[08:56] since loads are on the critical path we
+[08:57] typically do the prediction for loads
+[09:01] so this is a very simple scheme where
+[09:02] you predict the last address
+[09:04] right and unlike branch predictors we
+[09:08] cannot use saturated counters over here
+[09:11] because this problem is not amenable to
+[09:13] saturated
+[09:14] counters right so it's not it's not
+[09:16] fundamentally accounting problem
+[09:18] we are storing an address in this case
+[09:20] we store the last address
+[09:23] so as we had discussed the branch
+[09:24] predictor gives the generic structure of
+[09:26] a predictor
+[09:28] which of course can be used in many many
+[09:30] different cases
+[09:31] scenarios so let us now look at
+[09:36] a different kind of predictor called a
+[09:38] stride based
+[09:40] address predictor so in this case
+[09:43] let's take a look at the c code first
+[09:47] the c code is doing something that is
+[09:48] rather simple
+[09:51] the c code is just
+[09:54] taking an array of 10 elements and
+[09:57] adding
+[09:58] all the 10 elements and producing a sum
+[10:01] so what we have over here we is that we
+[10:03] have sum
+[10:04] plus equal to array i where i is
+[10:07] varying from 0 to 9 so we are adding the
+[10:10] first 10 elements
+[10:12] so that's what we are getting the sum of
+[10:16] the first
+[10:31] so if i were to do it in assembly i can
+[10:35] convert it to simple disk assembly where
+[10:36] i map i20
+[10:38] sum to r2 uh sorry i might i
+[10:41] map i to r1 sum to r2
+[10:45] and the base address of the array r is
+[10:47] stored in r0
+[10:50] so what i do is that i compare r1 with
+[10:53] 10 every cycle
+[10:54] if the comparison fails if there is no
+[10:57] equality if there is inequality then i
+[11:00] load the value of the base of the array
+[11:02] to r3
+[11:04] and then i update the sum over here
+[11:08] and then what i do is i increment the
+[11:11] memory address which is the base address
+[11:13] of the array
+[11:14] over here i increment the loop index and
+[11:17] then i jump
+[11:19] back over here
+[11:22] so this line is what i want to draw your
+[11:25] attention to first
+[11:26] in this case we increment the base
+[11:29] address by 4
+[11:30] why by 4 because we are assuming that
+[11:33] the size of an integer is 4 bytes so
+[11:35] that's why we are incrementing it by 4.
+[11:39] now let us consider this load
+[11:41] instruction which is the most important
+[11:44] so it's so important that i'm erasing
+[11:45] the ink on the slide
+[11:47] whenever i do that it should be very
+[11:51] important
+[11:52] so here what i'm doing is that i am
+[11:55] loading
+[11:56] a value from the address stored in
+[11:59] register r0
+[12:01] this line should be read along with this
+[12:03] line where we are incrementing the value
+[12:05] of r0 by 4.
+[12:08] so the address stored over here is
+[12:11] getting incremented by four
+[12:12] every iteration so we can think of this
+[12:16] as a stride based pattern where if i
+[12:18] have an address predicted
+[12:19] over here then the address predictor
+[12:22] will have to explicitly take into
+[12:24] account the fact
+[12:26] that every time we access
+[12:29] this instruction uh the address is
+[12:34] right and four in this case is the
+[12:35] stride
+[12:37] so what do we do well we use a different
+[12:40] stride based predictor because
+[12:42] in this case the last address based
+[12:44] predictor will not be useful
+[12:46] so we need to use a different kind of
+[12:48] predictor called a stride based
+[12:50] predictor so the last address let it be
+[12:53] a
+[12:55] right let the strike be s and the
+[12:57] pattern be p
+[12:58] so what we have is that we have a
+[13:00] similar table
+[13:02] as over here which of course is
+[13:05] addressed with the n
+[13:06] lsp bits of the program counter each
+[13:10] entry
+[13:13] looks like this where we have the
+[13:15] address the stride and the pattern
+[13:17] so in each entry uh the
+[13:21] what we store is the memory address
+[13:23] computed the last time
+[13:26] along sorry along with that
+[13:30] i think i should something has gone
+[13:32] wrong
+[13:35] okay yeah along with that along with the
+[13:38] memory address computed the last time
+[13:42] the this instruction with this pc was
+[13:44] executed we stored two additional pieces
+[13:45] of information
+[13:47] we store what is the stride which means
+[13:50] historically
+[13:51] what the memory address has been
+[13:54] getting incremented with and whether we
+[13:56] follow a strike based
+[13:58] pattern or not so let's say for the sake
+[14:01] of prediction
+[14:02] right if let's say the pattern bit is 1
+[14:06] which means that we can conclude that we
+[14:08] follow a stride based
+[14:10] addressing pattern we can predict a plus
+[14:13] s
+[14:13] as the next address when we actually
+[14:17] compute the address
+[14:18] of this load instruction so let's say
+[14:21] the computed address is a dash
+[14:24] so we subtract a dash minus a
+[14:29] and we equate that with the stride
+[14:33] so i should use a double equal to
+[14:34] because it is clear it's a it's an
+[14:36] equality and not an assignment
+[14:38] so we pretty much equate that a dash
+[14:41] minus a and see if it's equal to the
+[14:44] so if a stride based addressing pattern
+[14:46] is indeed being followed
+[14:48] this will be equal to the stride so we
+[14:50] update the last address
+[14:52] from a we update it to a dash the stride
+[14:55] of course remains the same
+[14:56] and the pattern bit is set to one if it
+[14:59] is not already
+[15:00] one all right but let us say that a
+[15:03] stride based addressing is not being
+[15:05] followed
+[15:06] then we have a choice so if this is a
+[15:09] one bit from one we can convert it to 0
+[15:11] or this can also be a saturating counter
+[15:15] so it is important to understand that a
+[15:17] saturating counter is a generic
+[15:19] mechanism
+[15:20] which is not just limited to branches
+[15:23] right
+[15:24] clearly not so for example
+[15:28] if i were to consider the code that is
+[15:31] shown here in slide number seven
+[15:35] again i want to draw your attention so
+[15:37] i'm erasing the ink on the slide
+[15:39] so let us say that this was part of some
+[15:42] high level function
+[15:44] we will find a stride based addressing
+[15:47] pattern over here
+[15:49] right so this is something that we will
+[15:51] find
+[15:52] but after we exit the function and we
+[15:57] come back again
+[15:58] right so let us say we exit in a long
+[16:00] time later again we come back
+[16:02] we will find that for the first access
+[16:04] the stride based pattern will not hold
+[16:06] but that does not mean that the behavior
+[16:08] has changed
+[16:09] this is essentially a temporary
+[16:11] aberration
+[16:13] if we use a saturating counter then what
+[16:16] we can do is we can
+[16:18] ignore that and we can still continue to
+[16:20] predict
+[16:21] on the basis that it is indeed stride
+[16:23] based and the rest of the predictions
+[16:25] will turn out to be correct
+[16:27] so that is why whenever we store
+[16:30] something about the past history
+[16:33] we should think not once but twice but
+[16:36] thrice
+[16:37] that what exactly is the
+[16:40] pattern that is being followed and how
+[16:41] much of hysteresis do you want to give
+[16:43] it
+[16:44] if we want to tolerate these occasional
+[16:47] anomalies
+[16:48] this should be a saturating counter
+[16:51] that's number one
+[16:53] and let's see if the stride changes then
+[16:56] we should see whether we should
+[16:59] uh you know just treat it as an
+[17:02] occasional anomaly and not t in the
+[17:04] or let's say there is a persistent
+[17:06] change in the stride then of course the
+[17:07] value of the stride s should be changed
+[17:10] over here all right so much of this
+[17:13] depends on actual simulation and
+[17:15] actual engineering but the key idea is
+[17:18] that we store these three pieces of
+[17:20] information
+[17:21] and the prediction if a stride based
+[17:23] pattern is followed is always a plus
+[17:25] s and whenever we resolve the address we
+[17:28] always compute a dash minus a
+[17:30] for a dash is the result address and
+[17:32] compare it with the stride
+[17:34] if it is equal well that's great we can
+[17:37] increase the confidence
+[17:38] of p if it is not equal we can do
+[17:42] several things
+[17:43] much of that depends upon whether p is a
+[17:46] saturating counter or not
+[17:47] and the amount of hysteresis that we
+[17:49] want to give it right
+[17:51] and so there is no hard and fast rule on
+[17:54] how much of hysteresis needs to be given
+[17:57] so typically what happens is that we run
+[18:00] hundreds thousands of simulations
+[18:03] on the programs that people are expected
+[18:06] to use
+[18:07] and we look at the behavior that these
+[18:10] programs are following
+[18:13] all right so we have discussed address
+[18:15] speculation now
+[18:16] let us now discuss the load store
+[18:18] dependence
+[18:19] speculation so what has been seen
+[18:25] is that if a given memory address
+[18:28] let's say it has a load if there is a
+[18:31] collision
+[18:31] collision means a same memory address
+[18:34] with a previous store in the pipeline
+[18:38] this tends to be in a sense a
+[18:40] predictable steady state behavior
+[18:42] and these collisions in a certain sense
+[18:45] can be predicted
+[18:46] which means that if i have a load i can
+[18:49] predict with a reasonably high accuracy
+[18:51] that look
+[18:53] the value will actually come from a
+[18:55] previous store that is there in the
+[18:57] pipeline in the sense
+[18:58] an lsq forwarding will give the value
+[19:01] and the value will not really come from
+[19:03] the data cache
+[19:04] why is this the case well we will have
+[19:06] to look at the nature of the code
+[19:08] say a lot of code is essentially this
+[19:11] register spill code right
+[19:14] which leads to this behavior that when
+[19:16] we spill a register
+[19:17] because we run out of registers and then
+[19:19] we execute a function and restore it
+[19:22] in that case what happens is that
+[19:27] uh well we have a store and then we have
+[19:30] a load
+[19:32] and as i said we can either spill
+[19:33] because we run out or we spill it
+[19:35] because
+[19:37] of a function called regardless of the
+[19:40] reason
+[19:41] we always have the store load pairs and
+[19:43] since they are not that far apart they
+[19:45] will still be in the pipeline
+[19:47] so moment we see this load we can say
+[19:49] with high confidence that look there is
+[19:52] a previous store that will supply value
+[19:54] to it
+[19:55] and there are many other examples of
+[19:58] coding patterns
+[20:00] mainly with respect to function calls or
+[20:02] with respect to you know loading data
+[20:05] where such a pattern holds so if you can
+[20:09] predict these collisions with
+[20:10] good enough accuracy so let's say we
+[20:12] predict that there are no collisions
+[20:14] then we don't have to wait for
+[20:16] unresolved stores
+[20:18] we just send the load directly to the
+[20:19] cache we get the value and we wake up
+[20:22] the consumers
+[20:24] or let's say if you predict that there
+[20:26] is a very high probability of a
+[20:27] collision between a store and a later
+[20:29] load
+[20:30] even if there are unresolved stores in
+[20:33] the middle
+[20:34] we need not wait for them because if you
+[20:37] have predicted that look this store and
+[20:39] this load are going to collide
+[20:40] and nobody else then we directly forward
+[20:44] don't wait for these and the load
+[20:47] proceeds
+[20:49] so this of course is highly dependent
+[20:51] upon the way that we write programs
+[20:53] but given that most assembly programs
+[20:56] are written
+[20:57] roughly in a similar manner and this
+[21:00] pattern
+[21:02] holds across languages across compilers
+[21:04] across
+[21:05] processors that is why processor design
+[21:08] should be designed in such a way to
+[21:10] leverage this pattern
+[21:12] so there is an important philosophical
+[21:14] insight over here
+[21:16] almost all architectural optimizations
+[21:18] are in a sense based on
+[21:20] their learning based optimizations right
+[21:23] so they look at the way that programmers
+[21:25] actually write their code
+[21:27] and on the basis of that they decide
+[21:30] what kind of hardware will best
+[21:32] take advantage of these patterns if
+[21:35] there were no patterns
+[21:36] no architectural optimization would
+[21:38] actually work
+[21:42] okay so how do we find collisions
+[21:44] nothing
+[21:45] we have a standard template that we have
+[21:47] set up
+[21:48] in our good old branch prediction days
+[21:51] so given that we have learned that we
+[21:53] just keep on using it
+[21:55] so some loads do show a consistent
+[21:57] behavior they can be predicted as
+[21:59] colliding or non colliding
+[22:02] so little bit of idea whenever you have
+[22:03] these bulbs that is when we have our
+[22:06] insight
+[22:07] so we have a collision history table chd
+[22:11] which takes an n-bit pc n-bit program
+[22:14] counter
+[22:15] and then well it points to an entry same
+[22:18] as a branch predictor we predict whether
+[22:20] it's colliding or non-colliding
+[22:22] and here you can have a single bit or
+[22:24] you can have a saturating counter
+[22:29] no problem at all
+[22:36] right so we can have
+[22:41] a saturating counter which
+[22:44] can take care of those occasional
+[22:48] how many bits to have well a lot of
+[22:50] those are
+[22:52] outcomes outcrops of a simulation
+[22:54] related study
+[22:56] let us now discuss how to use the chd
+[23:00] so the chd is used like this that we can
+[23:03] use it at
+[23:04] two points we can do the prediction
+[23:07] itself at two points
+[23:09] the first is at the time of decoding
+[23:11] which of course i am not showing over
+[23:12] here
+[23:13] it's not uh can be done
+[23:17] uh also it can be done at the time that
+[23:20] we resolve the address of the
+[23:25] so it can be done at two points
+[23:29] so i am showing here that when we
+[23:32] compute the address of a load we access
+[23:34] the chd so this is of course at the time
+[23:36] of resolution
+[23:37] but also it can be done at the time of
+[23:39] decoding so in this case it does not
+[23:41] matter
+[23:42] but we will show other cases where it
+[23:44] actually does
+[23:46] so if the load is predicted to be
+[23:48] colliding
+[23:49] what it basically means is that in the
+[23:52] load store queue there is a store
+[23:57] which has the same address with the load
+[24:01] so it doesn't mean that there are no
+[24:03] intervening stores
+[24:04] in the middle that don't have the same
+[24:06] address but there is at least one
+[24:09] so what do we need to do well we need to
+[24:11] wait for all the prior stores
+[24:13] in the load store queue to be resolved
+[24:15] to get resolved
+[24:16] once they get resolved what needs to be
+[24:19] done
+[24:21] is two things either we get this
+[24:23] forwarded value
+[24:24] that is option one well then there is no
+[24:26] problem at all
+[24:28] or we send the value to the data cache
+[24:32] if it is predicted to be non colliding
+[24:35] which means that
+[24:37] there is no forwarding that is going to
+[24:40] happen
+[24:40] most likely of course then we send the
+[24:43] load directly to the data cache and we
+[24:44] are done
+[24:46] all right once the address is resolved
+[24:50] so basically the address of let's say
+[24:53] the store in consideration is resolved
+[24:55] so if you don't know which one
+[24:58] then pretty much once the addresses of
+[24:59] all the stores before the load
+[25:01] are resolved right and
+[25:06] let's say all of them it's known the
+[25:08] entire state of load store queue before
+[25:10] the load is known
+[25:11] right the store queue actually not the
+[25:13] lsq but the store queue before the load
+[25:15] is known
+[25:16] we are in a position to see whether
+[25:18] there is a collision or not
+[25:20] right so if any of these addresses match
+[25:22] then there is a collision else not
+[25:24] so in this case we update the cht with
+[25:26] this information
+[25:28] and let's say that there was a collision
+[25:30] but we speculated past it
+[25:33] there is a need to recover the state
+[25:36] as simple as that so this essentially
+[25:38] allows us to send some loads which are
+[25:40] non colliding
+[25:42] to the data to the data cache l1 cache
+[25:45] without waiting for
+[25:49] unresolved stores before it to get
+[25:51] resolved so so that wait time we avoid
+[25:54] so which means we can send loads early
+[25:57] we can wake up their consumers so this
+[25:58] gives us more
+[25:59] ipc right it gives us more parallelism
+[26:02] and more ipc
+[26:04] this can be augmented with more
+[26:06] information which is where
+[26:09] when we predict becomes important
+[26:12] so this so let's say that we do this
+[26:15] prediction at decode time
+[26:18] so what we can augment it augment it
+[26:21] with is we can augment it with the store
+[26:24] to load distance
+[26:27] which basically means that if there is a
+[26:30] forwarding
+[26:30] how many entries separate the store and
+[26:33] the load
+[26:34] right however it is measured because we
+[26:37] have separate load and store queues
+[26:38] so it can be the number of stores before
+[26:40] it number of loads before it or a sum
+[26:42] it does not matter for a load it will
+[26:45] typically be the number of stores before
+[26:48] so which will basically essentially be
+[26:50] this distance where these are all stores
+[26:54] so if this distance is d what we do is
+[26:58] that a load waits till there are less
+[27:00] than d entries before it
+[27:02] in lsq so of course this needs to be
+[27:05] interpreted contextually
+[27:07] so in the context of this description it
+[27:09] is the number of entries before it in
+[27:11] the store queue
+[27:12] so the load basically just waits till
+[27:15] the number of entries in the store queue
+[27:17] are
+[27:19] till they are less than d which means
+[27:22] until they are greater than equal to d
+[27:24] nothing but the moment it
+[27:26] goes below d and no forwarding has
+[27:28] happened
+[27:30] you are kind of sure that no more
+[27:31] forwarding will happen because this is
+[27:33] what we have predicted
+[27:35] so load at this point can be dispatched
+[27:37] to the
+[27:38] data cache right it can be sent to the
+[27:40] data cache because
+[27:42] what we predicted is that we predicted a
+[27:44] collision but we predicted something
+[27:45] more also
+[27:47] what we predicted is that the store to
+[27:50] load distance
+[27:51] can be measured in different ways but
+[27:53] let's measure it for the time being with
+[27:56] the number of stores before the load so
+[27:58] this was predicted as d
+[28:01] and the moment that the distance between
+[28:04] the load and the earliest store in the
+[28:06] store queue right this falls below d
+[28:08] we will find that this prediction pretty
+[28:10] much doesn't hold
+[28:12] which means that there is no more
+[28:13] matching stores right there are no
+[28:15] matching stores
+[28:16] most likely of course so then the load
+[28:19] can directly be sent to the data cache
+[28:22] so this
+[28:23] is an optimization node out
+[28:26] it uses more information which is the
+[28:28] distance d
+[28:30] whenever we use more information we use
+[28:32] more space
+[28:33] so we expect a better prediction a more
+[28:36] accurate prediction a more informative
+[28:38] prediction
+[28:39] in this case the prediction indeed gives
+[28:41] us more information
+[28:43] and this information can be used
+[28:46] productively
+[28:49] now let us come to another idea which is
+[28:53] one of the most sophisticated ideas in
+[28:55] this space
+[28:57] so this is a far more refined proposal
+[29:00] so to speak
+[29:02] uh so as compared to the basic chd this
+[29:06] is known as store sets so we start out
+[29:10] in the same manner so always our
+[29:12] predictors will keep on
+[29:15] looking the same
+[29:18] write pretty much our basic branch
+[29:20] predictor design
+[29:22] so here our explicit aim is to remember
+[29:24] both store dependencies
+[29:26] and pretty much for a load we should be
+[29:28] able to say that which stores
+[29:31] are kind of part of what is the store
+[29:33] set but a store set is basically the set
+[29:36] of all the stores
+[29:37] that can forward their value to a load
+[29:40] right pretty much like that store set is
+[29:42] a set of stores
+[29:44] so here is what we do so i will describe
+[29:46] this kind of part by part because it's a
+[29:50] kind of an intricate scheme but once
+[29:53] understood it will not appear to be that
+[29:56] so given a load of store we start in a
+[29:59] conventional manner where we extract the
+[30:01] n
+[30:02] least significant bits we use it to
+[30:05] access
+[30:06] a 2 to the power n entry table so this
+[30:09] table
+[30:09] previously was giving us direct
+[30:11] prediction information in this case it
+[30:13] will not
+[30:13] give us it will instead give us a
+[30:16] pointer to one more table
+[30:18] so what is the first table the first
+[30:20] table is the store set identifier table
+[30:22] ssit what we read over here is
+[30:26] for a load or store we read its store
+[30:29] set
+[30:29] id so for every load
+[30:33] in the simple design we'll have one
+[30:35] store set that is associated with it
+[30:38] and that will have a unique id so we
+[30:41] will discuss
+[30:41] slightly later how that unique id is
+[30:43] given but let us assume it has a unique
+[30:45] id
+[30:46] so then the we will
+[30:50] figure out this by reading this table
+[30:52] similarly the every store it is part of
+[30:55] one store set so this of course in the
+[30:58] initial proposal it was one store set
+[31:00] later on it was extended to multiple
+[31:02] store sets
+[31:03] but in this slide set we are only
+[31:05] discussing the simple idea which is a
+[31:07] single store set
+[31:08] so every store also if you read then
+[31:12] you will have a pointer to its store set
+[31:14] id which is essentially the store set
+[31:16] that comprises uh that doesn't compile
+[31:19] comprise but that contains this store
+[31:23] all right so what we do is we use the
+[31:25] store set id regardless of whether it's
+[31:27] a loader store
+[31:29] we use it to access the lfst table which
+[31:32] is one more table
+[31:33] so if let's say this is a 7-bit id then
+[31:36] this table will have
+[31:38] 2 raised to the power 7 entries or
+[31:41] 128 entries
+[31:44] each entry stores the last fetch store
+[31:47] in the store set
+[31:49] so as i said a store set is basically a
+[31:51] set of stores
+[31:53] and it will tell us that look
+[31:58] a certain store which is there in the
+[32:00] pipeline
+[32:01] is the latest in this store set which
+[32:03] means it will most likely forward the
+[32:06] so how do we identify an instruction
+[32:08] well we provide each instruction with a
+[32:10] unique
+[32:11] instruction number which pretty much
+[32:16] if you read the book uh it pretty much
+[32:19] is a number which is twice the size of
+[32:22] the reorder buffer
+[32:23] so it can be a circular counter
+[32:26] which can be
+[32:30] i mean anything more than actually the
+[32:32] size of the reorder buffer
+[32:33] depending upon how we are willing to
+[32:36] construct it
+[32:40] ah sorry i stand corrected so it's
+[32:41] actually more than twice the side of the
+[32:43] reorder buffer such that
+[32:45] if there is one instruction before it
+[32:48] or after it you will never have the same
+[32:51] instruction repeating right it's more
+[32:54] than twice the size
+[32:55] so so then if we have a cyclic counter
+[32:57] like that
+[32:58] we can generate a unique instruction
+[33:01] number for every instruction
+[33:02] in the pipeline such that at one point
+[33:05] of time there should be no repetition
+[33:07] so basically if let us say in the
+[33:09] pipeline all
+[33:10] instructions can have a unique number
+[33:13] and furthermore if there is one
+[33:15] instruction over here
+[33:18] so it will first start at the bottom of
+[33:21] the rob and gradually work its way up
+[33:22] the rov so in its lifetime you should
+[33:24] never see two instructions with the same
+[33:26] number that are actually different
+[33:29] so having an instruction number that is
+[33:32] varies between let's say 0 and any
+[33:35] number that is greater than twice the
+[33:36] rov size
+[33:37] this to a certain extent solves this
+[33:41] so the long and short of this story is
+[33:43] that every instruction
+[33:44] is allotted a unique instruction number
+[33:48] and in the lfst table we say that look
+[33:51] in this store set
+[33:53] what is the instruction number of the
+[33:54] latest store that has been fetched
+[33:58] so this when so this check mind you is
+[34:01] done at decode time not at resolution
+[34:03] time
+[34:04] so the load basically knows that if i am
+[34:08] there are a lot of instructions that
+[34:10] have been fetched before me
+[34:12] out of this some of these stores are in
+[34:14] the store set
+[34:16] what is the store set the set of all the
+[34:18] stores that can potentially forward
+[34:19] their value to the load
+[34:21] out of this this store is the latest
+[34:25] it's a part of my store set and it is
+[34:27] the latest
+[34:28] which means this is the store that will
+[34:30] most likely forward the value to me
+[34:33] the rest are important in the sense they
+[34:34] are in my store set but i don't care
+[34:37] i only care about the id of the latest
+[34:40] store because that is what is going to
+[34:42] forward a value to me
+[34:44] and that to me is the one that i should
+[34:48] be concerned about
+[34:49] and this is the last fetch store in the
+[34:52] store set
+[34:53] and how do i identify it well as i said
+[34:56] we have a scheme
+[34:58] of providing a unique instruction number
+[35:00] to each
+[35:01] instruction and this is recorded in lfst
+[35:05] given the store set say load basically
+[35:07] reaches the lfst
+[35:08] via a single level indirect and it finds
+[35:12] store id and it stores it so every node
+[35:16] load basically if of course it has a
+[35:19] store set associated with it
+[35:21] has the id of the least fetched sorry
+[35:24] latest
+[35:24] fetch store lfst which it will use
+[35:28] how will it use well so this is kind of
+[35:31] a loaded
+[35:32] text heavy slide but let's go slow
+[35:37] so what we have said is that for every
+[35:39] load we have an associated
+[35:41] store set stores that have forwarded
+[35:45] values to it in the past
+[35:48] are are members of the store set
+[35:52] and a store in this case is a part of a
+[35:54] single store set but as i said there are
+[35:58] extensions to this idea where this rule
+[36:00] is broken but we are not considering
+[36:01] that
+[36:03] so what do we do for loads and stores
+[36:06] well for loads and stores of course we
+[36:08] do different things
+[36:09] the first is that we read the store set
+[36:12] right which is exactly what i am showing
+[36:15] over here this is step one
+[36:19] the second is we get the instruction
+[36:21] number of the latest store
+[36:22] in the store set from the lfst of course
+[36:25] subject to the fact that it exists which
+[36:27] is
+[36:28] step two the load waits for store s
+[36:33] to get resolved so the load basically
+[36:38] locates the store s in the store queue
+[36:41] or we can say that in the store queue
+[36:42] whenever
+[36:46] a load is resolved it probes the store
+[36:50] queue to find if a store with that
+[36:52] instruction number is there
+[36:54] so let's say this is the load which got
+[36:56] resolved so once it does
+[36:57] it finds the
+[37:00] actually this can be done before
+[37:02] resolution also the moment we enter a
+[37:05] we if we know the lfst the
+[37:08] the latest store in the store set
+[37:11] uh that this load is a part of
+[37:15] then the load can simply probe the store
+[37:17] queue and find the
+[37:20] entry in this that is the
+[37:24] latest fetch store right
+[37:27] so then we can do several things one is
+[37:29] that if this has not been resolved
+[37:31] we wait for this to be resolved
+[37:35] and we can check the addresses the other
+[37:36] is we don't have to check for the
+[37:37] address
+[37:38] the moment we know what is to be stored
+[37:40] we can do a direct forwarding even
+[37:42] before the address of the load has been
+[37:44] computed
+[37:46] right so so several things are possible
+[37:49] so but in all cases we can ignore
+[37:52] all the instructions between the store
+[37:54] and the load
+[37:56] because with very high confidence we
+[37:57] have predicted
+[37:59] that there is a dependency between the
+[38:01] store and load
+[38:02] so let me explain this once again
+[38:04] because this is a reasonably
+[38:06] complex concept so should be explained
+[38:08] in different ways
+[38:10] till you are able to understand it
+[38:12] rather thoroughly
+[38:16] so the idea if i were to explain it in a
+[38:18] different way would be that let us
+[38:20] consider the conceptual view of the load
+[38:22] store queue
+[38:23] so let us say that we add a load at this
+[38:26] point
+[38:28] at decode time and at that point we read
+[38:30] the ssit and lfst and we are sure
+[38:33] that there is a store before it
+[38:37] in the lsq fair
+[38:40] we clearly have a store set based match
+[38:44] so what can be done in this case is that
+[38:47] if we really want to aggressively
+[38:48] speculate
+[38:50] when the value that will be stored which
+[38:54] is roughly also the time when it will
+[38:55] get resolved
+[38:56] because let's look at a store a store
+[38:59] instruction
+[39:00] will be let's say of this type that
+[39:02] store rx
+[39:04] that's a sum offset let's say it is 8 or
+[39:06] y
+[39:07] so what we will do is we will read rx we
+[39:10] will read
+[39:11] ry both from the register file roughly
+[39:14] at the same time
+[39:16] and then we will add 8
+[39:19] to ry that will give us the address of
+[39:21] the store
+[39:23] and we will write both the values which
+[39:25] is the resolved address as well as the
+[39:27] value that needs to be stored
+[39:29] at the same time why at the same time
+[39:32] because if we do it at different times
+[39:34] that will unnecessarily increase the
+[39:35] number of ports that we require in lsq
+[39:39] so in terms of implementation it will be
+[39:41] hard so at the time of resolution we
+[39:43] will write both
+[39:44] see the store has been resolved then
+[39:48] we can directly take the forwarded data
+[39:51] even before the load has been resolved
+[39:53] and continue
+[39:54] so this will give us in a sense a
+[39:57] certain speed up
+[39:58] and we don't have to wait for the load
+[40:00] to be resolved
+[40:01] and this for as far as we are concerned
+[40:04] is a performance enhancing optimization
+[40:07] all right so this is a
+[40:12] clearly a very powerful thing because
+[40:15] what we are doing is we are ignoring all
+[40:17] the stores and
+[40:18] loads the loads can be ignored but all
+[40:20] the stores in between
+[40:22] and even if they are unresolved we are
+[40:23] saying that we don't care
+[40:26] for a store what we do is we read the
+[40:28] store set id
+[40:30] and then when are we accessing the store
+[40:34] again
+[40:34] let's say right after decode we are
+[40:36] accessing the ssid
+[40:38] so this store is clearly the latest
+[40:42] in the store set so we update the lfst
+[40:45] with the instruction number of the
+[40:46] current
+[40:47] store and subsequently we can
+[40:49] speculatively forward data to loads that
+[40:52] are there in its
+[40:55] store set well i wouldn't say loads are
+[40:57] there in the store set but i would say
+[41:00] loads that are supplied value by stores
+[41:04] in its door set
+[41:05] all right and so this is how
+[41:09] we can in a sense manage these fine
+[41:11] grained
+[41:12] dependencies and also increase the ilp
+[41:15] using this technique when and where do
+[41:19] we update the tables well the details
+[41:20] are there in the book in chapter five
+[41:23] but clearly when we detect a load store
+[41:27] then if a store set has already been
+[41:29] allotted
+[41:30] we simply add
+[41:33] the store set we simply add the load to
+[41:37] or we just record that for this given
+[41:39] load this is the store set
+[41:41] and let's see if the store is not a part
+[41:44] of the store set
+[41:45] then we add the store to the store set
+[41:49] we get rid of its previous mapping and
+[41:51] we add it to the store set
+[41:53] and let's see the store set itself is
+[41:55] not there then we create a new store set
+[41:57] and we update the ssid ssit
+[42:01] such that both this store and this load
+[42:04] point to the same store set so this
+[42:07] bookkeeping is always done when we
+[42:08] detect a dependence
+[42:10] we need to do this book keeping with the
+[42:12] ssit and lfst
+[42:14] but that said and done this is clearly a
+[42:17] very powerful optimization
+[42:18] its clearly more effective than the chd
+[42:21] because chd just predicts a collision
+[42:24] in some cases it can predict the
+[42:26] collision and also have distance
+[42:29] but again that's not that accurate
+[42:30] because the distance can vary
+[42:32] code can vary right the behavior of the
+[42:34] code can vary
+[42:35] but this is a far more accurate method
+[42:37] of predicting
+[42:39] which stores will collide with which
+[42:40] loads then we can explicitly wait for
+[42:43] those stores and forward values and so
+[42:45] on
+[42:48] all right now let's come to the next
+[42:50] which is load latency speculation
+[42:53] so we do have a memory hierarchy much of
+[42:55] this will be discussed in chapter seven
+[42:58] hence i really don't want to broach this
+[43:00] topic right now
+[43:02] but all that i can say is that look we
+[43:05] have
+[43:06] a hierarchy of memories for performance
+[43:09] reasons of course so there is an
+[43:11] instruction cache which i am not showing
+[43:14] but
+[43:15] sorry i am not showing this
+[43:18] the instruction cache provides
+[43:21] instructions to the pipeline
+[43:24] uh the data cache is fast we have
+[43:27] assumed a one to two cycles it takes to
+[43:30] it has a very high hit rate of ninety
+[43:31] percent
+[43:33] for all the accesses that go below
+[43:36] so this fifty percent is essentially a
+[43:38] local hit rate in the sense that if 100
+[43:41] accesses come requests come to the l2
+[43:43] cache only 50
+[43:45] of those are satisfied this is a
+[43:48] far slower structure it takes 10 to 50
+[43:51] and of course if we don't find it in l2
+[43:53] cache we go to the main memory where we
+[43:55] will find everything
+[43:57] again we will break this assumption but
+[43:59] let us assume
+[44:00] it holds for the time being and this has
+[44:02] a very long
+[44:04] access time 300 to 400 cycles very long
+[44:08] so we don't know for sure where we will
+[44:13] the data for a given load right so we
+[44:16] don't know
+[44:16] so that's the reason i buried my head in
+[44:18] sand but you can always make a guess
+[44:21] right so we love making guesses that is
+[44:24] why we call
+[44:25] this sub chapter aggressive speculation
+[44:28] where we guess as much as we can
+[44:31] in the hope of getting that last drop of
+[44:33] ilp
+[44:35] right it's like in a searching for water
+[44:37] in a desert
+[44:38] we guess speculate as much as possible
+[44:41] such that whatever we can extract in
+[44:43] terms of
+[44:44] a slightly higher instruction level
+[44:46] parallelism we do that so for load
+[44:50] instructions we predict if it will hit
+[44:52] in the data cache or not
+[44:54] if it will we do an early broadcast
+[44:59] right and so let's say that
+[45:02] if let's say a small predictor says it
+[45:04] will hit in the data cache well no
+[45:05] problem
+[45:06] we broadcast we wake up the consumers if
+[45:10] the prediction is wrong we need to do
+[45:12] something we'll see that
+[45:13] in the next section we can design a hit
+[45:17] predictor for a load given the load pc
+[45:19] we can see whether it will hit or miss
+[45:22] the idea is very similar to a branch
+[45:24] predictor so we will not discuss the
+[45:25] same thing over and over again
+[45:28] here also we can use simple bits or we
+[45:30] can use saturating counters
+[45:32] right so everything depends upon the
+[45:35] nature of the workloads
+[45:36] so a lot of architectural simulation has
+[45:38] to be done
+[45:40] but the basic pattern is the same right
+[45:42] so you know this by now
+[45:46] what else can we predict well it turns
+[45:49] out we can predict values as well
+[45:52] so value prediction as we have discussed
+[45:54] is the only way to break
+[45:56] read after write dependency between a
+[45:58] producer and a consumer
+[46:00] the only way is if we can somehow
+[46:03] predict the values that the consumer
+[46:05] will use
+[46:06] and clearly one of the slowest
+[46:08] instructions in this category one of the
+[46:10] biggest culprits in this category is a
+[46:12] load instruction all right
+[46:14] so the load instructions value is
+[46:16] something that we can predict
+[46:19] all right so why are values predictable
+[46:22] well many times we use there is data
+[46:24] redundancy so you use the same values
+[46:25] over and over again
+[46:27] like let's say is a scientific program
+[46:29] we use the values of e and pi
+[46:30] over and over again bit masking many a
+[46:34] times you know even if
+[46:37] we are considering
+[46:40] long values we are only interested in a
+[46:42] few bits so
+[46:44] those bits in a sense are predictable
+[46:47] many times you are using constants in
+[46:49] our code
+[46:50] many times we have error checking code
+[46:53] where
+[46:54] we almost never have errors but a large
+[46:56] part of the code is the same
+[46:57] a lot of values that it uses is the same
+[47:01] virtual functions well virtual function
+[47:03] is an important
+[47:05] virtual functions are important things
+[47:07] in c plus plus
+[47:09] so what they basically say
+[47:12] right so i you know my aim is clearly
+[47:14] not to introduce an object-oriented
+[47:16] language here
+[47:17] but clearly uh some introduction might
+[47:20] be due
+[47:21] that look let's say i have a vehicle
+[47:23] class right so it depends defines
+[47:25] everything about a vehicle
+[47:28] and lets say in this you have get type
+[47:30] say vehicle will have a type
+[47:35] and then we have a subclass of vehicle
+[47:39] let's say cars
+[47:42] so cars will again have a definition for
+[47:44] the get type function with the get type
+[47:45] for a car will be a car but for a
+[47:47] vehicle it might be undefined
+[47:49] so we can always have this this is the
+[47:53] key of any object oriented program
+[47:55] right we can always have a pointer to a
+[47:58] car
+[47:59] like let us say in a car star
+[48:03] ah so as is the convention the class
+[48:06] starts with a proper
+[48:07] class starts with a capital letter and a
+[48:09] variable with a small letter so let us
+[48:10] have a car
+[48:12] and let us say that we have initialized
+[48:14] the properties of the card
+[48:16] so then we can have a pointer to a
+[48:20] vehicle
+[48:22] and set this equal to car right
+[48:30] now what do we do is that let us say we
+[48:35] send this pointer v across
+[48:38] a set of functions right does not matter
+[48:41] so let us say we send this
+[48:42] pointer far far away and then we call
+[48:47] the get type function so mind you we are
+[48:51] calling get type on a pointer to vehicle
+[48:54] but what will magically happen is that
+[48:57] the car will also
+[48:58] would have defined a get type function
+[49:02] what will magically happen is that
+[49:03] instead of this function being called
+[49:06] actually this function of the car will
+[49:08] be called because this vehicle is
+[49:09] actually a car
+[49:11] even though in the entire code we are
+[49:12] using vehicle star
+[49:14] but this function will get called and
+[49:16] this is a virtual function
+[49:18] and the way it actually does happen is
+[49:20] that we have a small table
+[49:21] with each object which essentially says
+[49:24] that look for get
+[49:25] type it just has a pointer to the pc
+[49:29] and in this case it is this pc
+[49:32] so all of this code right for virtual
+[49:34] functions
+[49:36] is predictable similarly register
+[49:40] spelling which we have already seen
+[49:43] so if we take a look at all of this i
+[49:45] would suggest the
+[49:47] viewers to just take a look at this
+[49:49] these are all coding patterns right
+[49:52] so for example before object oriented
+[49:54] code came along
+[49:56] virtual functions were not there but
+[49:59] once that came along
+[50:01] and once let's say there was a big need
+[50:04] for register spilling
+[50:06] hardware always has to take into account
+[50:10] software patterns and virtual functions
+[50:12] are clearly a big example of that
+[50:15] that once programmers started writing
+[50:17] programs in a certain manner
+[50:20] hardware had to take that into account
+[50:23] and then hardware had to be redesigned
+[50:26] to in a sense ensure that c plus plus
+[50:30] programs run
+[50:31] quickly right so this the market for c
+[50:34] plus plus programs which was not there
+[50:36] in let's say the mid 80s
+[50:39] by the late 90s had become huge in fact
+[50:42] even now
+[50:43] most of the proper software is written
+[50:45] in c plus plus and other dot net
+[50:46] languages but c plus plus is still big
+[50:48] very big
+[50:50] so this is where hardware designers had
+[50:52] to step up
+[50:53] and ensure that their processors could
+[50:55] actually run these programs quickly
+[50:58] and then they realized that virtual
+[51:00] functions are a very important
+[51:01] object-oriented programming concept
+[51:04] and this needs to be supported one of
+[51:07] the key ways of supporting virtual
+[51:09] functions is of course having
+[51:10] support for function pointers right that
+[51:14] is one
+[51:14] in hardware which means that we need
+[51:17] support for
+[51:17] indirect branches where the target is
+[51:20] not hardwired but it is stored in a
+[51:22] register
+[51:23] so this is undoubtedly required but
+[51:26] other than that
+[51:27] they also realize that many other values
+[51:29] that are used here are predictable
+[51:31] so you need a value predictor so value
+[51:34] predictors pretty
+[51:36] much follow the same pattern that we
+[51:38] have been discussing up till now
+[51:40] which is either predict the last value
+[51:44] or let's say the value increases with a
+[51:46] constant stride
+[51:47] predicted on the basis of a stride
+[51:50] or you do it on the basis of profiling
+[51:53] what is profiling well profiling is like
+[51:56] this
+[51:56] that we take the program
+[52:00] we give it a set of representative
+[52:02] inputs
+[52:04] right so you give it a set of you know
+[52:07] dummy inputs or representative inputs
+[52:09] however you want to call it
+[52:12] and you have a lot of instructions that
+[52:15] embedded in your profile program but
+[52:17] they will not be a part of your final
+[52:19] program
+[52:20] which will essentially write the results
+[52:22] of values and write
+[52:24] you know which the direction the program
+[52:26] is taking
+[52:28] write down the outcomes of branches a
+[52:32] host of information to a file
+[52:34] a regular file so this file
+[52:39] can then be analyzed and then
+[52:43] important pieces of this information can
+[52:45] then be used to
+[52:47] actually kind of pre-program the
+[52:49] hardware
+[52:50] such that let us say for example you can
+[52:53] say that look for this pc
+[52:55] it most often takes this value
+[52:59] so let's say if it's a load pc it most
+[53:01] often reads this value from the memory
+[53:03] system
+[53:05] so all of this information will come via
+[53:07] profiling
+[53:08] and all of this information in a certain
+[53:10] sense
+[53:11] can be fed to the hardware via special
+[53:14] instructions
+[53:16] right if the hardware has a value
+[53:18] predictor
+[53:19] and instructions have been exposed to
+[53:21] software to program it
+[53:23] so in that sense you will see that your
+[53:25] accuracy will improve
+[53:26] substantially so i would advise all the
+[53:29] viewers to take a look at the program
+[53:32] sorry not g prof what does g prof do and
+[53:36] not tell you now
+[53:37] but you take a look at it you will get
+[53:39] to know what it does
+[53:41] so it is something on these lines along
+[53:43] profiling but what it does you explore
+[53:45] on your own
+[53:48] ah this is the last slide in this
+[53:50] section
+[53:51] where we discuss the use of confidence
+[53:53] bits
+[53:55] so as you have seen we have predicted a
+[53:56] lot of things
+[53:58] but of course our prediction should we
+[54:01] predict all the time because many times
+[54:03] unlike branches where we are forced to
+[54:05] predict in many cases we need not
+[54:09] so we can have a separate confidence
+[54:11] table which will predict the confidence
+[54:14] in the sense that how strong will the
+[54:15] prediction be and this can use saturated
+[54:17] counters
+[54:19] so we can say that certain things can be
+[54:21] predicted with high confidence
+[54:24] if historically
+[54:27] they have been very predictable
+[54:29] otherwise we say that they are low
+[54:31] confidence
+[54:33] and then of course we will have a
+[54:34] predictor table as we have seen we enter
+[54:36] the pc we get the prediction
+[54:40] so we first use the confidence table to
+[54:42] find out if it makes sense to predict
+[54:44] simultaneously we also predict the
+[54:46] predictor table can use you know a
+[54:48] single value
+[54:49] can use strides we can have complicated
+[54:52] predictor tables that use the last k
+[54:54] values and try to predict on the basis
+[54:56] of that
+[54:57] so these things can be arbitrarily
+[55:01] but the question is that whether we
+[55:03] should use a predicted value or not
+[55:06] we can use the separate confidence
+[55:08] predictor to actually tell us
+[55:10] all right and this is an important
+[55:13] augmentation to our predictive
+[55:16] prediction mechanisms because
+[55:20] we don't want to unnecessarily predict
+[55:21] low confidence stuff
+[55:23] and just lose cycles right that would be
+[55:25] really bad
+[55:26] once the results are available we update
+[55:28] both the confidence as well as the
+[55:30] predictor table
+[55:32] and of course if the results are
+[55:33] available we also know whether we made a
+[55:35] mistake or not
+[55:36] so we recover with a replay flush
+[55:41] next we will discuss replay mechanisms
+[55:43] where we show
+[55:44] how we recover from these
+[55:48] misprediction misspeculated and
+[55:50] speculation related faults you

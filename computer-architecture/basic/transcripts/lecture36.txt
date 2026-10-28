@@ -1,0 +1,1235 @@
+[00:00] [Music]
+[00:00] n
+[00:35] welcome back let us discuss the details
+[00:37] of the memory system let's start with a
+[00:40] mathematical model of what uh the CPI of
+[00:43] a processor will be if we have a memory
+[00:46] system with caches and uh cach misses
+[00:49] then we'll discuss the different kinds
+[00:50] of misses and what can be done about
+[00:54] them so let us compute the CPI of a
+[00:57] pipeline that has misses in the cache
+[01:01] hierarchy so let CPI be the actual
+[01:06] CPI and let CPI ideal be the CPI with an
+[01:10] ideal memory system where every memory
+[01:12] access takes one cycle and every memory
+[01:15] access is a hit so if this is the ideal
+[01:20] CPI let the stall
+[01:22] rate uh be the number of
+[01:26] stalls that we have
+[01:30] uh per instruction right so per
+[01:34] instruction uh what is the rate of
+[01:36] stalls that we have so for example if
+[01:39] let's say for every 10 instructions one
+[01:41] of the instructions stalls then the
+[01:43] stall rate is 1 in
+[01:45] 10 and let stall Cycles be the number of
+[01:49] cycles that we waste because of the
+[01:52] stall so let us assume that uh if so the
+[01:55] ideal CPI is one uh which is the case
+[02:00] maybe a single cycline single cycle
+[02:03] processor the stall rate is 1 in 10 and
+[02:07] for every stall uh we on an average we
+[02:11] waste three
+[02:12] Cycles then uh the CPI is 1+ 3x
+[02:19] 10 which is
+[02:25] 1.3 so this can also be said this is CPA
+[02:28] idal so the installed rate so if we
+[02:32] assume that every in instruction that
+[02:34] goes to
+[02:35] memory uh can potentially stall so we
+[02:39] can then say that the stall rate is uh
+[02:42] so we can equate this and this FM is the
+[02:45] fraction of memory
+[02:48] instructions and uh the St number of
+[02:50] stall Cycles so so if let's say all the
+[02:52] memory instructions hit in the L1 cache
+[02:56] then the stall cycle are
+[02:57] zero but let's say on an average if uh
+[03:02] you know for all the memory instructions
+[03:04] the average memory access time uh
+[03:07] aat uh instead of one Cycles is 1.1
+[03:11] Cycles then we compute the number of
+[03:14] stall Cycles as average memory access
+[03:17] time minus the time it takes to
+[03:21] uh perform an ideal access which is one
+[03:24] cycle so in this case it is 1.1 - 1 uh
+[03:28] which is 0.1
+[03:31] so as a result and assume that if let's
+[03:34] say 30% of the instructions are memory
+[03:36] instructions so the CPI will be CPI
+[03:39] ideal
+[03:40] plus3 * .1 so let me discuss this
+[03:45] equation in a different
+[03:51] light so what we are essentially trying
+[03:53] to do here in uh the first line is that
+[03:57] uh we are trying to compute this CPI
+[04:00] with a non- ideal memory system so for
+[04:02] that what we do is first we get the CPI
+[04:05] for an ideal memory system so this can
+[04:07] include pipeline stalls and everything
+[04:09] else but the only assumption here is uh
+[04:13] that the memory
+[04:15] system uh per se uh has hits in one
+[04:20] cycle then uh we we use the parameter
+[04:25] stall rate as the fraction of
+[04:27] instructions uh that actually stall
+[04:30] and for each stall how many cycles it is
+[04:32] it that we waste so this essentially
+[04:35] gives us the number of pipeline bubbles
+[04:37] so as we have seen in the previous
+[04:39] chapter we can compute the CPI in this
+[04:42] manner so what we do now for the memory
+[04:45] system uh we take this term over here
+[04:49] and replace it with an equivalent term
+[04:52] which is this so we consider the
+[04:54] fraction of memory instructions in the
+[04:56] program and multiply them uh uh and
+[05:00] multiply this fraction with the average
+[05:03] number of stall cycles per memory
+[05:05] instruction so this will give us the
+[05:07] total uh stall cycles per
+[05:10] instruction and uh so the average number
+[05:12] of stall cycles per memory instruction
+[05:15] is the average memory access time minus
+[05:19] one why minus one uh the reason that we
+[05:23] subtract one is because we assume that
+[05:25] every memory
+[05:27] instruction will take one cycle
+[05:30] and this one cycle is folded into this
+[05:32] CPI over here so we need not do double
+[05:35] counting and consequently we can compute
+[05:38] the stall cycles for memory instructions
+[05:42] as a at average memory access time minus
+[05:45] one and if we multiply the average stall
+[05:47] cycles per memory instruction with the
+[05:52] instructions we will get the average
+[05:55] stall cycles per
+[05:58] instruction so then we will add it to
+[06:00] the CPI so essentially one thing that we
+[06:03] see is that as the fraction of memory
+[06:05] instructions increase the CPI will
+[06:07] increase the performance will go down
+[06:10] and similarly the memory access time
+[06:12] increases then also the CPI will
+[06:14] increase now why will the memory access
+[06:17] time increase it will increase if there
+[06:20] are more misses in the cache hierarchy
+[06:22] we need to go lower in the memory
+[06:25] hierarchy and uh we need to fetch data
+[06:28] this will increase inrease our overall
+[06:31] access time and this will increase our
+[06:33] CPI consequently
+[06:36] make uh
+[06:38] the processor run
+[06:40] slower now let's try to compute the
+[06:43] average memory access time so the
+[06:45] average memory access time can be
+[06:48] computed as follows so let's take the
+[06:50] hit times every instruction needs to go
+[06:52] via the L1 cache so let's consider the
+[06:56] time the hit time of the
+[06:58] L1 so this will be added for every AIS
+[07:01] irrespective of the fact whether it's a
+[07:03] hit or a miss so a fraction of the
+[07:07] accesses that go to the L1 cache will
+[07:10] actually miss in the L1
+[07:12] cache and for all of the all of those
+[07:15] misses we need to pay a Miss penalty
+[07:18] which is the number of Cycles it takes
+[07:21] uh to go down the memory hierarchy and
+[07:23] fetch a value and write it back to
+[07:27] L1 so the L1 Miss penalty can further be
+[07:32] broken down as
+[07:34] follows so the L1 Miss penalty
+[07:36] corresponds to this quantity so let's
+[07:39] take a look at
+[07:40] it so the average memory access time is
+[07:43] again the L1 hit time plus the L1 Miss
+[07:46] rate multiplied with so in L1 Miss
+[07:48] penalty all the accesses that Miss in L1
+[07:52] cache go to the L2 C so we have a
+[07:56] similar formula for the L2 cache
+[08:01] for every L2
+[08:03] axis we have uh L2 hit time because
+[08:07] irrespective of a hit or miss uh we will
+[08:11] take some time to figure out whether
+[08:13] it's a hit or miss so this is the L2 hit
+[08:16] time plus uh we will have you know some
+[08:20] of these accesses will again miss in L2
+[08:22] so it'll be L2 Miss rate and similar to
+[08:25] an L1 Miss penalty we'll have an L2 Miss
+[08:28] penalty which is an number of Cycles it
+[08:30] takes to go down the memory hierarchy
+[08:32] and fetch a
+[08:34] value so uh this is pretty much the
+[08:38] formula for the average memory access
+[08:40] time and of course we can go down so
+[08:42] I'll have that in the next few slides
+[08:44] but the important thing to note here
+[08:47] that irrespective of a hit or a Miss we
+[08:49] need to spend some time this is the hit
+[08:52] time and uh then you know some a
+[08:56] fraction of the accesses will miss and
+[08:59] and for the misses we need to pay a Miss
+[09:02] penalty so when we are actually
+[09:04] Computing the stall penalty which is the
+[09:06] quantity in the
+[09:08] previous uh equation which is pretty
+[09:12] much this the stall
+[09:14] penalty uh this is uh so so if you if
+[09:18] you consider I'm sorry it's not this
+[09:19] quantity it is this
+[09:21] quantity this
+[09:31] it is this
+[09:35] quantity so this quantity will be the
+[09:37] average memory access time minus the L1
+[09:40] hit time so the reason that we Define it
+[09:43] like this is because we assume that in
+[09:46] an ideal cache sorry in an ideal
+[09:49] processor all the instructions will hit
+[09:51] in the L1 so the L1 hit time will be
+[09:54] folded into the computation of CPI ideal
+[09:57] so we need not consider it again in in
+[09:59] the sense we need not consider it as a
+[10:01] penalty so as a result it should be
+[10:03] ignored so it's not it's not a stall
+[10:06] penalty right so it should be ignored
+[10:08] when we are Computing the stall penalty
+[10:10] the stall penalty will essentially be
+[10:12] the average memory access time minus the
+[10:15] L1 hit time which means that this
+[10:18] quantity over here is the stall penalty
+[10:21] and this quantity can further be
+[10:22] expanded as L1 Miss rate time L2 hit
+[10:26] time plus L2 Miss rate time L2 Miss pen
+[10:30] so what we can do is that we can further
+[10:34] uh extend this
+[10:36] equation so uh as we had shown in the
+[10:38] last Slide the average memory access
+[10:41] time is L1 hit
+[10:43] time plus the L1 M rate times the L1
+[10:46] Miss
+[10:47] penalty the L1 Miss penalty further is
+[10:50] the L2 hit time plus the L2 Miss rate
+[10:53] times the L2 Miss penalty so you know
+[10:56] every single term is getting defined
+[10:59] like this and
+[11:01] furthermore the L2 Miss
+[11:04] penalty is after the L2 if you have an
+[11:07] L3 cache is the L3 hit time plus L3 Miss
+[11:11] rate time L3 Miss penalty so if you have
+[11:14] n levels in the memory hierarchy right n
+[11:16] levels of caches so for the last level
+[11:20] so for the second last level the Ln
+[11:22] minus one miss penalty will be the Ln
+[11:25] hit time because we're assuming that the
+[11:27] last level of the memory hierarchy
+[11:29] contains all the lines and as a result
+[11:31] its Mis rate is zero right so this is
+[11:35] the main memory that we have been
+[11:36] talking about its Mis rate is zero so
+[11:39] basically this quantity you know this
+[11:41] mis rate quantity over here becomes zero
+[11:43] so as a as a result uh for the last
+[11:47] level uh the Mis penalty of the second
+[11:49] last level is the hit time of the last
+[11:52] level because we are assuming that no
+[11:54] accesses Miss over there so this further
+[11:57] tells us
+[11:59] that if we know the Mis rates at each
+[12:02] level and also the hit times at each
+[12:04] level we'll be able to compute the
+[12:06] average memory access
+[12:09] time let me now Define some
+[12:12] terms so the M rate that we have been
+[12:15] using is called the local Mis rate so it
+[12:18] is equal to the number of Misses in a
+[12:20] cache at level I divided by the total
+[12:23] number of accesses at level I so let me
+[12:26] give an example let us assume that we
+[12:28] have an L1 cache and we have an L2
+[12:36] cache let's assume 100 accesses go to
+[12:40] the L1
+[12:41] cache and then 90 of them have a hit in
+[12:46] L1 but 10 go to the
+[12:48] L2 and from the L2 to the main
+[12:57] memory five accesses
+[13:01] so at the L2 the local Miss rate is
+[13:04] essentially so it gets
+[13:05] 10 uh so it has five misses and it gets
+[13:09] 10 accesses so the local Miss rate is
+[13:13] 50% in comparison we can Define the
+[13:16] global Miss rate it is equal to the
+[13:18] number of Misses in a cach at level I
+[13:21] divided by the total number of memory
+[13:23] accesses so the global Miss rate will
+[13:25] essentially be for the L2 cache 5
+[13:28] divided by 100
+[13:30] so what is typically of more importance
+[13:32] is the local Miss rate which is 5
+[13:35] divided by 10 or 50% and that's what we
+[13:37] have been using in all our formula but
+[13:40] it's still important to uh you know know
+[13:43] this term Global Mis rate which is the
+[13:45] misses at a certain level divided by the
+[13:48] total number of memory
+[13:50] accesses now let's define uh the term
+[13:53] called working set so before I Define
+[13:55] that I want to uh talk about how
+[13:57] typically a program works
+[14:00] so the way that a program works is we
+[14:02] typically have you know multiple for
+[14:04] loops and while Loops so we have lot of
+[14:06] iterations and
+[14:08] then we move to another section of the
+[14:10] program again we have a lot of for Loop
+[14:12] iterations we move to another section
+[14:15] and so on and so forth so maybe in in
+[14:18] this uh part uh we will access one array
+[14:22] or a group of arrays so for a certain
+[14:24] you know fixed period of time we'll be
+[14:25] accessing some data again we'll move to
+[14:28] another part of the program will be
+[14:29] accessing some other data so in a given
+[14:32] time interval the amount of memory that
+[14:34] a program
+[14:35] accesses this amount of memory is called
+[14:38] a working set it's called The Working
+[14:40] set of the program at that particular
+[14:42] point in time so for example let's
+[14:47] assume
+[14:49] that a given
+[14:52] program uh
+[14:54] accesses uh typically one megabytes or 2
+[14:57] megabytes of data
+[14:59] and it does not access more than that we
+[15:01] can say that the working set is 2
+[15:04] megabytes let's assume that one more
+[15:06] program accesses 2 megabytes for some
+[15:09] period of time then in another period of
+[15:11] time it accesses 4 megabytes you know
+[15:14] four it accesses 4 megabytes meaning
+[15:16] that uh it has Loops that sort of scan
+[15:19] through that entire 4 megabytes of data
+[15:22] and then again it accesses
+[15:25] to like that so we can see at this point
+[15:27] of time the working set is 2 megabytes
+[15:29] at this point the working set is 4
+[15:31] megabytes at this point the working set
+[15:33] is 2 megabytes and so on so essentially
+[15:37] you know this is again an approximate
+[15:38] definition there's nothing formal about
+[15:40] it but roughly in a small time interval
+[15:43] in execution of a program the amount of
+[15:46] memory that is accessed is called as the
+[15:49] working
+[15:50] set so what we want is that we want the
+[15:52] working set to fit in the caches such
+[15:56] that most of the data that a program
+[15:57] would require would be available in the
+[16:05] caches now given the fact that we have
+[16:08] seen this let us uh look at misses and
+[16:12] what can be done to them done with them
+[16:15] and let us try to classify the types of
+[16:18] Misses that happen in
+[16:21] uh uh you know in in in a memory system
+[16:25] so these are called three C's actually
+[16:27] because you know the three kinds of
+[16:29] misses all three start with the letter c
+[16:32] so these are called the three
+[16:36] C's so the first category of Misses
+[16:40] are compulsory
+[16:44] misses so these are misses that happen
+[16:46] when we read in a piece of data for the
+[16:48] first time so they're also called cold
+[16:54] misses so compulsory misses or cold
+[16:57] misses will happen uh when you know when
+[17:00] for example when a program is starting
+[17:02] up uh the none of the data will be in
+[17:06] the caches so we will need to read it
+[17:08] for the first time and this these misses
+[17:11] have to happen so they're called
+[17:12] compulsory misses also called cold
+[17:14] misses because
+[17:15] essentially when a program starts it's
+[17:19] cold next we can have conflict
+[17:23] misses so conflict messes like
+[17:27] this that these are misses that occur
+[17:30] due to a limited amount of associativity
+[17:33] in a cache so for example assume that a
+[17:35] cach is four-way associative which means
+[17:37] that in each set there are four ways or
+[17:40] four
+[17:43] entries the access of the program is
+[17:46] such that maybe uh you know you very
+[17:49] frequently access five separate
+[17:51] addresses and five separate cach lines
+[17:53] that are mapping to this set so since
+[17:56] this set can only contain four entries
+[17:58] and there are five accesses to five
+[18:00] separate blocks or blocks or cach line
+[18:03] same
+[18:03] thing uh one of them will need to get
+[18:07] displaced the other one will come in so
+[18:08] we'll have a lot of these
+[18:10] evictions because only you know four out
+[18:12] of those five can be accommodated so
+[18:14] we'll have a lot of evictions and what
+[18:16] is happening there is a conflict there's
+[18:18] an address conflict inside a set so this
+[18:22] is known as a conflict
+[18:25] Miss so uh the last category of Misses
+[18:28] are capacity misses so assume that you
+[18:31] know the working set of a program is 10
+[18:33] kiloby and the size of the cach is 8
+[18:36] kilobytes so in this case the entire
+[18:39] working set will not fit so you know
+[18:41] assume that there's a 10 kiloby long
+[18:42] array and we doing a lot of operations
+[18:44] on that array but our cach is only 8
+[18:47] kiloby so the entire array will not fit
+[18:50] and as a result we'll have a lot of cash
+[18:53] misses so this is called a capacity Miss
+[18:56] so what are the three kinds of Misses
+[18:57] again we have compulsory misses which
+[19:01] happen when we are reading in a program
+[19:03] for the first time and uh we'll have a
+[19:06] Miss we'll have conflict misses which
+[19:09] are basically because our cash ways have
+[19:12] limited
+[19:13] associativity and hence you know we'll
+[19:16] have some conflicts because we cannot
+[19:18] store a lot of blocks in one cash we're
+[19:22] limited by the associativity and as a
+[19:24] result if something new comes in
+[19:25] something old has to go out and we have
+[19:28] capacity misses where if the working set
+[19:30] exceeds the size of the cash then uh
+[19:34] we'll have evictions Replacements and
+[19:36] consequently higher cash
+[19:39] misses so let us look at schemes to
+[19:41] mitigate misses or to reduce the number
+[19:43] of
+[19:45] Misses so compulsory misses so what is
+[19:48] the idea one way of doing reducing this
+[19:50] is we can increase the block size so
+[19:53] let's say instead of a 64 byte block
+[19:56] size I make it 120
+[20:01] byte block size then this means that in
+[20:04] one go we are fetching in more data from
+[20:06] the lower level and because of spatial
+[20:09] locality the reason that we made blocks
+[20:12] in the first place it is possible that
+[20:14] number of Misses might go down because
+[20:17] you will access a lot of lot more data
+[20:20] you'll find within the same
+[20:23] block and this would not have been
+[20:25] possible had the block sizes been
+[20:27] smaller so let me an example so let's
+[20:30] assume the block size is 64 so we fetch
+[20:32] in 64 bytes and after that we need to
+[20:35] access the next 64 this is not there in
+[20:38] the cach so we'll have a cach Miss but
+[20:40] assume that we fetched both the 64
+[20:43] consecutive 64 bite blocks together and
+[20:45] your block size is
+[20:47] 128 then essentially all the 128 bytes
+[20:50] are available in the
+[20:51] block as a
+[20:53] result uh we will not have you know the
+[20:57] cash M that we had for the second block
+[21:00] so this can work the other is let us try
+[21:03] to guess let us have a small circuit
+[21:06] that tries to guess the memory locations
+[21:08] that will be accessed in the near future
+[21:10] so you know maybe if you're accessing an
+[21:12] array so let's consider a typical array
+[21:18] access so we considering sorry for
+[21:20] drawing a slanted
+[21:23] array
+[21:25] uh so let's assume that we have one
+[21:27] program you know it's start sort of
+[21:28] trying to do bubble sort so then it'll
+[21:31] uh we are accessing the array elements
+[21:33] sequentially one after the
+[21:40] other so if you have a small circuit
+[21:42] over here which is sort of analyzing the
+[21:45] array accesses analyzing the addresses
+[21:47] of the array it'll be able to predict
+[21:49] that if you have reached this
+[21:52] point then uh most likely uh and since
+[21:56] we're accessing them in sequence most
+[21:58] likely you know we will access the next
+[22:00] few locations so it can guess that the
+[22:02] next few locations will be accessed
+[22:04] because we're going uh consecutively
+[22:06] you're going in increasing order of
+[22:08] array locations so it can guess and
+[22:11] fetch them from the lower level in
+[22:12] advance and this is called prefetching
+[22:15] pre fetching means guess predict what
+[22:17] you'll access in the future and fetch
+[22:19] the data from the lower levels of the
+[22:21] memory system which means that if we
+[22:24] have an L1 cache
+[22:30] and we have an L2
+[22:39] cache and we have a small uh prefetching
+[22:43] circuitry over here so it can look at
+[22:47] all the accesses that are going into the
+[22:48] L1 cache and uh on the basis of that
+[22:52] make a guess that uh what kind of
+[22:55] accesses are required so it can then uh
+[22:58] you know put in requests of its own to
+[23:00] the L2 cache and that data will be again
+[23:03] be supplied to the L1 cache so hopefully
+[23:05] this can reduce the case the the number
+[23:10] Misses uh in the
+[23:16] L1 now let us uh talk of a scheme to
+[23:20] reduce the number of conflict
+[23:22] misses so in this case the simplest
+[23:26] solution uh the the the simplest
+[23:29] solution is to increase the
+[23:30] associativity of the cash say if it's so
+[23:32] because the problem is essentially
+[23:34] coming because of
+[23:35] associativity if we have a limited
+[23:37] four-way associative cache and five
+[23:39] lines are mapping to the same set we
+[23:42] will have misses so let's increase it
+[23:44] from fourway to 8way which means have
+[23:46] eight uh entries in each
+[23:49] set well this is easier said than done
+[23:51] because more are the number of ways more
+[23:54] is the power consumption because of more
+[23:56] comparisons and more is the L latency uh
+[24:00] again because of the fact that we have
+[24:01] more circuits and you know there is a
+[24:03] certain slowdown that is
+[24:05] induced what we can do instead is that
+[24:09] we can use a smaller fully associative
+[24:12] cache called a victim cache so the idea
+[24:15] of a victim cache is like this that any
+[24:17] line that gets displaced on the main
+[24:19] Cache can be put in the victim cache so
+[24:22] what we can have is we can have an L1 we
+[24:25] can have an
+[24:26] L2 of course the communicating but we
+[24:29] can have very very small cache over here
+[24:31] called victim cache and we can have many
+[24:33] tics to you know put data here but
+[24:36] essentially anything that is being
+[24:37] thrown out of the L1 Cache can be put in
+[24:40] the victim cache you know it's a victim
+[24:42] so it can be put over here and
+[24:45] subsequently any read access needs to
+[24:47] check in both the L1 and the victim and
+[24:50] once when the victim fills up we can
+[24:52] evict something here and we can make it
+[24:55] be sent to L2 so there are certain
+[24:57] advantages of the victim cach I'll
+[24:59] discuss this in the subsequent
+[25:01] slides uh let's take a a look but before
+[25:04] discussing that let me take a look at
+[25:06] the third point which is to write
+[25:09] programs in a cache friendly way what
+[25:12] this basically means is that we can you
+[25:16] know at either at the level of the
+[25:18] programmer or at the level of the
+[25:20] compiler
+[25:21] we so this is mainly at the level of the
+[25:24] compiler actually so when I say write
+[25:25] programs it's not that much from a
+[25:27] programmer's point of view view but it's
+[25:28] from the point of the view of the
+[25:31] compiler that allocate your data
+[25:33] structures in such a way that they are
+[25:35] fairly balanced across all the ways of
+[25:37] the cach so no all the sets of the cach
+[25:40] so no set is unduly stressed right
+[25:42] there's no amount of undue
+[25:44] traffic uh on each set and this will
+[25:48] reduce so you know this will sort of
+[25:50] reduce the pressure on anyone set and
+[25:52] decrease uh the number of
+[25:56] Misses so let's discuss the cach in a
+[25:59] little bit of more
+[26:00] detail so let's consider the first case
+[26:04] where we send a request and we find the
+[26:07] data in the L1 cache right uh so
+[26:10] basically in this case nothing needs to
+[26:12] be done we read the data in L1 cache and
+[26:15] the data goes back to the
+[26:18] processor now let's assume that uh we
+[26:22] don't find the data in the
+[26:24] L1 so in so why will we not find the
+[26:27] data in L1 because it's not there but
+[26:30] let's assume that previously some line
+[26:32] was thrown out from L1 instead of
+[26:34] writing to the L2 we wrote it to this
+[26:36] small fully associative cache called the
+[26:39] victim cache which is small and fast so
+[26:42] in this case we first check in L1 or we
+[26:44] check in L1 and victim parall it doesn't
+[26:46] matter and if we find it in the victim
+[26:49] cache we take it and we give it to the
+[26:51] processor so once again we find the data
+[26:54] in the victim cache we take it and we
+[26:57] give it to the the processor if we don't
+[27:00] find the data in the L1 and the victim
+[27:02] well then we need to go to the L2 cache
+[27:05] and give it to the processor so so
+[27:09] what's the advantage of a victim cash so
+[27:11] the advantage is like this right so
+[27:14] there is so so so let's look at uh you
+[27:16] know maybe some sizes the L1 is 8
+[27:20] kiloby to L2 is 128
+[27:23] kiloby the victim cache might just
+[27:25] contain eight
+[27:27] entries and if one entry is 64
+[27:31] bytes so eight entries will
+[27:41] be 512 bytes or essentially
+[27:46] half a
+[27:49] kilobyte so half a kilobyte is not
+[27:52] really a lot right it's not you know
+[27:54] tremendously increasing the size but it
+[27:56] can make a fair amount of difference and
+[27:58] the reason that I say so is like this so
+[28:00] let us assume that you know as we have
+[28:02] been seeing in a running example we had
+[28:04] 128
+[28:06] entries so if we have a two-way
+[28:09] associative cache so we'll have 64
+[28:15] sets so if we have 64
+[28:19] sets so let me maybe draw them so you
+[28:23] consider let's consider a two-way set
+[28:24] associative cache with 64 sets and each
+[28:28] each set has two lines right each set
+[28:31] has two cache
+[28:34] blocks so the ideal case would be when
+[28:37] uh the entire access is balanced so each
+[28:39] of the set gets roughly a similar number
+[28:42] of cache
+[28:44] accesses however uh if uh that is not
+[28:48] the
+[28:50] case uh
+[28:52] then uh what should be done uh is well
+[28:56] then what will happen is that you know
+[28:58] maybe there will be some such sets which
+[29:00] are pretty unlucky so maybe could be
+[29:02] this one and this one where it has you
+[29:05] know a fairly large number of accesses a
+[29:07] disproportionately large number of
+[29:09] accesses go to these
+[29:10] two so there'll be a fair amount of
+[29:13] conflicts in these two sets and be some
+[29:15] conflict
+[29:16] misses so if some of those lines can be
+[29:20] accommodated in the victim cache so the
+[29:23] victim cache mind you as half a KB of
+[29:25] size in this case then we are we can
+[29:28] sort of you know logically think that
+[29:30] for some of the sets that have high
+[29:32] contention we have in a sense increased
+[29:34] their
+[29:35] size or in other words what it means is
+[29:39] that for some of the frequently accessed
+[29:42] lines that we still have to throw away
+[29:44] from our cache because of limited
+[29:47] associativity we'll find another home
+[29:49] called the victim cach which is again a
+[29:51] very small and very fast structure and
+[29:54] this will hopefully have an effect which
+[29:57] is is far higher than you know what its
+[30:00] size would otherwise predict for example
+[30:03] a half a KV cash when especially
+[30:05] sandwich between an 8 KB and a 128 KB
+[30:08] cache will have a minimal effect but if
+[30:11] we design the algorithm to send uh cash
+[30:15] lines to EV victim cash slightly
+[30:18] judiciously and mainly Target lines that
+[30:20] are evicted from highly accessed or
+[30:22] highly contended sets then most likely
+[30:25] these lines will be accessed more
+[30:27] frequently in the future fut because of
+[30:28] you know temporal and special locality
+[30:30] effects and as a
+[30:33] result the victim cache might actually
+[30:35] play a significant role in in uh
+[30:39] appreciably reducing the number of
+[30:41] accesses that go to the L2 cache the
+[30:42] number of memory requests that go to the
+[30:44] L2 cache so as a result a victim Cache
+[30:47] can prove to be very useful because uh
+[30:51] you know it's not significantly adding
+[30:53] to the access time and L1 takes cash
+[30:56] takes one cycle to access and we access
+[30:59] the L1 and the victim parall or we
+[31:01] access the L1 first and the victim later
+[31:04] uh we will still uh you know the acccess
+[31:06] time to victim cache will still be
+[31:08] around you know additional two cycles uh
+[31:11] but uh you know as compared to that an
+[31:13] L2 cach can take much longer to access
+[31:15] somewhere between 10 to 15 Cycles so
+[31:18] there is still a significant amount of
+[31:20] speed up and the victim cash can capture
+[31:23] those those lines which are otherwise
+[31:25] frequently used but because of cont
+[31:27] conflict reasons all of them can cannot
+[31:30] be accommodated in the same set we will
+[31:33] uh definitely see some benefit that's
+[31:35] the reason the victim cache idea is very
+[31:38] popular and it is used uh it is used uh
+[31:43] uh you know it is a very common artifact
+[31:46] in modern
+[31:49] processors now let's discuss some other
+[31:51] schemes to mitigate misses so let's look
+[31:53] at capacity misses so we have already
+[31:56] discussed compulsory so what was a
+[31:58] scheme for mitigating compulsory misses
+[32:01] it
+[32:01] was either increase the block size or
+[32:04] prefetch the scheme to mitigate conflict
+[32:07] misses was you know increase
+[32:09] associativity that is easier said than
+[32:10] done because a higher associativity
+[32:13] means you know more latency more time
+[32:15] and more power so in comparison a victim
+[32:19] cache could be
+[32:21] used and uh the victim cache as we just
+[32:26] you know discussed if if it is if we can
+[32:29] design an algorithm so there are many
+[32:31] algorithms in the literature so the
+[32:33] there are many in research papers uh
+[32:36] which can uh so which
+[32:42] essentially
+[32:45] um ensure that some of the most
+[32:49] frequently accessed lines which cannot
+[32:51] be accommodated in L1 cache find a place
+[32:53] in the victim cache we can see
+[32:56] significant improvements in in the
+[32:58] performance of the memory
+[33:01] system all right so for capacity misses
+[33:05] we again have a simple uh algorithm the
+[33:08] simplest thing is increase the size of
+[33:11] cache that is again easier said than
+[33:13] done the reason being that a larger
+[33:15] cache is also slower and more
+[33:16] inefficient in terms of power or we can
+[33:19] use better prefetching techniques so in
+[33:22] this case what can happen is if you can
+[33:24] predict and fetch what is needed in the
+[33:26] future so hopefully that will uh sort of
+[33:31] reduce the impact of having a smaller
+[33:33] cache but prefetching is per se not a
+[33:36] part of this course it's a part of an
+[33:37] advanced course in computer
+[33:40] architecture so let's now discuss some
+[33:42] thumb
+[33:43] rules so the first so so what is a thumb
+[33:46] rule well a thumb rule is something that
+[33:48] people have observed a thumb rule is
+[33:51] something that people use but it does
+[33:53] not have a theoretical proof it is just
+[33:55] you know something that has come from
+[33:57] observation
+[33:58] and that's the reason it's called a rule
+[33:59] of thumb it's not a proof I mean it does
+[34:01] not have a
+[34:02] proof so one thumb rule is at the Mis
+[34:05] rate is proportional to the inverse of
+[34:09] the square root of the cache
+[34:11] size right which means that if I this is
+[34:14] called a square root rule so which means
+[34:16] that if I double the cache
+[34:19] size uh or if I'm sorry if I increase
+[34:22] the cache size by four times then I'll
+[34:24] reduce the Miss rate by a factor of 1 by
+[34:26] two so I'll reduce it by by 50% so the
+[34:29] Miss rate is 10% and I want to make the
+[34:31] Miss rate 5% I need to increase the cash
+[34:35] size by four times so you know as I said
+[34:38] is an approximate rule so might not be
+[34:41] four times might be three and half might
+[34:43] be five 5 and half but it's a
+[34:45] good you know it's a good uh strategy to
+[34:49] at least
+[34:50] remember the other is the associativity
+[34:53] rule so this says so this is again also
+[34:56] approximate no theoretical proofs just
+[34:59] has been
+[35:00] observed uh you know observed in
+[35:02] simulations in actual processors and
+[35:05] it's also you know very approximate in
+[35:07] nature so the associ associativity rule
+[35:10] says that doubling the
+[35:12] associativity is almost the same as uh
+[35:16] doubling the cash size having the
+[35:18] original associativity to give an
+[35:20] example a 64 KB 4-way cache will roughly
+[35:24] have the same Mis rate very similar Mis
+[35:27] rate
+[35:28] as the 128 KB two-way cache right so
+[35:31] what are we doing we are doubling the
+[35:33] cache size and we reducing the
+[35:35] associativity by
+[35:37] half right and so uh so in this case uh
+[35:42] or if you go from this way to this way
+[35:43] doubling the
+[35:46] associativity uh from 2way to 4way is
+[35:49] the same
+[35:50] as you know doubling you know keep the
+[35:53] original associativity but double the
+[35:55] cash size
+[35:59] so uh well uh these two rules are
+[36:01] approximate can be used
+[36:05] uh you know whenever
+[36:08] required let's now move to the next
+[36:11] slide where we will uh look at uh what
+[36:15] is called software prefetching so there
+[36:17] are two kinds of uh prefetching
+[36:19] algorithms one is software prefetching
+[36:22] and the other is Hardware
+[36:24] prefetching so in Hardware prefetching
+[36:26] what happens is that that we have a
+[36:28] hardware circuit that looks at the
+[36:30] memory accesses and then tries to guess
+[36:32] what we'll access in future and it tries
+[36:35] to uh fetch that from the lower levels
+[36:37] of the memory system we can instead do
+[36:40] it in software and it's very easy so we
+[36:42] can actually augment our C code to fetch
+[36:46] things from the memory system in advance
+[36:48] well before we actually use them so
+[36:50] let's take a look at uh this program
+[36:53] over here
+[36:58] so in this uh particular function uh
+[37:01] what we try to do is that we consider an
+[37:05] array uh so we consider a data array and
+[37:08] we consider an array with the indices uh
+[37:11] called the array
+[37:12] vals so we uh iterate through each and
+[37:15] every entry of the vals array so we
+[37:17] assume that there are n entries where N
+[37:19] is a predefined global constant for each
+[37:22] of the N entries starting from 0 till n
+[37:25] minus one we access each entry of the
+[37:31] valary and in uh each entry of this uh
+[37:35] Val
+[37:37] array what we do uh is that uh so so we
+[37:42] access so so we assume that each entry
+[37:43] of the Val array contains an index we
+[37:46] take that index and we access the data
+[37:49] array and whatever number is stored over
+[37:52] there we add it to the sum and finally
+[37:55] we return the sum so this is called the
+[37:57] add all
+[37:58] function so we analyze this function uh
+[38:02] we'll realize that this function neither
+[38:04] has temporal
+[38:06] locality nor does it have spatial
+[38:08] locality so uh why doesn't it have
+[38:11] temporal locality well so this will
+[38:13] again depend on what is contained within
+[38:15] the Val aray but if it contains fairly
+[38:18] random elements so the same uh elements
+[38:21] or similar elements similar blocks are
+[38:23] not being accessed frequently over time
+[38:26] in the same period of time
+[38:28] so as a result temporary uh temporal
+[38:30] locality is not there spatial locality
+[38:34] is also not there because uh you know
+[38:37] consecutive elements or elements with
+[38:39] nearby
+[38:40] addresses are also not being accessed
+[38:44] well the vals aray is being accessed so
+[38:45] there is special locality in terms of
+[38:48] accessing the vals array but not in
+[38:50] terms of accessing the data array right
+[38:52] so the vals array we are accessing
+[38:55] vals Z
+[39:01] then vals one and so on but assume Val Z
+[39:06] contains 10 vals one is
+[39:10] 32
+[39:11] uh Val 2
+[39:15] is uh
+[39:18] 120 then uh the addresses that we are
+[39:21] accessing are 10 32 and 120 which are
+[39:24] absolutely random so uh for the vals
+[39:28] array we have special locality because
+[39:30] they are increasing orders of array
+[39:31] indices but not for the data array and
+[39:35] for the data array we pretty much have
+[39:37] very random
+[39:39] addresses and uh so as a result even
+[39:42] spatial locality and temporal locality
+[39:45] both are not there for the data array
+[39:46] even though they are there for the vals
+[39:48] array to some extent but we and because
+[39:52] uh entries are being accessed randomly
+[39:54] in the data array we'll have a lot of
+[39:55] cache misses so this means that so such
+[39:59] kind of code you know where we have a
+[40:01] double IND Direction in the sense the
+[40:04] index of the data array is itself an
+[40:06] array element this is common this is
+[40:09] very common in scientific code is very
+[40:10] very common and it's called an irregular
+[40:13] array access and this typically has a
+[40:16] very bad cache
+[40:17] performance so what we can
+[40:20] do is that uh we can add one line which
+[40:24] will make our cache performance
+[40:25] fantastic and it'll uh so uh some
+[40:28] experiments indicate that the
+[40:30] performance of a program can even
+[40:32] increase by three times what we do is
+[40:35] that if you're using the GCC compiler on
+[40:37] Linux right this thing only holds for
+[40:39] GCC on Linux can hold for GCC on Mac
+[40:43] also but I have not tested we can use
+[40:46] the function underscore uncore builtin
+[40:48] uncore prefetch so this is a software
+[40:51] prefetch
+[40:53] instruction uh in the sense that
+[40:57] uh it
+[40:59] uh given an address it tries to prefetch
+[41:03] that data and tries to bring it to the
+[41:05] highest levels of the memory system
+[41:07] which is the L1 cach and if if the
+[41:10] address just in case is wrong or is
+[41:12] invalid it does not matter so there are
+[41:14] never any problems with the address is
+[41:15] invalid right so so that does not create
+[41:18] any problems at
+[41:20] all so what we can do is that we can
+[41:24] prefetch some address which will be
+[41:26] accessed to the Future
+[41:28] for example we can prefetch this address
+[41:30] over
+[41:31] here which is vals I + 100 so assume
+[41:34] that I'm you know in a current iteration
+[41:37] we are at vals I so after 100 more
+[41:40] iterations we'll be accessing the data
+[41:42] array entry at vals I + 100 so we can
+[41:46] prefetch that entry in the current
+[41:49] iteration by calling the function
+[41:51] underscore uncore built-in prefetch so
+[41:54] what this does so the way that this
+[41:56] works is that that we send a pointer to
+[41:58] it and so the and operator in C
+[42:01] essentially creates a
+[42:03] pointer and uh I mean it gets the
+[42:06] address the memory address so we get the
+[42:08] memory address of this element and we
+[42:10] send it to the memory system such that
+[42:13] the the and from the lower levels of the
+[42:18] memory system uh we can the data we we
+[42:22] can get the data back up to the upper
+[42:24] levels
+[42:27] uh so uh this instruction of course
+[42:29] we're adding an extra instruction so the
+[42:31] performance penalty is there but
+[42:34] hopefully by getting uh by prefetching
+[42:37] data in advance it will uh become very
+[42:40] easy uh you know not very easy but by
+[42:43] prefetching data in advance when we
+[42:45] actually access the data later we'll
+[42:48] find it at the upper levels of the
+[42:49] memory hierarchy and uh the Mis penalty
+[42:53] or the the memory access time will be
+[42:55] much much lower
+[42:58] so this is actually the case so if you
+[42:59] just run this program you know I invite
+[43:02] all the readers all the listeners to
+[43:04] write this program and test it for
+[43:06] themselves so you'll also find some of
+[43:08] these programs on the website of the
+[43:10] book and definitely inside the book also
+[43:13] so if these programs are written and
+[43:15] they are
+[43:16] tested so you will find that there is a
+[43:19] 200 to 300% Improvement in performance
+[43:22] mainly because we are prefetching data
+[43:25] and particularly this pattern is hard
+[43:27] hard to prefet in Hardware because the
+[43:29] hardware has to guess that all the
+[43:32] indices that are going into the data
+[43:34] array are actually coming from another
+[43:37] array called vals and that's pretty
+[43:40] difficult for the hardware to guess even
+[43:41] though it is possible there are uh
+[43:44] research Works in that respect but doing
+[43:47] this in software is still easier it's
+[43:49] slightly more intuitive and so what we
+[43:52] do is that for any iteration we refetch
+[43:55] data that will require 100 iterations
+[43:56] later
+[43:58] so readers can ask a question that when
+[44:00] we are towards the end of uh you know
+[44:02] when we are close to N uh then that
+[44:05] Value Plus 100 will be an invalid value
+[44:08] that is correct but we can always pass
+[44:10] an invalid address to built-in prefet it
+[44:12] will not cause any problems it will not
+[44:14] cause the program to shut down or have a
+[44:17] fault or uh you know or a segmentation
+[44:19] fault so these issues will not happen so
+[44:21] we are pretty much
+[44:25] safe now let's consider Hardware
+[44:31] we have a
+[44:33] prefetcher uh that takes a look at well
+[44:36] it can take a look at two pieces of
+[44:38] information so it can either take a look
+[44:41] at let's say the accesses to the L1
+[44:44] cache so that's one thing that it can
+[44:46] look
+[44:48] at or it can look at the misses that are
+[44:51] happening in the L1 cach okay so
+[44:54] basically it can be any one of them but
+[44:55] looking at the misses is slightly more
+[44:58] common on the basis of that the
+[45:00] prefecture can
+[45:03] decide uh which are the addresses that
+[45:05] the processor will most likely access
+[45:07] next it can then send a message to the
+[45:10] L2 cache to get in those lines to the L1
+[45:13] cach such that the processor will find
+[45:15] them ready and available so a hardware
+[45:18] prefecture it works in some cases where
+[45:20] the access stream is predictable if
+[45:23] that's not the case then we need to use
+[45:25] software prefetching
+[45:28] there are other things that we can do to
+[45:31] make uh the processor Faster by
+[45:35] essentially reducing the memory access
+[45:36] average memory access time so we can
+[45:39] reduce the hit time as well so to reduce
+[45:42] the hit time we need to use a smaller
+[45:45] and simpler cache but well having a
+[45:47] smaller and simpler cache has other
+[45:50] negative effects as well and the main uh
+[45:54] the biggest negative Point here is of
+[45:56] using a small and simpler cash that it
+[45:59] reduces the hit rate as well so this
+[46:01] trade-off needs to be kept in mind
+[46:04] additionally we can try to reduce the
+[46:07] penalty so the Miss penalty can be
+[46:09] reduced as follows that let's consider
+[46:12] right
+[46:13] misses so if we consider right misses
+[46:16] where uh you know we might write to
+[46:18] successive words in the same line uh
+[46:21] what we do is that we create a small
+[46:23] right buffer with a very small structure
+[46:25] four or eight entries just after after
+[46:27] the L1 cache so we send uh so the right
+[46:30] buffer need not be after the L1 it can
+[46:32] be between the processor and L1 as well
+[46:35] so it does not matter the concept is the
+[46:37] same so we send the rights to a fully
+[46:40] associative right buffer on an L1
+[46:43] Miss and uh so basically this
+[46:46] essentially contains multiple
+[46:53] blocks uh so then uh we do a right so
+[46:57] basically what we do is that uh if we're
+[47:00] writing to four bytes so we write some
+[47:02] part of it but the rest of the block we
+[47:04] don't know because the data has not been
+[47:06] fetched once the data is fetched from
+[47:09] the L2 cache we populate the rest of the
+[47:12] contents of the
+[47:15] block so the Insight here is that we
+[47:18] need not send and also you know at that
+[47:20] same time if let's say another request
+[47:22] comes so maybe you know let me just
+[47:25] expand this sort of put a magnifying
+[47:27] glass so let's consider each block to be
+[47:30] a 64 by
+[47:36] quantity so let us assume that the
+[47:38] processor wants to write to some four
+[47:40] bytes in the
+[47:42] middle after that the processor wants to
+[47:44] run another four bytes over here so you
+[47:47] know a stream of rights are coming so
+[47:50] the the a naive approach would be that
+[47:52] we first get the data from the L2 cache
+[47:56] and the then we uh pretty much write it
+[48:00] to the right buffer we get the data from
+[48:02] the L2 cache to the L1 cache and then we
+[48:04] do the rights but this will take time so
+[48:07] what we can instead do is that the
+[48:09] rights can uh go to an entry in the
+[48:12] write buffer so let's say we can write
+[48:14] to uh you know we can allocate an entry
+[48:17] and write four bytes similarly we if
+[48:20] another Right comes in the same for the
+[48:23] same block we can write the other four
+[48:25] bytes and we can wait for the line to
+[48:28] come from the L2 cache once it comes we
+[48:31] would have known that this chunk and
+[48:33] this chunk have already been written to
+[48:35] but the rest of the contents of the
+[48:37] block can be filled with whatever comes
+[48:40] from the L2 cache right which is
+[48:42] essentially this entire dotted region so
+[48:45] the advantage here is that we don't have
+[48:47] to wait and uh we can do our rights and
+[48:50] then we can proceed with the next
+[48:52] instructions right so in a certain sense
+[48:55] it reduces the Mis Penal of the L1 cache
+[48:58] especially when it comes to
+[49:01] wrs let us now look at reducing the read
+[49:06] penalty uh these two optimizations
+[49:08] critical word first and early restart
+[49:10] are used together so the Insight is
+[49:13] something like
+[49:14] this that the memory word that causes
+[49:17] the read write Miss uh so so basically
+[49:20] let's let me go one step uh back so
+[49:24] let's consider the size of a c cash
+[49:27] block so the size of a cache block is
+[49:29] typically 64
+[49:32] bytes but when we read an integer that
+[49:34] might only be four
+[49:36] bytes so basically uh in these 64 bytes
+[49:40] if let's say we wanted to read a integer
+[49:42] and we didn't find it in the L1 cache we
+[49:45] would only be interested in four bytes
+[49:47] right even though the entire block needs
+[49:49] to be fetched uh you know as an atom as
+[49:51] an indivisible unit but we are primarily
+[49:54] interested in four bytes so what we can
+[49:57] do is that uh we can slightly tweak the
+[50:01] system here so consider the L1 cash and
+[50:05] consider the L2 cache so if the L2 is
+[50:08] supplying 64 bytes to the
+[50:11] L1 uh and so how will it Supply so
+[50:14] essentially there are some copper wires
+[50:16] between L2 and L1 and it can take
+[50:18] multiple Cycles so you know typically uh
+[50:22] we can only transmit uh something like 4
+[50:26] bytes at a time time uh uh I'm sorry uh
+[50:29] 16 bytes at a time that is so it'll take
+[50:31] around four Cycles to
+[50:33] transmit so what we can ensure is that
+[50:36] the memory word four bytes of the memory
+[50:38] word so the memory word that we are
+[50:40] interested in is transmitted first right
+[50:43] so maybe we can divide the 64 by chunk
+[50:46] into you know 16 by smaller chunks and
+[50:50] maybe the memory word that we have is
+[50:53] present in this 16 by chunk so we can
+[50:57] transmit this the First Once We transmit
+[51:00] it we can go for an early restart which
+[51:03] basically means that the L1 cash can uh
+[51:07] fetch the four 4 bytes within the 16 by
+[51:10] junk and send it to the processor such
+[51:13] that the processor gets it gets its data
+[51:16] and it can restart its execution all
+[51:18] right so the processor does not have to
+[51:20] stall the advantage here is that uh we
+[51:24] are able to get a little bit of mileage
+[51:28] or leverage uh little bit of mileage out
+[51:31] of the process and the way we are doing
+[51:34] it is that we are tweaking the order in
+[51:35] which the bytes get transferred from the
+[51:37] lower levels of the memory hierarchy to
+[51:39] the L1 gache and instead of reading the
+[51:43] btes sequentially within a block we read
+[51:46] that part that we are interested in and
+[51:48] transmit it the first after it reaches
+[51:51] the L1 we immediately give it to the
+[51:53] processor such that the processor can
+[51:56] restart its
+[51:58] execution so this is a simple slide that
+[52:01] summarizes all our techniques so this is
+[52:03] like a One Stop uh place for all our uh
+[52:07] techniques so let me just go over it so
+[52:10] for compulsory misses uh we realize that
+[52:13] the best technique is a large block size
+[52:16] because if you have a larger block size
+[52:18] you're fetching more data at once and
+[52:21] because of spatial locality some of it
+[52:23] might be useful prefetching both
+[52:25] software as well as well as Hardware is
+[52:27] a generic technique very useful uh can
+[52:30] be used to reduce actually all kinds of
+[52:32] Misses but primarily capacity and
+[52:34] compulsory misses uh so uh it is
+[52:38] involved with a little bit of extra
+[52:40] complexity and uh so it reduces the risk
+[52:43] of uh displacing useful data but
+[52:46] nevertheless prefetching done wisely has
+[52:49] its
+[52:50] benefits we can increase the cache size
+[52:52] this will reduce capacity misses but
+[52:55] larger is is the cash higher is its
+[52:57] latency higher is its power and higher
+[52:59] is its area so that's the negative
+[53:02] points to reduce conflict misses we can
+[53:05] always increase the
+[53:06] associativity so no doubt it will reduce
+[53:09] conflict misses but it make the cash
+[53:11] more complicated we need to compare with
+[53:13] more tags so this is associated with
+[53:16] higher latency and higher
+[53:19] power uh the victim cash is almost
+[53:22] always a good
+[53:24] idea and the reason it's almost always
+[53:26] always a good idea is because it's very
+[53:27] small so the you know it does add a
+[53:29] little bit of extra complexity but the
+[53:32] overhead is
+[53:33] minimal and but it you know its
+[53:35] Effectiveness can vary depending on the
+[53:37] type of the program but it primarily
+[53:40] reduces conflict misses especially when
+[53:43] some
+[53:44] sets get a lot of traffic in that case
+[53:47] if you can save some ways in the victim
+[53:49] cach we'll get some benefit we can also
+[53:52] use compiler based techniques to reorder
+[53:54] the code such that cach misses get
+[53:56] reduced used so this is anyway an
+[53:58] advanced topic is out of the scope of
+[53:59] this
+[54:00] book uh it's not very generic but it's
+[54:03] extremely
+[54:04] effective So after talking about the
+[54:06] three C's the three kinds of Misses
+[54:09] let's talk about hit time so if you want
+[54:12] to reduce the hit time we have go for a
+[54:14] smaller and simple cach but again this
+[54:16] increases the Miss rate so there's a
+[54:18] tradeoff here let's consider the Miss
+[54:21] penalty so for rights we can reduce it
+[54:24] with a right buffer
+[54:27] so here what we do is that we write to
+[54:29] the right buffer and we just move on we
+[54:31] uh continue our
+[54:33] execution when the word comes from the
+[54:35] lower level the new data is merged with
+[54:39] the older data so it sort of helps us go
+[54:42] ahead uh and while reading we need to
+[54:45] check both the right buffer as well as
+[54:47] the original
+[54:48] cache and for read misses we have a
+[54:51] combo of these techniques early restart
+[54:53] and critical word first so there is some
+[54:55] amount of extra State uh some amount of
+[54:58] extra complexity but the advantage is
+[55:01] that it allows us allows the processor
+[55:03] to go ahead because we give a preference
+[55:06] to that data that originally caused a
+[55:08] miss right the you know the four bytes
+[55:10] or 8 bytes the processor wanted to read
+[55:12] and it caused a Miss if you give
+[55:14] preference to that data it helps us
+[55:17] restart the execution of the program
+[55:20] sooner so now that we have seen the
+[55:22] details of the memory system we'll go to
+[55:24] the last part the fourth part of this
+[55:26] lecture series uh which is on virtual
+[55:29] memory

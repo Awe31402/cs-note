@@ -1,0 +1,1457 @@
+[00:00] [Music]
+[00:28] n
+[00:34] welcome to the last and fourth lecture
+[00:36] in this series so we'll discuss virtual
+[00:39] memory virtual memory is a very simple
+[00:41] concept but somehow most students manage
+[00:43] to get it wrong so uh my job is to
+[00:46] ensure that at the end of this lecture
+[00:48] by the end of this
+[00:49] lecture everybody has a somewhat decent
+[00:52] understanding of what virtual memory
+[00:57] is so up till now we have assumed that a
+[01:00] program perceives the entire memory
+[01:02] system to be its own so if every program
+[01:05] on a 32-bit machine you know how large
+[01:08] is the memory system that it can
+[01:09] potentially address well so if a if the
+[01:13] addressing is 32 bits uh we can address
+[01:17] all the bits with uh you know all the
+[01:19] bytes with addresses 0 to 2 ^ 32 minus 1
+[01:22] so that's a total number of bytes that
+[01:24] we can address because mind you one
+[01:27] location contains only one bite so total
+[01:30] we can address 2 ra to the^ 32
+[01:33] bytes which is four
+[01:37] * 2 ra to^
+[01:40] 30 which is uh so 2 the^ 30 is 1 Giga 1
+[01:44] gab so this is 4
+[01:49] GB so 4 GB is a total amount of memory
+[01:53] space that we can
+[01:56] address and uh within this we can access
+[01:58] any location at will so this is the
+[02:01] assumption that we make all right that
+[02:04] the entire memory system is
+[02:06] ours we also need to take multiple
+[02:09] programs into account so you know for
+[02:12] example at this point maybe 100 programs
+[02:14] are running on my machine so my CPU runs
+[02:17] program a for some time then switches to
+[02:20] program B and then to program C so in a
+[02:23] sense it's called a Time shared system
+[02:26] where we run one program for some time
+[02:28] uh one more program for some more time
+[02:30] and one more program for you know some
+[02:33] more time so the question is that do
+[02:35] they corrupt each other's data the
+[02:37] answer is
+[02:38] no so you know for example if I have
+[02:41] programs A and B and let's say I run
+[02:43] program a for 1 second and then I run
+[02:46] program B for 1
+[02:48] second uh does a deliberately write into
+[02:52] the memory space of B and corrupt its
+[02:54] data the answer is no and does B
+[02:56] deliberately write to A's data
+[02:59] deliberate ately or you know non-
+[03:00] deliberately you know just like that uh
+[03:03] inadvertently does B write to a space
+[03:06] the answer is no so somehow we are able
+[03:09] to achieve a partition of the memory
+[03:12] regions used by A and B but again how is
+[03:15] this possible because a assumes that the
+[03:17] entire memory space is its own and B
+[03:20] assumes the entire memory space is its
+[03:21] own so if a wres rights to let's say
+[03:25] location
+[03:26] 20 and uh B wres to
+[03:31] 20 then they will end up uh overwriting
+[03:35] each other's data which is exactly what
+[03:37] we don't
+[03:38] want so this is also called the overlap
+[03:41] problem and this is something that we
+[03:42] want to
+[03:43] solve that we have to ensure so you know
+[03:46] this this aim over here is a good aim
+[03:49] that both A and B actually should think
+[03:51] that they are the owners of the entire
+[03:53] memory
+[03:55] system however in practice we need to
+[03:58] ensure that it don't overwrite each
+[04:00] other's data right so this you know this
+[04:03] is A1 for us so let's call it
+[04:06] A1 then there is an
+[04:13] A2 uh so
+[04:16] so you know if we consider physical
+[04:19] memory so what is physical memory is the
+[04:21] total amount of physical storage that we
+[04:23] have right in the main memory that's the
+[04:26] physical memory so if you consider a
+[04:28] memory system that that has less than 4
+[04:30] GB of physical memory so let's say it
+[04:32] has 2 GB of physical memory right we
+[04:34] need to ensure that all our programs
+[04:36] still
+[04:37] run so if a program accesses a location
+[04:41] which is let's say after 3gb it should
+[04:43] still run on this system right so this
+[04:46] is something that has to be ensured that
+[04:48] even if the size of our physical memory
+[04:51] physical memory is the actual amount of
+[04:53] you know memory that we have right uh
+[04:56] you know in terms of dam chips and so on
+[04:59] so uh the actual transistors that we
+[05:01] have so if this is 2GB uh Which is less
+[05:05] than our virtual memory space which is
+[05:06] 4GB which is the entire space that can
+[05:08] be addressed we need to find a way of uh
+[05:13] ensuring that programs work so this is
+[05:14] also called the size problem so two
+[05:16] problems size and
+[05:20] overlap so let me just you know redefine
+[05:24] these two
+[05:26] concepts physical memory refers to the
+[05:29] actual set of physical memory
+[05:32] locations that are contained within the
+[05:35] main memory right so the main memory is
+[05:38] a set
+[05:39] of uh memory chips which contain Dam
+[05:44] cells and uh so this is the actual
+[05:47] physical memory and of course we have
+[05:49] the caches as well but if we consider an
+[05:51] inclusive cache hierarchy then
+[05:53] essentially the size of the physical
+[05:55] memory is the size of the main memory
+[05:58] and this can be you know anything it
+[06:00] depends upon the amount of Hardware that
+[06:01] we have
+[06:03] invested uh but virtual memory is what
+[06:06] the program thinks it has so physical
+[06:08] memory is what you actually have but
+[06:11] virtual memory is the amount of memory
+[06:13] that a given program or a given
+[06:15] programmer thinks that you have so it's
+[06:18] a memory space assumed by a program
+[06:20] which is assumed to be contigous and
+[06:22] Without Limits and let's say if a memory
+[06:24] address takes n Bits then the total
+[06:27] virtual memory size is 2 to^ n
+[06:30] in other words if let's say the it's a
+[06:33] 32bit addressing that we are using then
+[06:36] the total virtual memory size is 2 to^
+[06:38] 32 bytes or 4
+[06:41] GB similarly if we using 64 bits then
+[06:44] the total virtual memory size is 2 ra
+[06:46] to^ 64 bytes which is huge so which is
+[06:50] essentially 16
+[06:54] times you know roughly 16 * 10 ^ 18
+[06:57] bytes which is massive all
+[07:00] right so so essentially the idea here is
+[07:03] that uh you know we are defining uh two
+[07:07] concepts and the concepts are again
+[07:09] different physical memory is the actual
+[07:12] amount of
+[07:13] storage and virtual memory is the amount
+[07:17] of storage that you think that you have
+[07:20] right so both are different right one is
+[07:22] an ideal dream world the virtual world
+[07:25] and the other is the actual world where
+[07:27] you have actual storage devices and the
+[07:29] two problems that we need to solve is
+[07:31] space and overlap so overlap means that
+[07:34] two processes A and B do not end up you
+[07:37] know overwriting each other's data even
+[07:39] though the physical memory is shared
+[07:41] between
+[07:42] them and the space problem is that you
+[07:45] know you your physical memory can
+[07:47] actually be actually be less than the
+[07:50] amount of virtual memory that you have
+[07:53] in that case your program should still
+[07:55] work so we need to find out how to
+[07:57] enable that so let us look at a process
+[08:01] you know the virtual memory map of a
+[08:03] process in a Linux operating system so
+[08:06] recall that a process is a running
+[08:08] instance of a program right so all
+[08:12] programs so this is the EF format so all
+[08:15] programs actually start with the virtual
+[08:18] address zero so from zero till a certain
+[08:24] address right uh from zero till a
+[08:28] certain address we we have the
+[08:30] header uh the
+[08:34] header is uh basically uh so so it
+[08:38] records the type of the program the type
+[08:40] of the encoding so there's a lot of meta
+[08:42] information in there then we have the
+[08:45] text section of the program which is
+[08:46] actually the instructions of the program
+[08:49] so they pretty much start from this
+[08:50] virtual address so after having all the
+[08:53] instructions of the program of the data
+[08:55] section which consists of static
+[08:58] variables and glob Global variables you
+[09:00] know static oblique Global variables
+[09:03] with initialized values so let's say in
+[09:05] the beginning of a program I Define
+[09:07] Intex equals 10 since this data is
+[09:10] initialized it will come to the data
+[09:12] section we then have a BSS section which
+[09:16] also contains in a static oblique uh
+[09:19] Global variables the same thing which
+[09:22] are not initialized so that's the reason
+[09:24] they're uh all filled with zeros right
+[09:27] so anything that is not initialized is
+[09:29] filled with zeros so that is the BSS
+[09:32] section so uh the this is how one part
+[09:35] of the virtual memory map is
+[09:37] divided and if I look at the top so uh
+[09:41] at a very high address 0xc and then 7
+[09:44] zeros is when the stack starts right and
+[09:48] since the stack is downward growing it
+[09:50] grows to its lower addresses and
+[09:52] similarly after the BSS section the Heap
+[09:55] starts recall that the Heap is a memory
+[09:58] area where we put in dynamically
+[10:00] allocated data like the data that is
+[10:03] alled allocated with calls like Malo in
+[10:06] C and new in C++ and Java so all the
+[10:10] data will go on the
+[10:13] Heap uh in the middle we have a segment
+[10:15] called a memory mapping segment this is
+[10:18] a fairly complicated so I will not be
+[10:21] discussing it but if you want me to give
+[10:24] a oneline summary the oneline summary is
+[10:27] as follows uh that let's see if I open a
+[10:30] file or something right file or a disk a
+[10:34] file on a hard disk so but we have not
+[10:36] discussed what is the hard disk so I
+[10:39] sort of you know ask uh readers to take
+[10:41] this with a pinch of
+[10:43] salt uh what we can do is we can assign
+[10:45] a memory region that corresponds to
+[10:48] something that we are you know trying to
+[10:50] open like a file right so if I have a
+[10:52] certain movie file then uh if the movie
+[10:56] file is stored somewhere else I can
+[10:58] assume that this has a one to one
+[11:00] correspondence with the btes in the
+[11:02] movie file this is all that I can say at
+[11:05] this moment I really don't want to uh go
+[11:08] deeper uh however after getting
+[11:11] understanding of virtual memory we will
+[11:13] be in a position to discuss this in some
+[11:15] more depth in chapter number uh 12 the
+[11:20] last chapter right we'll discuss memory
+[11:22] mapping but let's leave this uh for the
+[11:25] time
+[11:28] being all right so basically what
+[11:30] happens every single process uh has a
+[11:33] roughly similar memory map where we
+[11:35] start from address zero first have the
+[11:37] header then the text then the sections
+[11:40] to store Global oblique static
+[11:43] variables and uh we have spaces for the
+[11:45] Heap and the stack so something that can
+[11:48] be deduced here very easily is that most
+[11:50] of these so let's say the stack the
+[11:52] addresses will be common across
+[11:54] processes so how come they will not
+[11:56] overwrite each other so we'll discuss
+[11:59] solutions to this
+[12:01] problem uh so but before we do that
+[12:03] let's take a look at some memory Maps
+[12:05] across operating systems so so basically
+[12:08] if we consider 32 bits the total virtual
+[12:11] memory size is 2 ^ 32 which is 4
+[12:14] GB so what the Linux operating system
+[12:17] will do is that it'll give 3 GB to user
+[12:21] programs the typical programs that run
+[12:23] and it will keep 1 GB for the operating
+[12:26] system itself this is the first time
+[12:29] that we hearing the word operating
+[12:31] system so the operating system is a
+[12:33] special program whose job is to manage
+[12:35] other
+[12:37] programs uh the
+[12:40] windows uh operating system what it does
+[12:43] is that it splits it does a 5050 split
+[12:46] so it gives user programs 2 GB you know
+[12:49] in the 32-bit version and it gives the
+[12:52] OS uh the operating system the called
+[12:55] The W kernel 2 GB so there a minor
+[12:58] difference
+[13:00] so let us now look at the main idea of
+[13:03] what a virtual address is right of what
+[13:07] virtual memory is so if I consider a
+[13:10] program
+[13:12] right all the addresses inside a program
+[13:15] are virtual addresses where I assume
+[13:17] that the entire memory space belongs to
+[13:20] me and I can access and the way I split
+[13:24] the memory space is this way between
+[13:26] header text Data BSS Heap and stack back
+[13:29] all right but mind you here again the
+[13:32] assumption that is being made is that
+[13:33] the entire space is available to one
+[13:36] process so this is the virtual address
+[13:39] that we use however this is not the
+[13:42] address that goes to the memory system
+[13:44] so if I consider this as the memory
+[13:46] system the address that goes to the
+[13:48] memory system is actually something else
+[13:51] it is the physical
+[13:55] address so between the virtual address
+[13:58] that a program used us es a compiler
+[14:00] uses and the physical address that is
+[14:02] sent to the memory system we need to
+[14:05] have an address translation system so
+[14:08] this is called with different names it's
+[14:10] also called the memory management unit
+[14:12] the address the virtual to physical
+[14:14] address translator so call it by any
+[14:16] names any name we'll call it the address
+[14:18] translation
+[14:20] system it basically you know uh it
+[14:24] converts one uh in our running example
+[14:27] 132 but address into another 32-bit
+[14:30] address and it sends it to the memory
+[14:33] system now if I consider one more
+[14:37] program so let's say this is program a
+[14:39] and this is program
+[14:42] B I'm
+[14:45] sorry so program B will have one more
+[14:48] address translation system of its own
+[14:51] which is again uh you know
+[14:58] different
+[15:07] and this address translation system
+[15:09] would again uh yield a physical address
+[15:12] because mind you the physical address is
+[15:14] not different the physical address is
+[15:16] the same because it corresponds to an
+[15:17] actual location uh right in the caches
+[15:20] or in the main memory so anything that
+[15:23] goes anything inside the processor is a
+[15:25] virtual address anything that goes out
+[15:28] of the process to the memory System
+[15:30] including the L1 cache right uh is the
+[15:34] physical address and for every program
+[15:37] that's running it will have its address
+[15:39] translation system we'll discuss this in
+[15:41] great detail which converts a virtual
+[15:44] address that the program uses to an
+[15:47] actual physical address and the physical
+[15:49] address is the same for all programs
+[15:51] because it's corresponding to an actual
+[15:53] location and the virtual addresses don't
+[15:57] matter and also so the aim of the
+[16:00] address translation system is to solve
+[16:02] both of our problems which are
+[16:04] essentially the overlap problem ensuring
+[16:06] that A and B don't overwrite each
+[16:07] other's data problem number one and to
+[16:11] ensure that uh the size problem which is
+[16:15] that if you know the
+[16:17] physical memory is less than the virtual
+[16:20] memory right we don't have enough
+[16:22] physical memory then how to take care of
+[16:25] this situation these are the two
+[16:26] problems that the address translation
+[16:28] system must serve for us must solve for
+[16:30] us right and so that's the reason we
+[16:33] have virtual memory on one side of the
+[16:35] translation system which is what the
+[16:38] program thinks it has right the entire
+[16:40] memory space one large contigous memory
+[16:43] space and the physical address which is
+[16:46] on the other side both are separated by
+[16:49] a translation
+[16:51] system so to describe the translation
+[16:54] system it's not possible to do in one
+[16:56] slide it'll take multiple slides so
+[16:59] let's use the multiple slides and uh
+[17:03] describe the translation system in uh
+[17:05] some amount of
+[17:06] detail so let us divide the virtual
+[17:10] address space that we have right the
+[17:12] total memory space that a program thinks
+[17:14] it has into chunks of you know
+[17:17] continuous consecutive chunks the same
+[17:19] way we had blocks in a cache we divide
+[17:22] the address space into chunks of 4
+[17:25] kilobytes and each such
+[17:27] chunk is called a page all right so each
+[17:31] such chunk of consecutive 4 kilobytes is
+[17:34] called a
+[17:35] page and similarly we divide the
+[17:37] physical address space into again chunks
+[17:39] of contigous chunks of 4 kilobytes this
+[17:42] is called a frame so mind you the
+[17:44] virtual address space and the physical
+[17:46] address space can have different sizes
+[17:48] for example it is very much possible in
+[17:50] modern processors for the virtual
+[17:52] address to be a 48 bit
+[17:54] quantity and maybe the physical address
+[17:57] to be a 36-bit quantity the that is
+[17:59] perfectly fine your address translation
+[18:01] system will map a 48 bit quantity to a
+[18:04] 36-bit quantity no problem in that all
+[18:07] that we are saying is that let's take
+[18:09] this address same way we made cache
+[18:12] blocks right the same way we had Atomic
+[18:15] indivisible cache blocks let's make a
+[18:18] larger block let's call it a page when
+[18:20] we are creating blocks out of the
+[18:22] virtual address space and let's call it
+[18:25] a frame when you are creating blocks out
+[18:28] of the physical address space so the job
+[18:30] of the translation system is to map a
+[18:32] page to a frame so let us consider this
+[18:36] uh number in some more detail 4
+[18:40] kilobytes right 4 kilobytes is 4 is 2
+[18:44] square and a kilo is 2 ^ 10,24 we're
+[18:49] approximating to
+[18:50] 1,000 so this is 2 ^
+[18:54] 12 bytes and so it'll take 12 bits to
+[18:58] specify the address of a bite within a
+[19:00] page so what we can do is given an
+[19:03] address we can you know let's say given
+[19:05] a 32bit
+[19:07] address what we can do so let's consider
+[19:10] 32 bits because it is a running example
+[19:12] but we can easily extend it to other
+[19:14] memory systems so we'll take the bottom
+[19:17] 12 bits right which is essentially the
+[19:21] offset of a bite within the page and
+[19:23] discard them the remaining 20 bits are
+[19:27] the page address
+[19:29] these 20 bits need to be
+[19:32] mapped to another physical page which is
+[19:35] a frame so we'll discuss about this in
+[19:38] some amount of Greater detail in the
+[19:40] next slides but let's look at the main
+[19:43] Insight well the main Insight
+[19:47] is uh that you know why are we doing why
+[19:50] are we making the blocks well the reason
+[19:53] we make the blocks is as
+[19:55] follows that it will reduce our
+[19:58] translation overhead so instead of you
+[19:59] know doing a translation for every
+[20:02] bite uh we can uh actually translate it
+[20:05] at a much higher granularity so it'll
+[20:07] save us some
+[20:08] effort so first is that the page is
+[20:10] really large let's say it's like 100
+[20:13] megabytes then you know most of the page
+[20:15] will actually remain unused and since we
+[20:18] will not divide a phys so page size and
+[20:21] frame size mind you have to be the same
+[20:24] so since we are not dividing a physical
+[20:26] page uh since we not dividing a page or
+[20:29] a frame into multiple subp Parts if we
+[20:32] have a really large page we might end up
+[20:35] wasting memory similarly the page or
+[20:38] frame size is very small you know let's
+[20:41] assume that it is only like 8
+[20:43] bytes then uh we will have the overhead
+[20:47] of mapping will be extremely high right
+[20:50] so we'll have to map very frequently so
+[20:52] that's again a bad idea so 4 kilobytes
+[20:56] has been experimentally been found to be
+[20:58] a good choice so we take 4 kilobyte
+[21:01] chunks and for each of this we map each
+[21:04] page to a frame so let me discuss in
+[21:06] some more
+[21:11] detail so the mapping process is as
+[21:14] follows let us uh look at a diagram of
+[21:19] course not drawn to scale of the virtual
+[21:21] memory regions that uh program a process
+[21:24] a uh uses so let us assume that the
+[21:27] entire blue is the entire virtual memory
+[21:30] region of process a so mind you the
+[21:33] diagrams are not drawn to scale so out
+[21:36] of this light blue is the regions that
+[21:38] are not used right so basically they are
+[21:40] not accessed and the darker blue is the
+[21:44] color of the regions that are accessed
+[21:46] so in these regions we divide the
+[21:48] regions into 4 kilobyte pages so each
+[21:51] such square square box is a 4 kilobyte
+[21:55] page right so this is a 4 KB
+[21:57] page
+[22:05] so each page is mapped to so basically
+[22:08] if you if you consider uh process a it
+[22:13] uh sees a contigous virtual memory where
+[22:15] the virtual memory occupies the entire
+[22:19] space and it does not need to see any
+[22:22] other view but what happens in the
+[22:23] middle you know sort of the secret
+[22:26] source is that there is a mapping layer
+[22:29] that the program does not get to see and
+[22:32] you know that's the secret Source over
+[22:34] here so essentially every page is mapped
+[22:38] to a frame so this is the Crux of the
+[22:40] idea every page is mapped to a frame but
+[22:43] mind you this page is mapped to this
+[22:45] Frame this page is mapped to this Frame
+[22:48] this page is mapped to this Frame and
+[22:49] this page is mapped to this this Frame
+[22:51] so they're pretty much mapped to random
+[22:53] frames which are dispersed all over in
+[22:55] physical memory and the frames are
+[22:58] definitely not
+[22:59] contiguous and the greatness of this
+[23:02] mapping
+[23:04] is that
+[23:06] uh the programmer the process the
+[23:10] compiler can see the virtual memory as
+[23:12] one nice contigous memory but what
+[23:15] happens in reality is that each of these
+[23:17] Pages get mapped to different frames and
+[23:20] the different frames can be there all
+[23:22] over right so they need not be
+[23:24] contigous so this solves most of our
+[23:28] problems
+[23:28] the reason is that let's again take a
+[23:31] look at uh you know both of these
+[23:33] rectangles so let's consider the virtual
+[23:35] memory of program B so let's assume that
+[23:38] program B uh addresses memory in two
+[23:41] regions where each region fits within a
+[23:43] page so again these pages are mapped to
+[23:47] different physical frames which of
+[23:49] course are totally
+[23:52] disconnected so but the interesting way
+[23:55] in which the overlap problem is being
+[23:57] solved is
+[24:58] address actually changes and from the
+[25:01] page we page address we go to a frame
+[25:03] address the frames can be dispersed all
+[25:05] over for example when we move from the
+[25:08] last bite of this page to the first bite
+[25:10] of this page as far as the programmer is
+[25:13] concerned we are only moving ahead by
+[25:16] one bite but what is actually happening
+[25:19] in reality is that this page was mapped
+[25:21] to this Frame so the last bite of this
+[25:24] page is the last bite of this Frame
+[25:26] which is essentially this bite
+[25:29] then again when we move here the mapping
+[25:32] changes this page gets mapped to this
+[25:35] Frame so basically this bite which is
+[25:37] the starting bite of this page actually
+[25:40] gets mapped to this bite in a physical
+[25:44] frame so the advantage here is that you
+[25:48] know both a as well as B can see the
+[25:51] entire memory space as their own there's
+[25:53] no problem but since you know they will
+[25:56] not be occupying the entire virtual
+[25:57] address space which is 4 GB but they
+[25:59] might be occupying let's say 10 kiloby
+[26:01] 100 kiloby 1 mgab we can divide the
+[26:04] memory region into
+[26:07] Pages for each page is 4 kilobytes and
+[26:10] because of spal locality you know we'll
+[26:12] have a nice clustering of
+[26:14] data and these Pages can then be mapped
+[26:17] to frames in memory the only uh
+[26:20] constraint here is that one frame has to
+[26:23] be mapped to only one page it's it is so
+[26:25] for example you know mapping this Frame
+[26:27] to this page page and mapping this Frame
+[26:30] to this page is not allowed right if
+[26:32] it's done purposely that's a separate
+[26:34] issue but otherwise it is not allowed
+[26:37] this ensures that two processes can
+[26:38] never share data in the physical memory
+[26:42] so this solves our overlap
+[26:44] problem so this slide is very very
+[26:47] important and just in case you don't
+[26:49] understand this I would advise the
+[26:52] readers to take a look at this and sort
+[26:54] of take the video back and uh go over
+[26:58] this as many times as possible because
+[27:00] this diagram is the Crux of virtual
+[27:02] memory if this diagram is understood all
+[27:06] of virtual memory is understood and if
+[27:08] and if this diagram is not understood
+[27:10] pretty much nothing is understood so
+[27:13] students should make utmost effort to
+[27:15] understand this diagram let me again
+[27:17] summarize what this is doing in two
+[27:19] sentences but to risk uh loss of
+[27:22] Interest due to repetition I'll move
+[27:24] ahead what we are trying to say is let
+[27:27] processes a B perceive a nice contiguous
+[27:31] memory system in reality we take the
+[27:34] regions that they
+[27:36] access uh in a block them group them
+[27:39] into pages and map each page to a frame
+[27:42] in physical memory that has the same
+[27:45] size and we never share a frame across
+[27:48] two separate processes that will solve
+[27:50] the overlap problem for us there are
+[27:53] other problems let's take a look at it
+[27:55] so also the size problem can be solved
+[27:58] like this that if the virtual memory
+[28:00] size is 4 GB and this is only 1 GB it
+[28:04] makes no difference at all because in
+[28:06] any case we have broken this down into
+[28:08] frames
+[28:10] and we just have to map uh Pages here to
+[28:14] frames so it does not so the actual size
+[28:16] of this does not matter it will only
+[28:19] matter if the working set of programs a
+[28:22] and program B the amount of memory they
+[28:24] require exceeds 1 GB then the entire
+[28:27] physical memory will fill up but that is
+[28:30] rare So typically programs don't use
+[28:32] that much of memory so that's the reason
+[28:34] we are
+[28:36] safe all right so now let's take a look
+[28:40] at the details of page
+[28:42] translation so given a virtual address
+[28:44] in a 32-bit addressing
+[28:48] scheme since a page is 4 kilobytes and 4
+[28:51] KB
+[28:53] is 2 ra to the ^ 12 bytes the lower 12
+[28:59] bits will specify the offset of the bite
+[29:01] within the page same same way as the
+[29:04] offset of the of a bite within a block
+[29:06] in a cache so this part can be ignored
+[29:08] right for both the this part is the same
+[29:11] right it's the same so basically you
+[29:13] know this is the same as this so as a
+[29:15] result we can ignore these
+[29:17] two but what will however change is the
+[29:20] upper 20 bits which is the page
+[29:22] number that will go to the translation
+[29:25] system and what will come out is a 20
+[29:28] bit frame number so the translation
+[29:31] system is also called the page table
+[29:33] because for every page you know a page
+[29:35] number comes in and a frame number comes
+[29:37] out this is also called the page table
+[29:40] so in the virtual address 20 bits come
+[29:43] in 20 bits of the virtual address come
+[29:45] in and 20 bits of the physical address
+[29:47] come
+[29:48] out so let's take a look at a very
+[29:51] simple and naive implementation of a
+[29:53] page table so this is a this is called a
+[29:56] onedimensional page table which is very
+[29:58] simple uh we enter 20 bits so 20 bits
+[30:04] how many combinations we can have it
+[30:06] will be 2 ra to^ 20 which is 1 million
+[30:09] so roughly you know 1
+[30:11] million uh combinations we can have and
+[30:15] then each of these entries will have a
+[30:17] 20 bit frame number and uh so what we do
+[30:21] is that we will like a direct mapped
+[30:23] cache we will access one entry read the
+[30:26] frame number from it and get it as the
+[30:30] output so let's look at the issues with
+[30:32] a basic single level page table so the
+[30:36] size of the single level page table can
+[30:38] be computed as follows so the size of a
+[30:42] single entry is 20 bits 2.5 bytes the
+[30:45] number of entries is 2^ 20 or 1 million
+[30:49] the
+[30:50] total amount of storage used is 2.5
+[30:57] megabytes
+[30:58] now the page table is specific to each
+[31:01] process so if we have 200 processes
+[31:03] running instances of programs as is the
+[31:06] case that is currently happening on my
+[31:08] system we will spend 500 megabytes half
+[31:12] a gigabyte in just storing page tables
+[31:15] which is not acceptable that's a huge
+[31:16] amount of memory
+[31:18] space that is being used to store Page
+[31:21] tables this is just too
+[31:23] much so what is the Insight well the
+[31:26] Insight is that most the virtual address
+[31:28] space is actually empty for a given
+[31:31] program the virtual address space that
+[31:33] it's talking about is around 4 GB but
+[31:36] out of 4 gbes you know the amount of
+[31:38] memory a program might be using might
+[31:40] only be 10 megabytes right the rest is
+[31:43] empty so they'll not require that much
+[31:45] of memory so maybe we can leverage this
+[31:47] pattern in some way so let's see how it
+[31:51] can be leveraged
+[31:54] used so let us consider a two-level page
+[31:57] table this is called a multi-level page
+[31:59] table so what we do is that we divide
+[32:02] the page number which is a 20 bit
+[32:05] quantity into two 10 bit quantities 10
+[32:08] and
+[32:10] 10 so we take the most significant 10
+[32:14] bits right the upper 10 bits and we use
+[32:17] it to address a table which has 2 ra to^
+[32:23] 10 entries which is 1024 entries right
+[32:26] so this is called the primary page table
+[32:29] subsequently the primary page table so
+[32:32] so mind you uh since a program does not
+[32:36] access a lot of
+[32:38] pages uh most of the entries in the
+[32:40] primary page table will be empty so I'll
+[32:42] discuss this in some more detail towards
+[32:45] the end of this slide but uh let's just
+[32:48] continue with the
+[32:50] discussion each of these primary page
+[32:52] tables points to a secondary page
+[32:55] table so we so let's say this entry
+[32:58] points to this secondary page table we
+[33:01] take the remaining 10 bits and use it to
+[33:04] address the secondary page table which
+[33:06] again has 2 the^ 10 entries and each
+[33:10] entry of the secondary page table
+[33:12] contains the 20bit frame number this
+[33:15] design right where we take 10 bits first
+[33:18] access a primary page table this the
+[33:21] primary page table contains a pointer to
+[33:23] the secondary page table then we take
+[33:26] the next 10 bits and access the
+[33:28] secondary page table this design is
+[33:30] called two-level page table and the
+[33:33] claim is that it's a far more efficient
+[33:35] design let's see
+[33:38] why so uh so we have two page tables
+[33:41] here so there has to be some advantage
+[33:43] and let's see what is the
+[33:46] advantage so the First Advantage is that
+[33:49] you know the way that we do this
+[33:50] addressing so if you consider a 32-bit
+[33:56] address
+[34:00] and we divide it into 10 10 bits 10 bits
+[34:05] and 12 bits right so anyway the bottom
+[34:08] 12 bits correspond to the address of the
+[34:10] bite within the page so they're not
+[34:13] important the upper 10 bits the most
+[34:16] significant 10 bits which are these
+[34:19] bits are expected to have the least
+[34:22] amount of variance right so if I
+[34:25] consider you know the so so let let me
+[34:29] look at it in some other way assume that
+[34:32] I'm counting from 0 to th000 so then the
+[34:36] first number you know in decimal first
+[34:37] number is 0 0 0 then 0 0 1 after some
+[34:41] point I'll reach 201 1 20 02 this way so
+[34:46] where do I see the least amount of
+[34:48] variance or the or a larger amount of
+[34:51] predictability I see the least amount of
+[34:53] variance in the most significant digit
+[34:57] right the most significant bit bite
+[34:59] digit doesn't matter and I see the
+[35:02] highest amount of variance in the least
+[35:03] significant digit because it changes
+[35:06] very frequently right so this is where I
+[35:09] see the highest amount of variance right
+[35:11] so let me put a plus plus here and a
+[35:12] minus minus here the same is true for
+[35:15] memory addressing so typically when I'm
+[35:17] accessing an array or reading
+[35:20] instructions uh in a program I would
+[35:22] expect the maximum amount of variation
+[35:26] you know in the bits to actually happen
+[35:29] uh for the lower 10 bits of the page
+[35:31] number and I would and I would expect a
+[35:35] relatively lower variation to happen in
+[35:37] the upper 10 bits and look at this
+[35:39] counting example so essentially the
+[35:42] upper 10 bits remain relatively stable
+[35:45] and you know they change only once every
+[35:47] 100 entries but uh the lower bits change
+[35:50] far more frequently so if I take this
+[35:53] upper bits so most likely very few of
+[35:56] these uh you know upper bits will point
+[35:58] to valid entries right and most of the
+[36:02] entries here will actually be empty
+[36:04] because no combination of upper bits
+[36:05] would actually point to
+[36:07] them so this is a good strategy so this
+[36:10] minimizes the number of secondary page
+[36:12] tables that we need to use in this case
+[36:15] if our upper bits only point to three
+[36:17] separate entries so mind you the primary
+[36:19] page table is a direct mapped
+[36:23] cache so if the upper bits point to only
+[36:26] three valid entri
+[36:28] we need to allocate only three secondary
+[36:30] page tables right so this is allocated
+[36:32] on demand it is not that we allocate all
+[36:35] 1024 secondary page tables that will
+[36:37] defeat the purpose only the number of
+[36:40] secondary page tables that are required
+[36:43] are allocated so in this case only if if
+[36:46] three of the entries in the primary page
+[36:49] table actually get pointed to by the
+[36:51] upper 10 bits more significant 10 bits
+[36:55] we allocate only three secondary page
+[36:56] tables
+[36:58] then we use the remaining 10 bits to
+[37:00] address them if you want me to do some
+[37:03] math then the math is like this that
+[37:05] each secondary page table contains 1024
+[37:08] entries each entry is 20 bits or 2.5
+[37:12] bytes so the
+[37:14] total uh memory requirement of a
+[37:16] secondary page table is 2.5
+[37:19] kiloby so 2.5 kilobytes will roughly map
+[37:23] 4 megab of virtual
+[37:25] memory and of course we'll allocate only
+[37:28] those many secondary page tables as
+[37:31] required so let's
+[37:34] consider so we have already talked why
+[37:36] this a good idea and keeping spatial
+[37:38] locality in mind let's consider an
+[37:41] example if a program uses 100 megab of
+[37:45] virtual memory and needs 25 secondary
+[37:47] page tables we need a total of 2.5
+[37:51] kiloby time 25 or 62.5 kiloby for saving
+[37:55] secondary page tables and we'll also
+[37:58] need a little bit more you know uh at
+[38:01] Max we'll also require this much of
+[38:03] space for the primary page table so the
+[38:06] total amount of storage right you know
+[38:09] can be this or can be slightly more but
+[38:12] in any case it is approximately 62.5
+[38:15] kilobytes you know plus or minus a few
+[38:17] not not minus but plus a few more
+[38:19] kilobytes for the primary page table but
+[38:22] this is minimal you know this is
+[38:23] absolutely minimal it's you know roughly
+[38:25] 60 odd kilobytes per process
+[38:28] as compared to 2.5 megabytes per process
+[38:32] so you know in one you know per process
+[38:37] if I consider
+[38:38] a one level page
+[38:41] table we were spending 2.5
+[38:44] megabytes if I consider a two level page
+[38:48] table we are spending
+[38:51] 62.5 KB so this is clearly you know
+[38:55] space efficient by an order of magnitude
+[38:59] that's the reason secondary page table
+[39:01] should be used what again is the Insight
+[39:04] well the Insight is simple the Insight
+[39:08] is basically
+[39:10] that
+[39:12] we do our addressing in this manner that
+[39:17] we divide the address into two parts and
+[39:20] the upper part is expected to show
+[39:21] little variance or Randomness you know
+[39:23] recall our counting logic so very few of
+[39:26] these entries would actually be
+[39:27] populated and point to valid secondary
+[39:30] page tables and we'll not all allocate a
+[39:33] secondary page table for every
+[39:35] entry so let's say if you know this is
+[39:38] 1024 but
+[39:40] maybe you know if only 10 secondary page
+[39:42] tables are required we'll allocate space
+[39:45] for only 10 and each of these secondary
+[39:47] page tables is 2.5 KB so the total space
+[39:51] utilization is very small very
+[39:54] modest so that's the reason twole p page
+[39:57] tables are used in almost all commercial
+[40:00] systems let us now look at a different
+[40:03] kind of a page table called an inverted
+[40:05] page table the inverted page table per
+[40:08] se is not very popular but it still has
+[40:11] a very strong motivation so the strong
+[40:13] motivation for using an inverted page
+[40:16] table are as
+[40:18] follows that let's say uh the size of
+[40:21] one page table is 50 kilobytes right so
+[40:23] since a page table is specific to each
+[40:26] process and let's assume that there are
+[40:28] 100 processes in the system then the
+[40:32] total amount of memory that is used
+[40:35] is 5,000 kiloby or 5
+[40:39] megabytes for certain systems that are
+[40:41] memory constrained but still have a lot
+[40:43] of
+[40:45] processes uh it is kind of difficult uh
+[40:48] to find you know this much of memory to
+[40:50] save page
+[40:51] tables so that's the reason uh also you
+[40:54] know updating so when processes there's
+[40:57] a text switch one process
+[41:00] uh leaves the CPU and another process
+[41:03] starts running on the CPU the page table
+[41:05] needs to be changed so uh given the fact
+[41:09] that we have these overheads it's a
+[41:11] better idea at least perceived by some
+[41:14] to have an inverted page table but again
+[41:17] you know the twole page table the
+[41:19] previous slide in the previous slide is
+[41:21] far more popular but this is still used
+[41:24] notably in some IBM machines so the idea
+[41:27] here is that we have a single page
+[41:29] table where uh the entries of the page
+[41:33] table are essentially uh they correspond
+[41:35] to each physical frame in memory so you
+[41:38] can logically think of that we are
+[41:40] giving a 20 bit frame number as input so
+[41:42] it will
+[41:43] have you know somewhere uh like 2 to^ 20
+[41:48] entries and
+[41:51] uh uh you know each entry will store the
+[41:54] page number uh that uh this actually
+[41:57] corresponds to and the page number and
+[42:00] the process ID you know which page
+[42:02] number belonging to which
+[42:06] process so depending upon the math uh
+[42:10] this can uh technically work out to be a
+[42:14] uh slightly more space efficient
+[42:16] solution so if you consider uh let's say
+[42:18] this particular design and if you assume
+[42:21] that each entry is 20 bits which is 2.5
+[42:23] bytes so the total size of this is 2.5
+[42:26] bytes * to 2 ra^ 20 which is 1 Mega so
+[42:31] this is 2.5 MB so if you have 100
+[42:34] processes then we see that uh uh you
+[42:37] know with traditional page tables it
+[42:39] might take 5 megabytes if we assume 50
+[42:41] kiloby per uh process which is kind of
+[42:45] reasonable and this takes 2.5 megabytes
+[42:48] and if we have even more processes then
+[42:50] this approach will be more space
+[42:52] efficient and here we have one entry per
+[42:55] physical frame for each
+[42:57] entry in each entry we save the page
+[43:01] number and the process uh that uh this
+[43:04] entry is mapping to right this page
+[43:06] belongs
+[43:07] to so all of this is fine from a
+[43:09] conceptual point of view but the way we
+[43:11] implement it is slightly more
+[43:14] complicated so we in this case we
+[43:16] consider the 20bit page number and we
+[43:19] consider the process ID so the process
+[43:22] ID well this depends upon the number of
+[43:25] processes that we wish to support
+[43:27] so in a system with ,00 processes uh we
+[43:31] will need 10 bits so the total size of
+[43:34] this you know 20 bits + 10 the total
+[43:36] size of this is 30
+[43:41] bits and
+[43:44] uh so we need to take the 30 bits and
+[43:47] pass it through an hashing engine so
+[43:49] hashing is a very common term in
+[43:51] computer science so for those who uh
+[43:53] don't know what a hashing engine
+[43:56] is so let's consider this as a hashing
+[43:59] engine and let's assume the 30 bits are
+[44:02] going in so what what a hashing engine
+[44:04] does is that it mangles the 30 bits and
+[44:08] computes uh another number which has a
+[44:11] fewer number of bits and uh which is
+[44:15] pretty much decided
+[44:17] randomly so uh you know these numbers
+[44:20] the output has a uniform
+[44:22] distribution so what this means is that
+[44:25] I have I can think of this as a the
+[44:27] black box where 30 bits come in and 12
+[44:31] bits come out which means that for every
+[44:33] 30 bit number right for every 30 bit
+[44:36] number there is a unique mapping to a
+[44:39] 12-bit number right so basically given a
+[44:42] 30-bit input there is a 12bit output so
+[44:45] mind you for every output multiple
+[44:47] inputs might be corresponding to it but
+[44:49] for every input only one output
+[44:51] corresponds to it so if we assume that
+[44:54] the input here is 30 bits and uh the
+[44:57] output here is 12 bits so typically
+[45:00] hashing engines are considered uniform
+[45:04] uh you know a good property is uh is
+[45:07] called a uniform hashing which means
+[45:08] that all the outputs are equ probable so
+[45:10] it sort of uh balances uh the inputs
+[45:15] across the outputs but that again is a
+[45:18] pretty
+[45:19] theoretical uh
+[45:21] concept but what we are concerned with
+[45:24] is that 30 bits are coming in and 12
+[45:26] bits are coming out so we use these 12
+[45:30] bits to access a table called a hash
+[45:32] table so since we have only 12 uh 12
+[45:35] bits the maximum number of entries that
+[45:37] we can have in this table is 2 to^
+[45:41] 12 each so let's say this maps to this
+[45:45] entry so each entry of the hash table
+[45:48] maps to one entry of the inverted page
+[45:50] table so let's say this entry maps to
+[45:52] this
+[45:53] entry right so so it's not a so so we
+[45:56] can discuss more about this mapping but
+[45:59] let's first uh look at you know go over
+[46:01] the figure at least once so each entry
+[46:05] in this hash table maps to uh one and
+[46:08] only one entry in inverted page table so
+[46:12] we first compute the hash access the
+[46:14] entry in the hash table then access the
+[46:17] entry uh you know from here we access
+[46:19] the entry in inverted page
+[46:21] table and uh so I'm sorry in this
+[46:24] example it's not this entry that's
+[46:25] mapping to it's actually this this entry
+[46:27] that is mapping to and in this entry We
+[46:30] compare we look at the page number and
+[46:32] the process ID that is stored in this
+[46:34] entry so pretty much every entry in
+[46:36] inverted page
+[46:38] Table stores the page
+[46:44] number and the process
+[46:48] ID right so we compare our page number
+[46:52] and P ID with uh the number that is
+[46:54] stored over here so let's assume that
+[46:57] you know there's it it does not match so
+[47:00] why will it not match because multiple
+[47:02] inputs can get mapped to the same 12bit
+[47:06] number the same output of the hashing
+[47:08] engine so as a result they'll come here
+[47:11] and all of them will be redirected to
+[47:13] this entry so if there is no match let's
+[47:16] do one thing let's then search in the
+[47:19] next K entries right so K can be 1 2 3
+[47:22] 10 doesn't matter so in this case it's
+[47:24] three so let us search in the next K
+[47:27] entries and check each one of them if
+[47:30] there's a match in any one of them well
+[47:32] we are good to go otherwise we will
+[47:35] infer that this entry is not there in
+[47:37] the page
+[47:37] table so once let's say this entry
+[47:40] matches so then uh this will also store
+[47:43] the frame number and we read out the
+[47:46] output frame
+[47:47] number all right so so let me just go
+[47:51] over the entire slide once again after
+[47:53] erasing the
+[47:55] ink so the idea here is that we first
+[47:58] construct a number out of the page
+[48:00] number and the current process ID which
+[48:02] we have assumed to be 10 bits given the
+[48:05] 30 bit number we send it to a hashing
+[48:07] engine which mangles the bits and
+[48:09] complicates and uh you know complicates
+[48:12] it and computes a complicated function
+[48:15] where the output will typically be a
+[48:17] smaller number that is maybe 12 bits
+[48:19] wide right that's the example that we
+[48:21] have been using we now use these 12 bits
+[48:25] to index a separate table called a hash
+[48:27] table and each entry of this hash table
+[48:30] points to an entry in the inverted page
+[48:32] table so let's say we come to this
+[48:35] entry right so from here let's say this
+[48:39] entry points to this entry in the
+[48:40] inverted page table here we compare the
+[48:44] process ID and the page number that are
+[48:46] stored over here with our process ID and
+[48:49] page number right with which we access
+[48:51] this if there is a match well and good
+[48:54] we read out the frame number that is
+[48:56] stored in this this entry otherwise we
+[48:58] search over the next K entries and we
+[49:01] read out the frame number so the
+[49:03] advantage is we have one page table for
+[49:05] the entire system also a you know a
+[49:09] smart reader would ask what is the
+[49:12] necessity of having this hash table why
+[49:16] didn't we use the hashing engine
+[49:17] directly to access an entry in inverted
+[49:20] page table well so the answer is like
+[49:23] this that maybe there are some frames
+[49:27] that we don't want to assign to any
+[49:29] process so maybe you know these two
+[49:31] frames over here we don't want to assign
+[49:34] to any process we sort of want to
+[49:37] reserve them uh for either the operating
+[49:40] system or for some other special kind of
+[49:43] process so uh to you know achieve
+[49:48] this uh what we should do or what we
+[49:50] need to do is that we need to add a
+[49:52] further level of indirection where we
+[49:55] first actually access the hasht table
+[49:57] and entries in the hash table will point
+[49:59] to entries in the inverted page table so
+[50:02] for example if you want that this entry
+[50:04] will not be uh you know mapped to any
+[50:07] page then we'll we basically need to
+[50:10] ensure that no entry in the hash table
+[50:12] will actually point over
+[50:14] here had we not had the hash table then
+[50:18] and since the hashing engine produces
+[50:20] these 12 bits which are you know
+[50:23] uniformly distributed definitely for
+[50:25] some input Comm comination we would have
+[50:27] mapped to one of these entries that we
+[50:29] don't want to be mapped to and that
+[50:32] would have caused
+[50:34] problems right so to avoid this we add
+[50:37] an extra table called a hash table so
+[50:40] the long and short of it to summarize is
+[50:43] that an inverted page table has some
+[50:45] benefits in the sense that we do not
+[50:47] need a separate page table per process
+[50:51] we can have one page table for the
+[50:53] entire system but however accessing it
+[50:56] is
+[50:58] complicated so let's now summarize the
+[51:00] entire memory access process so we have
+[51:03] the processor that releases virtual
+[51:06] addresses we have a memory management
+[51:08] unit page tables are a part of it that
+[51:11] translates the virtual address to
+[51:13] physical addresses and these are sent to
+[51:16] caches so pretty much every access needs
+[51:19] to go through the
+[51:21] mmu so what we have described up till
+[51:23] now we need to access the page tables
+[51:25] which themselves you know so where are
+[51:27] the page tables stored well the page
+[51:30] tables have to be stored somewhere and
+[51:32] they need to be stored in
+[51:33] memory right we can't have a separate
+[51:36] piece of hardware for them so they need
+[51:38] to be stored in memory as well and uh so
+[51:41] they of course uh will be stored uh you
+[51:44] know at some point and the physical
+[51:45] addresses will be known but
+[51:48] nevertheless uh you know this will make
+[51:50] things very slow because for one load
+[51:52] instruction we'll have to walk the page
+[51:54] table so the term is walking the page
+[51:56] table
+[51:57] right let me just write
+[52:08] it so let us uh you know design a fast
+[52:12] mechanism such that we don't have to
+[52:14] access the page table for every single
+[52:16] memory access so what we can do is that
+[52:19] we can have a very small cache that has
+[52:21] the end uh most recent mappings so due
+[52:25] to temporal and spatial locality we
+[52:27] should observe a very high hit rate in
+[52:29] this gache and we will not need to
+[52:32] access the page tables very
+[52:35] frequently so we add a specialized
+[52:38] structure called tlb so tlb is a
+[52:41] translation look aside
+[52:55] buffer so pretty much it stores
+[52:59] translations so tlb is actually a very
+[53:01] small cache it's typically a set
+[53:03] associated with a fully associative uh
+[53:06] 64 uh entri cash so what comes in is
+[53:11] actually the page number and we quickly
+[53:13] access the tlb and what comes out is the
+[53:15] frame number all right and since the tlb
+[53:19] is a very small structure and it uses
+[53:21] the lru replacement scheme right so it
+[53:23] stores the most uh you know recently
+[53:26] used
+[53:28] entries uh it can satisfy most of the
+[53:32] translation requirements of memory
+[53:34] addresses so tlbs typically have a very
+[53:37] high hit
+[53:38] rate the hit rate of tlbs can well uh
+[53:42] exceed the you know 97 98
+[53:45] 99% so most of the accesses actually hit
+[53:48] in the tlb so tlb Mis rate per se is not
+[53:51] that big a deal and uh this ensures that
+[53:54] we can access our caches very very
+[53:57] quickly uh this is because uh our
+[54:00] translation operation is very fast and
+[54:03] for one of those occasional tlb misses
+[54:05] where we don't find the page number in
+[54:07] our tlb we need to access the page
+[54:10] tables and we need to get the
+[54:13] translation from the page tables
+[54:14] populator tlb and move on so the tlb can
+[54:18] be thought of as a cache for the page
+[54:20] table it helps speed up the process of
+[54:23] memory address translation and the
+[54:26] reason Reon it works is because of
+[54:27] spatial and temporal locality right well
+[54:30] spatial well okay both uh temporal
+[54:33] locality because we'll reuse the same
+[54:35] pages over and over again and special
+[54:37] locality because you know there high
+[54:39] probability that we'll remain within the
+[54:41] same page the page is a huge structure
+[54:43] it's 4
+[54:46] kilobytes so uh the tlb can be a fully
+[54:49] associative cache it can be a set
+[54:51] associative Cache no problem each entry
+[54:54] will contain a page to frame mapping
+[54:57] uh tlb typically contains 64 entries can
+[54:59] be 128 also no problem and accesses uh
+[55:04] so if there is no so then if there's a
+[55:06] tlb Miss we go to the page
+[55:09] table and it is possible that we are if
+[55:11] you are accessing a page for the first
+[55:14] time uh we will not have a mapping for
+[55:17] it so this is called a page fault right
+[55:19] so what's a page fault a page fault is
+[55:21] when the page is not available in memory
+[55:24] so we'll see it can happen because a
+[55:26] video reason so one of the reasons can
+[55:28] be that we don't find an entry for it in
+[55:30] the page tables so in this case whenever
+[55:33] there's a page fault we need to create a
+[55:35] mapping right allocate an empty frame in
+[55:39] memory and also update the list of empty
+[55:41] frames so mind you in the memory
+[55:43] management unit which can be implemented
+[55:46] either in Hardware or in software we
+[55:49] need to have a list of empty frames so
+[55:51] the moment we take a frame out of this
+[55:53] list we need to update this list pretty
+[55:56] much remove that
+[55:58] frame so now let's consider a new term
+[56:01] called swap
+[56:03] space so let us consider a system with
+[56:07] uh 500 megab of main
+[56:09] memory so the question that we ask is
+[56:13] can we run a program that requires 1 gab
+[56:17] of main memory right so so so so let's
+[56:19] look at it uh you know 1 GB of should
+[56:22] not be main memory but should be Memory
+[56:25] actually so let us assume that we have a
+[56:28] system where we have a
+[56:30] processor we have an
+[56:33] L1 uh we have an
+[56:35] L2 and then we have our main memory and
+[56:39] the caches are inclusive and the size of
+[56:42] the main memory is 500 megabytes but our
+[56:44] program is huge so it actually accesses
+[56:47] you know 1,000 megabytes or 1 GB of main
+[56:50] memory 1 GB of memory is what it
+[56:53] requires can we run our program on such
+[56:55] a system
+[56:57] well uh so the answer as it turns out is
+[57:00] yes because if you do not allow this
+[57:02] we'll be really constraining our program
+[57:06] and we'll also need to invest in a lot
+[57:07] of memory so it's a better idea to have
+[57:11] some way of doing this so what we can do
+[57:14] is that we can add an additional entry
+[57:17] in the page
+[57:19] table so this will be an additional bit
+[57:22] it will say is the frame found you know
+[57:25] is this particular frame found in main
+[57:28] memory or somewhere else so you know the
+[57:30] page table so what does a page table
+[57:32] entry look like or a tlb entry given a
+[57:36] page number it will contain the frame
+[57:38] number but what we are suggesting is
+[57:41] that we can have a little bit more we
+[57:43] can have some more data as
+[57:45] well so we can have some amount of state
+[57:48] that says that is this Frame available
+[57:51] in main
+[57:54] memory sorry m
+[57:56] or is it available somewhere else or is
+[57:59] it available somewhere else so in this
+[58:02] case we can add more you know memory
+[58:05] like storage devices to our system and
+[58:09] when we are translating from a virtual
+[58:11] page to a physical frame we can specify
+[58:15] in exactly which storage device will you
+[58:17] find this physical frame so one of the
+[58:20] possible storage devices as main memory
+[58:23] but we can have others as well so let's
+[58:25] consider are the hard disk so almost all
+[58:27] computers have a hard disk so we'll
+[58:30] study the hard disk later in chapter
+[58:33] 12 but uh for beginners it's a magnetic
+[58:38] disk that stores data if the main memory
+[58:41] is uh something of the tune of
+[58:46] uh uh you know 8 GB or 16 GB the hard
+[58:49] disk is much more it's typically 500 GB
+[58:52] or 1 tbte so it's much larger but it
+[58:55] does not use semiconductors it uses
+[58:57] magnetic storage so it is much slower
+[58:59] much much
+[59:01] slower so we can say that the hard disk
+[59:04] can contain a dedicated area inside it
+[59:08] called the swap space right so in the
+[59:11] swap space we can save some frames which
+[59:14] are not fitting in main memory so they
+[59:16] can be saved in the swap
+[59:18] space so conceptual diagram of this
+[59:21] would be that we have the
+[59:23] processor then we have the L1 cache
+[59:27] we have the L2 cache below the L2 cache
+[59:30] we have the main memory this we are
+[59:32] saying is somewhat constrain so if we
+[59:35] need some additional space we can go to
+[59:37] the hard disk which is the biggest
+[59:39] storage structure that we have on
+[59:42] machines and a part of it we can
+[59:45] dedicate to actually storing some of the
+[59:47] frames that are not fitting in main
+[59:49] memory so in this case the physical
+[59:53] memory right the physical storage area
+[59:56] it becomes a combination of the main
+[59:58] memory and the swap space right it's a
+[60:00] combination of this and that clearly the
+[60:02] main memory part is much faster but we
+[60:05] can still get little bit of additional
+[60:07] storage in the swap
+[60:09] space so what each page table entry will
+[60:12] contain is that it will contain the
+[60:14] frame number and will contain a bit
+[60:17] right uh so the bit if it is zero it can
+[60:20] say that the frame is there in main
+[60:22] memory if it is one it can indicate the
+[60:26] frame is there in swap
+[60:29] space so let us now look at uh a
+[60:32] flowchart right of a typical memory
+[60:35] access so if we have a memory access can
+[60:38] be a load or store does not matter there
+[60:41] is a tlb hit well well and good that's
+[60:43] the best case yes so we send the mapping
+[60:47] to the processor we construct the
+[60:48] physical address and we send it to the
+[60:50] memory system if there is no tlb hit we
+[60:54] check the page tables if there's a hit
+[60:56] in the page table then we populate the
+[60:59] tlb with a new mapping and we also send
+[61:02] the mapping to the processor such that
+[61:05] it can create a physical
+[61:08] address now if there is no page table
+[61:10] hit you know if this mapping is uh not
+[61:13] there in the page
+[61:15] table so if you don't find an entry in
+[61:18] the page table this means that there is
+[61:20] no mapping so mapping needs to be
+[61:22] created so what we do is that we check
+[61:25] if a free frame is available in main
+[61:27] memory right in the in our frame list
+[61:30] well if it's available yes and good we
+[61:32] go to this stage otherwise if it's not
+[61:35] available we go to main memory and we
+[61:38] evict a frame to swap space right so
+[61:41] we're assuming that we have main memory
+[61:43] and uh so the L2 cache is connected to
+[61:45] the main memory and the main memory is
+[61:48] connected to the hard disk which is huge
+[61:51] so part of this is let's say the swap
+[61:53] space let me call it SS so we take one
+[61:57] frame in main memory and we essentially
+[61:59] kick it out and put it in the swap
+[62:01] space we also update the page table for
+[62:04] that frame saying that it's in the swap
+[62:06] space and
+[62:09] then we read in the new frame so if
+[62:12] let's say new frame has some data in the
+[62:14] swap space what we can do uh is that we
+[62:17] can either create an empty frame or we
+[62:19] if we know what its content should be we
+[62:22] readen that from the hard disk and then
+[62:25] then we create and update the mapping in
+[62:27] the page table we populate the tlb and
+[62:30] we send the mapping to the
+[62:33] processor all right and the processor
+[62:35] can use this mapping to create the new
+[62:37] to create a physical address and send it
+[62:39] to the memory
+[62:41] system now let's take a look at some of
+[62:44] the advanced features that are possible
+[62:46] so so you know with our paging and
+[62:48] virtual memory setup so sometimes it is
+[62:52] necessary for two processes to actually
+[62:54] share data and the mind this is
+[62:57] purposeful this is deliberate that
+[62:59] sometimes it might be necessary that for
+[63:01] process one to some send some data to
+[63:05] process two so when will this be
+[63:07] necessary well we can think of a
+[63:09] producer consumer
+[63:11] situation that we have let's say one
+[63:14] process which is accepting requests from
+[63:16] the web so this is P1 it is accepting
+[63:18] requests from the
+[63:20] web then we have a process
+[63:24] P2 which will get the request from
+[63:27] process P1 P2 will access some database
+[63:30] give some data to process P1 and P1 will
+[63:33] send the data back to the client over
+[63:36] the net or over the web right over a
+[63:38] network
+[63:39] link so in this case P1 and P2 need to
+[63:42] share some data and this can easily be
+[63:44] done with our
+[63:46] mechanism what we can do is for the same
+[63:49] physical frame we can map it to two
+[63:53] separate pages one page is in the
+[63:56] address space of process P1 and one page
+[64:01] is in the address space of process
+[64:04] P2 so uh if process P2 writes to this
+[64:08] page it is actually writing to this
+[64:09] physical frame similarly process P1
+[64:12] writes to this page it is writing to the
+[64:15] same physical frame so in this way kind
+[64:17] of indirectly they can share data so if
+[64:20] P2 writes something over here is the
+[64:22] same memory locations that P1 can access
+[64:25] so P1 can uh read the
+[64:27] values so uh implementing shared memory
+[64:30] in this way is very very common and uh
+[64:34] it's uh you know extremely common to use
+[64:36] virtual memory for uh you know creating
+[64:39] mechanisms or processes to share
+[64:42] data another thing is that let's assume
+[64:45] that we want to protect some regions of
+[64:47] the program and we don't want them to be
+[64:50] modified so one such section that can be
+[64:53] protected is the text section which is
+[64:55] where the instructions of the program
+[64:57] are there right and we don't want the
+[65:00] instructions to be
+[65:01] modified because if somebody modifies
+[65:04] the instructions is like inserting a
+[65:05] virus so let's say if I modify these
+[65:08] instructions and I make them send random
+[65:10] emails to random people on the net
+[65:12] that's going to create problems so we
+[65:15] want the program to be you know
+[65:18] unmodifiable so how do we do this well
+[65:20] the simple way is that we extend each
+[65:23] page table entry or tlb entry with the
+[65:26] frame number can have some additional
+[65:28] data and we also add a readon
+[65:31] bit if the readon bit is set to one
+[65:34] means that you know no other process can
+[65:37] actually write uh to this memory region
+[65:40] you know just in case you're able to
+[65:42] break into a program it ensures that
+[65:45] even the same process cannot write into
+[65:49] region uh so uh essentially the text of
+[65:53] the program the instructions of the
+[65:55] program cannot be modified so this is
+[65:58] one way of ensuring protection and
+[65:59] Security in a virtual memory system that
+[66:02] we can uh Mark large parts of the memory
+[66:05] space as read only which means that once
+[66:08] it is you know it can only be read for
+[66:10] the first time it can only be written
+[66:12] the first time it is
+[66:13] initialized after that no process can uh
+[66:17] write to it and this ensures that our
+[66:19] programs Remain the way they are and
+[66:21] they are not maliciously
+[66:24] modified all right so this brings us to
+[66:27] the end of the memory systems
+[66:30] chapter so we are done with memory
+[66:33] systems so we are all ready to take on
+[66:36] chapter number 11 which is the chapter
+[66:39] on Parallel programming and
+[66:40] multiprocessor
+[66:44] systems

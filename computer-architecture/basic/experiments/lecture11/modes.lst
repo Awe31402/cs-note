@@ -1,0 +1,14 @@
+     1                                  bits 32
+     2 00000000 8B00                    	mov eax, [eax]
+     3 00000002 8B0448                  	mov eax, [eax + ecx*2]
+     4 00000005 8B4448E0                	mov eax, [eax + ecx*2 - 32]
+     5 00000009 8B42F4                  	mov eax, [edx - 12]
+     6 0000000C 8B0412                  	mov eax, [edx*2]
+     7 0000000F A14233E1FF              	mov eax, [0xFFE13342]
+     8 00000014 648B03                  	mov eax, [fs:ebx]
+     9 00000017 B878563412              	mov eax, 0x12345678
+    10 0000001C 0578563412              	add eax, 0x12345678
+    11                                  bits 64
+    12 00000021 48B89A785634120000-     	mov rax, 0x123456789A
+    12 0000002A 00                 
+    13 0000002B 8B050A000000            	mov eax, [rel $ + 0x10]

@@ -1,0 +1,3127 @@
+[00:23] So
+[00:24] Now we
+[00:25] Memory models
+[00:26] About
+[00:26] Let's discuss,
+[00:27] Finally the data
+[00:28] With races, we
+[00:28] Discussion
+[00:29] We will finish.
+[00:31] Data Races
+[00:32] And memory
+[00:33] Models are a
+[00:33] So much so
+[00:34] Close relationship
+[00:35] Will have
+[00:36] We will observe,
+[00:37] This is about this.
+[00:38] In the lecture
+[00:39] We will find out.
+[00:43] First we
+[00:45] We have been
+[00:45] What before?
+[00:46] Have we learned?
+[00:47] Once quickly
+[00:47] Let's remember.
+[00:48] . Memory model
+[00:51] Or memory
+[00:52] Consistency
+[00:53] A model is a
+[00:54] To a piece of code
+[00:55] What kind of implementations (
+[00:56] executions)
+[00:56] are allowed
+[00:57] And to that
+[00:58] Correct results
+[00:59] What is
+[00:59] Informative
+[01:00] Specification
+[01:01] . So, this is
+[01:03] Basically
+[01:04] Rules
+[01:04] Decides
+[01:05] . And memory
+[01:07] Model
+[01:07] Processor
+[01:08] Architecture
+[01:09] Depending on
+[01:09] There will be. We
+[01:11] As if looking
+[01:13] , virtual
+[01:13] Missions,
+[01:14] Software,
+[01:15] Compilers
+[01:15] etc.
+[01:16] Also for
+[01:17] Memory
+[01:17] We use models
+[01:18] Can be defined
+[01:19] . However
+[01:22] So far
+[01:22] What we explained
+[01:23] Policy,
+[01:24] Mainly
+[01:26] In the context
+[01:27] Defined
+[01:28] . So, we
+[01:30] Very aggressive
+[01:31] To be
+[01:31] Optimizations
+[01:32] Have
+[01:33] Maybe.
+[01:33] Then memory
+[01:34] The model is very
+[01:35] Weakly
+[01:35] Changes.
+[01:37] The strongest
+[01:38] To the model
+[01:38] Sequential
+[01:40] A standard
+[01:41] Oath.
+[01:43] So, WS for PLSC
+[01:44] and FR
+[01:45] Orders
+[01:46] Globally
+[01:47] Should be.
+[01:49] So, this is PLSC
+[01:51] Of
+[01:51] Live
+[01:52] Result. and
+[01:54] All popular
+[01:55] Architectures
+[01:56] PLSC
+[01:56] Follow
+[01:57] And they are PLSC
+[01:58] Confirming
+[01:58] Coherence
+[01:59] Will implement.
+[02:00] And a lot
+[02:01] Until 'thin
+[02:02] Air
+[02:02] Reeds
+[02:03] Not allowed.
+[02:04] Value
+[02:04] Prediction
+[02:05] When
+[02:06] This could happen.
+[02:06] We saw that.
+[02:07] Moreover
+[02:08] Some more
+[02:09] Pipeline
+[02:09] With optimizations
+[02:11] Besides. So
+[02:13] We really
+[02:14] Changeable
+[02:15] Are these? Which ones
+[02:16] Global Cao,
+[02:17] What are local
+[02:18] Will it be? They are RF
+[02:19] and PO.
+[02:20] Mainly,
+[02:21] Yes? So
+[02:22] RF means, we
+[02:23] RFI as seen
+[02:24] And RFE
+[02:25] Two types
+[02:26] Maybe. RFI
+[02:27] That is, own
+[02:27] Right
+[02:28] Reading first (
+[02:29] read your own writing early),
+[02:29] And what does RFE mean?
+[02:30] The rights of others
+[02:32] read others write early).
+[02:32] So others
+[02:33] Reading first
+[02:34] is non-
+[02:35] Atomic
+[02:35] With the Wrights
+[02:36] Equal. and
+[02:36] All kinds
+[02:37] Program
+[02:38] Order
+[02:38] Relationships
+[02:39] Can be simplified
+[02:40] (relaxed). We
+[02:41] That's what I saw.
+[02:42] Simplification
+[02:43] That is
+[02:43] Non-compliance
+[02:44] That means.
+[02:47] A few in a row
+[02:48] Execution
+[02:49] Witnesses
+[02:49] Let's see. and
+[02:51] How are we?
+[02:52] Let's see.
+[02:54] One
+[02:55] Observing
+[02:55] and
+[02:56] Not noticing,
+[02:56] How is that a
+[02:57] The result
+[02:58] Is it allowed?
+[02:59] Or
+[02:59] Rejecting
+[03:01] So, we
+[03:02] Here are some
+[03:04] Let's discuss.
+[03:05] But, for readers
+[03:06] My viewers
+[03:07] The advice is,
+[03:08] In the book
+[03:09] This
+[03:10] In detail
+[03:10] Look. And this
+[03:12] Examples
+[03:13] Very detailed
+[03:13] Check it out.
+[03:15] So,
+[03:15] First
+[03:16] Almost
+[03:16] Always
+[03:17] Simplified (
+[03:18] relaxed) order,
+[03:19] That is, the right to
+[03:19] Reed
+[03:20] Let's see. This
+[03:21] Out-of-
+[03:22] Pipeline,
+[03:23] Load store
+[03:23] Queues,
+[03:24] Forwarding
+[03:25] Write buffers
+[03:26] Having
+[03:27] Caused by
+[03:28] Result. Here
+[03:30] A right
+[03:30] Operation and
+[03:31] After that, a
+[03:32] Read operation
+[03:33] When,
+[03:33] Write operation
+[03:34] Commit at the end
+[03:35] During
+[03:35] Happens,
+[03:36] But Reed
+[03:36] Operation
+[03:37] Before that
+[03:38] Happens.
+[03:39] So, that read
+[03:40] Operation one
+[03:41] If you look at it this way
+[03:41] Other
+[03:42] For processors
+[03:42] Than right
+[03:43] Before
+[03:43] It appears.
+[03:45] So, this is
+[03:47] Processing
+[03:48] and other types
+[03:51] The result, right?
+[03:53] Usually
+[03:53] Very
+[03:54] Architectural
+[03:55] Structures
+[03:56] To some extent
+[03:57] Can be given up (
+[03:58] (You can relax.)
+[03:59] So, a
+[04:00] Look at the example.
+[04:01] About it
+[04:02] Study
+[04:02] Let's do it. First
+[04:04] We set the value of X to 1.
+[04:05] Set to
+[04:06] Let's do it. That
+[04:07] Then a read
+[04:08] Instruction
+[04:09] There will be.
+[04:12] In a way
+[04:12] To say
+[04:14] That
+[04:14] In advance
+[04:15] Reads,
+[04:15] But that's what happens.
+[04:16] No
+[04:17] Let's say. Right?
+[04:18] So, what?
+[04:19] What is happening?
+[04:20] We are now
+[04:21] Let's see, okay?
+[04:22] If it is
+[04:23] If it happens or not
+[04:23] What if it doesn't happen?
+[04:26] Now A, B,
+[04:27] And C
+[04:28] Three
+[04:28] Instructions
+[04:29] Let's see, here
+[04:31] We divide X by 1.
+[04:31] Wright
+[04:32] We are doing it.
+[04:33] We subtract 1 from X.
+[04:36] Right? Because
+[04:37] This is a single thread.
+[04:39] Sure
+[04:40] It has to be done. That
+[04:41] Then we set Y to 1.
+[04:42] Right.
+[04:42] We will do it. So, this
+[04:44] To the point
+[04:45] Everything is fine.
+[04:46] There is. After that, D
+[04:49] Name
+[04:50] Read 1 from Y.
+[04:51] Does this
+[04:52] Also fine.
+[04:53] There is. And then we
+[04:55] Two read
+[04:56] Operations
+[04:56] There are. Their
+[04:57] Middle
+[04:58] Will continue
+[04:59] Let's say.
+[05:01] Then we
+[05:04] What is Reed?
+[05:04] Are we going to do it?
+[05:06] Okay, we have two.
+[05:07] Options
+[05:07] There are. We
+[05:08] Zero (0)
+[05:09] Can be read
+[05:10] Or one (1)
+[05:11] Can be read.
+[05:12] Results
+[05:12] If we look, we have
+[05:13] Read T1, X value 1
+[05:15] is equal to and
+[05:16] T2 value is 1.
+[05:17] It is equal.
+[05:18] Right? Now
+[05:20] Question
+[05:21] What is T3?
+[05:21] We value
+[05:22] How much read
+[05:23] Will we do it? Very
+[05:26] In architectures
+[05:27] , you
+[05:28] Practically
+[05:29] What you see
+[05:29] What is, a
+[05:30] The core is its own
+[05:31] Operation,
+[05:32] That's other.
+[05:33] To the cores
+[05:33] Before appearing
+[05:34] Read first.
+[05:35] Does. Other
+[05:37] Cores or
+[05:38] Other threads,
+[05:39] Our current
+[05:39] Both in discussion
+[05:40] Same
+[05:41] Meaning
+[05:41] Give.
+[05:43] So, what is T2?
+[05:44] If it does,
+[05:45] That is the X variable.
+[05:46] Read value
+[05:47] To do
+[05:48] When trying
+[05:50] , it is old
+[05:50] Value means
+[05:52] Comes.
+[05:53] Needless to say
+[05:54] No, then RX0
+[05:55] and between WX1'
+[05:56] From Reed' (FR)
+[05:58] To be continued.
+[06:00] So, if there is an RFI
+[06:02] , of which we
+[06:03] What
+[06:03] Can we relax?
+[06:04] Let's see. To you
+[06:06] If there are rights,
+[06:07] We do this.
+[06:08] Can't relax.
+[06:08] If we read
+[06:09] To write
+[06:10] If we follow, we
+[06:13] At times up to
+[06:14] We are read-to-
+[06:15] Reed too
+[06:16] If we notice, we
+[06:17] And FR anyway
+[06:20] So, RFI
+[06:22] If a bicycle
+[06:23] Occurs
+[06:24] So, this
+[06:26] Validity
+[06:26] No. But very
+[06:28] Sometimes it is like that.
+[06:29] No. We
+[06:31] The pipeline
+[06:32] When using
+[06:33] For the most part
+[06:34] At times like that
+[06:35] No. That's why this
+[06:36] Edge there
+[06:37] No. So,
+[06:40] RFI Order
+[06:41] Not, but
+[06:42] The rest
+[06:43] Edges
+[06:44] What is there?
+[06:45] Even in architecture
+[06:46] , this
+[06:47] Allowed
+[06:49] . Okay?
+[06:51] Kind of
+[06:52] This is correct.
+[06:53] Execution,
+[06:53] Because we
+[06:54] Our own
+[06:54] Wrights
+[06:55] To read
+[06:56] Permission must be granted.
+[06:57] So, this LSQ
+[06:58] We have this.
+[06:59] Provides.
+[07:01] Provide.
+[07:03] And then
+[07:03] After that right
+[07:07] So, this is a
+[07:08] Classic
+[07:10] Optimization,
+[07:11] Here we are
+[07:11] Loads
+[07:12] Complete quickly
+[07:13] We will,
+[07:13] Because
+[07:14] Critical
+[07:15] On the path
+[07:15] are and
+[07:16] We them
+[07:18] We would like to do
+[07:19] . So, that's it.
+[07:20] Speed ​​up
+[07:21] For a lot
+[07:21] Key feature.
+[07:24] That's why out-
+[07:24] Off-order
+[07:26] With symptoms
+[07:27] Almost all
+[07:30] Acceptably
+[07:35] Of being
+[07:36] This is the meaning,
+[07:36] Right? Okay,
+[07:40] Now we are RFE
+[07:42] Let's see. Here
+[07:43] We are non-
+[07:44] Wright's
+[07:45] Discussing
+[07:46] . We are non-
+[07:49] Introduction
+[07:50] Already
+[07:51] Similar
+[07:51] Subjects
+[07:52] We saw.
+[07:55] So, here
+[07:56] What are we?
+[07:56] If we do
+[07:58] That means we
+[08:05] As discussed
+[08:07] , we have local
+[08:07] Tail off
+[08:08] If there are caches,
+[08:09] A
+[08:09] In architecture
+[08:10] Non-atomic
+[08:12] Maybe. A
+[08:15] In other words, we
+[08:16] Core the chip
+[08:17] Cash
+[08:17] Bank
+[08:17] Complexes
+[08:18] As tiles
+[08:19] Let's divide.
+[08:21] So, another
+[08:22] The core is the same.
+[08:26] On the tile
+[08:27] Core, other
+[08:28] Cores
+[08:28] Before seeing
+[08:29] Sister Core
+[08:30] The right of
+[08:31] It is possible to read.
+[08:35] Especially those
+[08:35] Snoopy
+[08:36] The bus
+[08:36] Share like this
+[08:37] It can happen.
+[08:39] So, others
+[08:42] Reading is
+[08:43] Definitely a
+[08:44] Opportunity. and
+[08:49] Something like MSHR
+[08:50] Construction
+[08:51] If they share,
+[08:52] Others
+[08:53] Before seeing one
+[08:54] Core Right
+[08:55] Look at it, it
+[08:56] Based on
+[08:56] Decisions
+[08:57] Taking
+[08:58] It can also happen.
+[09:03] So we
+[09:05] Seen
+[09:06] In short
+[09:07] Recap
+[09:07] Let's do it. We are X
+[09:09] Set to 1
+[09:10] Did it, then X
+[09:11] We read. That
+[09:12] As one
+[09:13] It arrived. That
+[09:14] Then we Y
+[09:16] Set as one
+[09:16] We did it. We are Y
+[09:19] We read. Here
+[09:21] We
+[09:22] Guessing
+[09:22] . And then we X
+[09:24] Let's read.
+[09:25] So, this is right.
+[09:26] Atomically
+[09:27] If so, this sequence
+[09:28] From you
+[09:29] Clearly
+[09:30] As can be seen
+[09:31] , we are one
+[09:31] We used to read.
+[09:32] But, we
+[09:33] Of course
+[09:34] Zero
+[09:34] We read.
+[09:35] As a result,
+[09:37] In Witness
+[09:38] A wheel
+[09:39] Because we are RX0
+[09:40] and a between WX1
+[09:42] FR edge
+[09:42] To be added.
+[09:44] Especially
+[09:45] No, right.
+[09:47] If so, this
+[09:48] Behavior
+[09:50] But, rights
+[09:51] Atomic is not
+[09:52] So, we have this
+[09:53] There will be no edge.
+[09:54] This edge for you
+[09:54] Otherwise, there
+[09:55] There is no wheel.
+[09:56] And this
+[09:58] You can see.
+[10:00] Basically,
+[10:01] What do we do?
+[10:02] What are we doing?
+[10:04] We especially
+[10:05] Looking
+[10:08] Different
+[10:09] To locations
+[10:09] Rights
+[10:12] In order.
+[10:14] So, T2 X
+[10:15] Sees,
+[10:16] That is, X first.
+[10:18] Will be done,
+[10:20] And then Y as one
+[10:21] Set
+[10:22] However, T3 Y
+[10:25] Done, then X
+[10:27] That has been done.
+[10:28] Looks.
+[10:33] In order
+[10:34] We are watching,
+[10:35] This is non-
+[10:36] Of the rights
+[10:37] But, non-
+[10:39] With rights
+[10:39] Also, we still have
+[10:40] PLSC is,
+[10:42] To the location
+[10:43] Related
+[10:43] Rights are one
+[10:45] We'll see. But,
+[10:47] For locations,
+[10:47] A little there
+[10:48] Confusion
+[10:50] Especially this
+[10:51] Edge Global
+[10:51] Not because.
+[10:53] That's the main thing.
+[10:54] Reason. and
+[10:55] That's why this
+[10:55] On the graph
+[10:56] We have a wheel.
+[10:57] No. Okay.
+[11:01] Next edge
+[11:02] Let's see, this
+[11:03] Relax
+[11:05] The same right-to-
+[11:05] Right order.
+[11:09] Non-
+[11:09] Blocking
+[11:10] In cache
+[11:11] It may happen,
+[11:12] Here is the first
+[11:13] Right in MSHR
+[11:14] Gets stuck.
+[11:15] , but the second
+[11:16] Right, many
+[11:17] For reasons,
+[11:18] We are direct.
+[11:19] Affected
+[11:20] Can or
+[11:22] Skip MS, MSHR
+[11:23] Put it down.
+[11:24] To the level
+[11:25] Can be sent. Many
+[11:30] First right
+[11:30] May get stuck.
+[11:32] , late
+[11:32] Maybe, but
+[11:33] Second right
+[11:34] Accessible
+[11:37] To the cores.
+[11:37] So, the same
+[11:38] For thread
+[11:39] Also,
+[11:39] Addresses
+[11:40] As long as it is separate
+[11:41] Until, right-to-
+[11:42] Right order
+[11:43] Will be violated
+[11:44] We will see.
+[11:46] And,
+[11:49] In caches, we
+[11:50] MSHR a right
+[11:51] At
+[11:51] We will stop.
+[11:52] And another
+[11:53] Forward
+[11:54] Let's go.
+[11:55] , such
+[11:56] Problems there
+[12:01] Here too a
+[12:02] Simple example
+[12:03] If we take, we
+[12:04] One for X, one for Y
+[12:05] Let's write one.
+[12:07] So, we have WX1
+[12:08] and WY1
+[12:11] Between us
+[12:12] Order Edge
+[12:12] We will reach.
+[12:13] About though
+[12:14] Are we discussing?
+[12:15] That's it. For us
+[12:17] There are
+[12:19] Then we RY1
+[12:21] Then, we
+[12:22] Read to read
+[12:22] There is an order.
+[12:26] Not a topic.
+[12:27] Also, we can use X
+[12:31] Yes? This
+[12:33] Summary
+[12:34] What we do is Y
+[12:36] We read. Wright
+[12:38] To Write Order
+[12:41] In the world, we
+[12:42] X as one
+[12:42] What to read,
+[12:43] But we
+[12:45] That's why we RX0
+[12:46] and FR between WX1
+[12:47] Edge
+[12:49] Then we have
+[12:50] A bicycle
+[12:50] Occurs.
+[12:53] Not possible.
+[12:56] But, if
+[12:56] Right to Right
+[12:57] Ordering
+[12:58] Otherwise, we will
+[13:00] We would add
+[13:01] No. Then
+[13:05] There was a bicycle.
+[13:06] No and this
+[13:07] Exactly
+[13:08] It was, right?
+[13:11] It would have been fine.
+[13:13] And our discussion
+[13:14] Summary of
+[13:15] What? T1 first X
+[13:18] Writing,
+[13:18] Then Y
+[13:19] Writing
+[13:20] Looks. T2
+[13:25] Them
+[13:25] Contraindications
+[13:26] Looks. That
+[13:29] First writing Y,
+[13:30] Then X
+[13:36] Here too we
+[13:38] In places
+[13:40] We are watching.
+[13:43] We can use this code
+[13:44] When written
+[13:45] And our right
+[13:47] When not followed
+[13:48] , we have
+[13:48] Visible
+[13:49] This is it. Okay?
+[13:54] That's why multiple
+[13:57] We are fences.
+[13:58] If not added,
+[13:59] Others data
+[14:00] Can't see. and
+[14:02] You values
+[14:03] Communicate
+[14:04] When doing
+[14:04] This is very
+[14:05] Effects
+[14:06] There are. What are we?
+[14:07] If possible,
+[14:08] Two
+[14:08] Threads
+[14:09] Considering
+[14:10] Let's take it,
+[14:11] Okay? T1 and T2.
+[14:14] We are the result.
+[14:15] For a value
+[14:15] Set equal
+[14:16] Can be done.
+[14:17] For example, something
+[14:18] A value, 57
+[14:20] Status
+[14:22] We will do this.
+[14:24] Computation
+[14:25] Done.
+[14:26] Indicates.
+[14:29] Let's read,
+[14:30] Okay? Status
+[14:33] If one, we
+[14:35] Here
+[14:35] Doing
+[14:36] That's it, then
+[14:43] Yes? So,
+[14:44] We can do anything.
+[14:44] Temporary
+[14:45] Variable
+[14:45] To the result
+[14:47] We will. But
+[14:48] We have this result.
+[14:48] It seems
+[14:49] Guarantee
+[14:50] No. We guarantee
+[14:51] For lack of
+[14:52] The reason is
+[14:53] These rights
+[14:53] Reversible
+[14:54] There is a possibility,
+[14:55] Right? So, this
+[14:56] Order guaranteed
+[14:57] Not given
+[14:58] Kind of code
+[14:59] Method
+[14:59] Doesn't work. This
+[15:02] We are here for a
+[15:03] The fence
+[15:04] To be added. We
+[15:05] If added,
+[15:07] Correct behavior
+[15:07] Guaranteed to be
+[15:08] There will be. Okay.
+[15:11] Next time
+[15:12] Complex
+[15:13] Read the subject.
+[15:14] Read order.
+[15:16] Violation
+[15:17] Very easy
+[15:17] Because, we
+[15:19] To addresses
+[15:21] We are talking.
+[15:22] . and LSQ is
+[15:24] In the processor
+[15:25] This order
+[15:26] Never
+[15:27] Will be done.
+[15:32] Two reeds
+[15:32] Maybe
+[15:33] And they
+[15:35] Issue
+[15:38] Okay, that's it.
+[15:40] Simple. Something
+[15:41] Because of a reason
+[15:46] Stopped
+[15:47] . So, we are LSQ
+[15:48] Ni
+[15:48] We are using
+[15:49] And we have a
+[15:50] Kind
+[15:50] Predictor
+[15:51] There is
+[15:51] Let's say, right?
+[15:52] For us
+[15:52] Dependence
+[15:53] Whether or not
+[15:54] That. So,
+[15:55] We have two.
+[15:56] There are, for X
+[15:57] Reed and Y
+[15:58] Reed. To X
+[15:58] Clashes in Reed
+[15:59] It will happen.
+[16:00] We assume,
+[16:01] So that's it.
+[16:02] Also
+[16:02] Stops
+[16:04] What is it?
+[16:05] Data
+[16:05] Let me read.
+[16:06] And it
+[16:07] Send to cache.
+[16:08] But for Y
+[16:08] In Reed
+[16:09] No conflict
+[16:09] We don't want to.
+[16:10] Let's assume,
+[16:11] To the cache
+[16:12] We will send it.
+[16:14] To say,
+[16:14] Aggressive
+[16:16] , especially
+[16:18] Used
+[16:19] Load-store
+[16:20] With a cue, this read
+[16:22] Very easy.
+[16:23] And we do it.
+[16:24] In the fifth chapter
+[16:25] We saw it happen.
+[16:28] Read there.
+[16:29] Read order
+[16:29] Violated
+[16:30] . In that case,
+[16:34] What should we do?
+[16:38] Let's start with X.
+[16:39] and Y's
+[16:39] This is what I read.
+[16:40] Example
+[16:41] Let's take a look. X
+[16:43] The value is one.
+[16:44] Let's say. Y
+[16:45] Value zero
+[16:46] We read that.
+[16:47] That is, RX1 to RY0
+[16:49] Km. Then we Y
+[16:50] Set to one
+[16:51] We will.
+[16:51] So we are a
+[16:52] FRH
+[16:53] We will add.
+[16:53] Then we can find Y.
+[16:57] RFH
+[16:58] And here
+[17:01] There is. So
+[17:03] Order Edge R
+[17:04] and between W
+[17:05] There will be. A
+[17:06] Reed and
+[17:07] After that
+[17:07] Coming right.
+[17:08] and WX1
+[17:09] Then to RX1
+[17:15] So this
+[17:16] In case,
+[17:19] However,
+[17:20] Happening
+[17:20] What we are
+[17:22] We will change it.
+[17:26] That's something for us.
+[17:27] Trouble
+[17:27] Causes.
+[17:31] Read before Y
+[17:32] If it happens, it is Y
+[17:33] The beginning of
+[17:35] That is zero. That
+[17:35] Then,
+[17:36] Sure, X
+[17:36] One back
+[17:37] Gives,
+[17:38] And you
+[17:39] , in this graph
+[17:43] And any one
+[17:45] Order loading
+[17:47] Planned
+[17:48] Processor,
+[17:54] Definitely an LSQ
+[17:55] With, here we are
+[17:56] They load
+[17:57] Fetched
+[18:00] No need, this is
+[18:02] Especially us
+[18:03] Dependencies
+[18:04] When expected
+[18:09] This is definitely
+[18:10] An opportunity. This
+[18:14] If it happens,
+[18:15] Then this
+[18:19] A validity
+[18:19] To become
+[18:20] Contains.
+[18:22] Now, we have
+[18:23] Processors
+[18:24] For example,
+[18:25] Intel
+[18:25] Processors,
+[18:26] Read-to-read
+[18:28] In this case, this
+[18:31] This result
+[18:33] But, other out
+[18:34] -Out-of-order
+[18:34] In processors,
+[18:37] This edge there
+[18:38] No. This Edge
+[18:39] If not there,
+[18:40] That will be allowed
+[18:41] You can easily
+[18:42] Can be seen.
+[18:45] Now, Reed-
+[18:46] To-Write
+[18:48] So, Reed-
+[18:51] Actually a lot
+[18:52] Difficult. So,
+[18:53] This means
+[18:54] What? This
+[18:55] Meaning a read
+[18:56] And a right
+[18:57] There are. This
+[19:00] To violate
+[19:02] , after this right
+[19:03] Run this read
+[19:06] Read here.
+[19:07] To be implemented
+[19:08] There will be. But,
+[19:10] That's really it.
+[19:11] The way it happens
+[19:12] No. Because,
+[19:14] When is the right time?
+[19:15] Will it be implemented?
+[19:16] Look. Wright
+[19:17] is ROB's
+[19:18] To the head
+[19:18] Upon arrival
+[19:19] Will be implemented.
+[19:21] By then Reed
+[19:22] There will be. Reed
+[19:24] In the pipeline
+[19:25] Since there is no
+[19:26] It does its job.
+[19:27] Finished.
+[19:27] Should be. That
+[19:28] Its value
+[19:29] Having obtained
+[19:29] Gone
+[19:30] Should be. Is that all?
+[19:35] Overcoming
+[19:36] No way.
+[19:40] But some
+[19:41] In cases
+[19:42] It is possible,
+[19:43] Right? So a
+[19:46] That is the case.
+[19:49] Possible
+[19:50] What is, we have
+[19:51] A hypothetical
+[19:52] That's right.
+[19:54] That means we have a
+[19:55] Aggression
+[19:55] Optimization
+[19:56] There is, here is a
+[19:59] Finally
+[19:59] To reach
+[20:00] We are right before.
+[20:04] We are a kind of
+[20:05] Aggressive right
+[20:06] We will. Another
+[20:10] What is, these are
+[20:11] Hardware
+[20:12] Threads are called
+[20:15] Physical
+[20:16] Store
+[20:17] Single load
+[20:17] Store queue
+[20:18] They share. This
+[20:21] Quickly
+[20:21] It may appear.
+[20:23] They are a kind of
+[20:24] Predictable
+[20:25] With a view
+[20:26] So, that
+[20:27] In the context, we
+[20:28] If you want
+[20:29] Such
+[20:30] Come.
+[20:33] Our problem is T1.
+[20:34] equals 1, T2 equals 1
+[20:35] With the result of
+[20:36] There is. Because
+[20:38] In all cases
+[20:39] , Wright
+[20:41] After
+[20:42] What happens,
+[20:43] So two
+[20:44] Reeds one
+[20:45] Otherwise, we
+[20:47] Order edges
+[20:48] There are. Yes?
+[20:49] Here. Rights
+[20:53] Worldwide
+[20:54] What we think
+[20:55] Two RF edges.
+[20:57] There is a wheel.
+[21:00] Read to write
+[21:01] There are many
+[21:02] Simple
+[21:04] You are this
+[21:06] Can't see.
+[21:08] Read them to
+[21:10] It will be the same.
+[21:12] But this is too much.
+[21:14] In implementations
+[21:18] I
+[21:18] Specified
+[21:19] For some reasons
+[21:20] Valla Wright
+[21:23] In that case this
+[21:24] Result
+[21:26] These edges will not exist.
+[21:30] There will be no wheel.
+[21:35] Okay. So this
+[21:38] In this context
+[21:39] Will not continue. This
+[21:41] Legal
+[21:43] But I
+[21:44] As said
+[21:45] , do this
+[21:46] Very difficult,
+[21:47] Because this
+[21:48] Out of
+[21:49] In pipelines
+[21:50] What we taught
+[21:50] To that
+[21:51] Contradictory.
+[21:52] So we have
+[21:53] Extremely aggressive
+[21:55] Otherwise, this
+[21:56] Being violated
+[21:58] Very unlikely.
+[22:00] Now a
+[22:01] Important
+[22:02] Corner case
+[22:05] What is,
+[22:06] In consistency
+[22:07] All
+[22:09] We believe that there will be
+[22:10] We think
+[22:11] , right? But
+[22:13] Now I
+[22:14] A simple
+[22:15] I want to ask.
+[22:16] , RFI relationship
+[22:17] If we relax
+[22:18] Everything else
+[22:20] If
+[22:20] What happens?
+[22:22] That means a core is its own
+[22:23] Own right
+[22:28] Can read in advance.
+[22:34] This is SC.
+[22:34] Breakdown
+[22:35] Does it?
+[22:36] The answer is no.
+[22:38] Relationship SC
+[22:39] In
+[22:39] Can be relaxed
+[22:40] And to this
+[22:42] Proof
+[22:43] There is. Proof
+[22:44] The main
+[22:45] Intention
+[22:46] A right and
+[22:47] A read
+[22:48] Suppose,
+[22:49] Okay? So
+[22:50] Read that right.
+[22:51] Value from
+[22:52] Reads.
+[22:53] Then another
+[22:54] Core that read
+[22:55] Effect
+[22:56] Of course,
+[22:58] By the way, the same
+[22:59] In the thread
+[23:00] Maybe too.
+[23:00] After that it
+[23:02] Tasks
+[23:02] Does.
+[23:03] Finally,
+[23:04] To the right
+[23:04] Going back
+[23:07] So, like this
+[23:08] Wheel
+[23:08] is formed,
+[23:09] Then you
+[23:10] Look, this
+[23:10] Execution SC
+[23:11] That is not in
+[23:12] It is said. Yes?
+[23:14] But what am I?
+[23:15] What I'm saying is
+[23:16] , it is in the book
+[23:18] Discussed
+[23:19] Item, this
+[23:19] Actually
+[23:20] Not happening. Okay?
+[23:24] To prevent it from happening
+[23:25] The reason is,
+[23:27] A systematic method
+[23:28] Will be
+[23:31] For example this
+[23:32] and other
+[23:35] , also right
+[23:35] Between operations.
+[23:36] Yes?
+[23:37] Dependency is
+[23:38] By Reed
+[23:39] It will go, this
+[23:40] In the case, a
+[23:40] From Reed
+[23:41] To another
+[23:42] The only one that exists
+[23:42] Dependency
+[23:43] To the same address
+[23:44] There will be, that is
+[23:44] From a reed
+[23:45] To the right.
+[23:46] So, you
+[23:46] An edge like this
+[23:48] Therefore, we have
+[23:49] There will be no bicycle.
+[23:50] Or is it something else?
+[23:51] By
+[23:52] It will go.
+[23:54] In cases,
+[23:54] We have a bicycle.
+[23:55] No way
+[23:56] Proving
+[23:57] Possible.
+[24:04] This is a
+[24:04] Important point,
+[24:05] This is RFI
+[24:06] Relationship
+[24:06] To relax
+[24:07] Allows
+[24:08] . The main thing for this
+[24:12] Other cores that
+[24:13] That it has been relaxed
+[24:14] Can't recognize,
+[24:15] Because they are
+[24:17] You can't see.
+[24:20] How about,
+[24:24] Unrelaxed
+[24:24] Situation
+[24:25] Apart from
+[24:26] No. and
+[24:28] Other cores
+[24:29] To see, they
+[24:31] By or
+[24:33] They see. But
+[24:35] Again, right.
+[24:37] Than them
+[24:38] Execute
+[24:39] It should be. Wright
+[24:40] And that other
+[24:42] 'Happens in the Middle'-
+[24:43] Before 'relationship'
+[24:45] That's why we
+[24:46] Can't see. But
+[24:47] I am its
+[24:48] Deeply
+[24:49] Wanting to go
+[24:49] No. Its
+[24:51] There is. But
+[24:52] Remember
+[24:53] , because we
+[24:54] Do this next.
+[24:55] In the figure
+[24:55] We will use it.
+[24:59] Shows.
+[25:01] Above all
+[25:02] It will be above.
+[25:03] There you are.
+[25:04] Nothing
+[25:04] Not relaxed.
+[25:05] This is atomic.
+[25:06] Rights owned
+[25:06] There will be. This
+[25:08] For the rights.
+[25:09] And we
+[25:12] RFI relationship
+[25:12] We relaxed.
+[25:14] Previous
+[25:14] On the slide
+[25:15] As shown
+[25:16] , doing so
+[25:17] Possible and
+[25:17] With it
+[25:18] Can be pushed
+[25:19] . Now we
+[25:21] Intel Memory
+[25:23] If it comes, this
+[25:23] Total Store
+[25:24] Order memory
+[25:25] The model, in which
+[25:26] Write to read
+[25:27] Only
+[25:28] Relaxed.
+[25:31] We are out of
+[25:32] With a pipeline
+[25:33] Working
+[25:34] So this is
+[25:35] Should be relaxed.
+[25:37] And we are RFI
+[25:39] Let's relax,
+[25:40] This is here.
+[25:41] All models
+[25:42] Work to do.
+[25:43] Mainly that
+[25:44] Otherwise, out.
+[25:45] Out of order
+[25:47] Benefits
+[25:48] Because there are none.
+[25:53] There is, this is
+[25:53] Distributed
+[25:55] In systems
+[25:56] Also very
+[25:56] Popular
+[25:57] Received,
+[25:58] Memory model
+[25:59] Just
+[26:01] Not limited.
+[26:04] System or
+[26:05] Programming
+[26:05] Even for the model
+[26:06] Expandable
+[26:07] . So,
+[26:09] Extra
+[26:09] Purpose,
+[26:10] Additional relaxation
+[26:11] What is rights (
+[26:12] writes) Atomic
+[26:17] , it's like TSO
+[26:18] There will be. Right-
+[26:19] To-read
+[26:20] Everyone
+[26:21] Violating
+[26:22] . But, in addition,
+[26:24] Writes
+[26:25] Not atomic.
+[26:27] The thing is
+[26:28] Right-to-right
+[26:29] are managed
+[26:31] . So, a
+[26:34] Although,
+[26:35] It is his own.
+[26:37] Manages
+[26:38] . That's why
+[26:41] The word
+[26:42] It arrived.
+[26:43] Then we have PSO
+[26:44] There is. So,
+[26:46] PSO is what we are
+[26:48] (PC)
+[26:49] Equally
+[26:51] Rights in this
+[26:52] There are, but
+[26:53] This is the right-to-
+[26:55] Does not comply. Okay,
+[26:57] What happens here?
+[26:59] This is the change.
+[27:00] Inside the thread
+[27:03] Not followed,
+[27:04] We have non-
+[27:06] Caches
+[27:07] Because of being.
+[27:09] And the rights
+[27:10] Whatever
+[27:11] There are. After
+[27:13] We have a week.
+[27:14] And release
+[27:15] There are.
+[27:16] So, these
+[27:17] Difference between
+[27:17] What? Week
+[27:18] In ordering
+[27:20] Do not obey, that is
+[27:22] We do not follow, but
+[27:23] We still have
+[27:25] There are rights.
+[27:28] We have a fence.
+[27:30] Yes, it is a
+[27:31] Generic
+[27:31] Fence
+[27:33] . But, release
+[27:35] As seen,
+[27:35] We have a pair.
+[27:38] There are. We have a
+[27:38] Release and
+[27:39] An acquire
+[27:40] Sorry,
+[27:41] This is another
+[27:42] Should be. This
+[27:43] Acquire first.
+[27:45] There should be a release.
+[27:47] Acquire and
+[27:48] Release
+[27:48] The idea is,
+[27:49] That's the lock.
+[27:50] Acquiring
+[27:51] And the lock
+[27:51] Releasing
+[27:52] Like.
+[27:54] Section's
+[27:56] Inside it
+[27:57] So, we have
+[27:59] To the section
+[28:00] Before and
+[28:00] Then the fence
+[28:01] Why?
+[28:02] If necessary, or
+[28:03] In other words, a
+[28:04] Acquire
+[28:05] If necessary.
+[28:06] Acquire's
+[28:08] First I
+[28:09] Lock
+[28:09] I will get it. That
+[28:11] Then I
+[28:14] I will implement it.
+[28:16] Or in other words
+[28:17] Getting locked
+[28:21] Also implemented
+[28:21] No way. Or this
+[28:22] Specific
+[28:25] Okay? Acquire
+[28:28] So, this is it.
+[28:29] Thought. Release
+[28:36] Implemented
+[28:37] In the section
+[28:40] , with Acquire
+[28:41] Including,
+[28:41] Completed
+[28:42] Meaning. So,
+[28:46] Release outside
+[28:46] To the world
+[28:47] Sign
+[28:53] Go and see them.
+[28:54] You can study.
+[28:55] Traditional
+[28:56] Like a fence
+[28:56] Besides, this
+[28:58] Coming
+[28:59] Than that
+[29:00] Incomplete
+[29:01] It won't stop. So,
+[29:02] With a fence
+[29:03] Compared to this
+[29:04] That's all.
+[29:04] Irregularity
+[29:06] . However,
+[29:09] Between them
+[29:12] Limited
+[29:12] They will.
+[29:16] Also this
+[29:17] In orders
+[29:18] Anything
+[29:18] Does not comply.
+[29:19] To this
+[29:21] There are. and
+[29:24] The model itself
+[29:25] Actually RFI
+[29:26] Does not respect. IBM
+[29:28] and ARM
+[29:29] Models are
+[29:30] In case
+[29:31] Different,
+[29:32] That is, they
+[29:33] No respect.
+[29:34] They have non-
+[29:37] In addition, what are they?
+[29:40] No respect,
+[29:42] What are they?
+[29:43] Orders (POs)
+[29:44] Do not obey. But
+[29:45] Fence them
+[29:47] So, IBM
+[29:47] and ARM memory
+[29:48] In models
+[29:49] We are right.
+[29:49] Code
+[29:50] To be able to write
+[29:51] The reason is, they
+[29:52] For fences
+[29:52] Comprehensive
+[29:53] Support is there.
+[29:54] Just normal
+[29:55] Apart from that, all
+[29:56] Types
+[29:56] Fences
+[29:57] Between stores,
+[29:58] Between loads
+[29:59] And many more like this
+[30:00] Fences. This
+[30:01] Us
+[30:02] Efficient
+[30:04] . And, memory
+[30:06] Models
+[30:07] To whom
+[30:07] Want to know?
+[30:08] Answer
+[30:09] Multithreaded
+[30:10] With code
+[30:10] Every working
+[30:11] This is for everyone.
+[30:12] Required. Otherwise,
+[30:13] They
+[30:14] Mistakes
+[30:14] Will do.
+[30:16] The system is a
+[30:17] In the manner
+[30:17] It works.
+[30:18] Consider,
+[30:19] But that
+[30:20] Actually that
+[30:21] Doesn't work.
+[30:22] Internally
+[30:24] Reorder
+[30:25] Can do
+[30:25] So. and
+[30:26] You are different.
+[30:27] You will see.
+[30:31] Moreover,
+[30:32] A bug
+[30:34] Code one
+[30:34] In the machine
+[30:36] May work,
+[30:37] But another day
+[30:38] May not work
+[30:40] , yes?
+[30:43] At one
+[30:44] Parallel code
+[30:45] Maybe, that's it.
+[30:46] One day well
+[30:46] Works.
+[30:49] Programmer
+[30:50] Inexplicable
+[30:51] Unexpected
+[30:52] Gives.
+[30:54] So, a lot
+[30:55] People's library
+[30:56] Writers and
+[30:57] Low-level
+[30:58] People, right?
+[31:01] Library
+[31:02] Writers, OS
+[31:02] Writers,
+[31:03] Compiler
+[31:04] Writers, like this
+[31:05] -With level code
+[31:06] Very working
+[31:07] Memory for people
+[31:08] Model's
+[31:08] Riddles
+[31:09] Detailed meaning
+[31:10] Want,
+[31:12] Number
+[31:13] To reduce
+[31:13] Main
+[31:14] Goal.
+[31:19] Reducing
+[31:20] is a
+[31:21] Unresolved
+[31:21] Problem and
+[31:22] Solving
+[31:24] Difficult. However,
+[31:25] Some of this
+[31:26] Various
+[31:27] Ways
+[31:29] Where
+[31:30] To avoid
+[31:31] Activity
+[31:31] Even the tools
+[31:35] Is
+[31:36] A by itself
+[31:36] Research
+[31:37] That is the problem.
+[31:38] It is becoming clear
+[31:39] . And them
+[31:41] In reducing
+[31:42] To help
+[31:43] Many tools
+[31:44] There are. But,
+[31:45] Experienced
+[31:46] For programmers
+[31:48] Full understanding
+[31:50] So, where?
+[31:51] Should I put up a fence?
+[31:51] And where
+[31:52] Shouldn't it be kept?
+[31:53] Well done to them.
+[31:53] I know. Okay.
+[31:57] Now
+[31:58] What is, we'
+[31:58] Black belt
+[31:59] Programmer'
+[32:01] We used it.
+[32:03] What is correct?
+[32:04] Parallel
+[32:07] To be done
+[32:08] Programmer.
+[32:09] However, the question
+[32:10] Most people
+[32:11] Programmers
+[32:13] At the level
+[32:13] We should be
+[32:14] We hope.
+[32:14] ? The answer is no.
+[32:18] So, average
+[32:19] We are very
+[32:20] Simple one
+[32:21] To be designed,
+[32:22] So that they
+[32:24] With model
+[32:25] Without
+[32:25] Working and
+[32:27] On machines
+[32:28] Walking properly
+[32:29] Can write.
+[32:34] Solution
+[32:35] What? We
+[32:36] From the beginning
+[32:37] Let's think, "
+[32:38] Look, memory.
+[32:40] Great. I
+[32:41] Completely
+[32:42] I did it.
+[32:43] Also great.
+[32:44] I do it.
+[32:46] The SC told me,
+[32:47] RC, PC and
+[32:49] I completely
+[32:49] Understood.
+[32:50] But, ultimately,
+[32:51] I have it with me.
+[32:52] No relation.
+[32:55] Without all
+[32:57] A walking one
+[32:58] I have the code.
+[32:59] I want to write.
+[33:00] . That's easy.
+[33:03] Walk and
+[33:05] Even simply
+[33:05] Should be. and
+[33:07] I am memory.
+[33:08] Wanting to learn
+[33:09] No, for me.
+[33:10] Not interested.
+[33:11] Okay. I
+[33:13] No. Display
+[33:14] About (performance)
+[33:15] That's enough for me.
+[33:16] I don't care.
+[33:17] A little
+[33:18] Slowly
+[33:18] I am here.
+[33:19] I will bear it.
+[33:20] Please me
+[33:21] Yes
+[33:22] It's okay.
+[33:22] But, my
+[33:23] Headache
+[33:24] And all
+[33:25] Walkable
+[33:28] So, for me
+[33:29] Performance
+[33:29] Big
+[33:30] Anxiety
+[33:31] Causing
+[33:31] Not the point.
+[33:32] So, that's it.
+[33:34] It's okay with me.
+[33:35] Yes? In it
+[33:36] Many fences (
+[33:37] fences) I have
+[33:38] But, for me
+[33:39] Just simplicity
+[33:40] Portability
+[33:41] Want. Yes?
+[33:44] That's simple.
+[33:44] should be, and
+[33:45] I am an arm (
+[33:46] On an ARM machine
+[33:47] If written, the same
+[33:48] Code Intel
+[33:49] Gotta walk, too.
+[33:50] Contrary
+[33:51] It should also happen.
+[33:53] Okay. So,
+[33:55] Same code'
+[33:55] Counter Plus
+[33:56] Plus
+[33:57] Let's see. I
+[33:59] This is three
+[34:00] Assembly
+[34:01] As statements
+[34:02] If separated,
+[34:02] I like this.
+[34:03] (C) Language
+[34:04] Equivalent
+[34:04] In the assembly
+[34:05] I am writing.
+[34:06] I am the assembly.
+[34:07] Not writing.
+[34:08] Counter
+[34:08] Read, a
+[34:09] Register
+[34:10] Send it, that
+[34:11] Inflate, and then that
+[34:13] Back counter
+[34:14] Into variable
+[34:15] I will write.
+[34:16] Yes? RISC ISA three
+[34:17] As instructions
+[34:18] Separated
+[34:19] Do it like this
+[34:21] And I am this
+[34:22] Code's
+[34:22] Many copies
+[34:23] I can't walk,
+[34:25] Output
+[34:25] Wrongly
+[34:28] So, I
+[34:29] Fetch and
+[34:30] Increment (
+[34:30] fetch and increment) like
+[34:33] I can use it.
+[34:36] There is a guarantee. This
+[34:37] Take,
+[34:38] Counter it.
+[34:39] With a plus
+[34:39] Replacement
+[34:40] Does,
+[34:40] And this is all
+[34:41] Immediately
+[34:42] As it happened
+[34:42] It seems.
+[34:44] Atomic. Yes?
+[34:47] No problem.
+[34:48] No. That big one
+[34:50] Instead, I
+[34:51] This is it.
+[34:51] I will use it.
+[34:54] So I
+[34:55] I can do this.
+[34:56] But I have
+[34:57] Very large
+[34:59] If there is logic,
+[35:00] I am like this.
+[35:00] I can't.
+[35:05] Then you can do this.
+[35:06] The code is correct.
+[35:07] Lock and
+[35:08] Unlock
+[35:09] Mechanism
+[35:10] Those who argue,
+[35:10] This is me.
+[35:11] Next
+[35:12] I will show you.
+[35:17] So you
+[35:19] Using
+[35:20] If you don't want to write
+[35:21] , because very
+[35:23] We are like that.
+[35:23] Can't do it.
+[35:25] A lot of logic
+[35:25] Complicated
+[35:26] Maybe. We
+[35:29] Section called
+[35:30] In what is called
+[35:31] Can be embedded
+[35:32] , it is with a lock
+[35:32] It starts.
+[35:33] How is this?
+[35:34] Does it work?
+[35:35] We saw. This
+[35:36] With unlock
+[35:36] Ends.
+[35:37] How is that?
+[35:38] We saw. That
+[35:40] Execute it.
+[35:41] We will. We
+[35:42] A lock and
+[35:43] We will have.
+[35:45] And in the middle
+[35:45] The existing code
+[35:47] Section
+[35:47] It is said. and
+[35:49] For each lock
+[35:50] A lock
+[35:55] As long as it's locked
+[35:56] Time, no one else
+[35:57] Inside
+[35:57] Can't come.
+[36:00] Counter is different.
+[36:01] Anywhere
+[36:02] If used
+[36:03] , the same
+[36:03] With a variable
+[36:04] If locked,
+[36:05] Even then
+[36:06] No one inside.
+[36:07] Come and counter
+[36:08] Update
+[36:09] Without doing
+[36:09] And a mistake
+[36:10] This should not happen.
+[36:11] Confirms
+[36:16] Are you doing it?
+[36:17] This critical
+[36:17] For the section
+[36:20] , we have T1
+[36:21] And T2
+[36:22] If there are threads,
+[36:23] T1 lock
+[36:23] Does, T2
+[36:25] To get
+[36:25] Tries
+[36:27] , that
+[36:27] Unable to get
+[36:28] . T1 Unlock
+[36:32] As seen T2
+[36:33] Spin
+[36:33] Still happening
+[36:35] Then T2
+[36:36] Gets.
+[36:37] That's some time.
+[36:38] Run along
+[36:38] It will be.
+[36:39] Finally, T2
+[36:40] Leaves
+[36:42] . Okay. So,
+[36:43] A thread
+[36:44] Get the lock,
+[36:46] Implementing,
+[36:47] Spinning
+[36:48] Being is
+[36:49] We work
+[36:49] Simple procedure.
+[36:51] Abandoned
+[36:52] Then, another
+[36:53] Thread it.
+[36:54] That is critical.
+[36:55] On the section
+[36:56] Special
+[36:56] Control
+[36:57] Gets,
+[36:59] Again
+[37:00] Does, like this
+[37:05] Locks
+[37:05] Use?
+[37:06] Okay, two.
+[37:07] Philosophical
+[37:08] With questions
+[37:08] Let's get started.
+[37:11] Big one nearby
+[37:13] There is a code.
+[37:14] But in it
+[37:15] Shared
+[37:16] Variables
+[37:16] No. If
+[37:20] And locks
+[37:21] To be used
+[37:22] Is it necessary?
+[37:29] The kind of seen
+[37:30] Concurrency
+[37:30] No bugs.
+[37:32] Okay, actually.
+[37:34] Why bugs?
+[37:34] Are you coming? This
+[37:35] Code section
+[37:38] We wanted,
+[37:39] But it happens.
+[37:39] No, because
+[37:40] They are
+[37:40] Coming.
+[37:44] Set the value to 100.
+[37:45] They study.
+[37:46] Then they
+[37:47] It's 101.
+[37:47] Set.
+[37:48] But 101 is
+[37:50] Final state
+[37:51] state) should not be.
+[37:52] Final status 102
+[37:55] Share
+[37:55] Done
+[37:56] That's why
+[37:57] It's happening.
+[37:58] Share it.
+[37:58] If not done,
+[37:59] Problem
+[37:59] It won't come.
+[38:01] First thing.
+[38:05] No need.
+[38:06] However, we
+[38:07] When is it necessary?
+[38:09] Two code
+[38:10] The blocks are the same.
+[38:11] Address
+[38:11] Concurrently
+[38:12] Paradoxically
+[38:13] Access
+[38:14] We have locks.
+[38:15] Required. Same
+[38:16] What is the address?
+[38:16] Single variable
+[38:17] That means. Okay,
+[38:19] Accesses (
+[38:20] conflicting accesses) ie
+[38:21] What? They are
+[38:21] Any two
+[38:22] Accesses
+[38:23] Couples, among them
+[38:23] At least one
+[38:24] But them
+[38:25] That's what they say.
+[38:27] If so, what are they?
+[38:29] With that we have
+[38:30] No work and
+[38:31] What are they like?
+[38:31] Correctness
+[38:32] Problems
+[38:32] Do not cause,
+[38:34] To be taken care of
+[38:36] One of them
+[38:40] Back
+[38:40] Let's go. We
+[38:43] We are doing
+[38:44] That's why the problem
+[38:46] If we
+[38:48] If not,
+[38:49] In reading
+[38:50] What kind of problem?
+[38:51] It wouldn't have been.
+[38:52] Lock us.
+[38:53] Function required
+[38:56] The value of
+[38:57] We update.
+[39:02] There we have
+[39:04] Mutual
+[39:04] Exclusivity
+[39:05] Required. Yes?
+[39:08] The codes are the same.
+[39:10] To do and
+[39:11] Contradictory
+[39:13] To do, that is
+[39:13] At least among them
+[39:14] One is right.
+[39:15] The operation is over.
+[39:15] Should be. Both
+[39:17] Operations themselves
+[39:17] However, what kind
+[39:21] Either or
+[39:21] Both are right.
+[39:23] Still a problem
+[39:24] In that case,
+[39:25] That's clear.
+[39:27] It will be,
+[39:27] Because the final
+[39:28] Status them
+[39:29] On the order of events
+[39:30] Dependent
+[39:30] There will be. and
+[39:31] That's a big code.
+[39:32] Black
+[39:33] Very read
+[39:34] And right
+[39:37] Otherwise,
+[39:37] Total
+[39:38] Process
+[39:38] It's not going well.
+[39:40] Concurrent
+[39:41] What does that mean?
+[39:42] That is the same.
+[39:43] That is during
+[39:44] We are back.
+[39:45] Go.
+[39:45] Informally
+[39:46] Let's take a look.
+[39:48] Informally,
+[39:50] That means two
+[39:50] The threads are the same.
+[39:51] Execution on time
+[39:53] Meaning. Both
+[39:56] At the same time
+[39:57] They study,
+[39:58] That means both are 100
+[40:03] In the end, they
+[40:04] Just 101.
+[40:05] They write. Their
+[40:07] In operation
+[40:07] Overlap (
+[40:08] overlap),
+[40:10] As defined
+[40:13] It can be said.
+[40:13] And that
+[40:14] For problems
+[40:17] Simple meaning '
+[40:18] At the same time'
+[40:19] , but we still
+[40:20] Better
+[40:20] I can do it.
+[40:21] Opinion.
+[40:23] Increase code
+[40:24] Let's see. We
+[40:28] We have read it,
+[40:29] It is one
+[40:30] We did it.
+[40:33] Are we doing it? RX0
+[40:34] From to WX1.
+[40:36] A program
+[40:37] Let's add.
+[40:38] and RX0 to WX1
+[40:39] Until. So,
+[40:41] Here it is.
+[40:42] Witness. We
+[40:43] Again one
+[40:47] Okay? After that
+[40:49] , to you
+[40:51] Two similar FR
+[40:56] We have a right.
+[40:56] Serialization
+[40:57] There is an edge,
+[40:59] Right, that's right.
+[41:00] That happened
+[41:03] You
+[41:05] Witness.
+[41:09] Information
+[41:09] Does not provide. This
+[41:13] Whatever you say
+[41:15] Witness
+[41:16] It's fine. But
+[41:19] Because of that
+[41:20] The result is for us.
+[41:21] Satisfactory
+[41:22] No, right?
+[41:27] There are no bicycles.
+[41:28] If you notice, this
+[41:30] Sequentially
+[41:31] Consistently
+[41:32] There is. In a way
+[41:36] Like this
+[41:36] Sortable
+[41:39] One SC. But that's SC
+[41:40] However, X
+[41:41] The final of
+[41:42] Value as one
+[41:43] I don't want that.
+[41:44] In two
+[41:45] We wish,
+[41:46] Satisfaction
+[41:47] Not included.
+[41:49] Clearly, this
+[41:51] Conflicting
+[41:52] The case
+[41:53] To solve
+[41:55] On Witness
+[41:56] Additional tool
+[41:57] Or extra
+[41:58] The clause is required.
+[42:02] Can be fixed.
+[42:08] This is a gift for us.
+[42:09] Understanding
+[42:11] Here, we
+[42:12] From thread T1
+[42:13] Thread T2 has a
+[42:14] Transfer value
+[42:15] Want to do
+[42:18] What does X do?
+[42:19] Set the value to 1.
+[42:20] Setting.
+[42:23] Then, X is 1.
+[42:25] As a result of our calculation
+[42:29] Then we have Y.
+[42:30] We will set.
+[42:32] And then we have Y.
+[42:35] So, Y
+[42:35] is 1 km
+[42:36] Unequal
+[42:36] Until, we loop
+[42:37] Keep doing it
+[42:38] We will be there. and
+[42:39] That is 1
+[42:40] Let's go down.
+[42:40] We will come. That
+[42:41] Then we X
+[42:50] What actually
+[42:50] We'll see? We
+[42:54] Let's see,
+[42:55] Its value is RX1
+[42:56] We will see,
+[42:57] But
+[42:58] We have some
+[43:01] Also necessary.
+[43:03] Only we
+[43:03] We can see. But
+[43:05] Here I am.
+[43:06] What I want to say
+[43:07] An important
+[43:08] The matter itself
+[43:08] There is. Y is a
+[43:09] Sink
+[43:11] That is, here Y
+[43:12] Simply Atomic
+[43:18] Seen before
+[43:19] Like them.
+[43:21] You actually
+[43:22] If you look
+[43:23] We can find 1 in X.
+[43:24] We will write. To WY1
+[43:27] There will be. Yes?
+[43:29] For now
+[43:30] Arbitrary
+[43:31] For that
+[43:36] Let's see Y
+[43:39] Sink operation
+[43:40] So, you have WX1
+[43:41] From to WY1
+[43:42] There will be an edge.
+[43:44] Then, you
+[43:45] Synchronization
+[43:46] Edge, that is SO
+[43:47] Edge too
+[43:47] There will be, this
+[43:49] Important, WY1
+[43:50] and between RY1,
+[43:51] We are studying.
+[43:52] , so their
+[43:53] All in between
+[43:57] Constantly
+[43:58] There will be
+[43:59] . So, their
+[44:00] We have a SO in between.
+[44:08] RY1 in the middle and
+[44:12] RX1. and
+[44:15] There is an edge.
+[44:16] If taken, WY1
+[44:17] A fence inside
+[44:18] There will also be
+[44:19] Hopefully,
+[44:20] That is WX1
+[44:23] RF low
+[44:25] Related to it
+[44:26] Without this,
+[44:27] We will use RX1 at the time.
+[44:28] Let's study.
+[44:30] Given.
+[44:33] What is this?
+[44:34] In Witness,
+[44:37] Carefully
+[44:37] If you look at some
+[44:38] We have samples.
+[44:39] We can see. Memory
+[44:42] Without, here
+[44:43] Set the value of X to 1.
+[44:44] If done,
+[44:45] Here X is 1.
+[44:46] As
+[44:46] Will be read
+[44:47] A guarantee
+[44:48] There is a pattern.
+[44:49] And our
+[44:50] Accurate
+[44:52] Doesn't work. That
+[44:53] You know.
+[44:53] Well, that's it.
+[44:54] It doesn't matter.
+[44:56] Reason Y is a
+[44:58] To be. So,
+[44:59] Here is a
+[44:59] Tough
+[45:01] There is. Here is a
+[45:04] Another tough one
+[45:07] We are sure
+[45:09] Given,
+[45:09] Right? So,
+[45:10] What can be said
+[45:13] And the original
+[45:14] Magic
+[45:15] What we have is SOH
+[45:16] Two with
+[45:20] So, WX1
+[45:21] From RX1 to SOH
+[45:22] There is a way.
+[45:24] There is. Same
+[45:26] Accuracy
+[45:27] . Or our original
+[45:29] Purpose
+[45:30] . So, SOH is our
+[45:35] The original of
+[45:36] With summary
+[45:38] Should be. Okay,
+[45:44] A little more
+[45:45] Let's take it.
+[45:49] What I mean is
+[45:50] , Execution
+[45:52] Having SOH
+[45:53] Way
+[45:53] When not,
+[45:55] In parallel (concurrent
+[45:56] ) will be
+[45:57] Let's say. In SOH
+[45:59] So great
+[46:00] What's the matter?
+[46:01] And its
+[46:01] About us
+[46:02] Why so much?
+[46:04] ? Okay, this
+[46:07] Once again
+[46:08] Let's see. SOH
+[46:12] To summarize:
+[46:14] From the perspective
+[46:16] Summarizes
+[46:17] .
+[46:19] Synchronizing
+[46:20] The variable Y
+[46:22] Before, previous
+[46:23] All access
+[46:23] To be completed
+[46:25] Want.
+[46:28] Then here
+[46:28] Another
+[46:33] And this sets Y to 1.
+[46:35] Later
+[46:36] Definitely
+[46:37] It should happen.
+[46:40] All actions
+[46:40] Only after that
+[46:46] Desired
+[46:47] This is it, and
+[46:48] How to fulfill his wish
+[46:50] If you are doing
+[46:52] Instructions and this
+[46:53] Sink edges
+[46:54] Through, right? This
+[46:57] SO edges.
+[46:59] Do you understand?
+[47:05] The thing is,
+[47:07] To the variable
+[47:07] Two contradictions
+[47:09] Middle SO Edge
+[47:10] If,
+[47:12] Fulfilling
+[47:13] Meaning, that is, we
+[47:14] One access
+[47:15] Do it, then
+[47:16] Go through,
+[47:17] Second contradiction
+[47:19] We will do it. This
+[47:25] Meaning contradiction
+[47:27] Are being controlled
+[47:29] , and whose
+[47:29] By?
+[47:31] Included instructions
+[47:33] . This means that this
+[47:37] Desires
+[47:38] Accordingly
+[47:43] Roughly
+[47:44] That is the situation.
+[47:45] Unofficial
+[47:46] Description. So,
+[47:49] We do it.
+[47:50] Officially
+[47:51] Trying
+[48:02] That is, between them
+[48:05] It means no.
+[48:08] One per address
+[48:09] Wright and a
+[48:10] Read
+[48:10] Consider.
+[48:11] An RFH between them
+[48:16] We believe that
+[48:17] Let's say,
+[48:19] What is mentioned?
+[48:21] Not going,
+[48:22] Right? It's locked.
+[48:23] Or unlock
+[48:24] No such thing
+[48:26] Not going.
+[48:30] Until then,
+[48:31] We have another
+[48:33] Maybe,
+[48:34] There, we
+[48:38] Easy to have
+[48:42] Under control
+[48:44] Variables are these
+[48:46] On the order
+[48:46] If dependent,
+[48:47] They are also these
+[48:48] Gradually
+[48:49] To reflect
+[48:50] It will be, right?
+[48:52] It may not happen.
+[48:57] That's why only
+[49:00] Similar between
+[49:00] Interaction
+[49:01] All actions,
+[49:04] We want to go.
+[49:05] These
+[49:07] Inform
+[49:08] , right? So,
+[49:13] The section is
+[49:16] One for the Edge
+[49:17] Example, but
+[49:17] This is only
+[49:18] No. Here
+[49:19] We have a
+[49:20] There is a section.
+[49:21] We unlock
+[49:22] After doing,
+[49:23] Another thread
+[49:24] Into the section
+[49:25] Enters
+[49:26] , then there
+[49:27] A SO Edge
+[49:29] Everything that happens
+[49:30] Accesses,
+[49:31] What happens there?
+[49:32] Than
+[49:34] And they are SOH
+[49:35] Because of
+[49:38] For example, we can use X
+[49:39] Ni 1 and Y
+[49:41] If you want to do it
+[49:42] , which is it
+[49:45] . And then here we have X
+[49:46] Set to 2
+[49:48] And we set Y to 2.
+[49:54] So, other
+[49:55] All threads
+[49:56] Always X
+[49:57] Equal to Y
+[49:58] To note,
+[49:58] Partial
+[49:59] We are the status
+[50:00] Forever
+[50:01] Let's see. Yes
+[50:05] Right? And they
+[50:06] Without getting X
+[50:07] And Y
+[50:09] Can't
+[50:09] So, they
+[50:10] Different access
+[50:11] Nothing can be done.
+[50:13] Got them
+[50:16] You will see. Like this
+[50:18] Edge and
+[50:19] Sections
+[50:24] When writing
+[50:26] Mistaken
+[50:27] There is a possibility
+[50:28] And the same
+[50:29] Above the variable
+[50:31] and simultaneous
+[50:32] Maybe, right?
+[50:34] Synchronize
+[50:35] Variable.
+[50:36] There
+[50:38] There are, they are
+[50:39] Simultaneously
+[50:41] Those are the data.
+[50:42] Race
+[50:43] It is said. Here
+[50:46] Implementation is
+[50:46] Actually a
+[50:47] Data Race,
+[50:48] Because we are X
+[50:50] Simultaneous contradiction
+[50:55] No intention,
+[50:58] Attempt
+[50:59] No. That's why
+[51:01] We will see the result.
+[51:03] We can't see.
+[51:04] , we use the counter
+[51:05] To increase
+[51:07] , but
+[51:08] What kind
+[51:09] Not adding
+[51:10] Due to final
+[51:11] Result incorrect
+[51:12] Coming, right?
+[51:14] What to see
+[51:15] Final value
+[51:15] I need two,
+[51:16] But this
+[51:17] In the event that
+[51:17] There is one,
+[51:19] No. For that
+[51:20] Main reason
+[51:21] There SO
+[51:22] It's just not there.
+[51:24] So, data
+[51:25] Races
+[51:26] Not good.
+[51:27] They are actually
+[51:28] Bugs and
+[51:30] Successfully
+[51:30] Apart from implementation
+[51:31] Prevent.
+[51:34] Okay, now.
+[51:35] We are data races.
+[51:36] More about
+[51:38] And their
+[51:39] Original meaning
+[51:40] Let's see what it is.
+[51:42] Definition
+[51:44] I want to say
+[51:45] , because
+[51:46] Many of these
+[51:47] Items
+[51:47] There are and
+[51:48] Theoretically
+[51:49] Very deep
+[51:50] Item.
+[51:52] Many proofs
+[51:55] On purpose
+[51:57] Skip, very
+[51:58] Ordinary
+[51:59] Let me explain,
+[52:02] With theories
+[52:03] To not get bored
+[52:04] I mean.
+[52:06] So, its
+[52:06] Book for
+[52:07] There is and
+[52:08] You all are
+[52:08] Departments
+[52:09] I want to read.
+[52:10] I want
+[52:11] . However, I
+[52:13] The idea
+[52:13] Let me explain.
+[52:15] Here are two
+[52:16] Between concepts
+[52:16] The difference
+[52:17] I want to show
+[52:18] . One is in execution (
+[52:20] execution) data race,
+[52:21] Another one
+[52:22] In the program
+[52:23] Data Race. Their
+[52:24] The meanings are different,
+[52:25] But how much are they?
+[52:26] Beautiful
+[52:26] Connected
+[52:27] Are we there?
+[52:28] We'll see. This
+[52:30] That's what greatness is.
+[52:33] The first one is
+[52:35] Data in execution
+[52:36] The concept of race,
+[52:37] Right?
+[52:39] For that one
+[52:41] We will create.
+[52:42] Regular
+[52:45] Confrontational
+[52:46] All pairs
+[52:47] We will check.
+[52:47] They are at the same time.
+[52:48] (concurrent)
+[52:49] If it happened
+[52:51] Data Race
+[52:53] We will tell you. Yes
+[52:54] Right? and
+[52:55] Another one, here
+[52:57] is for implementation
+[52:58] A related one
+[52:59] Item. Yes, right?
+[53:00] ? So, a
+[53:01] For we have many
+[53:02] Contains implementations
+[53:03] In some
+[53:06] Maybe not.
+[53:07] A lot of data race
+[53:08] Detection
+[53:09] Tools
+[53:15] Sometimes
+[53:15] Some
+[53:16] Data in implementations
+[53:17] are,
+[53:19] No, this
+[53:20] We will have a later one.
+[53:21] By example
+[53:28] What is, the data
+[53:29] Raceless
+[53:30] What do we mean?
+[53:31] To decide
+[53:32] We will try.
+[53:33] . There we have
+[53:35] Theoretical
+[53:35] Equipment
+[53:36] are needed,
+[53:37] So clear
+[53:38] No. Because
+[53:41] A certain
+[53:42] The edges of (
+[53:43] edges).
+[53:44] So the data
+[53:45] To the races
+[53:46] Something with a model
+[53:47] There is a relationship.
+[53:50] That's not the case. But
+[53:52] I want to go.
+[53:54] , so each
+[53:54] Theory
+[53:56] I will.
+[53:57] And I
+[54:00] Not proof,
+[54:03] I think that's the point.
+[54:04] I said. Okay.
+[54:08] Basic
+[54:09] For questions
+[54:10] To give
+[54:10] Let's try.
+[54:11] . We are now
+[54:12] Where are we?
+[54:14] We are bad.
+[54:15] We told each other.
+[54:16] Right. Why are they?
+[54:18] Bad ones?
+[54:19] Because a
+[54:22] Access (concurrent
+[54:23] access) is a
+[54:27] Reflecting
+[54:31] While writing
+[54:32] , yes? For us
+[54:37] If available,
+[54:38] That means you are the same.
+[54:40] In any order
+[54:41] Can be read,
+[54:42] Can be written or
+[54:43] Can be changed
+[54:46] So, the final
+[54:48] Doubtfully
+[54:52] Single common
+[54:56] However
+[54:56] To control
+[54:57] They think.
+[54:58] They are like this
+[54:59] They say, "Okay,
+[54:59] You are X.
+[55:00] If you want to change
+[55:01] , It's okay.
+[55:03] Change. But
+[55:04] Before doing so,
+[55:06] Like getting
+[55:07] Do something.
+[55:08] Work
+[55:08] When finished,
+[55:10] Do something like.
+[55:12] You have access.
+[55:13] If you want to,
+[55:13] This method again
+[55:14] Through
+[55:15] Go. So,
+[55:16] This is at least one
+[55:17] Set, or
+[55:18] Even if you read
+[55:19] Or even written,
+[55:24] One set
+[55:25] And there is a
+[55:27] Meaningfully
+[55:28] There are. Okay?
+[55:30] Overall
+[55:33] Data races
+[55:33] Let's define
+[55:35] To the program
+[55:36] Regarding
+[55:38] To catch
+[55:39] These are good.
+[55:40] We call it a tool.
+[55:41] We felt.
+[55:42] Otherwise, the data
+[55:42] If there are races,
+[55:43] Multi-threaded
+[55:44] By a
+[55:45] Simple counter
+[55:46] Update also
+[55:47] Will change
+[55:51] Introduced
+[55:52] Just a moment, that's it.
+[55:53] Correctly
+[55:53] Changed. Yes?
+[55:55] Do this more
+[56:01] The absence
+[56:02] Does it indicate?
+[56:03] That is, a
+[56:05] It is SC
+[56:06] Run on the machine
+[56:07] Let's do it.
+[56:07] Let's say. That
+[56:10] Not available
+[56:11] Okay, this code
+[56:12] A piece
+[56:13] Look. This
+[56:14] In the code we have RX0,
+[56:16] S1, S2, and WX1
+[56:22] Yes, okay?
+[56:24] , these two
+[56:25] A SO edge in the middle
+[56:26] There is. So this
+[56:27] Execution Data Race
+[56:28] It is free.
+[56:33] Access S1
+[56:34] And S2 has a
+[56:36] Not assigned.
+[56:37] But if they
+[56:39] Implement like this
+[56:41] If you want, S2 WX1,
+[56:43] Okay? RX1. That is
+[56:47] And then I
+[56:47] I will study.
+[56:48] Okay? And then my
+[56:49] At second
+[56:51] Access is available.
+[56:52] So, here we have
+[56:53] A data race
+[56:54] There is. Here
+[56:55] We have a data race.
+[56:56] Why is that?
+[56:57] Okay, we have a race.
+[57:00] This is right and this is
+[57:01] Between the reeds
+[57:03] There is no edge. This
+[57:05] We have data.
+[57:06] Indicates,
+[57:07] This is us.
+[57:08] What to avoid
+[57:10] So, SC data
+[57:11] Freedom
+[57:12] Does not indicate,
+[57:15] , which is an SC
+[57:15] Machine, okay.
+[57:18] Execution.
+[57:22] But, there
+[57:26] Race is
+[57:27] Maybe more than SC
+[57:28] Strongly
+[57:32] Strong and
+[57:33] Weak means
+[57:34] Let's see, but
+[57:35] At least
+[57:39] No. And
+[57:40] Because of what?
+[57:40] Is it coming?
+[57:41] Let's see. My
+[57:43] Nearby data
+[57:43] Race Free
+[57:47] What's next?
+[57:48] On slides
+[57:49] You are detailed.
+[57:50] You will see, but
+[57:51] All of them
+[57:52] Executions
+[57:55] Data Race Free
+[57:56] Let's say that.
+[57:58] Combined. That is, this
+[58:01] All executions
+[58:02] Are in SC
+[58:03] Do you understand? Yes?
+[58:13] Run it.
+[58:17] Many
+[58:19] They will come, right? This
+[58:22] I am arguing.
+[58:23] . Surprisingly,
+[58:25] This is true.
+[58:26] It turned out. This
+[58:29] Computer
+[58:31] Most
+[58:33] I think it's a result.
+[58:34] I will tell you.
+[58:38] Some with me
+[58:39] May not agree.
+[58:41] , but my
+[58:41] This is in view
+[58:44] The most important
+[58:45] The result, this
+[58:46] What does it mean, your
+[58:54] However, then
+[58:55] Freedom SC
+[59:01] I am other
+[59:02] Rules or
+[59:03] Details
+[59:03] Saying here
+[59:04] No. All of them
+[59:07] There are. But
+[59:09] We are here.
+[59:10] Into the details
+[59:11] Without going
+[59:11] Widely
+[59:14] Okay?
+[59:20] Between the threads
+[59:22] Happening for
+[59:22] All contradictions
+[59:24] If there is a SOH in between,
+[59:26] At least one SOH
+[59:32] On the way
+[59:33] There will be a SOH.
+[59:36] By Edge
+[59:37] Sorted
+[59:39] Let's do something.
+[59:42] Without a
+[59:45] Take
+[59:45] All SC
+[59:50] So SC
+[59:51] Basically RFE
+[59:53] Do
+[59:56] There are. That
+[59:58] What will happen?
+[59:59] Let's see. Okay,
+[60:03] Acyclic
+[60:06] It means that it is in.
+[60:08] Just for imagination,
+[60:09] There is a
+[60:09] There is a bicycle.
+[60:13] Then a
+[60:13] If there is a bicycle,
+[60:15] Bicycle too
+[60:18] Easy. Yes?
+[60:19] So their
+[60:20] Between '
+[60:21] Happens-
+[60:22] Before'
+[60:22] In relation
+[60:23] Sink with sink
+[60:24] Bicycle one
+[60:26] So this is a
+[60:27] Sink operation,
+[60:29] Before relationship,
+[60:30] A global
+[60:33] S1, S2, S3, etc.
+[60:34] Continuing
+[60:35] Finally to S1
+[60:36] Arrives.
+[60:37] It is possible.
+[60:38] We are not
+[60:39] We are stating
+[60:40] . It is possible.
+[60:44] Himself
+[60:47] Will follow
+[60:48] Our argument. We
+[60:52] Reason
+[60:55] Order and
+[60:56] Atomicity
+[60:57] So.
+[61:00] Follow,
+[61:02] Fence among them
+[61:02] There will be. They are
+[61:06] Follow.
+[61:09] So, they are SC
+[61:11] Therefore, their
+[61:12] Mid-cycle
+[61:13] It is possible to be
+[61:13] No. There
+[61:14] We have a conflict.
+[61:15] Formed.
+[61:17] Of proof
+[61:17] Gross form.
+[61:20] It says, "
+[61:22] About the model
+[61:23] Never mind.
+[61:24] . Okay, memory.
+[61:25] The model is so
+[61:30] You are not
+[61:31] Not performing
+[61:33] If. Yes?
+[61:39] Hard memory
+[61:40] In the model SC
+[61:41] Also, you
+[61:42] No data
+[61:44] Not showing
+[61:44] There will be a guarantee.
+[61:54] Meaning. Yes?
+[62:01] The meaning is,
+[62:03] On the variable
+[62:07] You can give them a
+[62:09] Put, that is
+[62:10] At the beginning a
+[62:13] One at the end,
+[62:14] At the beginning
+[62:15] One, at the end
+[62:16] One. So,
+[62:19] Any order
+[62:20] Similar SOS
+[62:21] It will go. So
+[62:25] Don't worry.
+[62:27] You can do this.
+[62:27] When to run
+[62:28] Even if you do,
+[62:29] Underlying
+[62:30] Without,
+[62:32] Always in SC
+[62:35] Powerful
+[62:36] . This
+[62:37] It says,
+[62:43] The model is
+[62:45] By architects
+[62:46] To be designed
+[62:47] . Performance
+[62:48] To improve
+[62:49] This is as much as possible.
+[62:50] So weak
+[62:50] It could be.
+[62:51] We just
+[62:52] As needed
+[62:53] If added
+[62:54] Enough.
+[62:55] You know,
+[62:56] With ability
+[62:57] Combined
+[62:58] And atomic
+[63:00] Should be up to.
+[63:01] Minimizing
+[63:02] It is better for us,
+[63:03] Because they
+[63:04] Expensive. But,
+[63:05] As long as it is avoided
+[63:06] Until, we
+[63:07] Safely
+[63:08] As it is.
+[63:09] Can think
+[63:12] Um mana
+[63:16] In terms, we first
+[63:16] What was expected
+[63:17] Isn't that it? For us
+[63:18] Parallel executions
+[63:19] I don't like it.
+[63:20] Parallel execution
+[63:21] In some way
+[63:22] Consecutive
+[63:24] To implement
+[63:26] But our
+[63:28] Based
+[63:29] That's it with method
+[63:30] Not possible,
+[63:34] No. But this
+[63:35] In the case, it
+[63:37] We call it a
+[63:40] Equivalent to execution
+[63:43] Can think.
+[63:45] Too much writing
+[63:46] Easy
+[63:47] As humans, we
+[63:48] In sequential order
+[63:48] To think
+[63:49] We would like to
+[63:52] Let's think.
+[63:53] So, that's SC
+[63:54] If you know that,
+[63:55] Our proofs
+[63:56] All tools
+[63:58] Start
+[64:00] A lot of analysis
+[64:01] It will be. Okay,
+[64:06] Are we there? What does SC mean?
+[64:08] That there is no
+[64:09] No, but the data
+[64:10] Lack of race
+[64:10] That means SC
+[64:11] Meaning. Okay.
+[64:13] What else?
+[64:15] One. Another one
+[64:17] What is, for me
+[64:22] Indicates?
+[64:24] Right? So
+[64:26] We see, I
+[64:27] Otherwise what?
+[64:28] Happens
+[64:29] The question
+[64:29] We checked.
+[64:30] Data Race for you
+[64:31] Otherwise, it
+[64:32] Very great
+[64:32] Subject. You
+[64:35] There will be. But
+[64:37] If there is a data race,
+[64:38] What then?
+[64:39] I have a data race.
+[64:40] If, then
+[64:44] Yes, this too
+[64:44] Very beautiful
+[64:45] Theory,
+[64:47] In the world
+[64:48] I am for this.
+[64:49] I will give importance to
+[64:50] . Because
+[64:51] Generally,
+[64:52] Mathematics
+[64:52] Like the sciences
+[64:53] Apart from,
+[64:55] We have more
+[64:56] Theories
+[64:58] And what we have
+[65:00] The number is too much.
+[65:00] Less. But
+[65:03] What we have
+[65:06] . So this is
+[65:08] One, this
+[65:09] Second.
+[65:10] What is it, "
+[65:11] Look, your
+[65:14] You are an SC.
+[65:15] Implementation
+[65:15] Can be built
+[65:16] , that's also data
+[65:18] Displays
+[65:19] , right? "That is
+[65:22] Any memory
+[65:23] Under the model,
+[65:24] If you
+[65:29] SOH between them
+[65:30] Being without
+[65:32] You then
+[65:33] An SC implementation
+[65:34] Can be created
+[65:40] For proof,
+[65:41] The book
+[65:41] Look. This is a
+[65:44] Proof. But,
+[65:44] This is original.
+[65:47] Very important
+[65:56] That is SC.
+[65:57] In execution
+[66:04] Turn around
+[66:04] Antonym
+[66:06] (contrapositive)
+[66:06] Can be considered
+[66:07] . Then a
+[66:11] Consistent
+[66:14] They are a billion.
+[66:15] If you are,
+[66:16] , we are humane
+[66:17] Can't do it, but
+[66:18] Automated
+[66:19] The tool can.
+[66:23] Can build.
+[66:25] Which of them
+[66:25] Not one.
+[66:27] If not shown, then
+[66:29] We don't have
+[66:31] Okay, this is a lot.
+[66:32] Important.
+[66:34] I think it's 20.
+[66:35] Times
+[66:35] Even if I say
+[66:36] No objection,
+[66:38] In our argument
+[66:39] Part
+[66:39] Has.
+[66:42] This again
+[66:43] Listen. What are we?
+[66:45] We learned.
+[66:46] ? Any memory
+[66:47] You are the data.
+[66:48] Looking at it,
+[66:50] With the data race
+[66:50] A SC with
+[66:52] Can build
+[66:53] We say.
+[66:58] Contrapositive
+[66:59] That is, we
+[67:00] Implication
+[67:00] Markers
+[67:01] Changing.
+[67:07] What do we do next?
+[67:08] What if we do...
+[67:13] That means it's 'not'(
+[67:15] not) means.
+[67:17] Yes? Look,
+[67:19] SC
+[67:20] Otherwise, that
+[67:24] Okay? So,
+[67:25] In this case,
+[67:27] Characteristically
+[67:30] Indicates
+[67:31] Or what?
+[67:35] Tool data
+[67:36] SC with Race
+[67:38] If it cannot be built
+[67:39] , that tool
+[67:40] Billions
+[67:42] Look, among them
+[67:43] Whether there are
+[67:44] Can know.
+[67:46] But, that's data.
+[67:49] Not built
+[67:51] Then, that
+[67:53] No data race free
+[67:54] That means. Another
+[67:55] In words
+[67:56] We are data.
+[67:56] Race a
+[67:58] Defining
+[67:59] . And this
+[68:01] What is being said?
+[68:01] That is, its
+[68:08] As if nothing
+[68:14] Programs
+[68:15] Writing. They are
+[68:17] All memory
+[68:17] On models
+[68:20] They work.
+[68:25] His memory
+[68:27] Freely
+[68:28] There will be. You
+[68:29] Your
+[68:30] Write, memory
+[68:34] And that's data.
+[68:35] Without race
+[68:36] Look.
+[68:38] On architecture
+[68:39] Run, that's it.
+[68:40] It will run.
+[68:45] Bugs coming
+[68:46] There is a possibility.
+[68:46] We have bugs.
+[68:49] Can be done. These
+[68:50] Bugs
+[68:51] Will be.
+[68:52] Especially, we
+[68:57] Maybe 100
+[68:57] In executions
+[68:59] May not appear
+[69:00] . But the 101st or
+[69:02] 1001st
+[69:04] The problem
+[69:05] Noticeable.
+[69:07] There we have a
+[69:08] Tool required,
+[69:09] And such
+[69:10] Lots of tools
+[69:10] Available
+[69:11] There are. They are
+[69:16] In a row
+[69:17] Count,
+[69:18] Data in them
+[69:18] For races
+[69:19] They search,
+[69:20] And finally
+[69:21] That code data
+[69:22] Race-free
+[69:22] Confirm
+[69:27] We are other
+[69:27] Policies,
+[69:28] That is, other semi-
+[69:29] Formal
+[69:30] Methods
+[69:31] Let's see. But
+[69:35] What is your
+[69:37] Is there a data race?
+[69:38] Whether
+[69:39] With tool
+[69:40] Verifying
+[69:42] If the data
+[69:42] If there is a race, it is
+[69:50] Everything learned
+[69:52] Time. We
+[69:54] What was learned
+[69:57] Good,
+[70:00] Dissenting
+[70:05] Helps.
+[70:09] SC means data
+[70:10] Race Freedom
+[70:11] Not that. But
+[70:12] Excellent
+[70:13] The result is,
+[70:16] Without data
+[70:18] Meaning. This is very
+[70:20] Good. This is a
+[70:22] Write,
+[70:22] Run everywhere
+[70:24] . I am this.
+[70:26] Take, non-
+[70:27] SC Execution
+[70:28] That is, data
+[70:28] Races are called
+[70:29] I can say.
+[70:31] Yes? This too
+[70:32] The same thing
+[70:35] And next
+[70:38] Tool Data Race
+[70:41] If unable to create
+[70:42] , that program
+[70:43] It means free.
+[70:45] Alternatively
+[70:46] ,
+[70:48] Definitely SC
+[70:56] Otherwise, everything
+[70:57] It's fine.
+[71:01] Wrote. But
+[71:04] Very much throughout
+[71:06] Added, this
+[71:07] Your performance
+[71:07] Reduces.
+[71:09] To be minimized
+[71:10] . But that
+[71:12] If you think,
+[71:13] No work. Okay?
+[71:16] Languages
+[71:17] What to do?
+[71:19] Also memory
+[71:20] Define
+[71:21] . For example, C++11, C
+[71:22] ++ 17 Memory
+[71:26] . And they are these
+[71:28] Primitives
+[71:30] . And data
+[71:32] How to code
+[71:33] What should I write?
+[71:34] To the programmer
+[71:35] They say.
+[71:39] Modern languages ​​C++
+[71:40] , Java, and
+[71:41] For others, their
+[71:42] Own memory
+[71:44] There are. These
+[71:46] Software
+[71:46] Memory models,
+[71:48] Data race-free
+[71:50] In Raya
+[71:51] . So, these are
+[72:01] This language provides
+[72:02] To use
+[72:03] Hopefully.
+[72:05] Yes? Exactly
+[72:08] To write.
+[72:09] And rightly so
+[72:12] What are the data?
+[72:15] To do one
+[72:15] Method. Here
+[72:18] What is, I
+[72:19] When a
+[72:23] Will I do it?
+[72:23] It is a
+[72:23] With lock
+[72:24] I will protect you. That
+[72:27] Later, I
+[72:30] Sure, the same
+[72:32] For, I
+[72:32] Always the same
+[72:33] With set locks
+[72:34] I will protect you,
+[72:35] If it is different
+[72:36] By thread
+[72:38] Even though it was done
+[72:39] , single
+[72:42] Protecting
+[72:42] That won't happen.
+[72:45] Always a
+[72:47] Tied
+[72:47] There will be. That
+[72:48] I am that.
+[72:49] Obtained
+[72:54] The edge
+[72:56] . So, my
+[72:58] All of me
+[72:59] Explained
+[73:00] In sections
+[73:01] Code to ensure
+[73:02] If you write,
+[73:04] Will be done
+[73:05] And so that
+[73:10] To variables
+[73:12] Will be protected
+[73:13] , and no
+[73:20] What we did
+[73:21] What is, we
+[73:23] The foundations
+[73:24] We built it.
+[73:26] This is mainly
+[73:28] For. Furthermore, this
+[73:31] On performance
+[73:32] OS that pays attention
+[73:33] Writer and
+[73:34] Library Writer
+[73:35] Also for.
+[73:37] And they,
+[73:38] People
+[73:39] Wanting to write
+[73:40] No, not much.
+[73:41] Fences or
+[73:44] The existing code.
+[73:45] Finally, someone
+[73:46] One of the locks
+[73:47] Code for
+[73:47] Should I write,
+[73:52] If you can let go
+[73:53] , our locks
+[73:55] Significantly
+[73:55] Improves
+[73:56] . So, a lot
+[73:58] Low-level people
+[74:01] Need to know
+[74:04] Can't bear it.
+[74:05] But what high-level
+[74:07] However, the data
+[74:08] The concept
+[74:10] The code that was made
+[74:11] Write it down.
+[74:12] PS code is
+[74:13] Let's call.
+[74:14] All here
+[74:17] Wrapped
+[74:22] So, the code
+[74:23] The structure is like that.
+[74:28] Without, code
+[74:29] Everywhere
+[74:34] Yes? That's data.
+[74:36] No race
+[74:36] Period. But,
+[74:38] In which
+[74:39] Disadvantage
+[74:41] Slow
+[74:42] Lots of instructions
+[74:45] Less
+[74:48] Decreases.
+[74:50] Nice
+[74:50] Handcrafted
+[74:52] For libraries
+[74:52] Differently,
+[74:53] Here we have
+[74:58] There are instructions,

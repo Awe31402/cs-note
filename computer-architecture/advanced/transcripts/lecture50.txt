@@ -1,0 +1,1071 @@
+[00:00] [Music]
+[00:12] thank you
+[00:21] welcome to the second lecture on
+[00:23] reliability
+[00:25] so we'll start with false due to
+[00:27] non-determinism
+[00:29] so the idea is that does the CPU always
+[00:31] produce the same output and always take
+[00:33] the same time for doing so
+[00:36] well you would assume that the answer is
+[00:38] yes the CPU is absolutely deterministic
+[00:41] which means that it will produce some
+[00:43] output in two cycles or three Cycles all
+[00:46] the time
+[00:47] not the case no
+[00:49] there are many sources of
+[00:51] non-determinism that
+[00:54] basically make the CPU produce different
+[00:58] outputs taking different amounts of time
+[01:00] of course you know it doesn't mean that
+[01:02] you write a c program and all the time
+[01:04] it will give you a different output so
+[01:07] once it will print you know hello world
+[01:09] once it will print high world and so on
+[01:11] that's not going to happen
+[01:13] but if we start looking at each and
+[01:15] every output pin of the CPU
+[01:19] or look at the memory state or many
+[01:21] other factors
+[01:22] which are not supposed to be strictly
+[01:25] deterministic for the outside world you
+[01:27] will see a variation right so in this
+[01:29] case
+[01:31] in a program you know that exactly this
+[01:33] is what I want but in a large part of
+[01:36] the CPU especially the internal parts
+[01:39] determinism is not required and it's not
+[01:41] a part of the specifications that is why
+[01:43] we have some non-determinism which is
+[01:46] fine that's an aspect of the design see
+[01:48] even C programs May produce the same
+[01:50] output but they don't take the same
+[01:52] amount of time
+[01:53] and they don't have the same memory map
+[01:55] so basically there are sources of
+[01:59] non-determinism in the CPU whereas I
+[02:01] said a lot of the internal State can
+[02:03] vary even though
+[02:05] things of interest like results of alien
+[02:08] operations and so on or program outputs
+[02:11] will remain the same
+[02:12] but sometimes this subtle
+[02:15] deviations from determinism which are
+[02:17] otherwise internal
+[02:20] sometimes they become external and they
+[02:22] create bugs
+[02:24] so this is a problem
+[02:28] and
+[02:29] many a time what happens is that if we
+[02:33] want to reproduce an erroneous state
+[02:37] it's very hard to reproduce because the
+[02:39] execution is not deterministic
+[02:41] and then there is a problem right so if
+[02:44] let's say we are running it on some sort
+[02:46] of a test board
+[02:48] we will not be able to accurately
+[02:50] diagnose the cause of the faults because
+[02:52] we may see some problem so let's say
+[02:55] some memory pain should be 0 it is one
+[02:57] but next time we run it it'll we may not
+[03:00] see the problem
+[03:01] that is because of the inherent
+[03:03] non-determinism which makes it very hard
+[03:06] to verify Hardware because
+[03:09] unlike software they may show a fair
+[03:13] amount of difference run to run as I
+[03:15] said some things remain constant but
+[03:17] many things keep changing
+[03:20] so let's look at some of the things that
+[03:23] keep changing because I've been
+[03:24] deliberately vague in the previous slide
+[03:27] but let me now remove some of the
+[03:30] Clutter and tell you what is it that I
+[03:33] have broadly been referring to
+[03:37] so we have random replacement policies
+[03:40] and caches right in many caches we say
+[03:42] choose a line at random from a set and
+[03:44] throw it out
+[03:45] sometimes what happens is that bus
+[03:47] Arbiters and anything else which relies
+[03:49] which makes these choices for concurrent
+[03:52] requests chooses one over the other and
+[03:55] many a time these random numbers are
+[03:57] kind of set up at good time
+[03:59] or because of variation of one or two
+[04:02] cycles for other causes it is possible
+[04:05] that the replacement in caches will lead
+[04:08] to very different cache States and very
+[04:10] different performance values also
+[04:13] in processors there are often
+[04:15] uninitialized State elements
+[04:18] and they can cause a problem for
+[04:21] determinism in the sense that if let's
+[04:25] say we are relying on flip flops right
+[04:27] or transitions and we see that they are
+[04:31] initialized to some State then maybe a
+[04:33] certain transition will be much faster
+[04:34] than others
+[04:36] again can cause some determinism
+[04:38] especially if we are interested in all
+[04:40] the internal values of a processor which
+[04:43] means values of the internal flip flops
+[04:45] and so on then life will become tough
+[04:49] then of course power getting and clock
+[04:52] gating are also inherently
+[04:53] non-deterministic events because
+[04:56] depending upon the external voltage and
+[04:58] so on it may take different amounts of
+[05:00] time to recover from a power or clock
+[05:02] gated state or even dvfs it may take
+[05:05] different amount amounts of time to
+[05:07] recover from it so what could happen is
+[05:10] that if I am taking slightly longer to
+[05:12] recover I may miss other Hardware
+[05:13] interrupts which may cause a system
+[05:16] failure it is possible that a hardware
+[05:18] interrupt arrives
+[05:20] at the time of a dvfs recovery and it is
+[05:23] missed and that causes some problem
+[05:25] right but next time when I run it it may
+[05:29] happen that I recovered from dvfs much
+[05:31] faster my PLL was able to lock
+[05:34] far sooner
+[05:36] so I don't get to see it so in this case
+[05:39] because of the inherent unpredictability
+[05:41] I may see a problem but when I try to
+[05:43] reproduce it I may not be able to see it
+[05:46] of course inductive noise and soft
+[05:49] errors do lead to non-determinism but
+[05:51] they are rare but since we have
+[05:53] discussed them I've just put it here but
+[05:55] essentially it is uninitialized State
+[05:58] elements random replacement policies and
+[06:00] everything we did to reduce power
+[06:02] they introduce a fair amount of
+[06:07] similarly dram memory passes an i o well
+[06:10] the same thing
+[06:11] the dram refresh
+[06:15] is fundamentally an analog operation
+[06:18] and it is dependent upon the dram
+[06:20] traffic you want the traffic to seize
+[06:22] before doing a refresh and so on
+[06:24] so this can take variable amounts of
+[06:26] time along with the fact that we may
+[06:29] have
+[06:31] accumulated with flips
+[06:33] so if you have accumulated them we will
+[06:35] have to then use the ECC bits to correct
+[06:38] them
+[06:39] how many bit flips we have accumulated
+[06:41] will
+[06:42] be a non-deterministic figure
+[06:45] which is why ECC scrubbing will also be
+[06:47] an undeterministic figure
+[06:49] again when we access i o like hard disks
+[06:52] they use mechanical components we'll
+[06:54] take different amounts of time
+[06:56] and furthermore even you know even when
+[06:59] I am transmitting data from one end of
+[07:01] the chip to another
+[07:03] using any kind of internal launcher bus
+[07:06] technology be it hyper transport or
+[07:08] whatever
+[07:09] so what happens is that it typically
+[07:11] uses a source synchronous bus
+[07:14] so Source synchronous bus what it does
+[07:17] is that along with the data
+[07:20] it transmits the clock
+[07:23] so the clock is used to recover the data
+[07:27] here again because physical transmission
+[07:29] is involved and also you know this first
+[07:32] receiver has to lock into this clock
+[07:35] here a couple of Cycles here and there
+[07:38] can happen
+[07:39] right because latencies are not fixed
+[07:41] they are temperature dependent
+[07:43] so because of these little one or two
+[07:47] cycles here and there
+[07:49] you cannot really debug a chip cycle by
+[07:52] cycle right and then what can happen is
+[07:55] that maybe there will be some fault
+[07:57] which gets activated in some rare
+[07:59] Corner case
+[08:01] let's say that you are expecting some
+[08:03] operation to complete in three Cycles
+[08:04] but it somehow takes four
+[08:07] then you may have a bug a problem
+[08:10] but next time you may try to reproduce
+[08:13] it with every single time you'll get
+[08:15] three you will never see a 4 so this
+[08:17] will create the process
+[08:19] of post silicon verification and
+[08:22] debugging this makes them quite tough
+[08:24] and the reasons are all mentioned here
+[08:28] so the question is can we have for the
+[08:31] purpose of debugging or even for the
+[08:33] purpose of execution
+[08:35] a deterministic CPU which means that is
+[08:37] internal state
+[08:39] for the same set of actions will always
+[08:41] be the same
+[08:43] right so again as I said let's not again
+[08:46] confuse this with an executing program
+[08:49] an executing program will anyway always
+[08:51] run correctly
+[08:52] but sometimes we may have problems in
+[08:55] that also if you have not anticipated
+[08:58] some rare sequence of Hardware events
+[09:01] where we kind of sat with the
+[09:02] assumptions that this will complete in
+[09:04] three cycle this one in four Cycles two
+[09:06] and so on
+[09:07] but in a rare set of events if this
+[09:09] becomes 5 and then this is beyond our
+[09:12] anticipation Zone could lead to problems
+[09:15] and we may find it very hard to
+[09:17] reproduce this scenario
+[09:18] so to ensure that these things don't
+[09:20] happen in a strict contract timing
+[09:23] contract is maintained between all the
+[09:25] chips elements within the CPU and the
+[09:28] CPU itself
+[09:30] we would like some determinism which
+[09:33] means that if I set the internal state
+[09:34] to a given State and then I run a
+[09:38] program
+[09:39] then the final internal State should be
+[09:42] exactly what I wanted to be
+[09:45] so there are of course modern mechanisms
+[09:48] where we can use we can set if the value
+[09:50] of every single flip flop reset them
+[09:54] and then we can record a set of events
+[09:56] with their precise timings the
+[09:58] specialized motherboards to do that and
+[10:00] just replay the set of events for
+[10:01] debugging this will ensure that
+[10:05] whatever I see on the field I can
+[10:07] reproduce it in the lab
+[10:11] I can reproduce it reasonably easily and
+[10:14] predictably and that case will not
+[10:17] happen that I saw someone in a million
+[10:19] case in the field but I'm never able to
+[10:21] see it in the lab
+[10:22] and that is why there is a need to have
+[10:25] a deterministic CPU not just for
+[10:28] debugging but also for running you know
+[10:30] like a full deterministic CPU
+[10:33] such that wherever or whenever there is
+[10:35] a problem
+[10:37] and you feel that a bug happened because
+[10:40] you know some some mismatch in Hardware
+[10:43] or software or firmware
+[10:45] you can immediately reproduce that
+[10:47] problem at the cycle level
+[10:49] that's not very hard so let's say
+[10:51] there's a sender and receiver both have
+[10:53] their local clocks so the sender is
+[10:56] sending at its local time TS
+[10:59] then if we assume that the communication
+[11:01] channel is timing wise non-deterministic
+[11:05] but otherwise it kind of delivers what
+[11:07] you have sent but the timing is slightly
+[11:09] unpredictable
+[11:11] then we create a range we say the
+[11:13] maximum it can be delivered between in
+[11:15] local time of the receiver TS plus Theta
+[11:18] 1 to TS plus Theta 2. so what you do is
+[11:21] you deliberately wait for the worst case
+[11:23] time
+[11:24] so let's say Theta 1 could be four Theta
+[11:26] 2 could be 5.
+[11:28] so you assume that everything will be
+[11:30] delayed till T S Plus 5. even if
+[11:33] something has arrived early you just
+[11:34] buffer it and process it at TS plus 5
+[11:37] which is its worst possible time
+[11:40] so this will ensure that we are cutting
+[11:42] off non-determinism
+[11:44] how are we doing that well the way that
+[11:47] we are doing that is in case a message
+[11:48] arrives early it waits everything is
+[11:51] processed
+[11:53] at the right time which in this case is
+[11:55] TS plus 5 and this is done consistently
+[11:58] across the board so this will cut out a
+[12:00] major source of non-determinism
+[12:02] that basically arises because of long
+[12:05] buses or let's say it arises right
+[12:07] because of the bus slash NOC complex
+[12:12] so we have discussed a little bit about
+[12:14] determinism and non-determinism we
+[12:17] didn't go very deep
+[12:19] but the basic idea was simple that look
+[12:22] uh
+[12:23] Hardware has to remain
+[12:26] reliable and for Hardware to remain
+[12:29] reliable even at the cycle level at the
+[12:32] pin level
+[12:33] right at the level of Cycles
+[12:36] at the level of individual pins
+[12:39] at the level of State elements
+[12:41] we would like the same sequence of
+[12:44] actions to give us exactly the same
+[12:45] outcome as is the case in a program
+[12:49] the older design philosophy said that
+[12:51] look let all programs run absolutely
+[12:53] correctly
+[12:54] but let the internal State slightly
+[12:56] diverge so is it the external State
+[12:58] Remains the Same but if I were to look
+[13:01] at every memory line and so on
+[13:03] then I will allow some Divergence for
+[13:07] instance if I look at random replacement
+[13:10] random replacement will always produce a
+[13:13] correct output it is not tinkering with
+[13:14] output at all
+[13:16] it is just that the state of the cash
+[13:19] will vary from run to run and thus
+[13:22] debugging will be hard in case some
+[13:24] problem is found in the CPU
+[13:26] so that is why
+[13:28] the external output being correct we
+[13:30] would also like some degree of internal
+[13:34] determinism
+[13:36] to ensure that bugs can be reproduced in
+[13:39] the lab
+[13:40] and a higher level of guarantee
+[13:43] correctness guarantee can be provided
+[13:46] now let's look at design false design
+[13:49] fault is basically a bug an error right
+[13:51] that the designer made
+[13:53] you can argue that the previous category
+[13:55] was similar you can say that the
+[13:57] previous category of non-determinism was
+[13:59] similar
+[14:00] for the designer assume that
+[14:05] sum interface between the
+[14:08] sender and the receiver would let's say
+[14:10] take two cycles
+[14:12] the entire protocol was based on that
+[14:14] but in let's say one in a million cases
+[14:16] because of some weird combination of the
+[14:19] temperature and Supply voltage this
+[14:20] takes three Cycles
+[14:23] then again this may lead to an issue or
+[14:25] may not lead to an issue but the fact is
+[14:28] that the designer well was not
+[14:29] conservative enough
+[14:31] but that's of course one kind of bug so
+[14:35] to fix that we made all day
+[14:37] communication interface is deterministic
+[14:40] because anyway inside logic
+[14:41] non-determinism doesn't happen to that
+[14:44] extent because it's still synchronized
+[14:46] at clock boundaries but communication
+[14:48] across clock boundaries or between two
+[14:51] circuits within the clock boundary can
+[14:54] introduce non-determinism as many
+[14:56] authors have pointed out
+[14:57] but if we look at more Core Design
+[15:00] faults like errors in Adder multiplier
+[15:02] logic
+[15:03] they can hurt us big time and they in
+[15:06] fact have hurt us in 1995 Pentium had a
+[15:10] very serious bug in his division unit
+[15:12] so you have to recall a lot of those
+[15:15] chips Intel Pentium right had to recall
+[15:17] lot of units and in those days many 475
+[15:21] million dollars which would definitely
+[15:23] be a billion plus today
+[15:25] it was spent in fixing it
+[15:29] amd's Barcelona and Phenom processors
+[15:32] had a bug in the tlb that caused the
+[15:34] processor to hang
+[15:35] these are rare but they exist and when
+[15:37] they manifest themselves there is
+[15:39] nothing that you can do
+[15:40] essentially the entire system is gone it
+[15:43] has to be rebooted
+[15:46] so processor problems or processor
+[15:49] design faults are very expensive because
+[15:51] unlike software you can't issue a patch
+[15:54] so that is why very serious verification
+[15:56] is required
+[15:58] and many modern approaches are also
+[16:01] taking the patch Direction seriously
+[16:04] Fair what you can do is if let's say the
+[16:06] implementation of some instruction is
+[16:08] wrong
+[16:10] we can then replace it with a sequence
+[16:12] of micro code
+[16:14] which has the correct implementation
+[16:16] it'll be much slower
+[16:17] but the point is that the micro code
+[16:19] stored in firmware that is give you a
+[16:21] correct output so such Hardware patching
+[16:24] is also happening but you know the most
+[16:27] important point is that we do so much of
+[16:29] testing and Hardware
+[16:30] because we can't afford a bug in the
+[16:33] case of software it's not that much
+[16:34] because a patch can quickly be
+[16:36] downloaded and installed
+[16:40] so the fault checking process here is
+[16:43] that you try to avoid them as much as
+[16:44] possible
+[16:46] so the typical design flow is that you
+[16:49] decide a high level architecture
+[16:51] divide it into different smaller sub
+[16:53] units design each subunit
+[16:56] exhaustively test these designs so for
+[16:58] every subunit you do a unit level test
+[17:02] and then make a larger thing and let's
+[17:06] say It's a larger unit level it has
+[17:07] subsystem level test full test
+[17:10] have huge testing verification teams
+[17:13] we'll discuss the difference between
+[17:15] them shortly but have huge teams just
+[17:18] for ensuring the correctness
+[17:21] so there is a gold standard of
+[17:23] correctness called formal verification
+[17:25] which is a formal approach
+[17:27] where you basically say that one circuit
+[17:31] which is the one that you built
+[17:33] is equivalent to an ideal circuit
+[17:37] an ideal circuit may be an ideal adder
+[17:40] or an ideal multiplier right so both of
+[17:42] them are equivalent an ideal circuit of
+[17:44] course is hypothetical it's mathematical
+[17:46] it's a mathematical object
+[17:48] and the circuit that you built is
+[17:50] something that you built using a
+[17:51] hardware language like very logger vhdl
+[17:54] you would like to prove that they are
+[17:55] equivalent which means that for all
+[17:57] sequences of inputs they provide the
+[17:59] same outputs
+[18:00] if you define the internal State as a
+[18:02] part of the output well then it produces
+[18:04] the same output as well as the same
+[18:07] internal States but the key idea is that
+[18:10] on one side of the equality equation I
+[18:18] I have my design on the other I have
+[18:22] something which is supposed to be
+[18:23] hypothetical but it's supposed to be 100
+[18:25] correct and I need to prove an equality
+[18:29] or equivalence which basically means
+[18:31] that the circuit I design is absolutely
+[18:33] correct right absolutely aspect
+[18:35] specifications
+[18:37] so there are two approaches in
+[18:38] theoretical CS automatic automated
+[18:41] theorem proving and model checking
+[18:45] so here basically the theorem is that
+[18:49] the circuit is equivalent to an ideal
+[18:53] design
+[18:54] so we start with the basic axioms
+[18:58] right so start with the basic if there
+[19:00] is an and gate we know what that stands
+[19:02] for so these are all basic axioms
+[19:04] and then I try to prove a theorem which
+[19:06] is that the output is correct by
+[19:10] basically you know saying that it is the
+[19:13] output satisfies some mathematical
+[19:15] properties
+[19:17] so in this case in automatic theorem
+[19:19] proving you do not prove that much that
+[19:21] is equivalent to an ideal circuit but
+[19:23] you prove that is equivalent to an ideal
+[19:25] mathematical model right so the
+[19:27] mathematical model could not be like a
+[19:30] full model but it could have certain
+[19:32] properties so you could say that the
+[19:33] output satisfies a set of properties and
+[19:36] these set of properties are sufficient
+[19:38] right so this would be a better way of
+[19:41] putting it that using known basic axioms
+[19:44] I try to prove a theorem what is the
+[19:46] theorem the theorem is that the output
+[19:48] is correct what does that mean what that
+[19:51] means is the output that this circuit
+[19:53] under test is producing
+[19:57] certain properties hold for the output
+[19:59] and these set of properties are
+[20:00] sufficient to infer correctness
+[20:03] model checking on the other hand with
+[20:06] the Computing method and much faster and
+[20:08] much more popular
+[20:10] essentially creates the model of a
+[20:13] system in a formal language
+[20:15] and then it tries to
+[20:19] check this model again properties of the
+[20:22] model and again drawn
+[20:25] some sort of an equivalence
+[20:28] of whether the implemented system and
+[20:30] the morph and the formal hypothetical
+[20:33] model which is
+[20:36] supposed to represent the problem at
+[20:38] hand or the are they same or not so this
+[20:42] diagram that I have drawn is more
+[20:44] relevant for model checking not for
+[20:46] automated theorem proving where I say
+[20:48] that the circuit that I implemented is
+[20:50] similar to
+[20:52] a theoretical circuit which means if the
+[20:54] theoretical circuit is the adder then I
+[20:57] have a straight cut similarity over here
+[20:59] it's a very hard problem
+[21:01] undecidable many cases but the idea is
+[21:04] that I take the circuit and I take a
+[21:07] formalized model and then I try to prove
+[21:09] properties on it
+[21:12] so this was the process of verification
+[21:16] where I verification basically says that
+[21:19] whatever I am producing
+[21:21] will satisfy certain properties these
+[21:25] set of properties could be necessary
+[21:26] could be sufficient well that I don't
+[21:30] know but as I said the methods are
+[21:32] automated theorem proving
+[21:34] which using axioms tries to create a
+[21:37] theory
+[21:39] that the circuit's output is correct and
+[21:43] in other case I take the circuit and I
+[21:46] create a model for it using a dedicated
+[21:47] model checking language like spin or
+[21:50] something
+[21:51] then I prove that
+[21:56] this model
+[21:59] will not take me to what is called an
+[22:02] unreachable state or something which is
+[22:04] deliberately incorrect it will always be
+[22:07] similar in its operation to an ideal
+[22:09] circuit right that is basically what I
+[22:11] prove
+[22:13] validation on the other other hand is
+[22:16] something where the the chip has been
+[22:18] manufactured
+[22:19] then I am kind of testing it for
+[22:21] manufacturing defects verification is at
+[22:23] the design time or you know
+[22:27] you know roughly around that ballpark
+[22:29] when I'm designing something whether
+[22:30] I've designed let's say the schematic
+[22:32] that is when I rigorously verify but
+[22:35] validation is post manufacturing where I
+[22:38] see if what I have built is actually
+[22:40] correctly built or not
+[22:42] so one testing method is known as
+[22:44] burning testing
+[22:46] so there what you do is that you
+[22:48] deliberately heat up the chip to let's
+[22:50] say 200 to 50 degree C
+[22:52] clearly out of its comfort zone
+[22:55] then you attach probes to Wafers give it
+[22:58] test vectors which are
+[23:00] inputs custom customized custom inputs
+[23:03] and see if the outputs match known
+[23:06] correct outputs or not
+[23:08] why burn in well the idea of burning is
+[23:11] that you are kind of testing it in
+[23:12] extreme conditions if something has to
+[23:14] fail it will fail in that if it doesn't
+[23:16] fail you kind of know it's reliable
+[23:19] the other popular method is scan chain
+[23:22] based testing so what you do
+[23:25] is that you try to set the value of
+[23:27] every single flip flop within the chip
+[23:29] by connecting their inputs to a Serial
+[23:31] bus serial bus is known as the scan
+[23:34] chain
+[23:35] so what we do is we kind of shift in
+[23:38] bits
+[23:39] and transfer these bits to these flip
+[23:41] flops which means that we can start from
+[23:43] a known state
+[23:45] and then go forward but at least given
+[23:48] the fact that you are starting from a
+[23:49] known state where cutting off
+[23:52] and then we run the processor with a
+[23:54] given set of inputs for
+[23:58] a certain number of Cycles the outputs
+[24:00] are again sent to the scan chain and
+[24:01] they are kind of read out scanned out so
+[24:04] they are scanned out by the JTAG port
+[24:07] we used to be the serial Port but we
+[24:09] kind of read out all the inputs and then
+[24:11] we give it to a chip design tool Eda
+[24:14] tool which kind of tells you that look
+[24:16] after K Cycles these are the values
+[24:18] stored in all the flip flops kindly
+[24:20] check if it's correct or not
+[24:23] then you have iddq testing
+[24:26] very basically verify the current so we
+[24:29] don't do any activity which we verify
+[24:31] the current drawn by different parts of
+[24:33] the chip
+[24:34] the advantage of this is that we can
+[24:36] identify short circuits
+[24:40] so we run the chip at many different
+[24:43] voltage and frequency levels
+[24:45] so this will allow us to do number one
+[24:47] binning which means that we can say that
+[24:49] look the chip is safe for only 2.5
+[24:51] gigahertz and below so we'll kind of
+[24:53] sell a 2.5 gigahertz chip and of course
+[24:56] charge less than a three gigahertz chip
+[24:58] also we can create a custom dvfs table
+[25:01] which basically means that at a given
+[25:03] voltage what is the maximum possible
+[25:06] safe frequency at which there are no
+[25:08] errors so we can create a dvfs table
+[25:11] that can possibly look different for
+[25:13] every single fabricated die because its
+[25:15] physical properties are different
+[25:18] then functional testing
+[25:20] which is similar to what I was seeing
+[25:22] you know deterministic testing
+[25:24] which is that I have this specialized
+[25:26] testing boards like Intel colon for
+[25:29] example
+[25:30] which sets the internals of the chip to
+[25:33] a known state so you kind of have the
+[25:35] chip over here put it in a known State
+[25:37] give it a set of test vectors which
+[25:40] could also be as large as let's say I
+[25:42] try to boot a noise
+[25:44] and then I look at the outputs the
+[25:46] outputs match it is correct so as I said
+[25:48] a bunch of things burn in testing is
+[25:51] when I take it to extreme conditions I
+[25:53] do a test it's like functional testing
+[25:55] at extreme conditions
+[25:57] scan chain is basically a dedicated
+[26:00] serial bus that is connected to most
+[26:02] flip flops
+[26:04] I can either set their value or read the
+[26:06] value setting the value means setting
+[26:08] the internal state of the chip pretty
+[26:10] much and reading the value would be
+[26:12] reading the values of all the flip flops
+[26:14] or the full internal state
+[26:16] can be used for testing iddq and
+[26:19] schmooing are electrical methods where
+[26:21] first one is used to finding short
+[26:23] circuits the second one for binning
+[26:26] which means what is its say frequency
+[26:28] and its dvfstick
+[26:30] let us look at some examples of faults
+[26:34] so we showed three faults there are
+[26:36] different types so the first fault was
+[26:38] then I was discovered in IBM G3
+[26:41] processor
+[26:42] so all of these Faults Are regularly
+[26:45] published by the processor vendor in
+[26:47] Errata documents which are publicly
+[26:49] available on their websites they are
+[26:51] targeted towards compiler writers OS
+[26:53] developers such that they can avoid the
+[26:56] conditions that lead to the fault
+[26:58] sometimes former developers as well so
+[27:01] if you can see this fault is activated
+[27:03] when several conditions are true like
+[27:05] the L1 cache suffers MS at the same time
+[27:08] the processor is using the L2 cache and
+[27:10] power management is active
+[27:12] so when all three conditions are turned
+[27:15] on some L2 lines may get corrupted so
+[27:18] this basically means that if power
+[27:20] management is active
+[27:22] then
+[27:24] uh well one is either turn off power
+[27:27] management this condition will never
+[27:29] happen
+[27:30] or if let's say uh you know you have
+[27:33] some control over the hardware design
+[27:34] let's say in the next iteration
+[27:36] then uh you know either fix the problem
+[27:40] or ensure that when the L1 cache is
+[27:42] servicing Ms don't access the L1 L2
+[27:45] cache
+[27:46] so that is the hardware level thing the
+[27:48] only software level fix is to turn off
+[27:51] Dynamic power management
+[27:54] Pentium 4 again several conditions that
+[27:57] are true there's a cash hit on a line in
+[27:59] the M State a snoop access is going on
+[28:02] and the bus you are trying to
+[28:03] re-initialize
+[28:05] again if there is a firmware fix which
+[28:08] is that if the bus is being
+[28:10] re-initialized and kind of freeze all
+[28:12] accesses that would fix the problem
+[28:14] because otherwise this may lead to a
+[28:16] Deadlock
+[28:17] so we will need to see if an OS fix or a
+[28:21] compiler fix can
+[28:22] fix the problem
+[28:24] then there is no need for Hardware
+[28:26] respin but if it's serious then the
+[28:28] processors have to be recalled
+[28:30] up
+[28:32] a new version of the processor without
+[28:34] the bug has to be created and it has to
+[28:36] be given free of cost pretty much if
+[28:38] it's happening within a warranty
+[28:40] AMD Athlon well this is slightly
+[28:43] different because these were events that
+[28:46] are concurrently true in the same clock
+[28:48] cycle
+[28:49] but this basically says within a window
+[28:51] of four instructions if you have an 2 am
+[28:54] adjust after multiply instructions
+[28:57] right something bad can happen
+[29:01] right ALU can produce incorrect results
+[29:03] or if within the Windows 7 instructions
+[29:06] right we have a div followed by an
+[29:09] address after multiply instruction then
+[29:11] also something bad can happen but the
+[29:14] nice thing is that in this case the
+[29:15] compiler can help
+[29:17] what the compiler can do is that it can
+[29:19] ensure that it will never generate code
+[29:21] sequences that follow these properties
+[29:24] of course the casualty would be
+[29:26] efficiency and speed but again this may
+[29:29] be a worthwhile trade-off in this case
+[29:30] if let's say we don't want to go for new
+[29:33] hardware
+[29:36] types of faults well so we have
+[29:39] discussed two variants actually without
+[29:42] knowing that there were variants but
+[29:44] we'll again come back to this so let me
+[29:46] go to the next slide
+[29:48] so one is non-critical which means they
+[29:50] don't affect the correctness of the
+[29:53] this would be issues in performance
+[29:55] counters debug registers and so on so if
+[29:58] something is happening we don't care
+[29:59] that much
+[30:01] the other is critical concurrent so
+[30:04] critical concurrent would basically be
+[30:06] the first group
+[30:07] Fair yes the bug is critical
+[30:10] and you want several events or
+[30:13] conditions to be true at the same time
+[30:15] same clock cycle that is critical
+[30:17] concurrent
+[30:19] that would be false one and two the
+[30:21] other is critical complex where you have
+[30:23] a sequential relationship that I have
+[30:25] one am instruction within four
+[30:29] instructions another
+[30:30] um instruction has to be there right so
+[30:33] here there is a sequentiality so this is
+[30:35] critical complex
+[30:37] and the example would be the last fault
+[30:40] fault through
+[30:42] so for us critical complex bugs are
+[30:45] difficult to detect because to detect
+[30:48] uh you need a state machine the
+[30:51] non-critical ones we don't care so the
+[30:53] critical conquering once is what a lot
+[30:55] of people have focused on
+[30:57] how do you predict and detect well the
+[30:59] first thing is that you need to collect
+[31:01] all events of Interest all events of
+[31:03] Interest are called signals now how do
+[31:06] you know what to tap well you can look
+[31:07] at historically things like L1 may sell
+[31:10] to Ms or architecture specific things
+[31:13] right so all of those can be tapped and
+[31:16] you can you just have to pray to God
+[31:17] that whatever is a real condition the
+[31:19] signals for that are within this set and
+[31:22] also let's say historically a bunch of
+[31:25] architecture special like processor
+[31:27] specific
+[31:28] things like a certain power mode or
+[31:31] certain initialization mode if that also
+[31:35] has been involved all of that could be
+[31:36] tapped and after tapping we need a
+[31:39] programmable combinational unit which
+[31:42] can say that look yes if signal one
+[31:43] three five eight and ten are true at the
+[31:46] same time
+[31:47] it could lead to a buggy situation so
+[31:49] pretty much that is how you would
+[31:51] predict but this is kind of predicated
+[31:53] upon the fact that all of these events
+[31:57] of Interest are being collected in
+[31:59] Hardware in the first place
+[32:02] so if I were to classify these faults I
+[32:05] could have an alternative classification
+[32:07] as well
+[32:08] I could have logic design faults where
+[32:11] simply a mistake was made in the RTL
+[32:13] code
+[32:14] I could have algorithmic faults where
+[32:16] the RTL code is fine but let's say that
+[32:19] there is a high level deviation for
+[32:21] example I am implementing a certain
+[32:24] protocol let's say that you know
+[32:27] I'm rounding to Infinity but I was
+[32:29] actually supposed to round to minus
+[32:30] infinity so in that case my RTL is fine
+[32:33] but at the conceptual level I made a
+[32:35] mistake
+[32:36] timing faults are very common timing
+[32:38] Falls basically say that look I thought
+[32:41] that a given path would take three
+[32:43] seconds three let's say nanoseconds and
+[32:46] I set my clock cycle accordingly
+[32:48] but it's taking let's say lock cycle is
+[32:51] set to 3.5 nanoseconds but this path is
+[32:53] actually running four nanoseconds
+[32:56] then the signal will not reach the
+[33:00] Target latch at the right time so I'll
+[33:02] have it timing fault all of these faults
+[33:05] which are all there at the design time
+[33:07] are congenital faults at Birth time
+[33:10] so you can live with them if you wish
+[33:12] but then of course you'll have a buggy
+[33:14] processor whether you need to live with
+[33:16] them depends on the fact that whether
+[33:18] you could do something to kind of
+[33:20] circumvented
+[33:22] in a lot of cases what happens is that
+[33:26] you can have some Os or compiler fixed
+[33:29] like turning off dvfs for instance if
+[33:31] that helps
+[33:33] in many modern research prototypes a lot
+[33:36] of signals are tapped as I just
+[33:38] mentioned and you have dedicated what is
+[33:40] called DFD Hardware designed for debug
+[33:42] Hardware that looks at these signals
+[33:45] computes functions on them looks at
+[33:47] potential buggy situations and then
+[33:49] either informs the user or tries to
+[33:54] put the processor in a different mode
+[33:57] such that these signals at least one of
+[33:59] them is not triggered anymore so some
+[34:01] you know improvisation at that point is
+[34:04] needed to ensure that we don't actually
+[34:06] enter an erroneous situation
+[34:10] so let's now look at the workarounds as
+[34:12] we have been arguing
+[34:14] we will have to turn off some feature
+[34:16] right so this part is important that
+[34:19] some feature has to be
+[34:21] kind of turned off or somehow the system
+[34:23] has to be impaired to ensure that at
+[34:26] least one of the conditions for the bug
+[34:28] stops holding that's a very important
+[34:30] factor without that it will be hard to
+[34:34] kind of avoid those conditions right so
+[34:36] somewhere some compromise needed
+[34:39] so if certain instruction combinations
+[34:41] are the issue as we just saw then
+[34:43] compiler level Solutions will help if
+[34:47] let's say prefetching or dvfs is the
+[34:49] issue bios level Solutions will help so
+[34:52] for example stop ddfs disable it
+[34:55] entirely
+[34:57] then we have discussed this approach
+[34:58] based on tapping signals where you look
+[35:01] at all kinds of architectural events
+[35:04] things like dbfs prefetching misses all
+[35:09] the modes right things which are kind of
+[35:11] processor model independent and specific
+[35:17] configuration settings in the processor
+[35:20] model which are important
+[35:22] so that would kind of be in conservative
+[35:24] guess of all the signals I would say
+[35:27] signal is
+[35:28] something like
+[35:32] you know some event some either some
+[35:34] event or some setting
+[35:36] right so for example an example would be
+[35:38] an L1 message being serviced and L2
+[35:40] message is being serviced a branch
+[35:42] misprediction is being serviced or we
+[35:45] get some special instruction or a
+[35:46] context switch or dvfx is going on
+[35:50] something like that
+[35:52] right
+[35:53] so then what we do is that whenever we
+[35:56] find a bug and a bug can be detected
+[35:59] much much later after a processor is
+[36:03] released we can pre-characterize these
+[36:06] bugs in terms of these signals so in
+[36:09] terms of these signals we can see that
+[36:13] a certain combination leads to a bug or
+[36:16] let's say may lead to a bug but we are
+[36:19] sure that the bug will not happen if
+[36:21] this combination doesn't move
+[36:23] so this means that whenever a certain in
+[36:25] a combinational condition is true
+[36:28] we can
+[36:30] have some sort of programmable Hardware
+[36:32] so this Hardware basically means
+[36:34] programmable Hardware
+[36:40] and look at the impending error and take
+[36:43] some remedial action in the sense if we
+[36:45] see that something wrong is going to
+[36:47] happen maybe we can trigger a pipeline
+[36:50] flush or
+[36:53] basically roll back to a checkpoint if a
+[36:55] checkpoint exists or turn off one of
+[36:57] these things like dvfs or prefetching or
+[37:00] then we can have design for debug
+[37:03] Hardware where we create dedicated
+[37:05] storage space known as debug buffers or
+[37:07] Trace buffers that essentially stores
+[37:09] the values of these signals so instead
+[37:11] of doing an online
+[37:13] computation on them to see if any bug
+[37:16] condition has been triggered
+[37:18] what we can do is that we can analyze
+[37:20] these Trace buffers and find all the
+[37:22] conditions associated with the bug
+[37:25] right so what we can do is that if let's
+[37:28] say
+[37:29] a certain bug is happening in the field
+[37:31] we can then maybe send the contents of
+[37:33] these debug buffers or Trace buffers to
+[37:35] the vendor back it could do a fair
+[37:38] amount of data mining and then find out
+[37:40] the combination that essentially leads
+[37:42] to the bug
+[37:43] so if this is the combination after a
+[37:46] thorough analysis it can say that look
+[37:49] this combination has led to this pump
+[37:53] and then what we can further do is that
+[37:57] all the information that our Hardware is
+[37:59] collecting again is the signal thing
+[38:02] so the only difference between let's say
+[38:04] this part and this part is that here we
+[38:06] collect signals and then we compute
+[38:08] functions on these signals
+[38:10] and if a function is kind of true
+[38:13] it will basically say that a bug may
+[38:17] happen might happen
+[38:19] so in this case the debug Hardware will
+[38:21] collect data and uh
+[38:24] in the second case that is which is this
+[38:26] is and then we can analyze the data to
+[38:29] find out
+[38:31] how exactly did a bug happens so this is
+[38:33] kind of a pre-stage to that so this can
+[38:35] feed information to this along with that
+[38:38] there is a lot of work to compress these
+[38:42] you know signal information that debug
+[38:44] Hardware is capturing
+[38:46] so we can take a single trace and kind
+[38:48] of compress it that would be spatial
+[38:52] or we can take a set of traces for
+[38:55] different let's say cores or something
+[38:57] and find out redundancy across time so
+[39:00] temporal redundancy
+[39:01] which basically means that if let's say
+[39:03] for dbfs for all of them is set in a
+[39:05] column in the entire column may not be
+[39:08] stored you can just store one for the
+[39:09] entire call
+[39:10] so regardless of however we do it we can
+[39:13] do this row wise where a row would be
+[39:15] the signals for let's say one code or we
+[39:18] could do it column wise which would be
+[39:20] the same signal across course let's say
+[39:22] L1 missed the cross force or L2 message
+[39:25] across Force so it doesn't matter in any
+[39:28] case we want to create a matrix
+[39:31] where basically the rows are
+[39:33] all the
+[39:37] functional units or let's say you can
+[39:39] call it functional units or course or
+[39:40] whatever whatever can generate a signal
+[39:43] and the columns are the signals so it is
+[39:45] possible that you know different
+[39:47] functional units May generate the same
+[39:49] signal like as I said uh prefetching or
+[39:52] an mshr access or an L2 miss something
+[39:54] like that
+[39:55] so we can compress data both row wise as
+[39:58] well as column wise
+[40:00] hence they are given different names but
+[40:02] what is the advantage of doing all of
+[40:04] this well
+[40:06] compression means that for the same
+[40:08] space we can store more
+[40:10] if for the same space we can store more
+[40:13] data we can potentially analyze more
+[40:15] come up with more of these bug
+[40:18] conditions and then use other Hardware
+[40:21] that can
+[40:23] either avoid these conditions at runtime
+[40:26] or at least convey this to the
+[40:28] developers such that in the next
+[40:30] generation of the chip they
+[40:32] are aware that which conditions lead to
+[40:35] a problematic situation and then you
+[40:38] know they can use it to further debug
+[40:40] and rectified ratio
+[40:43] so this is a broad idea of trying to fix
+[40:46] RTL level faults so regardless of
+[40:49] whatever they are logic algorithmic or
+[40:51] timing
+[40:52] with a more solid and thorough
+[40:57] verification as well as post silicon
+[41:00] validation for test chips right so
+[41:02] verification is primarily pre silicon
+[41:04] which is happens on the design or
+[41:06] aspects of the design
+[41:08] validation as I said is primarily a post
+[41:11] silicon activity so regardless of that
+[41:14] if both of these are done seriously
+[41:17] we should be able to avoid them but as I
+[41:19] said no exercise is ever perfect
+[41:25] so regardless of how serious is the
+[41:27] effort so typically 50 to 100 bugs
+[41:30] still slipped into production level
+[41:33] silicon what I mean by production level
+[41:36] silicon is basically the chip that is
+[41:38] released to the market
+[41:40] so all of this is you know dutifully and
+[41:42] very meticulously documented in the
+[41:46] Errata documents some bugs are serious
+[41:49] but perhaps not that serious to recall
+[41:52] the processor but bugs still happen
+[41:55] and a lot of you know bios
+[41:59] and I would say firmware
+[42:01] where in the large part of the firmware
+[42:03] is within the BIOS and Os developers
+[42:07] plus compiler developers actually read
+[42:09] these Errata documents and try to
+[42:12] generate code to avoid these bugs so
+[42:14] this does happen workarounds do happen
+[42:17] of course as programmers we don't get to
+[42:19] see it but a lot of people who build
+[42:21] these motherboards and work with system
+[42:23] software at all levels including the OS
+[42:26] they are well aware that such issues are
+[42:28] happening and then they
+[42:30] essentially take steps to implement
+[42:33] these workarounds as discussed
+[42:36] so now that we have discussed bugs we
+[42:39] are ready to move to the next stage
+[42:42] which is discuss issues related to
+[42:46] essentially natural variation in the
+[42:49] fabrication process and hard errors in
+[42:52] edging
+[42:53] so this I would prefer to do in the
+[42:56] third lecture and stop this lecture
+[42:59] right here because we have discussed
+[43:01] things which are of a fairly homogeneous
+[43:03] nature and the third lecture will be
+[43:06] quite homogeneous for variation and
+[43:08] aging so we stop here and we will meet
+[43:11] you in the third lecture where we will
+[43:12] discuss points five and six

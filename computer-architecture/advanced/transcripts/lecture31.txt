@@ -1,0 +1,955 @@
+[00:00] foreign
+[00:22] of this chapter on nocs on chip Networks
+[00:29] so this will be a somewhat shorter
+[00:30] lecture where we will discuss
+[00:32] non-uniform cache architectures which
+[00:34] will basically tell us
+[00:37] how
+[00:39] the on-chip network is co-designed
+[00:42] with the cache hierarchy and then of
+[00:46] course we will discuss performance
+[00:47] aspects
+[00:50] so what's the key idea here the key idea
+[00:52] is that L2 and L3 caches are very large
+[00:56] so uh given the fact that they are very
+[00:59] large what we have is we are the course
+[01:01] over here
+[01:02] and we have a sea of cache Max
+[01:05] so let's call them b c for core and B
+[01:08] for cash Banks and there can be a lot of
+[01:10] these cashbacks
+[01:11] so if let's say message needs to go from
+[01:13] here to here via these routers
+[01:16] then of course it will have to pass
+[01:17] through the links and the routers and in
+[01:19] this case as we have just seen in the
+[01:21] fourth lecture the router delay can be
+[01:24] substantial in the sense a full pipeline
+[01:26] could be five Cycles otherwise the
+[01:29] router delay could be like three Cycles
+[01:31] or four Cycles so the router delay as
+[01:34] such could be quite high right it could
+[01:36] be substantial so that is why it takes a
+[01:38] long time even end to end lot of time is
+[01:41] spent in routers if it's a remote Bank
+[01:43] as I said if this is the core and it's
+[01:45] the remote bank it's far away
+[01:47] it could be 20 to 50 Cycles or even more
+[01:50] depending upon the size of the network
+[01:52] and of course the congestion
+[01:55] so this basically means cash access time
+[01:58] particularly for a large cash so
+[02:00] typically the word LLC is used LLC is a
+[02:03] last level cache
+[02:04] in an LLC the access time could be
+[02:07] fairly variable right
+[02:09] and this is why we have a non-uniform
+[02:12] cache because all of these LLCs are
+[02:14] fundamentally non-uniform because the
+[02:17] data is distributed throughout the chip
+[02:19] and access times are very non-uniform
+[02:22] well this number one is a problem
+[02:25] because it uses a slow down but the idea
+[02:28] is can we take advantage of this well in
+[02:30] principle we can place frequently used
+[02:33] data closer to the course so this is
+[02:35] something that we can do so in this case
+[02:38] what will happen is that all the data
+[02:40] that we frequently use that will be
+[02:42] closer to the course so somehow it will
+[02:44] be placed let's say close to this score
+[02:46] if you know this score is accessing to
+[02:49] reduce the perceived latency but how to
+[02:52] do that is a separate matter so this is
+[02:54] what we will look at in this chapter
+[02:56] primarily
+[03:01] so let us first discuss the most the the
+[03:05] simplest scheme static Noka s Noka
+[03:08] so the key idea is that let's say I have
+[03:11] a large number of cash banks in the LLC
+[03:14] that are organized like this in a matrix
+[03:16] form
+[03:17] each one of them is a cash prank
+[03:20] so the idea is how do I split the cache
+[03:23] blocks or which is basically the
+[03:25] physical address space
+[03:27] and map them to the cash Banks right
+[03:29] this itself is a hard problem
+[03:32] right so give a cash block find which
+[03:34] cash bank it maps to this itself is not
+[03:37] an easy problem
+[03:38] and we need to ensure that you know the
+[03:42] access is kind of homogenized in the
+[03:43] sense no hot spots are forming it's not
+[03:45] the case that for a given Bank let's say
+[03:48] this one there is a lot of contention
+[03:49] and the bank just to the sides of it
+[03:52] there is no contention at all
+[03:54] so there are multiple ways that we can
+[03:56] kind of split a physical address
+[03:59] post translation that is into the
+[04:02] different components
+[04:05] so the first would be the byte within a
+[04:07] block so we have already seen this right
+[04:10] so the byte within a block if the 64
+[04:12] byte block we will spend six bits in
+[04:16] this right
+[04:17] and this is essentially a log of the
+[04:19] block size so this is something of
+[04:21] course that we should ignore this is not
+[04:22] important
+[04:23] and then in a traditional set
+[04:26] associative cache we had the set ID and
+[04:28] the tag
+[04:29] now what we have is we have an
+[04:31] additional bank ID which is a couple of
+[04:34] bits that we kind of reserve for saying
+[04:36] which bank it is let's see if there are
+[04:38] 16 Banks then this will be a four bit
+[04:40] field which will essentially tell us
+[04:42] which bank we need to go to
+[04:45] now there are many ways in which this
+[04:48] bank ID can come out from a physical
+[04:51] address in the sense in this case it's
+[04:53] in the middle so clearly the more we
+[04:55] move towards the left the Lesser is the
+[04:57] randomness
+[04:58] so in this case what would happen is
+[05:00] that we would kind of have
+[05:03] more clustering at the bank level which
+[05:05] may not be a bad idea mainly because
+[05:10] we could
+[05:11] possibly associate a small cache along
+[05:14] with the bank to kind of store things uh
+[05:18] kakaya store frequently access blocks
+[05:20] but again this is not done but clearly
+[05:23] there is more of clustering over here in
+[05:25] this bank ID
+[05:27] and there is less of clustering over
+[05:29] here in a bank
+[05:31] the main reason being that in this case
+[05:33] the bank ID is determined first with the
+[05:35] lower order bits
+[05:37] and the lower it is more is the
+[05:39] randomness so we expect this approach
+[05:41] which is the second mapping to be way
+[05:44] more spread out
+[05:46] right so there is no doubt about this
+[05:48] that the more the bank ID bits you know
+[05:50] kind of move to the right we are
+[05:52] increasing Randomness and it will be the
+[05:54] accesses will be more spread out across
+[05:56] the banks and the more it moves to the
+[05:58] left we are reducing Randomness the
+[06:00] accesses will kind of be more clustered
+[06:02] you know with respect to a few Banks so
+[06:05] that is kind of known so there are
+[06:07] different advantages for choosing
+[06:09] different mappings in this case the
+[06:11] advantage is clearly homogenization in
+[06:14] this case we are trying to deliberately
+[06:16] kind of cluster but of course if we look
+[06:19] at set IDs in this case the sets will be
+[06:21] distributed kind of homogeneously
+[06:24] which could be an advantage in the sense
+[06:26] that even though Banks accesses will be
+[06:29] clustered but within a bank the sets
+[06:32] will be
+[06:33] uniformly you know the data will be
+[06:35] uniformly distributed across the sets
+[06:37] whereas in this case the banks will be
+[06:40] kind of random
+[06:44] so just to repeat the banks are random
+[06:46] in mapping two but the sets aren't so
+[06:48] there are you know so you'll see more
+[06:50] clustering at the set level which may
+[06:52] not be a good idea especially if you are
+[06:54] prone to conflict misses so as you can
+[06:57] see there are you know pros and cons the
+[06:59] it's not very clear you know which idea
+[07:02] is better than which one
+[07:06] so now let's come to a dynamic approach
+[07:08] known as Dynamic Noka where the idea is
+[07:12] that we bring frequently used data
+[07:14] closer to the core that is requesting it
+[07:17] so what we do is that we create Bank
+[07:20] sets which are you know groups of banks
+[07:22] so let's not confuse this set with the
+[07:24] sets within a bank this set is different
+[07:26] let's call it groups of banks so that's
+[07:29] maybe a possibly a better idea
+[07:34] so let's now clear the ink and see
+[07:36] what's happening so let this be the
+[07:38] requesting core
+[07:40] and let it request for a bank
+[07:43] that is actually there
+[07:46] in this Bank set
+[07:49] right so as I said each column is a bank
+[07:51] set
+[07:53] so basically what we do is if there are
+[07:55] four Bank sets then we basically extract
+[07:57] two bits from the physical address
+[08:00] right we'll talk about the position
+[08:02] later but let it be two bits it will
+[08:04] tell us in which bank set we are
+[08:07] then what we do is we find the bank in
+[08:10] the bank set which is the closest
+[08:12] requesting code
+[08:14] so it is pretty much like a
+[08:16] perpendicular line on this Bank set and
+[08:19] in this case this would be the closest
+[08:20] bank so we call this the Home Bank
+[08:23] so what we do is that we start a
+[08:26] protocol of searching so the basic idea
+[08:29] is that the block that we are requesting
+[08:31] for could be there in any Bank in the
+[08:35] bank set so that is the basic Insight
+[08:37] that
+[08:39] the bank set is a collection of banks
+[08:42] and furthermore the block could be there
+[08:44] in any Bank of the bank set so we
+[08:47] basically need to search
+[08:49] we shall see there are several
+[08:50] advantages even though at front even The
+[08:53] Upfront it looks like something to be
+[08:56] much heavier than a snooka but that's
+[08:58] not really the case
+[09:01] so the operation of the protocol is like
+[09:03] this given a physical address we make we
+[09:05] map it to a bank set
+[09:07] which basically means that we'll have
+[09:10] we'll then have the bank set ID
+[09:13] the set ID and the byte within a block
+[09:15] so in this case even if there is
+[09:16] clustering on the bank set as we shall
+[09:19] see it's not a problem because there are
+[09:21] a lot of banks in the bank set and you
+[09:23] know we can take care of that
+[09:25] and it is more important to homogenize
+[09:27] accesses within a bank so that's the
+[09:29] reason a site ID has more randomness
+[09:32] so the key idea is that once we go to
+[09:35] the bank set the request goes
+[09:37] basically the path of the request
+[09:40] is from the requesting core RC
+[09:43] to the Home Bank
+[09:45] the Home Bank is the closest bank
+[09:48] in the bank set
+[09:51] so the idea is that we first search for
+[09:54] the Block in the Home Bank if you find
+[09:55] it we declare a cache hit
+[09:57] right otherwise we do something and then
+[10:00] if you are not able to find the block
+[10:01] with an entire Bank say then we
+[10:04] basically go to the lower levels it's
+[10:06] like a Cash pass
+[10:08] so there are several search strategies
+[10:10] as we shall see sequential two-way and
+[10:12] broadcast and they have their own
+[10:14] advantages and disadvantages
+[10:18] so let us now look at search strategies
+[10:22] so there are three possible search
+[10:24] strategies so we of course always start
+[10:26] from the Home Bank
+[10:28] and we always check whether the block is
+[10:31] there in the Home Bank or not
+[10:33] so the first search strategy is
+[10:35] sequential where we go to the second
+[10:37] block so we go one side you know steps
+[10:41] two three four and five and then we keep
+[10:43] checking if you don't find then we again
+[10:45] come to the other side and we keep
+[10:47] checking so it's kind of sequentially
+[10:48] first go this way and then
+[10:52] so as you can see of course sequential
+[10:54] is reduces the load on the banks because
+[10:58] we don't have parallel accesses but it
+[11:00] is very slow
+[11:03] so what we could have otherwise is that
+[11:06] we could have
+[11:09] let's come to see a broadcast access
+[11:11] right where we kind of send parallel
+[11:13] messages to all the banks we ask all of
+[11:15] them to check and report back
+[11:17] so even though this is the fastest it
+[11:19] does increase traffic substantially
+[11:22] right
+[11:24] I would say a big traffic plus plus
+[11:27] and it also increases the load on the
+[11:29] banks and the bank contention
+[11:30] substantially so what has been found to
+[11:33] be reasonably good in practice is the
+[11:35] two-way approach where we send two
+[11:37] parallel probes on both sides sorry
+[11:39] after checking the home pack
+[11:42] so what we do is we check one block to
+[11:45] the left one block to the right then
+[11:48] again two blocks to the left you know as
+[11:49] you can see time step three here time
+[11:51] step three here
+[11:53] write one over here one over here so on
+[11:56] and so forth
+[11:57] so this is the two way access scheme
+[12:00] which is kind of somewhere between
+[12:02] conceptually somewhere between
+[12:04] sequential and broadcast and it does
+[12:09] in a sense achieve a trade-off between
+[12:12] parallelism on one side
+[12:17] and
+[12:21] latency on the other side right so so
+[12:23] basically you know later sorry
+[12:25] parallelism latency is the same thing
+[12:26] but let's say Bank
+[12:28] contention or let's say Bank accesses
+[12:30] which can indicate power also on the
+[12:33] other side
+[12:34] right so basically we don't go
+[12:36] sequentially but again we go at twice
+[12:38] the rate of sequential
+[12:40] and we still uh end up reducing the
+[12:44] latency quite a bit
+[12:45] and we don't increase the bank
+[12:47] contention too much of the extra
+[12:49] additional work too much right at least
+[12:51] as compared to sequential
+[12:59] so after a hit Miss detection if there
+[13:01] is a hit decision then we send the block
+[13:04] to the requesting core
+[13:06] so here is the denucan as the
+[13:08] dynamicness of the scheme right denuka
+[13:12] which is that
+[13:13] we promote the block so once a block
+[13:16] let's say was found somewhere so let's
+[13:18] say that you know regardless of the
+[13:19] search strategy this is the Home Bank
+[13:21] and let's say the block was found over
+[13:23] here
+[13:24] then what we do is we essentially
+[13:26] promote the Block in a sense we move it
+[13:28] closer to the Home Bank
+[13:30] or navy to the Home Bank itself
+[13:33] so we bring it to an error bank which is
+[13:35] closer to the Home Bank or maybe to the
+[13:37] Home Bank itself
+[13:39] so this is a process of promotion in the
+[13:41] sense that you know you are bringing it
+[13:43] closer and closer to the requesting core
+[13:45] and when it is on the Home Bank at the
+[13:48] Home Bank it is essentially the closest
+[13:49] to the requesting code
+[13:52] so now the idea is that why is this
+[13:55] being done well the reason that this is
+[13:57] being done is to
+[13:59] ensure that subsequent accesses if there
+[14:01] is special locality
+[14:03] subsequent accesses to different
+[14:06] bytes within the same block will
+[14:11] have hits and then those hits will be
+[14:13] closer to the requesting code right so
+[14:16] the messages don't have to this is the
+[14:18] requesting code they don't have to
+[14:19] travel very far if it's let's say they
+[14:22] are close to the Home Bank they just
+[14:23] have to travel this much which is fine
+[14:26] or let's say it is better than what used
+[14:28] to be the case
+[14:30] so now what happens is that in a new
+[14:32] bank if there is an empty block and you
+[14:35] know we can put in this block over there
+[14:36] if there's empty space there is no
+[14:38] problem
+[14:39] otherwise one option is the eviction
+[14:41] that we evict something from a set to
+[14:43] make way for the block that is getting
+[14:45] promoted or we just do a swap so
+[14:48] basically this goes here and that goes
+[14:50] there
+[14:51] so bringing blocks closer to the Home
+[14:53] Bank is also consistent with temporal
+[14:55] locality the reason being the same block
+[14:57] may be accessed again in this case it
+[15:00] will be found closer to the code
+[15:02] if there is a mess which means you do
+[15:04] not find it then of course you have to
+[15:06] fetch it from the lower level now the
+[15:08] question is where do you place it there
+[15:10] are multiple options and the different
+[15:11] options are associated with different
+[15:14] trade-offs
+[15:17] either we insert it into the nearest
+[15:19] bank which is the Home Bank right
+[15:22] or we insert it to the farthest bank and
+[15:24] we let it get promoted over time
+[15:27] so the strategy of course depends on the
+[15:29] access pattern it depends on the quality
+[15:31] on the nature of the workload so it's
+[15:34] you know reasonably hard to say that
+[15:36] what exactly is the best idea is it
+[15:39] you know one decision or it or is it
+[15:41] some other decision right so this is
+[15:45] basically dependent on water simulation
+[15:47] studies would say
+[15:50] eviction and migration so once a block
+[15:53] in a scene that a block needs to be
+[15:55] evicted so one option is to of course
+[15:57] send it to the lower level
+[15:59] the other is to kind of demote it right
+[16:02] so this is the opposite of promotion it
+[16:04] is kind of demotion
+[16:06] the other other idea is to demote it
+[16:08] which is to move it away from the
+[16:10] homeback
+[16:18] so if the block is over here you demote
+[16:21] it and move it away from the Home Bank
+[16:23] in a sense it still remains in the bank
+[16:26] set but in a but it is
+[16:28] kind of further away from the Home Bank
+[16:32] so we are not really penalizing the
+[16:35] program by sending it all the way down
+[16:38] to main memory or something
+[16:39] but we are increasing this access time
+[16:42] next time the main reason is that we've
+[16:44] got demoted is it doesn't have a high
+[16:45] priority anymore because in the bank
+[16:47] that it was there it was anyway evicting
+[16:49] it so we decided to kind of make it a
+[16:52] soft eviction by demoting it within the
+[16:55] bank set
+[16:56] the advantage is that this approach
+[16:58] keeps data close to the requesting
+[17:00] course no doubt
+[17:03] depending upon the usage and the
+[17:05] patterns it brings data closer
+[17:08] furthermore it gives a block multiple
+[17:11] chances upon an eviction
+[17:13] you can move it to a bank slightly
+[17:15] further away or you know you can bring
+[17:18] it closer
+[17:20] and all of these things the search
+[17:22] policy which is we looked at it right
+[17:24] either it's two way or one way or
+[17:26] migration or broadcast whatever
+[17:29] the search policy locating the bank the
+[17:32] migration and eviction policies as we
+[17:34] have discussed right here are all very
+[17:36] important design decisions in the design
+[17:38] of any Dynamic Noka scheme so as of
+[17:41] today there are many many Dynamic Nuka
+[17:42] schemes and all of them in a sense look
+[17:46] uh quite different but they are
+[17:48] optimized for different kinds of
+[17:50] workload
+[17:54] so we can of course have more advanced
+[17:57] designs where the private data so data
+[18:01] that is accessed by only one core only
+[18:02] by the thread that is running on a core
+[18:05] is stored within the bank in the tile so
+[18:08] basically what happens
+[18:10] is that
+[18:12] if this is the core
+[18:15] then let's say we
+[18:18] divide you know blocks of course and
+[18:21] cash Banks into tiles as you have seen
+[18:23] earlier
+[18:24] so you can say that look if something is
+[18:27] private it's going to remain only Within
+[18:29] These Banks
+[18:31] fair enough
+[18:32] so so this is something that can be done
+[18:35] furthermore for shared data we can have
+[18:38] the same thing as a snooka where we
+[18:40] basically just put it
+[18:42] based on the physical address and if
+[18:44] it's read-only data it can be replicated
+[18:46] in the sense you can have copies of it
+[18:48] in different banks
+[18:50] so how do you know which one is which
+[18:52] well we could have compiler support in
+[18:55] the sense the compiler could tell us
+[18:56] which data is what paralyzing the
+[18:58] program
+[18:59] we could have profiler support where you
+[19:01] basically run a test run of the program
+[19:03] and you get an idea which data structure
+[19:05] is read only which is shared in a
+[19:08] private and so on
+[19:11] so of course there are some more
+[19:13] advantages that we can accrue from here
+[19:15] so we clearly know that code is
+[19:17] read-only Right unless of course you
+[19:19] know it's one of those advanced programs
+[19:21] that modify themselves code is mainly
+[19:23] read only
+[19:24] so limited replication ensures very good
+[19:27] instruction hit rate so what we can do
+[19:29] is given the fact that it is important
+[19:32] to kind of make the access to code
+[19:34] instructions basically
+[19:36] as fast as possible the instruction hit
+[19:39] rate is very important the performance
+[19:40] is very sensitive to this so what we can
+[19:43] do is that we can kind of replicate the
+[19:46] code in different cache Banks and given
+[19:48] the fact that it's read only there are
+[19:50] no synchronization issues
+[19:52] so
+[19:54] this can be done but replicating all the
+[19:56] data which is potentially you know read
+[19:58] write data is tricky because you have to
+[20:00] then synchronize the replicas and that's
+[20:02] hard so this is something we'll look at
+[20:04] in the next chapter chapter 9 with
+[20:07] regards to maintaining synchronization
+[20:09] but if it's just read only data it can
+[20:12] be replicated
+[20:13] such that the data is always closer to
+[20:15] you so these are again in a part of
+[20:17] advanced designs we have not looked at
+[20:19] them but this is broadly the design
+[20:21] philosophy that they follow
+[20:24] so now we'll look at the last aspect of
+[20:28] this chapter which is performance
+[20:30] analysis
+[20:33] so how do you evaluate the performance
+[20:35] of a network right how do you know that
+[20:37] whether the network and network means
+[20:38] not just a network it is the topology of
+[20:41] the network
+[20:43] it is the routing
+[20:46] protocols right in the network you know
+[20:49] what kind of protocols you use
+[20:51] it is basically the design of the router
+[20:54] right it's essentially the optimizations
+[20:56] that you use even things like the you
+[20:59] know the flow control policy right what
+[21:01] how what is your credit regime in the
+[21:03] sense on off credit server so how do you
+[21:06] basically achieve flow control between
+[21:08] links so all of these things are
+[21:10] important and for that there are many
+[21:13] evaluation metrics one of course is the
+[21:15] latency which is the easiest which is
+[21:16] that from point A to point B on an
+[21:19] average how long does it take or let's
+[21:21] say between any two pairs how long does
+[21:23] it take
+[21:24] the other is throughput which you can
+[21:26] measure in terms of megabytes or
+[21:27] gigabytes per second
+[21:29] that let's say you know the network on a
+[21:31] whole how much of data is Flowing at the
+[21:33] maximum amount of data that is flowing
+[21:35] in the network
+[21:37] you can look at energy or power if you
+[21:39] wish and then of course the area and the
+[21:41] routing complexity routing basically
+[21:43] means the the process of placing these
+[21:46] wires right that is known as routing so
+[21:48] this is a different routing in the sense
+[21:50] you would see that the same term is
+[21:53] being used over and over again once we
+[21:55] talked about routing in the context of
+[21:57] finding a route but this is again this
+[21:59] is different this is placing the wires
+[22:02] placing the wires of the network so
+[22:04] that's also called routing in Eda Eda is
+[22:07] electronic design and automation so
+[22:09] that's what they call routing for
+[22:11] and the idea is that all of these things
+[22:14] the latency the throughput energy area
+[22:17] routing complexity everything
+[22:19] this is all you know
+[22:22] part of the overall evaluation schema
+[22:25] so there are two things we can do so one
+[22:27] is we can use architectural simulators
+[22:30] it's an architectural simulator does
+[22:32] what
+[22:33] it basically
+[22:36] takes as its input
+[22:38] a program
+[22:42] plus you know its arguments
+[22:45] it runs the program
+[22:48] and then
+[22:50] simulates the program on a virtual or
+[22:52] hypothetical CPU where of course you are
+[22:55] at Liberty to change everything and
+[22:56] change the course you can change the
+[22:58] cash Banks you can change the ALU
+[23:00] shielders inside the course everything
+[23:01] right so this is basically a software
+[23:03] CPU
+[23:10] so the idea is that you run a real
+[23:12] program on the simulated software CPU
+[23:14] which may not be real it may be
+[23:16] something that is
+[23:17] you know something that you would like
+[23:19] to create right which is hypothetical
+[23:21] but again you know this is the right way
+[23:24] of basically testing out a new design
+[23:26] Implement a design on a software
+[23:28] simulator
+[23:29] and then you essentially simulate a
+[23:32] program or several programs or hundreds
+[23:35] of programs or you create a benchmark
+[23:37] Suite of programs and you run them on
+[23:39] this CPU simulator
+[23:42] so then of course architectural
+[23:43] simulators could come in two types one
+[23:48] you take a program
+[23:50] you run it on what is called a CPU
+[23:53] emulator which of course does not give
+[23:55] you all of these statistics basically
+[23:57] given an instruction it just provides
+[23:59] the result but it doesn't really
+[24:00] simulate the pipeline or on chip Network
+[24:03] or anything
+[24:04] so one option is that you just execute
+[24:06] the program you collect all the
+[24:08] instructions and the results this is
+[24:10] known as a Trace and you provide the
+[24:12] trace to the simulator
+[24:14] the other is that you run the original
+[24:20] on
+[24:22] some sort of a CPU emulator which at run
+[24:24] time can give you the trace it's like an
+[24:27] online trace of the trace would
+[24:29] basically say look I executed four
+[24:31] Branch instructions these are their PCS
+[24:33] these are their outcomes
+[24:34] I
+[24:36] just ran
+[24:40] 10 add instructions or something that PC
+[24:43] is an outcome so all of these things
+[24:46] are Dynamic CPU emulator can provide
+[24:50] if let's say we don't want to go this
+[24:53] way which is slow then of course we can
+[24:55] go the fast way which is we can use
+[24:57] Standalone Network simulators where we
+[25:01] can either you know get data from traces
+[25:03] or we could generate our traffic
+[25:05] synthetically so synthetic traffic waste
+[25:08] and then basically just you know
+[25:10] simulate sending messages and then we
+[25:12] can see all of these things latency
+[25:14] throughput energy everything so in this
+[25:17] case the traffic
+[25:18] distribution is kind of artificial it's
+[25:20] synthetic
+[25:24] so architectural simulation as I said
+[25:28] we have the program
+[25:31] and then we run the program on an
+[25:33] emulated CPU that provides us the traces
+[25:36] of the network data and the addresses
+[25:38] which essentially tells you that look
+[25:40] you know if this is the network you are
+[25:42] essentially going from here to here here
+[25:43] to here here to here and so on
+[25:46] we simulate the NOC which means we
+[25:48] simulate all aspects of it the routers
+[25:50] the links all the algorithms of flow
+[25:52] control and so on and then we finally
+[25:55] get latency throughput and power energy
+[25:57] statistics
+[26:00] so the positive part is that this can
+[26:03] simulate NLCS accurately for real
+[26:06] workloads that's the positive aspect
+[26:09] the negative aspect is that this is slow
+[26:12] right so that's the reasonably High you
+[26:15] know extremely strong negative aspect
+[26:17] that is a slow process
+[26:20] so what could be a faster process is
+[26:23] that we go for synthetic traffic
+[26:25] generation
+[26:26] Fair instead of getting you know actual
+[26:29] information so what is actual
+[26:31] information is essentially that a time
+[26:34] and a source destination pair right
+[26:36] we're saying that at this time
+[26:40] a message was sent from this source to
+[26:42] this destination so you now you simulate
+[26:45] so well we could do that so we could run
+[26:48] a real program on a hypothetical CPU we
+[26:50] could get all of these all of this piece
+[26:52] of information and then simulate
+[26:55] another idea would be that we create a
+[26:57] mesh
+[26:59] or you know or any any kind of a mesh
+[27:02] like Network and then we generate
+[27:04] synthetic traffic which is basically the
+[27:07] same information but this follows a
+[27:09] certain distribution in a sense you have
+[27:11] a set of source to destination pairs at
+[27:13] certain
+[27:14] which send messages at certain times
+[27:18] so the source uh so given the fact that
+[27:21] it's a mesh what you can do is that you
+[27:24] can have an x coordinate and a y
+[27:25] coordinate so this could be the x
+[27:27] coordinate and this could be the y
+[27:28] coordinate
+[27:29] so every Source would have an x
+[27:32] coordinate and a y coordinate which is s
+[27:34] x and s y
+[27:35] similarly every destination would have
+[27:38] an x coordinate and a y coordinate which
+[27:40] is DX and d y
+[27:42] so let's now look at a few simple
+[27:44] patterns of
+[27:47] traffic and then we will gradually you
+[27:50] know slowly make that more and more
+[27:53] complicated
+[27:58] the
+[28:00] easiest traffic pattern is actually
+[28:03] random so from a given source
+[28:05] we send a packet to a destination at
+[28:08] random so it is like random traffic
+[28:10] simulation
+[28:12] this well
+[28:14] makes some sense because a randomized
+[28:16] experiment always has some value
+[28:18] but that said and done
+[28:22] if you want something which is more
+[28:24] structured one of the simplest patterns
+[28:26] is bit complement
+[28:27] so DX is equal to the complement of s x
+[28:32] so in a certain sense it's like you know
+[28:34] sending the message far away so that's
+[28:36] why this is typically used to test NOC
+[28:39] throughput because bit complement means
+[28:41] that you know if let's say at one zero
+[28:43] one zero you're sending it to zero one
+[28:45] zero one which in a certain senses
+[28:47] far away right you know and look at it
+[28:49] from any angle
+[28:51] it it's uh you know reasonably far away
+[28:54] from you similarly the yth component is
+[28:57] also the bit complement of d y so d y is
+[29:01] essentially equal to
+[29:03] the yth component of x complemented
+[29:06] so let us look at these I have a small
+[29:09] diagram over here
+[29:10] so if you look at bit complement and if
+[29:13] you look at you know these squares
+[29:16] so so what is this well this is
+[29:18] essentially
+[29:19] a matrix a matrix of nodes communicating
+[29:22] nodes routers basically whether routers
+[29:25] are numbered this way 0 1 2 3 and 0 1 2
+[29:28] 3 x axis and y axis
+[29:30] so what you can see
+[29:32] is that in the bit complement scheme
+[29:35] 0 will get complemented to 3 so this is
+[29:38] 0 0 it will go to 3 3 right so then
+[29:41] these are the ones who just kind of go
+[29:43] far and these ones also go far so
+[29:45] clearly I can't show for
+[29:47] every cell that would clutter up the
+[29:49] diagram but you get the pattern that uh
+[29:52] these messages from here will kind of go
+[29:55] all the way deep down here messages from
+[29:57] here will go deep down here so this is
+[29:59] like uh
+[30:02] kind of like thoroughly stress testing
+[30:04] the throughput of the network
+[30:05] particularly around the center right so
+[30:08] that is why the bit complement pattern
+[30:10] is primarily used as an NOC throughput
+[30:13] testing device
+[30:15] the other is transpose which is
+[30:17] basically you know you just swap the X
+[30:19] and Y components in this case d x is
+[30:21] equal to s y and d y is equal to s x so
+[30:24] you just swap them
+[30:27] so the direction of the traffic is kind
+[30:29] of perpendicular to the diagonal when I
+[30:31] show the
+[30:32] diagram you will see that just swapping
+[30:35] the components basically means a zero
+[30:37] zero swapped essentially it stays here
+[30:40] and uh for the rest there is a sum
+[30:44] amount of movement minor amount of
+[30:46] movement but for a lot of
+[30:48] other kinds of traffic there is you know
+[30:51] there is a lot of movement kind of if
+[30:53] this is the diagonal over here we see it
+[30:56] is perpendicular to the diagonal like
+[30:57] this
+[30:59] in a certain sense this also plays the
+[31:01] role of bit complement it is used as a
+[31:04] throughput testing device albeit in a
+[31:07] different manner
+[31:09] now again let's go back and let's look
+[31:11] at bit reverse so in this case what
+[31:13] happens is that we treat the entire
+[31:17] s array which is essentially the
+[31:19] concatenation of SX and s y as one large
+[31:23] array and the concatenation of d x and d
+[31:26] y as one large array
+[31:29] so what you do is that
+[31:33] you just reverse the bits so you
+[31:36] basically say that the d i d i or the
+[31:38] ith bit in the destination
+[31:41] is s two n minus 1 minus I so this
+[31:43] basically just reverses the bits
+[31:46] right so if you actually look at it if
+[31:48] let's say these are the bits you start
+[31:49] kind of interpreting these bits in a
+[31:51] reverse manner in a sense you say that
+[31:54] the ith bit in the destination is
+[31:56] essentially instead of counting I from
+[31:58] here you basically count I from there so
+[32:01] this completely reverses the bits
+[32:03] so this bit reversal right so basically
+[32:06] why did I treat both s and D as one
+[32:10] array because this is kind of easier to
+[32:12] visualize and then of course you know
+[32:13] the midpoint if I do one part is the
+[32:16] exponent other is the Y
+[32:18] y coordinate
+[32:19] so this is typically used in Fast
+[32:21] Fourier transforms you get to see a
+[32:23] similar traffic pattern so this is
+[32:26] exactly what bit reverse is in a certain
+[32:28] sense it's slightly like transpose as
+[32:31] you can see but then again here you kind
+[32:35] of shorter uh you know
+[32:37] shorter communication and here there is
+[32:39] in a much longer communication but this
+[32:42] is sort of looks similar to transpose at
+[32:45] least these two diagrams
+[32:46] now let's look at a few more uh
+[32:50] patterns
+[32:51] which again are visible primarily in
+[32:55] numerical computation kind of kernels
+[32:59] fft being a major one
+[33:01] so this is bit rotations in bit rotation
+[33:04] what you do is this is similar to a
+[33:06] right shift
+[33:07] where essentially the N minus 1X
+[33:09] component here kind of gets right
+[33:11] shifted here this gets here
+[33:13] so what happens with the 08 bit which is
+[33:15] the first bit of SX is very important it
+[33:18] actually becomes the most significant
+[33:20] bit of s y and similarly the least
+[33:24] significant bit of s y becomes I am
+[33:27] sorry this becomes the most significant
+[33:29] bit of d y and similarly the least
+[33:31] significant bit of s y becomes the most
+[33:34] significant bit of DX so you get the
+[33:36] pattern is essentially the destination
+[33:38] is formed by right Shifting The Source
+[33:42] and then finally you know you do a wrap
+[33:44] around
+[33:45] so the values of d x and d y
+[33:50] are nothing but d y is s y zero and then
+[33:54] s x n minus 1 to sx1 which is basically
+[33:57] in all of these right shifted and
+[33:59] similar is the definition for d y so
+[34:01] this is bit rotation
+[34:03] then you have Shuffle so we will discuss
+[34:07] uh I will discuss tornado later but
+[34:09] Shuffle the idea is the same thing but
+[34:11] instead of a right shift it is nothing
+[34:14] but a left shift so all of these arrows
+[34:16] which are going right they in this case
+[34:19] they go left so it's like a left shift
+[34:23] so if I look at ah bit rotation and
+[34:26] Shuffle
+[34:27] what you would basically see is that
+[34:30] right shifting does what it basically
+[34:32] divides by two but given the fact that
+[34:35] this is slightly more complicated than
+[34:36] the right shift because the LSB comes
+[34:39] into the MSB and so on
+[34:42] pretty much in some cases it's not like
+[34:45] a pure division by two but there is more
+[34:47] or less a movement from let's say this
+[34:50] end to this end movement towards the
+[34:51] origin right uh there is pretty much a
+[34:54] movement either in a down I mean either
+[34:57] leftwards or downwards or a combination
+[35:00] or left and down but the entire traffic
+[35:02] is kind of trying to come towards the
+[35:05] origin or the axis pretty much if these
+[35:07] are the access the entire traffic is
+[35:09] trying to come this way
+[35:10] so this will typically be useful when uh
+[35:13] essentially I'm trying to reduce
+[35:15] something in a sense a computation has
+[35:16] finished and I'm trying to kind of bring
+[35:19] everything close to me
+[35:20] the shuffle pattern which was pretty
+[35:23] much a left shift will do the same it
+[35:25] will basically double in the other
+[35:27] direction which is moving away from the
+[35:30] origin right you can see this front tire
+[35:31] moving away from the origin so this is
+[35:34] exactly what it is doing which is moving
+[35:36] away it's like spreading a computation
+[35:38] so that is when I would like to do a
+[35:40] shuffle
+[35:42] tornado as you can see I'll show you the
+[35:44] equation but as you can see from the
+[35:46] diagram over here that tornado basically
+[35:49] means that you know every cell is
+[35:51] essentially shifted three places to the
+[35:54] in fact that's the way it is defined
+[35:56] that the y coordinate Remains the Same
+[35:58] as you can see d y is equal to s y but
+[36:01] the x coordinate
+[36:04] uh basically we add a number to it and
+[36:08] n by two minus one so pretty much you
+[36:10] know like half the distance it is
+[36:11] shifted
+[36:12] so this is typically seen uh when we are
+[36:15] solving differential equations in
+[36:17] parallel on a group of course you would
+[36:19] see this tornado pattern this also looks
+[36:21] like a tornado or a large amount of data
+[36:23] is moving to the right so more or less
+[36:25] that's the idea but then of course
+[36:27] towards the end there's a wrap around
+[36:28] mainly because of this percentage n
+[36:33] right so now we have finally after five
+[36:37] lectures reached the end of this chapter
+[36:39] so we should celebrate
+[36:41] so let me quickly conclude some Modern
+[36:43] nocs have a complex network of nodes and
+[36:46] links the hierarchy is a message broken
+[36:49] down into packets
+[36:50] and an entire packet flows all the bits
+[36:54] in the packet flow along the same route
+[36:56] furthermore we have head Flats body
+[36:58] flats and tail flats and the head plate
+[37:00] is typically the one at the head of the
+[37:03] packet all the routing decisions are
+[37:04] made on the head flit
+[37:06] a flat win may not be able to transmit
+[37:09] in a single cycle we have to translate
+[37:11] it in multiple Cycles but they have to
+[37:13] be consecutive and a fleet is an atomic
+[37:15] unit so it can furthermore be divided
+[37:18] into fits
+[37:19] the key issues and nocs we saw Deadlocks
+[37:22] live locks and starvation
+[37:24] deadlock free routing Protocols are
+[37:27] there no doubt they are deadlock free
+[37:29] because they avoid some turns
+[37:31] this stops any kind of a clockwise or
+[37:34] anti-clockwise cycle from farming
+[37:37] the router has five stages bwrc vacast
+[37:41] we can further optimize them by using a
+[37:44] bunch of techniques as we have seen look
+[37:45] ahead routing speculative VC allocation
+[37:48] bypassing etcetera
+[37:50] for evaluating the performance of an NOC
+[37:53] if you don't want to use a traditional
+[37:55] architectural simulation
+[37:57] based method that's also fine you can
+[37:59] use a synthetic traffic generator we
+[38:02] just looked at a couple of examples of
+[38:04] synthetic traffic generation so I would
+[38:06] like to end here
+[38:08] and in the next chapter we will discuss
+[38:11] multiprocessors

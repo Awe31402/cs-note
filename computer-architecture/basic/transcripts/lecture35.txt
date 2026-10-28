@@ -1,0 +1,2499 @@
+[00:35] Okay, let's
+[00:36] start discussing
+[00:37] caches.  Caches are very
+[00:39] interesting, and there is a
+[00:40] huge amount of
+[00:41] research on
+[00:42] how to make caches
+[00:43] efficient.  So we
+[00:45] won't be able to
+[00:46] cover most of
+[00:47] it in this
+[00:48] lecture, but at least
+[00:49] we'll be able to
+[00:50] cover most of the
+[00:51] basic mechanisms behind
+[00:53] modern caches.  So,
+[00:59] the overview of the basic cache is
+[01:01] as follows.  Uh, it's a black
+[01:03] box.  First,
+[01:04] let's consider it as a
+[01:05] black box, that is,
+[01:07] memory that contains a
+[01:08] set of memory addresses
+[01:09] and their values, er,
+[01:10] of course,
+[01:11] organized into blocks.
+[01:12] So regarding blocks,
+[01:13] we need to go back
+[01:15] to the previous
+[01:15] lecture.  So, what we
+[01:17] discussed in the
+[01:18] previous lecture is that the
+[01:19] memory system is
+[01:20] organized
+[01:21] hierarchically.  So,
+[01:23] we have the L1 cache, which is
+[01:25] small and fast.
+[01:29] Then we have the L2 cache,
+[01:30] which is a little larger and
+[01:32] slower.  And
+[01:35] finally, we can
+[01:36] have L3 or main
+[01:37] memory, which is
+[01:38] made up of
+[01:39] DM cells.  Isn't that right?
+[01:46] Which contains all
+[01:48] the addresses, and, uh, these
+[01:49] addresses in L1 are a strict
+[01:51] subset of the six
+[01:52] addresses in L2, and the addresses in L2
+[01:54] are a strict
+[01:54] subset of the addresses in
+[01:56] main memory.
+[02:01] So we discussed
+[02:02] that, and also the
+[02:03] use of
+[02:03] spatial
+[02:04] locality, because,
+[02:06] uh, having a
+[02:06] cache hierarchy
+[02:07] takes
+[02:08] advantage of temporal
+[02:09] locality.  So,
+[02:11] to take advantage of
+[02:13] locality, we
+[02:14] discussed
+[02:14] grouping
+[02:15] memory addresses into blocks.  So
+[02:17] if you group them into
+[02:18] blocks of 64 and
+[02:19] get a block at
+[02:20] a time from the lower
+[02:22] level, then the block is an
+[02:23] atomic unit.
+[02:24] So we never
+[02:25] have half a block
+[02:26] or a third of a block.  So
+[02:28] you get a block at a
+[02:29] time.  So,
+[02:30] most likely, to
+[02:31] access one
+[02:32] data item in a
+[02:33] block, most likely,
+[02:35] we will be accessing
+[02:37] some other
+[02:38] data item that is
+[02:39] also in the
+[02:40] block in the near future, because it has
+[02:42] already been retrieved, uh
+[02:43] , we don't need to
+[02:44] retrieve it
+[02:45] again.  So this
+[02:46] will increase our
+[02:47] cache hit rate.
+[02:49] So any cache
+[02:50] can be thought of as having a
+[02:53] memory address that goes in.
+[02:56] So if it's
+[02:57] a load, then the
+[02:59] load value will be output, along with a
+[03:01] hit or miss decision.
+[03:02] Of course, if there is
+[03:03] a mistake, and the
+[03:04] load value does not make
+[03:05] sense.  Um, yeah, um,
+[03:08] so for the
+[03:08] download
+[03:09] we basically have
+[03:11] an address and a value.
+[03:14] For storage, similarly,
+[03:15] if there is no block,
+[03:16] we will have a miss, but
+[03:17] if there are block addresses,
+[03:19] we can perform
+[03:20] the save.  So,
+[03:21] the storage will only have a
+[03:23] memory address and a
+[03:24] storage value.
+[03:25] So, for storage, the
+[03:26] load value doesn't make
+[03:28] sense.  So, what are the
+[03:31] main problems?
+[03:32] First we
+[03:33] need to
+[03:34] decide whether it's a
+[03:34] hit or a miss.
+[03:35] If, uh, there's a hit,
+[03:37] we need to
+[03:38] do a
+[03:38] load/
+[03:39] save.  So
+[03:43] let's look at the
+[03:44] basic operations of a
+[03:45] cache and describe the
+[03:46] operation of the entire cache
+[03:47] based on some of its
+[03:49] primitive operations
+[03:50] .  So, the first operation
+[03:54] , uh, let me
+[03:55] move on to the laser
+[03:57] pointer.  Yes.  So, the
+[03:59] first operation is a
+[04:00] search.  We check
+[04:02] whether the given
+[04:03] memory location at the
+[04:05] given
+[04:06] memory address is present in the cache.
+[04:07] Right?  This is the first thing
+[04:08] we check.
+[04:11] If it's not in the cache,
+[04:12] we declare a miss
+[04:14] and just exit.
+[04:18] But if it's
+[04:19] present inside the
+[04:20] cache, then, um, we can
+[04:21] do, you know,
+[04:22] a few things.  If it is
+[04:25] a load, we
+[04:26] can read
+[04:27] the data from the cache as a
+[04:29] data read operation.  If it is a record,
+[04:30] we can perform a
+[04:33] data write operation.  We can
+[04:34] write data to the cache, and that's it
+[04:35] .  Now let
+[04:38] 's say there's a
+[04:39] cache miss, and, um,
+[04:40] then the block comes from a
+[04:42] lower level.  Then
+[04:46] insert the block
+[04:47] inside the cache.  And to
+[04:50] insert a block, you know
+[04:52] , sometimes it might be
+[04:52] necessary for us to
+[04:54] detect that the cache is
+[04:55] full.  Then we
+[04:57] need to throw away
+[04:58] one block.  So we
+[04:59] first need to
+[05:00] find a
+[05:01] replacement candidate.  Then we
+[05:03] throw it away.  Eject
+[05:05] the block from the cache and
+[05:05] insert a
+[05:06] new block in its place.
+[05:09] So, these are the six
+[05:10] basic operations:
+[05:11] search, read data,
+[05:12] write data.  If there's
+[05:14] a mistake, we need to
+[05:15] do, um, you know,
+[05:16] insert, replace,
+[05:18] delete.  These three
+[05:19] operations must
+[05:20] be performed.  So now
+[05:21] we will look at each of
+[05:23] these operations in great
+[05:24] detail.  So let's
+[05:26] first define a
+[05:28] working example.  So
+[05:29] , we will dedicate
+[05:32] at least this entire
+[05:33] section to this.  This entire
+[05:35] section will
+[05:36] use this
+[05:37] example because
+[05:38] having an example, uh
+[05:39] ,
+[05:40] simplifies our
+[05:41] thinking in a way, and instead of
+[05:42] using
+[05:43] symbols, it's better
+[05:44] to use a
+[05:45] concrete example.
+[05:47] So let's try to
+[05:49] design an
+[05:50] 8 kilobyte cache
+[05:51] with a block size of 64
+[05:53] bytes and a 32-bit
+[05:54] memory system.
+[05:57] Good.  So, what is
+[05:59] the configuration?  This is an
+[06:01] 8 kilobyte cache, 8 KB and a
+[06:03] block size of 64 bytes
+[06:05] in a 32-bit
+[06:07] memory system.  In addition,
+[06:10] inside the cache we have
+[06:12] two SRAM arrays, two
+[06:13] SRAMM cell arrays.
+[06:17] We have a tag array
+[06:18] that stores
+[06:19] part of the block address
+[06:20] so that we can
+[06:21] uniquely
+[06:22] identify the block.
+[06:25] So the tag array
+[06:26] contains part of
+[06:27] the address, and, uh, let's
+[06:28] look at, maybe,
+[06:30] you know, discuss the
+[06:31] block address a little bit
+[06:32] more before we
+[06:33] move on to the
+[06:35] block array.  So, a block
+[06:38] contains 64 bytes.  So,
+[06:44] 64 bytes is 2^6 bytes.
+[06:48] So, since a block is an
+[06:49] atomic unit,
+[06:51] we can never, uh, ever
+[06:52] split a
+[06:53] block.  So in a 32-bit
+[06:56] memory system,
+[06:58] how many possible
+[06:59] bits, sorry,
+[07:00] blocks we can have,
+[07:02] would be 2^32, because that's
+[07:04] the total size of the
+[07:05] memory space
+[07:06] divided by 2^6, which is the
+[07:08] block size.  So, at
+[07:11] most we can
+[07:13] have 2^26 blocks.  So the
+[07:17] block address is 26
+[07:18] bits, and the block address,
+[07:20] because as you know,
+[07:21] six bits
+[07:22] are taken up by, uh,
+[07:23] the address of a fragment
+[07:24] within a block.  So
+[07:27] , the maximum
+[07:28] number of blocks
+[07:30] we can have is -2^26.
+[07:32] So, the block address is
+[07:33] a maximum of 26 bits, which
+[07:35] means we
+[07:36] need 26 bits to
+[07:44] So, uh, yeah,
+[07:45] let me
+[07:46] go to the
+[07:47] block address and just
+[07:48] add 26 bits here.
+[07:51] Note that
+[07:52] if I change these
+[07:53] parameters, these
+[07:54] parameters
+[07:55] will also change, but
+[07:56] let's
+[07:57] discuss everything in the
+[07:58] context of a running
+[07:59] example for now.  So, along
+[08:03] with the tag array, we
+[08:04] have a block array that
+[08:05] stores the contents of the block.
+[08:07] Right?  So, what is
+[08:08] its size?  The content
+[08:10] is 64 bytes.  There is
+[08:12] one block that we
+[08:13] have defined as 64 bytes.
+[08:15] It stores the contents of
+[08:16] the block.  So both
+[08:20] arrays, the tag array and the
+[08:22] block array, should
+[08:23] have the same
+[08:24] number of entries, and
+[08:25] in fact they
+[08:26] can have a
+[08:27] 1:1 correspondence, right
+[08:28] ?  So, they absolutely
+[08:32] absolutely must
+[08:34] number of entries.
+[08:38] Good.  So, the
+[08:41] cache structure now looks like
+[08:43] this.  We have defined
+[08:45] two arrays: a
+[08:46] tag array and a block array.
+[08:47] Of course, they are not
+[08:48] drawn to
+[08:49] scale, and they are the
+[08:50] same
+[08:51] size and have the same
+[08:54] Both of them
+[08:55] communicate with the
+[08:56] cache controller,
+[08:57] which is the logic that
+[08:58] manages the cache.  So, the
+[09:01] cache controller
+[09:02] gets the address in
+[09:03] case of saving
+[09:04] the value.  It
+[09:05] interacts with both
+[09:06] arrays.  It has two
+[09:08] exits.  One is
+[09:09] the decision about the failed
+[09:10] operation, and the other is the
+[09:12] load value if
+[09:13] the operation is a
+[09:14] load operation.  So
+[09:15] let's discuss
+[09:17] one of the simplest
+[09:18] types of caches, which
+[09:19] is called a fully
+[09:20] associative cache.
+[09:24] So let's do some
+[09:25] math.  So,
+[09:27] our cache size
+[09:28] is 8 kilobytes.
+[09:31] So let's try
+[09:31] to figure out how much that is
+[09:33] in bytes.  So, this is 2*3*8
+[09:37] multiplied by 2*10, which
+[09:40] is 1 kilogram,
+[09:44] so 1 kilogram
+[09:46] means 0.24, which
+[09:49] is 2*10.  So, it's 2
+[09:52] * 3 * 2 * 10 = 2 * 13.  Good.  So
+[09:58] this is the number of bytes
+[09:59] we have in our
+[10:01] 8 kilobyte cache: 2*
+[10:03] 13. And since one
+[10:05] block is equal to 2*6
+[10:06] bytes (64 bytes),
+[10:08] what is the maximum
+[10:10] we can have in the cache?
+[10:13] 2*13 divided by 2*6 is
+[10:15] 2*7, which is 128.
+[10:17] So we can have
+[10:20] 128 blocks, or the cache
+[10:22] will have 128 entries.
+[10:25] Okay, in this
+[10:26] case, in the fully
+[10:28] associative version of
+[10:29] our cache, we would have
+[10:30] 128 entries.  So,
+[10:33] 128 entries in a block
+[10:35] array, 128 entries in a
+[10:37] tag array with a
+[10:38] 1:1 correspondence. And in a
+[10:45] fully
+[10:46] associative cache,
+[10:47] if we have 128
+[10:48] entries for a block,
+[10:49] it can be stored in
+[10:51] any entry.
+[10:52] Good?  So, for a block,
+[10:54] it can be stored
+[10:55] anywhere in the cache in
+[10:57] any of the 128 entries.
+[10:59] So remember what we
+[11:00] did on the
+[11:01] previous slide.
+[11:03] We, uh, said that, uh
+[11:05] , we can have 2^26
+[11:07] possible blocks.
+[11:11] The reason we said this is
+[11:13] because we have a 32-bit
+[11:15] memory system and the
+[11:16] block size
+[11:17] is 64 bytes.
+[11:20] So, 2^32 divided by
+[11:23] 2^6 is 2^26. So the
+[11:28] bits, right?  And then,
+[11:32] uh, since a block is 64
+[11:34] bytes, which is 2^6
+[11:36] , there's a 6-
+[11:38] bit bit shift inside the block.
+[11:40] So let's do
+[11:41] one thing.  Since the
+[11:43] block address is 26 bits,
+[11:44] let's store
+[11:46] all 26 bits in the
+[11:47] tag array.  So, we'll
+[11:48] need it, but
+[11:49] let's try to
+[11:50] figure it out
+[11:51] gradually.  So, in the
+[11:52] tag array, let's say
+[11:54] , there are 26 bits, which is the
+[11:56] block address.  Good.  So you
+[11:58] know we're going to have
+[11:59] different sets of
+[12:01] 26 bits for different
+[12:02] records.  And in the
+[12:04] data array we will have
+[12:05] the contents of the block, which
+[12:06] is essentially 64
+[12:08] bytes.  B is for big
+[12:12] byte, big B is for
+[12:13] byte.  Right?
+[12:16] So what we see here is the
+[12:18] addressing method is that
+[12:22] for a block of, uh, a
+[12:24] memory address, we first
+[12:26] calculate the
+[12:27] tag portion of the memory address,
+[12:28] which is the upper
+[12:30] 26 bits, and then there will be the
+[12:32] byte offset portion, which is
+[12:34] six bits.  So
+[12:36] where does
+[12:36] six come from again?  This
+[12:38] comes from the fact that
+[12:39] 2^6 equals 64, and 64
+[12:41] bytes is the size of
+[12:42] our block.  So, these
+[12:44] lower 60 lower
+[12:45] six bits we will
+[12:46] ignore.  We will
+[12:48] take the high 26
+[12:49] bits, i.e. this tag,
+[12:51] and compare them to
+[12:52] each of the entries in the
+[12:53] tag array.
+[12:56] Right?  So, with
+[12:58] each entry in the
+[12:59] tag array, we will
+[13:00] compare 26
+[13:02] bits, that is, the upper 26
+[13:03] bits of the address, to
+[13:04] see if there is a match.
+[13:08] Good.  Since this is a
+[13:10] block address
+[13:11] within an address, we will
+[13:12] compare each of
+[13:14] these 26 bits to the 26 bits
+[13:15] stored in the
+[13:18] Notice what these
+[13:19] 26 bits are?  These are the addresses of
+[13:21] different blocks.
+[13:25] Block address zero is
+[13:26] block address 127. Now, when
+[13:30] we are given a new
+[13:32] block address, we need
+[13:33] to check each one
+[13:35] .  And for this, the
+[13:38] best structure
+[13:41] we can
+[13:41] use is a
+[13:43] cam.  Recall from
+[13:44] Chapter 6 that a
+[13:45] cam is
+[13:47] content-addressed memory, where instead of
+[13:49] accessing memory
+[13:53] via a string address, we
+[13:54] access
+[13:55] it via its contents.  And
+[13:58] this is a perfect
+[13:59] application of CAM, where
+[14:00] given a
+[14:02] block address, you know, in
+[14:03] the address, given the
+[14:04] block part of the address,
+[14:06] which is also called the
+[14:07] tag part, we
+[14:09] compare 26 bits with
+[14:10] each of the 26 bits
+[14:12] stored here;  and, uh
+[14:17] , this is done in a
+[14:19] typical CAM array, and,
+[14:20] uh, after each
+[14:21] comparison, we
+[14:22] send them to orgate.
+[14:26] So if, let's say
+[14:28] , since there
+[14:29] is no duplication in the cache,
+[14:30] if there is a hit, it will
+[14:31] only hit one
+[14:33] entry.  So, let's say
+[14:34] it hits this
+[14:35] record.  So this will be
+[14:36] one.  So the output of
+[14:38] orgate is equal to one.
+[14:39] So if this output of
+[14:41] this orgate is equal to
+[14:42] one, that means there
+[14:43] was a hit.
+[14:46] Otherwise, if the
+[14:47] block address doesn't
+[14:48] match any of
+[14:50] these entries, any
+[14:51] of these tag entries, then
+[14:53] that means, uh, there's
+[14:54] no hit, and there's a
+[14:55] miss, right?  So,
+[14:57] essentially, if it's
+[14:58] a hit, orgate will return
+[14:59] a one, which means there
+[15:01] was some
+[15:02] match here.
+[15:03] Otherwise, uh, orgate
+[15:04] will return zero,
+[15:05] meaning there was no match
+[15:07] .  After that,
+[15:08] you know, if there is a match,
+[15:10] only one of the lines
+[15:11] will be a unit.  To
+[15:12] get the address of
+[15:13] this line, we'll
+[15:14] use
+[15:15] an encoder, which in
+[15:17] this case will tell
+[15:18] us what the address of this
+[15:19] line is, and it's going to be a
+[15:20] seven-bit address
+[15:21] because there are 128 bits here.
+[15:23] So, it will be a 7-bit
+[15:25] address, which is exactly what
+[15:26] line actually
+[15:27] matched, and the
+[15:28] data array will be a regular
+[15:30] array of SRAM cells.
+[15:38] Good.  Uh, you know, a
+[15:39] simple regular
+[15:41] SRAMM cell array,
+[15:42] nothing complicated about
+[15:43] it.
+[15:46] Let's say there is a match,
+[15:48] that is, 0, 0, 1, and 1, 0. So,
+[15:49] essentially, this is the second
+[15:51] entry where we had a
+[15:53] match.  So we'll
+[15:55] go to the second
+[15:56] record of the data array,
+[15:57] read the data, and this
+[15:58] will be the output.  So if
+[16:00] it's a download,
+[16:01] the output is 64 bytes or
+[16:03] any subset of
+[16:04] that.  If it's a
+[16:05] repository, then we'll
+[16:06] essentially write to that
+[16:08] record.  So in
+[16:09] any case, we
+[16:10] perform a search.  So
+[16:12] , our goal at the
+[16:14] search stage is to indicate in
+[16:15] which record of the data array
+[16:17] the value of the
+[16:19] memory location is located.  Good.  So
+[16:24] briefly summarize
+[16:25] what a fully
+[16:26] associative cache is.  In a
+[16:30] a block can
+[16:31] be located in
+[16:32] any cache entry.  We
+[16:34] did some
+[16:35] math
+[16:36] and
+[16:37] found out that our
+[16:41] cache would have 128 entries.
+[16:43] In this case, the block
+[16:44] can be located in
+[16:45] any of the records
+[16:46] .  If the block
+[16:47] is in
+[16:48] any of the records, how do
+[16:49] we know
+[16:50] which one?  So, we
+[16:52] are looking for a
+[16:53] search operation.  So let
+[16:55] me, okay, I think
+[16:58] clear a little bit of it
+[16:59] , and this
+[17:00] way I can, I'll
+[17:05] actually delete all the
+[17:07] text on the slide.  So that's
+[17:10] okay.  Let's
+[17:11] just abstract
+[17:13] this element.  So
+[17:15] maybe step out of
+[17:16] PowerPoint.  So the problem
+[17:25] we have is that
+[17:26] we have a cache
+[17:37] with 128 entries.
+[17:53] Right.  So the block
+[17:58] comes in, and
+[17:59] the address comes in, and
+[18:00] the address is a 32-bit
+[18:02] value, and we
+[18:03] need to match...
+[18:04] maybe I can
+[18:05] change, uh, finally, the
+[18:07] color.  So, we
+[18:14] need to find out
+[18:16] where exactly this address
+[18:17] is located in the cache.
+[18:20] So, we're looking at
+[18:22] 32 bits and trying to
+[18:26] break the address into two
+[18:27] parts.  One part
+[18:30] is the offset
+[18:31] of the fragment in the block, and
+[18:32] the other is the address of the block.
+[18:36] Since a block is 64
+[18:38] bytes, and 64 is 2
+[18:39] reduced to ^ 6, this
+[18:41] means that the first
+[18:44] represent the address
+[18:45] of a chunk within the block.
+[18:48] So this is something we
+[18:49] can ignore
+[18:50] or dismiss.  The remaining
+[18:53] part, which
+[18:54] is the next 26
+[18:56] bits, is the
+[19:01] block address.  Good.  So this
+[19:04] part is the
+[19:06] block address, these 26 bits, and, uh
+[19:15] , we need to
+[19:16] figure out which entry
+[19:18] out of these 128 corresponds to the
+[19:20] block address, which, uh,
+[19:22] is represented by these 26
+[19:24] bits.  So, this cache
+[19:29] can be further
+[19:30] divided into two
+[19:31] parts.  Uh, one, uh,
+[19:36] I think that's okay.
+[19:41] Sorry.  Yes.
+[19:43] Average.  So, one
+[19:44] is an array of tags, and the
+[19:56] other is an array of data.
+[20:10] tag array contains
+[20:11] part of the address so that
+[20:12] we can uniquely
+[20:13] map the block.  So in
+[20:17] this case,
+[20:17] since the block can
+[20:19] be present in
+[20:20] any record, the tag
+[20:21] must contain
+[20:22] the address of the block for the
+[20:23] record it
+[20:24] corresponds to.  So
+[20:27] remember that both the
+[20:29] tag array and the data array
+[20:31] will have, sorry, 128
+[20:32] entries, they will both
+[20:34] have 128 entries.
+[20:38] Therefore, there is a
+[20:42] one-to-one
+[20:42] correspondence between a
+[20:43] tag record and a
+[20:44] data record.  So,
+[20:50] compare each tag with the
+[20:52] block address, which is
+[20:53] 26 bits long.  Therefore, the tag
+[20:56] must also be 26-
+[20:57] bit, since it
+[20:58] also contains the address of
+[21:00] the block whose contents
+[21:01] are in the
+[21:02] data array.  Right?
+[21:06] So, we compare the
+[21:07] received
+[21:09] block address with each
+[21:18] entry of the tag array.
+[21:20] If there is a match, we
+[21:21] find out which
+[21:23] record the match is for.
+[21:24] Let's assume there
+[21:25] is a match for this entry.
+[21:26] We then access the
+[21:28] corresponding
+[21:29] entry in the data array
+[21:30] and return a
+[21:31] value: if this is
+[21:33] return the contents of the
+[21:34] data array, which
+[21:35] is 64 bytes from
+[21:37] which we can
+[21:38] select a subset,
+[21:39] or if this is a store,
+[21:40] we write the data
+[21:41] to the corresponding part of
+[21:43] the block within the
+[21:44] data array.  So, the
+[21:48] main problem here
+[21:49] is essentially a
+[21:50] search problem: for 128
+[21:52] entries in the
+[21:53] tag array, we need
+[21:54] to find whether
+[21:56] any of the entries in the
+[21:57] tag array match
+[21:59] block address.  If so, then you're all
+[22:01] set.  We do
+[22:04] this essentially through an
+[22:10] array of cams right
+[22:11] here.  Recall that a
+[22:13] cam is a memory with
+[22:15] content-addressing.  The block address
+[22:18] , which is...the block address
+[22:19] is essentially the part of
+[22:21] the address that corresponds to
+[22:23] the tag.  This thing
+[22:25] compares to
+[22:26] each record
+[22:28] tag array until...
+[22:29] uh...so we either don't
+[22:30] find the record, it's a
+[22:31] miss;  If
+[22:32] we find a record,
+[22:33] we will never have
+[22:35] duplicates, then
+[22:36] we refer to this
+[22:37] record in the data array.
+[22:40] This is called a
+[22:42] Where does
+[22:43] the name come from?  The name comes
+[22:45] from the fact that a
+[22:46] given block can
+[22:47] be associated with
+[22:48] any record in the
+[22:49] data or tag,
+[22:50] meaning that it is
+[22:51] fully or
+[22:52] completely
+[22:52] associative.  That's where
+[22:54] the name comes from,
+[22:55] right, it can be
+[22:57] linked, it's
+[22:58] associative, and
+[22:59] specifically it's also
+[23:00] called 128-
+[23:02] way
+[23:03] associative in this
+[23:05] case, because there are 128
+[23:06] entries, and any
+[23:08] entry, uh, we can
+[23:09] map.  So we'll
+[23:11] discuss the methods
+[23:12] later anyway.  Uh, but the
+[23:14] main idea is always
+[23:16] at the stage of searching for
+[23:17] any cache - it's a search.
+[23:19] Once we
+[23:20] have performed the search, we
+[23:21] can move on to the
+[23:22] next steps.
+[23:26] Good.  So
+[23:28] basically, uh, this
+[23:29] slide basically, uh,
+[23:31] discusses most of what
+[23:33] we talked about on the
+[23:34] previous slide,
+[23:36] which in CAM it summarizes
+[23:37] what the CAM array does, the
+[23:39] tag array.  And, uh,
+[23:41] if you have any
+[23:43] doubts about how
+[23:45] content-addressable memory works,
+[23:46] readers can
+[23:47] go back and
+[23:48] refer to
+[23:49] chapter six, the
+[23:50] chapter on digital
+[23:51] logic, where we
+[23:52] registers, memory, and
+[23:53] logic;  hence this
+[23:54] section.  Now let's
+[23:57] discuss a completely
+[23:58] different type of cache.  So, what
+[23:59] was the problem
+[24:00] with
+[24:01] cam
+[24:01] processor arrays that
+[24:03] we talked about in
+[24:04] chapter six?  One of the
+[24:05] problems was
+[24:06] that
+[24:07] processor arrays instead of a
+[24:08] six-transistor
+[24:09] cell have a 10-
+[24:10] transistor cell, and, uh,
+[24:12] that's why they're bigger;  as
+[24:14] a result, they are
+[24:17] we also need
+[24:18] them to be not
+[24:20] energy efficient at all,
+[24:21] because we need to
+[24:22] compare the
+[24:23] block address to each
+[24:24] individual entry in the
+[24:25] tag array, which, uh,
+[24:26] is not
+[24:27] energy efficient in
+[24:28] any way.  So
+[24:29] let's look at
+[24:31] the other, uh, part of
+[24:32] the spectrum.  So let's
+[24:35] have a cache again with an
+[24:36] array of tags and an
+[24:37] array of data.  But
+[24:38] let's split the
+[24:40] address differently.  So,
+[24:41] considering
+[24:42] the address, the lower six
+[24:44] bits
+[24:44] will always remain
+[24:45] the offset in the block.
+[24:47] can happily
+[24:48] ignore.  But for the
+[24:50] top 26, let's
+[24:51] split them into two
+[24:53] fields: a 19-bit tag and a
+[24:54] seven-bit index.
+[24:57] So let's consider
+[24:58] that seven bits means
+[25:00] that it can indicate that
+[25:01] it can uniquely
+[25:02] address 128 records
+[25:03] .  So let's
+[25:06] index to
+[25:06] match just
+[25:07] one element of the
+[25:08] tag array.  So, a
+[25:10] direct
+[25:11] mapping cache means
+[25:12] that a given block can
+[25:14] only be in
+[25:15] one direct mapping cache entry
+[25:17] .  Unlike a
+[25:20] where it can
+[25:21] be anywhere,
+[25:22] this one can
+[25:23] only be in a single entry.
+[25:25] And how is this
+[25:26] entry determined?  We're essentially
+[25:27] deleting six,
+[25:29] you know, deleting
+[25:30] part of the block,
+[25:31] part of the block address,
+[25:32] which in this case
+[25:33] is six
+[25:34] bits, because it's a
+[25:36] 64-byte block.  We
+[25:38] take the remaining seven
+[25:39] entries.  Why 7?
+[25:42] Because our tag array
+[25:44] has 128 entries, and 128 is
+[25:46] 2^7. So we take the
+[25:48] remaining, uh, seven
+[25:50] entries.  We
+[25:51] calculate the index with
+[25:53] this index,
+[25:53] access the
+[25:55] tag array,
+[25:56] read the stored
+[25:57] tag, and compare it
+[25:58] to the tag address part
+[25:59] .  Right?  If
+[26:03] the comparison
+[26:03] results in
+[26:04] equality, it is a hit
+[26:05] , otherwise it is a miss.  If
+[26:09] it is a hit, then with the
+[26:10] same index value a
+[26:13] one-to-one mapping occurs again, thus
+[26:15] we have found the block
+[26:16] within the
+[26:17] data array that we
+[26:18] need to either read
+[26:19] or write.  So,
+[26:22] what is the advantage of a
+[26:24] direct-mapped cache
+[26:25] ?  The advantage of a
+[26:27] direct mapping cache
+[26:29] is that it is
+[26:30] very simple,
+[26:31] unlike a fully
+[26:33] It is very simple.  We
+[26:34] don't need to
+[26:36] cams at all.  So, the
+[26:38] tag array can be an
+[26:39] SRAM array, that is, both the
+[26:55] tag array and the
+[26:56] data arrays can be an
+[26:58] SRAMM array, that is, an
+[26:59] array of SRAM cells, and
+[27:00] both of them will also
+[27:03] have 128 entries in this case,
+[27:04] but the thing is that the
+[27:06] given block cannot
+[27:07] be located anywhere.  It
+[27:09] has a fixed location,
+[27:10] and that location
+[27:11] is determined by
+[27:12] the lower seven
+[27:13] bits, the least
+[27:14] significant seven
+[27:16] bits of the 26 bits
+[27:17] remaining after the 26
+[27:18] bits of the block address, the
+[27:20] Earthwil block address.
+[27:23] So, this is a nice simple
+[27:25] diagram.  SRAMs are much
+[27:27] faster than CAMs.  So,
+[27:29] this is a very simple scheme
+[27:30] that you can
+[27:31] use.  But
+[27:33] the thing is, it's
+[27:35] also faster.  So, a
+[27:37] mapping cache is also
+[27:38] faster than a fully
+[27:39] associative cache.    The
+[27:41] only problem
+[27:42] is that it
+[27:43] will have a lower
+[27:44] hit rate, and
+[27:45] the reason is that
+[27:46] let's assume there
+[27:48] are two cache lines.
+[27:49] So a block
+[27:50] is also called a
+[27:51] cache line, right?  So,
+[27:53] the block is also called a
+[27:56] cash line.  So,
+[28:03] block, well, we'll
+[28:05] both terms
+[28:06] interchangeably.  So let
+[28:08] 's say you
+[28:09] know that two
+[28:10] cache lines correspond to
+[28:11] one cache entry.
+[28:13] Good.  So, if they
+[28:14] match the same
+[28:15] record, what happens?
+[28:16] They
+[28:17] will simply crowd each
+[28:18] other out, and this will result
+[28:19] in a lower
+[28:20] hit rate
+[28:21] or a higher
+[28:22] m-rate.  But
+[28:23] if it were a fully
+[28:26] they would find a place
+[28:27] in the cache, and one could be
+[28:28] here and the
+[28:29] other one could be here.  But in
+[28:34] since multiple
+[28:35] conflicting
+[28:37] cache lines or cache blocks
+[28:38] can be in a
+[28:39] single entry, we
+[28:40] will have more
+[28:41] cache misses and, as a
+[28:42] result, a lower
+[28:43] hit ratio.
+[28:49] So, let's now, uh
+[28:50] , look at something
+[28:52] in between, and, uh,
+[28:54] I won't
+[28:54] go into this slide because we
+[28:56] just discussed the
+[28:57] operation of the forward-
+[28:58] mapped cache on the
+[29:06] So without further
+[29:07] ado, I'll just
+[29:08] next slide,
+[29:09] which talks about an
+[29:11] intermediate solution
+[29:12] called a
+[29:14] set associative cache.  So what was
+[29:18] the assumption in a
+[29:19] associative cache
+[29:21] that a row could
+[29:21] be in
+[29:23] any of the 128 entries
+[29:24] for our example,
+[29:25] of course, for a
+[29:28] we said that a row
+[29:29] could
+[29:30] only be in a certain
+[29:31] specific entry.
+[29:35] So, in the
+[29:36] set associative cache, we will
+[29:39] create sets of,
+[29:41] say, four
+[29:42] entries.  Let's consider
+[29:49] four entries.
+[29:51] Let's call them a set,
+[29:52] right?  A set of four
+[29:54] records is a set.
+[29:57] So, if we
+[29:58] create such sets
+[29:59] of four records,
+[30:01] how many sets will we have
+[30:02] ?  We will have 128
+[30:05] divided by 4, which is 32
+[30:07] sets.  So, the logic is
+[30:11] this.  So, uh,
+[30:14] first we'll
+[30:15] look at the part of the
+[30:16] block address that
+[30:17] defines the addressing of
+[30:18] the block, and the lower
+[30:19] six bits, of course
+[30:21] , we'll discard.  Then,
+[30:25] since we have 32
+[30:26] sets, we'll first
+[30:27] take the low
+[30:28] five bits of what's
+[30:30] left, and 2^5 is going to be
+[30:31] 32. So, uh, to
+[30:33] put our
+[30:34] discussion in the
+[30:34] right
+[30:35] context, we'll
+[30:36] use the low
+[30:38] five bits to
+[30:39] first index and
+[30:41] right set.
+[30:45] correct set,
+[30:46] we will find
+[30:47] four entries there.
+[30:49] Within these
+[30:50] four entries, we
+[30:51] will compare the
+[30:52] block address with each of these
+[30:53] entries.  And wherever there is a
+[30:55] match, uh, we'll
+[30:57] do it, if there's a match
+[30:58] only among these
+[30:59] four entries, uh,
+[31:00] then we declare a
+[31:02] match, otherwise we
+[31:03] declare a miss.
+[31:05] So what's the main
+[31:06] idea?  The basic idea
+[31:08] is that this
+[31:10] solution is in
+[31:11] the middle of the spectrum
+[31:12] between a fully
+[31:14] and a direct map cache
+[31:15] .  So, in a fully
+[31:19] our choice was...okay,
+[31:20] let's talk
+[31:22] about cache type and, uh,
+[31:29] choice, okay?  In a
+[31:37] we had a choice of 128
+[31:38] entries, so, uh, the
+[31:40] block could be anywhere.
+[31:41] In a direct
+[31:42] mapping cache, we
+[31:44] only had a
+[31:45] single entry to choose from.  In a
+[31:49] set associative cache, our choice in
+[31:51] this case is
+[31:52] four, which means that
+[31:54] the row can be
+[31:55] anywhere in the set of
+[31:57] So, in general, we
+[31:58] can define what
+[31:59] is called a
+[32:03] k-way set associative cache, where k is
+[32:04] the number of entries in
+[32:05] each set.  So
+[32:07] instead of four, it
+[32:08] will be k.  So this
+[32:09] particular example
+[32:10] is a set associative cache
+[32:11] with four
+[32:12] sides.  So if
+[32:14] you want me to
+[32:15] explain it another way,
+[32:17] I can do that.  So
+[32:20] just clean up this
+[32:21] slide.  So what we
+[32:24] can do is
+[32:26] take all 128 records and
+[32:31] , uh, just
+[32:31] group them into
+[32:33] records of four
+[32:34] each, right?
+[32:39] To create something
+[32:40] like...So,
+[32:41] right.  So, if
+[32:45] it's an array of tags, then the
+[32:46] data array
+[32:46] remains
+[32:47] exactly the same
+[32:48] .  There is no difference.    The
+[32:51] the same in all
+[32:52] caches more or less in both the
+[32:54] associative
+[32:55] map set and the fully
+[32:57] associative one.  The
+[32:59] data array remains the
+[33:00] same.  We
+[33:01] only change the
+[33:02] tag array.  So, first
+[33:05] we will create 32 such
+[33:06] sets, where each
+[33:07] set contains four
+[33:08] records.  Now,
+[33:10] suppose we take a
+[33:11] block and read its
+[33:13] five index
+[33:14] blocks.  So, the index
+[33:15] is the index of the set.
+[33:17] So, we read
+[33:18] its five bits
+[33:19] after discarding the
+[33:20] lower six.  So,
+[33:22] let's assume it
+[33:23] points to this set.
+[33:25] After that, we
+[33:26] compare the rest of
+[33:27] the addresses, since these
+[33:28] five are fixed.
+[33:29] Right?  Based on
+[33:31] these five, we arrived at
+[33:32] this set.  So we
+[33:34] consider it anymore.
+[33:36] Then we look at
+[33:37] the rest of the part, which
+[33:39] is 21 bits, right?
+[33:41] Ideally, the block address
+[33:43] was 26, but out of those 26, we
+[33:44] removed five and
+[33:48] use those
+[33:49] five to access the
+[33:50] set.  So all
+[33:52] the records in the set
+[33:53] will have these five
+[33:54] bits in common.  So
+[33:55] we don't need to
+[33:56] store it.  Uh, we
+[33:59] take the remaining 21 bits, and
+[34:00] here we have a 21-bit
+[34:02] tag, and we also
+[34:03] extract the 21-bit
+[34:04] tag from the address, and we
+[34:06] just compare to
+[34:07] each entry in
+[34:08] that set.  What are we
+[34:12] comparing?  We
+[34:13] store, we
+[34:14] compare what is
+[34:15] stored in these
+[34:16] records and the part of
+[34:18] the address marked with the
+[34:19] t tag, which is
+[34:20] 21 bits.  If there is a match, we
+[34:22] declare a match.
+[34:23] Otherwise, we
+[34:24] declare a miss.  And
+[34:26] also, if there's a match
+[34:28] , then, uh, we take,
+[34:29] find where there's a match,
+[34:30] and read the
+[34:31] corresponding record from the
+[34:33] data array.  Here is a
+[34:36] nice diagram.  So
+[34:38] the diagram shows that
+[34:40] we
+[34:43] look at the address first.
+[34:46] So, the address will have
+[34:47] the lower six bits,
+[34:48] which will be the
+[34:49] block address.  Sorry.    The
+[34:51] lower six bits
+[34:52] will be the address of
+[34:53] the fragment in the block.
+[34:54] So that's what
+[34:55] gets rejected.  Then
+[34:57] we take five more
+[34:58] bits.  This is the
+[35:01] set index.  And
+[35:02] using the
+[35:03] set index, we
+[35:05] four records of
+[35:06] the set.  And, uh, we
+[35:09] take all four
+[35:10] entries and compare
+[35:11] them to the tagged portion of the address,
+[35:14] which is 21 bits.
+[35:16] So, we make
+[35:17] four comparisons.  This
+[35:18] could be a SRAMM array.
+[35:20] It doesn't have to
+[35:21] be CAMS.  So it
+[35:23] could still be pretty
+[35:24] fast.  So we
+[35:25] compare the four
+[35:26] records, the four tags
+[35:27] that are stored here,
+[35:28] with the tag portion of
+[35:30] the address.  And after
+[35:32] comparing, we
+[35:32] send
+[35:33] the results to orgate.
+[35:35] So, if any of
+[35:36] the comparisons were
+[35:37] successful, it means
+[35:39] the data is in the cache.  So
+[35:40] we can declare a
+[35:41] hit.  Otherwise,
+[35:46] besides, the encoder
+[35:47] tells us that, uh
+[35:49] , there was a match in which
+[35:50] record, right?  In this,
+[35:52] this, this or this.
+[35:54] What should be
+[35:56] done then?  Well, what we
+[35:58] need to do is
+[35:59] take the four indices
+[36:00] inside the
+[36:01] tag array and choose one
+[36:03] of them, because one of
+[36:04] them had to match.  So
+[36:06] let's assume it's this one.
+[36:09] So this one will go
+[36:10] through the multiplexer
+[36:11] to an entry in the
+[36:12] data array, and this one actually
+[36:13] corresponds to that
+[36:14] entry.  Right?
+[36:20] basically, uh, yeah,
+[36:21] that is, it matches
+[36:22] this entry, and we'll
+[36:24] corresponding entry
+[36:26] in the data array, which is this one
+[36:27] .  If, say
+[36:32] , we got into this
+[36:33] entry, then we would
+[36:34] move on to another one.
+[36:38] So it doesn't
+[36:39] matter, we
+[36:40] need to remember
+[36:41] that each entry in the
+[36:42] tag array has a
+[36:43] corresponding entry in the
+[36:44] data array, i.e. a
+[36:46] 1:1 correspondence.
+[36:48] So what is the new
+[36:49] addition in this
+[36:51] schema?  The new
+[36:52] addition to this
+[36:53] scheme is this block and this
+[36:55] block.  So let
+[36:59] me erase
+[37:00] the ink again and explain
+[37:01] these blocks in a little more
+[37:02] detail.  Instead of
+[37:07] searching for a block
+[37:08] in all records, we
+[37:09] search for it only in a
+[37:10] given set of
+[37:11] rows.  That's why it's
+[37:15] set associative cache.  This
+[37:16] particular one, that is,
+[37:17] each of these lines,
+[37:18] is called a path.
+[37:19] So, this particular
+[37:22] set associative cache.  One second.
+[37:38] This particular
+[37:40] set associative cache is called a
+[37:41] four-way set
+[37:43] .  This means that
+[37:44] any of the four
+[37:45] paths or any
+[37:46] of the four records
+[37:47] can contain a string.
+[37:49] So, we take the
+[37:50] set index, which
+[37:51] we get again from
+[37:52] the address, and access the
+[37:54] set and the particle
+[37:55] , specifically the four
+[37:56] entries in the set, for
+[37:58] each of which we
+[37:59] merge.  If there is
+[38:02] a match, we get the
+[38:03] match and also
+[38:04] find out which one
+[38:05] matched.
+[38:06] We check if this is
+[38:07] this line, it's
+[38:08] normal.  Then, uh,
+[38:10] we select the
+[38:11] corresponding record, uh
+[38:12] , which is this record,
+[38:14] and use
+[38:15] it to access the
+[38:16] data array.  So
+[38:21] here's a mathematical
+[38:22] look at it.  Let
+[38:23] the index be I and
+[38:24] the number of elements
+[38:26] in the set be K. Then
+[38:28] the indices we
+[38:31] are approximately equal to
+[38:34] I*K plus I*K + 1 to I*K + K
+[38:35] minus one.  We
+[38:37] read all the tags in the
+[38:39] set.  We compare
+[38:41] the tags with the tag
+[38:42] obtained from the address.
+[38:43] We then
+[38:44] use orgate
+[38:45] to calculate a hit
+[38:46] or miss.  And finally
+[38:47] , we use the
+[38:49] encoder to find
+[38:50] the index of the matching
+[38:51] entry.  After that,
+[38:53] we read the
+[38:55] block array.
+[38:57] Additionally, each entry in
+[38:58] the set is called a
+[39:00] path.  And if there
+[39:01] are k blocks in the set, it is
+[39:05] kway set associative cache or a
+[39:07] kway associative cache.  So before I
+[39:10] get to the
+[39:11] data read operation, I'd
+[39:12] like to, uh, take another
+[39:14] look at this
+[39:15] particular drawing, and
+[39:16] , uh, the best
+[39:17] way to look at it is to
+[39:19] erase what we
+[39:20] wrote earlier.  So
+[39:24] , in this particular
+[39:25] cache, as you remember
+[39:26] , let's look
+[39:28] at the tag size.  So, a
+[39:29] tag is what is
+[39:31] tag array.  In
+[39:32] the case of a direct
+[39:35] mapping cache, the tag
+[39:36] was only 19 bits long,
+[39:38] right?  So, in
+[39:39] the case of a direct-
+[39:42] mapped cache, the tag
+[39:44] had only 19 bits.  In
+[39:47] the case of a fully
+[39:48] associative cache, the
+[39:51] tag was 26 bits
+[39:52] because we needed a
+[39:54] larger tag.  In
+[39:57] the case of a
+[39:59] set associative cache, the tag can
+[40:01] range from 26 to 19.
+[40:02] The reason is
+[40:04] that we allocate
+[40:05] some bits for the
+[40:06] set index to
+[40:07] find which set, and
+[40:09] the rest of the bits become
+[40:10] part of the tag
+[40:11] because, uh, they are
+[40:13] needed to
+[40:15] identify the block,
+[40:16] since the total
+[40:18] is 26 bits.
+[40:22] But we can
+[40:23] use a
+[40:24] portion of the bits to
+[40:25] find
+[40:26] the set first, and essentially once
+[40:27] that's
+[40:28] fixed, the rest of the
+[40:29] bits need to be
+[40:30] used to
+[40:31] compare against the
+[40:32] tag array.  So as we
+[40:37] can see, as the
+[40:38] number of sets increases, uh, as the
+[40:41] number of sets increases,
+[40:42] the tag
+[40:43] will actually get smaller
+[40:45] and smaller until you can't make
+[40:47] it bigger beyond this point,
+[40:48] which means that each
+[40:49] set at this point
+[40:50] contains one record.
+[40:56] Similarly, if we
+[40:57] reduce the number of
+[40:58] sets, then, uh, the tag
+[41:00] will get
+[41:00] bigger and bigger, and the
+[41:02] index part will get
+[41:03] smaller and smaller,
+[41:04] until we reach a
+[41:06] associative point.  At
+[41:10] this point, the block could
+[41:12] be in any of the
+[41:13] 128 cache entries.  So,
+[41:15] there is no index.  The entire
+[41:17] cache is like one set.
+[41:21] At this point, the tag becomes
+[41:23] the largest, meaning it has
+[41:24] 26 bits.  So, the advantage
+[41:30] of this design
+[41:31] is that
+[41:32] it is
+[41:33] somewhere in the middle between a
+[41:38] and a direct
+[41:39] mapping cache.  So,
+[41:42] if we consider
+[41:43] the speed of operation, it is
+[41:44] obvious that the
+[41:46] is the fastest, followed by the
+[41:49] set associative cache, and then the
+[41:54] Now, when we consider
+[41:56] the hit ratio,
+[42:00] we have maximum
+[42:01] flexibility in a fully
+[42:06] We reduce
+[42:07] flexibility in the
+[42:08] set associative cache and
+[42:09] reduce it even further in the
+[42:12] .  Good.  So, as
+[42:15] a result, you know,
+[42:16] so there's no hard and fast
+[42:17] rule that you
+[42:20] have to
+[42:21] certain type of cache in a particular situation.  But
+[42:23] generally, people
+[42:24] prefer the
+[42:25] middle path,
+[42:26] which is a
+[42:27] set associative cache: either
+[42:28] two-way, or
+[42:29] four-way, in
+[42:30] some cases
+[42:31] eight-way
+[42:32] associativity.
+[42:36] Good.  So now
+[42:39] data read operation.  So, this is a
+[42:41] normal SRAMM access
+[42:42] to the data array.  In
+[42:46] some cases,
+[42:47] reading and searching
+[42:48] may overlap
+[42:49] for
+[42:50] download access.  So
+[42:51] let's see
+[42:52] how.  So if we
+[42:54] look at a
+[42:56] set associative cache, what we can
+[42:58] do, uh, this is what
+[42:59] we can, uh, so we,
+[43:01] well, uh, the first thing we
+[43:02] do is calculate
+[43:03] the index of the set.  And if
+[43:05] the set has four
+[43:06] paths, we need to
+[43:07] compare the tag to
+[43:08] each of, uh, the
+[43:09] contents of each of the
+[43:10] paths in the
+[43:11] tag area.  Uh, at the same time,
+[43:13] uh, what we need to
+[43:14] do is what we
+[43:15] can do, this is
+[43:17] what we can do,
+[43:18] this is what we can
+[43:19] do a little
+[43:20] extra work.  We
+[43:22] the contents of all four
+[43:24] paths from the data array
+[43:25] .  So in this sense, we
+[43:28] overlap
+[43:29] the read data with
+[43:30] the search.  After that,
+[43:32] once we
+[43:33] calculate the index of the
+[43:34] corresponding tag.
+[43:35] So let's say the
+[43:36] third entry was the
+[43:37] matching tag,
+[43:39] then the third entry of the
+[43:40] data array is what
+[43:41] can be selected.
+[43:42] Right?  So we
+[43:43] can kind of
+[43:44] overlap both in
+[43:45] a sense, we
+[43:46] do additional
+[43:47] work.  Otherwise, what would we
+[43:48] do differently?  We would
+[43:51] read all four
+[43:52] tag entries,
+[43:53] perform a comparison, and
+[43:54] find a match.  Then
+[43:56] for that
+[43:57] specific match we
+[43:58] would read the record in the
+[43:59] data array.
+[44:01] Right?
+[44:03] Let's say this is an
+[44:04] array of tags, and this is it, but
+[44:10] now let's
+[44:11] do some
+[44:12] extra work and
+[44:13] read all
+[44:14] four entries of the
+[44:15] data array, and also
+[44:17] read and
+[44:18] compare all
+[44:20] tag array in parallel.  If we
+[44:21] find a match, we
+[44:22] can choose one of
+[44:24] them.  But at least
+[44:28] overlap the time for reading data.  Now
+[44:33] write operation.  So
+[44:35] , before writing
+[44:36] the value, we
+[44:36] need
+[44:37] to make sure that the block is
+[44:38] present in the cache.
+[44:40] Therefore, most of the time
+[44:42] students cannot
+[44:43] understand why this is
+[44:44] so or why this should be
+[44:45] done?  Well,
+[44:47] look, if
+[44:48] it's not done, it's
+[44:49] because students
+[44:50] say, you know, I'm
+[44:51] going to write, so
+[44:52] I'm going to
+[44:53] record new data anyway.
+[44:54] But there is a problem.
+[44:56] The problem is that
+[44:57] most of the time
+[44:58] you're either writing
+[44:59] four bytes if it's an
+[45:01] integer, or eight
+[45:02] bytes if it's a long
+[45:03] integer or
+[45:05] double.  But
+[45:05] how big is a
+[45:07] block?  A block can be 32
+[45:09] or 64 bytes.  And
+[45:13] since we view a block
+[45:14] as an
+[45:15] indivisible unit,
+[45:16] if we simply
+[45:17] replace that part of the
+[45:18] block with new data,
+[45:19] we'll have to
+[45:20] remember it somewhere.
+[45:22] Maybe after that
+[45:24] we can do
+[45:25] another
+[45:26] write operation that
+[45:26] will write to that
+[45:27] part.  So if this is
+[45:31] done, we will
+[45:34] maintain some
+[45:35] state somewhere to remember
+[45:36] which part of the block
+[45:37] was written when.
+[45:40] Right?  And, uh,
+[45:41] you know, which parts
+[45:42] were left
+[45:43] untouched and which were
+[45:44] new, that's a lot of
+[45:45] extra work.
+[45:47] Also, this violates
+[45:48] our abstraction that a
+[45:49] block is an
+[45:52] right?  So, we've
+[45:54] always had this convenient
+[45:55] abstraction that a block
+[45:57] is one indivisible
+[45:58] unit.  So, if we
+[46:02] make a mistake, we
+[46:03] first get the
+[46:04] entire block, the old
+[46:05] contents of the block;  After
+[46:07] that, we record
+[46:08] new data.  So, how do
+[46:13] we do this?  So,
+[46:15] uh, we're recording new
+[46:17] data.  We also
+[46:19] whether you know that new
+[46:20] data was written to the
+[46:21] block after
+[46:22] it hit the
+[46:23] cache.  Therefore, we
+[46:25] store
+[46:25] the modified bit in the
+[46:26] tag array.  If a
+[46:29] block has been written to
+[46:30] since it was
+[46:31] selected into the cache, we
+[46:32] set it to
+[46:34] one.  Otherwise, the
+[46:36] default entry
+[46:38] remains zero.
+[46:39] But if you write
+[46:41] to it, then yes, zero
+[46:42] becomes one.  So,
+[46:45] there are two policies:
+[46:47] one is
+[46:48] write-through, and the other is write-
+[46:49] back.  So
+[46:54] every time we
+[46:55] write to the cache, so
+[46:56] because we have
+[46:57] an inclusion, we have an
+[46:58] inclusion cache hierarchy
+[46:59] : any
+[47:01] block present in the
+[47:02] L1 cache,
+[47:03] the same
+[47:05] block with the same address will also be present
+[47:06] in the L2 cache.  However, a block in the
+[47:10] L1 cache may contain
+[47:12] newer data.  So, there are
+[47:13] two ways to
+[47:14] solve this.  One is
+[47:15] write-through and
+[47:16] write-back.  So
+[47:18] , write-through
+[47:19] means that every time
+[47:20] we write to the
+[47:21] cache, we also
+[47:22] write to its
+[47:23] lower level, and at the
+[47:24] lower level you will have a
+[47:25] block that is
+[47:26] guaranteed by the
+[47:27] inclusion property.  So what this
+[47:31] essentially means is that if
+[47:32] I have a system like this
+[47:34] with L1 and L2, I write to
+[47:35] any block, I
+[47:36] store the data in
+[47:38] any block in L1, and the data
+[47:39] is spread to a copy of the
+[47:41] block in L2.  So, this has
+[47:45] some advantages.  One
+[47:47] advantage is
+[47:48] that I don't
+[47:50] need to store the
+[47:51] modified bit.  Well
+[47:52] , we need it in
+[47:54] some cases, but
+[47:55] generally not.  Uh, if I
+[47:58] want to throw this
+[47:59] block out of the cache, I can
+[48:00] easily throw it out,
+[48:01] right?  Uh, this
+[48:04] way we can
+[48:05] safely
+[48:06] delete data from the cache.
+[48:10] So in that sense for a
+[48:12] write-through
+[48:13] type, you know, unless we're
+[48:14] doing a simple
+[48:15] discussion, the
+[48:16] modified bit is not
+[48:18] needed, but in
+[48:18] the case of
+[48:20] write-back, uh, the idea is different.
+[48:23] We don't record to a
+[48:24] lower level, uh, and
+[48:25] also every time we
+[48:26] record, we
+[48:27] set the
+[48:28] modified bit to
+[48:29] one.  So,
+[48:31] the advantage of reverse
+[48:33] write over direct write
+[48:34] is that we
+[48:35] somehow
+[48:37] calls to a lower
+[48:38] level.  So let's say there
+[48:40] are hundreds or
+[48:41] thousands of accesses to the
+[48:42] same block
+[48:43] right in L1.  If this
+[48:45] happens
+[48:45] end-to-end, every
+[48:46] single access will be
+[48:47] directed to L2.
+[48:49] So, this will consume
+[48:50] a lot of energy and
+[48:51] generate a lot of
+[48:53] traffic to L2.
+[48:54] Instead, the right
+[48:55] reverse cache
+[48:56] will do what you
+[48:57] continue
+[48:58] to write to L1, and I
+[48:59] will just set the
+[49:02] one, nothing
+[49:03] more.  So in the
+[49:04] end-to-end cache,
+[49:05] the advantage was that if
+[49:06] I
+[49:08] throw something out of L1, I can
+[49:09] just throw it out.  In
+[49:12] the case of reverse
+[49:13] writing, things are a bit
+[49:14] different during
+[49:15] line expulsion.
+[49:16] Throwing means that
+[49:18] when something
+[49:18] is thrown, we
+[49:19] need to check
+[49:21] modified bit.
+[49:22] If it's not
+[49:23] modified, we
+[49:24] can throw it away.
+[49:27] If it's
+[49:29] need to write it down
+[49:30] to a lower level,
+[49:31] right?  So that the changes
+[49:33] are at least there.  Good.
+[49:37] So, after
+[49:38] the write-back and,
+[49:39] uh, write-through
+[49:40] , where again
+[49:41] , what's the trade-off?
+[49:43] Actually, let
+[49:44] me go
+[49:45] back one slide.
+[49:46] The trade-off is that a
+[49:47] pass-through
+[49:48] cache has much
+[49:49] more traffic at the
+[49:50] lower level, but
+[49:51] evictions are cheap.
+[49:54] The advantage is
+[49:55] that the traffic at the
+[49:56] lower level is
+[49:57] low, but the evictions are
+[49:58] expensive.  Now let's
+[50:00] look at the
+[50:02] insert, replace, and
+[50:03] delete operations.  So, if
+[50:06] you don't find a block in the
+[50:07] cache, we'll pick
+[50:08] it from a lower level.
+[50:10] Then we insert
+[50:11] the block into the cache using an
+[50:13] insert operation.  So,
+[50:14] let's add
+[50:15] some new state.
+[50:16] Let's add a valid bit to the
+[50:18] tag.  If the
+[50:20] corresponding row in the
+[50:21] data array is
+[50:22] non-empty,
+[50:23] meaning there is some
+[50:24] valid data, the valid
+[50:25] bit is one,
+[50:27] otherwise it is
+[50:28] zero.  So, what is
+[50:29] the structure of a tag in a
+[50:30] tag array?  Now
+[50:32] we have the part of the address
+[50:33] that corresponds to the tag.
+[50:35] We have a modified
+[50:37] bit and a valid bit.
+[50:40] So when we
+[50:41] insert a row,
+[50:42] say from a lower
+[50:43] level, we check
+[50:44] whether any
+[50:45] row in the set is an
+[50:46] invalid row,
+[50:47] meaning its
+[50:48] valid bit is
+[50:49] zero.  The line is empty,
+[50:51] meaning the record is empty.
+[50:53] If there is one, then we
+[50:55] write the
+[50:56] sample string to that location and
+[50:57] set the valid
+[50:58] bit to one.  So,
+[51:00] consider a
+[51:01] four-way
+[51:02] persistent cache
+[51:03] that has four
+[51:03] entries for each
+[51:05] set.  After
+[51:05] matching with
+[51:06] the set, we find
+[51:08] that the last entry uh is
+[51:09] empty.  So, if
+[51:11] any
+[51:12] new row appears that
+[51:13] matches this
+[51:14] set, it can be
+[51:15] placed in the last
+[51:16] record.  If it doesn't,
+[51:20] we need to find a
+[51:21] replacement candidate,
+[51:22] throw them out, which
+[51:23] essentially means
+[51:24] push them out and
+[51:25] insert them into this new
+[51:26] position.  So, the
+[51:31] replacement operation
+[51:32] means that we
+[51:34] replacement candidate in the set.  So, the
+[51:38] cash-in-exchange scheme or
+[51:39] exchange policy
+[51:40] is to
+[51:41] find one victim
+[51:42] right in the set.  So there
+[51:44] can be many schemes
+[51:46] , each with its own pros
+[51:47] and cons.  So we
+[51:51] random replacement scheme where
+[51:52] within the set we
+[51:53] can choose
+[51:54] any of the ways at
+[51:55] random.
+[51:57] Right?  If
+[51:58] they all have valid
+[51:59] data, select any
+[52:00] one.  So remember
+[52:01] that a fully
+[52:03] is also
+[52:03] a generalization of a
+[52:05] set associative cache, where the entire cache is a
+[52:07] single set.  So the
+[52:09] schemes apply.  So one
+[52:11] solution is to just
+[52:12] randomly pick
+[52:13] any line and
+[52:14] just throw it away.
+[52:17] The disadvantage is that
+[52:19] temporal locality is
+[52:20] limited.  And the
+[52:23] reason for this is that
+[52:25] maybe you know that
+[52:26] one of these
+[52:27] lines
+[52:29] is accessed very often and it
+[52:30] gets thrown away.  We
+[52:31] will have more misses.
+[52:33] Then we can have a
+[52:34] FIFO replacement scheme where FIFO
+[52:36] works on a
+[52:37] first-in,
+[52:38] first-out basis.  So,
+[52:53] in this scheme, when we
+[52:54] get a block, we
+[52:55] assign it a
+[52:56] counter value of
+[52:57] zero, and for the
+[52:58] remaining paths, we
+[52:59] store a counter
+[53:00] for each path in the
+[53:02] tag array.  So,
+[53:05] when we get a
+[53:06] block for the first time, we
+[53:07] keep its
+[53:08] counter at
+[53:09] zero, and the
+[53:10] block counters in the remaining paths
+[53:11] in the set
+[53:12] are incremented.  This
+[53:15] ensures that how do we
+[53:16] know which block
+[53:17] came first?  By
+[53:19] the one with the
+[53:20] highest counter.
+[53:22] So if you have a
+[53:23] three-bit counter,
+[53:24] well, the counter can
+[53:26] go up to seven at best.  But that's
+[53:27] okay.  We'll
+[53:28] at least find
+[53:29] one of the records that's
+[53:31] the oldest and
+[53:31] be able to
+[53:32] throw it away.  As
+[53:35] mentioned on the
+[53:37] we choose the path with the
+[53:38] highest counter
+[53:39] to replace.  So
+[53:41] give you an example.
+[53:42] Consider a
+[53:44] persistent cache with
+[53:52] Let's assume that
+[53:53] everything is initially empty
+[53:54] and we enter the first
+[53:55] block.  So, it has
+[53:57] a counter of zero.  After
+[53:59] that, we add
+[54:00] another block to this
+[54:01] set.  So
+[54:02] the counter is
+[54:03] zero, and this one
+[54:04] is incremented to
+[54:05] one.  Then we
+[54:07] add another block.
+[54:09] So, we increment the
+[54:10] remaining counters.
+[54:11] This one is one, and this one is
+[54:12] two.  Then
+[54:14] we add another block again.
+[54:15] So we increase
+[54:17] this one to zero.  Uh, it's
+[54:19] 0 to 1, 1 to two,
+[54:21] and 2 to 3. Then it
+[54:25] happens that
+[54:26] this block that we
+[54:27] added, which is essentially
+[54:28] the oldest and the
+[54:29] oldest, gets
+[54:30] accessed extremely
+[54:31] frequently, so this
+[54:32] block is extremely
+[54:33] popular.  So it's
+[54:38] frequently, and, uh, we're
+[54:39] trying to add
+[54:40] another block to that
+[54:42] set.  The one that will be
+[54:45] deleted is this block
+[54:47] , but maybe it's the one
+[54:48] that shouldn't be deleted
+[54:50] .  Uh, and maybe
+[54:52] this block
+[54:53] was accessed
+[54:54] extremely frequently.
+[54:57] So, this would violate the
+[54:58] principle of temporal
+[54:59] locality, and, uh, a
+[55:00] row that is
+[55:01] accessed early
+[55:02] might be accessed very
+[55:04] often.  Therefore, this may
+[55:06] be the wrong
+[55:07] decision.  Instead,
+[55:09] we want to
+[55:10] delete the row
+[55:11] that has the least
+[55:12] probability of being accessed
+[55:13] in the future.  There is no
+[55:16] way to know what
+[55:17] will happen in
+[55:18] the future.  But
+[55:20] at least we should
+[55:21] look back
+[55:22] and try to find a
+[55:24] line that
+[55:24] we are unlikely to
+[55:26] refer to in the
+[55:27] near future.
+[55:29] So, one such
+[55:31] scheme is Least
+[55:33] Recently Used LRU.  The idea
+[55:36] replace the block that has
+[55:38] been accessed the least in the
+[55:39] recent past.
+[55:41] So, essentially,
+[55:42] we're
+[55:42] trying
+[55:43] to predict the future from the past
+[55:44] , right?  Uh,
+[55:48] try
+[55:50] .  So, uh, what we're
+[55:58] doing now is,
+[55:59] uh, we're
+[56:00] trying to find
+[56:01] that block that
+[56:02] was, let's say, in the
+[56:03] recent past,
+[56:04] or that was maybe
+[56:06] accessed the least
+[56:07] in the last 100 cycles
+[56:08] or something like that.  So
+[56:14] this, uh,
+[56:16] follows directly from
+[56:16] the definition of
+[56:18] stack distance.  So we essentially
+[56:21] pick the line that
+[56:22] is lowest on the stack,
+[56:23] but we can't
+[56:24] actually maintain the
+[56:26] stack.  This would require
+[56:28] a lot of work, and, uh,
+[56:30] it's impossible to do
+[56:31] with the limited
+[56:32] number of bits in the
+[56:33] hardware, although
+[56:35] this approach has proven to be
+[56:36] optimal in
+[56:37] some scenarios.  So a
+[56:39] true LRU is complicated
+[56:40] .  Let's instead
+[56:43] implement
+[56:44] something called
+[56:45] pseudo LRU, which in
+[56:46] a sense gives us
+[56:48] almost everything that
+[56:49] LRU promises.  So,
+[56:51] pseudo LRU looks like this
+[56:53] .  Let's try
+[56:54] to mark the elements
+[56:55] that were used
+[56:56] recently.  What has
+[56:58] n't been used
+[56:59] recently can
+[57:00] be considered the least
+[57:01] used.  So
+[57:03] let's associate a
+[57:04] three-bit counter
+[57:05] with each value.
+[57:06] So, we'll actually
+[57:07] extend the entry in the
+[57:08] tag array to
+[57:09] get three
+[57:10] extra bits.
+[57:12] Every time we
+[57:13] access a string,
+[57:14] we increment
+[57:15] the counter and
+[57:16] stop
+[57:17] incrementing
+[57:18] after 7. So we'll
+[57:19] assume that 7 + 1
+[57:20] is 7. Then we
+[57:23] do this:
+[57:24] let me,
+[57:25] you might know by
+[57:26] now,
+[57:27] show you an example.  Uh,
+[57:29] let's say we have
+[57:30] different lines.  They
+[57:31] can have different
+[57:32] numbers.  Then we
+[57:37] turn to this
+[57:38] line.  So, from
+[57:39] four it will become
+[57:40] five.  Then we
+[57:43] line, it will become
+[57:44] two, it will become
+[57:44] three.  We're
+[57:45] going to go back to this,
+[57:46] it's going to be three.
+[57:47] Again we turn
+[57:49] to this, it becomes
+[57:50] four.  We
+[57:50] turn to this,
+[57:52] it becomes six and so
+[57:53] on.  Then we
+[57:55] periodically decrement
+[57:56] all counters in the
+[57:57] set by one.
+[57:59] So periodically, every
+[58:00] few hundred or
+[58:04] thousand clock cycles, we
+[58:05] decrement the counters
+[58:06] by one.  So
+[58:08] instead of 3*6*43, we
+[58:12] replace that with 3*6*43, what do
+[58:16] we have?  We'll have
+[58:20] 2*5*3 and 2. So why do
+[58:22] we do this?  Because
+[58:24] if you don't do this
+[58:26] , eventually all the
+[58:26] counters will reach
+[58:28] seven and stay at
+[58:29] seven.  After that, we
+[58:34] do this: every time there
+[58:35] is a
+[58:37] new access, we
+[58:38] to increase them.
+[58:40] Suppose a
+[58:41] new
+[58:42] block appears.  So if a
+[58:44] block appears, which one do we
+[58:45] delete?  Well, the one
+[58:47] with the smallest
+[58:48] counter, we should
+[58:49] delete.  This means
+[58:51] that it has
+[58:53] been accessed the least recently.
+[58:54] Suppose there are two
+[58:55] blocks with a
+[58:56] counter value of two.  So
+[58:58] let's try to delete
+[58:59] this one.  So when we
+[59:02] throw that away,
+[59:02] the question remains:
+[59:04] what should
+[59:04] the counter of the new
+[59:06] block be?  Well, the new block
+[59:08] is the newest.  Therefore,
+[59:09] it should have the
+[59:10] highest priority
+[59:11] according to
+[59:12] temporal locality.
+[59:13] So we set
+[59:14] its counter to seven
+[59:15] .  Let's assume that after
+[59:17] some time, perhaps
+[59:19] within the next
+[59:20] thousand cycles, none
+[59:21] of them will be
+[59:22] available.  So
+[59:23] gradually, uh, we'll
+[59:24] reduce their
+[59:25] number by one.
+[59:26] So that would be 1 4 2 and
+[59:28] six.  Then, uh,
+[59:31] let's say we have a
+[59:32] few more
+[59:33] appeals.  So then
+[59:34] the number of applications
+[59:35] will continue
+[59:36] to grow.  So
+[59:39] the logic here is that
+[59:41] we always
+[59:42] delete the block, uh, with the
+[59:43] lowest
+[59:44] counter, and that's
+[59:45] because that means that
+[59:47] block has been accessed
+[59:49] the least recently.  Right?
+[59:53] So, if it has been
+[59:54] addressed
+[59:55] the least recently, uh, that
+[59:56] means that even in
+[59:57] the near future, we
+[59:59] most likely will not
+[60:01] address it.  But
+[60:02] something that
+[60:03] has been addressed quite
+[60:04] often recently, we
+[60:08] will also be
+[60:08] addressing quite
+[60:09] often in the near
+[60:10] future.  That's why we do
+[60:12] n't delete it.  And
+[60:13] we also
+[60:14] set
+[60:15] the counter to seven, which is the
+[60:16] largest value
+[60:18] get for three
+[60:19] bits for the
+[60:19] block just received.  And
+[60:20] the reason is
+[60:21] that if a block
+[60:22] comes in brand
+[60:23] new, we want
+[60:24] to keep it for
+[60:25] a while, right?
+[60:26] According to the definition of
+[60:30] So, pseudo-LRU is very
+[60:32] popular.  It's, uh,
+[60:34] very commonly
+[60:35] used and
+[60:36] has a lot of benefits, uh
+[60:37] , associated with it.
+[60:39] So it is known as
+[60:40] one of the best
+[60:42] replacement schemes.  And the idea is, uh,
+[60:44] very simple.  We have
+[60:45] the logic for
+[60:46] the increase.  Every time
+[60:48] access, we increment
+[60:49] the value, in this
+[60:50] case not
+[60:51] exceeding seven.
+[60:51] Periodically, we
+[60:52] decrement the value
+[60:53] because if we
+[60:54] don't, all
+[60:55] the counters
+[60:56] will remain at
+[60:57] seven.
+[60:58] Whenever a block arrives,
+[60:59] it has the highest
+[61:00] priority, which is
+[61:01] seven.  And for
+[61:03] replacement, we choose the
+[61:04] block with the lowest
+[61:05] counter.  And the
+[61:06] lowest counter
+[61:07] means that it has hardly been used in
+[61:08] the past
+[61:09] .
+[61:12] Then we consider the
+[61:13] extraction operation.
+[61:14] Well, it's very, very
+[61:16] simple.  If the cache is
+[61:17] completely full,
+[61:18] nothing needs
+[61:19] to be done.  We can
+[61:21] throw away the line.  If
+[61:23] the cache
+[61:23] is completely full and the
+[61:24] modified bit
+[61:25] is zero, nothing
+[61:26] needs to be done.
+[61:28] We can
+[61:29] remove it.  If
+[61:30] the changed bit
+[61:31] is one, it
+[61:32] means that new data
+[61:33] has been written to that line
+[61:35] .  Therefore, we
+[61:36] need to write
+[61:37] the row to a lower
+[61:38] level and then
+[61:39] delete it.  That's the
+[61:40] only difference.  Good.
+[61:45] So let's
+[61:46] look at all these
+[61:47] operations schematically.
+[61:50] Hopefully this
+[61:51] clarifies everything.  So
+[61:52] let's, uh,
+[61:54] loading operation, shall we?
+[61:55] Upload something.  So
+[61:58] a search.  A search essentially
+[62:02] means that, uh, we
+[62:04] the set in the tag array
+[62:06] and, uh, we compare
+[62:08] tag array with the tag
+[62:10] part of the address.  So
+[62:16] part of this,
+[62:16] especially after the
+[62:19] set index is calculated, part of the
+[62:19] search process can
+[62:21] be overlapped by the
+[62:23] data read operation.  So this could
+[62:25] be a period of
+[62:25] overlap, and we've already
+[62:27] discussed how we
+[62:28] can
+[62:29] get the overlap right,
+[62:30] and this, mind you,
+[62:31] happens in the
+[62:32] case of a hit, and
+[62:33] this is what we do in the
+[62:35] case of a miss.  So
+[62:36] let's first
+[62:37] discuss the
+[62:38] hit case.  So in
+[62:41] once we have started
+[62:45] the process of reading all
+[62:46] four tags in the
+[62:48] four-residue cache, we
+[62:49] can also read
+[62:50] their corresponding
+[62:51] data values ​​from the
+[62:52] data array,
+[62:53] right?  So, we can
+[62:56] start reading them
+[62:57] in parallel, even
+[62:58] if all four aren't
+[62:59] needed, but
+[63:00] that's okay.  We
+[63:02] are trying
+[63:02] to reduce time;
+[63:03] once the search phase
+[63:05] is over, we
+[63:06] know whether it's a hit
+[63:07] or a miss.  So if
+[63:09] it's a, and we know exactly
+[63:11] what index, uh, the
+[63:14] data value is at, we
+[63:15] can, uh, pick that one after we
+[63:16] finish reading
+[63:19] So,
+[63:20] at least with a
+[63:21] little
+[63:21] overlap, we
+[63:22] save time.
+[63:26] Instead, if there's
+[63:27] a miss, then, uh,
+[63:28] basically, we
+[63:29] do a lookup in the
+[63:30] lower-level cache;
+[63:32] we read the block and
+[63:33] then insert
+[63:34] it, right?  And, uh,
+[63:38] after inserting the block,
+[63:39] it's possible (so these
+[63:40] question marks
+[63:41] indicate that this
+[63:43] won't happen
+[63:44] all the time, it might
+[63:45] happen someday), uh,
+[63:46] we find a
+[63:50] right?  One of the
+[63:52] lines, and then we
+[63:53] delete it.  So,
+[63:55] if it's a right-hand
+[63:56] reverse column cache
+[63:58] , then it might be
+[63:59] necessary
+[63:59] to write it
+[64:00] down if
+[64:02] it's changed, and then
+[64:03] we reinsert the
+[64:04] row that we had.
+[64:08] go back to this
+[64:09] stage where we, uh, well, in
+[64:11] this case, we
+[64:12] know exactly where we
+[64:13] put it.  So
+[64:15] data reading
+[64:16] after that.  O. Oh,
+[64:21] sorry.  We don't
+[64:23] really need to
+[64:24] come here.  Oh,
+[64:25] sorry about that.  I'm
+[64:26] just taking back what I
+[64:28] said in the last
+[64:30] 15 seconds.  Sorry.
+[64:31] Sorry.  Uh, yeah, what
+[64:33] we need to do
+[64:34] is we don't
+[64:35] need to do the
+[64:37] because we've already
+[64:38] read the data from the
+[64:39] lower level.  So
+[64:41] read them again from a
+[64:42] higher level.  So,
+[64:44] since you read
+[64:45] the data, the values ​​are already
+[64:47] available.  So this
+[64:48] can be passed off as an
+[64:49] output.  Good.  Good.
+[64:55] write operation to the right
+[64:57] .  So, uh, in the case of a
+[64:59] write operation, if
+[65:01] there is a hit, we can't
+[65:02] have an
+[65:02] overlap between
+[65:03] the search and the data.  This is
+[65:07] impossible, because otherwise,
+[65:08] as you know, we
+[65:09] cannot write data
+[65:11] to all four
+[65:12] data blocks, we will end up
+[65:13] corrupting at least
+[65:14] three.  Therefore, the correct
+[65:15] approach is to
+[65:17] perform a search first.  If
+[65:19] the data exists, we
+[65:20] correct record in the
+[65:22] data array and
+[65:23] write to
+[65:24] it.  Similarly, uh
+[65:30] , if there's a miss, then
+[65:32] we do a
+[65:33] lower-level cache lookup,
+[65:34] get the block, and
+[65:35] try to write the
+[65:37] block.  So the way
+[65:42] we try
+[65:43] to write a block, uh, is something like this
+[65:44] : we
+[65:49] first uh
+[65:50] insert it, right?
+[65:53] So, first
+[65:54] we write the block, which
+[65:55] essentially means that the new
+[65:57] data we want to
+[65:58] write
+[65:58] is written to the block
+[66:00] that we uh read from the
+[66:01] lower level, and
+[66:02] then we try to
+[66:03] insert uh, this block
+[66:05] with the new content into the cache.
+[66:09] If we find a
+[66:10] place to insert, then,
+[66:12] well, otherwise we
+[66:13] need to perform a
+[66:14] sequence of
+[66:15] three operations:
+[66:16] replace, remove,
+[66:17] insert, uh, you know.
+[66:19] So, we find a
+[66:21] replacement candidate.
+[66:23] We're deleting it, and,
+[66:24] uh, it might
+[66:26] need to be
+[66:26] written down
+[66:28] , also
+[66:29] because it's a cache on
+[66:30] the right.  And then we
+[66:32] insert a new
+[66:33] line.  If it's a
+[66:37] direct access cache,
+[66:38] you need to do
+[66:39] something different.  So, if
+[66:41] it is a random
+[66:42] access cache, this part
+[66:44] unchanged.  In case of
+[66:45] a hit, we
+[66:46] search and
+[66:47] record the data.  But we
+[66:48] also send the
+[66:49] right row to the
+[66:50] lower level.
+[66:50] Right?  So, if
+[66:52] you look at the
+[66:54] you'll see that this didn't
+[66:55] happen.  But in
+[66:57] access cache, every time
+[66:59] we write, we
+[66:59] need to send
+[67:01] it to the lower level
+[67:02] .  If there's a miss, uh, what
+[67:04] we do is we
+[67:06] lower-level cache.
+[67:09] We get a block, we
+[67:10] write new
+[67:11] content to the block, right?  So
+[67:14] any integer,
+[67:15] floating
+[67:16] point number or
+[67:17] double number, whatever
+[67:18] we want to write
+[67:20] , and the new block content
+[67:21] is written back to the
+[67:22] lower level cache, and at
+[67:23] the same time we
+[67:24] try to insert
+[67:26] it into the upper
+[67:27] level cache.  We find
+[67:29] the place well, otherwise
+[67:31] perform a replacement, you
+[67:32] know the sequence of
+[67:33] replacement and
+[67:35] insertion operations.  So
+[67:38] note that in this
+[67:39] sequence of replace
+[67:40] , remove, insert,
+[67:43] nothing needs to be
+[67:44] done.  We don't
+[67:45] need to access the
+[67:46] lower-level cache
+[67:47] , and the reason is that
+[67:48] it's a
+[67:49] pass-through cache.  So we
+[67:51] don't have any rows
+[67:52] at the top level
+[67:53] that contain any
+[67:54] changed data.
+[67:56] Right?  So, the
+[67:57] change bit is essentially zero for
+[67:58] all cache lines
+[67:59] across the board
+[68:00] .  So this is essentially
+[68:03] because, uh, we
+[68:04] recorded the block at
+[68:05] , uh, at an
+[68:07] earlier point in time,
+[68:08] which is this point at the

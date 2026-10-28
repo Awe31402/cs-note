@@ -1,0 +1,1506 @@
+[00:00] foreign
+[00:27] so now we will discuss message
+[00:29] transmission
+[00:32] so the idea is that in an NOC we send a
+[00:35] hierarchy of messages we send different
+[00:37] kinds of messages
+[00:41] so if we send a long message the message
+[00:44] is broken down into packets
+[00:46] so a packet is further broken down into
+[00:50] flits and a fleet is a flow flow bit
+[00:52] essentially if
+[00:54] and then a plate is broken down into
+[00:57] several fits right a physical so this is
+[01:01] more like a physical digit right you can
+[01:03] think of
+[01:04] just later the flow digit and this is
+[01:07] more like a physical digit so we'll see
+[01:09] what this is
+[01:10] so consider a say a source
+[01:14] right and a receiver
+[01:16] and they are connected by a pair of
+[01:18] copper wires
+[01:20] so assume that you have
+[01:23] 64 parallel copper wires right where
+[01:26] each wire can send one bit
+[01:29] then in every cycle you can basically
+[01:31] send eight bytes of information
+[01:34] say eight bytes in this case would be
+[01:37] what you can send physically in one go
+[01:39] that is a fit
+[01:41] but furthermore for the purpose of
+[01:44] buffering inside
+[01:46] the source and the receiver basically
+[01:48] for the purpose of buffering inside the
+[01:51] router
+[01:52] we may want to look at larger pieces of
+[01:55] data
+[01:57] so something that exists logically right
+[02:00] as a single atom is essentially a flow
+[02:03] digit
+[02:04] or a plate
+[02:06] so let's say in this case the fleet
+[02:09] could be 16 bytes for instance
+[02:11] which means that it will comprise
+[02:14] two fits
+[02:16] so what happens is that instead of power
+[02:18] as the logic of transmission is
+[02:20] concerned
+[02:21] the entire plate is transmitted in one
+[02:24] go
+[02:24] but of course in this case it takes two
+[02:27] cycles because in the first cycle we
+[02:29] send the first 8 byte portion
+[02:33] and in the second cycle we send the
+[02:35] other eight byte portion but clearly you
+[02:38] know they are sent in consecutive Cycles
+[02:40] because the entire fleet is still one
+[02:42] Atomic unit it's sent in one go even
+[02:44] though it may take multiple Cycles
+[02:46] because it is multiple fits
+[02:48] and then the entire plate is buffered
+[02:51] over here which basically means that
+[02:53] there is some storage space in the
+[02:55] router here
+[02:56] and the entire fleet is stored over here
+[02:59] now
+[03:00] a packet is basically several clicks so
+[03:04] what we say is that we can refer to a
+[03:07] packet more uh more or less like a
+[03:09] linked list
+[03:11] where the idea is that the first is the
+[03:13] head plate and then we have a sequence
+[03:15] of body flux
+[03:17] and finally we have a tail plate
+[03:20] right so we have the head as sequence of
+[03:22] body plates and the tail plate
+[03:25] so this is a packet so clearly you know
+[03:29] the packet is a sequence of plates and
+[03:31] we don't want all of it to be you know
+[03:33] buffered in one go even though we have
+[03:35] several schemes that do that
+[03:37] but the key idea of a packet is that all
+[03:39] the plates that comprise the packet
+[03:42] take the same route from a source to a
+[03:45] destination so let's see if you know the
+[03:46] destination is sorry if the root is like
+[03:49] this
+[03:50] then pretty much you know all the plates
+[03:52] in the same packet will take the same
+[03:54] route in the sense right from head to
+[03:56] tail they will take the same route and
+[03:58] basically Traverse like that
+[04:00] however if you consider a message a
+[04:03] message will have multiple packets
+[04:06] and the packets well in theory can take
+[04:09] different routes
+[04:10] and then you know they can be
+[04:12] reassembled at the receiver the same way
+[04:15] it happens in a regular Network right so
+[04:19] this can happen over here as well
+[04:22] so the most important difference between
+[04:25] a regular Network and an on-chip network
+[04:27] is that you are not allowed so let me
+[04:29] maybe write this is so important
+[04:31] it has to be written not allowed
+[04:40] so you are not allowed to drop packets
+[04:42] okay so this is like a given that it is
+[04:46] not allowed to drop packets
+[04:49] so philosophically this is a mock
+[04:51] departure from a regular Network because
+[04:53] in a regular Network you know we drop
+[04:55] packets that is how you figure out there
+[04:58] is congestion and then you do something
+[04:59] but in the case of an on-chip Network
+[05:01] packet dropping is absolutely not
+[05:03] allowed
+[05:04] and furthermore
+[05:06] given a large message well it is
+[05:08] packetized but oftentimes the many a
+[05:10] time a message is a packet right a
+[05:12] message basically the entire message is
+[05:14] a single packet
+[05:15] and you basically make all the routing
+[05:18] decisions which basically means you
+[05:20] figure out
+[05:22] which path
+[05:24] your plates will take only for the head
+[05:26] plate
+[05:27] and then the rest of the flits follow
+[05:30] the head plate
+[05:31] in the sense they take the same route
+[05:35] so that is the broad idea of how we
+[05:38] packetize messages divide a packet into
+[05:41] plates
+[05:42] and then again for a flit as I have said
+[05:45] all the fits go together in a sense they
+[05:48] are sent in consecutive Cycles
+[05:52] so the description is similar to what we
+[05:55] described in the last slide so we have
+[05:58] multiple plates in a packet the head
+[06:01] flit a sequencer body fluids and a tail
+[06:03] plate and of course given the fact that
+[06:07] the flit itself may be more the number
+[06:10] of bits in a fleet may be more than the
+[06:12] number of parallel wires
+[06:14] so we would require multiple consecutive
+[06:16] transmissions and each such transmission
+[06:18] is a fit
+[06:22] so let's now look at a very basic
+[06:24] problem which is that
+[06:27] we have the sender over here
+[06:30] and we have the receiver over here
+[06:33] and messages are stored so in this case
+[06:35] let's assume that plates are stored and
+[06:37] they go from the sender side to the
+[06:39] receiver's side
+[06:40] so we will see that in this entire
+[06:42] on-chip network business
+[06:45] the most important concept or I would
+[06:47] say by far the most important concept is
+[06:50] a question of storage is a question of
+[06:52] buffer space
+[06:53] because if you go back to slide 30 we
+[06:56] had discussed
+[06:58] that you're not allowed to drop a
+[07:00] message so given the fact that you are
+[07:02] not allowed to drop a message it does
+[07:04] Place restrictions Upon Us namely
+[07:09] that
+[07:12] uh we have to be very very careful about
+[07:14] the buffer space because there is finite
+[07:16] storage capacity within the routers and
+[07:18] ensure that a fleet is sent from the
+[07:21] sender to the receiver only when
+[07:24] we are sure that there is enough buffer
+[07:26] space available at the receiver
+[07:28] otherwise what happens when message
+[07:29] comes there is no place to store it it
+[07:31] will have to drop it
+[07:33] and dropping The Message is I'm sorry
+[07:36] dropping the flick in this case is
+[07:38] clearly not an option
+[07:41] so the only way to do that which
+[07:43] basically means that I am sending some
+[07:45] information in terms of in
+[07:47] plates and the slits can be stored at
+[07:52] the receiver basically means you need
+[07:54] some information at the sender
+[07:56] indicating the number of free buffers
+[07:58] the number of free flit buffers
+[08:06] at the
+[08:09] receiver
+[08:12] and this information should be there
+[08:14] with the senders if they send it thinks
+[08:16] that there are five free flit buffers at
+[08:19] the receiver the sender will send five
+[08:21] clips and then you know the sender will
+[08:23] assume that there are no free plate
+[08:25] buffers at the receiver so it will keep
+[08:27] quiet
+[08:29] so as you can see if I transmit a single
+[08:32] slip that's how it happens
+[08:35] so let's look at credit based flow
+[08:37] control
+[08:38] so the idea is that in this case the
+[08:40] sender which is node a
+[08:42] maintains an estimate of the number of
+[08:45] free buffers at the receiver which is B
+[08:48] say B is the receiver and let's say
+[08:50] there are three free buffers so then
+[08:52] this estimate will be maintained in a t
+[08:55] which basically means that a will send
+[08:57] three flips
+[08:59] and then basically aspirates estimate we
+[09:02] will not have any free buffer so then a
+[09:05] will stop sending
+[09:07] this basically means on you know if you
+[09:10] look at it another way
+[09:11] that if the sender thinks that the
+[09:13] receiver has enough free buffers then
+[09:16] only it sends a fleet right and
+[09:19] otherwise it does not send a flip
+[09:21] because if the receiver does not have
+[09:23] free buffers it will drop the packet I'm
+[09:25] sorry it will drop the flick and we are
+[09:28] not allowed to drop a fluid so dropping
+[09:30] a flat is not allowed
+[09:32] because dropping a flat is not allowed
+[09:36] that is why this method is required
+[09:39] furthermore once the receiver let's say
+[09:41] sends a flip to someone else and it
+[09:44] frees a buffer a fleet buffer that is
+[09:46] all of the buffers are plate buffers
+[09:48] because a fleet is the basic Atomic unit
+[09:51] it will send a message to the sender
+[09:54] which in this case is a that look one of
+[09:56] my buffers has been freed so you can
+[09:58] send a message right so this is known as
+[10:01] a credit
+[10:02] so this is a it's a single fit message
+[10:05] it does not
+[10:07] have to be anything more than that but
+[10:10] again the key Point basically over here
+[10:13] is that the moment a buffer becomes free
+[10:16] a credit is sent right so that's the
+[10:19] most important thing that a credit has
+[10:21] to be sent that is how a can kind of
+[10:24] have an up-to-date or near up-to-date
+[10:26] estimate of the number of free flit
+[10:29] buffers at B
+[10:30] so let's now discuss the broad
+[10:32] terminology over here
+[10:36] tph pH stands for fit is the time it
+[10:39] takes a single fit to go across
+[10:44] the A to B link
+[10:46] so if we have node a and we have node B
+[10:50] then the time it takes you know one fit
+[10:52] to go from A to B is D fit
+[10:55] and t f is T flip which is the time it
+[10:58] takes a flute to go from A to B
+[11:01] and the moment a fit or a fluid comes so
+[11:04] basically you know the moment a message
+[11:06] comes regardless of the size of the
+[11:08] message
+[11:10] it is processed so we assume it is tpr
+[11:13] and we also assume that all messages
+[11:15] take the same time to process only after
+[11:18] that is a node aware of what was the
+[11:21] contents of the message
+[11:23] and then we will Define TD as the credit
+[11:25] round trip delay this we will not Define
+[11:29] this specific term will be defined in
+[11:32] the subsequent slides
+[11:35] so the assumptions over here so
+[11:37] assumptions over here are by the way
+[11:38] important because a lot of the
+[11:41] subsequent analysis would depend on
+[11:43] these assumptions
+[11:45] so the first assumption is that the
+[11:46] routers are clock synchronized this
+[11:48] basically means that they use the same
+[11:52] clock and the clocks are synchronized so
+[11:54] if let's say you know a is counting
+[11:57] 10 Cycles then B will also count 10
+[12:01] Cycles right it's not going to count 20
+[12:04] Cycles or even 11 Cycles or nine Cycles
+[12:06] so if a uh sorry
+[12:13] if a is counting
+[12:15] uh 10 Cycles B counts 10 Cycles as well
+[12:19] time is measured in the unit of router
+[12:21] Cycles not you know CPU Cycles or
+[12:23] anything and everything is basically an
+[12:26] integral multiple of these router Cycles
+[12:29] furthermore when you receive a message
+[12:32] you don't know what is there in a
+[12:34] message so you process it first and the
+[12:36] time it takes to process is tpr so this
+[12:38] delay is incurred and then you add it
+[12:41] you insert it into a buffer
+[12:43] all the status messages whatever they
+[12:46] are the credits uh then on message off
+[12:49] message so we'll discuss these messages
+[12:50] in subsequent slides all the inner
+[12:53] status messages are one fit each they
+[12:55] need not be more than that so it's
+[12:57] easily possible to encode all our status
+[13:00] messages within one fit one physical
+[13:05] so let us look at the process of sending
+[13:07] credits and letters also look at the
+[13:10] round trip delay so here of course we
+[13:12] Define the time axis for nodes A and B
+[13:15] and the time
+[13:17] increases as we go in a downward
+[13:19] Direction
+[13:21] so what happens is that let us assume a
+[13:23] buffer at t equal to 0 was freed
+[13:27] so then basically what happens here is
+[13:32] that a credit is sent to node a which is
+[13:35] the sender saying that look you know one
+[13:37] of my buffers are free so you can send a
+[13:40] single flit message and the time it
+[13:43] takes to actually send
+[13:45] uh the fit over here which is that you
+[13:47] know this is the credit basically is tph
+[13:50] and as I said the clocks are
+[13:52] synchronized and then this message gets
+[13:54] processed which is tpr
+[13:56] after that a fleet is sent so basically
+[14:00] this is the flipped transmission delay
+[14:02] which is again processed
+[14:04] so you think about it at t equal to 0 if
+[14:06] let's say
+[14:08] you decide that you have a free buffer
+[14:11] then by the time you send a credit it is
+[14:15] processed and the fleet comes back and
+[14:16] that is processed right the total time
+[14:19] is called TD which is what we were
+[14:21] discussing in the previous slide on
+[14:23] terminology
+[14:24] and furthermore TD can be defined as a
+[14:28] sum of these components these four
+[14:29] components that is which is the sum of
+[14:32] tph
+[14:35] and 2 times tpr because one tpr is
+[14:38] incurred over here and one is incurred
+[14:40] over here so this is the total credit
+[14:43] this is called the credit round trip
+[14:44] delay
+[14:57] all right and this basically means that
+[15:00] you know in an Ideal World you will
+[15:02] expect that if let's say a buffer is
+[15:04] free now in the very next moment or
+[15:06] maybe the next cycle the message arrives
+[15:08] but it doesn't happen that way because
+[15:10] the credit has to be sent to the other
+[15:12] side and a message has to come and it
+[15:14] takes time
+[15:16] so uh what is the what is the properties
+[15:19] of credit based flow control
+[15:21] so from a buffer getting free to
+[15:23] receiving the next split because of that
+[15:25] you know that act of the buffer getting
+[15:27] freed is that you send a credit and it
+[15:30] takes TD units of time
+[15:33] so let's see within this time period
+[15:35] let's assume that you are continuing to
+[15:37] get flits in the sense you don't want
+[15:40] the receiver over here which is node B
+[15:42] to remain idle but you want Flex to keep
+[15:45] coming right so what is the maximum
+[15:47] number of flits that could be coming
+[15:54] so in this case you are assuming that
+[15:56] basically the time it takes for a single
+[15:59] flick to come
+[16:00] takes TF cycles of course the Assumption
+[16:03] over here is that it's not the case that
+[16:06] this TF Cycles are spent
+[16:08] kind of in the copper wire but rather a
+[16:12] fleet comprises multiple fits and those
+[16:14] fits are sent in conjugative Cycles so
+[16:17] we can say that look if it takes one
+[16:19] cycle to transmit a single fit
+[16:22] and let's say if there are four fits in
+[16:24] the flip then we can assume that TF is
+[16:26] equal to four this would sort of be a
+[16:29] rough calculation but again you know the
+[16:32] idea is that to receive the full flit it
+[16:35] will take four Cycles so pretty much you
+[16:37] know if we do a simplistic calculation
+[16:40] based on the assumptions and the
+[16:42] reasoning that I just provided
+[16:45] you can receive a maximum of TD by TF
+[16:47] flits in this time period right so not
+[16:50] more than that but if the time period is
+[16:52] TD then the maximum number of fluids
+[16:55] that you can you know fully receive
+[16:56] would be limited by this right uh so you
+[17:00] can uh you know some of you may want to
+[17:02] argue that look uh you can pipeline the
+[17:06] link or something but as I said let's
+[17:09] not look at
+[17:10] transmitting flits over a link that way
+[17:14] instead the way we should look at is
+[17:17] that it takes TF units of time for the
+[17:20] fluid to be transferred and for the
+[17:22] entire TF units of time it keeps the
+[17:24] link busy mainly because it's fits
+[17:27] physical digits are being transferred
+[17:29] that is why the maximum number of lits
+[17:31] that you can receive is TD by TF
+[17:35] this means that if the size of the
+[17:37] buffer at B right basically at t equal
+[17:40] to zero
+[17:43] is at least TD by TF flats and assume
+[17:46] that you know since this is assuming
+[17:48] that D is not freeing any more buffers
+[17:50] uh in the TD time frame then it is clear
+[17:54] that a is not going to stall because a
+[17:56] can just keep on sending all the flits
+[18:00] within this time period so everything
+[18:01] that we are discussing only within this
+[18:03] time period of TD right it's not Beyond
+[18:06] it
+[18:07] so the key idea over here is that in
+[18:09] this time period TD
+[18:11] uh
+[18:13] what will happen is that
+[18:17] we are essentially operating in the
+[18:19] shadow of a credit where the credit has
+[18:20] been sent and because of the credit
+[18:22] reflect is coming but if you don't want
+[18:24] the receiver to stall and and you want
+[18:27] it to continue to receive fluids then if
+[18:29] it has TD by ta free fluid buffers you
+[18:32] can receive all of them in this time
+[18:34] frame that's the idea then it is not
+[18:36] going to stall
+[18:37] right and furthermore what can happen is
+[18:40] once
+[18:42] a flight comes you can send a credit so
+[18:45] let's say this Fleet comes you send a
+[18:47] credit and then because of that
+[18:50] uh you uh basically a message comes
+[18:54] right so so basically what can happen is
+[18:57] that let's say at a steady state you're
+[18:59] also sending fleets out from here
+[19:01] you will essentially not stall
+[19:04] and the key idea is mainly because you
+[19:06] have TD by TF free buffers which are
+[19:09] available
+[19:10] of course we need to send a credit
+[19:13] message when the buffer becomes free so
+[19:15] the idea is that if this is a this is b
+[19:17] as you can see over here node a node B
+[19:20] and let us say there is a node C over
+[19:22] here
+[19:24] and on a periodic basis you are sending
+[19:26] fleets from B to C
+[19:29] then basically whenever you send
+[19:31] something here you send a credit
+[19:33] backwards
+[19:35] so in the certain sense we are doubling
+[19:37] the number of messages if you look at
+[19:40] that because every message that is sent
+[19:41] a credit is sent being sent to the
+[19:44] previous node and that will make our
+[19:46] life quite tough and quite difficult and
+[19:49] it's clearly not power efficient it is
+[19:51] clearly not performance efficient
+[19:56] so before we proceed further let us look
+[19:59] at the TD by TF Factor once again
+[20:02] so assume again we have a and b and
+[20:05] their respective timelines
+[20:09] so what happens is that let's say at t
+[20:11] equal to 0 B transmits a flit
+[20:15] so which means that a free buffer is
+[20:18] created then the credit is sent and over
+[20:20] time
+[20:21] a fleet is sent in response to this free
+[20:25] buffer and the credit that was sent
+[20:27] so the question is this time period is
+[20:29] TD and what is it that you expect to
+[20:32] expect a to do
+[20:34] in this time period right
+[20:36] so the first thing could be that
+[20:40] you expect a not to do anything and wait
+[20:42] for the credit but again a would have to
+[20:45] stall
+[20:46] and that is not a good idea
+[20:50] the other idea over here is that a keeps
+[20:54] on sending flits because it has
+[20:56] sufficient credits and B has sufficient
+[20:59] buffers
+[21:00] so the question is that clearly at this
+[21:02] point of time
+[21:04] right and if I kind of like look back
+[21:06] and if I assume that you know a credit
+[21:08] is uh I'm sorry a fleet is received at
+[21:10] this point of time
+[21:12] then clearly a should have enough credit
+[21:14] such that if it wants to kind of
+[21:16] saturate the bandwidth till this point
+[21:18] it can keep on sending flips
+[21:21] right so basically because for like one
+[21:24] credit is essentially one Fleet right it
+[21:27] or it allows you to send one click so
+[21:30] what will happen is that if in this time
+[21:31] period if you don't want a to stall then
+[21:34] you want that a at this point of time
+[21:36] when it can send the first flight after
+[21:39] it equal to zero at B
+[21:41] it needs to have enough credits
+[21:44] right because it is clear that any
+[21:46] credit that is sent after t equal to 0
+[21:48] would come either at TD or after TD so
+[21:52] essentially at this point you expect a
+[21:54] to have t d by t f lit such that TD by
+[21:57] TF credits such that it can send TD by
+[22:00] TF fluids to saturate the bandwidth at
+[22:03] this point of time such that the link is
+[22:04] not idle which further means that the
+[22:07] number of free buffers at B should be
+[22:09] again
+[22:10] uh you know TD by TF you may argue minus
+[22:14] 1
+[22:15] but you know I mean uh to keep the
+[22:18] matter simple let's say you would want
+[22:20] to have TD by TF free buffers over here
+[22:23] which also means that the total numbers
+[22:26] of buffers at B should be more than
+[22:29] or let us say lower bounded by T D by t
+[22:32] a right so there are different ways to
+[22:34] think about it but the Clear Point over
+[22:37] here that we are trying to make is that
+[22:39] in this time period which basically
+[22:41] means which is your response time period
+[22:43] right when a cannot respond to the
+[22:46] credit that you have sent if you still
+[22:48] want enough message Transmissions to be
+[22:51] there this means that a needs to have TD
+[22:54] by TF credit sometime in the past
+[22:56] and furthermore so let's say it needs to
+[22:59] have TD by TF credits at this point of
+[23:04] and because we have TD by TF credits
+[23:06] over here
+[23:07] uh we need to have TD by TF buffers at
+[23:11] least at this point of time
+[23:13] uh in B such that all of these plates
+[23:16] that are being sent can be stored
+[23:18] without dropping any fluid right so also
+[23:20] you know a lower bound on buffers is
+[23:22] being placed
+[23:25] so of course an improvement is possible
+[23:27] over here it's called on off flow
+[23:31] so the idea is that whenever
+[23:34] a message was sent from B right a flute
+[23:38] was sent a credit was also sent back
+[23:41] so we are essentially doubling the
+[23:43] number of messages
+[23:46] so that's not a good idea it's much
+[23:47] better to work with two thresholds
+[23:49] namely the off threshold and the on
+[23:51] threshold
+[23:53] so the idea is that if we have enough
+[23:54] free buffers in b
+[23:56] then we immediately send a message to A
+[23:59] to stop sending we say that look we have
+[24:01] reached a bottom threshold we just have
+[24:03] enough free buffers so you stop sending
+[24:06] and similarly if you have Anon free
+[24:09] then we can ask a to start sending so
+[24:12] that's an Anon is a start sending
+[24:14] threshold and enough is a stop signaling
+[24:18] so let's look at it let us say an off
+[24:20] threshold has been reached we send an
+[24:22] enough message
+[24:25] and what could happen is that so the
+[24:28] moment a gets the message it will turn
+[24:30] itself off
+[24:31] but of course it is possible that many
+[24:33] flits that
+[24:36] started their Journey before this time
+[24:39] period
+[24:40] they could be sent you know they could
+[24:43] be
+[24:44] kind of in flight
+[24:46] so we need to have enough buffers to
+[24:48] store all of these
+[24:50] in-flight plates
+[24:53] right so all of these have to be stored
+[24:55] since we are not allowed to drop
+[24:58] and then what will happen is several
+[25:00] messages will be sent
+[25:02] from B so a lot of free Fleet buffers
+[25:05] will be created
+[25:07] so then an on threshold will be reached
+[25:09] so on threshold basically means at this
+[25:12] point a can start sending
+[25:15] so then once it gets the message a will
+[25:18] start sending
+[25:19] and uh so you can clearly see the period
+[25:22] of questions over here where basically a
+[25:25] stops then a is asked to send why is it
+[25:28] asked to send because few more free
+[25:30] fluid buffers are created at B and then
+[25:32] a starts sending
+[25:37] so let us now analyze the off message
+[25:44] so let's look at the time instant T
+[25:47] because this time instant is the most
+[25:49] important for us
+[25:51] so let's look at all the messages that
+[25:54] arrive after t
+[25:56] so let's look at the next cycle which is
+[25:58] cycle t plus one
+[26:01] so basically arrive means that it is
+[26:05] fully processed right
+[26:07] so fully process means it enters a
+[26:10] buffer also
+[26:12] so in this case we take the time t plus
+[26:15] 1. we cut out the processing time
+[26:18] and we cut out the time it took to
+[26:21] physically send the plate which is minus
+[26:23] TF minus tpr
+[26:25] and then what we do is that if we assume
+[26:28] that an off message was sent at time t
+[26:32] then it will reach uh from B to a at
+[26:35] time t plus tph
+[26:37] and it will take DPR units to get
+[26:40] processed
+[26:42] so essentially there is a risky period
+[26:45] right
+[26:46] basically the risky period is
+[26:48] let's say between this point and this
+[26:50] point when the sender which is a in this
+[26:54] case does not know that b actually does
+[26:57] not need a message but it will just keep
+[26:59] sending
+[27:00] so we need to look at all the messages
+[27:02] sent in this window and we need to
+[27:04] ensure that B has enough buffer space
+[27:07] to store all of those splits because as
+[27:10] I said we are not allowed to discard
+[27:13] affiliate right so flip discarding is
+[27:16] not something that is allowed hence we
+[27:19] need to have adequate buffer space
+[27:22] so the question is how long is this
+[27:24] risky period during which you know
+[27:26] packets are sent to P right and
+[27:29] basically all that we need to do is that
+[27:32] we need to subtract
+[27:33] so we subtract the Cycles we take this
+[27:35] we subtract this and we add 1 because
+[27:37] you know we are considering so 5 minus 3
+[27:39] is actually
+[27:40] uh five minus 3 is actually 3 because
+[27:43] there are three Cycles three four and
+[27:45] five so that's why we add one
+[27:47] so well lo and behold what we see is
+[27:49] that after we rearrange the terms and do
+[27:52] a little bit of cancellation
+[27:53] this term is exactly equal to t d
+[27:58] as you can see if I just you know
+[28:01] quickly go back is the expression that
+[28:04] we have been seeing for quite some time
+[28:06] now right uh it's a total credit round
+[28:09] trip delay and we have been seen seeing
+[28:11] this for quite some time now in the
+[28:13] sense we had seen it here also in the
+[28:16] credit based flow control so we just see
+[28:19] the same thing you know TD appears again
+[28:21] and again so in this case it appears
+[28:24] again you know in a certain sense it can
+[28:26] be thought of as the round trip delay
+[28:29] so pretty much TD is the length of the
+[28:31] risky period which means that we can
+[28:33] receive TD by TF plates
+[28:36] so in a sense uh after sending the off
+[28:39] message these are the number of plates
+[28:41] it can have which basically means that
+[28:45] it needs to have enough buffer space
+[28:48] in this case what is NF so it is
+[28:51] basically TD by TF it needs to have
+[28:53] available right and or let's say the
+[28:57] minimum number of buffers it needs to
+[28:58] have available
+[29:00] right if it has less than that and an
+[29:02] off message has not been sent then there
+[29:04] is a potential problem because a fleet
+[29:07] could be sent in this risky period and
+[29:11] basically what could happen is that the
+[29:14] fleet could be uh
+[29:16] you know discarded
+[29:19] so now because we cannot drop fluids a
+[29:22] straightforward extension of this
+[29:24] argument would be that n off is greater
+[29:26] than equal to
+[29:28] t d by TF right so this is a standard
+[29:31] result that we have been seeing
+[29:35] so now what is the necessary condition
+[29:37] between non and N of well
+[29:39] say enough basically says that look if I
+[29:42] have enough free buffers
+[29:44] then it means that I am just at my
+[29:48] minimum
+[29:49] so what I need to do
+[29:51] is that I basically need to
+[29:54] send an off message right so this is
+[29:56] what it says but
+[30:00] what Anon says that look fine you know
+[30:03] you ask the sender to switch off
+[30:05] and also you
+[30:08] ensure that you have enough free buffers
+[30:10] such that you know just in case the
+[30:12] sender had sent messages which is still
+[30:15] in flight
+[30:16] they would be accommodated in these free
+[30:19] but now the question is when do I start
+[30:22] sending messages once again so that is
+[30:25] when the receiver has Anon free buffers
+[30:27] and Common Sense would suggest that Anon
+[30:29] is greater than enough
+[30:32] so of course if I can take the
+[30:34] pathological case where N1 is equal to
+[30:36] just enough plus one
+[30:38] which means that I receive one message
+[30:40] and then I send an off message because
+[30:42] one free buffer goes and again you know
+[30:45] that is sent then I send an on message
+[30:47] so this is no different from credit
+[30:49] based flow control right so this is
+[30:51] essentially a grade based kind of idea
+[30:54] which is not something that I like even
+[30:56] though it's not exactly credit based but
+[30:59] it's something broadly along that
+[31:01] direction
+[31:02] So to avoid frequent on and off messages
+[31:05] there needs to be a sizable gap between
+[31:08] the thresholds
+[31:09] such that without sending frequent start
+[31:11] stop messages in one go we can transmit
+[31:14] a Fair number of messages
+[31:21] so the idea now is that let's say
+[31:25] you know a message was sent
+[31:28] and then you know the number of free
+[31:31] buffers fell to the off threshold
+[31:34] an off message was sent
+[31:36] then for a long enough period for a long
+[31:40] he would stop sending messages
+[31:43] after that b at some point of time which
+[31:46] is at this point of time would realize
+[31:47] that no I have enough free buffers
+[31:49] because a few more messages were sent
+[31:51] from B to its neighbor which is C
+[31:54] so then what would happen is that a
+[31:57] would get the on message and again start
+[32:01] so this means that n which is a total
+[32:03] number of buffers right so this is a
+[32:05] total number of buffers at B so we are
+[32:07] only talking about B so that should be
+[32:09] evident if not
+[32:11] implicitly if not explicitly at least
+[32:14] implicitly but this means that n which
+[32:17] is the number of buffers
+[32:19] should be far greater than non right
+[32:23] so it should be you know reasonably
+[32:25] large
+[32:27] uh why should it be reasonably large
+[32:29] well ah
+[32:31] the reason it should be reasonably large
+[32:33] is because you should have you know
+[32:34] enough
+[32:36] messages over here even though a is not
+[32:38] sending such that during this time
+[32:42] you will not remain idle so what you
+[32:44] will do is that you will keep on sending
+[32:46] sending sending sending right and
+[32:49] basically after you have sent
+[32:52] you know messages you have enough free
+[32:53] messages so basically from off threshold
+[32:55] so let's say this is the off threshold
+[32:57] the moment you reach the on threshold
+[32:59] you
+[33:00] send a message to A to start sending
+[33:04] so let's say that at this point at this
+[33:09] are a non-free buffers
+[33:11] okay
+[33:14] so if I have Anon free buffers which is
+[33:16] why I sent you know the on message in
+[33:18] the first place
+[33:19] right then the number of non-free
+[33:22] buffers or the number of field buffers
+[33:25] is going to be n minus Anon
+[33:29] all right
+[33:30] so if it is going to be n minus n on
+[33:35] right then we want this to be more than
+[33:38] a threshold I'll tell you why
+[33:39] because the idea is that in this period
+[33:42] right which is the shadow of the on
+[33:43] message which is basically when I am
+[33:45] sending an on message and I have not
+[33:47] received a response yet which is I have
+[33:50] not received a fleet because of it yet
+[33:52] during this period I would like to keep
+[33:54] sending right
+[33:55] so the idea is that you know the length
+[33:57] of this period is again t d because we
+[33:59] have been seeing this over and over
+[34:01] again and basically how many flicks can
+[34:03] I send I can send TD by TF so we need
+[34:06] you know at least these many
+[34:10] flits over here you know the buffer
+[34:13] should have these many fleets so I said
+[34:15] I am not idle during this time period
+[34:17] that is the key idea
+[34:20] so if I were uh two kind of
+[34:23] clean up the screen
+[34:25] the shadow of an on message which is
+[34:27] this period which is TD Cycles I would
+[34:30] not like to be idle which basically
+[34:33] means that you know the number of
+[34:35] non-free buffers or let the number of
+[34:38] field buffers
+[34:40] switch is equal to
+[34:44] n minus n on
+[34:48] it should be more than TD by TF all
+[34:52] ah so because if n minus non is 0
+[34:57] then what will happen is that we will
+[34:58] not be able to send any message in this
+[35:00] period right any flat in this period
+[35:03] which is not acceptable to us
+[35:05] so we want this number n minus Anon
+[35:08] which is nothing but right the number of
+[35:12] let us say ah
+[35:15] filled buffers
+[35:17] right let me put a number sign number of
+[35:19] field buffers at the time that the on
+[35:21] message was sent
+[35:23] we want that to be greater than equal to
+[35:25] TD by TF such that there is no idleness
+[35:36] in the shadow of an on message right
+[35:39] such that you can keep on transmitting
+[35:41] fluids and in the shadow of an on
+[35:43] message there is no idleness at all this
+[35:46] is something that we would like to
+[35:48] ensure this is something that we would
+[35:49] like to have
+[35:52] so the point is that we will have enough
+[35:55] fluids so what do we have
+[35:57] so what we have is n minus N1 is greater
+[36:00] than equal to t d by t f which means n
+[36:02] is greater than equal to
+[36:04] non plus t d by t f
+[36:07] now we know that non is greater than n
+[36:10] of right so this we know from the
+[36:12] previous slide that N1 is greater than n
+[36:15] of
+[36:16] so this value is greater than n of plus
+[36:19] t d by t f
+[36:21] what we have proven earlier or shown
+[36:24] earlier is that n of is also needs to be
+[36:26] greater than equal to TD by t f to
+[36:29] ensure that
+[36:31] all the messages in Flight can be
+[36:34] buffered right
+[36:36] and so basically if I uh then use the
+[36:39] fact that n off is greater than equal to
+[36:41] TD by TF then this expression over here
+[36:44] is greater than equal to T 2 TD by t f
+[36:47] so basically we also have a constraint
+[36:50] on the total number of buffers
+[36:52] which is that n is greater than 2 d 2 t
+[36:57] d by t f all right so we have several
+[36:59] constraints right so we have the first
+[37:02] constraint n off is greater than equal
+[37:04] to TD by t f non is greater than n of
+[37:07] n minus N1 is greater than equal to t d
+[37:10] by T F and N itself the number of
+[37:13] buffers right so n is the total number
+[37:15] of buffers at which node at B that is
+[37:19] greater than 2 TD by TF so we basically
+[37:22] have a bunch of constraints
+[37:25] which are essentially limiting the
+[37:28] choice of values of
+[37:30] three variables what are these three
+[37:32] variables they are n the total number of
+[37:34] buffers and off
+[37:36] which is the of threshold and n on which
+[37:39] is the on threshold
+[37:43] right so now ah we are at an interesting
+[37:46] point at an interesting juncture
+[37:49] where basically we have looked at two
+[37:53] flow control mechanisms between of
+[37:56] course a single source and a single
+[37:59] right so this is what we have done we
+[38:01] have looked at
+[38:03] single Source single receiver kind of
+[38:05] sorry single sender single receiver kind
+[38:07] of situation
+[38:09] where we have looked at credit based
+[38:11] flow control which to a certain extent
+[38:13] is inefficient because
+[38:16] you know credits are sent but of course
+[38:17] you know credits could be batched so
+[38:20] this batching is happening via this on
+[38:22] off mechanism primarily
+[38:32] so the on off mechanism
+[38:35] is primarily uh you know doing this
+[38:38] where we are reducing the number of
+[38:40] messages that were originally associated
+[38:43] with the credit based schemes
+[38:48] so now what we will do is that we will
+[38:50] slightly up our game and we will instead
+[38:54] start looking at
+[38:56] larger systems right so it is not just
+[38:59] you know a single edge in a sense a
+[39:02] single sender single receiver based
+[39:04] system but we will start looking at
+[39:07] somewhat larger systems right
+[39:11] so so in this case let us consider again
+[39:13] a mesh network with a source and a
+[39:16] destination
+[39:18] so we will look at the simplest idea
+[39:20] which is circuit switching which was
+[39:22] there in the old telephone Network
+[39:25] uh you know old telephone Networks so
+[39:28] here what would happen is that from a
+[39:30] source to a destination
+[39:32] we would Reserve buffer space in the
+[39:34] routers along the way so what we would
+[39:36] do is we would first send a small plate
+[39:39] which would basically take some path and
+[39:42] then it would Reserve all the buffer
+[39:44] space for the entire
+[39:47] path right so I said once the message is
+[39:49] sent uh there is nobody to stop it we
+[39:52] have enough buffers available and the
+[39:54] entire message is sent from the source
+[39:55] to the destination in one group
+[39:58] so after we send the message we clear
+[40:00] the buffers but of course you know let's
+[40:02] say that each router has three buffers
+[40:04] each and the message itself is let's say
+[40:08] nine flicks so then then of course you
+[40:10] know it will kind of Pipeline and move
+[40:11] like a worm but the fact is that buffers
+[40:14] are reserved along all the nodes on the
+[40:17] path
+[40:19] and once the message is sent we clear
+[40:21] the buffers
+[40:23] so if I were to look at this diagram
+[40:26] over here and so basically let's say
+[40:29] this is the source this is the
+[40:30] destination and there are three hops so
+[40:33] this is hop one hop two hop three
+[40:36] so what I do over here is that basically
+[40:40] I
+[40:42] first send a probe flight whose job is
+[40:45] to go from The Source node to the
+[40:47] destination node
+[40:49] and let us assume that it takes there
+[40:52] are k-hops between the source and
+[40:54] destination and it takes
+[40:57] one cycle each per hop that is a
+[41:00] simplistic assumption to live with so in
+[41:03] this case the probe packet the probe
+[41:06] Fleet in this case the fastest that it
+[41:08] can go is essentially K Cycles so the
+[41:11] probe will reach from the source to the
+[41:13] destination three hubs one two three
+[41:15] reaches the destination
+[41:17] the destination then uh would basically
+[41:20] immediately start reserving uh start you
+[41:24] know regarding the fact that a circuit
+[41:27] has been established that's what it is
+[41:29] called right so this is called a circuit
+[41:32] so a circuit has been established so the
+[41:35] reservations
+[41:36] would happen ah and an acknowledgment
+[41:39] would be sent right so basically
+[41:41] reservations would happen and an
+[41:43] acknowledgment would be sent that look
+[41:45] now I have reserved buffer space for you
+[41:48] the fastest the response could come down
+[41:51] is again
+[41:53] uh you know again it would take care
+[41:55] Cycles so mind you you know there are
+[41:57] two
+[41:58] possible variations of this idea in one
+[42:01] case reservations could happen while
+[42:03] sending the proflate in another case
+[42:05] reservations could happen while sending
+[42:08] the response
+[42:09] so it doesn't matter the first one would
+[42:12] tie up resources for more time for more
+[42:14] time the second one for less time
+[42:17] so but of course the first one is
+[42:18] simpler so there is a kind of
+[42:21] performance and simplicity trade-off
+[42:25] and after that after the probe has been
+[42:28] sent and the response has been received
+[42:30] so this is 2K Cycles basically over here
+[42:33] then the message is sent flipped by flit
+[42:36] so basically uh let us assume that the
+[42:40] length of the message inflates is l
+[42:42] and B is the number of flits that can be
+[42:45] sent per cycle the channel bandwidth so
+[42:48] the total time that will actually take
+[42:50] to send the message
+[42:53] is essentially uh you know L by B for a
+[42:57] single hop
+[42:58] but given the fact that we are
+[42:59] pipelining it what will happen is that
+[43:03] uh if there are two fluids one Fleet
+[43:05] will be here the other one will be here
+[43:06] then this slit will come here the other
+[43:08] plate will come here
+[43:10] so if I look at a kind of a timeline
+[43:12] where the x-axis is cycles and the y
+[43:15] axis is basically you know ah at which
+[43:18] hop it is the hop count basically
+[43:23] so now let us take a look at this
+[43:25] expression and let's see where it is
+[43:27] derived we will make the assumption that
+[43:31] the channel bandwidth the fluids per
+[43:33] cycle is greater than equal to one
+[43:35] is very easy to extend this formula to a
+[43:38] case
+[43:39] where the fluids per cycle is less than
+[43:41] 1 which nowadays is becoming more common
+[43:44] but let me discuss the Genesis of this
+[43:48] simplistic formula
+[43:50] so the key idea is that if L is the
+[43:53] length of the message inflates and B is
+[43:56] the number of lits per cycle
+[43:58] the total number of Cycles it will take
+[44:01] to basically send all the fleets of the
+[44:04] message along the first top
+[44:07] is basically going to be lyb which is
+[44:10] what you see over here so all of these
+[44:13] Cycles this part is L by B
+[44:16] after that if I look at this part right
+[44:19] if I go to the Top If I go and look at
+[44:21] this part
+[44:23] then this part pretty much you know we
+[44:25] have one cycle per hop
+[44:28] right so basically you know we have
+[44:30] three hops here one two three so we have
+[44:32] K Cycles over here
+[44:34] kindly note that one cycle is being
+[44:36] double counted which is this cycle over
+[44:40] so the cumulative number of total Cycles
+[44:43] is now K plus L by B minus 1 minus 1
+[44:47] because of the double Counting
+[44:50] so uh in the case where
+[44:53] a fleet is an atomic unit and it is
+[44:56] taking multiple Cycles
+[44:58] so of course in this case
+[45:01] ah the idea is
+[45:04] that we may not want to kind of pipeline
+[45:07] fits within a fleet so in that case if
+[45:10] let's say B is 0.5
+[45:12] then instead of 1 this will become 2
+[45:15] over here because there will be a double
+[45:16] counting of two cycles but
+[45:21] let's not get into you know let's not
+[45:24] make this
+[45:26] formula more complicated let's stick
+[45:28] with this simplistic
+[45:30] view that it is K plus L by B minus 1
+[45:33] right and you know considered
+[45:36] this to be the case where you know it
+[45:40] will hold for ah cases where you pretty
+[45:43] much we can send new fluids every cycle
+[45:45] so for that minus one will hold
+[45:48] so the total time is 3 K plus L by B
+[45:52] minus 1 which again is a simplistic
+[45:53] expression just for the sake and purpose
+[45:56] of analysis but what we can clearly see
+[45:59] is that this protocol
+[46:01] in many ways is reasonably wasteful why
+[46:04] is it wasteful because once a circuit
+[46:08] is established we can do a lot of great
+[46:10] things but just to establish the circuit
+[46:12] which is the probe phase
+[46:14] the response phase and then the message
+[46:17] transmission phase it takes
+[46:19] quite a bit of time and this thing takes
+[46:23] 2K Cycles and furthermore
+[46:27] it kind of locks resources or blocks
+[46:30] resources resources in this case being a
+[46:33] router buffers for a large period of
+[46:36] which again is not the best thing
+[46:39] right from our point of view
+[46:41] so the idea is that this is good for
+[46:44] bulk transfers where we want to transfer
+[46:47] a large number of bytes in one go so
+[46:49] then of course needless to say this is a
+[46:52] good idea
+[46:53] but there are large overheads for a
+[46:56] single short transfer as a result this
+[46:59] may not be the best idea for an on-chip
+[47:01] Network that has many small transfers
+[47:03] instead of one large transfer
+[47:07] so what we can instead do is we can look
+[47:10] at packet based flow control which is
+[47:12] the store and forward approach instead
+[47:15] of doing flow control as we were doing
+[47:17] in the earlier case the earlier case
+[47:19] incidentally was called circuit
+[47:20] switching where we are essentially
+[47:22] reserving space for the entire circuit
+[47:26] which is the route from the source to
+[47:27] the destination
+[47:30] pretty much we were doing things at the
+[47:32] message level
+[47:33] so in this case if let's say we want to
+[47:36] send a packet to a router which is a set
+[47:38] of flits then the idea is we send all
+[47:41] the packets over here we have enough
+[47:43] buffer space here to store the entire
+[47:45] packet which means all of its
+[47:47] constituent fleets and the entire packet
+[47:50] is sent entire packet is buffered here
+[47:51] then the entire Market is sent it is
+[47:53] buffered here so I have a small
+[47:55] animation that can make things clearer
+[47:58] so as you can see all the fleets of one
+[48:01] packet are being sent then all The
+[48:04] Fleets are the nest next packet are
+[48:06] being sent so on and so forth
+[48:10] so again I can draw the same diagram
+[48:12] where I have Cycles in the x axis hops
+[48:15] in the y axis so as you can see the
+[48:18] length of this is L by B and we have K
+[48:20] hops so in this case actually it is a
+[48:23] much slower protocol if you think about
+[48:25] it even though we are doing it at a
+[48:27] packet level the total number of cycles
+[48:30] that it is taking us is K times L by B
+[48:33] which is high which is significantly
+[48:36] High
+[48:37] as compared to even the previous case
+[48:40] so ah it is true we are not locking up
+[48:42] kind of blocking resources for a long
+[48:45] but nonetheless it is on the higher side
+[48:48] right it's on the far Higher Side in
+[48:50] fact the basic store and forward idea
+[48:52] that's the reason
+[48:54] people
+[48:55] don't use it but they use
+[48:58] something else an improvement of this
+[49:00] but again as I said if we look at this
+[49:03] the idea is that because we store the
+[49:05] entire packet then forward it then store
+[49:08] and and then forward it
+[49:10] and furthermore we need space for all
+[49:13] the fleets of the packet so if a packet
+[49:15] has four flits but we have space for
+[49:17] only three then the packet in a no Fleet
+[49:19] or the packet is sent this is one more
+[49:22] caveat that's the reason this is not a
+[49:24] great idea
+[49:27] so then we have virtual cut through
+[49:29] routing or VCT
+[49:31] so even though we send flits before the
+[49:34] entire packet is buffered
+[49:36] we need to ensure that there is space
+[49:38] for the
+[49:40] entire packet right so VCT the idea is
+[49:43] the same but you know there is one uh
+[49:46] advantage over here over store and
+[49:48] forward so let me first tell you what is
+[49:52] common what is common is this part
+[49:53] something that I just said
+[49:55] and what is different is basically this
+[49:59] diagram which again we will look at
+[50:01] so given the fact that store in forward
+[50:04] and VCT are of the
+[50:08] variety where they work with packets
+[50:11] themselves right where they work with
+[50:13] you know full packets
+[50:15] the idea here is that
+[50:19] we still need space for the entire
+[50:21] packet right so in this case a packet as
+[50:23] you can see has four flicks
+[50:25] if you have space in this router for
+[50:27] only three flits then the packet cannot
+[50:29] be sent no Fleet of the packet can be
+[50:31] sent right so basically that is a
+[50:33] necessary requirement but the advantage
+[50:36] is that we can do ah pipelining of sorts
+[50:40] in the sense that
+[50:42] we do not have to store the entire
+[50:45] packet before forwarding a fleet so what
+[50:47] we do is that
+[50:49] we can basically keep forwarding The
+[50:51] Fleets even though all of them have not
+[50:53] all the fleets of the same packet have
+[50:55] not arrived at the router as you can see
+[50:57] over here this is the animation here if
+[51:00] I were to just compare this with the
+[51:01] previous animation you can quickly see
+[51:03] the difference
+[51:04] so the previous animation was this the
+[51:07] entire packet comes it's stored then the
+[51:09] entire packet goes the current animation
+[51:11] is different
+[51:12] where we do reserve space at the packet
+[51:15] level but again we don't wait for the
+[51:17] entire packet to arrive at a router
+[51:20] before sending any Fleet to the towards
+[51:23] the destination so in this case as you
+[51:25] can see the animation does indeed look
+[51:27] quite different and its analysis of
+[51:30] virtual cut through right routing this
+[51:32] scheme is also different so in this case
+[51:35] what we do
+[51:36] is that we sense these message fleets
+[51:38] but as I said in the previous case we
+[51:41] were actually waiting for the entire
+[51:44] packet to arrive so this was the weight
+[51:45] phase and then only we were sending in
+[51:48] this case this weight has gone
+[51:50] so we don't wait so the moment we have a
+[51:53] flat we try to send it to the next node
+[51:56] and then uh the next slate arrives we
+[51:59] try to send it to the next node so on
+[52:01] and so forth so in this case the final
+[52:03] timing expression is K plus L by B minus
+[52:06] 1. and we have already seen this
+[52:08] expression so we have seen this
+[52:10] expression when we were doing circuit
+[52:12] switching and the reason you know if you
+[52:15] see both the graphs both the plots are
+[52:18] the same
+[52:19] and in this Hops and Cycles both of them
+[52:22] are the same and the reasons for this
+[52:24] are also reasons for this expression are
+[52:27] also the same
+[52:31] so uh what are the problems in the VCT
+[52:34] scheme well what is good we already know
+[52:36] which is that
+[52:37] ah pipelining of Lids in a packet across
+[52:40] routers is possible as we just saw but
+[52:43] again what are the problems so let us
+[52:46] consider four routers a b c and d the
+[52:50] black ones are fluids from packet one
+[52:52] which are destined to C so they are
+[52:54] supposed to go here
+[52:56] the orange ones are destined to go from
+[52:59] B to D they are destined to go down
+[53:02] and the blue ones from packet 3 are
+[53:06] destined to some other node Beyond D so
+[53:08] that we do not care
+[53:10] so the idea is that we cannot send any
+[53:13] flit from packet one which are these
+[53:15] guys
+[53:16] till the router at B is totally empty
+[53:19] right so this is a problem because the
+[53:22] router at B has two flips even though it
+[53:24] has two empty fluid buffers
+[53:27] none of the fluids of none of the black
+[53:30] plates can come here and the reason is
+[53:33] that we need space to buffer the entire
+[53:35] packet and this space is not there hence
+[53:37] we will not do any transmission
+[53:40] and as you can see this is clearly
+[53:42] inefficient right this is clearly
+[53:44] wasteful of resources in this case the
+[53:47] resources are fluid buffers
+[53:49] so uh in this case needless to say
+[53:52] we have an opportunity to send this
+[53:56] Fleet over here
+[54:00] Fleet over here but we are not doing
+[54:05] so if I compare circuit level circuit
+[54:08] switching with packet level switching
+[54:11] so we will see that there are you know
+[54:14] interesting cases that come about in
+[54:16] terms of the timing
+[54:17] so circuit switching was slow and we
+[54:20] were you know very upset with it so we
+[54:22] said it is 3K plus L by B minus 1 but
+[54:25] store in forwards timing was also bad
+[54:27] the reason being the store and the
+[54:29] forward
+[54:31] so this was K times L by B so what is
+[54:33] the best the best idea that is coming
+[54:35] out from here is K plus L by B minus 1
+[54:39] which is the time in cycles of course
+[54:42] the assumption that we are making is
+[54:44] that you can transmit a new Fleet every
+[54:47] cycle right so that assumption is being
+[54:49] made and uh but if you break that these
+[54:53] constants 1 will change right these guys
+[54:55] will change but that will not make a big
+[54:58] difference overall so that's the reason
+[55:00] we decided to live on with this
+[55:02] simplistic assumption
+[55:04] but the key point is that in any virtual
+[55:08] cut through kind of scheme as we can see
+[55:12] what is happening is that
+[55:16] we are losing these opportunities as you
+[55:19] can see where we could transmit fluids
+[55:21] but we are not transmitted right so this
+[55:24] is a problem and we will have to solve
+[55:29] so one solution is to buffer at the flit
+[55:33] levels instead of waiting
+[55:35] to have enough space for the entire
+[55:37] packet what we could do is we could do
+[55:40] Wormhole flow control which is the way
+[55:42] that a warm moves
+[55:44] so we do not have to wait for space to
+[55:47] be created to buffer the entire packet
+[55:49] the flow control should be at the level
+[55:52] of flits
+[55:54] so this does not solve
+[55:57] all our problems right
+[56:00] but it as we see it will solve some but
+[56:03] let's look at the Assumption over here
+[56:05] the Assumption here is the setup here is
+[56:07] the same as what we had seen in VCT
+[56:10] where basically the black plates are
+[56:13] destined to router C and the orange
+[56:16] fluids are destined to D and these ones
+[56:18] are destined somewhere else
+[56:20] so in this case what we can do is that
+[56:23] we can
+[56:25] send the black plates over here
+[56:27] right and then of course we can send
+[56:30] them forward so as you can see that this
+[56:32] is an efficient transfer
+[56:34] but this also has problems which I would
+[56:36] like to show in the next slide which is
+[56:40] that there is a problem with Wormhole
+[56:42] routing that a flip from packet one if
+[56:46] its route is ABC so in this case as you
+[56:49] can see the diagram is slightly
+[56:50] different
+[56:51] the fluid buffers here are full so there
+[56:53] is no additional space and these orange
+[56:56] plates want to come here and these
+[56:57] plates want to go somewhere else and
+[56:59] these guys are stuck
+[57:02] so now the point is that we send the
+[57:04] black fluids to B
+[57:07] but because they are not at the head of
+[57:10] the flip buffer queue and at the head of
+[57:13] the fleet buffer queue we have the
+[57:14] orange plates which cannot make progress
+[57:16] because they need to go down whereas the
+[57:19] black plates need to go here and the
+[57:21] black fleets could make progress right
+[57:24] what is essentially happening is that
+[57:27] the black plates are stuck they cannot
+[57:30] move
+[57:31] they cannot go any further
+[57:33] the black plates are stuck even though
+[57:35] they could move in an Ideal World they
+[57:37] should be allowed to move but because we
+[57:39] have a single key of lids and the head
+[57:41] of the queue is blocked or The Fleets at
+[57:44] the head of the queue are blocking the
+[57:46] entire queue the black fits are flits
+[57:49] are unfortunately stuck
+[57:53] so this is a classic case of head of the
+[57:55] line blocking
+[57:58] the black plates could go to Sea however
+[58:01] the orange plates are blocking them
+[58:05] so this is where we come to our last
+[58:07] scheme which is the most sophisticated
+[58:10] in this space
+[58:11] so it is basically the same as creating
+[58:14] multiple Lanes of traffic within a road
+[58:18] so these are called virtual channels so
+[58:21] here what we do is that even though
+[58:22] between A and B very in this case is the
+[58:25] sender and B is the receiver
+[58:27] there is a single physical Channel but
+[58:30] we kind of logically think that there
+[58:31] are multiple virtual channels
+[58:34] where each virtual Channel
+[58:36] is associated with its own flit buffer
+[58:40] at the destination
+[58:41] in this case the destination is B and
+[58:45] even though all the virtual channels are
+[58:46] kind of sharing the same physical
+[58:48] Channel which is sharing the same copper
+[58:50] wires but logically it is as if you know
+[58:53] there are four separate channels and
+[58:55] four separate flows on the channels and
+[58:58] each channel is associated with its own
+[59:00] set of flit buffers this is nothing
+[59:03] different from consider a busy
+[59:05] intersection of Roads right
+[59:07] so basically you know each road if it
+[59:10] has
+[59:11] multiple Lanes
+[59:13] then pretty much all the vehicles on a
+[59:16] lane uh sorry on the vehicles on a road
+[59:19] are still
+[59:20] kind of on that road but they belong to
+[59:22] separate Lanes you could have you know a
+[59:25] right lane which is just allowed to turn
+[59:27] right assuming right side driving a
+[59:29] saving left side driving you could have
+[59:31] a left turn lane which could just turn
+[59:33] left right and the rest of the traffic
+[59:35] could go straight
+[59:37] so that is possible
+[59:39] so the same way that you divide a road
+[59:42] into lanes and depending upon which part
+[59:44] of the world you live in if you have
+[59:46] left side driving like in India then you
+[59:48] would have a dedicated
+[59:50] left turn lane
+[59:52] and then the left turn lane traffic
+[59:55] would not be blocking the traffic on the
+[59:57] other lanes or let's say if you have
+[60:00] right side driving you could have a
+[60:02] dedicated rights right turn lane and
+[60:04] also you could have a dedicated left
+[60:06] turn lane where you also don't block the
+[60:09] traffic that is going straight right
+[60:11] so the same way that we create Lanes
+[60:15] in on regular roads
+[60:17] we can say that look the actual Channel
+[60:19] like the actual road is the same
+[60:22] but again we have four virtual channels
+[60:25] where every Fleet is kind of marked with
+[60:28] which virtual Channel it belongs to and
+[60:31] then automatically it is directed to the
+[60:33] correct set of buffers
+[60:37] which is at the receiver which is B
+[60:40] so if I were to have virtual channels
+[60:43] which is akin to having multiple queues
+[60:45] on each router
+[60:47] and we consider the same example so we
+[60:49] consider this example over here which
+[60:52] was kind of troubling us
+[60:54] if we consider the same example with two
+[60:56] queues so we will find that the orange
+[60:59] plates are still blocked because they
+[61:01] can't move right so in this case they
+[61:02] are supposed to go here and they are
+[61:04] stuck
+[61:05] but the black plates will have a
+[61:07] different virtual Channel and they can
+[61:09] just move right so they can simply move
+[61:12] and they can go from a to c
+[61:14] which means that by splitting a physical
+[61:17] channel into virtual channels we are
+[61:19] avoiding head of the line blocking this
+[61:22] is why I have written no h o l h o l
+[61:25] mean side of the line blocking mainly
+[61:28] because this is like a separate Lane and
+[61:30] even though this Lane is stuck I am on a
+[61:33] different Lane
+[61:34] and that lane traffic is free to go
+[61:37] hence I just use my Lane so the lane you
+[61:40] know so in many roads we have
+[61:42] underpasses we have uh you know flyovers
+[61:46] over Bridges and so on
+[61:47] say let's say one lane you need to go
+[61:50] straight and you hit a traffic light but
+[61:52] in the other lane you kind of go on a
+[61:54] flyover so in that case the traffic is
+[61:57] not impeded
+[61:58] this is a classic case
+[62:01] that kind of embodies this thought this
+[62:04] principle
+[62:05] which is that the black Lane was not
+[62:08] being blocked so all the black plates as
+[62:10] you can see this way just moved and
+[62:13] moved and moved
+[62:16] so what are the pros and cons of virtual
+[62:19] channels
+[62:23] along with
+[62:25] solving the blocking issue this
+[62:27] increases throughput significantly
+[62:30] mainly because we can Multiplex a single
+[62:33] physical Channel among different virtual
+[62:37] as a result what happens
+[62:40] is that
+[62:42] if one of the lanes or virtual channels
+[62:44] known as a VC is blocked then packets on
+[62:47] the other VC can make progress of course
+[62:50] if they are going in other directions or
+[62:52] if the target VC is free right so in
+[62:56] this case they could very well be going
+[62:57] in the same direction
+[62:59] but they could very well be taking a
+[63:01] different VC on the destination router
+[63:03] which is free
+[63:05] this does increase the complexity of the
+[63:07] router substantially so we'll look at it
+[63:10] and assigning virtual channels
+[63:14] in routers and tracking them
+[63:17] and ensuring that they are optimally
+[63:19] assigned is hard but we will again see
+[63:22] that it's not that hard in practice
+[63:27] so now we have discussed the ins and
+[63:30] outs of message transmission
+[63:32] so in the next lecture we will focus on
+[63:35] routing algorithms which will be the
+[63:38] third lecture in this series on nocs
+[63:51] thank you

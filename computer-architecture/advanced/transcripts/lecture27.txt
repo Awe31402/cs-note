@@ -1,0 +1,1456 @@
+[00:00] foreign
+[00:13] Networks
+[00:20] so we need uh three specific pieces of
+[00:23] background
+[00:25] so the first is pipelining well we don't
+[00:28] need a lot of pipelining but at least in
+[00:30] order pipeline part that's the reason of
+[00:32] chapter 2 over here
+[00:34] cache is definitely
+[00:36] and some idea of graph Theory very
+[00:39] simple but still at least some idea is
+[00:42] needed
+[00:44] so here is how we will proceed so we'll
+[00:47] have six sections so we'll start with an
+[00:49] overview of an NOC
+[00:51] discuss basic ideas in message
+[00:54] transmission
+[00:55] routing so routing basically means how
+[00:58] do you
+[01:00] move a message from one part of the chip
+[01:02] to another part of the chip
+[01:05] the design of a router
+[01:07] then once we have covered the basic NOC
+[01:11] so the network on chip is also known as
+[01:13] an NOC capital N small o and capital c
+[01:17] so once these four have been done we
+[01:20] will look at an advanced topic which is
+[01:21] the design of a new kind of a cache
+[01:24] architecture known as a non-uniform
+[01:25] cache architecture
+[01:27] and finally we will conclude with
+[01:29] discussing the performance aspects of
+[01:32] nocs
+[01:35] so let's first take a look out take a
+[01:38] look at the layout of a modern chip
+[01:43] so there are two kinds of popular
+[01:45] layouts the first kind is this
+[01:47] chessboard kind of layout
+[01:49] where as you can see we have cores we
+[01:52] have cash Banks so go back to chapter
+[01:54] seven so in chapter 7 we had discussed
+[01:57] more about cash Banks
+[02:01] so the idea was that we will have
+[02:04] multiple cash banks in a large cache so
+[02:07] typically the last level cache whatever
+[02:09] it is L2 L3 L4 doesn't matter we refer
+[02:12] to it as an LLC last level cash LLC
+[02:17] so the cash banks of the LLC are
+[02:19] distributed throughout in this case
+[02:21] and additionally we have memory
+[02:23] controllers so all of them have to be
+[02:25] connected on the on-chip network such
+[02:28] they can such that they can talk to each
+[02:30] other or communicate with each other
+[02:33] another popular layout is this Rim kind
+[02:36] of layout
+[02:37] where you have a mix of course cash
+[02:40] Banks and memory controllers which are
+[02:42] on the rim
+[02:44] and everything else is in the center
+[02:47] which means the cash Banks
+[02:50] I'm sorry stand corrected so the course
+[02:52] and memory controllers are on the rim
+[02:55] and the cash banks are in the center
+[02:58] so this is another kind of layout but
+[03:00] clearly you know many other kinds of
+[03:02] layouts are also possible
+[03:04] and there is of course a trade-off in
+[03:06] terms of performance as we will see but
+[03:09] regardless of the layout the on-chip
+[03:11] network has to connect all of them
+[03:15] so now let's come to the definition of a
+[03:18] note
+[03:19] so any network we will always have two
+[03:22] terms a node and a link
+[03:25] a link can also be referred to as an
+[03:28] edge if particularly we are drawing the
+[03:30] network like a graph so this is the
+[03:32] computer science graph it's not the
+[03:34] regular engineering graph so the graph
+[03:36] is a data structure if you have not
+[03:39] heard about this then stop here stop the
+[03:42] video here
+[03:44] read about graphs what they are in in a
+[03:47] computer science data structure
+[03:49] terminology and then come back
+[03:51] so coming back to the definition of a
+[03:53] node it is any kind of an object or any
+[03:56] entity that can send or receive a
+[03:58] message
+[03:59] switch in our case could be a core a
+[04:02] cash bank a memory controller or an
+[04:04] accelerator an accelerator is a
+[04:07] specialized circuit
+[04:09] such as an AI engine or other or a
+[04:12] graphics engine which does a specific
+[04:14] task right it is a specialized compute
+[04:16] engine
+[04:19] so now we will Define the term called a
+[04:21] router which is Central to our
+[04:23] discussion on on chip Networks
+[04:25] say every communicating node in a sense
+[04:28] every node that wishes to communicate
+[04:30] has a router
+[04:31] the router is nothing but its
+[04:34] communication subsystem that
+[04:36] orchestrates the
+[04:38] communication on its behalf
+[04:43] so in this case uh routers are of course
+[04:46] are connected to other routers in a
+[04:48] certain sensor router represents a node
+[04:51] in the communication subsystem it is
+[04:53] connected to other routers and then
+[04:56] there are channels between routers
+[04:58] so a channel is a combination of two
+[05:02] things
+[05:03] so we have a physical part to a channel
+[05:06] which let's say between two routers
+[05:07] would be a set of copper wires so that's
+[05:09] the physical part of the channel
+[05:11] and furthermore at the entry so the
+[05:14] entry is also called the Ingress so this
+[05:16] is just the input entry right so we have
+[05:19] two terms Ingress and egress egress is
+[05:22] the exit and Ingress is the input is the
+[05:25] entry
+[05:26] so along with these copper wires we have
+[05:28] data buffers so data buffers are nothing
+[05:30] but a small it's a small storage area
+[05:36] for storing in Flight messages so the
+[05:39] key operative term over here is the term
+[05:41] data buffer which is to store in Flight
+[05:44] messages of the channel
+[05:47] so Channel as I said is more than a set
+[05:50] of parallel copper wires is a set of
+[05:53] parallel copper wires along with these
+[05:55] data buffers that are there at the
+[05:58] Ingress or the entry of every routers in
+[06:00] a sense messages come here
+[06:02] they are buffered in the data buffers
+[06:04] and then subsequently they are processed
+[06:06] in the router so how would the router
+[06:09] process it well it is connected to other
+[06:10] routers so it will decide where to send
+[06:13] the messages to send them here or to
+[06:15] send them here
+[06:18] so how do the routers communicate with
+[06:20] each other this is again a basic
+[06:23] question that needs to be answered
+[06:28] so let's look at some very basic
+[06:31] concepts so let's first consider two
+[06:33] routers Let It Be router R1 over here
+[06:36] and router R2 over here
+[06:39] so let us look at the wire between them
+[06:42] so the wire in this case as we have said
+[06:44] in a simple Avatar is basically a set of
+[06:47] parallel copper wires between the source
+[06:50] and the receiver so let's just consider
+[06:53] them as normal wires so there are no
+[06:55] buffers in between the wires unbuffered
+[06:58] so what we have seen in our discussion
+[07:00] on the Elmore delay model
+[07:03] is that the delay the transmission delay
+[07:06] on The Wire
+[07:07] is proportional to the square of the
+[07:10] length of the wire so it's quadratically
+[07:12] related
+[07:14] so if D is the delay and L is the length
+[07:16] of the wire then there is a quadratic
+[07:18] relationship like this
+[07:20] which means that long wires are very
+[07:23] slow because you double the length of a
+[07:25] wire
+[07:26] and the propagation delay of the signal
+[07:28] on The Wire increases by four times you
+[07:32] increase the delay of The Wire by let's
+[07:35] say
+[07:36] sorry you make the wire three times
+[07:38] longer and the delay becomes nine times
+[07:41] so this is an issue
+[07:44] so because this is an issue what we can
+[07:47] do is we can take a large wire and
+[07:49] divide it into
+[07:50] s segments
+[07:53] so when we divide it into these segments
+[07:55] what do we do between two segments we
+[07:58] insert a buffer the idea of the buffer
+[08:00] is to basically store and forward in
+[08:03] this is like a relay so it's not storing
+[08:05] the entire thing it's getting some data
+[08:07] and immediately forwarding to the next
+[08:09] so it's like a pipeline in that sense
+[08:11] and clearly it doesn't have a great
+[08:13] amount of internal storage nor does it
+[08:16] need to have its main idea is to kind of
+[08:19] read in and then write out
+[08:21] so this somewhat simple idea if we look
+[08:24] at it mathematically we will see that
+[08:26] there is a big benefit so let's
+[08:28] understand this let the delay of one of
+[08:31] these buffers be small d
+[08:34] so for X segments how many buffers do we
+[08:38] need s minus 1 and the combined delay of
+[08:41] all the buffers because they form a
+[08:43] series system is s minus 1 multiplied
+[08:46] with d
+[08:48] further mode we have S segments and the
+[08:52] delay of a segment delay of a signal
+[08:54] now the time that a signal takes to
+[08:57] Traverse a segment is proportional to so
+[09:00] if Kappa is a proportionality constant
+[09:03] is proportional to the length of the
+[09:05] segment which is nothing but L by S
+[09:06] because L is the overall length and we
+[09:09] have S segments
+[09:11] so the length of each segment is L by S
+[09:13] so its Kappa L Square by S Square
+[09:16] and as you can see the final expression
+[09:18] turns out to be this
+[09:20] so here what is the variable the
+[09:22] variable is the
+[09:25] number of segments
+[09:29] all right
+[09:31] and
+[09:34] what we can do is given the fact that we
+[09:36] can optimize the delay against this
+[09:38] variable
+[09:39] we can differentiate this with respect
+[09:42] to s and set it to 0 so in this case
+[09:45] we'll get an extrema and it will turn
+[09:48] out to be the minimum I'm omitting that
+[09:50] proof but the key idea is if we solve
+[09:53] this expression then s will become equal
+[09:55] to square root of Kappa by D into l
+[10:00] so the most important thing is that the
+[10:02] optimal number of segments which
+[10:04] minimizes the delay of the entire wire
+[10:07] right of the entire
+[10:10] channels in this case a channel is a
+[10:12] more intelligent thing because it has
+[10:14] buffers within it
+[10:17] the optimal number of segments is
+[10:19] proportional to the length and
+[10:21] furthermore if I plug in the formula for
+[10:23] the optimal number of segments into this
+[10:25] expression I get the optimize delay
+[10:29] to be 2 square root of Kappa D
+[10:32] multiplied with L minus d
+[10:36] so so what's the what is the
+[10:40] takeaway over here
+[10:42] the key takeaway over here is that
+[10:44] unlike the previous example where the
+[10:47] delay was proportional to the square of
+[10:50] the length of the wire
+[10:52] in this case the delay is
+[10:54] more or less approximately proportional
+[10:57] to L right of course you have this minus
+[10:59] t over here but by and large we have
+[11:02] reduced a quadratic relationship into a
+[11:06] linear relationship right so this is why
+[11:09] we have created the idea of this
+[11:12] buffered link
+[11:13] so link as I said is nothing but nothing
+[11:16] but the connection between notes in this
+[11:18] case it's a connection between routers
+[11:21] so a buffered link has a linear delay
+[11:23] and is linear in terms of the length of
+[11:26] the link
+[11:29] now let's look a little bit more at the
+[11:33] way the links are organized in a
+[11:35] physically organized on the vlsi chip
+[11:41] so we need to understand that a vlsi
+[11:43] chip is made of multiple layers like a
+[11:47] multi-story building
+[11:49] the lowest layer comprises the
+[11:51] transistors right so you will have you
+[11:53] know the transistors actually look like
+[11:55] a plus sign on Silicon because you have
+[11:58] one polysemic one layered over doped
+[12:01] silicon so let's refer to them as a plus
+[12:04] so the lower layer is full of
+[12:06] transistors the lowest layer actually is
+[12:08] full of transistors so there is no space
+[12:10] left
+[12:11] if I want to connect one transistor with
+[12:13] the other
+[12:14] so what I do is that I add a layer on
+[12:17] top
+[12:18] which only has metallic connections so
+[12:21] what I do is that I go up
+[12:23] on this layer I Traverse and then
+[12:27] finally I go down so as you can see
+[12:30] this is like you know traversing a
+[12:32] multi-story building with lot of
+[12:34] staircases across floors
+[12:37] see if I want to go from let's say this
+[12:39] point over here to this point
+[12:41] then I need to use multiple metallic
+[12:44] layers
+[12:45] right or let's say you know let me
+[12:48] change this point I mean this is maybe
+[12:49] easier to visualize
+[12:52] so what I do is that my connections are
+[12:55] kind of complicated
+[12:58] so uh the signal goes up like this then
+[13:01] goes like this then goes like this then
+[13:03] it comes here then it comes down over
+[13:06] here
+[13:07] so what you can see is that any kind of
+[13:10] a signal transmission between one
+[13:12] transistor to another
+[13:15] the wires are not in 2D space they are
+[13:17] in 3D space and furthermore we have
+[13:20] multiple metallic layers in the sense
+[13:22] you know we have one layer like this one
+[13:25] more layer then one layer then one more
+[13:27] layer and so on
+[13:28] because
+[13:30] even though the lowest layer comprises
+[13:33] uh you know is comprised of transistors
+[13:36] but the layers on top are only for the
+[13:38] interconnection so these are like
+[13:41] overpasses on highways right these are
+[13:45] like flyovers and overpasses and so on
+[13:47] where the idea is that you Traverse a 3D
+[13:51] route to go from one point to another on
+[13:54] the 2D plane
+[13:56] the reason you can't do it on the 2D
+[13:58] plane is because there is no space
+[14:00] and why do you need multiple metallic
+[14:02] layers well the pattern is hidden in
+[14:05] this diagram so if you see
+[14:07] the patterns are like this that in one
+[14:09] layered all the wires are horizontally
+[14:11] aligned then in the next layer they are
+[14:14] vertically aligned so horizontal and
+[14:16] vertical in the sense one is along the
+[14:17] x-axis one is along the y-axis
+[14:20] again along the x axis again along the y
+[14:22] axis so on and so forth
+[14:25] the reason for this is that you cannot
+[14:27] have an intersection of wires on a layer
+[14:31] right
+[14:32] so two copper wires can never intersect
+[14:34] otherwise they'll have the same
+[14:35] potentials intersections are not allowed
+[14:38] so that's the reason we alternate
+[14:40] so what we do is that we have multiple
+[14:42] metallic layers
+[14:44] and all the wires in the metallic
+[14:48] layered are broadly along the same
+[14:49] direction
+[14:50] so they are either oriented along the
+[14:52] x-axis or along the y axis
+[14:55] and the connections are made in such a
+[14:57] way that if I want to connect two points
+[14:59] then they actually go via multiple
+[15:02] layers using this 3D geometry that you
+[15:05] have seen and of course this is static
+[15:07] it's not dynamic in the sense it does
+[15:09] not change
+[15:10] but nonetheless the connections are
+[15:13] complicated and it's this is a dynamic
+[15:15] sorry I'm sorry this is statically
+[15:18] determined
+[15:20] but again it is 3D
+[15:23] so one term that needs to be introduced
+[15:26] over here is the notion of a wire
+[15:28] it's also called a tsv or a trans
+[15:30] silicon wire because it connects two
+[15:34] layers connects wires on two layers
+[15:36] right so it's a is literally a vertical
+[15:39] connection
+[15:40] so using a combination of wires and
+[15:43] wires
+[15:44] we achieve connections between
+[15:47] transistors
+[15:49] so if you think about it on a modern for
+[15:52] a modern chip you can have billions of
+[15:55] transistors let's say 2 billion
+[15:58] and then again they are divided into
+[15:59] course and functional units within the
+[16:01] course
+[16:02] see if let's say one functional unit
+[16:04] over here lets an added wants to
+[16:06] communicate with another unit over here
+[16:08] then you have to send wires from here to
+[16:11] and sending wires would essentially
+[16:14] amount to
+[16:16] going up and down different metallic
+[16:20] so we would typically have one
+[16:22] transistor layer and 10 to 15 metallic
+[16:25] layers just for achieving the
+[16:27] connections
+[16:28] and then we would have a few special
+[16:31] so of course one special layer would be
+[16:33] the power layer which is to
+[16:36] provide the power connections to all the
+[16:38] transistors so in this case also you
+[16:40] would have you know huge strong silicon
+[16:42] wires going down
+[16:45] so these wires would basically provide
+[16:47] power to the transistors so it's a it's
+[16:50] a the power layer is organized as a grid
+[16:53] so we'll discuss more of that in a later
+[16:55] chapter the chapter on reliability
+[16:58] and then we can have another layer for
+[17:01] ground connections right which is the
+[17:03] return path of the current
+[17:05] and one more layer for the clock for
+[17:07] routing the clock
+[17:09] so these are three special metallic
+[17:11] layers right so I'm not drawing the full
+[17:13] rectangle just the line
+[17:14] and then we have regular metallic layers
+[17:17] to achieve connections
+[17:20] and then of course we have
+[17:23] one layer that is full of transistors so
+[17:25] that is where all of your logic and
+[17:28] memory Etc everything is implemented but
+[17:31] of course the wires go to other layers
+[17:35] so we can have three kinds of
+[17:37] interconnects in Silicon chips
+[17:40] we can have local wires which are used
+[17:42] to connect transistors within the same
+[17:45] functional unit which means within an
+[17:47] added or within a multiplier
+[17:49] intermediate wires are across functional
+[17:52] units but may be close by
+[17:55] and Global wires are literally end to
+[17:57] end wires
+[17:59] so as we have seen intermediate and
+[18:01] Global wires are typically buffered in a
+[18:03] sense we have buffers in between them
+[18:05] but since local wires are short there is
+[18:08] no need to introduce buffers within them
+[18:13] so let's first look at a very simple yet
+[18:17] naive solution
+[18:19] for connecting all the routers right
+[18:22] so this is a design that we have seen in
+[18:25] many other places also which is that all
+[18:27] of them share
+[18:28] the same set of copper wires so the same
+[18:31] set of shared copper wires
+[18:33] this is known as a bus
+[18:38] even though this design is extremely
+[18:40] simple but still it does have its fair
+[18:43] share of shortcomings
+[18:45] so the biggest shortcoming is that we
+[18:47] can have only a single transmitter at a
+[18:49] time because multiple transmission
+[18:51] Transmissions are not possible that
+[18:54] would lead to interference
+[18:55] so we could have one sender and we could
+[18:57] have multiple receivers but again one
+[18:59] sender and multiple receiver kind of
+[19:01] traffic
+[19:02] is not very common
+[19:05] in our systems in our multi-core systems
+[19:10] furthermore you need a dedicated circuit
+[19:12] called a bus master
+[19:14] that receives request from multiple
+[19:16] senders so multiple nodes
+[19:19] would say that look I want to send and
+[19:21] the bus Master would give one of them
+[19:23] permission so that also is needed but in
+[19:26] any case this is a sequential bottleneck
+[19:28] where only one sender can be alive at a
+[19:30] time can be sending at a time
+[19:33] and also the bus Master is a point of
+[19:36] contention hence this idea is slow
+[19:39] and it is not scalable in a sense it
+[19:41] will not scale to many many cores so
+[19:43] that is not going to happen
+[19:46] so that is the reason there is a need
+[19:48] for a more complex topology so that you
+[19:50] would have realized up till now
+[19:53] so the layout of a multi-core processor
+[19:55] would look like this
+[19:58] so this again I have taken the basic
+[20:00] chessboard design of course and cash
+[20:02] Banks
+[20:04] we have memory controllers at both the
+[20:08] ends
+[20:09] so we have memory controllers over here
+[20:11] and we have memory controllers over here
+[20:14] and then we have routers so the routers
+[20:18] are representative of one tile
+[20:21] where a tile in this case is actually
+[20:24] encompassing two cores to cash Banks and
+[20:27] a memory controller five things
+[20:30] so that we have one router per tile
+[20:32] instead of one router per core or cash
+[20:34] bank because we also wanted to minimize
+[20:36] the number of routers and furthermore we
+[20:39] don't have so much of traffic that we
+[20:41] need so many routers so some coelacing
+[20:43] has been done
+[20:44] so what we have basically done is we
+[20:46] have divided the set of communicating
+[20:48] nodes into tiles
+[20:50] right and then basically
+[20:54] for one group of course and cash Banks
+[20:57] we have actually treated all of it as
+[20:59] one node and given it one router and the
+[21:02] routers need to be connected in a given
+[21:05] topology
+[21:06] such that
+[21:08] effective message transfer is possible
+[21:11] right so the key idea is that we have
+[21:14] the notion of tiles one router per tile
+[21:17] and the routers are connected these are
+[21:19] the three take-home points
+[21:21] from this video see if you want you can
+[21:23] just you know go
+[21:25] 30 seconds back and just listen to what
+[21:28] I said once again
+[21:30] now uh the notes as I said are organized
+[21:35] as styles we have one router per tile
+[21:38] which manages the process of sending and
+[21:41] receiving messages
+[21:42] furthermore if let's say the routers are
+[21:45] connected as a mesh the job of a router
+[21:48] is to send and receive messages on
+[21:51] behalf of its local tile
+[21:54] as well as right so this is important as
+[21:57] well as
+[21:59] forward messages that have originated
+[22:01] from other tiles so it is it also does
+[22:04] the job of relaying messages that have
+[22:06] originated from other tiles and other
+[22:08] routers
+[22:09] so in our case the routers will be
+[22:12] referred to as nodes
+[22:13] and adjacent nodes will be connected
+[22:15] with links the routers and links will
+[22:19] form an on-chip Network
+[22:24] so let us now look a little bit at
+[22:26] on-chip networks and we will discuss two
+[22:29] terms which are a vital importance
+[22:32] the first is bisection bandwidth and the
+[22:35] second is diameter
+[22:36] so consider an on-chip Network like this
+[22:42] okay so let me connect them
+[22:44] right so with links so this basically a
+[22:47] mesh that I'm creating
+[22:56] so the bisection bandwidth says that
+[22:59] let's say
+[23:00] how many links have to be snapped right
+[23:03] so how many links have to be snapped to
+[23:06] divide the NOC into two equal parts so
+[23:08] if this is the NOC and I want to snap
+[23:10] links
+[23:11] then you know let's say that they are
+[23:13] roughly equal parts so we ignore small
+[23:15] additive constants here and there but
+[23:18] the key idea is that how many links have
+[23:20] to be snapped of course if there are
+[23:22] multiple ways of snapping links
+[23:24] uh we will choose you know the the
+[23:27] minimum out of them such that there are
+[23:29] two equal parts so let that be implicit
+[23:31] in the definition that if there are
+[23:33] multiple ways of snapping links we
+[23:35] choose the minimum one
+[23:37] and to divide it into roughly two equal
+[23:39] parts
+[23:40] so this is the bisection bandwidth
+[23:43] and what is the
+[23:45] the importance of this term or let's say
+[23:48] What is the
+[23:50] a value of the of defining it this way
+[23:53] what's the advantage
+[23:55] the advantage is that higher the
+[23:57] bisection bandwidth higher is the path
+[23:58] diversity or the choice of paths between
+[24:01] two nodes so let's say you know you take
+[24:04] one node over here another node over
+[24:06] here then if there are multiple paths
+[24:10] and that will get captured by the
+[24:12] bisection bandwidth
+[24:14] and if there are multiple paths the key
+[24:16] Advantage is that we can tolerate
+[24:18] congestion better because if we just
+[24:20] take a link a chain kind of network like
+[24:23] this it's bisection bandwidth is one
+[24:25] because its bisection bandwidth is one
+[24:30] we can have a lot of congestion at any
+[24:33] of these points and since there are no
+[24:35] other alternative paths
+[24:37] congestion can really slow a network
+[24:39] down so the same thing holds for a city
+[24:41] Network also
+[24:43] where the key idea is that if you have
+[24:45] more parallel roads there is less
+[24:46] congestion
+[24:48] as opposed to having a single Road and
+[24:50] that road can lead to traffic conditions
+[24:53] so bisection bandwidth is the first
+[24:55] metric via which we will evaluate a
+[24:58] network
+[24:59] and the other metric is the diameter so
+[25:02] in the diameter what we do is that we
+[25:04] consider pairs of nodes so let's say we
+[25:06] consider this pair and that pair
+[25:09] so if we consider pairs of nodes we look
+[25:12] at the maximum optimal distance between
+[25:15] any two pair of nodes so what is the
+[25:18] optimal distance it is nothing but the
+[25:21] shortest path right
+[25:23] so you consider any two pair of nodes we
+[25:26] consider the shortest path between them
+[25:28] and we consider the largest such
+[25:30] shortest path or largest optimal
+[25:32] distance that gives us an idea of the
+[25:35] spread of the network how large the
+[25:37] network or how large are the distances
+[25:39] between two nodes in the network
+[25:43] so clearly our aim is to maximize the
+[25:46] bisection bandwidth and to minimize the
+[25:49] diameter that is always our aim that
+[25:52] this is something that
+[25:54] we would like to do
+[25:58] this is a desirable metric this is
+[26:01] something that we would like to do which
+[26:03] is maximize the bisection bandwidth
+[26:05] which means give a choice of alternative
+[26:08] paths and furthermore minimize the
+[26:11] diameter
+[26:12] so minimizing the diameter would
+[26:14] basically mean
+[26:15] that to go from any point to any other
+[26:18] point we don't have to Traverse many
+[26:20] links we'll have to Traverse few links
+[26:22] fewer links right so you are kind of
+[26:24] reducing the
+[26:26] size of the network or the perceived
+[26:28] size of the network
+[26:30] by saying that look you want to go from
+[26:32] any point to any point you don't really
+[26:34] have to Traverse through many links
+[26:36] because traversal through links as we
+[26:38] shall see is the main determinant of the
+[26:41] latency of the network right so that's
+[26:43] the reason we want more connections
+[26:45] between router such that
+[26:48] for any kind of traversal we don't
+[26:49] Traverse many links right so these are
+[26:51] our twin aims of doing this and doing
+[26:54] that right this meaning bisection
+[26:56] bandwidth reduction and that meaning
+[26:59] reduction uh so sorry this meaning
+[27:01] maximizing the bisection bandwidth and
+[27:04] that meaning minimizing the diameter
+[27:07] so let us look at a few example
+[27:09] topologies
+[27:11] so the simplest topology that we can
+[27:13] think of
+[27:15] is a chain
+[27:17] so here all the nodes are connected one
+[27:19] after the other
+[27:21] as a linked list
+[27:23] see here of course the bisection
+[27:24] bandwidth as you can see is one
+[27:27] and the diameter is also fairly High it
+[27:29] is between this node over here and this
+[27:33] node over there
+[27:35] so basically the idea is that because
+[27:37] the bisection bandwidth is on the lower
+[27:40] side
+[27:41] uh there is no path diversity in the
+[27:44] sense between any two nodes
+[27:47] there is only a single path
+[27:49] whereas in the case of a ring for
+[27:51] instance
+[27:52] there is limited path diversity which
+[27:55] basically means that there are two paths
+[27:58] and so One path is from this point to
+[28:02] this point
+[28:03] and other parts you know from this from
+[28:06] these two points is this way
+[28:08] so that's the reason the bisection
+[28:09] bandwidth in this case is 2
+[28:12] and the diameter is also roughly half
+[28:14] right so that's the reason a ring can
+[28:17] still be seen you know in occasional
+[28:20] places in an NOC but a chain you will
+[28:23] almost never find right other than you
+[28:25] know a few classical bus based
+[28:27] topologies where everything is connected
+[28:30] so that would be more like a star it
+[28:32] will not be achieved
+[28:35] so now let's come to the factory
+[28:36] topology the factory topology is
+[28:38] interesting but again you know what we
+[28:40] need to keep in mind
+[28:42] is that this is more for clustered
+[28:45] computers it's not really foreign
+[28:47] on-chip NOC so to speak
+[28:50] so what happens is that all the nodes
+[28:52] are organized as a tree so we have the
+[28:54] leaf nodes so the leaf nodes are
+[28:57] actually the routers right so these ones
+[28:59] over here
+[29:00] are the leaf nodes
+[29:11] and then you have these bunch of
+[29:13] internal nodes
+[29:15] so if let's say from this node if you
+[29:17] want to send a message over here the
+[29:20] message goes up up
+[29:22] then goes like that
+[29:27] so well a natural question is that what
+[29:29] is a bisection bandwidth of this network
+[29:31] where the diameter is not much so
+[29:33] diameter is pretty much you know login
+[29:35] going up to the root and login again
+[29:37] coming down
+[29:39] so you can see that it is roughly in the
+[29:41] ballpark of two login of course it could
+[29:43] be lower uh you know maybe slightly
+[29:45] lower given the constants but it's
+[29:48] roughly 2 log n
+[29:51] so looking at the bisection bandwidth
+[29:54] what we can see is that we can achieve
+[29:56] kind of a clean clean cut over here
+[29:59] so if we kind of cut off the network
+[30:01] over here so let's say here
+[30:03] it appears the bisection bandwidth is
+[30:06] just one which again is too low a value
+[30:08] this is not acceptable to us
+[30:10] because as you can see there is really
+[30:12] no path diversity when we are going from
+[30:15] here to here that is the way that it
+[30:18] would appear but again
+[30:20] there is a catch over here that's the
+[30:22] reason this is called a factory and not
+[30:24] a regular tree so the idea is that
+[30:26] initially of course the links are very
+[30:28] thin they are like a single link White
+[30:31] but as we go up the links become fatter
+[30:33] and fatter so basically here if there
+[30:36] are four nodes we could have very well
+[30:37] you know four parallel links over here
+[30:40] fridge could be used for data
+[30:42] transmission so that is why it's a
+[30:44] factory because as we go up towards the
+[30:47] root
+[30:48] the links become fatter what does fatter
+[30:50] mean which means that they can sustain
+[30:52] more parallel flows per time
+[30:55] for example you could actually have two
+[30:57] wires over here you could have four
+[30:59] wires over there
+[31:00] so and then in that case the bisection
+[31:02] bandwidth is actually not that low
+[31:05] the reason being that
+[31:07] as we go towards the root we are
+[31:09] increasing the width of these links
+[31:12] hence it becomes a factory but as I said
+[31:15] the factory idea is great for cluster
+[31:18] computers not for on-chip Networks
+[31:22] but what is there in on-chip networks is
+[31:24] actually a mesh where every node has a
+[31:27] degree of port
+[31:29] other than of course the nodes at the
+[31:31] corners or at The Rim which are
+[31:33] essentially the nodes over here
+[31:36] right so it is basically these nodes
+[31:39] that have a degree you know two in one
+[31:42] case and three in the other case but
+[31:44] otherwise they are kind of poor uh
+[31:46] throughout
+[31:49] so the mesh is common the other common
+[31:51] topology that we have so if I just go
+[31:53] back to the mesh actually
+[31:55] what you would see is that this is a
+[31:58] regular topology
+[32:00] Fair uh
+[32:03] this is easy to connect it's kind of
+[32:05] easy to construct on a chip because even
+[32:08] otherwise the most of the connections
+[32:10] between functional units resemble a mesh
+[32:12] so that's the reason the mesh is kind of
+[32:14] easy to construct
+[32:16] and another topology that is easy to
+[32:18] construct is a Taurus and the Taurus you
+[32:20] can see over here
+[32:22] here the idea is that there is no notion
+[32:25] of a rim or Corner defined in the sense
+[32:27] that you have these cross connections
+[32:29] between uh nodes right
+[32:33] in the same column as well as nodes in
+[32:36] the same row so these cross connections
+[32:39] exist
+[32:40] so these long links can cause an issue
+[32:42] so I'm not saying that it
+[32:45] cannot cause an issue because the point
+[32:48] is that the distance from here to here
+[32:50] in terms of either
+[32:52] you know the length of the wire or in
+[32:54] the time it takes the signal to Traverse
+[32:58] so and plus the distance from here to
+[33:01] here right if I if I just compare both
+[33:03] of them they are very different so this
+[33:05] is order n times more assuming it's an N
+[33:07] cross and Taurus
+[33:08] so this causes an issue which basically
+[33:11] means that if it takes one clock cycle
+[33:13] to go from here to here
+[33:14] it is going to take more than one clock
+[33:17] cycle to go from this node to this node
+[33:19] which again is not acceptable to us
+[33:23] our Network in many ways does not remain
+[33:26] a homogeneous Network so the long links
+[33:28] are an issue
+[33:30] even though every node has a degree of
+[33:31] force or the issue with
+[33:33] a kind of the rims and the corners being
+[33:36] less connected that issue is not that
+[33:39] relevant but nevertheless the long wires
+[33:42] cause an issue
+[33:44] hence we have the notion of the folded
+[33:46] Taurus so this is what I leave as a
+[33:48] homework
+[33:49] for the viewers of this video
+[33:52] which is that
+[33:54] the problem of long links got solved so
+[33:57] what we have
+[33:58] is that we still have a single row so if
+[34:01] you consider this row we have eight
+[34:02] nodes here
+[34:03] this is a single rows there are eight
+[34:05] nodes as you can see you count one two
+[34:08] three four
+[34:10] five six seven and eight they are
+[34:13] connected it is just that between two
+[34:15] nodes
+[34:16] the length of a wire the length of the
+[34:19] wire segment right is twice of what it
+[34:22] was in a normal mesh right and further
+[34:25] mode
+[34:27] uh the key point over here
+[34:30] is that
+[34:33] the length between any two of these
+[34:35] nodes right is actually the same
+[34:38] so let's say between this and this again
+[34:40] a small turn over here this and this
+[34:42] this and this and we do the same in the
+[34:45] columns so what you need to convince
+[34:48] yourself
+[34:49] is that this is still a Taurus of course
+[34:51] it is kind of colder in a different way
+[34:53] so
+[34:54] visualizing that this network and this
+[34:57] network are basically the same would
+[35:00] require some amount of thought but what
+[35:02] I would like to convince you
+[35:03] is that the notion of a row is still
+[35:06] there in the sense that this is a row
+[35:08] the notion of a column is still there in
+[35:10] the sense that this is a column
+[35:12] the notes in a row are connected to each
+[35:15] other I'll beat in a slightly
+[35:17] non-standard kind of way
+[35:19] where the alternate columns are kind of
+[35:22] connected this first and then this and
+[35:24] so on
+[35:25] and again you know in a column alternate
+[35:28] rows are connected
+[35:30] but again the key idea by and large
+[35:33] Remains the Same that you have a mesh
+[35:37] right you have the motion of rows and
+[35:39] columns you have a mesh and you have
+[35:41] these cross connections between Corners
+[35:43] so basically you know the entire thing
+[35:44] is connected
+[35:46] it is just that in this case you don't
+[35:48] have long links but the price that you
+[35:49] pay
+[35:50] is that uh between uh two nodes that are
+[35:55] side by side the length of the wire
+[35:58] segment is actually twice of what it was
+[36:00] over here so here it was this much
+[36:02] and in this case it is this much but
+[36:05] again you know we are getting rid of
+[36:07] long links
+[36:08] so I folded Taurus by far is much more
+[36:11] common in fact folding is a general
+[36:13] Network technique where
+[36:15] we take a theoretical Network and we
+[36:19] kind of make it practical by
+[36:21] uh you know slightly pushing pulling
+[36:23] folding stretching reconnecting a
+[36:26] network such that it is possible to
+[36:28] actually realize it on a practical chip
+[36:32] right which is mostly a 2d structure but
+[36:34] could be a 3D with a few layers
+[36:38] now let's come to high Radix topology so
+[36:40] the idea is that in a mesh and a Taurus
+[36:43] each node was connected to four
+[36:46] neighbors but in a high Radix topology
+[36:49] they are typically connected to more
+[36:52] than four neighbors
+[36:53] right so which means there is additional
+[36:56] path diversity
+[36:58] there is a somewhat low diameter because
+[37:01] you know you have a heavy degree of
+[37:04] yet it is hard to implement in an NOC
+[37:06] it's much easier to implement in a
+[37:09] cluster computer
+[37:10] but that said and then nowadays we are
+[37:12] seeing instances of high Radix
+[37:14] topologies also come in so we'll discuss
+[37:17] hypercubes and Clause networks a
+[37:19] butterfly that is the way that we will
+[37:21] explain
+[37:22] will not be higher addicts but it will
+[37:25] kind of be a specialization of the class
+[37:27] Network
+[37:28] which is kind of
+[37:31] practically implementable it's just that
+[37:34] we will require many more internal nodes
+[37:36] known as switches I'll describe that
+[37:38] when we come to a butterfly
+[37:42] so let's first look at a hybrid Cube so
+[37:44] hypercube is basically the
+[37:46] generalization of a cube
+[37:48] so consider a hyper cube of order 0 so
+[37:51] hypercable order 0 is a single point
+[37:54] to create a hyper Cube or order one we
+[37:57] take two such single points and we
+[37:59] connect them so we have uh you know one
+[38:02] point here one point here we connect
+[38:04] them and we number one of them zero we
+[38:07] number one of them one
+[38:09] so this is kind of a recursive
+[38:11] construction so what we do
+[38:13] is that to create an hypercube of order
+[38:16] 2 or H2
+[38:17] we take two copies of H1 as you can see
+[38:20] this is
+[38:24] one copy of H1 this is one more copy of
+[38:28] H1
+[38:29] and then what we do is that we
+[38:34] preserve the original numbering scheme
+[38:37] as you can see it is 0 here 1 here 0
+[38:39] here 1 here
+[38:41] but the first copy the most significant
+[38:43] bit we add is zero so they become zero
+[38:45] zero zero and zero one
+[38:47] and for the second copy in the most
+[38:49] significant bit we added one
+[38:53] so one thing that you will quickly
+[38:54] appreciate is that the Hamming distance
+[38:56] which is the number of bits that are
+[38:58] different in corresponding positions the
+[39:01] Hamming distance is one between this
+[39:04] node and this node
+[39:05] or between this node and this node in
+[39:07] fact between any pair of neighbors the
+[39:10] Hamming distance is one so this is
+[39:12] something that is easily observable
+[39:15] visible and in a sense realizable over
+[39:20] that by the way that
+[39:22] we constructed this in the way that we
+[39:24] numbered them the Hamming distance is
+[39:27] one between neighboring nodes
+[39:29] so now to create H3 which as you can see
+[39:33] is a regular Cube the way that we Define
+[39:35] a cube typically
+[39:37] you take two copies of H2 all right
+[39:41] and after taking two copies of H2 so let
+[39:45] us assume that you know the top face is
+[39:47] one copy
+[39:48] and the bottom face uh is one more copy
+[39:52] so let's say this is one copy here and
+[39:54] this is one more copy here so this is
+[39:57] one H2 and this is the other H2 the
+[40:01] corresponding nodes are connected okay
+[40:05] so so why do I say that well uh the
+[40:08] least significant bits are 0 1 here the
+[40:10] least significant bits are 0 1 here
+[40:13] in H2 which is the layer on top
+[40:16] the most significant bit is zero
+[40:19] in H2 which is the layer in the bottom
+[40:23] the most significant bit is one all
+[40:26] right so at the top it is zero at the
+[40:29] bottom it is 1. and again here what you
+[40:33] can see is that Hamming distance between
+[40:36] any two pair of nodes that are connected
+[40:39] with an edge is one why because see
+[40:42] within uh each copy of H2 that was
+[40:45] already the case
+[40:46] and the way that we connected which is
+[40:48] by construction we only add an edge if
+[40:50] the least significant bits are the same
+[40:52] but they belong to two different smaller
+[40:55] hybrid cubes in this case only the most
+[40:58] significant bit is different so in one
+[41:00] case it is zero other case it is one
+[41:03] so the Hamming distance is one right so
+[41:05] the key point is that the Hamming
+[41:07] distance is one
+[41:08] and again you know to create H4 we take
+[41:11] two copies of H3 and we connect
+[41:14] corresponding nodes as you can see same
+[41:16] numbering scheme and again the Hamming
+[41:19] distance between adjacent nodes is one
+[41:22] so this topology is a great idea for
+[41:25] a network scale machine for a cluster
+[41:28] computer it's it's great right there are
+[41:31] no doubts about it that it's a great
+[41:34] topology but
+[41:37] for the case of a regular on-chip
+[41:40] Network it's not a great idea
+[41:43] right but let's still look at its
+[41:45] properties our hyperque with n nodes
+[41:48] the diameter will be log into the base 2
+[41:51] right so that is not very hard to see uh
+[41:54] as you can see you know if you have four
+[41:56] nodes it is two well uh void well the
+[42:00] idea is if I have n nodes
+[42:04] so there are n nodes then basically
+[42:07] every node can be represented with log n
+[42:09] to the base two bits
+[42:12] which essentially means
+[42:15] that
+[42:17] in this binary encoding we'll have log
+[42:19] into the base two bits as you can see
+[42:21] log 8 to the base 2 is 3.
+[42:23] and furthermore the Hamming distance
+[42:25] between two nodes is one
+[42:28] so the maximum Hamming distance between
+[42:30] any two nodes is again login to the base
+[42:33] 2 because every bit can be flipped
+[42:35] which is why the diameter is this and
+[42:37] the bisection bandwidth is n by 2. again
+[42:40] the reason mean that you know
+[42:43] we have n by 2 nodes in each sub
+[42:45] hypercube and each of them is connected
+[42:48] with a link and that needs to be cut
+[42:51] so it is clearly a recursive data
+[42:53] structure as we have seen so I'll not
+[42:55] spend more time repeating that
+[42:58] but we will go to the class Network the
+[43:01] Clause network is kind of interesting so
+[43:04] it is basically a family of networks and
+[43:06] there you kind of Define
+[43:08] a broad structure of what the network
+[43:10] would look like
+[43:12] so in this case we have NR inputs
+[43:16] and we have
+[43:18] in our outs effect
+[43:20] so let's look at what are the three
+[43:22] parameters that Define a closed Network
+[43:25] or that parameterize the Clause Network
+[43:28] so we can have a three layer Network
+[43:31] basically with three parameters r m and
+[43:34] n
+[43:36] so as I said
+[43:38] in the first layer
+[43:40] we have R switches with n inputs each so
+[43:43] basically we have NR inputs
+[43:45] but NR inputs are divided like this that
+[43:48] we have R switches with n inputs each
+[43:51] and each switch has n inputs and M
+[43:53] outputs in this case both n and M are
+[43:55] four
+[43:56] so that is why we see 4 cross 4 so mind
+[43:58] you these switches are internal nodes
+[44:00] they are not really nodes that produce a
+[44:04] message or that absorb a message so they
+[44:06] are purely internal nodes
+[44:09] and furthermore you know there is a
+[44:11] connection between input and output over
+[44:16] so the key Point uh really uh is over
+[44:19] here that we are producing uh
+[44:24] R switches right so you're producing Mr
+[44:26] outputs over here at this stage
+[44:30] and furthermore in the next stage we
+[44:32] have M switches so right so we have M
+[44:35] switches each switches are inputs and
+[44:38] these are inputs basically come from one
+[44:40] of the previous switches over here so so
+[44:43] let's look at the previous round once
+[44:44] again
+[44:45] see each one of them right given the
+[44:48] fact that we have R switches each switch
+[44:51] will
+[44:54] so so let's name them one to R over here
+[44:58] so what basically happens is that each
+[45:00] of them we take one uh output each from
+[45:03] each switch so we'll have R outputs they
+[45:05] are connected to a switch
+[45:07] and each of these switches is an R cross
+[45:09] R switch and there are M such are cross
+[45:11] R switches
+[45:13] so basically what happens is that this
+[45:15] is an internal switch which basically
+[45:17] connects or let's say routes an input to
+[45:20] one of the outputs over here and again
+[45:23] in the final stage we basically have a
+[45:26] mirror inverse or we have a reversal
+[45:28] of the
+[45:30] First Column so the First Column we had
+[45:33] r n cross M switches
+[45:35] in this case we will have r m cross n
+[45:38] switches right so basically it will kind
+[45:41] of be a reversal of that
+[45:44] uh where we have we will have so
+[45:46] basically we have Mr outputs over here
+[45:48] so we will have Mr inputs over here
+[45:52] and finally you know we started with NR
+[45:54] inputs
+[45:57] so we'll end this point with NR output
+[46:00] so we have NR inputs over here we are
+[46:02] ending this ending at this point with in
+[46:05] our outputs so right so NR in NR out
+[46:10] furthermore the interesting part over
+[46:13] here is that as you can see just note
+[46:15] how many of these switches we have
+[46:18] so to start with we have our switches
+[46:20] again in the last layer we have our
+[46:22] switches
+[46:23] in the middle layer we have M switches
+[46:26] where each which is R cross R right so
+[46:28] that's the idea
+[46:30] for different combinations of r m and n
+[46:33] of course the network will look very
+[46:35] different but the basic idea is like
+[46:37] this you'll have three such Columns of
+[46:39] internal nodes or switches
+[46:43] basically with this your messages can be
+[46:45] routed so I'm not saying this is the
+[46:47] best idea for an on-chip Network because
+[46:49] we are adding many of these in the extra
+[46:51] internal nodes or switches right so that
+[46:54] is what it is called
+[47:04] right so that is what it is called These
+[47:06] are called internal nodes or switches
+[47:09] and furthermore what is the case over
+[47:13] that these internal nodes are not you
+[47:16] know generating any new data or packet
+[47:19] or even consuming a data or packet their
+[47:22] only job is to kind of uh you know put
+[47:25] out messages from one side to the other
+[47:28] so these have to be added and they also
+[47:31] appear to be in a centralized place but
+[47:33] of course in a flattened class
+[47:34] topologies where this is more
+[47:36] distributed exist but the key idea is
+[47:38] this is still kind of a three layer
+[47:42] uh you know it's kind of a three-layer
+[47:44] circuit right it's a three layer Network
+[47:46] but the class Network as you can see at
+[47:49] three parameters RM and N where
+[47:51] initially as I said said that we have
+[47:55] R switches and then M switches
+[47:58] so if m is greater than equal to n right
+[48:00] so basically you know the three
+[48:02] parameters if m is just greater than
+[48:03] equal to n
+[48:05] then there is a property mathematical
+[48:07] property which can be proven that we can
+[48:09] always connect
+[48:10] an unused input terminal so let's say
+[48:13] new input comes so it is assigned an
+[48:15] unused input terminal
+[48:17] to an unused output terminal right so
+[48:20] this connection is possible if let's say
+[48:22] an input is free and the output is free
+[48:24] but the idea is the rest of the
+[48:26] connections have to be rearranged but a
+[48:28] rearrangement does exist if m is greater
+[48:31] than equal to n to connect an unused
+[48:34] input terminal to an unused output
+[48:36] terminal
+[48:37] however if m is greater than equal to 2
+[48:40] N minus 1 which means if m is even
+[48:42] greater right so this was greater than
+[48:44] equal to n and this is greater than
+[48:46] equal to 2 N minus 1.
+[48:49] we can do exactly the same without
+[48:51] rearranging the rest of the connections
+[48:54] right so the rest of the connections
+[48:55] don't have to be rearranged without any
+[48:58] rearrangement we'll have sufficient
+[48:59] space in the network
+[49:01] to
+[49:04] realize the connection between an unused
+[49:06] input and an unused output
+[49:09] now let's look at the butterfly so the
+[49:11] butterfly as I said is not really high
+[49:13] Radix topology because if you look at
+[49:15] the Clause it was a high Radix topology
+[49:18] right so in a sense in a one of these
+[49:19] switches it is being connected each one
+[49:22] of these guys is being connected to
+[49:25] M switches right so basically you know
+[49:28] this connection is there
+[49:30] but this is technically not happening
+[49:32] over here in a butterfly because we have
+[49:35] two inputs and two outputs
+[49:37] so here we have eight nodes which are
+[49:39] the primary routers so they are the
+[49:41] producers and consumers of data so as
+[49:44] was the case in Clause they are the
+[49:46] producers as well as the consumers and
+[49:48] then we have these three columns of
+[49:50] internal nodes which are actually the
+[49:52] switches so I can write this over here
+[49:59] all right that these are the three
+[50:01] columns of internal nodes which are the
+[50:03] switches right
+[50:04] so we have column one column two and
+[50:06] column three
+[50:07] so the idea is that again these are it's
+[50:10] uh it's not a higher edx Network at
+[50:12] least the way it is drawn here these are
+[50:14] two cross two switches but the switches
+[50:16] do an important role
+[50:18] so uh the first you know you divide the
+[50:21] network into two parts right so let's
+[50:23] say you divide it over here
+[50:24] so each switch basically keeps the
+[50:27] message either in the current part or
+[50:28] sends it to the other part that's what
+[50:30] the First Column does then it keeps it
+[50:32] either in the first four or in the
+[50:35] last four right either in the first
+[50:39] for first half of four or in the second
+[50:41] half of four
+[50:43] and then the next switch basically you
+[50:45] know further divides it so what it does
+[50:48] is that again it keeps it either in the
+[50:50] first
+[50:51] two of that four or in the second two of
+[50:53] that four and the last one again you
+[50:56] know makes a choice between one and two
+[50:57] three and four and so on
+[50:59] so what you can basically see is that in
+[51:02] this case because we have eight nodes
+[51:06] what we are doing is that let's say
+[51:08] given an input let's say given an input
+[51:11] 6 and it needs to go to two so the first
+[51:14] decision that needs to be made is where
+[51:16] does to lie is it in the top four or in
+[51:19] the bottom four bottom four okay we send
+[51:21] it over here
+[51:22] then we see where does two lie is it in
+[51:24] the bottom two like one and two or three
+[51:26] and four it lies in one and two fine it
+[51:28] goes here
+[51:29] then where does it lie one or two it
+[51:31] goes here so that is how the network is
+[51:33] connected and clearly over here we can
+[51:37] achieve many parallel flows but again as
+[51:40] I said the bandwidth so every switch is
+[51:42] limited to two inputs and two outputs
+[51:45] if let's say we were to have 16 nodes
+[51:49] then basically we would have had to add
+[51:51] one more column which would have said
+[51:53] first 8 like the top eight or the bottom
+[51:56] eight so pretty much as you can see
+[51:58] we'll have login columns over here and
+[52:00] this is log into the base 2. so because
+[52:03] we have eight nodes we have log 8 to the
+[52:06] base 2 which is basically three columns
+[52:09] of course efficient implementations with
+[52:12] high Radix routers exist which is why
+[52:15] butterfly networks kind of show up here
+[52:17] in the first place
+[52:19] but as I said
+[52:21] uh you know this the way it is drawn it
+[52:24] is not hieratics but hydratics
+[52:26] Afters of the butterfly to exist
+[52:30] so now let's look at the summary of
+[52:33] where is it that we stand in terms of
+[52:36] the topology number of switches links
+[52:38] diameter with bisection bandwidth
+[52:41] so the chain and ring clearly don't have
+[52:43] an internal nodes or switches so this
+[52:45] part is easy to understand
+[52:47] the number of links in a chain is n
+[52:49] minus 1 for n nodes
+[52:51] and for a ring it is n
+[52:54] links for n nodes the diameter in the
+[52:57] chain was high because we had to go from
+[52:59] one end to the other end so the diameter
+[53:01] was high whereas
+[53:04] the diameter in the case of a ring
+[53:07] which was from here to here was half
+[53:11] roughly half right so in this case you
+[53:13] know we are ignoring seal the ceilings
+[53:16] and floors and the plus one minus one
+[53:18] over here so a little bit of ignoring we
+[53:20] are doing
+[53:22] and the bisection bandwidth in this case
+[53:24] is one in this case is two that should
+[53:26] be clear
+[53:28] so the number of switches in an in a
+[53:31] factory assuming n nodes and N is a
+[53:33] power of two is n minus 1 this we know
+[53:36] that whoever has studied binary trees
+[53:39] kind of knows that
+[53:41] and the number of links again is two
+[53:43] times that
+[53:45] right so why is that the case when an
+[53:47] assumption is of course being made that
+[53:50] the size of each link is equal to the
+[53:52] number of leaves in a subtree so that is
+[53:54] how this comes
+[53:55] right and the
+[53:59] diameter as we had argued then also is 2
+[54:02] times log n because it's log n to go up
+[54:05] and log n to come down
+[54:06] and the bisection bandwidth is n by 2
+[54:09] well y because of the Assumption over
+[54:11] here that at the top of the Factory
+[54:14] close to the root right if I if I were
+[54:17] to cut sorry if I were to cut then
+[54:21] basically you know this would cover n by
+[54:23] two nodes
+[54:24] so the number of links I need to cut
+[54:26] would be n by 2.
+[54:33] so similarly for a mesh uh again there
+[54:36] are no internal nodes so for a mesh
+[54:38] Taurus folded Taurus and hypercube we
+[54:42] don't have internal nodes or we don't
+[54:43] have switches but uh again uh you know
+[54:46] we have uh different numbers of links so
+[54:50] for a Taurus of course it is 4N well why
+[54:53] because every node has a degree of poor
+[54:56] so it'll basically be the degree of a
+[54:59] node divided by two so four n by 2 is to
+[55:02] n but in the mesh we don't have that
+[55:04] many links because for rims and Corners
+[55:06] it's kind of reduced
+[55:08] and again the diameter in this case in
+[55:11] the mesh is like corner to corner
+[55:14] right uh so in a Taurus it's actually
+[55:17] you know
+[55:18] uh it's not corner to corner that's fast
+[55:20] but it's from a corner to a center
+[55:22] right and uh again uh in the case of a
+[55:25] folded Torus
+[55:28] uh it is again
+[55:32] corner to corner
+[55:34] so that is why uh the root n Factor
+[55:37] comes over here and the bisection
+[55:39] bandwidth is 2 root 10 because you know
+[55:40] you pretty much need to snap links along
+[55:42] a row along a column
+[55:45] so for the hypercube we have seen that
+[55:48] so what we have basically seen is that
+[55:50] the diameter is log n because the
+[55:52] Hamming distance
+[55:54] uh you know the maximum change in the
+[55:56] Hamming distance could be log n
+[55:58] because for n nodes it's binary
+[56:00] representation has log n Bits And every
+[56:02] bit may change the bisection bandwidth
+[56:05] is n by 2 again because you know you
+[56:07] need to cut so this was discussed in
+[56:09] that section
+[56:10] and then for a butterfly we'll have n
+[56:13] log n by 2 switches n log n by 2 is not
+[56:16] very hard to visualize we have login
+[56:18] levels login columns actually and each
+[56:21] of them has n by 2. ah n by two rows so
+[56:25] we have n by 2 times log n is n log n by
+[56:27] 2. the number of links will come down to
+[56:30] this and the diameter will again be log
+[56:32] n plus 1 so actually the diameter is
+[56:34] kind of the same between any pair of
+[56:37] nodes because you have to Traverse
+[56:38] through the switches right and basically
+[56:40] you have to go from column to column to
+[56:42] column so there are login columns so it
+[56:44] is log n plus 1 and the bisection
+[56:46] bandwidth in this case is n by 2.
+[56:51] so this is a short summary of the
+[56:53] network so I'm not saying that all of
+[56:55] them are used in an on chip NOC some of
+[56:58] them are used and some of them are not
+[57:01] used right so basically a chain is not
+[57:04] used but a ring is used a factory again
+[57:06] no but mesh torrents folded Taurus yes
+[57:10] hypercubes know but some variant of
+[57:12] butterflies uh butterfly networks and
+[57:15] cloth networks albeit flattened
+[57:17] flattened means you know converted to a
+[57:19] 2d topology right a 2d or 3D with two
+[57:22] layers roughly so so things of that
+[57:25] nature are actually used
+[57:29] so now we have discussed the broad
+[57:31] overview of an NOC so this lecture will
+[57:34] end over here
+[57:35] the next lecture will look at some
+[57:37] fundamental results in message
+[57:40] and if you get the time we will cover
+[57:42] routing and the way the chapter will
+[57:45] progress is that we will discuss the
+[57:46] design of a router which is a key idea
+[57:48] for us
+[57:50] how to kind of co-design the NOC with
+[57:53] the last level cache again that's
+[57:55] something of
+[57:57] in a fundamental concern for us and
+[57:59] finally how do you Benchmark an NOC the
+[58:01] what is benchmarking how do you kind of
+[58:04] decide
+[58:06] further you know an NLC is a good NOC or
+[58:08] a bad NOC
+[58:10] basically you would run some program
+[58:11] schedule and you would like to figure
+[58:13] out right that whether
+[58:15] the NOC is well designed or not in terms
+[58:18] of
+[58:19] its runtime performance so look the
+[58:22] diameter and the bisection bandwidth
+[58:24] these are pretty much design time
+[58:26] parameters
+[58:28] so they don't change
+[58:30] so once we decide on the topology we
+[58:32] decide on the diameter and the bisection
+[58:33] bandwidth as well
+[58:35] but the point is that many other aspects
+[58:38] such as the router the design of the
+[58:40] router routing protocol and so on
+[58:42] including the kind of workload you're
+[58:45] running determine the performance
+[58:46] aspects of the NOC in the sense how many
+[58:49] messages it's able to send its
+[58:51] throughput and so on throughput and
+[58:52] latency primarily so I would say
+[58:54] because we are not dropping packets I
+[58:56] won't use the word good put that you
+[58:58] would use in a traditional networking
+[59:01] scenario but essentially throughput and
+[59:03] latency where throughput is the maximum
+[59:05] number of bytes per second you can send
+[59:07] between two pairs of nodes and latency
+[59:09] is how long it takes in terms of let's
+[59:11] say clock Cycles
+[59:13] so we'll discuss these performance
+[59:14] aspects with synthetic benchmarks in the
+[59:17] last part of this chapter but the first
+[59:19] part of this chapter which is which was
+[59:22] this lecture actually was to convey what
+[59:25] all an NOC is about and basic topologies
+[59:28] and you know basic ideas right so that
+[59:31] has been done so we are kind of well
+[59:33] poised to look at more advanced topics
+[59:35] in the subsequent lectures of this
+[59:37] chapter

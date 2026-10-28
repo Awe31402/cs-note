@@ -1,0 +1,1236 @@
+[00:00] foreign
+[00:21] on this topic so now we will discuss the
+[00:25] temperature model in the first lecture
+[00:27] we discussed the power consumption model
+[00:31] so the temperature model is kind of
+[00:33] physics heavy not a lot but there is
+[00:36] some
+[00:37] so let's look at a diagram of a silicon
+[00:39] package so we have the small little chip
+[00:42] over here the chip is not very large so
+[00:44] the chip
+[00:46] even a big one
+[00:48] is roughly 400 or 500 mm Square which is
+[00:51] nothing but 2 centimeters by two
+[00:53] centimeters right so that's all that is
+[00:55] there so it's not very big
+[00:58] on the bottom of the chip it's connected
+[01:01] to the PCB right and that's the bottom
+[01:06] means bottom in the slide on the bottom
+[01:09] of the chip but the point is that here
+[01:11] it is connected to the PCB with a ball
+[01:13] grade array for connections and the PCB
+[01:15] is basically the motherboard which
+[01:17] connects which has other chips in the
+[01:18] chipset
+[01:20] so because temperature hot spots form
+[01:24] it is a need to kind of spread the Heat
+[01:26] right so what you want is that you don't
+[01:29] want any hot spots you want to kind of
+[01:31] spread and dissipate the heat so you
+[01:33] have a heat spreader
+[01:34] which is somewhat larger so the spreader
+[01:37] would maybe be like six centimeter
+[01:39] across six centimeter or five cross five
+[01:42] so it is somewhat larger it's like a
+[01:43] size of half a thumb or maybe the size
+[01:45] of a full thumb right right it's a thumb
+[01:48] cross thumb pretty much right so a
+[01:51] spreader would be much larger it would
+[01:53] be something like this
+[01:54] so his job as I said is to dissipate the
+[01:57] Heat
+[01:57] and homogenize it and finally have a
+[02:00] heat sink which is even larger so if I
+[02:02] would say it's like this so the heat
+[02:04] sink as you can see has a bunch of fins
+[02:07] and you typically have a fan at the top
+[02:09] so typically
+[02:10] uh on top of this you have a fan
+[02:14] whose job is to kind of have air
+[02:16] circulation such that air can take the
+[02:18] heat away but even otherwise the job the
+[02:21] heat sink for having so many fins is to
+[02:23] kind of increase the surface area
+[02:25] because the more the higher is the
+[02:27] surface area the more heat air can
+[02:29] extract right so you want to keep the
+[02:31] chip as cold as possible
+[02:34] so most of the heat actually flows
+[02:37] vertically the lateral heat conduction
+[02:39] is not much I wouldn't say it is not
+[02:41] substantial there is some and that is
+[02:44] often it creates a lot of issues but
+[02:48] most of the heat by and large flows
+[02:50] vertically
+[02:51] the heat spreader is a nickel copper
+[02:54] alloy with a thermal conductivity 369
+[02:57] watts per Kelvin pretty much and the
+[03:00] heat sink of course has a much larger
+[03:02] surface area which is artificially
+[03:04] enhanced with these fins
+[03:08] and a lateral heat conduction and flow
+[03:11] through the PCB is not more than 20 to
+[03:13] 30 percent because there is some heat
+[03:14] flow like this as well
+[03:16] and also there is some flow laterally
+[03:18] and again laterally so nothing goes by
+[03:21] the sides you see on the sides are
+[03:22] diabetic adiabatic means that there is
+[03:25] no heat flow there is no heat flow
+[03:27] through that interface so again it flows
+[03:29] to the sides and then it either goes up
+[03:31] most of it goes up some of it comes top
+[03:35] play the typical diagram of a silicon
+[03:38] chip package
+[03:42] so just a small correction uh the heat
+[03:45] spreaders conductivity as I said is 369.
+[03:49] watts per meter Kelvin not watts per
+[03:52] Kelvin so I realize that's one mistake
+[03:54] that I did so so this is also what we
+[03:56] have measured in our lab right after
+[03:59] kind of disassembling a processor so it
+[04:01] could be you know plus or minus 10
+[04:03] percent of this but broadly speaking uh
+[04:06] the job is the
+[04:07] to have a very good heat conductor here
+[04:10] it's a nickel copper alloy and then
+[04:13] furthermore pass as much heat as you can
+[04:15] to the heat sink on top
+[04:19] so the heatsink has a fan above it
+[04:22] and the job of the fan is to remove the
+[04:25] Heat and here you can clearly see the
+[04:26] fins right the fins are clearly visible
+[04:30] the motherboard so the motherboard as
+[04:33] you can see over here we have of course
+[04:35] these are our memory chips
+[04:37] then via the processor here the heat
+[04:39] sink on top of it and the fan
+[04:41] right and it looks like it has some
+[04:44] other you know liquid cooling technique
+[04:46] but the motherboard has all of this
+[04:48] right so the motherboard has many of
+[04:50] these huge heat sink one heat sink is
+[04:52] clearly visible over here so as you can
+[04:54] see the heatsink is here there are many
+[04:56] of these fins and these fins effectively
+[05:00] increase the surface area
+[05:03] and because they increase the surface
+[05:05] area what happens is that
+[05:09] a lot of the heat is removed right via
+[05:13] the heatsink mechanism of course you
+[05:15] need a fence you need some sort of an
+[05:17] active mechanism to blow air on top of
+[05:19] it such that it can remove heat
+[05:23] there are three heat transfer mechanisms
+[05:26] this is again basic stuff but it's
+[05:27] important to take a look at it
+[05:29] conduction is very neat contact so for
+[05:32] example all the heat that is
+[05:35] passed around within the chip is all
+[05:37] conduction because you need contact
+[05:39] convection on the other hand happens
+[05:41] because of fluid flow so what happens is
+[05:44] that you heat let's say you know the
+[05:46] ground you have a heater hot air rises
+[05:48] sorry hot air rises then cold air comes
+[05:51] and takes its place it becomes hot it
+[05:53] rises so so there are these these Cycles
+[05:56] form right so this is convective heat
+[05:57] transfer convective heat transfer
+[06:00] requires a fluid so a fluid can be air
+[06:03] it could be water anything but it
+[06:04] requires a fluid to take the Heat and
+[06:06] move along with it
+[06:09] then you have radiation chips do emit a
+[06:11] little bit of radiation but not much so
+[06:14] this is dissipated as electromagnetic
+[06:16] waves mostly infrared waves and
+[06:19] radiative heat transfer we study a lot
+[06:21] when it comes to black bodies like stars
+[06:23] and planets and so on but that is again
+[06:26] not a concern here so convection and
+[06:28] radiation are not a concern here but you
+[06:30] would argue you may argue
+[06:32] that removing heat from the heat sink
+[06:35] involves convection of course it does so
+[06:37] that is where it plays a role but not
+[06:39] otherwise
+[06:41] some little bit of basic physics I know
+[06:44] you don't like that but a little bit
+[06:47] so let us say that we have this small
+[06:50] little cuboid over here
+[06:52] where the area of a face is essentially
+[06:55] a
+[06:57] right area units let me decide when
+[07:01] that's meter Square so on it doesn't
+[07:02] matter I assume there are SI units
+[07:04] and let the thickness of this be Delta X
+[07:07] right it is on x axis Delta X and the
+[07:11] temperature on one side is T one other
+[07:12] side is T2 and T1 is greater than T2
+[07:16] so this is one assumption we will make
+[07:19] right and the other setup that we'll
+[07:23] have is we will now extend this to
+[07:24] another cuboid and kind of differentiate
+[07:27] this
+[07:28] so we will say that look let heat
+[07:30] entering on one side be Q X
+[07:32] the heat leaving on the other side with
+[07:35] Q X Plus DX and the thickness be DX so
+[07:38] instead of Delta X which is like you
+[07:40] know discrete we made it continuous
+[07:42] so continuous will help us solve
+[07:44] differential equations so we Merit DX
+[07:46] and it's simple right it's a simple
+[07:47] cuboidal geometry heat entering on one
+[07:50] side the x axis is Q X leaving on x axis
+[07:52] Q X plus d x and we assume that on any
+[07:55] of the other faces no heat comes in or
+[07:58] goes off so this is the 3D view for so
+[08:00] this is what we will ah assume for the
+[08:04] Timely
+[08:06] so the fourier's law of heat conduction
+[08:09] which is essentially the only law that
+[08:11] you require right
+[08:13] basically says
+[08:15] that Q X is equal to minus k a so so
+[08:20] this little bit of confusion here that
+[08:22] we are numbering the faces A and B and
+[08:24] also using a for the area but this is
+[08:26] the area a okay so that it's a bad habit
+[08:30] shouldn't be done I've sadly done it
+[08:32] so what it says is that the derivative
+[08:36] of the temperature right across these
+[08:38] faces DT by DX
+[08:42] so this is a temperature derivative and
+[08:44] this is the area okay so you multiply
+[08:46] the area with the temperature derivative
+[08:50] this is in a sense
+[08:54] proportional to the heat coming in
+[08:57] right and the constant of
+[09:00] proportionality is negative okay so
+[09:03] basically what you are trying to say
+[09:05] is that if there is a positive
+[09:07] temperature gradient so let us say that
+[09:10] the temperature is increasing
+[09:12] then clearly the heat coming in has to
+[09:16] be less than the heat that is
+[09:19] kind of going out and the reason is
+[09:22] quite simple that otherwise you know how
+[09:24] is the temperature increasing the
+[09:25] temperature is increasing because some
+[09:27] heat is staying inside and then that is
+[09:29] increasing the temperature of the volume
+[09:31] so that is why the negative sign comes
+[09:33] as a matter of the convention which way
+[09:35] you draw the x axis which way you draw
+[09:37] the y axis
+[09:38] where the idea is clear that is the
+[09:41] temperature is increasing within the
+[09:43] volume which means that some heat is
+[09:45] being captured right so what is coming
+[09:47] out is less than what is coming in hence
+[09:49] the negative sign
+[09:51] and again uh Y is the area important
+[09:54] well the area is important
+[09:57] because as I said essentially you're
+[10:00] looking at the heat flux right your heat
+[10:02] per unit area so that essentially tells
+[10:05] you how much the temperature would
+[10:06] increase right because if the area is
+[10:09] very very large
+[10:11] then the temperature increase will not
+[10:13] be that hard
+[10:15] so that's all that we need to you know
+[10:17] bear in mind the fourier's law of heat
+[10:19] conduction that's it
+[10:21] so what I can do is that this area over
+[10:25] here right this area is essentially d y
+[10:28] times d z because again it's a small
+[10:31] movement on the y axis small and the Z
+[10:33] axis so I can say d y d z and then given
+[10:36] the fact that I am looking at three
+[10:38] different axis this is nothing but the
+[10:40] partial derivative on the x-axis right
+[10:43] so this would be a more accurate way of
+[10:44] looking at it because we have multiple
+[10:46] derivatives
+[10:47] so what we would like to do over here is
+[10:50] keep everything the same the fourier's
+[10:52] law of heat conduction the same
+[10:54] but move to the partial derivative
+[10:56] regime because we are only looking at
+[10:58] the difference on the x axis
+[11:01] so little bit of algebra over here not
+[11:03] much I promise
+[11:05] so if I again look at the same volume
+[11:08] over here right little region this is d
+[11:11] y and this is t z
+[11:15] so uh if I look at what's really
+[11:19] happening on the x-axis
+[11:21] so what I can see is the heat that is
+[11:24] entering minus the heat that is leaving
+[11:25] divided by DX is nothing but the
+[11:29] negative the partial derivative so this
+[11:31] is easy this follows basically from the
+[11:33] definition we're having positive if it
+[11:35] would have been Q X Plus DX minus Q X
+[11:38] that's not the case hence negative so
+[11:39] this should be easy
+[11:41] so what we have actually done is that we
+[11:44] have this result over here
+[11:46] right which essentially tells you what
+[11:49] is QX
+[11:51] so uh what we need to do is that
+[11:55] we have q x minus Q X Plus DX here
+[11:59] we move minus DX over here and Cub X we
+[12:03] had defined here so we just stick this
+[12:06] expression over there which is minus k d
+[12:09] y d z Del T by Del X so the dot means
+[12:11] multiply here so what we have done is
+[12:14] this part we have simply imported from
+[12:16] the previous slide so we come here
+[12:19] so basically the heat that remains
+[12:21] within the volume which is this thing
+[12:24] is nothing but so these two are
+[12:26] constants so I can take them out minus
+[12:28] minus cancels is K times d x d y d z
+[12:33] right so so the K is a constant of
+[12:35] proportionality we have not given it a
+[12:37] name but it will very soon give it a
+[12:38] name
+[12:39] so then d x d y d z is nothing but the
+[12:43] volume of the regions let call let's
+[12:44] call it DV for volume
+[12:47] so this becomes equal to the second
+[12:50] derivative Del Square t by Del x square
+[12:53] which is k d v Del Square t by Del x
+[12:56] square all right so this is what it is
+[12:58] that the heat over here is equal to K
+[13:02] times
+[13:03] DV by Del Square t by Del x square so
+[13:06] what I can then do is that I can do this
+[13:09] across all axis right across the y axis
+[13:11] Z axis and so on so because of flow in
+[13:15] all three axis X Y and Z the total heat
+[13:18] that remains within the volume
+[13:20] is K times DV of course it is this
+[13:23] quantity
+[13:24] plus this Del Square t by Del y square
+[13:27] plus Del Square t by Del Z Square
+[13:28] because it's a sum so heat does not
+[13:31] destructively interfere right thermal
+[13:34] energy unlike electromagnetic energy
+[13:36] does not have any kind of destructive
+[13:39] interference it simply adds right so
+[13:42] that's the second law of thermodynamics
+[13:44] so because of this addition right so
+[13:48] what is happening is
+[13:50] that we are
+[13:52] adding the so this is the total
+[13:55] temperature derivative and this amount
+[13:58] of heat is remaining within the volume
+[14:02] so let's now introduce a new operator a
+[14:05] new operator will make a notation
+[14:07] somewhat simpler
+[14:09] so let's look at this operator now sorry
+[14:12] Del Square Del by Del x square Del
+[14:14] Square by Del y square and plus Del
+[14:16] Square by Del Z Square
+[14:17] let us name this operator nabla Square
+[14:20] so you can see that this appears over
+[14:23] here so we will just refer to this as
+[14:26] navbla Square t
+[14:29] so the total heat that remains is amount
+[14:32] of thermal power so so know that the
+[14:33] unit of this is not energy the unit of
+[14:35] this is Watts so total power that
+[14:38] remains
+[14:39] right the total heat for a given unit of
+[14:42] time energy that remains inside
+[14:45] right so this is essential energy by
+[14:47] time
+[14:48] is nothing but K times DV which is the
+[14:54] small
+[14:55] volume that we are considering
+[14:57] multiplied with nabla square T now plus
+[15:00] Square t is the temperature
+[15:02] so we will later on refer to this as a
+[15:05] thermal conductivity but we will do that
+[15:08] when we will discuss the electrical
+[15:09] analog of this problem not now
+[15:12] so let's go with this and let us further
+[15:14] assume that within this small volume it
+[15:17] generates its own heat for instance if
+[15:19] this small volume has a couple of
+[15:21] circuits and those circuits dissipate
+[15:24] Dynamic power or they dissipate static
+[15:26] power then they are also not only
+[15:29] transmitting but also generating
+[15:32] let the rate of heat generation be Q
+[15:35] Dash joules
+[15:37] I'm sorry Q Dash Bots right its power
+[15:40] so the total thermal power that enters
+[15:43] plus that is generated within the volume
+[15:45] DV let us call it pstp like total
+[15:48] right of everything
+[15:51] that is equal to K Times nabla Square t
+[15:55] which is the part that it kind of keeps
+[15:58] right because you know you are
+[16:00] heat is Flowing but some part it tends
+[16:03] to keep right so that is why we have
+[16:05] this temperature gradient plus whatever
+[16:07] is internally generating add both and
+[16:09] multiply this with the
+[16:12] derivative of the volume so this Q Dash
+[16:15] is basically the derivative with respect
+[16:18] to volume right so that's the reason we
+[16:20] are multiplying it with DV so this is
+[16:22] the main equation that we use for heat
+[16:25] flow or heat conduction which
+[16:27] essentially says that the
+[16:30] power that
+[16:33] is entering a Volume Plus that is
+[16:35] generated is basically a sum of the
+[16:39] second derivative of temperature
+[16:41] a computed in this nebula Square way
+[16:44] plus the heat that is plus the internal
+[16:46] heat generation rights essentially given
+[16:48] a small volume
+[16:49] what is the power that is
+[16:52] being added to it is basically the
+[16:57] multiplied with K plus Q Dash
+[17:01] let's look at another way of looking at
+[17:04] PST so then we will be able to kind of
+[17:07] equate the LHS and rhs so we will come
+[17:09] compute this PST in a different way so
+[17:12] in this case earlier was a spatial
+[17:14] derivative right so if you look at over
+[17:17] here there is no time yet in a sense
+[17:19] this is just a spatial derivative
+[17:22] there is no time derivative so we would
+[17:24] like to also look at the time derivative
+[17:26] thing and see whether we can kind of
+[17:29] equate and LHS Within rhs
+[17:33] so PST if you would look at our standard
+[17:37] physics results way back when the
+[17:40] concept of specific heat was defined
+[17:43] so we had said that
+[17:46] the power that is kind of delivered to a
+[17:48] volume
+[17:49] is essentially its density
+[17:52] multiplied with of course the volume
+[17:55] uh with the specific heat which is a
+[17:57] constant for a given material
+[17:59] multiplied with the rate of temperature
+[18:01] increase
+[18:03] so essentially what I do is Let's ignore
+[18:05] the rest but let's say the specific heat
+[18:09] increases basically the power inflow in
+[18:12] this case of course we are multiplying
+[18:14] it with the small volume and the density
+[18:17] let's say equate both the expressions
+[18:19] for s t this is spatial derivative
+[18:22] which is on this side
+[18:24] right and then I have a Time derivative
+[18:28] which in the other side and of course
+[18:29] the volume term gets cut
+[18:31] so this is equal to rho times CP times
+[18:33] Del capital T by small T this is one of
+[18:36] the real instances
+[18:38] where actually we use a small letter as
+[18:40] a variable small letter T is time and
+[18:42] capital letter T is temperature in
+[18:45] general I also don't like doing that
+[18:47] what I have tried to stick with
+[18:48] convention in general temperature is
+[18:51] also represented using the variable U
+[18:54] but let me still go with the the way
+[18:56] that it is done
+[18:58] so we are kind of linking a second
+[19:01] derivative of temperature in a spatial
+[19:03] sense spatial second derivative
+[19:06] with the temporal
+[19:09] first order derivative right time
+[19:12] derivative with a spatial derivative
+[19:14] and then what I can do is if I just
+[19:16] divide this constant K so it will be
+[19:19] knabla Square t plus Q Dash by K is
+[19:23] basically rho c p by K so K by rho CP
+[19:26] has a specific name it's this is known
+[19:29] as Alpha
+[19:30] so essentially in average square t plus
+[19:32] Q Dash by K is equal to 1 by Alpha Del
+[19:34] capital T by Del small T temperature
+[19:36] derivative so spatial derivative is
+[19:39] equal to a temperature derivative is the
+[19:41] key thing key equation that we just
+[19:43] derived
+[19:44] now if you assume that there is no
+[19:46] internal power generation this term is
+[19:48] zero
+[19:49] so then uh now plus Square t is equal to
+[19:55] uh is is just proportional to Del T by
+[20:00] Del t
+[20:01] and let's now do the other thing
+[20:05] switches that let us assume that
+[20:08] the steady state there is no increase in
+[20:10] the temperature
+[20:12] then Lambda Square t is equal to the
+[20:15] negative of the internal heat generation
+[20:17] which basically means that whatever is
+[20:20] the spatial derivative that is somehow
+[20:22] being counteracted by the internal heat
+[20:24] generation leading to zero
+[20:26] so you can you know interpret this
+[20:28] equation in many many different ways but
+[20:31] the key idea is that we have a spatial
+[20:33] derivative on one side and a Time
+[20:35] derivative on the other side
+[20:37] so this equation that we just derived is
+[20:40] known as the Fourier equation of heat
+[20:42] transfer
+[20:43] so this is the Fourier equation
+[20:52] so there are many ways of solving this
+[20:55] so a simple method is known as a finite
+[20:58] difference method that is used so it's
+[21:01] not as accurate as a finite element
+[21:03] method but it's much faster the key idea
+[21:07] is that we take a system of partial
+[21:08] differential equations as we have here
+[21:13] and we converted it to a system of
+[21:16] linear equations so this is easy we have
+[21:20] all seen this so let's say we take Del
+[21:23] Square t by Del x square
+[21:25] so all that we are doing is that for the
+[21:28] same time instant uh let's consider it
+[21:30] for two different grid points so what we
+[21:32] do is that we take if you're doing it
+[21:35] for 2D we take a two dimensional uh
+[21:38] geometry and divide it into grids
+[21:40] if you are doing it for let's say 3D
+[21:43] then we would divide it into
+[21:45] small cubes or cuboids
+[21:48] in any case let's assume that
+[21:52] these individual grids which are called
+[21:54] elements are numbered one two three four
+[21:57] five six so essentially what we are
+[21:59] doing is that we are subtracting this
+[22:02] derivative at I plus 1
+[22:04] minus the derivative at i t i plus 1 T
+[22:07] minus i t
+[22:09] so this is simple this follows from the
+[22:11] definition this again follows from the
+[22:13] definition that we replace a derivative
+[22:16] with the values so finally this is what
+[22:19] we arrive at so this is roughly an
+[22:21] approximation of course for very small
+[22:24] Delta X this is what this broadly
+[22:27] corresponds to
+[22:30] so now let's look at the steady state
+[22:33] solution of the Fourier equation
+[22:36] so this is nabla square T is equal to
+[22:38] minus Q Dash by K
+[22:41] so as we have seen earlier it can be
+[22:43] converted to a set of linear equations
+[22:45] if we consider all the three axis x y z
+[22:49] so finally after doing all of it a
+[22:52] little bit of linear algebra is needed
+[22:54] to appreciate this but if let's say this
+[22:56] is the
+[22:58] power vector and this is the temperature
+[23:00] Vector so what we do is that we take a
+[23:03] chip and we discretize it into n cells
+[23:06] so let's say given a chip you know we
+[23:09] either have any 2D cells or n 3D cells
+[23:12] but in any case we take it and we just
+[23:15] you know break it up break break break
+[23:17] if you have n cells so basically what we
+[23:21] have t is basically a column vector
+[23:25] of the temperatures at all n cells a is
+[23:29] an N cross n Matrix which can primarily
+[23:31] be derived by converting all the
+[23:34] differential equation terms to Matrix
+[23:36] terms so this is an end Crossing Matrix
+[23:39] and uh
+[23:41] this was n cross one and power is again
+[23:44] you know the power Vector at each cell
+[23:46] and the power is generating so this is n
+[23:50] cross one so we can easily see the
+[23:51] matrix product make sense
+[23:53] and
+[23:56] all that we have to do is that for a
+[23:59] given geometry we'll have to compute
+[24:00] this Matrix a
+[24:02] once we give it the power Vector which
+[24:04] of course we can either get from a power
+[24:06] simulation tool or we can directly
+[24:08] measure with on-chip sensors doesn't
+[24:10] matter in any case once you have the
+[24:13] power Vector all that we have to do is
+[24:15] simply multiply it with this large and
+[24:18] cross and Matrix
+[24:20] and we will get the temperature Vector
+[24:23] so of course in this case
+[24:26] the complexity of the algorithm is order
+[24:30] n Square
+[24:34] right so the reason is that we are
+[24:37] taking you know one row of n one column
+[24:39] of n multiplying it to produce a single
+[24:42] element and doing this n times
+[24:45] so as we shall see this complexity is
+[24:47] actually huge in the sense that this
+[24:50] makes the algorithm quite slow
+[24:52] and the algorithm becomes White
+[24:55] unresponsive right I mean I'm sorry it
+[24:58] becomes quite slow and because of this
+[25:00] faster approaches are often needed
+[25:04] now let us now look at the transient
+[25:06] form of this equation
+[25:09] so the Fourier equation in its transient
+[25:11] form looks something like this which we
+[25:13] have seen
+[25:16] so this is a linear transformation if we
+[25:19] convert it to a matrix based linear
+[25:23] algebra based system
+[25:26] so let's refer to the time derivative
+[25:28] the temperature t s t Dash
+[25:30] and let's try to convert this equation
+[25:33] into a linear algebra equation using
+[25:36] similar finite difference approximations
+[25:39] so given that the second derivative is a
+[25:41] linear transformation we arrive at this
+[25:44] point
+[25:45] if you would see this is not very
+[25:46] different from this in the sense the
+[25:48] other term is 0 we can simply say a
+[25:52] inverse of the temperature is equal to
+[25:54] power
+[25:56] right so basically the term that is 0 is
+[25:59] basically this derivative term
+[26:02] so in a sense we are related in this
+[26:04] case we multiply the temperature Vector
+[26:06] we'll see in two minutes why
+[26:09] uh so then the unit of this is power the
+[26:12] unit of this is power
+[26:14] then the time derivative of temperature
+[26:16] is again multiplied with another Matrix
+[26:18] which we shall refer to as the C Matrix
+[26:21] so both G and C are n cross n element
+[26:24] matrices which can very easily be found
+[26:26] out by converting the differential
+[26:30] equation that we have over here a double
+[26:33] differential on one side and a
+[26:37] this can be done so what we can do is
+[26:39] that algebraically
+[26:42] we can solve it for all time steps and
+[26:45] then essentially we're going to manually
+[26:47] compute T Dash which is
+[26:49] T at time K plus 1 minus t k divided by
+[26:52] Delta small T this is for time this is
+[26:55] for temperature
+[26:57] so this is done this said and done even
+[27:00] the transient solution can be computed
+[27:02] using a linear algebra based method
+[27:06] so there is again a fun part over here
+[27:09] so if you look at this equation again
+[27:12] we can convert it to an electrical
+[27:14] analog which basically means that the
+[27:16] entire thermal problem
+[27:19] can be converted to an equivalent
+[27:21] electrical problem
+[27:24] and you can use a regular circuit
+[27:26] simulator like spice to solve electrical
+[27:29] problem to actually get
+[27:31] the analogous thermal values we will see
+[27:34] in a second how
+[27:35] so let us map temperature with voltage
+[27:38] so let's just say that all temperatures
+[27:40] here correspond to voltages in a circuit
+[27:42] and power with current
+[27:45] right
+[27:46] so in this case uh so this is the the
+[27:50] temperature
+[27:51] derivative is nothing but the voltage
+[27:53] derivative in our converted world
+[27:56] so if you look at it say this is V
+[27:58] multiplied with let's say some constant
+[28:01] is essentially is equal to I
+[28:04] so this constant over here is I by V
+[28:08] and by Ohm's law I by V is basically
+[28:12] nothing but
+[28:13] the conductance right is the opposite of
+[28:16] resistance it is the conductance so G
+[28:18] for that reason is called The
+[28:20] conductance Matrix right so so for that
+[28:23] so even if you look at the term over
+[28:25] here the term k over here was called the
+[28:28] conductivity and as you can see G over
+[28:31] here capital G is the conductance Matrix
+[28:34] which is converting voltage to current
+[28:37] as you can see this is happening P of
+[28:39] course is power in our world it's
+[28:41] current in the electrical analog world
+[28:45] p dash is nothing but the temperature
+[28:47] derivative over time which is nothing
+[28:49] but DV by DT
+[28:52] any student will of electrical
+[28:54] engineering will immediately recognize
+[28:56] that the capacitance times DV by DT is
+[28:58] nothing but the
+[29:00] got it right uh so basically the current
+[29:04] is equal to c times DV by DT
+[29:07] so basically again the unit of this is
+[29:10] power which in the electrical analog is
+[29:12] current and C over here can be thought
+[29:15] of as the capacitance Matrix right it's
+[29:18] a thermal capacitance or it is the
+[29:20] capacitance Matrix which is converting
+[29:24] the time derivative of temperature to
+[29:27] basically power or the time derivative
+[29:30] of voltage to current in the electrical
+[29:32] analog problem
+[29:34] so what we have done is that we have
+[29:36] taken a thermal circuit this is the
+[29:39] first time I am using the word thermal
+[29:40] circuit mind you
+[29:42] so I am taking a thermal circuit and I
+[29:44] am converting it into an equivalent
+[29:46] electrical circuit
+[29:48] why am I doing that because I can then
+[29:51] use
+[29:52] known electrical circuit solution method
+[29:55] circuit simulation methods to actually
+[29:58] solve this problem
+[30:04] and in this case I have an analog for
+[30:07] voltage which is temperature
+[30:11] I have an analog for current which is
+[30:14] an analog for conductance in this Matrix
+[30:17] G and for capacitance is this Matrix C
+[30:22] so if I look at an example uh so as you
+[30:25] can see let's say this is a simple 2D
+[30:29] or a 2d plate of silicon
+[30:32] says electrical analog would look like
+[30:34] this so there's a thermal resistance
+[30:36] between adjacent cells as you can see
+[30:38] one two three four four thermal
+[30:40] resistances
+[30:42] furthermore given the fact that this has
+[30:45] a higher temperature
+[30:47] we are connecting it to ground with a
+[30:49] capacitance so the capacitance will
+[30:51] indicate the fact that there is a
+[30:53] voltage over here and the voltage is
+[30:56] nothing but a temperature and of course
+[30:58] if any of these cells is also
+[31:01] dissipating power like in a static power
+[31:03] or dynamic part we can additionally add
+[31:06] a current source
+[31:08] so basically a complex thermal circuit
+[31:10] is made using capacitances resistances
+[31:14] capacitors resistors voltage sources if
+[31:18] let's say you know it's a fixed voltage
+[31:20] like the ambient Ambient means the
+[31:23] outside and current sources for power
+[31:26] and we always add a capacitor to ground
+[31:28] to indicate that there is a certain
+[31:31] voltage reach temperature at a certain
+[31:34] grid cell then once an analog has been
+[31:37] made there are a lot of algorithms for
+[31:40] fast and Ultra quick circuit stimulation
+[31:43] once we get the values again we convert
+[31:46] voltage back to temperature and current
+[31:47] back to Power
+[31:49] but anyway we are simulating for
+[31:51] temperature so what ultimately matters
+[31:53] is that voltages are converted to
+[31:56] temperatures
+[31:59] so this was all about the finite
+[32:01] difference method and its electrical
+[32:03] analog
+[32:04] so this is as you can see it's
+[32:07] well it's nice and fast
+[32:09] but the finite element method is far
+[32:12] more accurate and most of the industries
+[32:14] industrial tools
+[32:16] use the finite element method which is
+[32:19] very accurate yet somewhat slow but
+[32:21] still in many cases you need decades
+[32:25] so what you do
+[32:27] is that you convert the differential
+[32:29] equation that we add which is
+[32:32] right over here the differential
+[32:34] equation
+[32:36] into an integral equation instead of
+[32:38] derivatives in a u
+[32:40] kind of
+[32:43] integrate both sides so it becomes an
+[32:45] integral equation
+[32:46] and we multiply the original integral
+[32:49] equation sorry differential equation
+[32:50] with test function V
+[32:53] so this is a standard you know algebraic
+[32:55] trick a standard mathematical trick or
+[32:57] multiplying this that's of multiplying
+[33:00] both sides of the test functions but the
+[33:02] test function as we as we shall see
+[33:04] serves a very important purpose
+[33:07] then what we do is similar to the finite
+[33:09] difference method we divide the domain
+[33:12] domain is basically whatever geometry we
+[33:14] are simulating
+[33:15] we can in this case divide it into many
+[33:18] times so we can divide into triangles
+[33:21] rectangles
+[33:23] if it's 3D cuboids or tetrahedrons
+[33:26] so in general dividing it into triangles
+[33:28] for 2D and tetrahedrons but 3D is more
+[33:31] common the reason being that
+[33:35] you know there are a lot of very
+[33:37] efficient algorithms to
+[33:39] kind of simulate uh
+[33:41] temperature where the basic element is a
+[33:44] triangle triangles are very interesting
+[33:46] if you would have followed the chapter
+[33:48] on gpus the nice thing is that all the
+[33:51] three vertices of a triangle are always
+[33:53] on the same plane and a triangle can be
+[33:55] used to represent any kind of a complex
+[33:58] surface see each such basic structure is
+[34:01] an element
+[34:02] and furthermore
+[34:04] the points at which different elements
+[34:06] are connected these points are the nodes
+[34:08] the connection points or the vertices of
+[34:10] the triangle are notes
+[34:13] now what we do is out of the integral
+[34:15] equations with the test function here
+[34:18] again we create a set of algebraic
+[34:20] equations so this is always the case
+[34:21] okay this is always this is normal
+[34:25] but there are some important differences
+[34:27] I will explain them of course this
+[34:30] treatment is not meant to be
+[34:31] self-complete there are separate books
+[34:34] on finite element methods I would not
+[34:36] like to get into that
+[34:38] but let F K be the value of the function
+[34:41] f x
+[34:43] which is the function that I want to
+[34:44] compute for example if I want to compute
+[34:47] the value of the temperature
+[34:48] distribution then that would be let's
+[34:52] say the function T so I'm representing
+[34:53] that generally as f x
+[34:55] said each of the nodes so recall that if
+[34:58] I have a triangle then a three vertices
+[34:59] are the nodes
+[35:01] given this triangle let
+[35:04] the value here be F1 the value here the
+[35:07] F3 value here will be F2
+[35:11] furthermore let me now bring in this
+[35:14] test function
+[35:15] and let's say that it is some sort of a
+[35:17] basis function right so what is a basis
+[35:19] function
+[35:20] a basis function is let's say what sine
+[35:23] and cos is in a Fourier series or what
+[35:26] you know your inverse negative
+[35:28] exponential is in a LaPlace series it's
+[35:30] basically a set of those simple
+[35:32] functions that can be linearly combined
+[35:35] to produce a more complex function
+[35:37] so let's add each of these points let's
+[35:40] say these be the basis functions are
+[35:42] let's say V1 V2 V3
+[35:46] now what we do is that
+[35:49] we can express any
+[35:51] any function let us say f x
+[35:54] right so let's say this is point x so I
+[35:57] want to represent f x
+[35:58] it is basically f 1 times the value of
+[36:02] the function V1 where this is the basis
+[36:05] corresponding to this node over here F1
+[36:07] times V 1 X Plus F2 times V2 X Plus F3
+[36:10] times V3 X so if you think about it for
+[36:13] every Point within this region I am
+[36:16] implementing I am representing it as a
+[36:19] weighted sum of the
+[36:22] basis functions where the basis
+[36:24] functions are different for different
+[36:26] nodes but they are
+[36:28] evaluated at point x and weighted by the
+[36:31] values of F1 F3 etcetera at these points
+[36:36] so uh this is how I can set up a bunch
+[36:39] of equations right and of course here
+[36:42] the choice of the basis function is very
+[36:44] important
+[36:47] if I'm able to choose a good basis
+[36:49] function which is in a sense related to
+[36:52] the final
+[36:53] you know function field that I want to
+[36:55] compute
+[36:56] then I can kind of represent you know
+[36:58] the
+[36:59] value of the final function in this case
+[37:01] temperature at every point and then of
+[37:03] course it means to satisfy boundary
+[37:05] conditions and it needs to follow the
+[37:07] physics
+[37:08] and I can set up a system of equations
+[37:10] and solve it the same way I was solving
+[37:12] it for the previous case
+[37:17] so I am not going more into the finite
+[37:20] element method I just have one slide the
+[37:23] reason is that number one it's very slow
+[37:25] it's not very apt foreign for a computer
+[37:29] architecture audience they prefer the
+[37:32] finite difference method much more if I
+[37:34] were to
+[37:35] look at the finite difference method and
+[37:37] electrical analogs
+[37:39] so most of the popular temperature
+[37:42] simulators in computer architecture such
+[37:45] as hotspot for instance
+[37:47] use the electric and analog of the
+[37:49] problem and solve it
+[37:51] so of course the commercial fluid
+[37:54] dynamics tools also known as
+[37:55] computational fluid dynamics tools cfd
+[37:57] tools
+[37:58] they use the fem method but this is very
+[38:01] very slow right so in this case
+[38:04] uh the
+[38:06] time is more than order N squared much
+[38:09] more
+[38:10] so given that they are slow I can use
+[38:13] another method known as greens functions
+[38:15] which is ultra fast
+[38:18] so greens function uh the greens
+[38:20] function method is more like order ends
+[38:23] and how does that happen
+[38:25] well we will use the concept of
+[38:28] linearity and superposition
+[38:30] say the total power profile is p is
+[38:33] equal to P X Plus p y
+[38:35] the final thermal profile we are
+[38:38] assuming will be TX plus t y in a sense
+[38:40] for this power I compute the temperature
+[38:45] and I add them and whatever is the
+[38:49] result the sum that is equal to the rmal
+[38:53] profile or the temperature suffice
+[38:57] then we have the Notions of shift
+[39:00] invariance
+[39:02] which means that for very large parts of
+[39:04] the chip other than so let's say this is
+[39:06] the 2D chip and for very large Parts
+[39:09] other than the rim and the corner right
+[39:11] other than this region that's anywhere
+[39:13] in the center let's say over here
+[39:16] the effect of a very small power source
+[39:19] on its immediate neighborhood be the
+[39:21] power source here or let it be here
+[39:24] the effect on the immediate neighborhood
+[39:26] is more or less the same
+[39:28] other than the Raymond corners
+[39:31] if you shift the power source you shift
+[39:33] the temperature profile think of it that
+[39:35] way
+[39:36] so these two kind of immediately follow
+[39:38] from the Fourier equation physics
+[39:42] but it is important to kind of note them
+[39:45] or Point them out separately because
+[39:47] much of the physics of greens functions
+[39:50] actually relies on this
+[39:53] so we have
+[39:55] as I said linearity and superposition
+[39:57] which is this and shift in values
+[40:00] so what I am doing here is that I am
+[40:03] slightly abusing notation previously we
+[40:05] had said that n is the total number of
+[40:07] cells
+[40:08] let me
+[40:09] cut some slack for myself and say that
+[40:12] now in this crazy case it's an N cross M
+[40:15] grid
+[40:16] again you know same symbol should mean
+[40:18] the same thing but my apologies so in
+[40:21] this case if it's an N cross n grid
+[40:24] so at any point p q let us apply one
+[40:27] watt of power
+[40:29] then what will happen if this is a pqf
+[40:32] point and I'm applying one watt of power
+[40:36] I will have a temperature profile which
+[40:38] is radially symmetric
+[40:39] it's also called isotropic what it means
+[40:42] is the same in all directions
+[40:44] so it basically means it's seen it
+[40:47] all right
+[40:49] and this means that even g x y is equal
+[40:53] to G minus x y
+[40:57] so using the properties of linearity and
+[40:59] shift in variance if I add the effect of
+[41:03] all power sources
+[41:05] so what I can do is if I want to find
+[41:08] the temperature at you know point x p
+[41:10] and Y cubed
+[41:12] so what I do is that I look at all the
+[41:16] power sources which are there at all the
+[41:17] points for each power source let this be
+[41:21] the temperature spread function right so
+[41:23] this is what I did this is the function
+[41:25] via which temperature spreads
+[41:27] so what I can do is that given uh the
+[41:31] power source x i and y j
+[41:34] given the fact that you know
+[41:37] this relation
+[41:39] is true which follows from the fact that
+[41:41] this function is symmetric
+[41:43] what I can do is I can say that look
+[41:47] the effect of this power source at this
+[41:51] point which is my point of evaluation
+[41:54] is nothing but the distance between them
+[41:56] the X distance and the Y distance so g x
+[41:59] p minus x i and y q minus y j
+[42:03] so this is
+[42:05] simple Common Sense stuff it's easy to
+[42:07] prove as long as you kind of are able to
+[42:12] visualize this
+[42:16] so what we are basically saying is that
+[42:18] you consider all the power sources on
+[42:22] for each power source you add its effect
+[42:26] its temperature effect on the point of
+[42:28] Interest
+[42:30] what makes you think that we can add
+[42:32] well the first property makes us think
+[42:33] that we can add which is linearity and
+[42:35] superposition
+[42:37] what makes you think that
+[42:42] uh this effect is uh Audible and you
+[42:46] know the power source here and a power
+[42:48] source here will have the same effect
+[42:50] here shift in variance
+[42:52] so what we do is we compute the distance
+[42:54] come this is the temperature component
+[42:56] that the power source here is adding at
+[42:57] this point
+[42:59] and then we multiply this with the value
+[43:01] of the power source so this was of
+[43:03] course normalized to 1 watt
+[43:04] but we multiply it with the value of the
+[43:07] power source and then we just add up so
+[43:09] this is the final temperature
+[43:11] so as I said this is another approximate
+[43:13] method of computing the temperature
+[43:15] based on the contribution of individual
+[43:18] power sources and the temperature spread
+[43:21] so if I look at the continuous form of
+[43:23] this equation this would basically
+[43:25] become a regular 2D two dimensional
+[43:27] convolution
+[43:28] where this is the power multiplied with
+[43:30] the temperature function of each
+[43:34] source so if this is a source and let's
+[43:36] say its temperature is spreading like
+[43:37] this of course this is in 1D but rotate
+[43:40] it for a 2d effect
+[43:42] then pretty much all that we do is we
+[43:44] find the power and multiply it with this
+[43:46] so let's say this is the source and you
+[43:48] want at this point this is the
+[43:51] so now uh let me assume that the power
+[43:55] source that I'm applying is very very
+[43:58] narrow in the sense this my cell size is
+[44:00] very small
+[44:02] if that is what I assume then the power
+[44:04] source will become small small small
+[44:06] small small
+[44:06] and the in magnitude of the power will
+[44:10] still remain one word
+[44:12] so this will approach the direct Delta
+[44:15] which basically is a function whose
+[44:17] integral is one so this is one what its
+[44:20] integral is one
+[44:21] but pretty much it is 0 at all points
+[44:26] other than at zero so essentially it's a
+[44:28] singularity at zero
+[44:30] where basically the value of the
+[44:32] function is if I just plot it right the
+[44:35] x axis Y axis zero zero zero zero here
+[44:37] there is a peak and again it falls down
+[44:40] so the integral over here is one this is
+[44:42] a very narrow function this is of course
+[44:44] theoretical
+[44:45] but I can
+[44:48] Define the greens function
+[44:50] uh as
+[45:02] as follows so of course there is a small
+[45:04] error in this I would like to correct
+[45:07] this so what happens is that gradually
+[45:09] when my power source becomes small small
+[45:12] and small
+[45:14] then I can assume that my power profile
+[45:18] right so let's say this is the Chip And
+[45:20] I have a power profile so I can kind of
+[45:21] break it into small small small small
+[45:23] grids
+[45:24] and each of these small grades I can
+[45:27] assume to be a power source and this if
+[45:30] this is small enough I can approximate
+[45:32] this as a direct Delta function
+[45:34] so I can think that my power profile
+[45:36] right is basically a collection of these
+[45:39] direct Delta functions
+[45:55] so what you see over here
+[45:58] is that the moment I assume that that my
+[46:00] power source is a collection of these
+[46:02] very small functions
+[46:04] so so that is essentially also how we
+[46:06] came from here to here this was a simple
+[46:08] summation
+[46:09] but then the moment you go from a
+[46:11] summation to an integral it basically
+[46:13] means that your
+[46:14] grid size is getting very very small so
+[46:18] the moment we went from here to here our
+[46:20] power source over here started
+[46:21] resembling this which means that it
+[46:24] became really really small it started
+[46:25] resembling a direct Delta function
+[46:28] the moment your power source becomes so
+[46:30] small so let me delete this this part is
+[46:32] not correct the moment your power source
+[46:34] becomes so small
+[46:36] the greens function becomes the
+[46:38] temperature profile of that Ultra small
+[46:41] power source so this is the greens
+[46:44] so this equation over here can be
+[46:46] replaced as T is equal to P convoluted
+[46:49] with G this is a 2d convolution is a
+[46:51] convolution operator
+[46:53] where p is the power profile
+[46:55] which is defined as what we just
+[46:57] discussed and the greens function is
+[47:00] defined as the temperature profile
+[47:02] corresponding to a unit impulse power
+[47:05] source so this is known as a unit
+[47:06] impulse
+[47:08] why is it a unit impulse because its
+[47:10] integral is one that's where unit comes
+[47:12] from and Y impulse because it's a very
+[47:15] narrow function something that looks
+[47:17] like this
+[47:18] so the moment I consider my power
+[47:21] profile to be a collection of such
+[47:23] impulses or direct deltas
+[47:26] then the temperature profile that this
+[47:28] would lead to on the chip see which
+[47:31] let's say would be something like this
+[47:33] this would be the greens function so all
+[47:36] that I need to do to compute the
+[47:38] temperature is take the power profile
+[47:40] and convolute it or convolve it with the
+[47:42] greens function this is a very fast
+[47:45] operation and this is linear in the
+[47:47] number of cells
+[47:50] right previously it was quadratic in the
+[47:52] number of cells but this is linear in
+[47:55] the number of cells hence it is much
+[47:57] faster so you see if you have 10 000
+[47:59] cells it's 10 000 times faster
+[48:01] rights as a quadratic problem has been
+[48:04] converted to a linear problem using this
+[48:07] approach which is
+[48:09] quite important in this case
+[48:12] so now if you consider the greens
+[48:14] function let's show what it means
+[48:16] graphically
+[48:19] so graphically as I said
+[48:21] we are treating each individual power
+[48:24] source to be a single point a point
+[48:26] source an impulse
+[48:28] say that would look like this right it
+[48:30] will be very well defined it would look
+[48:33] but is temperature profile which was
+[48:35] spread
+[48:36] and as I have said other than
+[48:39] the rims and the corners there will be a
+[48:42] shift in variance also which means that
+[48:45] function would look the same regardless
+[48:48] of the power source I mean wherever the
+[48:50] power source is around it this spread
+[48:52] will happen
+[48:53] so this is what let's say a 2d spread
+[48:56] would look like nicely see the density
+[48:58] at the center
+[48:59] and the spread towards the sides
+[49:03] so if we look at it the convolution
+[49:05] operation so we incidentally use the
+[49:07] same operation in neural networks as
+[49:10] well
+[49:11] the reason there is speed here also the
+[49:13] reason is speed
+[49:14] it converts
+[49:17] a conventional you know operation Vector
+[49:20] Matrix operation into a purely
+[49:23] Matrix operation right ah
+[49:27] so basically the previous ones
+[49:29] complexity was order n Square
+[49:34] but the current one's complexity is just
+[49:37] order n
+[49:38] and the reason is so so in this case N
+[49:41] means the same thing thankfully so N is
+[49:43] a number of grid points and so
+[49:46] previously as I said it was quadratic in
+[49:49] the number of grid points
+[49:51] which was if you think about it a lot of
+[49:53] work a lot of extra work that we were
+[49:55] doing
+[49:56] which was simply not required
+[49:59] in this case it is just a function of
+[50:01] the number of trade points a quadratic
+[50:03] function has been converted to a linear
+[50:07] or a quadratic complexity has been
+[50:09] converted to a linear complexity which
+[50:12] makes the problem much much faster
+[50:15] now if I consider the leakage
+[50:17] temperature feedback loop
+[50:20] so what I am seeing over here is that I
+[50:23] have my Dynamic plus short circuit power
+[50:25] and the leakage power
+[50:27] they determine the total power which
+[50:29] again determines the temperature
+[50:31] the temperature again determines the
+[50:33] leakage power which again changes the
+[50:35] total power so there is a feedback loop
+[50:37] over here
+[50:39] most of the time it's a convergent
+[50:41] series but sometimes this can diverge so
+[50:44] what will happen is a leakage will
+[50:47] create so much of additional power that
+[50:49] the temperature will then increase the
+[50:51] leakage further so this Divergent
+[50:54] condition will re will lead to a
+[50:56] continuous increase in temperature until
+[50:58] the chip shuts down this is known as
+[51:01] thermal Runaway
+[51:03] so there is a fair amount of work
+[51:05] in which I was involved to compute a
+[51:08] leakage away greens function where we
+[51:11] avoid this iterative feedback loop
+[51:13] altogether and the greens function the
+[51:15] solution that it gives is actually the
+[51:17] solution of the dynamic part plus the
+[51:19] leakage power
+[51:22] so we have now discussed the power
+[51:24] consumption model the temperature model
+[51:27] so we are all set to look at methods
+[51:30] for power and temperature Management in
+[51:33] the sense we now know how power is
+[51:35] dissipated
+[51:36] how the temperature increases
+[51:39] so we should now look at
+[51:42] how do we manage the power and
+[51:44] temperature effectively this is a
+[51:47] subject of the next lecture

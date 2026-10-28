@@ -1,0 +1,1256 @@
+[00:00] [Music]
+[00:00] n
+[00:35] welcome to chapter 10 in this chapter
+[00:38] we'll discuss the memory system so up
+[00:41] till now we have been very vague about
+[00:44] the memories that are used in uh typical
+[00:48] processor system so in this chapter
+[00:50] we'll look into this in great
+[00:53] detail this is again uh the 10th chapter
+[00:56] of the book computer organization and
+[00:58] architecture uh it has been published by
+[01:01] mrail in
+[01:02] 2015 and you will get copies of this
+[01:05] book in almost all the countries via
+[01:08] Amazon uh so if there's any problem with
+[01:11] the availability you can kindly send the
+[01:13] author or the publisher an
+[01:17] email so we will uh discuss this chapter
+[01:21] we'll discuss four separate
+[01:22] sections uh one is an overview of the
+[01:25] memory system then we'll discuss
+[01:28] caches we'll then go into the details of
+[01:31] a memory system look at mathematical
+[01:34] models and finally discuss something
+[01:36] called virtual
+[01:39] memory so up till now we have assumed
+[01:42] that the memory is one large array of
+[01:44] bytes sorry about that yeah we have
+[01:47] assumed that the memory is one large
+[01:50] array of
+[01:51] bytes uh this large array uh starts at
+[01:55] zero and ends at 2 ^ 32 - 1 if he assume
+[02:00] we have a 32-bit memory system so every
+[02:04] uh program will perceive the memory as
+[02:07] one
+[02:08] huge array of bytes you know for each of
+[02:12] these is one
+[02:14] by and uh each bite has an address and
+[02:19] that's the memory address so it takes we
+[02:21] have also assumed that it takes one
+[02:23] cycle to access the memory which means
+[02:25] perform a read or write so this is the
+[02:28] assumption that we have been making
+[02:31] that when we write a program an assembly
+[02:33] program to be
+[02:35] specific the entire memory in the
+[02:38] system is assumed to belong to that
+[02:41] program and the program can write any
+[02:44] part write to any part of the memory
+[02:46] space at
+[02:49] will uh so so that is not what happens
+[02:54] in reality what happens in reality is
+[02:57] something like this
+[03:00] we have many programs running at the
+[03:02] same time and uh we have to somehow
+[03:05] magically avoid overlaps between
+[03:07] programs running on the same
+[03:09] processess right and running on the same
+[03:13] processor
+[03:15] also what we have assumed is that all
+[03:18] our programs require less than 4GB of
+[03:21] space which again you know might not be
+[03:24] true so uh for example let's say we have
+[03:26] a
+[03:27] processor so we have a processor over
+[03:38] here and the memory might
+[03:42] be 1 GB 1
+[03:45] GB so in this case we'll have to live
+[03:47] with this limitations so all our
+[03:49] programs still need to run over here and
+[03:52] it is also possible that one of our
+[03:54] programs uh you know uh we can have
+[03:58] let's say 64bit addressing
+[04:05] and uh it's possible that we have a
+[04:07] program that requires 8 GB of space and
+[04:10] we have 1 GB of physical memory so how
+[04:13] would we run such kind of a system this
+[04:17] is what we will discuss in the lat half
+[04:20] of this chapter when we'll discuss
+[04:22] virtual
+[04:24] memory so let me give an uh so let me
+[04:27] try to motivate this as follows so so we
+[04:30] have essentially made two assumptions
+[04:33] one assumption that we have made is that
+[04:35] one program uh you know one running
+[04:38] program in a sense owns the entire
+[04:41] memory system so that is one first
+[04:43] assumption that we made that the entire
+[04:46] memory system belongs to one program
+[04:49] right uh so basically that's the first
+[04:52] one the other assumption that we have
+[04:54] made is that for a 32-bit memory system
+[04:57] the physical memory is 4 GB that need
+[05:00] not be the case so we can have a small
+[05:02] physical memory for
+[05:21] example so we can have maybe a 1
+[05:25] Gigabyte physical memory and then uh you
+[05:29] know we need to see how to run a program
+[05:31] on such kind of a system so let's first
+[05:33] take a look at the you know the
+[05:35] Assumption number one so this is a
+[05:38] screen capture of the Windows task
+[05:40] manager so the Windows Task Manager
+[05:42] shows all the programs that are running
+[05:45] on my system at this very point of time
+[05:48] and as you can see I am uh well I'm
+[05:51] running Skype which is taking 89 megab
+[05:54] of memory I'm running PowerPoint which
+[05:57] is taking around 79 .8 megabytes of
+[06:01] memory then I'm running many many many
+[06:03] many more programs as you can see if I
+[06:05] just scroll down I'm may be running 100
+[06:08] odd programs sorry I'm running 74 I'm
+[06:12] running 74 programs so process is
+[06:14] actually a running instance of a program
+[06:16] so I'm running 74
+[06:19] processes so it is not that my you know
+[06:22] my CPU is running all 74 at the same
+[06:25] time it is of course it runs one program
+[06:28] at a time but but'll switch between
+[06:30] programs periodically so let's say you
+[06:32] know it is running
+[06:34] uh program number one then this CPU will
+[06:38] switch and it will run program number
+[06:40] two then it will switch and it will run
+[06:43] program number three so it periodically
+[06:46] switches right between programs and then
+[06:48] again it can you know again switch
+[06:51] back
+[06:52] so when I'm running all of these
+[06:55] programs and each program is assuming
+[06:57] that the entire memory space belongs to
+[06:59] it
+[07:00] there is a possibility of an overlap in
+[07:03] the sense that one program writes to one
+[07:05] memory address another program
+[07:07] mistakenly rights to the same memory
+[07:09] address so we have an overlap so this is
+[07:13] something that should be avoided but the
+[07:15] most important point that should come
+[07:17] out from this slide is that at any point
+[07:21] in a system multiple programs running
+[07:25] you know are alive at the same time but
+[07:28] of course the given processors so let's
+[07:29] say there's one
+[07:32] processor One processor can only run one
+[07:35] program at one
+[07:38] time right so if it is running only way
+[07:41] of running multiple programs is that it
+[07:42] runs one program and after some time it
+[07:46] again switches and it runs one more
+[07:53] program right again it's sort of
+[07:56] switches between the multiple programs
+[07:59] but even if it
+[08:01] switches uh we have to ensure that you
+[08:05] know one program has written to so let's
+[08:08] assume that this is the memory space
+[08:10] that we have if one program has written
+[08:12] to you know these regions of the memory
+[08:14] space then the other program does not
+[08:17] the next program does not touch these
+[08:19] spaces otherwise there'll be a
+[08:22] problem so we need to solve
+[08:25] this also we have been making some more
+[08:28] assumptions we have been assuming that
+[08:30] the entire memory you know is takes the
+[08:32] same time it takes one cycle to access
+[08:35] any part of the memory system so that's
+[08:38] not correct so let's take a look at the
+[08:40] different kind of technologies that we
+[08:42] have learned which can actually be used
+[08:44] to make a memory system so one is a
+[08:48] Master Slave D flipflop that we talked
+[08:50] about so it's area you know typically uh
+[08:55] is very
+[08:56] large uh so it's around 8 Micron
+[09:01] Square uh so so it's it's it's a fairly
+[09:05] large structure but it's fairly large
+[09:08] and it's fairly fast as well so in a
+[09:09] fraction of a clock cycle it's possible
+[09:12] to access the flip-flop and also do more
+[09:14] work in contrast if I consider an SRAM
+[09:17] cell you know in a cache or in so I
+[09:21] should I should Rather Make It in an
+[09:23] array of asram cells
+[09:34] so if I consider a single SRAM cell in
+[09:36] an array for storing a single bit it is
+[09:39] actually 10 times more area efficient so
+[09:43] the area that it takes is around 8
+[09:45] Micron
+[09:46] square and the typical latency will be 1
+[09:49] to5 uh clock
+[09:51] Cycles if I consider a dam cell in an
+[09:55] array uh so it is even more area
+[09:57] efficient right so it is even 16 times
+[10:00] more area efficient than SRAM cell so it
+[10:03] only takes
+[10:04] 05 Micron Square so these are you know
+[10:07] slightly old values but uh the ratios
+[10:10] will still remain the same if I consider
+[10:12] current
+[10:14] technology uh so a dam cell would take
+[10:17] you know something similar 05 Micron
+[10:20] square and the typical latency however
+[10:23] for accessing a dam array is very high
+[10:26] it's around 50 to 200 Cycles as we can
+[10:28] see that dam is the
+[10:35] slowest and uh the D flip flop is the
+[10:44] fastest right but well speed comes at a
+[10:48] price and the price is area efficiency
+[10:51] and this is sort of at the
+[10:56] middle right so uh SRAM is in the middle
+[11:00] but as we see that as we increase the
+[11:02] area and increased area also means
+[11:04] increased power the latency decreases so
+[11:08] our cells are
+[11:10] faster and similarly when we go and we
+[11:13] use a dam cell a dam cell the area
+[11:17] is uh very small but the latency is high
+[11:21] so all of these things you can again go
+[11:24] back to chapter number six on the on
+[11:28] memories and you know dram cells and
+[11:30] SRAM cells so if just in case some of
+[11:33] you have forgotten you can go back to
+[11:35] chapter 6 and take a look at it once
+[11:37] again so just to refresh your memory a
+[11:42] dram cell is actually a single
+[11:46] capacitor uh SRAM cell is a cross
+[11:50] coupled
+[11:56] inverter and a master D flip Lo
+[12:00] well that essentially consists of cross
+[12:02] coupled uh nand
+[12:07] Gates you know two of these so basically
+[12:10] one of this and one more with some
+[12:11] additional complexities so this is there
+[12:14] in chapter 6 but the basic idea is there
+[12:16] certain trade-off exists uh between uh
+[12:19] latency and
+[12:22] area so should we make our memory only
+[12:24] using flipflops well it's a very bad
+[12:26] idea because for a given amount of Chip
+[12:29] area will be able to fit only very few
+[12:33] bits in contrast right say is 10 times
+[12:37] area of a memory with SRAM cells roughly
+[12:39] and 160 times the area of a memory with
+[12:41] Dam
+[12:42] cells uh so you know these are
+[12:44] representative numbers and also they
+[12:46] will consume significantly more power so
+[12:49] we can't use you know any single
+[12:51] technology to make the memory right
+[12:53] that's the most uh important take-home
+[12:56] point that is coming from this slide but
+[12:59] to make a memory system so there are
+[13:01] tradeoffs maybe you know I can uh write
+[13:20] down so there are area versus latency
+[13:23] tradeoffs so as the area
+[13:27] increases the lat latency
+[13:31] decreases and similarly the power versus
+[13:33] latency trade-off as
+[13:41] well so as the power increases as we
+[13:44] have more power the latency
+[13:46] decreases however you know the entire
+[13:48] memory cannot be made of of just
+[13:50] flip-flop cells it'll be it will not
+[13:53] contain uh its capacity will be very low
+[13:56] it will not be power efficient it will
+[13:58] take consume to of power similarly the
+[14:00] entire memory cannot be made just of dam
+[14:03] cells because we can fit in a lot of
+[14:05] bits but it'll be too
+[14:08] slow so uh given these things you know
+[14:12] we can nicely summarize all the
+[14:14] tradeoffs over here something that we
+[14:15] discussed in the previous slide if I
+[14:18] increase the area I'll reduce the
+[14:20] latency of course but increase the power
+[14:22] if I make the memory cells faster I'll
+[14:26] increase the area but I'll increase the
+[14:28] power as well
+[14:29] and if I reduce the power well I have to
+[14:31] make them smaller and make them slower
+[14:34] as well so you cannot have the best of
+[14:36] all worlds so it's a you know it's a
+[14:38] philosophical thing but that is
+[14:41] true that having the best of all worlds
+[14:44] is not possible right that is simply not
+[14:48] possible so what is in a
+[14:52] sense
+[14:54] desirable is that we have something uh
+[14:57] you know some kind of a solution which
+[14:59] is a
+[15:01] compromise so uh you know as we have
+[15:03] been discussing having a memory with
+[15:05] just flip flops we'll not be able to
+[15:07] store anything with just SRAM cells will
+[15:09] we need more
+[15:11] storage and uh that also will not do and
+[15:14] with Dam cells we'll have a lot of
+[15:15] storage space but every access will be
+[15:19] very very
+[15:22] slow so what do we do so memory latency
+[15:25] depends on well the size of the memory
+[15:28] yes the large is a size lower it is the
+[15:31] memory access latency also depends on
+[15:33] the number of ports so this is let me
+[15:35] discuss this see consider a small memory
+[15:39] like a register
+[15:41] file so in a register file there is one
+[15:45] instruction which is Reading in one
+[15:47] cycle and there's also one instruction
+[15:49] which is writing so instruction is
+[15:52] reading two registers in the same cycle
+[15:55] you need two read ports or two
+[15:57] interfaces to read
+[15:59] similarly one instruction is writing you
+[16:01] need one write port a port is
+[16:03] essentially an interface to
+[16:06] write so two read and one
+[16:09] write
+[16:11] right so uh we can always have a
+[16:14] slightly bigger you know we can always
+[16:16] have a different kind of processor that
+[16:18] instead of one instruction issues two
+[16:20] instructions for cycle so what would
+[16:23] this processor require it would need
+[16:24] four read ports and two write ports six
+[16:28] ports right right so we have one more uh
+[16:31] so more are the number of ports the
+[16:33] number of parallel in know accesses per
+[16:35] cycle slower will be the memory and
+[16:37] slower also will be you know more will
+[16:40] be the
+[16:41] power and then the latency also depends
+[16:44] on what kind of Technology we use if
+[16:46] it's a SRAM or a dam or a flip-flop
+[16:49] it'll take you know different amounts of
+[16:52] power and latency and area as we have
+[16:55] discussed right so so so what are the
+[16:57] main things that are in our control one
+[17:00] is the size right so we can tweak with
+[17:03] the size of the memory so if let's say
+[17:06] the storage capacity is low so if it's a
+[17:08] 4 kilobyte memory it'll be very fast if
+[17:10] it's a 4 megabyte memory it'll be fairly
+[17:13] slow and the number of parallel accesses
+[17:16] we are supporting right the number of
+[17:18] ports and the technology that we are
+[17:21] using what are we building it with s
+[17:23] Rams or D Rams or
+[17:26] flip-flops so let's look at a solution
+[17:28] but let's first search for a solution in
+[17:30] real
+[17:32] life so let's leverage some patterns so
+[17:35] let us consider uh a student Sophia's
+[17:39] workplace so let's assume that sopia is
+[17:42] sitting over here right uh on a
+[17:47] desk and uh she has some books on the
+[17:51] desk and nearby she has a shelf which
+[17:54] has some more books and there's a
+[17:56] cabinet there's a huge cabinet that is
+[17:58] far away
+[17:59] right so so clearly the desk is small so
+[18:01] if I in terms of size the desk is the
+[18:07] smallest and this is smaller than the
+[18:19] Shelf which is smaller than the cabinet
+[18:22] right the cabinet is huge cabinet is
+[18:24] huge it's far
+[18:25] away so uh what is one thing that we can
+[18:29] see from here accessing a book from the
+[18:31] desk is fast and quick but the desk also
+[18:34] has small
+[18:35] size then we have the Shelf which is
+[18:39] slightly larger and it can uh fit more
+[18:42] books and then we have the cabinet which
+[18:44] is really
+[18:46] large so what would be the right way of
+[18:49] or for Sophia to organize her books the
+[18:53] right way will be for sopia to keep the
+[18:56] most frequently accessed books on a desk
+[18:59] right so you know the books that she is
+[19:01] reading for example if she is preparing
+[19:03] for an exam she can keep the
+[19:06] books uh that are the most related to
+[19:09] her course to her exam on her desk she
+[19:13] can keep the slightly less frequently
+[19:15] access books on the shelf right you know
+[19:18] some books some reference books can be
+[19:19] kept on the Shelf which are not used all
+[19:22] the time but you know can be used
+[19:24] sometime and the rarely access books
+[19:27] which he hardly ever read s there'll be
+[19:29] many many such books and they can be
+[19:31] kept in the cabinet right so we can have
+[19:35] uh so what is most important is we need
+[19:37] to note these three words a desk a shelf
+[19:41] and a
+[19:44] cabinet a desk is small and uh so so
+[19:50] essentially a desk is small and
+[19:52] fast so uh what this means is that you
+[19:55] can get a book from the desk very
+[19:57] quickly
+[19:59] in uh contrast a cabinet is large and
+[20:03] slow so it takes a lot of time to
+[20:05] actually find a book inside a cabinet
+[20:08] because it's
+[20:09] large and uh so that's the reason it's
+[20:12] large and slow but it has more capacity
+[20:15] and a shelf is somewhere in the middle
+[20:17] so if I just look at uh uh you know size
+[20:21] so basically I just can write it once
+[20:24] again that a desk
+[20:29] is smaller than a
+[20:31] shelf is smaller than a
+[20:37] cabinet if I look at the latency or you
+[20:41] know time it takes to get a book fetch a
+[20:44] book then is the reverse a
+[20:47] desk is faster than getting a book from
+[20:53] shelf which in turn it is faster
+[20:59] to get a book from from the
+[21:03] cabinet so
+[21:05] uh why does the strategy make sense well
+[21:08] the strategy makes sense mainly because
+[21:11] of you know the nature of human behavior
+[21:14] right so let's say before preparing for
+[21:16] an exam she will tend to read the books
+[21:19] which are on the desk more and more
+[21:21] right over and over again she'll read
+[21:23] the same books because she's preparing
+[21:24] for one exam and so in the same window
+[21:27] of time which is maybe a day or two or 3
+[21:30] days before an exam a certain set of
+[21:33] books will be accessed after that if
+[21:36] there is another exam one more set of
+[21:38] books will be accessed so any kind of
+[21:41] such a pattern is called temporal
+[21:43] locality temporal means time it's the
+[21:46] adjective form of time so in a short
+[21:49] duration of time when we tend when we
+[21:51] access the same thing over and over
+[21:54] again that's called temporal locality in
+[21:56] this case before an exam the same same
+[21:58] books will be accessed over and over
+[22:00] again because of the phenomenon of
+[22:03] temporal locality it makes sense to uh
+[22:06] you know have a small
+[22:08] desk where we can keep our books so most
+[22:12] of the time maybe you know 90% of the
+[22:14] time we'll get the books from the
+[22:16] desk then again it makes sense to have a
+[22:21] shelf and out of the remaining
+[22:24] 10% right
+[22:26] maybe you know 9 9 percentage of the
+[22:29] time we can get the books from the Shelf
+[22:32] because the Shelf is
+[22:34] larger and then again we can have a in
+[22:37] know large
+[22:42] cabinet Fe the remaining one% of the
+[22:45] time we need to go so the advantage of
+[22:48] this particular organization is that 9 9
+[22:52] and 10 times we can get the book within
+[22:54] Arms Reach Out of that 9 and 100 times
+[23:00] we can get the book from the shelf so
+[23:02] maybe Sophia just needs to walk 10 steps
+[23:05] and only one in 100 times does she
+[23:08] actually have to make a trip to the
+[23:09] cabinet which is at the end of the room
+[23:12] which sounds reasonable this is
+[23:13] typically the way that we organize
+[23:15] things so even on a kitchen this is
+[23:17] exactly what we do on a kitchen
+[23:21] countertop we have very commonly used uh
+[23:24] ingredients right for example salt sugar
+[23:28] that's there on the
+[23:29] countertop then uh we have a small shelf
+[23:34] or we have a
+[23:36] refrigerator uh which contains other
+[23:39] items which cannot be kept uh on the
+[23:41] countertop because of space so that
+[23:43] includes vegetables and
+[23:45] meat and then uh we might have some more
+[23:50] items that we use very very rarely so in
+[23:53] that case it does not make sense to keep
+[23:55] them at home we can always you know if
+[23:57] we want to make something that uses a
+[24:00] very rare ingredient like saffron maybe
+[24:02] we can go to the market and buy one so
+[24:05] this is similar so this pattern uh so
+[24:08] this is again temporal locality uh in
+[24:12] action where what we are
+[24:14] doing is that uh we are
+[24:18] basically looking at all our accesses
+[24:21] and trying to derive a pattern out of it
+[24:23] so be it accessing memory or be it uh
+[24:28] anything else uh we always have some
+[24:31] amount of temporal
+[24:34] locality so uh now let's look at some
+[24:39] other patterns so let's assume that
+[24:41] Sophia was taking a computer
+[24:43] architecture course so she had computer
+[24:46] architecture books on her
+[24:48] desk after the course is over well the
+[24:51] architecture books will go back to the
+[24:54] shelf and then you know once the exam is
+[24:57] over what do you do you have fun you go
+[24:59] on a vacation so vacation planning books
+[25:03] will now come to the
+[25:05] desk so then you know she will study
+[25:08] where does she want to go on vacation uh
+[25:11] and then figure out the right vacation
+[25:14] destination so one idea that we can use
+[25:17] over
+[25:18] here is that look we can bring all the
+[25:21] vacation planning books that she has in
+[25:23] one go so for example you know if she
+[25:27] wants to let's say go to Europe but then
+[25:30] she changes her mind and decides that
+[25:32] she needs to go to Singapore so it would
+[25:34] not be a good idea to make a separate
+[25:36] trip for each and every vacation
+[25:38] planning book so it makes sense that she
+[25:40] brings all the vacation planning books
+[25:43] in one go so if she requires one of them
+[25:46] you know in high likelihood she will
+[25:47] require a similar book in the near
+[25:49] future so essentially she will make a
+[25:51] trip to the
+[25:55] shelf or make a trip to the cabinet and
+[26:00] come back with a stack of similar books
+[26:03] in one go and put them on the
+[26:06] desk right so this is what you would
+[26:08] typically
+[26:09] do and even let's say when you are
+[26:12] cooking and uh you know you decide that
+[26:15] you want to uh cook with some
+[26:18] spices then it makes sense to actually
+[26:21] go to the shelf and bring in ginger
+[26:23] garlic green chilies uh everything
+[26:27] together because you know most likely if
+[26:29] you have used Ginger now you'll require
+[26:31] garlic half a minute later so why make a
+[26:34] separate trip just bring all the spices
+[26:36] in one
+[26:37] go so this is also one more pattern
+[26:41] similar to a temporal
+[26:42] locality so this pattern is called
+[26:45] spatial locality so let's Now quickly
+[26:47] discuss both so temporal locality
+[26:51] means once yeah so it's a concept that
+[26:54] basically states that if a resource is
+[26:56] accessed at some point of time time then
+[26:59] most likely it will be accessed again in
+[27:01] a short period of time so we saw that
+[27:04] example that when Sophia Was preparing
+[27:06] for a computer architecture exam she was
+[27:09] accessing the computer architecture
+[27:11] books repeatedly over a short period of
+[27:13] time after the exam she decided to go on
+[27:17] vacation so then she brought all the
+[27:20] vacation planning books to her desk so
+[27:23] this pattern is called spatial locality
+[27:26] so it is a concept that states that if a
+[27:28] resource is accessed at some point of
+[27:31] time then most likely similar resources
+[27:34] will be accessed again in the near
+[27:35] future so we uh discuss special loc
+[27:38] locality in the con in the context of a
+[27:41] kitchen that let's say you know I am
+[27:44] cooking and I uh you know decided to you
+[27:49] know make a curry so then I got some
+[27:53] ginger from the Shelf but most likely if
+[27:56] I've got some ginger I'll get some
+[27:57] garlic and some chili powder later so I
+[28:00] would rather bring all the spices that I
+[28:02] have in one go so this pattern is called
+[28:05] spatial locality because there's a very
+[28:07] high likelihood that you know any cook
+[28:10] who has used Ginger will also use garlic
+[28:13] in you know in a very short interval of
+[28:16] time so let us verify if the programs
+[28:19] that we write are similar to our
+[28:21] behavior in real life and they also
+[28:24] exhibit temporal
+[28:27] locality so let us Define the concept of
+[28:29] Stack distance so let us have a stack so
+[28:33] recall that a stack is a lasting uh
+[28:36] first out
+[28:37] structure uh so similar to you know a
+[28:39] stack of books or anything so let's just
+[28:42] you know quickly look at what a stack is
+[28:45] so it's a data structure where we just
+[28:47] put in data like this and we can just
+[28:50] push data and also we can pop data out
+[28:54] right so we have also discussed about a
+[28:55] stack in uh chapter 2 so it supports
+[28:58] only two operations push and pop so let
+[29:01] us have a stack of memory
+[29:04] addresses so whenever we access an
+[29:06] address we bring it to the top of the
+[29:08] stack so for example you know addresses
+[29:10] are accessed in a stack so uh whenever
+[29:14] uh so what we do is that let's say you
+[29:16] know we had accessed one address some
+[29:18] time ago so it sort of went down the
+[29:21] stack whenever we find it whenever we
+[29:24] access it once again we search for it in
+[29:27] the stack we remove it from its position
+[29:29] and we again put it at the top of the
+[29:31] stack so let's follow this
+[29:34] algorithm so stack distance is defined
+[29:38] as the number of entries between the top
+[29:40] of the stack and where the address was
+[29:43] found and of course if you don't find
+[29:45] the address in the stack it is
+[29:47] infinity all right so what's the stack
+[29:50] distance again it's the distance from
+[29:53] the top of the stack and the position in
+[29:56] the stack where the given address was
+[29:59] found and if the address was not found
+[30:02] then the stack distance is
+[30:04] infinity so in a certain sense this
+[30:07] quantifies the ReUse of addresses
+[30:10] because the stack distance is low what
+[30:12] it essentially means so if this is a
+[30:15] stack right and let's say the stack
+[30:18] distance is
+[30:22] low what this essentially means is that
+[30:26] you know almost the similar addresses
+[30:27] are being used again and again and again
+[30:30] and uh you know this is what it would
+[30:34] mean if it's high means that you know
+[30:35] addresses are being used in a very
+[30:37] random
+[30:39] way so uh once again the stack distance
+[30:42] is the distance from the top of the
+[30:43] stack to the position at which the given
+[30:47] memory address was
+[30:49] found and when you find it you move it
+[30:52] and you take it to the top of the
+[30:56] stack so well we plotted the stack
+[30:59] distance for a given Benchmark so almost
+[31:02] all workloads have similar profiles so
+[31:04] this was for a set of pearl
+[31:06] programs and so the x-axis is the stack
+[31:09] distance and the y- AIS is a probability
+[31:12] it's a probability density function
+[31:14] essentially so we see that the highest
+[31:16] probable probability or the most
+[31:18] probable stack distances are pretty much
+[31:21] these two which is makes it less than
+[31:24] 20 so if I have accessed one address you
+[31:28] know most likely within the next uh 20
+[31:30] memory accesses I'll access it once
+[31:32] again and that's you know very
+[31:35] significant and if I just add up the
+[31:37] rest what this basically tells me is
+[31:40] that you know roughly for let's say this
+[31:43] around 27 this is around 17 44 54 so
+[31:48] roughly for around 60% of the addresses
+[31:51] within uh 50 memory accesses I'll access
+[31:55] it once
+[31:56] again so the stack distance per se is
+[32:00] low and since the stack distance is low
+[32:03] it tells me that there is a certain
+[32:08] locality uh in memory accesses right and
+[32:13] where do this temporal locality comes
+[32:14] from it comes from the way that we code
+[32:16] so how do we typically code the way we
+[32:19] code is that we write a function so the
+[32:20] function would have some kind of a for
+[32:22] Loop which will just run again and again
+[32:25] and again and then it will have so
+[32:29] basically here a similar set of
+[32:32] addresses uh or May the same set of
+[32:34] addresses will be accessed over and over
+[32:37] then again we'll have another for Loop
+[32:38] where again the same kind of addresses
+[32:40] will be accessed over and over so this
+[32:43] is exactly this pattern of the way that
+[32:45] we write programs where we call similar
+[32:48] pieces of code similar functions access
+[32:51] similar kinds of data over and over in
+[32:53] for loops and while Loops this is
+[32:56] essentially what gives us temporal
+[32:58] locality and thus we have a small stack
+[33:03] distance so what so let me just remove
+[33:08] the one second yeah so most stack
+[33:12] distances are fairly low and this
+[33:15] indicates to us that there is a high
+[33:17] degree of temporal locality in uh you
+[33:20] know the set of programs that we
+[33:22] consider but even if we were to plot
+[33:25] this graph for other kinds of workloads
+[33:27] we would see similar
+[33:32] distributions so to quantify uh special
+[33:35] locality let us Define a term called
+[33:38] address distance so let's do one
+[33:41] thing let us maintain a sliding window
+[33:44] of the last K memory accesses so which
+[33:47] means that the last K uh memory accesses
+[33:50] that a processor saw
+[34:00] let us just you know maintain them right
+[34:03] the last K
+[34:06] axises so let us Define the address
+[34:09] distance as follows so the ath address
+[34:12] distance is the difference in the memory
+[34:15] addresses of the ith memory axis and the
+[34:18] closest address in the set of the last K
+[34:21] memory accesses right so let's assume if
+[34:23] K is equal to 10 I just maintain a
+[34:26] window of the last 10 memory accesses
+[34:29] now let's see I access address number
+[34:34] 104 so here there is no 104 but I had
+[34:38] let's say accessed address 100 so this
+[34:41] means that I will choose whichever
+[34:44] address is there in the last 10 which is
+[34:45] the closest to
+[34:47] 104 in this case if it's
+[34:51] 100 I will uh choose this and the
+[34:54] address distance the difference between
+[34:56] these addresses the absolute value or
+[34:58] maybe you know just the difference and
+[35:00] in this case the difference is
+[35:03] four uh so this in a sense shows the
+[35:06] similarity of addresses it basically
+[35:09] tells us that if I was in a certain
+[35:12] memory region at a certain point of
+[35:15] time and then I make one more memory
+[35:18] access how far away is it
+[35:21] actually right so let me now explain the
+[35:24] logic of the sliding window well the
+[35:26] logic is like this so how do I write
+[35:28] programs the way I write programs is
+[35:31] maybe you know I would set the value of
+[35:34] some variable so so let's say okay let
+[35:37] me consider another example which is
+[35:39] more RT
+[35:41] maybe so let me consider an
+[35:43] array uh so let me maybe erase this and
+[35:46] uh start once
+[35:48] again so let me consider an
+[35:53] array uh one
+[35:56] second yeah
+[35:59] so let me consider an array here of
+[36:07] values so typically uh a program that I
+[36:11] write inside a for
+[36:17] Loop we pass through the array of values
+[36:19] and we do something on them so we can
+[36:21] maybe have something as X is equal to
+[36:28] I where I is the loop index you know
+[36:30] plus some constant plus something else
+[36:33] plus something else it doesn't matter
+[36:35] and then I can have some more lines
+[36:38] after that I'll come to the next
+[36:39] iteration of the for Loop increment I
+[36:43] and then access vals I +
+[36:46] 1 so when I access vals I +
+[36:54] 1 I will look at my sliding window of
+[36:56] the last G accesses
+[37:06] right so in the last ke aises depending
+[37:09] on the value of K if it's well chosen
+[37:12] I'll definitely find vals I in here and
+[37:15] this will be the closest memory address
+[37:18] to vals I +
+[37:20] 1 so the difference between addresses is
+[37:23] the size of an integer which in most
+[37:25] systems is 4 bytes so this will will be
+[37:27] the closest so the address distance will
+[37:29] be four so what this is telling us is
+[37:32] that the first thing it's telling us is
+[37:34] that in most programs we
+[37:36] typically uh access similar data and
+[37:39] similar data will be there in structures
+[37:41] such as arrays or can be there in a link
+[37:43] list where the structures are allocated
+[37:45] side by side in memory but Mo but most
+[37:50] commonly arrays and most commonly
+[37:52] variables defined in the same region of
+[37:54] an activation block so they have similar
+[37:57] addresses so when I access variables
+[38:00] with similar addresses like in this case
+[38:02] I'm accessing in one iteration valsi in
+[38:06] the next iteration I'm accessing Val I
+[38:09] +1 uh we will see that uh a notion of
+[38:13] special locality is coming right so in
+[38:16] particular for the vals array since I'm
+[38:19] accessing the elements consecutively so
+[38:21] if I consider you know the Val
+[38:25] array I am accessing the elements
+[38:27] consecutively first I access
+[38:31] I then I'm accessing I + 1 and so on so
+[38:38] uh this means we are accessing similar
+[38:41] items with similar addresses and so
+[38:43] special locality is there but the way we
+[38:46] quantify it is slightly tricky so I
+[38:50] cannot uh compare the address of valai
+[38:54] with the address that access the last
+[38:56] because then you know there might be
+[38:57] several
+[38:58] lines before it as well which might be
+[39:01] accessing other
+[39:02] addresses so to sort of not get confused
+[39:05] the way we have defined it is that let
+[39:07] me consider a window of the last K
+[39:09] addresses and find the closest one so in
+[39:12] this case when I'm accessing Val I + 1
+[39:14] I'll find Val I which will be the
+[39:17] closest and it will tell me that for at
+[39:20] least Val i+ 1 address distance is four
+[39:23] similarly there can be other kinds of
+[39:26] accesses in between these lines and
+[39:29] we'll always find that we would have
+[39:31] accessed some other data location which
+[39:34] is close by in terms of memory
+[39:38] addresses and this uh is a pattern that
+[39:42] we can use so this is spatial locality
+[39:44] this is a pattern that we can use after
+[39:46] quantifying
+[39:48] it so let me quantify again let me
+[39:50] consider a case where K is equal to 10
+[39:54] and let me consider a benchmark a
+[39:56] workload consisting only of World
+[39:59] programs and let me plot the address
+[40:02] distance so if I plot if I do a you know
+[40:05] probability density function of the
+[40:07] address distance so what I see is the
+[40:10] highest probability is you know centered
+[40:12] around zero so that's the highest and if
+[40:15] I consider this region then roughly I
+[40:21] have around
+[40:24] uh uh yeah 10 + 25 35 + 15 roughly 50%
+[40:30] more than 50% of the
+[40:32] accesses are within an address distance
+[40:35] of plus or
+[40:37] minus 25 bytes right so this is
+[40:41] typically the way that programs access
+[40:44] this is because there will be many
+[40:45] arrays where I'm accessing the array
+[40:47] elements there will be many local
+[40:48] variables so for example if I Define int
+[40:52] you know I J and
+[40:54] K what the what most compile would do is
+[40:58] that they will give them consecutive
+[40:59] addresses I starting at one point J 4
+[41:02] bytes later k 4 bytes after J so if I'm
+[41:06] accessing J and then I'm accessing I and
+[41:08] then I'm accessing K uh so it doesn't
+[41:10] matter what the order is but we always
+[41:13] find that we're accessing similar data
+[41:16] similarly if there is an array or
+[41:17] there's a string or something so then
+[41:20] we'll also if we are doing a scan
+[41:22] through the
+[41:23] array uh using a for Loop we'll also be
+[41:26] accessing similar data so a notion of
+[41:28] spatial locality with a low address
+[41:31] there and uh so that is why we get this
+[41:36] graph and what we see here is that most
+[41:38] axises if I compute their address
+[41:40] distance more than 50 60% of the axises
+[41:44] is within plus or minus 25 bytes right
+[41:47] so that is my first conclusion and
+[41:51] smaller is the address distance higher
+[41:53] is the spatial
+[41:55] locality so what does this mean this
+[41:57] means that look if I access something
+[41:59] with memory address X very likely in the
+[42:03] near future I'll access something with
+[42:05] uh memory address X plus or minus Delta
+[42:08] where Delta is a small number right so
+[42:11] this tells me that this pattern is you
+[42:15] know this pattern does exist in real
+[42:16] world programs and we should use it in
+[42:19] some
+[42:24] way so address distances are typically
+[42:26] Plus - 20 + - 25 and this tells us that
+[42:31] if we access some data in the memory
+[42:34] we'll very likely access some other data
+[42:37] where the addresses are very close by
+[42:40] and this is essentially high spatial
+[42:44] locality so let us see how we can
+[42:47] exploit temporal
+[42:50] locality the way we can exploit temporal
+[42:53] locality is as follows that instead of
+[42:56] we can have a hierarchy of
+[42:59] memories where main memory is the last
+[43:01] level so so let me maybe put the
+[43:04] processor over here to station it at the
+[43:07] right
+[43:09] point so what we can do is we can have a
+[43:12] hierarchy of memories so L1 Cache can be
+[43:15] small and fast similar to the
+[43:17] desk the L2 cache is somewhere in the
+[43:20] middle so it's similar to the
+[43:23] Shelf the main memory is large so it
+[43:26] contains almost everything that's
+[43:29] similar to the cabinet the main memory
+[43:31] is large and
+[43:32] slow so similar to Sophia what the
+[43:35] processor would do is that first it
+[43:37] would access the L1 cache and search for
+[43:39] data if it finds it well and good
+[43:42] otherwise uh so hopefully most of the
+[43:45] time because of temporal locality 90% of
+[43:47] the data will be found in L1
+[43:50] cache if it does not find the data in
+[43:53] the L1 cache it will go to the L2 cache
+[43:55] which is larger and
+[43:57] slower if it does not find it there uh
+[44:00] then the processor will go to the main
+[44:02] memory which is the
+[44:04] cabinet and how do we ensure that the L1
+[44:07] is fast well uh so we make make the L1
+[44:11] small so we have a reduced capacity so
+[44:14] make it small smaller means faster also
+[44:17] use SRAM cells to build it right flip
+[44:21] flops are expensive so let's use small
+[44:23] and SRAM cells so L1 will be able to
+[44:26] access Within you know one to two cycles
+[44:28] and L1 cache is also small so it's
+[44:31] several kilobytes so let's say 16
+[44:33] kilobyte is a representative figure
+[44:35] nowadays then the L2 cache we can build
+[44:38] with again SRAM cells but it be much
+[44:41] larger so it can be somewhere between
+[44:44] 256 kilobytes to maybe 4
+[44:48] megabytes and the main memory can be
+[44:51] made with Dam cells because we need High
+[44:53] storage and we don't mind uh the ultra
+[44:56] high latency
+[44:58] see so this can be 4
+[45:01] GB 8 GB 16 GB does not
+[45:05] matter right so this is how you know we
+[45:07] tie up our processor system with what
+[45:11] Sophia was doing so the same way that
+[45:13] she had a desk a shelf and a cabinet we
+[45:16] have a hierarchy of memory structures we
+[45:19] have very small and very fast one
+[45:21] typically 16 32 kiloby called L1 cache
+[45:25] right a cache means it's a section of
+[45:27] the memory what what a cache means is
+[45:29] that is a small subset of the overall
+[45:32] memory so it is
+[45:34] small we then have an L2 cache slightly
+[45:37] larger 256 kiloby to 4 megabytes again
+[45:41] uh made up of
+[45:43] srams and then we have a dam based
+[45:46] structure for main memories right it is
+[45:54] based for main memory so it has four G
+[45:57] gab to uh 32 GB of memory so that's a
+[46:01] lot of memory
+[46:04] space so uh this is just a quick uh
+[46:07] summary of what we discussed L1 cache
+[46:10] small and fast L2 cache in the middle
+[46:12] the main memory is
+[46:14] large so this is a hierarchy of caches
+[46:18] so the main memory will contain values
+[46:21] for all the memory locations so we might
+[46:23] relax this thing later but for the time
+[46:25] being uh let's you know let's take it as
+[46:28] a gospel truth that the main memory will
+[46:31] contain all the memory locations and the
+[46:33] caches will contain a subset of memory
+[46:35] locations so let's assume that in a
+[46:37] system there are 2 billion 2 billion
+[46:40] right billion with a B memory locations
+[46:43] so the main memory will contain all of
+[46:44] them but the caches will contain a
+[46:47] smaller subset the L1 cache might
+[46:49] contain a few thousand L2 cach might
+[46:52] contain a few million that way
+[46:57] so let's now discuss the access protocol
+[47:00] and also the way that we organize our
+[47:02] hierarchy of caches so typically we
+[47:05] consider an inclusive cach
+[47:08] hierarchy so this means that the L1
+[47:11] cache contains a subset of addresses
+[47:13] that are there in
+[47:14] L2 and the L2 cache contains a subset of
+[47:17] addresses that are there in main memory
+[47:20] which contains all the
+[47:22] addresses so uh explaining in another
+[47:25] way the main memory contains the entire
+[47:27] set so let's let this be S1 let this be
+[47:31] set S2 and let this be the entire set s
+[47:35] so S1 is a subset of
+[47:39] S2 and S2 is a subset of s so this
+[47:43] basically means that there will never be
+[47:45] any line you know any cache well any any
+[47:49] address sorry not a line an address
+[47:51] which is present in L1 and not present
+[47:54] in L2 there will never be any address
+[47:56] which is present in L2 and not in the
+[47:58] main
+[47:59] memory so so that will never be the case
+[48:03] it will always be the case that L1 is a
+[48:05] strict subset and L2 is a strict subset
+[48:09] of the addresses in the main memory so
+[48:12] this called inclusive cash hierarchy in
+[48:14] general it's a good idea to have an
+[48:17] inclusive cash hierarchy as opposed to a
+[48:21] non-inclusive cash hierarchy which
+[48:23] causes a lot of problems it's more of a
+[48:25] research topic than actually uh you know
+[48:28] textbook topic and the protocol is as
+[48:31] follows we first access the L1 cache if
+[48:34] the memory location is present we have a
+[48:37] cache hit so we say that uh the memory
+[48:39] location is present so we can perform
+[48:41] the access read or write the important
+[48:44] term here is a cache hit which tells us
+[48:49] that uh the memory address the memory
+[48:51] location is there in the
+[48:53] cache
+[48:55] otherwise we we have a cache
+[48:58] Miss so if there's a cache Miss means
+[49:00] that the address is currently not there
+[49:02] for example if you access the L1 cash
+[49:05] and a certain address is not there a
+[49:07] request now needs to be sent to L2 if L2
+[49:10] has the address it'll fetch it and give
+[49:13] it to
+[49:14] L1 if L2 does not have the address then
+[49:17] it will send a request to main
+[49:19] memory right which is made of dam cells
+[49:22] and so L1 and L2 are typically within
+[49:25] the processor Within with in the chip
+[49:27] right so the what does the chip contain
+[49:30] well the chip will contain the processor
+[49:31] it will contain the L1 and the L2 right
+[49:37] and the main memory is typically
+[49:39] outside you know it's a separate module
+[49:41] which is
+[49:48] outside so if you have a cach m so what
+[49:51] we need to do is we need to fetch the
+[49:52] value from the lower levels of the
+[49:54] memory system and populate the cache
+[49:57] and this can be followed recursively
+[49:59] which means if L2 does not have it can
+[50:01] send it to main memory and Main memory
+[50:03] will always have the data right that's
+[50:05] the Assumption we have been making so we
+[50:07] need not have two levels we can have L1
+[50:10] then L2 then L3 so lot of large
+[50:13] processors have an L3 as well and then
+[50:15] they have a main
+[50:17] memory some processors also have an L4
+[50:20] but L4 is very very rare L1 L2 L3 is
+[50:24] common or just L1 L2 and Main memory is
+[50:26] also common but what is the most
+[50:29] important here is to have an inclusive
+[50:32] cache hierarchy for the addresses in L1
+[50:35] are a very strict subset of the
+[50:37] addresses in L2 and addresses in L2 are
+[50:39] a strict subset of the addresses in main
+[50:45] memory so let's take a look at uh the
+[50:47] advantage of having this kind of an
+[50:50] organization so let us consider that the
+[50:53] hit rate in L1 is 95% which means that
+[50:57] for 100 accesses sent to the L1 95 find
+[51:01] their address inside L1 and it takes one
+[51:04] cycle let's then assume that the L2 hit
+[51:07] rate is
+[51:08] 60% and it takes 10 Cycles to access the
+[51:12] L2 and then it goes to main memory where
+[51:14] the hit rate is
+[51:16] 100% and it takes us 300 Cycles to go to
+[51:19] main memory and get the data back so in
+[51:22] this case 95% of the memory accesses
+[51:25] will take a single
+[51:27] cycle 3% will take that additional 10
+[51:33] Cycles right uh to go to L2 and get the
+[51:36] data
+[51:37] back and uh
+[51:42] 2% uh we actually take that additional
+[51:45] 300 Cycles after L after accessing
+[51:49] L2 uh
+[51:51] to get the data from Main
+[51:53] memory right so this is is telling us
+[51:57] that look for most of the time most of
+[51:59] our memory accesses are fast you know
+[52:01] reasonably fast both L1 and L2 and a
+[52:04] very small percentage of them will
+[52:05] actually take 300 so so these are very
+[52:08] you know rough crude numbers it's not
+[52:10] 300 exactly it's 1 + 10 plus 300 and but
+[52:14] we look at the performance of the memory
+[52:16] system in some great detail that's the
+[52:17] reason you know these numbers are very
+[52:19] crude at the moment but the important
+[52:22] point to note is that if you have a
+[52:24] hierarchy most of the accesses will hit
+[52:26] at the highest level which is good
+[52:28] highest level is the
+[52:30] fastest then gradually smaller and
+[52:33] smaller percentages of accesses will
+[52:35] trickle down to the lower levels so we
+[52:38] need to design a system where the least
+[52:41] number of accesses actually come down to
+[52:43] the lowest possible
+[52:46] level now this so the previous
+[52:49] discussion was on exploiting temporal
+[52:51] locality so how do we exploit special
+[52:55] locality so well let's look at the
+[52:58] address locality plot uh so the plot was
+[53:02] over here the address distances are
+[53:05] typically within plus or minus 20 bytes
+[53:07] plus orus 20 25 bytes
+[53:10] right so this means that we
+[53:13] have fairly High uh spatial locality so
+[53:17] let's use this pattern so since most the
+[53:20] addresses are within a small range so
+[53:23] the idea is that let us group memory
+[53:26] addresses into sets of n
+[53:29] bytes each group is known as a cach line
+[53:32] or a cache block so it's an atomic unit
+[53:36] in the sense that we'll treat the entire
+[53:38] group uh as one and a cache block can
+[53:42] typically be 32 64 128 bytes right a
+[53:45] power of
+[53:47] two so what is the reason of creating
+[53:50] these larger blocks of bytes the reason
+[53:53] is as follows that once we fetch a block
+[53:55] of 32 or 6 4
+[53:58] bytes because of a very short uh address
+[54:05] distance uh and because of high spatial
+[54:08] locality a lot of accesses in the short
+[54:10] time interval will fall
+[54:12] within uh the block right so it'll fall
+[54:17] within the address range of the block or
+[54:18] a lot of accesses will find their data
+[54:20] in the block itself so so consider this
+[54:23] once again so let's assume that there is
+[54:25] this address with address
+[54:27] 100 and most of the time we are
+[54:30] finding you know in a short interval of
+[54:32] time most of our accesses will be
+[54:34] between 75 and
+[54:37] 125 so it's a good idea it's a very very
+[54:41] good idea that what we do the same way
+[54:44] that Sophia fetched all the vacation
+[54:47] planning books at once because she
+[54:48] thought if she'll use one she'll use the
+[54:50] other is that we divide the memory
+[54:53] system into 64 byte blocks so one is
+[54:57] address 0 to
+[54:58] 63 other is 64 to
+[55:05] 127 so in this so This basically means
+[55:09] that if let's say we start a program by
+[55:12] accessing address 100 in very very high
+[55:14] likelihood we'll be accessing most of
+[55:16] the addresses in the range of 75 to 125
+[55:21] as per our plot in a short span of time
+[55:25] and if you fetch the entire 64 bytes
+[55:27] together from the lower levels from the
+[55:29] main memory or from the L2 cache into
+[55:31] the L1
+[55:34] then uh we will reduce our Miss rate
+[55:37] significantly right because of spal
+[55:40] locality if all the accesses are within
+[55:42] this block in a small period of time
+[55:45] we'll all have cach hits so we'll not
+[55:47] have to go outside the L1 cach so it's a
+[55:49] fantastic idea in that
+[55:51] sense so what again is the conclusion
+[55:55] from our address distance plots it was
+[55:58] that let us break down our entire memory
+[56:01] space that we have into contigous sets
+[56:05] of blocks where a block is 32 64 or 128
+[56:08] bytes and let's treat a block as an
+[56:11] atomic indivisible unit that we you know
+[56:14] fetch from lower levels or displace to
+[56:16] lower
+[56:17] levels and the advantage of bringing in
+[56:19] a block in one go is that let's say we
+[56:22] start with this address then we in a
+[56:25] high likelihood will access the next few
+[56:27] addresses so if a block for example
+[56:29] contains the data of an array so if we
+[56:32] start from this address very likely very
+[56:34] very high likelihood will scan through
+[56:36] the array will access all of these
+[56:39] addresses so this uh takes care of
+[56:41] special locality as
+[56:43] well so now uh we have taken a look at
+[56:47] both temporal locality as well as
+[56:50] special
+[56:51] locality so next uh we will discuss how
+[56:55] to use both of these and design our
+[56:58] caches so let me just summarize a couple
+[57:00] of things and caches we'll actually
+[57:03] discuss in the next
+[57:05] lecture so uh what I want to summarize
+[57:08] is I want to go back to the plots right
+[57:10] one for temporal locality one for
+[57:12] spatial
+[57:13] locality so for temporal locality we use
+[57:16] the notion of the stack distance and we
+[57:19] said that if the stack distance is low
+[57:22] the temporal locality is
+[57:24] high and and uh why was this the case
+[57:28] because this standard pattern you know
+[57:29] we looked at a kitchen we looked at
+[57:31] Sophia's desk we looked at a program
+[57:33] with for Loops so since we access
+[57:36] similar data you know over and over
+[57:39] again in a short period of time uh it
+[57:42] makes sense to actually have a cache
+[57:44] hierarchy where you have a small and
+[57:46] fast L1 which acts like a desk so most
+[57:49] accesses can be served with the L1 if
+[57:51] you don't find it in L1 you have a
+[57:53] larger L2 which acts like the Shelf and
+[57:56] finally you'll have the cabinet which
+[57:58] will have all the
+[58:00] addresses and you don't find something
+[58:02] in L1 you go to the main
+[58:04] memory so that's how essentially by
+[58:07] creating a hierarchy of these caches we
+[58:11] are leveraging temporal locality and
+[58:13] we're bringing this desk shelf and
+[58:16] cabinet uh this observation this
+[58:18] principle into the design of processors
+[58:21] as well that's Point number
+[58:23] one point number two
+[58:26] is that we plotted the address distance
+[58:29] distribution which measures the
+[58:31] similarity in
+[58:32] addresses uh right that the processor is
+[58:35] accessing we found that most of them are
+[58:37] within plus or minus 20 25 30 bytes so
+[58:40] if you create a you know an indivisible
+[58:44] unit so let's say if you fetch instead
+[58:47] of one byte or four bytes at a time we
+[58:49] fetch let's say 64 bytes at a
+[58:52] time like fetching multiple vacation
+[58:54] books at a time if let's say I've
+[58:56] started accessing this address most
+[58:58] likely I'll access the addresses nearby
+[59:01] and all of them I would have already
+[59:02] fetched because they're part of the same
+[59:04] block so we'll have a lot of cache hits
+[59:07] right so uh we solve the problem
+[59:12] of you know ensuring special locality by
+[59:16] dividing the memory space into blocks
+[59:19] that's that's also very important
+[59:21] concept so uh to summarize after this
+[59:24] entire 1H hour lecture we look looked at
+[59:26] a cache hierarchy
+[59:29] right we Justified it and we divide
+[59:32] memory into
+[59:36] blocks so these are our two important
+[59:39] observations that we'll take forward
+[59:41] when we actually design
+[59:46] caches all right which is I'm sorry this
+[59:50] slide

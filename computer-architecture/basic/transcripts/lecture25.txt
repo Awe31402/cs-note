@@ -1,0 +1,1396 @@
+[00:00] [Music]
+[00:00] n
+[00:34] welcome back so let's take a look at
+[00:37] floating Point addition so we'll take a
+[00:40] look at all three floating Point
+[00:41] addition multiplication and division so
+[00:44] let's start with addition addition and
+[00:46] multiplication are done almost similarly
+[00:49] division is however different and it's
+[00:51] very
+[00:54] interesting all right so let's uh
+[00:56] quickly go back to chapter 2 and uh
+[01:00] quickly uh do a revision of how floating
+[01:03] Point numbers are stored so we'll use
+[01:05] 32bits 32bit number system as the
+[01:08] running example but you know same
+[01:11] results hold for 64bit so I'll not uh
+[01:15] you know in the cost
+[01:16] of uh you know not repeating uh you know
+[01:21] repeating the same thing rather I'll not
+[01:22] repeat it so uh in a 32bit number system
+[01:27] we uh share
+[01:30] one uh I'm sorry we store one bit the
+[01:32] most significant bit is a sign bit so uh
+[01:35] so any number that has a normalized form
+[01:38] so the normalized form basically says uh
+[01:41] that we uh take this number minus one
+[01:45] and to the power s so if s is zero the S
+[01:47] bit is zero means that this is one
+[01:51] otherwise if the S bit is one means that
+[01:53] -1 to the^ S is minus1 so the number is
+[01:57] negative then uh we store a
+[02:00] significant so the significant is of the
+[02:03] form 1 Point a sequence of 23 zeros or
+[02:11] ones so uh the significant is uh less
+[02:14] than uh greater than equal to 1 or
+[02:16] rather 1 is less than equal to p and is
+[02:19] less than two then we have 2 * e minus
+[02:23] bias where e is the real uh so so e is
+[02:26] the exponent that is stored and bias is
+[02:36] 127 so for example if you want to
+[02:39] represent a number of the
+[02:42] form uh let's say
+[02:45] 1.5 okay let me go maybe here uh let's
+[02:49] say we want to represent a number of the
+[02:51] form
+[02:52] 1.5 so 1.5 in base 10 would translate to
+[02:56] 1.1 in base
+[02:58] 2 so in this case the sin beta
+[03:05] 0o the sin beta 0o then we'll save a 23
+[03:10] bit mantis up the main reason being that
+[03:13] uh the one here is common so the 23
+[03:16] bits of the mantisa so go back to
+[03:18] chapter 2 just in case uh you have
+[03:21] forgotten what these terms are so the 23
+[03:24] mantisa bit mantisa will say one and all
+[03:27] zeros pretty much and after that we'll
+[03:30] save the exponent so the exponent is
+[03:32] stored in the biased
+[03:33] notation and uh so if the exponent in
+[03:37] this case is nothing it's 1.1 * you know
+[03:41] it's 1.5 * 2^
+[03:45] 0 right uh so so the exponent basically
+[03:49] is
+[03:49] zero so what we will do is that we will
+[03:52] set e as
+[03:55] 127 such that the real exponent is 127
+[03:58] minus the bias which is
+[04:08] zero uh so that's pretty much uh so in a
+[04:13] 32 bits the way that we would store is
+[04:16] that we'll have one bit for the sign
+[04:18] we'll have 23 bits for the
+[04:22] Mena then we have eight bits to store
+[04:25] the exponent and the exponent is stored
+[04:28] in a bias notation the real exponent is
+[04:30] actually e minus the
+[04:32] bias right that's the real
+[04:35] exponent and uh we also mentioned that
+[04:38] we have so since this number can vary
+[04:40] from 0 to
+[04:42] 255 we also mentioned that 0 and 255 are
+[04:45] used to hold special values so in
+[04:49] particular uh if you use the value zero
+[04:52] right so the last eight bits are zero it
+[04:55] meant that uh it meant two things if the
+[04:57] significant is zero then the number is
+[04:59] zero
+[05:00] otherwise if the significant is non
+[05:04] zero uh then it uh it represents a
+[05:07] special kind of
+[05:09] number uh so we will
+[05:15] uh uh this special kind of number is
+[05:18] called a dormal number and we also said
+[05:21] that uh if the exponent is 255 which is
+[05:24] the highest value and then if the
+[05:27] mantisa is all zeros then uh it can
+[05:30] either be positive or negative infinity
+[05:32] and if the mantisa is not zero then it's
+[05:34] not a number nine so I'm not discussing
+[05:36] these things in detail here because I
+[05:39] already spent a lot of time discussing
+[05:41] these issues in Chapter 2 but let me
+[05:44] nevertheless just summarize uh let me
+[05:47] just summarize that information that we
+[05:49] require so what we require is that any
+[05:52] floating Point number can be expressed
+[05:54] in a normal form where uh it will have a
+[05:57] sign bit which will determine the sign
+[05:59] of the the number then we'll have a
+[06:01] significant which is of the form 1
+[06:04] Point uh 1 Point uh then 23 zeros or
+[06:08] ones so this part is called the
+[06:10] mantisa right so it can be any
+[06:12] combination of zeros and ones but just
+[06:14] 23 of
+[06:16] them and then we'll have an exponent the
+[06:19] exponent is stored in a biased
+[06:22] notation and uh the bias is
+[06:25] 127 so we also took into account the
+[06:28] fact that when uh uh the exponent e
+[06:33] minus uh sorry when the exponent is
+[06:36] zero then uh we can have a special class
+[06:39] of numbers called denormal numbers where
+[06:42] the standard form of a denormal number
+[06:44] is like
+[06:46] this it's a number of the
+[06:52] form as shown here there's a small error
+[06:55] in this slide so instead of one it
+[06:58] should be zero so 0 is less than equal
+[07:00] to P is less than 1 uh so so as we can
+[07:03] see uh is that just where the range of
+[07:06] normal number normal numbers end so
+[07:09] let's say these are all the normal
+[07:10] numbers of course the graph is not drawn
+[07:12] to scale and let's say this number is
+[07:15] zero so we have a tiny buffer of numbers
+[07:18] here called dormal
+[07:24] numbers and the standard form of a
+[07:26] denormal number is that it's a of a
+[07:29] number of the type 2 to^ -
+[07:32] 126 * P * -1 the^ s but here the
+[07:36] significant has a different form it's
+[07:39] not 1 point something rather it is
+[07:41] 0 uh 23 Z or ones right it's of the form
+[07:45] zero plus the mantisa when the mantisa
+[07:48] is 23 zeros or ones right you know some
+[07:51] number some combination of zeros and
+[07:54] ones all right so given the fact that we
+[07:57] have seen this
+[07:59] we are now ready uh to in a sense uh
+[08:04] take a look at the way that we shall do
+[08:06] floating Point
+[08:16] arithmetic so let us assume that we want
+[08:19] to add the numbers A and B so if you
+[08:22] want to do that let's take a look at the
+[08:24] E field and the E field is uh the value
+[08:28] that is stored right right so it is the
+[08:30] real exponent plus 127 which is the bias
+[08:34] for example when we try to save a number
+[08:36] of the form
+[08:37] 1.5 which is actually 1.1 in binary then
+[08:40] the real exponent was zero so what we
+[08:43] save is 0 + 127 which is the
+[08:47] bias let us now take a look at floating
+[08:50] Point
+[08:51] addition so uh let's first consider the
+[08:53] inputs so we are given two 32bit
+[08:57] inputs so the format of the input is as
+[08:59] follows that we have a 1 bit sign bit we
+[09:03] have a 23 bit
+[09:04] mantisa and we have an 8 bit exponent
+[09:07] field for the exponent is stored in the
+[09:10] bias notation so if the real exponent is
+[09:12] X so what we are saving is X plus the
+[09:15] bias so the real exponent is zero then
+[09:18] we are saving 127 because the bias is
+[09:22] 127 similarly the B
+[09:24] field is formatted in the same manner we
+[09:28] have a sign bit
+[09:30] we have a 23 bit
+[09:32] mantisa and we have a 8 bit
+[09:36] exponent so we need to add these two
+[09:38] floating Point numbers the result will
+[09:40] be another floating Point number which
+[09:42] is stored in exactly the same
+[09:44] format and uh we need to design an
+[09:47] algorithm such that given a and b we can
+[09:50] compute
+[09:51] C so what we do is that let me just
+[09:54] describe the pseudo code of the
+[09:56] algorithm so what's a pseudo code it's
+[09:59] basic basically a list of steps written
+[10:01] in a kind of high level description of
+[10:04] what the algorithm will do then Hardware
+[10:06] designers can take this algorithm and
+[10:08] Implement a circuit in
+[10:10] Hardware so let's do one thing let's
+[10:13] unpack the E fields and unpack meaning
+[10:16] let's extract them so let's call the E
+[10:19] field of a as EA and E field of B is EB
+[10:23] and let the E field of the result be
+[10:26] EC similarly let's unpack the
+[10:28] significant
+[10:29] ific so the significant recall that it's
+[10:32] a number uh for you know normal floating
+[10:35] Point numbers it's a number of the form
+[10:37] 1 Point M where m is a mantisa and
+[10:40] mantisa itself contains 23 bits so it's
+[10:42] a number basically at the form 1 point
+[10:45] you know 0 0 1 0 1
+[10:50] 1 23
+[10:53] bits so uh the one bit before the
+[10:56] decimal point and the 23 bit mantisa
+[10:58] make it 2 four bits let's do one more
+[11:01] thing so let us then assign it to a
+[11:04] number of the form W where you add a
+[11:07] leading zero bit so let's say let me
+[11:09] consider an example let's assume 1.5 in
+[11:12] decimal so 1.5 in decimal is
+[11:16] 1 1 in binary so in this case the
+[11:20] significant is 1.1 and the manesa is 1
+[11:23] followed by 22
+[11:24] zeros so uh we will Define a number of
+[11:27] the form W for w is of the form 0
+[11:31] 1.1 so mind you the point cannot be
+[11:34] stored in binary so we are only using it
+[11:36] to enhance readability so its position
+[11:40] implicit so uh W thus becomes a 25 bit
+[11:44] uh number quantity and uh so where does
+[11:47] this 25 come again from once again the
+[11:50] significant is at the form 1 Point the
+[11:52] 23 mantisa
+[11:54] bits so the significant is 24 bits and
+[11:58] we add a leading zero so this will
+[12:00] become 0 1. m where this is 2 bits and
+[12:03] this is 23 bits so total it's a 25 bit
+[12:07] quantity so with no loss of generality
+[12:10] let's assume that EA is greater than
+[12:12] equal to
+[12:14] EB and let the let's call the
+[12:16] significance of a and b as PA and PB
+[12:22] respectively furthermore let's define a
+[12:24] temporary variable W which is of the
+[12:27] same 25 bit form that we had discussed
+[12:29] in the last slide and let us get it by
+[12:32] unpacking the significant of B which has
+[12:34] the smaller exponent so let's unpack PB
+[12:37] and get W so now let's take a look at
+[12:41] the way that we want to do the addition
+[12:43] but before that let me motivate you by
+[12:45] saying how we would do it in the case of
+[12:47] decimal so let's assume I want to add 2
+[12:50] * 10^
+[12:52] minus1 + 4 * 10^ -
+[12:57] 3 so one uh I would first in a sense
+[13:00] unpack
+[13:02] it so this would be
+[13:05] 0.2 this would be
+[13:12] 0.04 subsequently what we will do is I
+[13:15] will write it in such a way that the
+[13:18] decimal points are
+[13:23] aligned then we will go forward and do
+[13:27] the addition
+[13:30] so what we need to do in a similar so
+[13:32] let's uh there's also another way of
+[13:34] looking at this Let Me Maybe erase part
+[13:36] of
+[13:50] it uh so so in this case the exponent of
+[13:54] this Min -1 is greater than
+[13:57] -3 so instead what I can do is that I
+[14:01] can write this as 2^ 10^ minus 1 no
+[14:04] problem with
+[14:05] that however this uh can be written in a
+[14:09] different way this can be written as
+[14:15] 0.04 * 10^
+[14:18] minus1 so 10^ minus 1 part being common
+[14:22] I can just you know write it in the side
+[14:24] and then I can add
+[14:36] 2. and 0.04 to make it
+[14:40] 2.04 and then uh so this so the final
+[14:43] answer is 2.04
+[14:48] * sorry time 10^ minus 1 all right so
+[14:54] what we can do is that we can do
+[14:55] something similar uh we can first make
+[14:58] the their exponents the same and then we
+[15:01] can align the decimal points and perform
+[15:03] an addition to make the exponents the
+[15:06] same what we would do is that we will
+[15:08] make the exponent of B the same as the
+[15:10] exponent of a and the exponents can be
+[15:13] made equal by shifting
+[15:14] W uh to the right by EA minus EB
+[15:18] positions so uh this is simple you know
+[15:21] very simple thing EA minus EB is a
+[15:23] difference in
+[15:24] exponents and uh so what we will do is
+[15:27] that if we shift W to the
+[15:29] right by uh these many positions then
+[15:33] effectively we'll be multiplying uh 2 ^
+[15:36] EA minus EB with EB to make it to the
+[15:38] power
+[15:40] EA so then uh we will have uh we will be
+[15:45] able to align the decimal points and add
+[15:48] right so this is the first thing you
+[15:49] know in any floating Point addition we
+[15:51] always align the decimal points uh
+[15:54] aligning the decimal points essentially
+[15:56] means that we make the exponents the
+[15:57] same and we write it in such a way that
+[15:59] we can just do a normal addition so
+[16:02] we're doing exactly the same thing uh we
+[16:05] we are setting the exponent of A and B
+[16:08] to be the same and this we are doing by
+[16:11] right shifting
+[16:12] W by EA minus EB
+[16:15] positions subsequently now that their
+[16:18] exponents are same so their exponent
+[16:20] field for both of them is a and the real
+[16:23] exponent is of course EA minus the
+[16:25] bias uh so so that's fine so then what
+[16:29] we can do is we can do w = w + PA so
+[16:33] which means that I'm adding the
+[16:35] significant of PA plus the significant
+[16:38] of PB in a sense right shifted by EA
+[16:42] minus EB
+[16:45] positions so uh this is the same as
+[16:48] equivalent to aligning the decimal
+[16:50] points setting the exponents to be the
+[16:53] same and
+[16:55] adding now let the significant so
+[16:58] basically regist W now contains a result
+[17:01] of the addition the result of the
+[17:04] addition so let the significant
+[17:06] represented by register W be PW right so
+[17:09] this is the significant that's there
+[17:11] this is this will be at the form uh you
+[17:13] know something point something right
+[17:16] where the position of the point is
+[17:18] implicit or can be
+[17:20] inferred so there is a certain
+[17:22] possibility that PW can be greater than
+[17:25] equal to 2 for example if you're adding
+[17:27] 1.5 and 1.5 so which is actually 1.1 and
+[17:32] 1.1 in binary so then what's the result
+[17:35] 1 + 1 is 0o uh 1 + 1 + 1 is 1
+[17:40] 1.0 okay so where we consider all these
+[17:42] points to be aligned so the result is
+[17:44] essentially three and this is greater
+[17:46] than equal to two so this is not a valid
+[17:49] significant for us so in this case we
+[17:52] need to do something called
+[17:53] renormalization which is
+[17:55] basically what we do is that we write
+[17:58] shift so so one 1 1.0 we make it
+[18:01] 1.1 this is done by right shifting W by
+[18:04] one position and we increment the
+[18:07] exponent uh EA because EA is now the
+[18:10] exponent of both uh you know EA is the
+[18:13] exponent of the result so we increment
+[18:15] the exponent by one position so let me
+[18:18] give a similar example in decimal let's
+[18:20] assume we have 23 times 10 ^
+[18:24] 4 but uh we uh don't want two digit to
+[18:29] the left of the decimal place decimal
+[18:31] point so we can alternatively write this
+[18:34] as 2.3 * so essentially I'm right
+[18:37] shifting
+[18:39] it by one position and times 10 ^ 5 so I
+[18:44] increment the exponent so we are doing
+[18:46] exactly the same in binary to ensure
+[18:49] that our significant is
+[18:51] between one and
+[18:55] two so the final result is like this the
+[18:58] the sign the sign
+[19:00] bit uh will be same as the sign of a or
+[19:03] b so mind you we are doing addition and
+[19:05] we are thus assuming that the sign bit
+[19:07] is the same right so how do we Define
+[19:10] how are at least we defining addition we
+[19:13] are defining addition by the fact that
+[19:15] we are either adding two positive
+[19:16] numbers or two negative numbers the S
+[19:18] bit is different it'll essentially
+[19:20] become
+[19:20] subtraction so s bit will be the same as
+[19:23] sign of a or b right so two positive
+[19:26] numbers we add the result is positive
+[19:29] two negatives we add the result is
+[19:32] negative now we also have the
+[19:34] significant PW and we have the exponent
+[19:37] field
+[19:39] EA so given the fact that we have all
+[19:41] three we can construct a floating Point
+[19:44] number let me just quickly go back so
+[19:46] given the fact that we know the sign of
+[19:48] the result so so let this be the
+[19:55] result so we know the sign of the result
+[19:57] so we know the sign ific so from the
+[19:59] significant we can find the Mena right
+[20:02] the 23 bits after the point and we also
+[20:06] know the final uh exponent field what
+[20:08] it's supposed to be so we can have EA
+[20:11] over here right after these doing these
+[20:13] two steps so let's explain with an
+[20:20] example so let's consider this example
+[20:23] let's add the numbers 1.01 in base 2 uh
+[20:27] * 2 cub + 1.11 again in base 2 uh time 2
+[20:33] 2^
+[20:34] 1 so the decimal point will be showing
+[20:37] in W to enhance readability but in the
+[20:39] hardware it will not be there so let's
+[20:42] set a as 1.01 * 2 Cube and let's set b
+[20:47] as uh 1.11 * 2^ 1 so the exponent in a
+[20:53] will be greater than the exponent of
+[20:55] B and also you know for the sake of
+[20:57] readability let's not use the bias
+[20:59] notation for E right uh so let's also
+[21:04] you know avoid doing that so let's not
+[21:06] use the bias notation instead uh let's
+[21:09] assume that e is stored as is even
+[21:12] though in Hardware that's not the
+[21:13] case so uh in this case W will be 0
+[21:19] 1.11 uh which is the significant of
+[21:22] B uh e is three uh e the exponent of a e
+[21:26] a the final exponent is three so to
+[21:30] align the decimal points uh what we need
+[21:33] to do is that we need to write shift W 0
+[21:36] 1.11 by 3 - 1 places why 3 - 1 because 3
+[21:40] is the exponent of a and 1 is the
+[21:42] exponent of B so we need to WR shift W
+[21:45] by uh two places so this will give
+[21:49] us uh 0 1 1 1 after the decimal point
+[21:54] and 0 0 before the decimal point so now
+[21:57] the decimal points of both A and B are
+[21:59] aligned and the exponent for both of
+[22:01] them is e or a same thing uh which is
+[22:06] three so then uh we should add W with
+[22:10] the significant of PA so w is
+[22:15] 0.0111 with the significant of PA which
+[22:18] 01.01 0 so if I do the
+[22:23] addition so uh let me see
+[22:34] plus I'll have one one here 1 + 1 is 0
+[22:39] it's 1 here and 0 1 so the final result
+[22:44] 011011 uh there is no reason to
+[22:46] renormalize because this is between 1
+[22:49] and two so the final result C is 1 1.011
+[22:53] * 2 to ^ 3 right because we taking the
+[22:57] exponent of
+[22:59] uh
+[22:59] a so this is uh one example of how we
+[23:03] would do it in Hardware of course we
+[23:04] have made some simplifications we are
+[23:06] not using the bias notation but this
+[23:08] should capture most of the idea and the
+[23:10] idea is simple uh we are using exactly
+[23:13] the same
+[23:14] algorithm as we would have used for
+[23:17] decimal numbers so exactly the same uh
+[23:20] algorithms and the same technique is
+[23:22] being used that we first make the
+[23:24] exponents the same then we align the
+[23:27] decimal points and add
+[23:30] so let me consider one more
+[23:33] example so in this case we are adding
+[23:36] 1.01 in base 2 * 2 Cub + 1.11 in base 2
+[23:41] * 2
+[23:42] 2 again the decimal point in W is shown
+[23:45] for enhancing readability and we will
+[23:47] not be using the biased scheme right so
+[23:51] so that is uh what we'll not be doing so
+[23:55] a is 1.01 * 2 Cub B is 1. 1 1 * 2 2 and
+[24:00] the exponent of a is greater than the
+[24:02] exponent of B so the significant of B is
+[24:05] 0
+[24:07] 1.11 and E the final exponent that at
+[24:10] least we are planning at the moment is
+[24:13] three so to make W the first stage would
+[24:16] be is that we take the significant of B
+[24:19] and shift it to the right by 3 minus 2
+[24:24] positions so this will make it
+[24:27] 0.111 1 then we add
+[24:31] 0.111 which is uh the value of w the
+[24:35] right shifted version of B significant
+[24:38] with the significant of a which is
+[24:40] 1.01 so let's take a look at the
+[24:43] addition 1.01 0 +
+[24:48] 0.111 so 0 + 1 is 1 1 + 1 is 0 carry of
+[24:52] 1 1 + 1 is 0 carry of 1 so it's
+[24:56] 1. 0 0 1 so as we can see this number is
+[25:02] greater than two right so it's greater
+[25:05] than equal to two and that's a
+[25:07] problem so uh as a result you know this
+[25:10] needs to be fixed the way that we fix it
+[25:13] is that we sort of
+[25:14] renormalize so we shift it to the right
+[25:17] by one position so then this becomes 13
+[25:21] Z and 1 and we increment e by 1 so 3 + 1
+[25:25] is 4 so the final result that we have
+[25:28] have over here is
+[25:32] 1.001 * 2 ^
+[25:35] 4 so as you see that after doing the
+[25:38] addition there was a need to renormalize
+[25:41] the
+[25:43] result and uh so what we did is that we
+[25:45] right shifted uh W and we added uh one
+[25:50] to e so uh we added 3 + 1 and made it
+[25:54] four let us now discuss a very tricky
+[25:57] issue uh in
+[25:59] the uh world of floating Point math so
+[26:02] let's discuss
+[26:06] rounding so assume that we were allowed
+[26:08] only two mantisa bits in our previous
+[26:10] example so let's go back so assume that
+[26:13] here right we are allowed only two
+[26:15] mantisa bits so we can store only 1.0
+[26:20] and we need to discard these two bits so
+[26:23] well if it's 01 maybe we can discard but
+[26:26] assume that the final result was of the
+[26:28] for
+[26:30] 1.11 it might have been inappropriate to
+[26:33] discard 1 one without making a change in
+[26:36] the 0 0 so we it would have been maybe
+[26:39] more appropriate to round it to
+[26:41] 1.01 so rounding is an issue especially
+[26:44] when the number of mantisa bits is
+[26:46] finite and this issue has to be
+[26:49] considered so let us uh first Define
+[26:52] some normal standard
+[26:54] terminology and then we will talk about
+[26:57] rounding and why why does rounding come
+[26:59] there's another reason so the reason is
+[27:01] that we are essentially right shifting
+[27:03] so initially you know if I consider the
+[27:05] significant of a it is of the form 1
+[27:08] point you know something for 23 bits
+[27:11] that's fine but this is being added with
+[27:14] W which is the significant of B right
+[27:16] shifted by certain number of bits so for
+[27:19] all we know this can be of the form 00 0
+[27:21] 0 and then a certain number of bits let
+[27:25] me just erase and clean
+[27:32] this right and then uh 23 bits so when
+[27:36] we do an addition uh it'll be 1 point
+[27:40] something something something you know
+[27:42] it might be
+[27:43] like uh you know greater than 23 bits so
+[27:46] there will be a requirement to stop this
+[27:49] at 23 bits because that's all that we
+[27:50] can store and the remaining bits have to
+[27:53] be discarded but they should be
+[27:55] discarded in a way that the result is
+[27:58] the most accurate and for that reason we
+[28:01] have to do some amount of
+[28:02] rounding so let's the the terminology
+[28:05] first so consider the sum W of the
+[28:08] significance that we have and note that
+[28:11] in Hardware we're not storing the
+[28:12] decimal point it is implicit so in a
+[28:15] sense that we know where it is but it's
+[28:16] not being stored so the significant is
+[28:19] pretty much being stored as a 24bit
+[28:21] number in Hardware right so it is in
+[28:25] reality it is 1 Point the mantisa which
+[28:27] is 23 bits but the way that the
+[28:30] significant is being stored in Hardware
+[28:32] is one continuous sequence of 24 bits so
+[28:36] it can be you know
+[28:38] alternatively
+[28:39] interpreted as a 24bit unsigned number
+[28:43] so let's use that interpretation over
+[28:46] here and so this is all that we can keep
+[28:49] we don't have space to store anymore but
+[28:52] it is possible that during our operation
+[28:53] there'll be some additional bits which
+[28:55] actually have to be discarded so let
+[28:58] just do one thing let's uh assume that
+[29:00] this is you know let's logically assume
+[29:03] that this 24bit significant is one kind
+[29:05] of number and the bits that are being
+[29:07] discarded is another
+[29:09] number and let's say that the final
+[29:12] number W is p + r * 2 ^ - 23 where If I
+[29:18] multiply the significant with 2^ -23 the
+[29:21] decimal point will come here just after
+[29:24] the first bit and let's define the r
+[29:27] portion the residue as the part that
+[29:30] we'll ultimately throw out right so the
+[29:32] residue uh we can treat it as less than
+[29:34] one in this uh particular equation
+[29:37] because we are assuming that uh since we
+[29:40] are taking 2 ^ minus 23 out the decimal
+[29:43] point from this point has actually moved
+[29:46] to this point right so that's what we
+[29:49] are assuming so any number will have
+[29:51] your regular significant and a residue
+[29:54] and the residue part is thrown out so we
+[29:57] want to run round the significant in
+[29:59] such a way that it reflects the residue
+[30:03] correctly so uh so the ter terminology
+[30:06] again P represents a significant and the
+[30:08] temporary result uh it's stored as a
+[30:10] 24bit unsigned number right that's p and
+[30:15] we are storing the residue as a number
+[30:18] which is strictly less than
+[30:20] one so the aim is to modify P to take
+[30:23] into account the value of R and then we
+[30:25] can happily discard r for example if I
+[30:29] you know let me give an example in the
+[30:32] world of decimal numbers so let's assume
+[30:34] we are allowed to store only two digits
+[30:36] after the decimal point and the number
+[30:38] is of the form
+[30:42] 10.50 uh
+[30:44] 93 so since these two are the residue
+[30:48] they can be discarded but we should
+[30:50] update the significant to make it more
+[30:52] accurate which will be
+[30:56] 10.51 so that's exactly what we want to
+[30:58] do and then uh so in this process we
+[31:00] have created a new significant which
+[31:03] is p dash and p dash reflects the
+[31:07] residue correctly right because the
+[31:09] residue cannot be stored we don't have
+[31:11] the space for
+[31:12] it so I 754 which is the floating Point
+[31:16] standard that we have uh discussed in a
+[31:19] fair amount of depth in Chapter
+[31:22] 2 has several rounding modes so let us
+[31:25] discuss what these rounding modes are
+[31:28] so one rounding mode is called
+[31:30] truncation so truncation basically means
+[31:33] that P Das is equal to P so we just get
+[31:36] rid of the residue so let's say you know
+[31:39] uh I have I can
+[31:42] save um I'm sorry yeah I I'm not allowed
+[31:46] to save a single even a single digit
+[31:49] after the decimal point so in this case
+[31:52] what I will do is 9.5 I'll just round it
+[31:54] to 9 and I'll completely discard the
+[31:56] residue in this case uh I will discard
+[32:00] six and even 9.6 I'll round it to 9 and
+[32:03] even 9.99 I will round it to 9 so I'm
+[32:07] just truncating I'm just discarding the
+[32:09] residue and I'm not updating the
+[32:11] significant so this is a very simple
+[32:13] mode of rounding and uh this is
+[32:16] typically you know not advisable to use
+[32:18] but you know we can use it if you want
+[32:20] to so this is called
+[32:23] truncation the other is rounded to plus
+[32:26] infinity which means means that we add
+[32:29] the residue to the significant so mind
+[32:31] you once again the significant is a
+[32:33] 24bit unsigned number and the residue is
+[32:36] less than
+[32:38] one right so basically if we We'll add
+[32:41] both of them and we'll take that seiling
+[32:44] so the ceiling operator essentially
+[32:46] takes you to the next higher integer for
+[32:49] example the ceiling of
+[32:52] 3.4 is
+[32:54] 4 the ceiling of minus
+[32:59] 6.2 right the next higher integer is min
+[33:01] - 6 so uh pretty much we'll take the
+[33:04] ceiling of the value so 9.5 will round
+[33:08] it to 10 because that's the next higher
+[33:10] integer minus 3.2 you know if we have a
+[33:14] number of this type we'll round it to
+[33:16] minus 3 because that's the next higher
+[33:18] or greater integer so this is rounding
+[33:21] to plus
+[33:23] infinity so this also is something uh
+[33:26] that can be done is supported by the it
+[33:29] 754 format and the advantage here is
+[33:32] that we always choose the higher integer
+[33:35] uh so for example uh what we are doing
+[33:38] is we are considering a 24bit
+[33:43] significant and then uh we are so since
+[33:45] we have taken 2 ^ minus 23 out of the
+[33:49] equation I'll just go back so this
+[33:51] equation is the Crux and uh we need to
+[33:54] ensure that all of us are understanding
+[33:56] it otherwise will cause a little bit of
+[33:58] an issue a lot of issue
+[34:03] rather the spirit of this equation is as
+[34:06] follows that in the course of our uh
+[34:10] algorithm we will produce intermediate
+[34:13] results which are more than you know 24
+[34:16] or 25 bits can even have 40 bits so they
+[34:20] will have a certain significant
+[34:22] part which is of the form 1 point
+[34:25] something and then they will have a
+[34:27] certain residue part see if I take 2 ^ -
+[34:31] 23
+[34:32] out then uh pretty much what happens is
+[34:36] that the decimal point you know since
+[34:38] significant was of the form 1 point
+[34:40] something the decimal point is going to
+[34:43] move from this point to this point and
+[34:46] so thus we'll have a purely positive
+[34:48] number you know pure integer a pure not
+[34:51] positive but a pure integer called P
+[34:54] which is 24 bits can be more it doesn't
+[34:56] matter it's a pure integer does not have
+[34:58] a decimal portion and a residue which is
+[35:02] after the decimal point and the residue
+[35:04] is thus less than one so our aim is to
+[35:08] consider p+ R you know I'm sorry our aim
+[35:11] is to consider P and R both of them and
+[35:14] come up with a new significant p dash
+[35:17] and discard R so to discard R will
+[35:21] anyway have to be discarded but we'll
+[35:23] have to see how can we uh take the
+[35:26] effect of r to account you know if R is
+[35:29] small we can get rid of it but if it's
+[35:31] large then P has to be incremented so
+[35:34] some rounding has to be done so our aim
+[35:36] is to move from P to one more
+[35:38] significant p dash and discard R and but
+[35:42] take the value of R into account so we
+[35:46] discussed truncation we have discussed
+[35:47] rounding to plus infinity so one more
+[35:50] method is rounding to minus infinity or
+[35:53] negative Infinity which is which means
+[35:55] we go to the lower integer it's the
+[35:57] opposite oppos it of rounding to plus
+[35:59] infinity so in this case what we do is
+[36:03] that we actually go down so from 9.5 we
+[36:07] go down to 9 and from - 3.2 we'll go to
+[36:11] the lower integer which is -4 so
+[36:13] mathematically represented We'll add P
+[36:16] We'll add R to p and we'll take the
+[36:19] floor of the value so floor means go to
+[36:22] the lower integer for example 4.6 the
+[36:25] floor is
+[36:26] 4 - 3.8 we go to the
+[36:30] integer uh that is lower than it that is
+[36:33] -4 in fact even for - 3.1 we go to the
+[36:37] next lower integer which is
+[36:41] -4 so uh so what are the three modes
+[36:44] that we have discussed right now
+[36:45] straightforward truncation round to plus
+[36:48] infinity and round to minus infinity now
+[36:51] we'll discuss uh a slightly more
+[36:55] sophisticated mechanism which is also
+[36:56] more popular
+[36:58] so in this case what we do is that we
+[37:02] set p- is equal to p+ R so actually some
+[37:04] function of p+ r so we'll discuss this
+[37:06] function it's called The Box function
+[37:09] but we'll discuss this function in
+[37:11] detail so what we'll do is that we'll
+[37:13] round it to the nearest it's called
+[37:15] round to nearest so we'll round it to
+[37:17] the nearest integer so 9.4 will become 9
+[37:22] and uh 9.6 will become 10 all right so
+[37:26] 9.4 the near 1 is 9 and
+[37:29] 99.6 uh will become
+[37:31] 10 uh similarly - 2.3 the closer integer
+[37:35] is min-2 so that's fine but the
+[37:38] difficulty comes with 9.5 and - 3.5
+[37:42] because they are in the middle so what
+[37:44] we will do is we will always prefer we
+[37:47] will round it so
+[37:48] 9.5 can be rounded to either 9 or can
+[37:52] either be rounded to 10 so it's equally
+[37:54] you know close to both 9 and 10 so this
+[37:57] case what we will do is as a matter of
+[37:59] convention we'll prefer the even number
+[38:02] so even number is 10 so we'll round it
+[38:04] to it similarly for - 3.5 we'll round it
+[38:09] to the nearest even number which is min
+[38:12] -4 so what is round to nearest again
+[38:15] round to nearest is that if the number
+[38:17] is not of a form X +5 we round it to the
+[38:21] nearest
+[38:22] integer however uh if it's a number of
+[38:25] the form X Plus .5 then we choose the
+[38:30] integer that is even right the nearest
+[38:33] integer that is even let's now try to
+[38:36] summarize the rounding modes so the
+[38:39] rounding can be thought of as a function
+[38:42] so the inputs of the function are like
+[38:44] this so let's first draw a black
+[38:54] box so what goes in is the
+[38:58] uh significant as an unsigned number as
+[39:00] a 24 or 25 bit uh it does not matter uh
+[39:04] but what goes in is an unsigned number
+[39:06] which is the significant and uh so so
+[39:09] actually even before this we compute the
+[39:11] final output W and then uh we extract uh
+[39:16] the significant which is uh pretty much
+[39:18] the amount that we can fit uh with a 23
+[39:21] bit mantis so it should be of the form 1
+[39:23] point something and uh the man size over
+[39:28] here 23 bits so that is our significant
+[39:31] which we have extracted out of the final
+[39:33] result of the mathematical operation
+[39:35] right be it addition or subtraction but
+[39:37] we'll talk about just addition with the
+[39:39] same signs for the time being then what
+[39:42] we
+[39:43] do is that uh we send uh this number
+[39:47] which is actually a 24bit number as the
+[39:50] significant and we also send the residue
+[39:53] Which is less than
+[39:55] one what comes out is the new
+[39:58] significant p
+[40:00] dash and uh so p dash there are two
+[40:03] choices one is p- is equal to
+[40:05] P so that is a default so here basically
+[40:08] we set the residue to
+[40:10] zero the other choice is that p- is p
+[40:15] incremented with one so p + 1 right so
+[40:18] in this case we have effectively done
+[40:20] some rounding so in this case we are
+[40:22] incrementing the
+[40:24] significant so let's now try to State
+[40:26] the basic rules for different rounding
+[40:28] modes let's consider truncation first so
+[40:31] in the case of truncation what we do is
+[40:33] we completely discard the residue so P
+[40:36] Das is equal to P so in uh both the
+[40:39] cases we don't do anything and the
+[40:40] default
+[40:42] remains and the default when the sign of
+[40:45] the result is positive and when the sign
+[40:48] of the result is negative is the
+[40:51] same which is that we just discard the
+[40:54] residue so that's the reason we don't do
+[40:56] anything other than mere
+[40:58] truncation let's now talk about rounding
+[41:02] infinity so let's uh take a look at two
+[41:05] numbers
+[41:07] 3.1 and minus
+[41:09] 3.1 so in the case of 3.1 this needs to
+[41:13] be rounded to +
+[41:15] 4 because that's the next greater
+[41:17] integer in the case of minus
+[41:20] 3.1 uh this needs to be rounded to minus
+[41:23] 3 because that is the next greater
+[41:26] integer so the conditions are as follows
+[41:29] as if the sign of the result is positive
+[41:32] and we have a nonzero residue which is
+[41:34] exactly this
+[41:36] case then uh what we need to do is we
+[41:40] need to increment the significant so we
+[41:42] need to increment 3 to 4 otherwise if
+[41:45] the residue is zero anyway we don't need
+[41:47] rounding so we can leave it as
+[41:50] is if the sign of the result is negative
+[41:53] as in this case minus
+[41:55] 3.1 in that case so basically if I draw
+[41:58] a number line you know minus 3 will lie
+[42:01] here minus 4 will lie here and all
+[42:04] intermediate numbers will lie over here
+[42:07] so since we are rounding towards plus
+[42:08] infinity all the numbers will be rounded
+[42:10] to minus 3 so what we are essentially
+[42:15] doing is that if this can be any number
+[42:17] of the form minus 3.x we will truncate
+[42:21] this X and we'll round everything to
+[42:23] minus 3 so essentially we need to let
+[42:26] the default happen
+[42:27] which is that we set p- equal to p and
+[42:30] discard the
+[42:32] residue let us now after a brief clean
+[42:36] up of
+[42:37] course uh let me clean this part
+[42:46] up uh let's now talk about round
+[42:48] rounding to minus infinity which means
+[42:51] choosing the lower uh integer so let's
+[42:55] again take a look at 3.1 and -
+[42:59] 3.1 so in the case of 3.1 we need to
+[43:02] round it to three so even if I uh so let
+[43:06] me draw a number line so let me have uh
+[43:10] I'm sorry let me have four over here and
+[43:13] three over here so all the numbers
+[43:15] between three and four will get rounded
+[43:19] to
+[43:20] three so what we are doing is that uh
+[43:24] for when the sign of the result is
+[43:25] positive we we are discarding the
+[43:28] residue so that's the reason we can do
+[43:30] our default action
+[43:32] here however if the number is negative
+[43:35] then so let me draw a number
+[43:37] line let me write Min -3 here and uh -4
+[43:43] here so - 3.1 would stand somewhere
+[43:47] here so uh for all such numbers what we
+[43:50] need to do is that they need to be
+[43:52] rounded to the lower integer which is
+[43:55] minus 4 right
+[43:57] so the logic is that if there is any
+[43:59] nonzero residue which means the number
+[44:01] is somewhere in this range then we need
+[44:04] to perform a rounding which means
+[44:06] increment the
+[44:07] significant so uh what we need to do is
+[44:10] we need to check if the residue is non
+[44:12] zero if that's the case then we will
+[44:17] significant and from minus 3 we'll take
+[44:20] it to Min
+[44:20] -4 so once again just to refresh for all
+[44:23] the empty entries uh we never increment
+[44:27] the significant rather we fall back to
+[44:29] the default which is to discard the
+[44:32] residue and keep the significant as is
+[44:35] wherever there is a condition if the
+[44:37] condition is satisfied then only we
+[44:40] significant so let us now discuss the
+[44:43] last rounding mechanism which is round
+[44:47] to the nearest Which is also by the way
+[44:49] the most
+[44:51] complicated so just give me one second
+[44:58] all right so uh rounding to the nearest
+[45:01] is the most complicated but it's it's
+[45:04] not that
+[45:05] hard so let's see so uh let's assume
+[45:10] that I have I have three numbers
+[45:12] 3.1
+[45:14] 3.5 and
+[45:17] 3.9 so 3.1 I need to round to three 3.5
+[45:23] I have a choice between three and four I
+[45:24] choose the even number so I round it to
+[45:26] four
+[45:27] and 3.9 the closest integer is
+[45:30] four so the logic is like this I'll
+[45:33] first take a look at the residue if the
+[45:35] residue is greater than 0.5 as in the
+[45:38] case of
+[45:39] 3.9 then I will increment the
+[45:41] significance I'll increment 3 to 4
+[45:44] otherwise I'll take a look at the other
+[45:48] condition which is that the residue
+[45:50] should be equal to 0.5 so in this case
+[45:52] the residue is equal to
+[45:54] 0.5 and the least significant if bit of
+[45:57] P which is the significant is one so
+[46:01] what this basically means that P is an
+[46:03] odd number so uh recall that what I'm
+[46:06] trying to say is an odd
+[46:09] number
+[46:11] implies that it's you
+[46:14] know implies and also it's implied back
+[46:17] that is least significant
+[46:20] bit of that number so in this case p is
+[46:24] equal to 1 in binary and the reason is
+[46:27] very simple that in this binary notation
+[46:30] uh for an even number so since the sums
+[46:34] of powers of two for an even number its
+[46:37] least significant position has to
+[46:39] contain zero because the rest of the
+[46:40] numbers are a power of two multiples of
+[46:42] two essentially and for an odd number
+[46:45] the least significant bit position
+[46:46] should be one so what we are essentially
+[46:49] checking here is that you know we are
+[46:52] checking that P is an odd number so in
+[46:55] this case the significant p is three
+[46:57] which is an odd number and the resid is
+[46:59] 0.5 that's the reason we are
+[47:01] incrementing uh 3.5 we rounding it to
+[47:05] 4 if I would have rather considered
+[47:09] 4.5 then the first subcondition would
+[47:11] have been true that the residue is
+[47:14] 0.5 however uh the significant P would
+[47:18] not have been odd so this condition
+[47:20] would have evaluated to false hence we
+[47:23] would have not rounded it and we would
+[47:25] have rather truncated it and the answer
+[47:27] would have been
+[47:29] four so this is the case when the sign
+[47:32] of the result is positive so let us now
+[47:35] see what happens when the sign of the
+[47:37] result is
+[47:47] negative one second okay so let me again
+[47:51] consider the three numbers -
+[47:53] 3.1 - 3.5
+[47:57] and -
+[47:58] 3.9 right the negative
+[48:01] variance so what I do is I'll take a
+[48:03] look at the residue if the residue is
+[48:06] greater than 0.5 I'll do something or if
+[48:08] the residue is 0.5 I'll do something
+[48:10] else but both the conditions for this
+[48:13] number are false that's the reason I'll
+[48:15] truncate so - 3.1 will become
+[48:19] -3 now if we take a look at Min - 3.9
+[48:22] the first condition is true the residue
+[48:25] .9
+[48:27] is greater than
+[48:28] 0.5 that's the reason we'll increment
+[48:30] the significant and this will get
+[48:32] rounded to minus
+[48:34] 4 now if we consider -
+[48:37] 3.5 well so in this case the residue is
+[48:39] 0.5 so this sub condition is true again
+[48:43] what I need to check is that uh p is an
+[48:46] odd number if it's an odd number
+[48:48] something needs to be done otherwise we
+[48:50] can go with the
+[48:52] default so in this case three is an odd
+[48:55] number so that's the reason we rounded
+[48:59] -4 uh had it been
+[49:02] -4.5 then this condition would have been
+[49:04] false because four is an even number so
+[49:07] instead we would have rounded it to
+[49:09] minus 4 which is exactly what we want to
+[49:12] do in this particular scheme that we
+[49:15] always want to round it to an even
+[49:17] number if the residue is
+[49:20] 0.5 so these are all the conditions for
+[49:23] all the four rounding modes uh
+[49:25] truncation which means do nothing so do
+[49:28] nothing means uh keep the significant as
+[49:32] is get rid of the residue in all cases
+[49:34] we get rid of the residue but here we
+[49:35] keep the significant as is round to plus
+[49:38] infinity we check if the residue is non
+[49:41] zero and of course if the sign is
+[49:43] positive the sign is negative again we
+[49:45] do
+[49:46] nothing and round to minus infinity is
+[49:48] just the reverse of round to plus
+[49:51] infinity round to nearest is somewhat
+[49:54] tricky uh we need to there are two cases
+[49:56] we need to check if the residue is
+[49:58] greater than 0.5 we increment the
+[50:00] significant if the residue is05 and the
+[50:03] significant is odd then also we
+[50:05] increment and this the same condition
+[50:08] for both positive as well as negative
+[50:10] results so one very important takeaway
+[50:14] Point here is that to implement this in
+[50:17] Hardware we have to uh have multiple
+[50:20] circuits so the first circuit needs to
+[50:23] compare the value of the least sign
+[50:25] least significant bit of p with one
+[50:29] right so you need to have one
+[50:31] comparision circuit that is one circuit
+[50:34] that you need to have the second circuit
+[50:36] needs to compare the residue with zero
+[50:38] and compute this expression the third
+[50:41] circuit needs to compare the residue
+[50:43] with 0.5 and see if the residue is
+[50:45] greater and fourth you need to compare
+[50:49] the residue with 0.5 and see whether
+[50:51] it's equal if you can compute the values
+[50:54] of all four of these expressions
+[50:57] then we can compute all the rounding
+[51:00] conditions so this is exactly what we
+[51:02] need uh we need the least significant
+[51:04] bit of P so this is very easy to get
+[51:06] I'll not discuss this right it's just
+[51:08] one bit has to be
+[51:10] extracted but to get the rest it's
+[51:12] somewhat tricky so what we will do is
+[51:15] We'll add a couple of more bits to get
+[51:17] what we want so let us consider the
+[51:20] residue R and let us refer to its most
+[51:23] significant bit as r or the round bit so
+[51:27] if I consider you know this as the
+[51:29] residue so let me consider this most
+[51:32] significant bit let me call it R and let
+[51:35] the logical or of the rest of the bits
+[51:37] of the residue you know or of all of
+[51:39] these bits just a simple or operation
+[51:42] let me refer to this as s so if s is one
+[51:46] it means that at least one of these bits
+[51:48] is one if s is zero means that all of
+[51:51] these bits are zero so I claim that just
+[51:54] with r and s bits we'll be able to
+[51:56] evaluate all the conditions let's see
+[51:59] how so R greater than 0 so if R is
+[52:02] greater than 0 it means that at least
+[52:04] one of the bits in the residue is one
+[52:07] which means that either R is one or S is
+[52:10] one if s is one means one of the bits
+[52:14] here should be one has to be one so the
+[52:17] condition is we just do r or S is equal
+[52:20] to 1 if any of if this condition is true
+[52:24] it means that one of the bits here is
+[52:26] one and we can infer that the residue is
+[52:29] greater than zero now let's consider one
+[52:32] more case for the residue is equal to
+[52:35] 05 if the resd is equal to 0.5 it means
+[52:38] that the round bit is one because you
+[52:40] know it's pretty much less than one so
+[52:42] we have 0 point here before it which is
+[52:45] implicit so this is so what is the
+[52:47] representation of 0. five in binary it
+[52:50] 0.1 0 0 right so uh basically the r bit
+[52:58] will be equal to 1 but all of these bits
+[53:00] will be equal to zero so that R will
+[53:02] also be zero so condition will be that R
+[53:05] is 1 and S is zero so this can be
+[53:09] inferred as S Bar s complement is one so
+[53:12] this is the condition R and S complement
+[53:16] is equal to 1 the last condition is R is
+[53:19] greater
+[53:21] than5 this will happen
+[53:24] when uh r is one and at least one of the
+[53:29] bits in
+[53:30] the you know at least one of the rest of
+[53:33] the bits is equal to one so then the r
+[53:36] function will evaluate to one so the S
+[53:38] bit will be one so uh basically the
+[53:42] function here is that both r as well as
+[53:44] s both of them need to be one for the
+[53:47] residue to be greater than 0.5 why is
+[53:50] this again because Any number greater
+[53:52] than
+[53:53] 0.5 its binary representation has to be
+[53:56] of the form 0
+[53:58] point uh one and then you know can be
+[54:01] anything else but among these bits at
+[54:05] least one bit at
+[54:08] least one
+[54:11] bit has to be
+[54:14] one so then we can say that the number
+[54:16] is greater than 0.5 and if one of these
+[54:19] bits is equal to one then it means that
+[54:21] that R is one so s is equal to 1 so the
+[54:24] condition is that R is 1 and S is one so
+[54:27] R and S is equal to
+[54:29] one so we just see that keeping the r
+[54:32] bit or the round bit and the S bit as a
+[54:34] sticky bit you know just uh Computing
+[54:38] them uh when our output is being created
+[54:42] will help us get all the conditions to
+[54:44] implement all the four rounding
+[54:50] modes uh let's look at the process of
+[54:53] rounding in a little bit more detail one
+[54:55] particular aspect that we have not
+[54:57] talked about so when we increment the
+[55:00] significant there is a
+[55:02] possibility uh that we might have to
+[55:04] renormalize once again the reason is
+[55:07] that the significant might become
+[55:09] greater than equal to 2 after
+[55:12] renormalization it's again possible that
+[55:14] the exponent field e becomes equal to
+[55:17] 255 which is actually an invalid value
+[55:20] because 255 can signify two things
+[55:23] either not a number or plus minus
+[55:25] infinity
+[55:27] in both cases it's not a valid number so
+[55:30] we need to declare an overflow which
+[55:32] means that the number the result cannot
+[55:34] be represented with the number of bits
+[55:36] that we have so uh essentially the
+[55:39] number overflows the range of the number
+[55:43] system so let's now look at addition of
+[55:46] numbers with opposite signs so uh in in
+[55:50] the world of sign numbers we technically
+[55:52] don't have a difference between addition
+[55:54] and subtraction that's the reason we
+[55:57] have classified uh our discussion
+[56:00] differently we have said that let's
+[56:03] consider uh numbers with the same sign
+[56:06] and let's consider numbers with the
+[56:08] opposite
+[56:09] sign so if I consider numbers with the
+[56:12] opposite sign the algorithm is more or
+[56:14] less similar a little bit of uh
+[56:16] difference in some places so with no
+[56:19] loss of generality let's assume again EA
+[56:21] is greater than equal to
+[56:23] EB so the first few steps are the same
+[56:25] we the register W with the significant
+[56:28] of B
+[56:30] PB so since uh A and B don't have the
+[56:33] same sign we need to uh essentially
+[56:36] ensure that they have the same sign and
+[56:38] this can be done by negating B so we
+[56:41] take the two's complement of w so
+[56:43] essentially set it to minus
+[56:45] p and then we'll perform an
+[56:48] addition uh so
+[56:51] uh uh The Next Step would be to align
+[56:54] the decimal point
+[56:57] so to align the decimal points what we
+[56:59] do is we do the same thing that we did
+[57:01] in the case of numbers which had the
+[57:03] same sign which was that we write shift
+[57:11] positions uh such that their exponents
+[57:14] are the same and the decimals are
+[57:16] aligned subsequently we add W with PA so
+[57:21] this will complete our addition uh so we
+[57:24] do that and so recall that till this
+[57:26] this point everything is standard uh so
+[57:28] even if let's say we were uh you know to
+[57:31] add two numbers with opposite signs uh
+[57:34] in regular arithmetic so since the
+[57:36] significant is positive let one number
+[57:38] be a and let the other number be B and B
+[57:41] is in this case less than zero so what
+[57:44] we would do is we would add a with the
+[57:47] two's complement of
+[57:51] B right the two's C two's compl of B
+[57:55] that's exactly what we have done we have
+[57:57] taken the two's complement of w which
+[57:59] contains a significant of B we have
+[58:02] aligned the decimal points then we
+[58:04] perform the
+[58:05] addition now it is possible that when we
+[58:08] perform the addition uh the significant
+[58:11] the result might be less than zero so
+[58:13] why would this happen well a simple
+[58:16] reason uh that this would happen is that
+[58:19] let's assume you know one case where
+[58:21] you're adding let's say Min
+[58:24] -1 uh you know - 1 sorry let's say we
+[58:28] are adding
+[58:30] 1.1 with -
+[58:34] 1.5 so in this case the exponents are
+[58:36] the same so the first one can be a and
+[58:39] the second number can be B so then we
+[58:42] will see that the sign of the result
+[58:44] will be negative so that's the reason so
+[58:46] it's very easy to handle this case we'll
+[58:49] essentially replace W with the two's
+[58:51] complement of w so basically we'll
+[58:53] replace it with minus W and we'll flip
+[58:56] the sign of the result rather we'll flip
+[58:58] the sign bit of the result to indicate
+[59:02] that uh so initially the sign bit will
+[59:04] be the sign of a but uh if the if after
+[59:08] addition the result is negative then
+[59:11] what we will do is we will replace W
+[59:13] with minus W and flip the sign of the
+[59:15] result so in this case uh initially the
+[59:19] sign of the result is positive but since
+[59:22] we get uh Min -.4 over here we will flip
+[59:26] the sign of the results it will become
+[59:27] minus and pretty much the mantisa
+[59:30] significant and exponent will encode
+[59:35] point4 so after we uh add uh perform the
+[59:40] addition and adjust for the sign uh we
+[59:43] need to normalize the result so uh there
+[59:45] are some reasons why we need to do that
+[59:48] let us assume that we are trying to add
+[59:51] these numbers
+[60:08] so the result will pretty much be
+[60:13] 01 right so this is not a valid
+[60:18] significant the reason it's not a valid
+[60:20] significant is basically because it's
+[60:22] not at the form 1 point something so so
+[60:25] this is you know one of the cases where
+[60:26] the result W is less than one so what we
+[60:29] need to do is we need to keep shifting W
+[60:32] to the left till it is in the normal
+[60:34] form which is 1 point something so in
+[60:37] this case the normal for form would be
+[60:39] 1.0 however the it'll be 1.0 * 2 ^ - 2
+[60:46] so what we essentially have to do is we
+[60:48] have to keep left shifting W or we have
+[60:50] to keep shifting W to the left till it
+[60:54] is in the normal form and simultaneously
+[60:57] we need to decrement the exponent
+[60:59] e uh till we reach the normal form so in
+[61:02] this case we'll have to decrement the
+[61:04] exponent e by
+[61:06] 2 after that the rest of the procedure
+[61:09] is the same we need to round numbers
+[61:12] well so rounding in this case uh is not
+[61:16] really required because if you're
+[61:17] shifting to the left then uh we are
+[61:20] essentially shifting in zeros but
+[61:22] otherwise it might be required uh
+[61:25] especially if if the exponents are the
+[61:26] same and some bits are remaining so we
+[61:29] need to round and
+[61:34] renormalize all right uh so uh once we
+[61:38] have uh discussed all of this let us
+[61:43] summarize our entire discussion in a
+[61:45] flowchart so the flowchart looks at all
+[61:48] possible cases so let's assume that we
+[61:51] are trying to add uh A and B two
+[61:53] floating Point numbers A and B and the
+[61:56] result is one more floating Point number
+[61:58] which is C so uh they can have the same
+[62:01] sign or they can have different signs so
+[62:04] the first check that we should probably
+[62:06] do is check if a is zero so if a is zero
+[62:09] it's a simple case the result is equal
+[62:11] to B if that's not the case we can check
+[62:14] if b is z if b is z again it's a simple
+[62:18] case so we can set the result to a and
+[62:20] move
+[62:21] forward then we need to swap A and B
+[62:24] such that uh EB is less than equal to EA
+[62:28] or EA essentially has the higher
+[62:30] exponent right uh so we need to ensure
+[62:34] with no loss of generality that EB is
+[62:36] less than equal to EA if that's not the
+[62:38] case we'll just swap A and B then what
+[62:42] do is that uh we
+[62:46] will subsequently what we do is that we
+[62:49] align the decimal points uh so what we
+[62:52] can do is we can uh perform this step so
+[62:56] in this step we align uh so we set the
+[62:59] exponents the same and align the decimal
+[63:01] points and this is achieved by uh
+[63:04] essentially setting W as PB right
+[63:07] shifted by EA minus EB
+[63:10] positions and uh we set EA the exponent
+[63:13] of a as the default exponent of the
+[63:16] result and the sign of a as the default
+[63:18] exponent of the sorry the sign of a as
+[63:21] the default sign of the result so recall
+[63:23] that in our discussion uh we
+[63:26] the order was slightly different but
+[63:27] I'll come to it uh then uh we check if
+[63:31] the S of a is equal to the sign of B if
+[63:34] that's the case then well that's great
+[63:37] so we just add uh w we just set W as the
+[63:40] old value of w which is uh the
+[63:43] significant of B shifted to the right by
+[63:45] some places plus the significant of a so
+[63:49] we just perform the addition otherwise
+[63:51] we take the two's complement of w and
+[63:54] then we perform the addition
+[63:56] so recall that we had reversed the order
+[63:59] of this step and this step uh in a in
+[64:02] one of our previous slides so it
+[64:04] technically does not matter if we have
+[64:06] enough number of bits because we are not
+[64:09] losing precision and uh when we are uh
+[64:12] you know inside the hardware we are not
+[64:14] limited to have 32 bits we can have more
+[64:16] bits because they are After All
+[64:18] Temporary spaces right so the the
+[64:21] constraint is that the inputs will be 32
+[64:24] bits right and the output also needs to
+[64:27] be 32 bits but inside the circuit we can
+[64:30] definitely represent the significance
+[64:32] and the Mantis with more number of bits
+[64:34] and later on discard some bits using a
+[64:37] proper rounding policy so that's the
+[64:39] reason the order of right shifting and
+[64:41] to's compliment does not matter and uh
+[64:44] as long as you know we have sufficient
+[64:46] space which anyway we have or we are
+[64:48] assuming to have so after performing the
+[64:51] addition especially if the signs are
+[64:53] different there is a possibility that W
+[64:55] is less than
+[64:56] Z if this uh possibility is there that
+[65:02] uh W is less than z uh then in if this
+[65:05] is the case that W is less than zero
+[65:08] well then we again replace W with the
+[65:11] two's complement of w and we flip the
+[65:14] sign bit of the result the sign of the
+[65:16] result right as as we had showed in the
+[65:19] previous slide that when the result was
+[65:21] minus point4 so we actually set the
+[65:24] significant to4 I mean point 4 properly
+[65:27] adjusted and we flip the sign of the
+[65:29] result if it's not the case we can
+[65:31] directly move over
+[65:33] here then we normalize W and bring it to
+[65:36] the standard form and also update the
+[65:39] exponent e at this point it is possible
+[65:42] that we can have either have an overflow
+[65:44] or underflow what this means is that we
+[65:46] might have exceeded the range of the
+[65:48] number system so this should be reported
+[65:51] as an
+[65:52] overflow then uh we need to perform a
+[65:55] rounding
+[65:56] uh because you know the mantisa can only
+[65:58] be 23 bits so additional bits have to be
+[66:01] discarded so we need to round after
+[66:04] rounding we need to renormalize W and
+[66:06] update e and the process of
+[66:09] renormalization itself can induce an
+[66:12] overflow or underflow so this should be
+[66:15] reported and if we have reached this
+[66:18] step means everything is in order so we
+[66:21] need to construct the result C out of w
+[66:25] which is is the you know the final
+[66:27] significant so we can construct the
+[66:29] mantisa out of it the exponent field and
+[66:31] the sign bit and then we report the
+[66:33] result as C so I would advise all the
+[66:36] students to uh take a look at this
+[66:38] flowchart in great detail the flowchart
+[66:40] is otherwise very simple as long as uh
+[66:43] all the individual steps are understood
+[66:46] but it's very very important to
+[66:47] understand each and every individual
+[66:49] step
+[66:55] all right so now let's discuss floating
+[66:57] Point multiplication and division

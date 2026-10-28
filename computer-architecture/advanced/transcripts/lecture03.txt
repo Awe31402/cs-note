@@ -1,0 +1,629 @@
+[00:00] [Music]
+[00:13] welcome to chapter 1
+[00:15] of the book advanced computer
+[00:17] architecture
+[00:19] so this chapter is primarily
+[00:21] introductory
+[00:23] but to understand this entire book
+[00:26] it is necessary to have an idea of some
+[00:29] of the basic concepts of computer
+[00:33] these include assembly languages
+[00:37] so it can be any assembly language arm
+[00:39] x86 anything
+[00:40] but at least the basic idea of assembly
+[00:44] languages should be there
+[00:46] basic processor design this is also
+[00:49] something that should be known
+[00:51] not a lot but at least the basics and
+[00:54] basic pipeline design
+[00:56] all right so this is what is required
+[00:58] and
+[00:59] readers viewers of this video
+[01:04] are pointed to the link to my previous
+[01:07] book which is a book on undergraduate
+[01:09] computer architecture
+[01:11] the book along with all the preprint
+[01:13] chapters are available
+[01:15] at this link so i'll just pause for two
+[01:18] seconds such that
+[01:20] readers can take a screenshot and then
+[01:23] navigate to this link one
+[01:27] two all right so assuming that
+[01:32] the viewers have adequate background
+[01:34] we'll move to the next slide
+[01:36] so the way that we will motivate modern
+[01:38] computer architecture is like this
+[01:40] that since the last 50 years
+[01:46] if something has really progressed and
+[01:48] changed human life it is the advent of
+[01:50] computers
+[01:51] notably better faster and more power
+[01:53] efficient computers so this is something
+[01:55] that has completely changed
+[01:57] the fabric of society industry and human
+[01:59] life in general
+[02:01] so if you can if you think about it
+[02:03] maybe the era from let's say 1900 or
+[02:05] maybe the 1850s to 1950
+[02:09] was the year of the atom so that is when
+[02:12] most of the advances in atomic physics
+[02:15] materials and so on were happening
+[02:18] from 1950 to hopefully the next 100
+[02:21] years
+[02:22] will be the era of the bit
+[02:26] and after that people say will be the
+[02:29] era of the gene
+[02:32] where a lot of what we are doing will be
+[02:35] taken over by
+[02:36] biology but we are not there yet and i
+[02:38] can't see that far yet in the future but
+[02:40] definitely
+[02:42] what has changed the discourse and
+[02:45] basically the trajectory of human
+[02:46] civilization
+[02:48] has essentially been the atom the bit
+[02:51] and the g in the bit part
+[02:55] of the story we have seen a near
+[02:58] exponential increase of the number of
+[03:00] transistors per chip
+[03:02] which has rightly predicted by gordon
+[03:05] moore one of the co-founders of intel
+[03:08] so he had initially predicted that every
+[03:10] year the number of transistors per chip
+[03:11] will double
+[03:13] initially it was every year gradually it
+[03:15] slowed down to every two years but
+[03:17] clearly on a log scale you can see from
+[03:19] 1970
+[03:20] through 2015 this has roughly held
+[03:24] so it's linear in the log scale which
+[03:26] means it's exponential
+[03:28] so the moon's law has basically given us
+[03:31] an excess of 10 billion transistors per
+[03:34] chip today
+[03:35] which can actually do a lot of
+[03:36] interesting things along with
+[03:38] having a supercomputer like power a
+[03:41] single chip can
+[03:43] recognize faces do computations
+[03:47] connect you to social networks and do
+[03:49] everything
+[03:51] so there have been two laws in computer
+[03:55] which are essentially empirical
+[03:56] observations which have continued to
+[03:57] hold
+[03:58] which are very important the first as we
+[04:01] just discussed is the moon's law
+[04:04] it says that the number of transistors
+[04:06] per chip
+[04:07] will double roughly every one to two
+[04:10] it has more or less held up till now but
+[04:12] now
+[04:14] it's expected to come to an abrupt stop
+[04:17] the reason is that transistors as we
+[04:19] speak which is 2021
+[04:22] are already very small so this feature
+[04:24] size
+[04:25] which is the size of the smallest
+[04:28] structure that we can fabricate in
+[04:30] silicon
+[04:31] that has come down to
+[04:35] about seven nanometers all right
+[04:39] so less than that it's going to be very
+[04:42] hard
+[04:43] in the sense we may go down to five or
+[04:45] three considering the fact
+[04:47] that a silicon atom is around roughly
+[04:49] speaking 200 nanometers
+[04:51] this is not more than 35 to 40 atoms
+[04:55] placing atoms so close by
+[04:58] or having such accurate fabrication that
+[05:00] the atomic scale is increasingly
+[05:02] is exceedingly difficult that is why
+[05:06] maybe transistors might reduce
+[05:10] in size so the feature size might go
+[05:12] down from seven
+[05:13] to five or who knows maybe three but
+[05:15] that's it
+[05:17] so moon's law has come to a stop but
+[05:19] essentially what this book will look at
+[05:21] is that in spite of the mode's law
+[05:23] coming to a stop
+[05:25] which basically means in spite of
+[05:27] transistor sizes etc remaining constant
+[05:31] how do we get the maximum possible
+[05:33] performance
+[05:35] from computers so this is what modern
+[05:37] computer architecture is all about
+[05:40] and another sister law
+[05:43] that's called the sister of moore's law
+[05:46] many people may not like that
+[05:48] it is called scaling so this basically
+[05:51] says
+[05:52] is that the power density remains
+[05:53] constant
+[05:55] so for various fabrication reasons
+[05:59] the size of a chip has remained more or
+[06:01] less constant which is roughly you can
+[06:03] say a regular server chip
+[06:05] is uh 2 centimeters cross 2 centimeters
+[06:08] or 20 cross 20
+[06:10] mm so this size of let's say
+[06:13] 400 millimeter square for a server chip
+[06:16] slightly lower for a desktop or laptop
+[06:18] chip let's say 150
+[06:20] to 400 millimeter square so the sizes
+[06:23] remain the same mainly for yield reasons
+[06:25] so what denard had predicted is that the
+[06:27] power density will remain the same
+[06:29] which means the total power dissipated
+[06:32] will remain the same
+[06:34] if we combine this with moon's law what
+[06:36] would what it would also
+[06:38] imply is that the performance which
+[06:41] increases
+[06:41] exponentially
+[06:44] the performance per watt will also
+[06:46] increase exponentially mainly because
+[06:48] the number of watts remains
+[06:49] more or less constant it is determined
+[06:52] by other factors such as the maximum
+[06:54] rate of heat removal and so on from the
+[06:56] chip
+[06:57] but more or less the performance per
+[06:59] watt will remain
+[07:02] sorry the more performance per watt will
+[07:04] increase exponentially
+[07:05] which means that for every watt of power
+[07:08] expended
+[07:10] we will get an increasing amount of
+[07:13] in fact exponentially increase the
+[07:15] performance increase however
+[07:17] has also stopped sorry the performance
+[07:20] increase per watt has also stopped
+[07:23] and the reason is that primarily because
+[07:26] moore's law has also
+[07:27] slowed down and it is expected to fully
+[07:30] stop within a few years
+[07:32] so this is also why denard's killing has
+[07:35] ended in fact it ended in 2006
+[07:37] when this exponential increase in the
+[07:39] performance per watt
+[07:42] this gradually started breaking down
+[07:45] nonetheless computer architecture has
+[07:48] moved on from there
+[07:50] so previously most of the innovations
+[07:52] that were happening were happening only
+[07:54] because we could add more transistors
+[07:57] but the thinking in computer
+[07:58] architecture post 2006
+[08:00] which is the last 15 years has changed
+[08:03] substantially
+[08:05] so let's look at some of the basic
+[08:07] results
+[08:08] which sort of conclude a discussion on
+[08:11] undergraduate computer architecture
+[08:14] the first is that if we take a regular
+[08:16] five stage in order pipeline
+[08:19] where basically if we look at the
+[08:21] pipeline or the structure like this
+[08:23] instructions flow in and they go through
+[08:26] the five stages so no instruction
+[08:28] overtakes the other
+[08:30] and then they exit
+[08:33] if we consider this to be our basic
+[08:35] structure
+[08:37] then we always have the option of
+[08:38] issuing which means sending down the
+[08:40] pipeline one instruction
+[08:42] or several instructions together if we
+[08:44] send several instructions together of
+[08:46] course
+[08:47] the dependencies between the
+[08:48] instructions matter
+[08:50] and the additional scheduling and
+[08:52] forwarding overheads are there
+[08:55] nevertheless there is a chance that the
+[08:57] performance will increase mainly because
+[08:58] of the additional parallels
+[09:01] if we look at the spec benchmarks
+[09:04] so spec is the standard performance
+[09:06] evaluation cooperative
+[09:09] so if you look at the spec benchmarks
+[09:12] which is the traditional benchmarks that
+[09:14] are used to measure performance
+[09:16] and let's say that the performance is
+[09:18] normalized to an issue with
+[09:20] a one as you can see over here
+[09:23] if you have issue with the four in the
+[09:24] sense if you issue four instructions per
+[09:26] cycle
+[09:27] we don't get the kind of speed up that
+[09:29] we expect
+[09:31] in the sense that the average speed up
+[09:33] as you can see so typically
+[09:34] in these cases the geometric mean is
+[09:36] taken
+[09:37] is actually not that great so it's not
+[09:40] even 50 percent
+[09:42] and just draw a line straight straight
+[09:44] straight over here
+[09:45] so you'll see this to be around at the
+[09:47] ballpark of around
+[09:48] 35 to 40 percent which is not much
+[09:52] so the net increase for any benchmark is
+[09:55] between 20 to 50
+[09:56] roughly and of course bzip2 mcf and
+[10:00] omnipp show a higher
+[10:02] performance increase but that's said and
+[10:05] done
+[10:07] for most of the benchmarks the
+[10:09] performance increase is not much
+[10:11] and this much of performance increase
+[10:13] one would get anyway
+[10:14] with slightly faster transistors if one
+[10:17] waits for
+[10:18] two three or four years
+[10:22] so the next paradigm that was introduced
+[10:23] which is something that we will talk
+[10:26] very extensively in this book because an
+[10:29] out of order processing is typically not
+[10:32] a part of an undergraduate book but it's
+[10:34] part of a postgraduate book
+[10:36] so i'm assuming some familiarity with
+[10:38] assembly language if you look at this
+[10:40] piece of code over here
+[10:42] we will see that there are read after
+[10:44] write dependencies in the sense here r1
+[10:46] is produced
+[10:47] r1 is consumed register r1 that is
+[10:50] and the convention being used here is
+[10:52] that add r1 r2 r3
+[10:55] r2 plus r3 is set to r1
+[10:59] and similarly we can say that we are
+[11:01] creating the value of r4 and then
+[11:03] reading it right so there is a clear
+[11:06] chain of dependencies here
+[11:08] and there is another chain of
+[11:09] dependencies over here
+[11:13] right so the traditional in order
+[11:15] pipeline even if we are limited to let's
+[11:17] say two issue in order processor
+[11:20] we will execute the first instruction
+[11:22] then the second the only parallelism
+[11:24] that we see
+[11:26] is with the third and fourth
+[11:27] instructions
+[11:29] then again the fifth and sixth
+[11:31] instructions are
+[11:34] executed without any other parallel
+[11:38] instruction executing the total
+[11:39] execution time is five cycles
+[11:42] if i were to execute the same piece of
+[11:44] code on a regular in order pipeline
+[11:46] one after the other that would have
+[11:48] taken six cycles
+[11:50] so the reduction in time even if we
+[11:52] execute
+[11:53] more issues in parallel assuming it is
+[11:56] possible to do so
+[11:57] is only one-sixth which is not much so
+[11:59] we don't like it
+[12:01] but if you are able to change the order
+[12:03] of execution of instructions as long as
+[12:06] any producer consumer or any write
+[12:09] dependencies are not violated
+[12:12] so then we will have a two issue out of
+[12:15] order processing
+[12:16] so what we can do is we can take this
+[12:18] instruction and this instruction
+[12:21] see this and this similarly
+[12:24] in the next cycle we can pick up this
+[12:26] and this how we pick up and so on is a
+[12:28] separate matter
+[12:29] right that's a totally separate matrix
+[12:31] we'll discuss this in very great detail
+[12:33] in chapters four and five of this book
+[12:37] and then we will pick up this and this
+[12:41] this surface all right so if we look at
+[12:44] it
+[12:45] if we just break the in order assumption
+[12:48] and we execute instructions out of order
+[12:52] then the entire execution can finish in
+[12:54] three cycles
+[12:56] right so if you execute them out of
+[12:59] order
+[13:00] as you can see out of order means not in
+[13:02] program order not in order in which they
+[13:04] appear
+[13:05] then all that we require is three cycles
+[13:08] which is
+[13:10] a 2x speedup right
+[13:13] and this is substantial so we can see
+[13:15] that we can even go slightly more than
+[13:17] that
+[13:18] with additional tricks
+[13:21] so now if we just compare the difference
+[13:24] between in order
+[13:25] and out of order execution you will see
+[13:30] the performance numbers are much higher
+[13:32] right so they are much much higher
+[13:34] they are not limited to the 20 to 50
+[13:36] range
+[13:37] instead if let's say this is one the
+[13:40] average performance gain
+[13:42] is 2.4 so this is 2.4 times
+[13:46] which is quite substantial and for some
+[13:48] benchmarks it's actually even more than
+[13:51] so what you can basically see is that
+[13:53] there is a huge
+[13:55] performance gain a massive massive
+[13:58] performance gain something that is not
+[14:00] seen otherwise
+[14:02] and the reason it is not seen otherwise
+[14:05] is because the modern out of order
+[14:07] process
+[14:08] has many tricks that an inorder
+[14:10] processor does not use
+[14:12] so in this book of course the
+[14:14] introductory chapter was chapter one
+[14:16] we will motivate out of order process in
+[14:18] chapter two
+[14:20] then chapters three four and five
+[14:23] we'll discuss which is the first part of
+[14:25] the book we'll discuss out of order
+[14:27] chapters
+[14:28] in great detail all right so in
+[14:30] excruciating detail we will discuss
+[14:33] all the aspects of out of order
+[14:35] execution
+[14:36] in chapters 3 4 and 5.
+[14:40] so what we will observe towards the end
+[14:42] of chapter 5
+[14:43] is that we have we meaning the entire
+[14:48] industry and academic community has
+[14:50] invested a lot of effort
+[14:52] a lot of design effort a lot of thinking
+[14:54] effort in
+[14:55] increasing the performance of out of
+[14:57] order processors
+[14:59] so we start for block from 2001 and go
+[15:02] right up to 2012
+[15:04] where each point represents one
+[15:07] processor that was released in this time
+[15:09] frame
+[15:10] and the y-axis is a spec in score
+[15:13] what we will see is that the performance
+[15:15] gradually climbs up
+[15:17] up up up up up up until you see a degree
+[15:19] of saturation
+[15:21] so after 2012 as you can see the
+[15:23] performance is roughly saturated for a
+[15:25] single
+[15:26] port a core we will define it more
+[15:30] formally but now think of it as a
+[15:32] pipeline and a cache
+[15:33] the combo of a pipeline and a cache all
+[15:36] right
+[15:37] and so a single core or a single
+[15:40] processor
+[15:41] its performance saturated way back
+[15:43] that's a decade ago
+[15:45] and after that pretty much that area
+[15:48] got stalled development in that area got
+[15:50] stalled because of saturation
+[15:52] so what people moved to was basically
+[15:56] multi-core processors
+[15:57] so from single cores they moved up they
+[16:00] moved up the hierarchy up the chain
+[16:03] and they went to multi-core processors
+[16:05] so instead of a single
+[16:06] processor kind of on a chip you have
+[16:08] multiple small processors on a chip
+[16:10] where each one of them can execute a
+[16:12] program
+[16:13] recently from multi-core processors we
+[16:15] have gone to multi-core plus
+[16:16] accelerators
+[16:18] where accelerator is a specialized
+[16:22] that can do something specialized for
+[16:24] example
+[16:26] it can execute neural networks
+[16:29] it can do speech processing it can
+[16:32] process xml documents
+[16:34] encryption compression so the
+[16:36] accelerators are for specific jobs
+[16:39] and then and where very important
+[16:42] subclass of multi-core processors
+[16:44] emerged
+[16:45] which took off on its own it had a life
+[16:47] of its own which we will discuss in
+[16:49] chapter 6
+[16:50] they are gpus or graphics process
+[16:54] so the 2010-20 decade belonged to
+[16:58] of various hues and colors so they were
+[17:01] regular multi-cores
+[17:03] multi-cores with accelerators or gpus a
+[17:05] lot of work was done in this space
+[17:09] right so gpus again started as
+[17:12] separate processors whose job was to
+[17:14] only process graphics
+[17:16] intensive tasks but they gradually
+[17:19] change their color
+[17:21] and they were repurposed to execute
+[17:23] general purpose programs
+[17:24] as well
+[17:27] then our part one of the book comes to
+[17:31] an end
+[17:32] and we entered part two so part one was
+[17:35] all about processing so we finished that
+[17:38] now in part two we will discuss the
+[17:40] memory system
+[17:41] so over the years in the multi-core
+[17:43] system
+[17:45] we need a very high bandwidth and low
+[17:47] latency memory system
+[17:49] and as a result a lot of architectural
+[17:51] tricks have to go in
+[17:53] to designing the memory system and
+[17:55] consequently the memory system has
+[17:57] become
+[17:57] immensely complicated there are
+[17:59] elaborate protocols for everything
+[18:02] particularly for accessing optimizing
+[18:05] the access of on-chip caches
+[18:08] so i'll tell you in a second what i'm
+[18:10] talking about
+[18:11] so we consider a chip we have a large
+[18:14] number of cores in here
+[18:17] we also have a large amount of on-chip
+[18:19] memory
+[18:20] so the on-chip memory is known as an
+[18:22] on-chip cache
+[18:28] and optimizing the behavior of the
+[18:30] on-chip cache is exactly what is
+[18:35] or let's say what has been driving
+[18:37] innovation in this space
+[18:39] so we'll discuss cache design in chapter
+[18:41] 7.
+[18:43] and if we have a large sea of caches
+[18:45] they need to be connected so we need an
+[18:47] on-chip network
+[18:48] which is also a very deep field in its
+[18:50] own right so i'll discuss that in
+[18:52] chapter 8.
+[18:55] then when we considered multi-processor
+[18:57] memory systems
+[18:59] they get quite complicated so we will
+[19:02] discuss them
+[19:03] in chapter 9. and finally
+[19:07] in chapter 10 we will discuss off-chip
+[19:10] right so the first three were for
+[19:11] on-chip memory but then we will discuss
+[19:14] off-chip memory soft chip memory in
+[19:16] general
+[19:18] they are dram memory models but of late
+[19:22] other technologies are coming in such as
+[19:24] reram stt memory
+[19:26] flash and so on so these are
+[19:28] non-volatile memory units
+[19:30] which means that they can continue to
+[19:32] hold their state
+[19:34] even if there is a power outage
+[19:37] right even if we turn the computer off
+[19:39] they'll continue to hold their data so
+[19:41] that is for non-volatile memory or
+[19:43] nvms so these four chapters broadly
+[19:48] are a part of the second part of the
+[19:50] book
+[19:52] the third part of the book will discuss
+[19:55] assorted issues
+[19:57] all right
+[20:01] so it will first start with chapter 11
+[20:04] which talks about power and temperature
+[20:06] power and temperature are major issues
+[20:07] no doubt
+[20:09] so they have stopped the further scaling
+[20:11] of processors primarily because
+[20:14] we cannot increase the temperature or
+[20:15] increase the complexity any further
+[20:18] because the power dissipation and the
+[20:20] resultant temperature rise will become
+[20:22] prohibitive
+[20:24] they cause reliability problems right
+[20:27] they are a major reason power and
+[20:29] temperature is
+[20:30] maybe the single largest reason for
+[20:32] causing reliability
+[20:34] problems so they cause either short-term
+[20:36] faults or hard errors
+[20:38] and along with that we'll discuss a few
+[20:40] more interesting
+[20:42] mechanisms by which processors can fail
+[20:46] so you will find that particles
+[20:48] generated in outer space can come
+[20:50] as cosmic rays and then they can cause
+[20:53] faults in that process and the fault
+[20:55] mechanism is quite
+[20:56] interesting so you don't want to steal
+[20:58] the fun you'll get to read more about it
+[21:00] in chapter 12.
+[21:04] and chapter 12 also contains some
+[21:06] phenomenon called parameter variation
+[21:08] which means that when we are trying to
+[21:10] fabricate a transistor
+[21:12] or operate it
+[21:15] our operating conditions or fabricating
+[21:17] conditions may be non-ideal
+[21:19] or the results may be non-ideal so as a
+[21:22] result a transistor that is seen
+[21:26] in an electron microscope after it has
+[21:28] been fabricated
+[21:29] its specs may differ from ideal spins
+[21:32] and of course if you bring in slightly
+[21:34] fluctuating voltages and temperature
+[21:36] then transistors are operating in quite
+[21:40] an
+[21:40] unstable and variable environment
+[21:44] security everything needs to be secure
+[21:47] these days security is a major challenge
+[21:49] we'll discuss this in chapter 13.
+[21:52] and finally the last chapter which is
+[21:54] chapter 14
+[21:56] will capture an aspect of processor
+[21:57] design which is expected to dominate
+[22:00] in the next decade so next decade is
+[22:03] actually the current decade which is
+[22:04] 2020 to 2013.
+[22:06] this is the future in the sense we will
+[22:08] have large
+[22:10] chips with a lot of on-chip accelerators
+[22:14] for different tasks such as computer
+[22:15] vision machine learning speech
+[22:17] processing
+[22:18] to essentially add many features of
+[22:20] intelligent computing
+[22:22] into regular processors such that they
+[22:25] can be used
+[22:26] for all kinds of applications switch out
+[22:28] of an advanced nature what would be
+[22:30] advanced nature think of gesture based
+[22:32] computing
+[22:34] which basically means that you know i
+[22:36] stand in front of the tv i wave my hand
+[22:38] and the channel changes
+[22:40] the way that that happens is there's a
+[22:42] small camera that captures the input
+[22:45] sends it to the processor so you just
+[22:47] look at the way that this happens
+[22:48] there's a small camera
+[22:50] it captures the input it sends it to the
+[22:55] so clearly the amount of processing
+[22:57] required is too much for a regular
+[23:00] but it has a small machine learning
+[23:02] accelerator which is quite powerful it
+[23:04] has been built for this purpose
+[23:07] it processes the result
+[23:11] and sends the result to the host program
+[23:14] the host program
+[23:16] is a program that controls the channel
+[23:18] of the tv so it
+[23:19] increments the channel or decrements the
+[23:21] channel
+[23:23] so we will be seeing increasingly seeing
+[23:25] innovations of this type
+[23:27] particularly in different machine
+[23:29] learning areas
+[23:31] not just included to vision and speech
+[23:33] so let's see what the future may hold
+[23:36] but at least we will look at these 14
+[23:41] of this book in a series of video
+[23:44] lectures
+[23:44] and as i said they are divided into
+[23:46] three parts with the first part is
+[23:49] the second part is the design of the
+[23:53] and the third part looks at assorted
+[23:56] issues
+[23:57] that include security as well as machine
+[24:02] learning
+[24:11] you

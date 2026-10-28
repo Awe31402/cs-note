@@ -1,0 +1,7 @@
+	mov r0, 0xAB12
+	movu r1, 0xAB12
+	movh r2, 0xAB12
+	movh r3, 0x12A
+	add r4, r3, 0xA92D
+	addu r5, r3, 0xA92D
+	mov r6, -3

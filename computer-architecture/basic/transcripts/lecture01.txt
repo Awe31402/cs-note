@@ -1,0 +1,264 @@
+[00:00] [Music]
+[00:45] Hello everybody. I'm Professor Smiti
+[00:47] Sarangi from uh the Indian Institute of
+[00:50] Technology, IIT Delhi, India. I have
+[00:53] written a book on computer organization
+[00:55] and architecture.
+[00:57] Uh it has been published in 2015 by
+[01:01] McGraill. Uh as of now it is available
+[01:04] in almost all e-commerce sites in India
+[01:06] such as Flipkart and Amazon. It should
+[01:09] also be available on Google books and
+[01:11] local bookstores.
+[01:13] If you are uh tuning into this video
+[01:15] from overseas, you would find this book
+[01:18] on Amazon, uh your local McGroill
+[01:21] office, country office, uh Google books
+[01:25] and also you might find it in local
+[01:27] technical bookstores as well. So let me
+[01:30] highlight the main features of what
+[01:32] computer architecture is and what this
+[01:35] book is all about. Computer architecture
+[01:38] is the study of processors.
+[01:41] Computer processors are nowadays found
+[01:43] everybody including the computer on
+[01:45] which I'm recording this video including
+[01:48] the web camera that is capturing the
+[01:50] video uh my phone the printer here on
+[01:54] the back side you have computers
+[01:57] everywhere we are entering the era of
+[01:59] smart things where there will be a small
+[02:02] computer processor embedded in almost
+[02:05] everything and they would be
+[02:07] communicating with each other. Hence in
+[02:10] this era of computers, it makes a lot of
+[02:13] sense to study uh what computers are all
+[02:16] about, how they are designed and how
+[02:18] they are used. Hence, I wrote this book
+[02:21] computer organization and
+[02:24] architecture. And this is meant to be
+[02:26] very very different as compared to other
+[02:28] books in the area. Uh so let me tell you
+[02:31] my inspiration for writing this book. So
+[02:33] when I started teaching computer
+[02:35] architecture roughly uh 5 years ago at
+[02:38] in IIT Delhi a lot of students came to
+[02:40] me and said that for some reason they're
+[02:42] not feeling excited when they read uh
+[02:45] you know other books in this subject and
+[02:48] they were just not getting a feel-good
+[02:50] uh feeling. So I asked them what is the
+[02:53] reason? They said that uh prior to
+[02:56] coming to college they were studying
+[02:59] physics, chemistry and maths which are
+[03:01] very very established areas and uh in
+[03:04] the seinal texts in these areas there
+[03:06] were a lot of equations and formula and
+[03:08] so on and also in their first year they
+[03:11] studied in other branches of engineering
+[03:13] with lot of equations and mathematical
+[03:15] formulations and they didn't find this
+[03:17] in computer architecture textbooks. So
+[03:19] they sort of thought that the entire
+[03:21] field is liquid. So I thought let's
+[03:24] introduce some mathematical rigor into
+[03:26] the area such that at least this book is
+[03:29] similar to all the other books that
+[03:31] students read in a typical engineering
+[03:35] curriculum. Uh you know be it electrical
+[03:37] engineering or computer science even
+[03:39] within computer science uh students
+[03:43] should find a lot of concepts that they
+[03:45] learn in let's say C programming or data
+[03:47] structures and algorithms useful in a
+[03:50] course on computer architecture. So a
+[03:52] huge amount of effort was made to
+[03:54] formalize the field have equations have
+[03:57] formula have algorithms and relate it
+[04:00] with other areas of computer science and
+[04:03] also other areas of
+[04:05] engineering. So in that sense we
+[04:07] introduced a lot of mathematical
+[04:09] formulation and rigor and completely cut
+[04:12] down on any verbose content so that
+[04:15] students find the book relatively easy
+[04:17] to follow. It should read like a story
+[04:19] and the course should be similar to
+[04:22] other courses that students are expected
+[04:24] to take after two years of study in a
+[04:28] high school with emphasis on science and
+[04:32] then one or two years of engineering
+[04:34] study. So that is I think one major uh
+[04:38] facet of the book that we have tried to
+[04:41] formalize a lot of concepts and present
+[04:43] it in a way which students will be able
+[04:46] to understand and uh they wouldn't have
+[04:49] to learn any new trick to assimilate the
+[04:51] contents of the book. The other major
+[04:54] aspect of this book is the massive
+[04:57] emphasis on practical skills, real world
+[05:00] engineering skills where students are
+[05:02] expected to design systems as they go
+[05:05] through the book. For example, we have
+[05:08] two chapters dedicated to ARM assembly
+[05:11] languages and x86 assembly languages.
+[05:14] So, an ARM assembly language can be used
+[05:16] to program uh almost all the phones that
+[05:19] we have today because they use ARM
+[05:20] processors.
+[05:22] x86 assembly languages can be used to
+[05:25] program uh laptops and desktops and
+[05:29] servers that use Intel and AMD x86
+[05:32] processors. An assembly language is
+[05:34] different from a highle language such as
+[05:36] C or
+[05:37] C++ in the sense that it is a low-level
+[05:42] language. It gives you access to all the
+[05:44] internals of the machine and you can
+[05:46] write very very efficient code with it.
+[05:48] So we have a lot of examples in the
+[05:50] book, a lot of solved exercises to teach
+[05:53] students uh all about assembly languages
+[05:56] and the internal details of both ARM as
+[05:59] well as x86 machines. Then we take
+[06:02] students through a full exercise spread
+[06:04] across five chapters where they design
+[06:06] an entire processor from scratch. So
+[06:09] they design the software specification,
+[06:11] the instruction set, the assembly
+[06:13] language. So every part of the processor
+[06:17] including then different modules of the
+[06:19] processor and the processor itself is
+[06:22] designed from scratch and then the
+[06:24] processor is further optimized by uh
+[06:27] what's called pipelining which is a
+[06:29] design technique to make processes three
+[06:31] or four times faster. So till a pipeline
+[06:34] processor we make students go through
+[06:36] the entire rigor of designing a full
+[06:38] system and students will find that it's
+[06:41] not that hard. It's it's incredibly easy
+[06:43] to do. they just need to go along with
+[06:46] the
+[06:46] book. Uh we also have some reference
+[06:49] designs on the website but finally
+[06:51] students will be able to design a
+[06:53] processor a working processor fully on
+[06:56] their own by the ninth chapter of this
+[06:59] book. The last three chapters are
+[07:01] dedicated to state-of-the-art topics
+[07:03] because computer architecture as a field
+[07:06] has significantly changed uh over the
+[07:09] last uh 3 or four years. Uh so what are
+[07:12] the main changes? Well, the main changes
+[07:14] are that we have what are called
+[07:16] multi-core processors in a sense that
+[07:19] one computer uh one laptop or a phone
+[07:23] would have more than one processors
+[07:25] would have four or six or eight
+[07:27] processors. So they need to work
+[07:29] together. So we need to write parallel
+[07:31] programs and we need to design our
+[07:34] hardware in such a way that it can
+[07:36] leverage the fact that we have multiple
+[07:38] processes. This is a this used to be a
+[07:41] fairly difficult post-graduate area. So
+[07:44] I've but since technology has changed an
+[07:47] effort has been made in this book to
+[07:50] bring post-graduate concepts to an
+[07:53] undergraduate level such that most
+[07:55] students would at least know what a
+[07:57] parallel program is, how to write one,
+[08:00] what parallel hardware is because most
+[08:02] students would have phones with uh four
+[08:04] cores, four processors or eight
+[08:06] processors. So they can relate very well
+[08:08] to parallel hardware. So they would now
+[08:10] know how it works. Then they can use
+[08:13] this to design large memory systems for
+[08:15] multi-core
+[08:16] processors. The last chapter uh again
+[08:20] has some state-of-the-art content. We
+[08:22] talk about uh storage devices. Storage
+[08:25] devices such as this one over here which
+[08:28] is taking over the world. Uh it is a USB
+[08:31] stick.
+[08:33] Uh, it was unimaginable a few years ago
+[08:35] that a device this small, less than the
+[08:38] size of my finger, can actually contain
+[08:41] 4 GB of data. 4 billion bytes. That was
+[08:44] unthinkable. Even large hard disks do
+[08:46] not contain that much of data. But
+[08:48] nowadays, devices like this and even
+[08:51] smaller ones can contain 4 GB or 32 GB
+[08:55] of data or even much larger flash drives
+[08:58] are there.
+[09:00] So we will go into how such kind of
+[09:02] devices are designed and how do we
+[09:05] communicate with them. For example, uh
+[09:07] this device is connected via the USB
+[09:09] ports. So as you can see over here, this
+[09:12] is the USB port. Uh so we will talk
+[09:16] about how such ports are designed and
+[09:18] how uh these ports are used to interface
+[09:21] with computers. We'll discuss many more
+[09:24] state-of-the-art IO protocols such that
+[09:27] students can build a system with a
+[09:29] processor. It's just but a processor is
+[09:31] not sufficient. You need to connect
+[09:33] other devices. This chapter will look at
+[09:36] that. We also have three appendices
+[09:39] where we discuss uh state-of-the-art
+[09:41] processors. We discuss uh
+[09:44] state-of-the-art mobile processors,
+[09:45] desktop processors, graphics processors.
+[09:48] So the entire uh gamut of processors
+[09:50] from Intel, AMD and Nvidia are covered
+[09:52] with details.
+[09:55] Along with that uh another effort has
+[09:57] been made to have the exercises at the
+[10:00] ends of the chapter
+[10:03] uh to make them very thoughtprovoking
+[10:05] and challenging because one thing that
+[10:07] students were telling me is that they
+[10:08] were just not uh getting challenged by
+[10:12] the typical exercises that were there uh
+[10:15] at the back of the chapters of other
+[10:17] books. So yeah, you will see that in
+[10:20] this book there are problems with a
+[10:22] single star, a double star and a triple
+[10:24] star. The triple star ones are supposed
+[10:26] to be really really difficult and you
+[10:28] know it might take a day or more to
+[10:30] solve them. So uh the main idea is have
+[10:34] very difficult problems at least some
+[10:37] and have a lot of easy ones as well such
+[10:39] that there's a full spectrum of problems
+[10:41] and students can solve all of them and
+[10:44] get a very strong understanding of the
+[10:46] subject. uh we have uh all the
+[10:50] PowerPoint slides for all the lectures.
+[10:52] Uh we have uh these video lectures for
+[10:56] uh all the slides, a fully featured
+[10:59] solution manual and all the software
+[11:02] that we use along with the book is there
+[11:04] on the site. Uh that includes
+[11:07] assemblers, emulators, assembly uh
+[11:10] writers, logic simulators, architecture
+[11:12] simulators. So if you go to the site of
+[11:16] book, you will find uh all of this
+[11:19] software uh that can be used to design
+[11:22] uh processors and modules uh as we go
+[11:26] along uh in this book. So my aim is that
+[11:29] I'll be posting all the video lectures
+[11:32] online. Uh you'll find them either on my
+[11:36] website or on YouTube. uh if there are
+[11:39] any queries or clarifications or you
+[11:41] find any mistakes in the book or in the
+[11:43] lectures or slides, you're happy to uh I
+[11:46] would be happy if you would email me. Uh
+[11:48] my email id is sr sarangi sr s r
+[11:54] ngigmail.com. Uh thank you and all the
+[11:57] best. Uh I'll be with you for the next
+[11:59] 30 to 40 hours for all the lectures uh
+[12:03] in this uh online series. All the best.

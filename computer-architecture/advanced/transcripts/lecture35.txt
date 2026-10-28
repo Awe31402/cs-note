@@ -1,0 +1,1327 @@
+[00:00] [Music]
+[00:23] now that we have assembled all the
+[00:26] ingredients for describing a memory
+[00:28] model the next next is to describe the
+[00:31] entire space of memory models memory
+[00:34] consistency
+[00:37] models so where do we stand right
+[00:41] now so what we have been observing is
+[00:44] that sequential consistency is Not
+[00:47] Practical processors reorder
+[00:50] instructions that access different
+[00:53] addresses not the same but that access
+[00:55] different addresses for performance
+[00:58] reasons so for uni processor it doesn't
+[01:01] matter but for a multiprocessor it
+[01:03] definitely does matter and we have seen
+[01:06] very non-intuitive behaviors because of
+[01:09] this so for
+[01:11] example uh some pieces of code some
+[01:16] reorderings which are perfectly normal
+[01:18] and perfectly correct in a single
+[01:20] threaded
+[01:21] execution would appear to be incorrect
+[01:24] in a multi-threaded
+[01:26] execution furthermore given the
+[01:28] complexities of
+[01:31] the pipelines non-blocking caches and so
+[01:33] on rights can be non-atomic in fact they
+[01:37] are non-atomic in a lot of architectures
+[01:40] such as IBM and and
+[01:43] arm so we need to have a model that also
+[01:46] takes this into account so now the
+[01:49] question is that given a
+[01:51] non-sequentially consistent system which
+[01:54] is any practical system how do we reason
+[01:58] about its correctness
+[02:00] so SC pretty much gave us a
+[02:03] mechanism where we could map a parallel
+[02:06] execution to a legal sequential
+[02:09] execution establish its
+[02:11] equivalence and then we could say that
+[02:14] look given a piece of
+[02:16] code uh these are all of its legal
+[02:19] sequential executions so what we could
+[02:22] do is that given a piece of code
+[02:26] assuming the architecture follows s c we
+[02:29] could create a space of legal sequential
+[02:32] executions lsc1 LSC 2 so on and so forth
+[02:37] if all of them follow a certain property
+[02:40] for example if all of them after the
+[02:42] execution set the value of some variable
+[02:45] to equal to three so we can say that
+[02:48] regardless of how we execute because a
+[02:52] parallel program can have many different
+[02:54] outcomes but that's okay as long as all
+[02:59] in all the outcomes Y is equal to 3 we
+[03:02] might be happy with it so what can we do
+[03:05] well we can reason that look regardless
+[03:07] of whatever happens as long
+[03:11] as our machine is sequentially
+[03:14] consistent we can enumerate all the
+[03:16] legal sequential executions and we can
+[03:19] say that look in all of them the common
+[03:21] property is that Y is equal to 3 which
+[03:24] is what I want hence I'm happy but what
+[03:28] about nonc executions Things become way
+[03:30] more complicated in this case so in this
+[03:35] case uh what exactly we see is that even
+[03:40] enumerating all the
+[03:41] executions and particularly the
+[03:43] sequential executions is hard and many
+[03:46] sequential executions also might not be
+[03:49] legal so let's uh understand this so let
+[03:51] us study
+[03:55] this all
+[03:57] right so what we want to do is that we
+[04:01] want to create a theoretical tool which
+[04:04] is somewhat similar to what we did in
+[04:06] the case of sequential
+[04:07] consistency which basically was to
+[04:10] convert a parallel execution or somehow
+[04:13] equate it establish an equivalence with
+[04:14] the sequential execution in the case of
+[04:17] sequential consistency this was very
+[04:19] easy to do and the sequential execution
+[04:22] was very elegant so why was it very
+[04:25] elegant well number one it was legal
+[04:28] number two program order was
+[04:31] preserved so we will not be that
+[04:34] fortunate when we consider non models so
+[04:37] what we will do is from a parallel
+[04:39] execution we'll create a
+[04:41] graph uh specialized graph called an
+[04:44] execution witness and from that we will
+[04:47] move to a sequential execution which may
+[04:49] or may not be legal so we will see when
+[04:51] it is legal and when it is not but this
+[04:54] will at
+[04:56] least give us several things one is that
+[04:59] if we can
+[05:01] construct a sequential execution from a
+[05:03] parallel execution via an execution
+[05:07] witness what it can at least tell us
+[05:09] that for a given memory model it's a
+[05:11] valid outcome right so mere fact that we
+[05:14] could reverse this will tell us that
+[05:17] look given this execution so so let's
+[05:19] say my question is that given an
+[05:21] execution is it valid in the sense are
+[05:24] the outcomes valid so what I can do is I
+[05:26] can create an execution witness out of
+[05:28] it and and then try to create a
+[05:30] sequential execution out of the
+[05:32] execution witness if I'm able to do it
+[05:35] at least I can say the outcomes are
+[05:37] valid right so I can use this method to
+[05:40] enumerate all the valid outcomes and as
+[05:44] long as they follow a certain property I
+[05:46] am
+[05:48] happy so this is slightly more
+[05:50] complicated than the simple two-step
+[05:52] process that we had in the case of
+[05:56] SC so in this case it's a three-step
+[05:59] process
+[06:00] but we will see that this is very
+[06:02] elegant and of course the two-step SC
+[06:04] process is a subset of this so let's
+[06:07] take a look at some of the broad
+[06:09] principles the first is that given a
+[06:11] piece of parallel code it can have many
+[06:14] different
+[06:15] executions and it can have many
+[06:18] different outcomes right so the set of
+[06:21] outcomes we can let's say classify them
+[06:24] into valid and invalid so invalid Val
+[06:27] outcomes we will not see in an
+[06:28] architecture
+[06:30] if it violates its memory model but the
+[06:32] valid outcomes we will
+[06:34] see so for each execution as I said we
+[06:36] construct an execution witness which is
+[06:39] nothing but a
+[06:41] graph and if we can convert it to a
+[06:44] sequential execution well it tells us
+[06:47] something we will see
+[06:49] what so let us now try to construct an
+[06:52] execution witness for an execution that
+[06:54] is showed over here so here we have xal
+[06:58] to 1 we read the value of x we set y
+[07:01] equal to 1 we read the value of y and
+[07:05] the SC execution is like this uh we set
+[07:08] x equal to 1 we read the value of y into
+[07:11] T1 this is read to be
+[07:14] zero then we set y equal to 1 we read
+[07:17] the value of x and this is read to be
+[07:20] one so what we can do is that we can
+[07:22] convert this
+[07:24] execution so which is also if you look
+[07:27] at it is a parallel execution that we
+[07:30] can that we have converted to
+[07:32] sequential where the nodes are these
+[07:34] instructions each one of these is a node
+[07:36] so this graph will have four
+[07:38] nodes we can then have edges between the
+[07:41] instructions based on the orders that
+[07:44] are guaranteed by the memory model so I
+[07:47] will discuss this part in somewhat more
+[07:49] detail but let's for the time being just
+[07:53] FL go along with the flow so what I'm
+[07:56] trying to say over here is that
+[07:57] different memory models
+[08:00] impose different kinds of constraints on
+[08:03] the execution witness so we have
+[08:05] different kinds of edges so we can have
+[08:08] two kinds of edges Global and
+[08:11] local so these are happens before edges
+[08:15] which means that uh let's say that if I
+[08:19] write a happens before B it means that
+[08:22] event a happened first and then event B
+[08:25] happened after that so it does not
+[08:27] matter
+[08:29] of when event B happened after event a
+[08:32] so as I said we never look at exact time
+[08:35] over here so B could have happened
+[08:37] immediately later or it could have
+[08:39] happened after a very long time right so
+[08:42] that doesn't matter right whether it is
+[08:44] just after a or after a very very long
+[08:47] time this per se does not matter the
+[08:51] reason is that in all conquering systems
+[08:54] we are only interested in the order
+[08:56] which means that it just happened after
+[08:57] it or happened before it
+[09:00] right and the timing doesn't matter and
+[09:03] mainly because we have so many
+[09:05] non-deterministic events within the CPU
+[09:08] that if we start putting constraints on
+[09:10] a timing these relationships will be
+[09:12] very complex and also we will not be
+[09:15] able
+[09:17] to uh guarantee all of those timings so
+[09:21] now let's come to Global and local so
+[09:23] Global happens before Edge is added if
+[09:26] let's say it is agreed to by all threads
+[09:28] in the sense of all thread say that look
+[09:30] event a happened before event B so we
+[09:33] let's put let's call it GHB so local
+[09:36] happens before we'll call it lhb local
+[09:38] happens
+[09:40] before and Global happens before we'll
+[09:42] call it
+[09:44] GHB so if we say that a happened before
+[09:47] B and this is globally agreed to then uh
+[09:52] All The Observers and in this case we
+[09:56] have one Observer on each thread so all
+[09:58] the threads will agree with this
+[10:00] otherwise they won't all right so this
+[10:03] is a difference between Global and
+[10:06] local so continuing to execution
+[10:08] witnesses there are different kinds of
+[10:10] edges in the execution
+[10:12] witness so all of the edges so we'll
+[10:16] consider the program order Edge first so
+[10:19] all of the edges are between memory
+[10:20] operations issued by the same thread
+[10:23] regardless of the address so they can be
+[10:25] same U address or it can also be
+[10:28] different addresses it doesn't matter as
+[10:31] long as these operations have been
+[10:33] issued by the same thread it is
+[10:37] fine so let us now look at uh the kind
+[10:41] of program order edges that we add so in
+[10:45] general the program order Edge will be
+[10:47] represented with Po in the execution
+[10:49] witness and we will add a program order
+[10:52] Edge between a read and a write again
+[10:55] issued by the same thread we'll call it
+[10:57] PW
+[10:59] then we'll have P RR which is read read
+[11:01] P right read P right right and from any
+[11:05] instruction to a sync operation so
+[11:07] synchronization operation uh there is a
+[11:11] global udit so so uh so I'll I need to
+[11:14] further talk about this part so the
+[11:17] program order edges as we have been
+[11:20] seeing uh might be there or might not be
+[11:23] there in the memory model for example
+[11:26] the right to read program order Edge is
+[11:28] often violated so this is clearly not
+[11:30] Global and the execution witness will
+[11:33] always contain Global edges so this
+[11:35] needs to be kept in mind that the
+[11:37] execution witness
+[11:39] will normally contain only Global edges
+[11:43] and the right to read Edge in most
+[11:45] memory models is not Global but of
+[11:47] course in sequential consistency all of
+[11:49] these edges are Global in this because
+[11:51] we respect program order uh all of these
+[11:54] edges have to be Global in SC but in all
+[11:57] other memory models or let's say
+[12:00] regardless of the memory model the
+[12:02] following edges are always Global which
+[12:05] is from any instruction to a sync
+[12:07] operation so which means that the
+[12:09] instruction fully completes everybody
+[12:11] gets to see the result of it and then
+[12:14] the synchronization
+[12:15] operation executes and similarly posi
+[12:20] which is again a synchronization
+[12:21] operation to an instruction after it so
+[12:24] we have also seen other kinds of
+[12:27] synchronization operations which is not
+[12:29] a like a pure fence in that case these
+[12:33] edges will of course change their
+[12:35] character but any Edge from an
+[12:37] instruction to a sync operation or vice
+[12:40] versa of course depending upon the type
+[12:42] of the sync operation is always Global
+[12:45] all
+[12:49] right so keeping these in mind let us
+[12:52] proceed so what we need to uh broadly
+[12:55] keep in mind is that we have some of
+[12:57] these edges uh which are these four
+[13:00] which are dependent on the memory model
+[13:04] right so they are respected they are
+[13:06] said to be respected or Global in SC but
+[13:09] the other two are Global in all memory
+[13:13] models so let us consider an example so
+[13:16] nothing is clear without an example so
+[13:19] consider the following
+[13:21] execution so where uh we have a single
+[13:24] thread so we simply add edges program
+[13:27] order edges between
+[13:30] uh the three different operations if the
+[13:34] uh memory model specifies that these
+[13:37] edges are Global so we have wx1 wy1 so
+[13:41] this is a right to right Edge and then
+[13:43] we have a right and a read so this is a
+[13:46] right to read
+[13:47] Edge so this execution witness will be
+[13:50] valed if the programming if the memory
+[13:52] model is in a c where we create a node
+[13:55] for each memory operation and we add
+[13:58] edges between the
+[13:59] as per the memory
+[14:02] model so let us now look at another kind
+[14:05] of edge called the
+[14:07] read uh from Edge the RF Edge so the RF
+[14:12] Edge is a right to read
+[14:15] Edge for the same address right so
+[14:18] program order edges were possibly for
+[14:21] different addresses but this is for the
+[14:23] same address but again the program order
+[14:26] Edge was in the same thread and this can
+[14:28] also be across
+[14:31] threads
+[14:32] right so the RF Edge we can have two
+[14:35] kinds RF and
+[14:37] RFI so in r in the RF Edge we have read
+[14:40] and WR operations in different threads
+[14:43] right so it is a right in one thread and
+[14:47] a read from a different thread and the
+[14:50] RF we have the read and WR operations in
+[14:53] the same thread right so in the same
+[14:56] thread we have the right and and then a
+[14:59] later read and needless to say they are
+[15:01] to the same
+[15:04] address so let's first look at a small
+[15:07] example and then I will uh explain
+[15:10] more so in this small example we have a
+[15:13] right and we have a read and the final
+[15:17] outcome is T1 is equal to 1 so in that
+[15:20] case uh what it means is that we are
+[15:23] writing and we are reading and that's
+[15:25] the final uh and the value of one is
+[15:27] received by the other thread
+[15:29] so we can have a wx1 RX1 and we can add
+[15:33] an
+[15:34] RF all right so an RF Edge can be added
+[15:38] over here uh to signify the fact that uh
+[15:43] we are writing and we are
+[15:45] reading so what we have also seen in the
+[15:47] past is that if rights are Atomic the RF
+[15:50] Edge is
+[15:51] global what this essentially means is
+[15:53] that every right has one completion time
+[15:57] associated with it
+[15:59] then everybody will agree that look the
+[16:01] right happened and then the read
+[16:02] happened after
+[16:04] that right so any read that is reading
+[16:07] the value of the right all of us will
+[16:09] agree but if this this right is not
+[16:12] Atomic then different threats will
+[16:14] perceive this right to happen at
+[16:16] different points in time so the RF Edge
+[16:19] will cease to be Global in the sense not
+[16:21] everybody would agree that this right
+[16:24] had fully
+[16:25] completed fully completed means
+[16:28] everybody had seen the value of the
+[16:29] right before the other thread actually
+[16:32] read right so in this case the RF Edge
+[16:34] will not be Global so here of course an
+[16:37] astute reader can ask that look if the
+[16:39] right was not done how did you read well
+[16:41] it was done with respect to this thread
+[16:43] but not with respect to other threats
+[16:45] hence this right was not Global so uh if
+[16:49] the RF Edge is global if rights are
+[16:51] Atomic if they are not Atomic the RF
+[16:54] local similarly RFI so RFI is read from
+[16:58] internally so this is typically not
+[17:01] Global okay so even in in ordered
+[17:03] pipelines that have forwarding and so on
+[17:06] of the kind that we have been seeing so
+[17:09] of course this is store to load
+[17:10] forwarding but nevertheless uh so sorry
+[17:13] load load to
+[17:17] U yeah sorry this is uh slore to load
+[17:20] forwarding so in this case uh if we have
+[17:23] an lsq RFI will not be Global which
+[17:27] means that internally we are forwarding
+[17:29] the value of a right to a read within
+[17:32] the
+[17:33] pipeline the rest of the world is seeing
+[17:36] it much later and this
+[17:39] is well uh this is not a globally
+[17:42] visible operation so this means that a
+[17:45] core can read its own value before other
+[17:48] cores can and whenever you read a value
+[17:52] early the corresponding Edge does not
+[17:55] remain Global in a sense everybody does
+[17:58] not agree that
+[18:00] this is indeed a global Edge or let's
+[18:04] say the right genuinely happened
+[18:06] genuinely completed before the
+[18:09] read all right let's look at a few more
+[18:11] edges of course now our execution
+[18:14] witnesses will become uh more and more
+[18:20] expressive so let us look at this
+[18:23] particular execution so uh thread one
+[18:26] sets X to one
+[18:29] thread two sets X to
+[18:33] two and then uh we read the value of x
+[18:36] there is a fence we read the value of x
+[18:38] once again so in this case uh let's see
+[18:42] what's what is the outcome so the first
+[18:44] outcome we read is one and then what we
+[18:46] read is two so let us now create the
+[18:49] execution witness for it so we have the
+[18:52] first right
+[18:53] wx1 then we have the second right
+[18:57] wx2 so since we need in this order one
+[19:00] and then two we add a WS Edge which is a
+[19:02] right serialization Edge so as we have
+[19:05] seen in our discussion on plsc this Edge
+[19:08] is always Global all right so always
+[19:11] this Edge holds so this Edge is always
+[19:14] Global and after
+[19:17] that uh the first right is seen by RX1
+[19:21] so we add an RF Edge going this way the
+[19:24] second right is seen by rx2 so we add
+[19:27] one more rfh
+[19:29] and then we add a uh set of program
+[19:32] order edges because we have a read and
+[19:34] then a fence so there is a program order
+[19:36] Edge and then we have a fence and then a
+[19:39] read so this is one more uh program
+[19:41] order Edge so the Ws Edge is by
+[19:44] definition always
+[19:46] Global which is a direct consequence of
+[19:49] plsc and the requirements of coherence
+[19:52] that ultimately came out of plsc only so
+[19:55] what you further see is that this
+[19:57] execution witness is
+[20:05] cyclic so what an acyclic execution
+[20:08] witness basically
+[20:10] means that if we use the results of the
+[20:13] topological sort algorithm so the
+[20:14] topological sort algorithm basically
+[20:17] says that if we have a directed acyclic
+[20:20] graph or a dag which is exactly the
+[20:22] execution witness in this case and if
+[20:25] there are no Cycles it is possible for
+[20:27] us
+[20:29] to arrange all of these operations in a
+[20:32] linear sequential order so as you can
+[20:35] see this can be done we can have
+[20:37] wx1 then we can have
+[20:40] RX1 then we can have
+[20:42] wx2 then we can have the fence and then
+[20:46] we can have
+[20:48] rx2 so it is possible to create a
+[20:51] sequential order which is sequential
+[20:52] execution which is equivalent to the
+[20:55] parallel execution in this case and as
+[20:57] you can also so see this order is also
+[21:01] Leal right so we are respecting program
+[21:04] order in uh along with that this a legal
+[21:07] sequential execution so this execution
+[21:09] is an
+[21:10] sc and furthermore we saw how we can use
+[21:14] three different types of edges namely
+[21:17] the Ws Edge the RF Edge and the program
+[21:20] order Edge to create an execution
+[21:25] witness now we will introduce the
+[21:29] last kind of edge which is a from read
+[21:31] Edge so let us first take a look at the
+[21:35] execution and then we will see uh we'll
+[21:37] go further so in this case what we have
+[21:40] is that we have two rights to the same
+[21:43] location we write one and then two and
+[21:46] then we read the value of
+[21:48] x we read it to be one so what we can do
+[21:52] in this case is that we have two right
+[21:55] nodes and uh then then we have a right
+[21:58] seral Edge between them and the way we
+[22:01] create an execution witness is that we
+[22:03] add an RF Edge so this will be an RF
+[22:05] Edge it's external right WR to a read
+[22:10] and interesting part is that given the
+[22:12] fact that we read one and then to the
+[22:14] same location we overwrite it with the
+[22:17] value two we add the from read Edge from
+[22:21] RX1 to
+[22:23] wx2 all right so as I as we have
+[22:27] discussed in in the past as well in the
+[22:30] execution witness ws and fr FR edges
+[22:33] will always be Global regardless of the
+[22:36] memory model so let me write
+[22:55] it regardless of the memory model the F
+[22:59] FR and WS
+[23:04] edges are
+[23:09] Global why is this the case well this
+[23:12] directly follows from the requirements
+[23:14] of plsc if you go back and even so it
+[23:18] doesn't matter we can have Atomic rights
+[23:19] non-atomic rights doesn't matter at all
+[23:22] from the requirements of plsc we brought
+[23:25] in the requirements of coherence that
+[23:27] rights have one Global Order that is
+[23:29] visible uh to all the threads and all of
+[23:33] them agree so from that it follows that
+[23:35] both F and WS which is from read which
+[23:39] is from read means from a read from a
+[23:41] read to a right from a read to a right
+[23:44] and between rights to the same location
+[23:47] we observe a global order right so both
+[23:49] F FR and WS they are accesses to the
+[23:53] same
+[23:55] location and the execution Witness
+[23:59] which anyway has only Global edges will
+[24:02] always have ws and fr edges whether it
+[24:06] has program order edges or RF edges that
+[24:10] is dependent on the memory model right
+[24:13] and also you know what kind of program
+[24:15] order edges with we have tons of
+[24:17] synchronization Primitives they have
+[24:18] different behaviors all of that is fine
+[24:21] but the key point is that the
+[24:23] requirements of plsc always hold why is
+[24:27] it that the case because we want to
+[24:29] maintain the
+[24:31] abstraction that there is a single
+[24:34] location for every variable that might
+[24:36] not be the case in a sense we might have
+[24:39] 20 physical locations for a single
+[24:41] variable but even if that is happening
+[24:43] an external Observer should never get to
+[24:46] know from there ws and F FR come all
+[24:51] right all right so now we have in now we
+[24:54] have looked at all the edges so we would
+[24:58] first like to introduce the
+[24:59] synchronization
+[25:01] Edge which is important so we will see
+[25:04] it is extremely important to tie all of
+[25:06] these things together and uh so the
+[25:10] synchronization Edge can
+[25:12] be mentioned very easily uh over here
+[25:16] with this example let's say we set X as
+[25:18] one and Y as one and let's assume that
+[25:22] program mod holds between the right to X
+[25:25] and right to y
+[25:29] so let us assume now uh that Y is a
+[25:34] variable so uh we will specialize
+[25:38] this in the later lectures on uh how do
+[25:41] we say that one is a synchronization
+[25:44] variable but let's assume for the time
+[25:46] being that Y is a synchronization
+[25:48] variable so what we will do is that we
+[25:51] will introduce a version of a write a
+[25:53] version of a store which can be thought
+[25:56] of as a synchronization store in in the
+[25:58] sense that any
+[25:59] store of course with additional
+[26:03] directives so x86 for example allows you
+[26:06] to specify the loog prefix if that
+[26:11] is uh if if that is mentioned before a
+[26:14] load or a store then the address
+[26:17] automatically becomes a synchronization
+[26:19] variable so let's assume that that is
+[26:21] specified so this is a synchronizing
+[26:23] variable so then we read the value of x
+[26:26] and we read it to be one so what we do
+[26:29] is we add a program mod Edge between the
+[26:31] wx1 and wy1 so recall that we'll not
+[26:35] have a WS Edge because these are
+[26:37] different addresses then we have an RF
+[26:40] Edge which is also a synchronizing Edge
+[26:43] right the latter being more important so
+[26:45] an edge can also be of multiple types so
+[26:48] an edge need not have a single type it
+[26:50] can have many types so it's a
+[26:52] synchronizing Edge and again between
+[26:55] reads let's assume that program order
+[26:57] holds
+[26:58] so in this case this execution witness
+[27:01] will be valid because if you add the
+[27:03] final Edge which is an RF Edge an RF
+[27:06] Edge to be more precise between the
+[27:09] write and the read we will not sorry we
+[27:11] will not have a cycle so this basically
+[27:14] means that all of these operations can
+[27:17] be arranged in a linear order and you
+[27:19] will furthermore find that it will be
+[27:21] legal as well and it will follow program
+[27:24] order as well so here what is the
+[27:26] assumption that Y is a synchronization
+[27:28] variable how did we specify that well
+[27:31] let's be slightly vague about it right
+[27:34] now all that I would like to mention is
+[27:36] that we will use special synchronizing
+[27:39] loads and stores in the place of normal
+[27:41] loads and stores so x86 has a lock
+[27:45] prefix the lock prefix allows us to
+[27:48] convert a regular load store to a
+[27:51] synchronizing load
+[27:52] store all updates to such sync variables
+[27:56] are globally ordered so let us assume so
+[27:59] furthermore uh many uh memory models
+[28:03] assume that all
+[28:06] synchronizing accesses or updates to
+[28:08] sync variables are in SC so we will make
+[28:12] a similar assumption here in our
+[28:14] discussion as
+[28:17] well so uh just to summarize what are
+[28:21] all the edges that we have introduced so
+[28:23] we have introduced five kind of edges
+[28:26] primarily so we have introduced a
+[28:28] program mod Edge which is between
+[28:31] instructions of the same thread right so
+[28:33] that's important same
+[28:34] thread doesn't matter it can be same
+[28:37] addresses same set of addresses
+[28:39] different addresses doesn't matter but
+[28:41] same thread right to read well it's a
+[28:44] right to read dependence it can be all
+[28:46] of these can be across threads uh these
+[28:49] four across threads
+[28:59] so the right to read operation uh
+[29:01] there's a dependent same address across
+[29:03] threads right to right read to WR all
+[29:08] right uh so across threats we don't have
+[29:10] a read to read order because it doesn't
+[29:12] matter in which order you actually read
+[29:14] so that's not important uh so what we do
+[29:17] over here is that these are to the same
+[29:20] address and also a synchronization Edge
+[29:22] between sync operations uh it should be
+[29:25] the same uh the synchronization variable
+[29:28] should have the same address so that
+[29:30] would make it a sync operation all right
+[29:33] so uh to summarize we will create an
+[29:35] execution witness which is a
+[29:38] graph and each operation memory
+[29:41] operation is a node we'll have these
+[29:43] five kinds of edges and then we will
+[29:45] analyze the entire graph most
+[29:47] importantly we will search for cycles
+[29:50] and will and we will use the results
+[29:52] from topological sorting which say that
+[29:56] if a if if an if a graph
+[29:58] does not have
+[29:59] Cycles it is possible to arrange all the
+[30:02] operators in a linear order such
+[30:06] that if there is a path from operation a
+[30:09] to operation B in the graph then
+[30:13] operation a appears first and operation
+[30:16] B appears later
+[30:19] right so we would keep on discussing
+[30:22] this several times but the idea of
+[30:25] topological sorting should be clear
+[30:30] all right an even bigger grander summary
+[30:33] so the wsfr and S so edges are always
+[30:36] Global wsfr follow from plsc Ando
+[30:39] follows from uh the way that our
+[30:42] Hardware implements synchronization
+[30:44] operations so they are always Global
+[30:47] some subset of program order edges are
+[30:49] Global so let us call that subset
+[30:51] PPU and some subset of the RF edges are
+[30:55] also Global let's call them grf
+[30:58] for SC grf is equal to RF in the sense
+[31:04] that uh both RF external and RF internal
+[31:08] are
+[31:09] Global and uh pop is equal to PO in the
+[31:12] sense all program a edes are Global so
+[31:16] finally our Global happens before
+[31:18] relationship which is exactly what the
+[31:20] execution witness will
+[31:22] capture will comprise all the program
+[31:25] modes which are global all the RF edges
+[31:29] also called the data flow edges that are
+[31:31] global data flow between a write and a
+[31:33] read and the Ws and Fs which have to be
+[31:37] Global because of coherence and PLS all
+[31:41] right so this is our Global happens
+[31:43] before order so what we do is we take an
+[31:46] execution a parallel execution of course
+[31:50] we create an execution witness we add
+[31:53] all the edges as per these
+[31:55] relationships Popo and
+[31:59] uh
+[32:02] grf are uh prescribed by the memory
+[32:05] model so we add those edges and then we
+[32:08] search for Cycles right so this is where
+[32:11] we have we are right
+[32:15] now so let us further elaborate on the
+[32:18] fact that let's see after creating the
+[32:20] execution witness why are Cycles all
+[32:23] that
+[32:25] important so here we'll use the classic
+[32:27] computer science result of topological
+[32:30] sorting which says the
+[32:36] following so note that all of these
+[32:38] graphs are directed graphs they are not
+[32:40] undirected graphs so if a graph does not
+[32:43] have a cycle we can arrange all the
+[32:45] nodes in a linear sequence such that
+[32:47] such that such that if there is a path
+[32:50] from operation A to B in the graph then
+[32:52] a appears before B in the linear
+[32:55] sequence so what does it mean that there
+[32:57] is a path from A to B in the graph it
+[32:59] means that there is a sequence of
+[33:01] happens before edges Global happens
+[33:03] before edges between a and
+[33:06] b
+[33:07] and it means a happened first and then B
+[33:10] happened later so if I can arrange them
+[33:13] in a
+[33:14] linear sequence of operations that a
+[33:16] appears first and B appears later and
+[33:19] the same holds for all pairs then we can
+[33:22] say that this is a possible order of
+[33:24] completion times of these operations
+[33:28] in a certain sense what we can say is
+[33:31] that this is most likely a it's a
+[33:35] feasible execution in the sense if let's
+[33:37] say these operations were to uh complete
+[33:41] like this then no happens before
+[33:43] relationship would be violated so this
+[33:46] is a sequential execution no
+[33:48] doubt okay and the way that we convert a
+[33:52] graph into a sequence is using the
+[33:55] topological sort algorithm which
+[33:57] maintains the same happens before
+[34:00] orders so uh what we have here is we
+[34:04] have an acyclic execution
+[34:07] witness and that leads uh sorry that
+[34:10] that essentially leads to
+[34:12] a sequence of operations all
+[34:17] right so let us now look at the
+[34:20] implications of mapping a parallel
+[34:22] execution to a sequential execution so
+[34:25] what we did is that we extended
+[34:28] Ed the discussion of the previous
+[34:31] section and we took a parallel execution
+[34:34] created an execution witness out of
+[34:40] it so in the execution witness the edges
+[34:43] were added as per the constraints
+[34:45] imposed by the memory model and then
+[34:48] from this we first checked for
+[34:51] Cycles so we said that look if there are
+[34:53] Cycles we can never have a cycle of
+[34:56] happens before relationship that's not
+[34:58] possible otherwise it will be a given
+[35:00] operation happened before the same
+[35:02] operation itself so A Cycles cycle
+[35:05] happens before relationships would look
+[35:07] something like this right uh so
+[35:10] regardless of the other operations
+[35:12] finally it'll come back to it so it will
+[35:14] basically mean that a given event a
+[35:17] happened before the same event which of
+[35:19] course is not possible so we cannot have
+[35:22] a cycle of happens before
+[35:24] relationships because of that if the
+[35:26] execution Witness does not have a
+[35:29] cycle then we are saying that the
+[35:31] execution is feasible well why because
+[35:34] we can uh do the topological sort on the
+[35:38] graph and arrange the operations in such
+[35:40] a way that if there is a path from
+[35:43] operation a to be in execution witness a
+[35:45] appears before B and this holds for all
+[35:48] pairs so this is a possible order in
+[35:52] which uh the
+[35:55] instructions complete but but this is
+[35:58] not unfortunately a legal sequence all
+[36:02] the time it'll be legal of course if the
+[36:03] rights are Atomic but if the rights are
+[36:06] not Atomic which means that if a right
+[36:09] appears to complete at different times
+[36:11] to different threads this will not be a
+[36:13] legal sequence so legality will be
+[36:15] violated so this is a problem but the
+[36:19] key important theoretical point over
+[36:21] here is that we establish an equivalence
+[36:23] between a parallel execution and a
+[36:25] sequential execution not necessarily
+[36:28] legal and the execution is feasible
+[36:31] according to the memory model so this
+[36:33] still our original aim of finding the
+[36:37] set of valid outcomes is still satisfied
+[36:39] the reason is that look what we do is
+[36:42] that we look at all possible ways that a
+[36:44] given piece of code can execute we
+[36:47] create the execution Witnesses all of
+[36:49] this can be done automatically using a
+[36:51] software tool and then for each one of
+[36:55] them we can check for Cycles so there is
+[36:57] no reason to sequentially enumerate
+[36:59] those operations we can if you if we
+[37:02] like and furthermore if the rights are
+[37:06] Atomic and the execution is legal even
+[37:09] though the program order doesn't hold
+[37:11] that is still fine uh if that gives us
+[37:14] more uh tools and more theoretical
+[37:17] insights we can do that but even at the
+[37:20] level of the execution witness itself if
+[37:23] it does not have Cycles it means that
+[37:25] the execution in ter terms of the
+[37:28] outcomes is valid so this does give us a
+[37:31] very strong and powerful tool to find
+[37:34] out when a given execution is valid for
+[37:37] a particular memory model all right so
+[37:41] this is where uh we would like to end
+[37:43] this
+[37:44] part with regards to the validity of
+[37:47] executions with respect to certain
+[37:50] memory
+[37:51] models and uh then there are also other
+[37:54] aspects of an execution that we shall
+[37:56] look at next
+[37:58] but at least from the point of view of
+[37:59] memory models we established an
+[38:02] equivalence and then as long as the
+[38:04] execution witness does not have
+[38:06] Cycles which means that there is no
+[38:08] cycle of global happens before edges we
+[38:11] are fine this essentially indicates to
+[38:14] us that a given
+[38:16] execution is per se valid right the
+[38:20] outcomes are valid they are allowed
+[38:23] which is the key thing that we wanted to
+[38:26] theoretically investigate
+[38:28] in this part of the lecture so let's uh
+[38:30] keep going and look at a few more
+[38:33] criteria for validity this was one but
+[38:35] there are a few more as
+[38:39] well so next we will look at accesses to
+[38:41] a single
+[38:43] location and we'll also look at data and
+[38:45] control
+[38:48] dependencies so let us create a new tool
+[38:51] called an access
+[38:53] graph which in principle is similar to
+[38:55] an execution witness but it it is
+[39:00] different so it contains all accesses to
+[39:03] the same location all accesses are to
+[39:06] the same location we can have multiple
+[39:08] threads so I have shown a diagram for a
+[39:10] single thread but we can have multiple
+[39:12] threads as well uh no issues so consider
+[39:16] all the operations issued by a single
+[39:18] thread so we'll consider all the
+[39:20] accesses initially for address X so
+[39:22] clearly this will not be there so I'll
+[39:26] have wx1 and W X2 so we will uh
+[39:29] introduce a new kind of edge so instead
+[39:31] of program order edges we will have uh
+[39:34] up edges called uniprocessor edges I'll
+[39:37] discuss in a second why so it is Edge
+[39:40] between accesses to the same location in
+[39:42] the same thread so mind you this is
+[39:44] accesses so this can be read right uh WR
+[39:48] right WR read read read anything it's
+[39:51] two accesses to the same location within
+[39:54] the same thread so we'll create a new
+[39:55] kind of edge
+[39:58] and we will call it the up Edge which of
+[40:00] course does capture program order but it
+[40:03] is again accesses to the same location
+[40:05] within the same
+[40:07] thread so what we see over here is that
+[40:10] we have we write one first then two we
+[40:13] add a
+[40:14] up and then uh so I'm treating this
+[40:18] simplistically as you know several
+[40:21] instructions but simplistically as one
+[40:23] instruction in the access graph where we
+[40:26] just read the latest value of x which is
+[40:28] two so we add one more
+[40:31] up and finally we write four so as you
+[40:34] can see I've extracted four instructions
+[40:36] I've haded Ive added uniprocessor
+[40:39] edges and uh let's take it slightly
+[40:43] further so here is what I claim which is
+[40:46] a simple generalization of the
+[40:49] discussion that we had in the
+[40:52] previous uh previous section on
+[40:56] SC so uh pretty much in SC uh we uh had
+[41:01] program
+[41:02] model so we are now looking at plsc
+[41:04] which is all the accesses for a single
+[41:06] location see here also ws and fr are
+[41:11] Global and uh program order in this case
+[41:14] is
+[41:15] up and in SC since all of RF is
+[41:19] global so we have program order here as
+[41:22] well all right so uh what is it uh that
+[41:26] we are trying to do what we are trying
+[41:28] to do is that we are trying to look at
+[41:30] all the accesses to the same location
+[41:34] doesn't matter it can be one thread or
+[41:36] it can be several threads that doesn't
+[41:37] matter so similar to SC we can Define
+[41:40] plsc over
+[41:42] here of course plsc will be confined to
+[41:45] everything for the same location so
+[41:47] instead of Po we'll use up and since all
+[41:51] RF relations are Global in SC they'll be
+[41:53] Global in plsc also at least in the
+[41:56] definition so so uh sorry uh this is uh
+[41:59] Global and finally uh we will add make
+[42:03] FR and WS Global so this for us is
+[42:07] plsc so what we have seen uh before this
+[42:11] discussion is that plsc is always
+[42:13] respected regardless of the memory model
+[42:16] right so regardless of the memory model
+[42:19] we always respect plsc that is
+[42:22] point1 and because of that when we
+[42:24] create an access graph which will only
+[42:27] have accesses to let's say a single
+[42:29] location doesn't matter many
+[42:32] threads we will have a very similar
+[42:34] graph as the execution witness right so
+[42:37] like the exe access graph is pretty much
+[42:40] an execution witness confined to a
+[42:43] single
+[42:44] location right and uh so in that case
+[42:48] We'll add our F frws edges of course RF
+[42:51] edges of course they will be Global and
+[42:54] our po edges and we expect
+[42:57] so there is no memory model with respect
+[43:00] to accesses to a single location because
+[43:02] plsc needs to hold so we expect that the
+[43:05] access graph will not have any Cycles
+[43:08] why because if it has Cycles plsc
+[43:10] doesn't
+[43:11] hold right recall our discussion in
+[43:14] slide uh number
+[43:16] 74 uh
+[43:18] so here the p uh the access graph for
+[43:22] plsc to hold it implies that there are
+[43:24] no Cycles
+[43:30] so let us
+[43:32] now look at uh data and control
+[43:36] dependencies as well and then try to
+[43:38] create a different kind of graph all
+[43:40] right so we have looked at the access
+[43:42] graph in the previous slide and access
+[43:45] graph was same as an exe execution
+[43:48] witness right so it's an execution
+[43:51] Witness
+[43:58] for a single
+[44:05] variable so in this case of course plsc
+[44:09] has to hold which is essentially
+[44:10] sequential consistency for a single
+[44:13] location and uh this part should be
+[44:16] self-explanatory by
+[44:19] now so let us now consider one more
+[44:22] example so in this example we'll have up
+[44:26] edes uni processor edges and we will
+[44:29] have multiple threads the threads T1 T2
+[44:33] and
+[44:34] T3 so in thread T1 we uh write to X and
+[44:38] then read T2 we just write and T3 we
+[44:42] read
+[44:43] twice so is this outcome allowed let's
+[44:46] see so T1 T2 T3 so T1 is equal to
+[44:50] 2 here we read one first and then we
+[44:53] read zero is it allowed well so note the
+[44:57] up edges so note the up Edge from
+[45:01] wx1 to rx2 so they are a part of the
+[45:07] thread so given the fact that they are a
+[45:09] part of the same thread we see this uni
+[45:13] processor Edge to enforce the
+[45:16] dependency and then uh we have wx2 right
+[45:21] serialization Edge over here and then U
+[45:25] right to read Edge because instruction B
+[45:28] reads the value produced by instruction
+[45:31] C so there is no cycle over here but we
+[45:34] will see a cycle when we consider thread
+[45:38] T3 so thread T3 reads one first so we
+[45:41] see an rfh and an
+[45:44] fge right so why an RF because there is
+[45:47] a right to read dependence over here and
+[45:49] an F because there is a read to write
+[45:53] right so we read an older value and then
+[45:56] uh wx2 is the later value and then a up
+[45:59] Edge to the subsequent read where we
+[46:01] read a zero so this is where the fun is
+[46:04] so uh because we read a zero there will
+[46:07] be an
+[46:08] fedge
+[46:11] from uh this access to
+[46:14] wx1 because we read zero first and then
+[46:17] one is written to the location so we do
+[46:20] we do see a cycle and the cycle goes all
+[46:23] the way up like this this way this way
+[46:25] and this way so given the fact that we
+[46:28] have a cycle in the access graph plsc is
+[46:31] violated and consequently this execution
+[46:34] is not allowed all
+[46:37] right so now we have seen plsc which is
+[46:41] uh very important if we consider
+[46:43] accesses to a single
+[46:45] location so we are not done yet there is
+[46:48] something
+[46:49] called uh a thin air read which we shall
+[46:52] see
+[46:54] next so let us now also consider data
+[46:57] and control
+[46:59] dependencies so while considering data
+[47:01] and control dependencies what we see is
+[47:05] that uh so we looking at a program with
+[47:09] two
+[47:10] threads so here we read X first so let
+[47:13] us assume that this read uh so this read
+[47:16] will be affected by a load operation so
+[47:19] let us assume that we also have value
+[47:22] prediction over here so if you have
+[47:24] value prediction uh so what happens in
+[47:26] value prediction well in value
+[47:27] prediction we predict the value early
+[47:30] and later we read the value from the
+[47:32] memory system and we
+[47:34] verifi so in this case we read the
+[47:37] value but that might take time so in the
+[47:39] time being we predict and we verify
+[47:41] later so for uniprocessor executions we
+[47:44] have been claiming that value prediction
+[47:46] is absolutely correct you know just the
+[47:49] Paradigm itself the reason is that we'll
+[47:51] never read a wrong value because we're
+[47:53] always verifying a value before
+[47:55] committing
+[47:57] is that the case for multiprocessor
+[47:58] executions let's
+[48:00] see so uh let's assume that the value is
+[48:02] stored in the register T1 and if T1 is
+[48:06] equal to 1 which is the if
+[48:08] statement uh so in this case what we do
+[48:11] is we set y to 2 so let's assume we find
+[48:13] it to be one in this execution right and
+[48:17] then uh once we set y to two uh let's
+[48:21] assume we have Atomic rights so in this
+[48:24] case uh we will have an RF Edge from wy2
+[48:28] to R
+[48:29] Y2 so let us further assume that our
+[48:32] memory model is such that we do not have
+[48:35] a read to write ordering between U
+[48:39] accesses to different addresses in the
+[48:41] same thread and a lot of memory models
+[48:45] which are called weak memory models as
+[48:47] we shall see they will not have this
+[48:49] ordering so we have not added any
+[48:51] edges uh in uh T1 right so in T1 no Edge
+[48:58] per se has been added now let us look at
+[49:01] thread T2 so in this case we have a
+[49:03] fence so program order Edge two of them
+[49:06] are required so in this case what we do
+[49:10] is we read the value to be two so that
+[49:12] justifies the RF Edge and then we have
+[49:15] two program order edges and then we
+[49:17] write one
+[49:19] wx1 and then uh what we actually get to
+[49:23] see over here uh is that
+[49:27] uh wx1 supplies the value
+[49:31] to RX1 via an RF
+[49:35] hge so first let's uh look at the
+[49:38] outcome so the outcome of course is that
+[49:40] T1 is equal to 1 as you can see and the
+[49:43] outcome is T2 is equal to two because of
+[49:45] the RF
+[49:47] Edge so this execution witness over here
+[49:50] does not have a cycle so we might be
+[49:53] tempted to say that this is a legal and
+[49:55] feasible execution
+[49:58] but the answer is that it is not why is
+[50:01] that the
+[50:02] case the reason that that is the case is
+[50:05] that there is a clear break in what is
+[50:07] called causality a causality is
+[50:10] essentially a cause effect relationship
+[50:13] right so anytime there is a cause and
+[50:15] effect relationship we call it
+[50:17] causality and uh there is a clear break
+[50:20] uh let me explain
+[50:23] why so the reason is uh that
+[50:30] we read the value of x into T1 so we
+[50:33] assume that at this point x is already
+[50:36] equal to 1 after that since X is equal
+[50:39] to 1 we set y to
+[50:41] 2 and then we read y to be two then of
+[50:45] course we have a fence so we have a
+[50:46] strict program ordering and then we set
+[50:49] X to be
+[50:50] one so uh there is a as you can see
+[50:53] there is a causal link which goes like
+[50:57] so one event after the so this first
+[51:00] this event then this then this then this
+[51:02] then this then this but the point is at
+[51:05] this point x is actually not equal to
+[51:07] one if you think about it the reason is
+[51:10] that we set X to be one at the end of
+[51:13] the chain of this causality uh at the
+[51:16] end of the causality chain right in the
+[51:19] sense first something happens then
+[51:21] something then something and then at the
+[51:23] end we set X to be one but X was not one
+[51:26] at the beginning but how can this
+[51:28] execution happen well the way that this
+[51:31] execution can be can happen is uh as
+[51:36] follows we predict the value of x so we
+[51:39] predict it to be one then we keep
+[51:44] executing after predicting it to be
+[51:49] one what we
+[51:54] do so uh what we do is that we go and
+[51:58] speculatively perform the right so in
+[52:01] this case we form the we perform the
+[52:03] right early and we do not wait for uh
+[52:07] the instructions prior uh to the right
+[52:10] get committed so this is uh this does
+[52:13] happen in extremely high performance
+[52:15] processors where uh they uh this uh read
+[52:19] to write order is violated and they do
+[52:23] perform early rights and after that uh
+[52:26] what we see on the side of T2 is that in
+[52:30] T2 we perform the load and then the
+[52:32] fence and then we write one
+[52:33] tox and so at the time of verification
+[52:36] of this
+[52:38] instruction we will always read X to be
+[52:41] one and this instruction would deem to
+[52:43] have been verified but that will
+[52:45] actually not be the
+[52:47] case the reason that will not be the
+[52:49] case is basically because when uh we
+[52:53] originally read X it was actually zero
+[52:56] and then uh this is kind of a spous
+[52:59] value right so X = to 1 or rather T1
+[53:02] equal to 1 appears to be uh appears to
+[53:06] have been read from nowhere and so
+[53:09] that's the reason it's called a thin air
+[53:11] read Because if you think about it T1
+[53:14] should have been red equal to zero
+[53:16] because you know X became one just
+[53:20] because uh we assumed that X is one over
+[53:23] here but that was the wrong assumption
+[53:26] because at this point x was actually
+[53:28] equal to zero so this value kind of has
+[53:30] been picked out of thin air so that's
+[53:33] the reason it's called a thin air read
+[53:36] and such kind of an execution would be
+[53:38] valid as per our execution witness uh
+[53:41] logic right that this execution witness
+[53:44] is a cyclic but we would still like to
+[53:47] prevent such kind of thin air
+[53:50] reads so I would further like to say
+[53:52] that uh this uh the problem of having
+[53:55] thinner reads also does arise when for
+[54:00] example we are implementing a virtual
+[54:02] machine like the Java virtual machine
+[54:05] and so on so so that is why this is a
+[54:07] general theoretical concept
+[54:11] where essentially there is a break in
+[54:13] causality and the reason being that we
+[54:16] assume a variable to have a certain
+[54:18] value and later on the assumption is
+[54:21] proved to be correct just because we
+[54:22] assumed right so uh that this is of
+[54:26] course not the right way it's kind of a
+[54:28] circular logic which is incorrect and
+[54:31] that's why such thiner reads have to be
+[54:33] prohibited so what I would request all
+[54:35] the listeners of this video to do is to
+[54:38] take a look at this example convince
+[54:41] themselves that this example is actually
+[54:43] not correct but our execution witness
+[54:46] method says that it is correct so we
+[54:48] have to do
+[54:50] something in addition to this to stop
+[54:53] this from happening let us now create a
+[54:55] causal
+[54:56] graph where in the causal graph we'll
+[54:59] have three kinds of
+[55:01] edges so we love creating graphs so we
+[55:03] keep creating graphs of different kinds
+[55:06] so let us compare a causal graph with
+[55:08] the previous figure this is the
+[55:10] execution witness this is fine but we
+[55:13] take the execution witness we add three
+[55:15] kinds of
+[55:16] edges so we keep the RF edges because
+[55:20] they determine data communication right
+[55:22] so there is they determine causality in
+[55:24] the sense I write and then I read all
+[55:27] right so uh this uh causality is
+[55:30] maintained then we add all the global
+[55:33] program order edges so called GP so I've
+[55:36] also referred to this as
+[55:39] Pop previously in the slides so PPU is
+[55:43] called preserved program order which for
+[55:45] that particular setting was correct but
+[55:49] what should have probably been used and
+[55:51] which was more relevant was GPO all
+[55:53] Global program order edges even the pop
+[55:55] was not wrong
+[55:57] uh but uh we will uh use we will prefer
+[56:00] the term GPU and in the book also I've
+[56:02] used
+[56:03] GPU so uh so what are the edges we add
+[56:06] again we add
+[56:07] RF because uh so what is the point of
+[56:10] view right it's important to Define uh
+[56:13] The Observer here and the point of view
+[56:15] so the Observer is
+[56:18] basically uh an observer on on all the
+[56:21] threads is only looking at the
+[56:24] communication of data in in the sense
+[56:27] that I read something and then what are
+[56:30] all the operations that are dependent on
+[56:33] the read so one is that I might be
+[56:36] communicating some data the way that I'm
+[56:38] doing from W2 to R
+[56:41] Y2 so then after that so so the Observer
+[56:45] will basically change uh the point of
+[56:47] observation from wy2 to R Y2 all the
+[56:51] global program order edges in the sense
+[56:54] that R Y2 needs to complete then the
+[56:56] fence then
+[56:57] wx1 and also a set of dependencies which
+[57:01] means one instruction needs to complete
+[57:04] then uh the dependent instruction in
+[57:06] this case the statement and then the
+[57:08] instruction in the body of the statement
+[57:11] all right so this is a different kind of
+[57:13] graph we have not really seen uh this
+[57:15] kind of a graph
+[57:17] before so this is called a causal graph
+[57:20] so here we have RF edges which in this
+[57:22] case are Global the reason is that uh
+[57:26] The Observer does uh is not really
+[57:29] looking what looking at other threads
+[57:32] about what they think about a right it
+[57:34] is only looking at the flow of data
+[57:37] right so think of the Observer pretty
+[57:39] much as sitting
+[57:41] on uh the forward slides of the read
+[57:44] right so so basically
+[57:47] wherever uh whoever is affected by the
+[57:50] read data or control The Observer is
+[57:52] sitting on the forward slice and
+[57:54] tracking it so pretty
+[57:56] much what a thinner read basically means
+[57:59] is that a read is a part of its own
+[58:01] forward slice right which is never the
+[58:05] case you know which will never happen
+[58:06] that you know no instruction will kind
+[58:09] of be uh kind of be a part of its own
+[58:11] forward slice why a path like this so
+[58:14] that is exactly what we are seeing that
+[58:16] from the read there's a path from the
+[58:17] read to the read uh uh you know so read
+[58:21] is a is a part of its own forward slice
+[58:24] and there is a path from the read to a
+[58:26] read that passes through other
+[58:27] notes so what the Observer would do in
+[58:30] this case is sit on the read and simply
+[58:32] start observing all the instructions
+[58:36] that are dependent on the outcome of the
+[58:37] read that would include data and control
+[58:40] dependencies communication Behavior WR
+[58:43] to read as well as Global program order
+[58:46] edges so we'll create a causal graph out
+[58:48] of these three kinds of edges and this
+[58:51] needless to say needs to be a cyclic
+[58:53] because if it is cyclic it means that
+[58:55] there is a break in
+[58:57] causality so there is a thing I read
+[59:00] basically so now the time has come to
+[59:03] put all of it together all right so to
+[59:07] put all of it together so we are looking
+[59:09] at the validity of an execution so we
+[59:12] look at the validity of an execution
+[59:14] from several points of view in the sense
+[59:16] we Define different kinds of observers
+[59:19] with different points of view and
+[59:22] capabilities so first we check if it
+[59:25] satisfies the memory model right so
+[59:27] different architectures have different
+[59:29] memory models in this case the execution
+[59:32] witness needs to be a Cy we have seen
+[59:35] that then does plsc hold for all memory
+[59:38] locations yes it has to otherwise the
+[59:41] notion of a single shared memory will
+[59:44] stop to hold so in this case all access
+[59:47] graphs are
+[59:49] recyclic then again uh we don't want
+[59:52] thin air reads so in this case the
+[59:55] causal graph
+[59:56] will be a cyclic all right so we have to
+[60:00] ensure that for every execution these
+[60:03] three hold all right so in a certain
+[60:07] sense these three conditions hold that
+[60:10] we are satisfying the memory model we
+[60:11] are satisfying
+[60:13] plsc and furthermore we do not have any
+[60:17] thin air read so there is no break in
+[60:18] causality so these are pretty much the
+[60:20] three most important conditions of any
+[60:24] execution being correct on on a
+[60:26] multiprocessor system and we also think
+[60:28] about it for a uniprocessor system all
+[60:30] that we need is plsc because uh for
+[60:34] every uh read we just need the latest
+[60:37] right or if there is a single thread
+[60:39] running on a multiprocessor system we
+[60:41] also need plsc not the others so they
+[60:44] are not really relevant in this case uh
+[60:47] so so in this case uh you know all
+[60:50] single threaded programs will work
+[60:52] correctly on a multiprocessor system
+[60:54] that is something that is given if plsc
+[60:58] holds but in addition if you have
+[61:00] multiple threads and multiple quotes we
+[61:02] have to satisfy the memory model and
+[61:04] avoid
+[61:07] thins all right so the next in the next
+[61:10] lecture we will move on to Cache
+[61:13] coherence so we have finished the first
+[61:16] two parts of this chapter

@@ -1,0 +1,2651 @@
+[00:21] Welcome to the
+[00:22] third lecture on
+[00:23] memory systems.  So,
+[00:24] in this lecture we
+[00:25] will discuss everything
+[00:26] related to DRAM commands
+[00:28] and timings.
+[00:31] Remember that in
+[00:32] previous lectures
+[00:33] we talked a lot
+[00:34] about the structure of a
+[00:35] DRAM device, which,
+[00:36] you know, is quite simple
+[00:38] .  The way
+[00:44] DRAM arrays are created, sense
+[00:45] amplifiers
+[00:46] ,
+[00:47] asynchronous design,
+[00:48] synchronous design,
+[00:49] DDR protocol—all of this
+[00:51] was covered.  So
+[00:53] here we will focus
+[00:54] specifically on the
+[00:55] DDR4 protocol and
+[00:56] work with it.
+[01:00] The life cycle of a
+[01:01] DRAM operation looks like
+[01:02] this: we issue
+[01:04] a command, send
+[01:05] it to the DRAM device, and
+[01:06] decode it there.  We
+[01:09] do what
+[01:10] the command says, that is,
+[01:11] we read
+[01:12] or write.  After
+[01:14] that, let's say we
+[01:16] perform a read.
+[01:19] Then we'll move
+[01:20] some data inside
+[01:22] the DRAM, then bring it back
+[01:23] , do
+[01:24] some more processing, and
+[01:25] then send the data
+[01:26] back to the pipeline.  So,
+[01:30] initially, let's say,
+[01:32] there was an L1 miss or
+[01:33] something like that.  So
+[01:34] the data
+[01:35] will come back again, because
+[01:36] you know why anything
+[01:37] happened in the first place?
+[01:39] Most likely,
+[01:39] there was a
+[01:40] read miss, the data went
+[01:42] through the cache hierarchy and
+[01:43] was not found.
+[01:44] Therefore, you will have to
+[01:45] fill the caches and
+[01:46] return.  So,
+[01:48] let's look at a working
+[01:49] example.  Consider a
+[01:51] DRAM device with 16
+[01:52] banks.  Banks in DDR4
+[01:56] are divided into so
+[01:57] -called bank groups,
+[01:58] where there can be four
+[02:00] or eight banks per
+[02:01] group.  And let's assume
+[02:05] that all the delays, all the
+[02:06] delay numbers,
+[02:07] are specified in bus cycles
+[02:08] , right?  So, regarding the tire,
+[02:11] what kind of tire is it?  This is the bus
+[02:13] from the
+[02:14] memory controller to the DRAM.  So all the
+[02:17] delay values
+[02:18] we provide
+[02:19] are in base
+[02:20] bus cycles.  This is what
+[02:22] we do.  This is a
+[02:27] simplified
+[02:29] state diagram of DDR4, the
+[02:30] DDR4 protocol, how exactly we
+[02:32] do our
+[02:33] job.  As you can see, we
+[02:38] of course first
+[02:39] power up the DRAM device,
+[02:41] then send a
+[02:42] reset command and
+[02:43] it initializes.
+[02:46] Ideally, the operation
+[02:48] should begin at this point
+[02:50] , which is what happens.
+[02:52] Of course, there are many
+[02:53] states and substates.
+[02:56] We have a
+[02:57] wait state where nothing
+[02:58] happens, but
+[03:00] from there we can go
+[03:01] to a
+[03:02] power-off state, for example
+[03:03] if the DRAM device is not
+[03:07] being used.
+[03:09] So you can send
+[03:10] a command to
+[03:10] turn it off, it
+[03:11] will go into a
+[03:12] power-off state, and
+[03:13] you can
+[03:14] send a command again
+[03:15] to enter and exit
+[03:16] this mode.  So,
+[03:18] you can send an
+[03:19] exit command to
+[03:20] exit the
+[03:21] power-off state.
+[03:22] True?  So, this can be
+[03:24] done then, a certain
+[03:27] DM device can
+[03:29] go into a
+[03:29] self-update state.  So
+[03:33] self-update
+[03:34] effectively means that
+[03:35] if, say,
+[03:36] a command doesn't come in,
+[03:37] it will update
+[03:38] itself because
+[03:40] it needs to
+[03:41] keep its data,
+[03:42] right?  So it's more
+[03:46] like an
+[03:47] automatic
+[03:48] update mode where you
+[03:49] enter a
+[03:50] self-update state, s, entering
+[03:52] self-update, where
+[03:53] it will take some time,
+[03:54] but you actually
+[03:55] update every
+[03:56] row.  Recall that
+[03:58] updating each
+[03:59] row involves reading the
+[04:00] row values,
+[04:01] filling them, feeding them to the sense
+[04:02] amplifier
+[04:03] , and then
+[04:04] restoring the voltage.
+[04:06] After this state, you
+[04:07] exit it,
+[04:08] return to the
+[04:09] waiting state, or
+[04:10] perhaps an update command can be
+[04:11] sent
+[04:13] .  So, a
+[04:14] solid arrow
+[04:16] actually means that
+[04:17] you have received a command and
+[04:19] are moving to a
+[04:20] certain state in response to it.  So in
+[04:23] this case, you
+[04:24] go into the
+[04:25] update state, and then what
+[04:26] happens is that
+[04:27] automatically after
+[04:28] the update is complete,
+[04:30] you go back
+[04:30] .  Now
+[04:40] let's look at
+[04:42] the most important, or I would
+[04:43] say the most important
+[04:44] command, which is
+[04:45] sent to
+[04:46] actually activate the
+[04:47] strings.  Any
+[04:49] reading or writing
+[04:50] occurs only
+[04:51] after this.  So, with the
+[04:53] act command you
+[04:54] go to the
+[04:55] activation state.  You
+[04:56] stay in this
+[04:58] state until the row
+[05:00] is activated, which
+[05:01] means you
+[05:02] open the row,
+[05:03] then charge the
+[05:04] bit lines and
+[05:05] ensure that
+[05:06] the value is going into the sense
+[05:08] .  And then
+[05:11] there is an
+[05:12] automatic transition
+[05:13] from activation to
+[05:14] active
+[05:15] bank state, where the bank
+[05:16] is activated depending
+[05:17] on the bank address, but
+[05:18] usually, if all
+[05:19] banks are available
+[05:20] in parallel, all banks
+[05:22] become active.  Here
+[05:26] , again, as I
+[05:27] said, banks
+[05:28] accept independent
+[05:30] commands in the
+[05:31] DDR protocol.  So we can
+[05:33] turn off the power to the
+[05:34] bank.  We can
+[05:35] enter a state of
+[05:36] reduced
+[05:36] energy consumption and
+[05:37] exit it again.
+[05:40] So, essentially, this
+[05:41] option is available to
+[05:43] banks.  This is not a frequently
+[05:44] used
+[05:45] option, but
+[05:47] it is there nonetheless.  Now
+[05:49] for reading I
+[05:50] send a
+[05:51] read command.  He
+[05:52] enters the
+[05:53] reading state.  As long as I
+[05:54] keep sending
+[05:55] read commands, it
+[05:57] keeps reading and
+[06:00] it keeps
+[06:03] providing data,
+[06:04] because let's recall that once
+[06:05] you've activated
+[06:07] a row, the entire contents of
+[06:12] the row actually
+[06:14] read amplifiers, the entire
+[06:15] contents of the row.
+[06:22] Once it
+[06:23] happens that the entire
+[06:24] contents of the row
+[06:24] get to the
+[06:26] read amplifiers, you can
+[06:27] just store
+[06:28] the data there.  And the
+[06:33] next time
+[06:34] you need
+[06:35] other, additional data
+[06:36] from the same row,
+[06:38] all you have to
+[06:39] do is
+[06:39] point your
+[06:40] column
+[06:41] multiplexers-
+[06:42] demultiplexers to
+[06:43] another part, and you'll
+[06:44] get the same
+[06:45] data;  you are getting
+[06:46] output data, right?
+[06:49] So the idea is
+[06:50] that the job of
+[06:51] your
+[06:51] multiplexer is
+[06:52] essentially to get the
+[06:53] data from here, and the
+[06:54] next time there's a
+[06:55] request here,
+[06:56] you get the
+[06:57] data again, and so on.  Then
+[07:03] you can decide
+[07:04] that, look, I...I would
+[07:05] like to close
+[07:07] my line now.  Closing
+[07:10] the line essentially
+[07:11] means going back
+[07:12] and
+[07:13] precharging the bit
+[07:14] lines and actually
+[07:15] turning the line off,
+[07:16] turning off the
+[07:18] word line transistors... Oh, so I'll
+[07:20] "read-pre" command, which will put
+[07:21] me in a
+[07:23] precharging state after
+[07:24] reading.  "Pre" stands for
+[07:25] pre-charging
+[07:27] , during which almost the
+[07:28] entire line
+[07:29] is turned off.    The sense
+[07:34] are also returned to the
+[07:36] VDD/2 state, and all
+[07:37] bit lines
+[07:38] are precharged.  So
+[07:42] they stay at
+[07:43] VDD/2, and essentially the sense
+[07:45] lose
+[07:47] their contents, and then you
+[07:50] precharge state where the row
+[07:51] is closed, the sense amplifiers
+[07:53] are reset, and
+[07:56] back to the
+[07:57] standby state.  You can
+[08:00] clearly see why.
+[08:01] The reason is that we don't
+[08:03] read anymore.
+[08:04] The line was closed.
+[08:05] You don't read anything
+[08:07] at all.  So, this
+[08:10] option is available, and
+[08:12] also by the way,
+[08:15] after you finish
+[08:17] reading, you
+[08:19] bank state so that
+[08:21] another
+[08:21] command can be processed.  So if you
+[08:24] don't go there
+[08:25] automatically, you
+[08:26] can process a
+[08:27] command that closes
+[08:29] the line, which means
+[08:30] that that path will be
+[08:31] used, and
+[08:32] the device, the specific
+[08:33] device,
+[08:34] will go back to the
+[08:35] waiting state, which
+[08:36] means you can
+[08:37] activate another
+[08:38] line.  But by keeping
+[08:39] the same row
+[08:40] active, you can
+[08:41] read, you can
+[08:43] go directly to the
+[08:44] preload state after
+[08:45] reading, and then
+[08:46] close the row.  You
+[08:48] can record, you
+[08:49] can continue
+[08:50] recording.  So the write in
+[08:52] this case will
+[08:53] actually be a write in the
+[08:55] sense amplifier, and that
+[08:56] value will be
+[08:57] passed to the
+[08:58] corresponding
+[08:59] memory cells because
+[09:00] the cells are connected,
+[09:01] yes, and the entire row
+[09:02] is turned on.  So our
+[09:04] demultiplexers
+[09:05] will do this work
+[09:06] for us.  So, writing
+[09:10] is the reverse process
+[09:11] of reading, but as long as
+[09:13] the line is open,
+[09:14] writing can be
+[09:14] performed.  So, we
+[09:16] have a precise set of
+[09:17] state transitions where
+[09:18] we write and then
+[09:21] bank activity state after
+[09:22] the write is complete.  We
+[09:24] can proceed to the
+[09:25] pre-
+[09:26] write charge, which is nothing
+[09:27] more than closing
+[09:28] the line and resetting the
+[09:30] sense amplifiers.  We can
+[09:31] use
+[09:32] the command from the
+[09:33] recording state or the
+[09:34] bank activity state,
+[09:35] again,
+[09:35] pre-charge and
+[09:36] exit the recording state
+[09:40] .  We can also
+[09:41] switch to the
+[09:42] read state.  If you
+[09:43] receive a
+[09:44] read command, similarly
+[09:45] from the read state
+[09:47] we can go to the
+[09:48] write state.  If you
+[09:50] write command, of course, after a
+[09:52] specific
+[09:53] read or write operation is
+[09:56] currently in progress.  Such transitions are
+[09:59] also possible, meaning
+[10:00] you can go from
+[10:01] reading with
+[10:02] precharge to writing with
+[10:04] precharge,
+[10:05] which will basically
+[10:06] mean the same thing:
+[10:07] eventually
+[10:07] precharge and
+[10:09] output.  Also, in the
+[10:12] active state of the bank,
+[10:13] you can send a
+[10:15] charge command, the role of which is to
+[10:17] transfer it to the
+[10:19] charging state, after which
+[10:20] we actually
+[10:21] close the line and
+[10:22] return
+[10:23] to the standby state again.
+[10:27] So it doesn't matter which
+[10:28] way you go, as long as
+[10:29] you reach the
+[10:31] charging state, you
+[10:32] will go to the
+[10:33] standby state once
+[10:35] the voltage
+[10:35] stabilizes.  So
+[10:39] this state diagram
+[10:40] looks pretty
+[10:41] simple after
+[10:42] I explained it.
+[10:44] At first it may
+[10:45] seem complicated
+[10:47] or intimidating, but it's
+[10:48] not.  The most important thing is
+[10:49] that there are two
+[10:51] update modes, but
+[10:52] updates are
+[10:53] mandatory.
+[10:57] Typically,
+[10:58] you should
+[10:59] refresh the line every 50–100 microseconds, but
+[11:01] of course this value
+[11:02] depends on the
+[11:03] device.  It is always
+[11:08] best to review
+[11:09] the specifications of your
+[11:10] DM device, DM model,
+[11:11] to see which
+[11:13] update mode
+[11:14] suits you
+[11:14] best and what the
+[11:15] update interval is.
+[11:20] So, the DM device, as
+[11:21] you can see, is by no means
+[11:22] primitive.  He
+[11:24] supports his own
+[11:25] state, the state of the banks.  You
+[11:26] can
+[11:27] contact banks regardless
+[11:28] , as you just saw
+[11:30] , that a bank can be
+[11:31] shut down.  But the key
+[11:34] idea is simple.
+[11:34] Activate the line,
+[11:36] then
+[11:36] do nothing.  Wait for
+[11:38] reads and writes and
+[11:39] continue
+[11:40] to service them.
+[11:41] Finally, when you
+[11:42] get a precharge command
+[11:44] or one of the
+[11:45] read commands with an additional
+[11:47] right?  So then
+[11:49] what happens is that
+[11:51] you can, in a
+[11:52] sense,
+[11:53] read it.  So,
+[11:55] precharge means
+[11:56] you read once and
+[11:57] then send
+[11:58] precharge.
+[11:59] Pre-
+[12:00] charge recording means
+[12:00] you record once
+[12:01] and then
+[12:02] pre-charge command.
+[12:03] Whereas record means
+[12:04] you want to
+[12:05] keep recording,
+[12:06] but record with
+[12:06] precharge
+[12:07] means you want to
+[12:08] record just
+[12:09] once and then forget
+[12:10] about it and close the
+[12:11] line.  So, that would be the
+[12:12] difference between the
+[12:13] two.  Otherwise, you
+[12:14] might want
+[12:15] to know what the
+[12:16] difference is between them.  But the
+[12:17] key idea is that
+[12:19] as long as the line
+[12:20] is open, we are ready
+[12:21] to go.  As soon as
+[12:22] it closes, we
+[12:23] perform the previous
+[12:24] charge, forget about
+[12:25] it, and go into
+[12:26] standby mode.
+[12:28] So, with respect to
+[12:30] DRAM timings, the DRAM device
+[12:31] is of course "smart".
+[12:33] It supports
+[12:34] state diagram.    The
+[12:35] memory controller
+[12:36] does this too.  The
+[12:38] memory controller sends
+[12:39] commands to the
+[12:40] DRAM device.  The DRAM device itself
+[12:42] has negligible
+[12:43] computing
+[12:44] capabilities, small.
+[12:48] To some extent, it
+[12:49] behaves like a
+[12:50] finite state machine,
+[12:51] as we saw in the
+[12:52] state diagram.  So that's how
+[12:53] he
+[12:54] presents himself.  But
+[12:57] it has no
+[12:59] internal
+[13:00] command generation capability,
+[13:01] other than, you know,
+[13:02] periodic
+[13:03] refresh, and the
+[13:05] memory controller's job is
+[13:06] to maintain a state machine
+[13:08] synchronized with the DRAM;    the
+[13:11] clearly knows all the details of the
+[13:13] DRAM device, and the DRAM can
+[13:14] be a regular DIMM or an
+[13:16] RDIMM.  As I said, FB-DIMMs
+[13:19] have a different protocol,
+[13:20] so they
+[13:21] have lost some
+[13:22] popularity.
+[13:24] In general, RDIMMs are
+[13:25] pin- and
+[13:27] socket-compatible with DIMMs, and
+[13:28] memory controllers are
+[13:29] unaware of them.  They
+[13:31] don't need to know about them
+[13:32] .  As we
+[13:34] discussed, this is just an
+[13:35] extra register
+[13:36] placed here
+[13:40] that actually allows
+[13:42] more DIMMs to be connected
+[13:43] to the channel.
+[13:46] The advantage of this
+[13:47] register is that
+[13:48] it slightly increases
+[13:49] the latency but significantly
+[13:51] reduces the capacitive
+[13:51] load.  This,
+[13:54] of course, can change
+[13:55] the timings, but as I
+[13:57] said, during
+[13:58] DIMM initialization, the
+[14:00] reads the timing table
+[14:02] directly from the
+[14:03] module itself.  So the
+[14:08] needs precise
+[14:09] knowledge of the timings,
+[14:11] as each
+[14:12] DIMM may have
+[14:13] slightly different performance.
+[14:15] After receiving them, it
+[14:16] independently maintains the
+[14:18] entire state machine and
+[14:19] initiates all
+[14:20] data exchange with
+[14:22] DRAM devices.  So let's now
+[14:25] look at some of the
+[14:28] DDR4 DRAM commands, including the activation command that
+[14:31] starts it all.  So,
+[14:36] after activation,
+[14:37] the most common
+[14:38] subsequent
+[14:39] DRAM commands are, of course, read
+[14:41] and write.  And reading and
+[14:44] writing involve
+[14:45] several, you know,
+[14:46] subcommands, right?  So,
+[14:48] essentially, a read and a
+[14:49] write may
+[14:51] look like an
+[14:51] atomic operation to us,
+[14:53] but actually at the
+[14:54] DRAM level, at the
+[14:55] device level, it's not an
+[14:56] atomic operation;
+[14:57] therefore,
+[14:59] read and write commands are generated,
+[15:00] which we will
+[15:01] discuss shortly.  ly and
+[15:05] there are time
+[15:06] relationships regarding the
+[15:07] delay from one
+[15:08] command to the next.
+[15:10] Let's say you
+[15:11] submit the first
+[15:12] team and then
+[15:13] submit the second
+[15:14] team.  Therefore,
+[15:18] the delay, i.e.
+[15:19] the number of cycles between
+[15:20] them, must be known
+[15:22] in advance so that the
+[15:25] waits a certain amount of time after the first command.
+[15:27] Sorry, that "C" might
+[15:28] look confusing.
+[15:30] Yes, there is a "C" here, and it
+[15:31] will wait a certain amount of time
+[15:32] before issuing the
+[15:33] next command.
+[15:34] So there are such
+[15:35] minimal delays,
+[15:36] right?  If
+[15:37] you look at these
+[15:38] delays or the time
+[15:40] interval from
+[15:41] activation to the
+[15:41] previous charge,
+[15:43] the minimum time that
+[15:44] needs to be endured
+[15:45] is T RAS.  RAS, of course,
+[15:47] comes from
+[15:48] Row Address
+[15:49] Strobe.  So, essentially, T RAS
+[15:51] means I am performing an
+[15:52] activation.  Activation
+[15:54] takes time.  If
+[15:55] you want me to
+[15:56] activate and then
+[15:57] close, then the close
+[15:58] must occur
+[15:59] at least an
+[16:00] interval T RAS after
+[16:01] activation.  Once
+[16:02] activated, if you
+[16:04] want me to perform
+[16:05] some internal
+[16:06] read or write, then
+[16:09] this is known as a
+[16:10] row-to-column delay
+[16:12] or TRCD, which is
+[16:13] row-to-
+[16:14] column delay.  As I
+[16:16] said, reading and
+[16:18] writing is a
+[16:18] multi-step process
+[16:20] .  Internally, there are
+[16:23] read and
+[16:24] internal write commands,
+[16:25] but from activation to
+[16:26] these two, the minimum
+[16:27] wait time is the
+[16:29] column delay.  If I want to
+[16:35] row, I have to
+[16:37] wait TRC units of
+[16:38] time, and TRC must be
+[16:40] greater than T RAS.  We'll
+[16:42] see.  And if I
+[16:44] want to activate and
+[16:45] then update again,
+[16:46] I will have to
+[16:47] wait for TRC,
+[16:49] right?  Because
+[16:51] an update, in a
+[16:52] sense, is like
+[16:55] an activation and then
+[16:56] moving on to activating
+[16:58] another row,
+[16:59] because activation
+[17:00] is what an update is,
+[17:01] right?  So, what is an
+[17:03] update?  Refresh
+[17:04] is: you activate
+[17:05] the row, then there is a
+[17:06] feedback path
+[17:07] between the cell
+[17:08] and the
+[17:09] sense amplifier, and this will
+[17:11] essentially set the
+[17:12] voltage on the
+[17:13] bit lines and the sense amplifier
+[17:15] to what
+[17:17] was in the cell, and
+[17:18] refresh the
+[17:19] cell voltage.  Therefore, for
+[17:20] both processes, which are
+[17:22] essentially equivalent, it is
+[17:23] necessary to provide TRC
+[17:25] units of time.
+[17:26] Obviously, TRC must
+[17:27] be greater than T RAS
+[17:28] because T RAS is the time
+[17:31] but after
+[17:32] precharge, the
+[17:35] next activation must be considered
+[17:36] because
+[17:37] precharge takes time.
+[17:39] So TRC must be
+[17:40] greater than T RAS, and
+[17:41] certainly T RAS must
+[17:43] be greater than TRCD,
+[17:46] the reason is
+[17:47] that...if I want
+[17:51] to do an internal
+[17:52] read or write, it's
+[17:54] much faster because
+[17:55] the data is already in the
+[17:57] sense amplifiers;  just
+[17:58] accessing them and, uh,
+[17:59] reading values
+[18:00] or, uh, changing
+[18:01] values ​​should
+[18:02] be faster,
+[18:03] which it is, and that would be
+[18:04] consistent with our,
+[18:05] you know, educated, uh
+[18:07] , common sense
+[18:08] or DRAM sense.  Similarly,
+[18:14] there is a delay between
+[18:15] all, say,
+[18:16] pairs of commands that you
+[18:18] expect to issue one after the
+[18:19] other, of course not
+[18:20] between unrelated
+[18:21] commands, but if
+[18:23] you expect to issue
+[18:24] command one and then
+[18:25] command two, then these
+[18:26] delays are defined, and the
+[18:29] has to adhere to them in a sense
+[18:30] .  So
+[18:35] what we do is: if I
+[18:37] look at
+[18:38] read access, I activate
+[18:39] the row.  I'm like
+[18:42] reading the data, which
+[18:44] is TRCD, and then
+[18:45] restoring the data, right?
+[18:47] So, everything is fine with reading
+[18:48] .  Reading
+[18:50] means that I'm just
+[18:51] reading the values ​​from the
+[18:52] amplifiers, but as
+[18:53] I said, uh,
+[18:54] reading
+[18:56] also has a
+[18:57] destructive role in a sense,
+[18:58] right?  You're kind of
+[19:00] draining the charge from the
+[19:01] discharge line, so
+[19:03] to make sure that
+[19:04] , uh, the voltages
+[19:05] are restored.  You
+[19:06] need a
+[19:07] data recovery phase.
+[19:08] So all of this—T RAS, which is the
+[19:10] same as
+[19:11] the delay from
+[19:12] activation to
+[19:13] pre-charge,
+[19:14] right.  Uh, because in
+[19:15] this case you
+[19:16] also do
+[19:17] a read and
+[19:18] restore if, uh
+[19:19] , in the case of a
+[19:20] previous charge.
+[19:22] So in the case of reading,
+[19:23] you are also
+[19:24] reading the data to some extent, and
+[19:25] reading is a
+[19:26] destructive process
+[19:27] .  So recovery
+[19:29] takes time.
+[19:30] It turns out that the sum of
+[19:31] this also equals
+[19:33] TAS.  So, uh, if I had to
+[19:36] elaborate on this, what does the
+[19:38] row activation command do?  We
+[19:40] already know this.  We
+[19:41] decode the command.  We
+[19:43] send the address to the
+[19:45] string decoder.  We
+[19:47] activate the line, right?
+[19:49] And, uh, but before
+[19:50] activation, we also
+[19:51] perform a pre-
+[19:52] charge, right?  So,
+[19:54] activation
+[19:54] basically means that
+[19:56] we
+[19:56] do a pre-
+[19:58] charge first.  There must
+[19:59] be a
+[20:00] precharge first, and after
+[20:01] we verify
+[20:02] that the precharge voltage has been reached
+[20:04] we activate the string.
+[20:07] Read.  The data
+[20:08] is that
+[20:09] you allow the
+[20:10] readout amplifiers
+[20:11] to synchronize with the
+[20:12] cells;  you
+[20:13] let them, uh,
+[20:14] settle down, and you also
+[20:15] do the
+[20:16] column decoding
+[20:17] and make sure the
+[20:19] column multiplexers are ready to
+[20:20] read.  As I
+[20:23] said,
+[20:24] data recovery is necessary
+[20:25] because DRAMs are
+[20:26] read-only
+[20:27] , so the data must be
+[20:29] recovered.  That's why there
+[20:31] is a time
+[20:31] delay.  It
+[20:34] takes some time
+[20:35] to recover data.
+[20:39] So, now
+[20:39] let's look at the
+[20:42] pre-charge command.  So in the
+[20:44] charge command, the sequential
+[20:45] pair of commands I
+[20:46] need to consider,
+[20:48] because after the
+[20:49] pre-charge
+[20:50] I can only
+[20:50] activate the same
+[20:52] line or another, it doesn't
+[20:53] matter.  So, the
+[20:55] pre-to-act delay is what
+[20:57] interests me.
+[20:59] So, the "pre-to-act
+[21:01] " delay, which I can call
+[21:03] TRP.  So, T means
+[21:05] time.  And this delay
+[21:09] that I have here is
+[21:10] essentially the delay between
+[21:13] activation.  This can be
+[21:19] put in the context of
+[21:20] a ratio,
+[21:21] because we saw TRC, which is
+[21:23] more like a
+[21:24] read cycle, it's
+[21:27] activation.  And then the
+[21:30] RAS delay, T RAS, was
+[21:31] the activation to the
+[21:32] previous charge
+[21:33] because there is minimal
+[21:35] time for readout,
+[21:36] recovery, etc.  And
+[21:38] then you have the
+[21:39] "pre-to-act" delay, which
+[21:40] is the TRP.  So the simple
+[21:42] equation here is: TRC,
+[21:44] which is the act-to-act delay
+[21:46] , is act-to-pre plus
+[21:47] pre-to-act, this plus this.
+[21:52] So the idea is pretty
+[21:53] simple: why is there a
+[21:54] delay?  Because
+[21:57] the idea is
+[21:58] that after the
+[22:00] it takes time for the
+[22:02] pre-charge to occur, for
+[22:04] the voltages to
+[22:04] stabilize, and once the
+[22:05] voltages
+[22:06] stabilize, I
+[22:07] activate.  That's why we
+[22:10] activate only after a
+[22:11] certain time, which is on TRP
+[22:12] units of time later.
+[22:16] So, TRC is essentially,
+[22:17] as I said,
+[22:19] the total time of "act-to-act
+[22:20] ", which is "act-pre-act", so
+[22:22] we have a sum here.
+[22:27] So, along with TAS and TRP,
+[22:29] there are a few more
+[22:33] parameters to
+[22:34] determine time
+[22:35] limits.  So, DRAM by
+[22:37] definition
+[22:38] consists of very
+[22:39] vulnerable devices.
+[22:41] So we have something
+[22:42] called a
+[22:43] "row-to-row" delay, which
+[22:45] means we
+[22:46] activate one row
+[22:47] and then activate
+[22:49] another row.  So,
+[22:50] row-to-row latency is
+[22:51] important
+[22:52] mainly because we don't
+[22:54] want to activate
+[22:55] too many rows very
+[22:58] quickly one after the other,
+[23:00] as activation
+[23:01] consumes a lot of
+[23:02] energy and we want to
+[23:03] limit that.  So, we will
+[23:07] recall the fact that
+[23:08] we discussed
+[23:10] the presence of
+[23:11] bank groups in DIMMs.
+[23:13] Therefore, a bank group
+[23:14] may contain four
+[23:15] or eight banks.
+[23:17] So, the group of banks
+[23:19] is considered almost
+[23:20] as an atomic unit
+[23:21] for this discussion.
+[23:24] Let's say we
+[23:25] activate a row in
+[23:26] one bank group,
+[23:27] then close
+[23:28] it and activate
+[23:29] another row in the
+[23:30] same bank group.
+[23:32] Sorry, in another
+[23:33] group of banks,
+[23:34] excuse me, in another
+[23:35] group of banks, I
+[23:36] activate another line.
+[23:39] Let's call this time TRRDS.  S
+[23:42] means short
+[23:43] ;  Why it is short
+[23:44] will become clear very
+[23:46] soon.  On the other hand,
+[23:50] I can activate a
+[23:52] bank group, a row in
+[23:53] the same
+[23:54] bank group, so that will have a
+[23:58] different time
+[23:59] limit or a different
+[24:00] minimum time between
+[24:01] activations, which is
+[24:02] equal to TRDL.  The reason
+[24:06] why TRRDL is greater than or
+[24:07] equal to TRDS is
+[24:08] because, look,
+[24:10] if it's the same group of
+[24:11] banks and I have a
+[24:13] lot of frequent
+[24:14] activations, you're going to
+[24:15] have higher
+[24:18] activity per
+[24:19] unit time, which
+[24:20] means higher
+[24:21] temperature, and therefore
+[24:22] higher
+[24:23] leakage power.  Therefore, it should
+[24:27] be longer than the
+[24:28] activation in the other
+[24:29] group of banks, because then
+[24:30] at least for each
+[24:31] group of banks you
+[24:32] observe a smaller
+[24:33] number of activations.
+[24:38] That's why another group of
+[24:39] banks is slightly faster
+[24:40] compared to the same
+[24:42] again, in terms of
+[24:43] pure power and
+[24:45] temperature.
+[24:47] Right?  This is what is
+[24:48] necessary.  That's why
+[24:52] we have shorter time for different groups
+[24:53] , and
+[24:55] longer for one.  We
+[24:57] also have another
+[24:58] important parameter
+[24:59] called the
+[25:02] Four Bank Activation Window or T
+[25:04] FAW.  So, the
+[25:07] activation window for the four
+[25:08] TF AW banks.  So T FAW
+[25:19] during this
+[25:20] time window you can
+[25:24] activate a maximum of
+[25:25] four rows, so
+[25:26] for a given DIMM you
+[25:28] activate a maximum of four
+[25:30] rows.  This is the
+[25:33] banks.  A larger
+[25:36] number will result
+[25:37] in
+[25:38] power limitations or
+[25:39] power problems.
+[25:43] Common sense
+[25:44] suggests that it should
+[25:45] be more than
+[25:46] four TRRDS, which is
+[25:47] correct.  So, as I
+[25:51] said, limiting
+[25:52] power consumption
+[25:53] and activity is very
+[25:54] important, and
+[25:55] obviously moving to a
+[25:56] different group of banks is a
+[25:58] better idea,
+[25:58] mainly due to
+[26:01] power density issues.  In addition
+[26:05] , if I limit myself to
+[26:06] even one group of
+[26:07] banks, there is the concept of
+[26:09] activity restrictions
+[26:10] ;  so, one or the other,
+[26:11] it doesn't matter.
+[26:14] But let's say if it's the
+[26:16] same group, it's
+[26:17] closer to us as an
+[26:18] example.  So,
+[26:21] basically, we
+[26:22] need to make it so
+[26:23] that we can
+[26:24] have at most
+[26:25] four
+[26:26] row activations in the window.  This is the
+[26:29] activation window for four
+[26:30] banks.  So in this
+[26:36] case, it is important
+[26:37] to make a small
+[26:38] clarification that there
+[26:39] is always a limit to
+[26:43] activity.  So, the
+[26:44] activation window of
+[26:45] four banks
+[26:46] actually operates within
+[26:47] one rank.  That is,
+[26:49] within the same rank,
+[26:50] regardless of the group of
+[26:51] banks.  That's why this
+[26:54] statement here
+[26:55] needs a little
+[26:56] clarification: within the
+[26:57] same rank,
+[26:58] regardless of the
+[26:59] bank group, during
+[27:00] this
+[27:01] four-
+[27:02] bank activation window, I can
+[27:03] only perform four
+[27:04] row activations.
+[27:09] Of course, it should be
+[27:10] greater than or
+[27:11] equal to 4*t rds, but
+[27:12] in practice it is
+[27:13] much larger
+[27:14] depending on the
+[27:16] power and
+[27:17] temperature constraints we
+[27:18] have.  So let's move on
+[27:22] to the read operation now
+[27:23] .  So, the
+[27:25] read operation and the
+[27:26] write operation are somewhat,
+[27:28] uh, complicated, and
+[27:32] you need to understand
+[27:34] why they are complicated.
+[27:36] So, this is our bus block
+[27:38] .  We send these
+[27:42] commands, and as you can see, the
+[27:43] command lasts exactly
+[27:45] one beat.  So we
+[27:47] send an
+[27:48] activation command, then an
+[27:49] idle operation, and
+[27:50] then a
+[27:51] read command.  At the same
+[27:53] time on the address bus e-e
+[27:56] , we send the
+[27:57] row address and then the
+[27:59] column address.  After
+[28:03] that, we give it some
+[28:04] activation time
+[28:05] so that the row and
+[28:06] column decoders can do
+[28:08] their job.  It then
+[28:12] takes some time for
+[28:13] the receiver to
+[28:14] synchronize its
+[28:15] clock signal with the
+[28:16] sender.  Yes?
+[28:19] So the point is,
+[28:20] during a read operation, the
+[28:23] commands to the data, and
+[28:27] when that happens, uh,
+[28:33] the commands are sent
+[28:34] like this, and the commands go
+[28:35] this way and the data goes
+[28:37] another way.  So that the
+[28:40] clock synchronization occurs, and
+[28:41] when the data arrives,
+[28:42] it can be
+[28:43] read correctly.
+[28:45] Yes?  This preamble
+[28:49] is essentially a
+[28:49] synchronization time, and
+[28:51] during this time the
+[28:53] DQS data strobe output is activated.  So
+[28:57] in this case it's
+[28:58] pin 01, and essentially
+[29:00] all data
+[29:01] is synchronized to the
+[29:03] DQS data strobe, which is
+[29:04] also
+[29:05] synchronized to the
+[29:06] clock.
+[29:09] So we have the
+[29:10] preamble time, which is the
+[29:11] time for this,
+[29:12] you know,
+[29:15] clock synchronization, and
+[29:19] the data is sent, as you can see,
+[29:20] the data is sent at
+[29:21] double speed.
+[29:23] That is, we send
+[29:25] data every half cycle.  This
+[29:29] is the same "D" in DDR, and as
+[29:32] earlier, the
+[29:33] pre-sample width
+[29:34] is usually 8.
+[29:38] This is because, as I
+[29:40] said, we were giving
+[29:41] the example of an
+[29:43] 800 MHz bus frequency
+[29:46] divided by an
+[29:47] internal frequency of 200
+[29:48] MHz by two, since that is
+[29:49] double the
+[29:51] data rate.  This gave us a
+[29:54] sample length of 8. And as you can see
+[29:55] , we're sending eight.
+[29:57] 1 2 3 4 5 6 7 8. After the
+[30:02] last transfer is complete,
+[30:03] there is
+[30:05] a certain amount of time to wait
+[30:06] before the next one, which
+[30:07] means that the current
+[30:08] data has to arrive, and
+[30:09] then there may
+[30:10] be additional
+[30:12] idle cycles.  But this is the
+[30:13] minimum
+[30:14] required for the
+[30:15] current data
+[30:16] you are sending to
+[30:17] reach its
+[30:18] destination.  And,
+[30:19] of course, every two
+[30:21] data transfers
+[30:21] are synchronized using a
+[30:24] pulse edge.  That's why we
+[30:25] see a lot of this
+[30:27] edge synchronization in the
+[30:28] DDR protocol.  And then
+[30:36] after that's
+[30:37] completed, after a
+[30:38] waiting period,
+[30:39] which in this case
+[30:40] would be a minimum of
+[30:42] half a tire cycle, we're
+[30:43] ready to go.  So
+[30:51] we are ready in the
+[30:52] sense that we can
+[30:53] wait a little bit and
+[30:54] start the next
+[30:56] broadcast.
+[31:01] Read commands look like this
+[31:02] : this is the time from the
+[31:03] read command to the
+[31:04] first bit of data
+[31:05] placed on the bus.
+[31:07] This is this period of time
+[31:08] .  This time period
+[31:11] is known as the
+[31:12] read delay.  Then there is
+[31:17] another command which is an
+[31:21] internal read.
+[31:23] Every time I issue a
+[31:24] read command,
+[31:25] that is, a
+[31:26] read command right here, an internal read command
+[31:27] is generated in memory
+[31:30] for the
+[31:31] read process, which is,
+[31:32] of course, invisible to
+[31:33] us, but is generated
+[31:34] internally.  So this
+[31:36] time from read to
+[31:37] internal read
+[31:38] is known as AL.  and then
+[31:41] from the internal
+[31:42] read to the first
+[31:43] bit of data on the bus, where
+[31:44] I of course send it
+[31:45] , but don't do the
+[31:46] parity check.
+[31:49] This is a kind of
+[31:50] column latency, and
+[31:51] of course all data
+[31:52] is protected by some
+[31:53] parity.  So if I'm
+[32:01] sending, say, 64
+[32:03] bits, I might have a
+[32:05] few more bits,
+[32:06] four or eight
+[32:07] bits for parity.
+[32:09] Therefore, it will take
+[32:10] some time to
+[32:11] check parity.
+[32:12] So, there is a
+[32:13] parity delay.  So the
+[32:17] total
+[32:18] read latency I'm
+[32:19] looking at, i.e. the time
+[32:20] from the read command
+[32:22] to the moment the
+[32:24] is on the bus and
+[32:25] parity is
+[32:26] checked,
+[32:27] is AL + CL + BL.
+[32:29] So, it's a
+[32:30] reading delay, as far as I
+[32:32] understand.  So AL is the time
+[32:34] from read to
+[32:36] , from internal
+[32:38] bit of data on the bus
+[32:39] without
+[32:40] parity checking, and then the time
+[32:41] required for
+[32:42] parity checking.
+[32:46] Of course, issuing an
+[32:49] read command takes
+[32:50] some time.  Then
+[32:51] the reading happens
+[32:52] , and then the
+[32:53] parity is checked, right?  And
+[32:55] finally, from the
+[32:57] to the time
+[33:02] the data is pre-charged, essentially, you know, the
+[33:03] entire transfer has to be
+[33:04] completed.  And then
+[33:06] you need some
+[33:07] time for the data bits to
+[33:08] stabilize and
+[33:10] be read;  only
+[33:11] then can you
+[33:13] charge and, you know,
+[33:14] close the line to some extent
+[33:15] .  So, the delay
+[33:17] between the internal
+[33:18] read and the
+[33:20] is known as TRTP, essentially the
+[33:21] read to
+[33:23] This is not from the moment
+[33:24] of reading, but from the
+[33:27] next
+[33:28] So, this is TR RTP.  So, as
+[33:32] we can see, there are, uh,
+[33:33] you know, these three
+[33:34] components of, uh, uh,
+[33:40] read latency.  So,
+[33:42] similar to our
+[33:43] power logic,
+[33:45] we can have
+[33:46] a delay between
+[33:46] columns, which
+[33:47] essentially tells us about the
+[33:49] read command packet.  The idea is the same
+[33:52] : power,
+[33:53] power density,
+[33:54] and temperature.  So
+[33:55] we define
+[33:57] columns, which essentially
+[33:58] means: the row
+[33:59] is activated, but I'll
+[34:00] read one column
+[34:01] now and the other
+[34:03] later.  What is this
+[34:04] delay?  Again
+[34:05] , if it's the same
+[34:07] the delay is greater, which is
+[34:08] necessary because I want to
+[34:09] reduce
+[34:10] power density.  So, I
+[34:12] call it TCCDL.  And if
+[34:17] it's a different group of banks,
+[34:18] then I want less
+[34:19] delay between
+[34:20] columns, or I'm okay with
+[34:21] less
+[34:22] columns.  So, I
+[34:26] call it TCCDS.  So
+[34:29] the relationship is:
+[34:31] TCCDL is greater than or
+[34:32] equal to TCCDS.  OK.
+[34:39] So, uh, as I
+[34:40] said, uh, there's a difference
+[34:42] between the same group of
+[34:43] banks and a different
+[34:44] group of banks.  In the
+[34:47] same group of banks.  I
+[34:49] want a higher latency
+[34:50] between columns,
+[34:52] capacity constraints
+[34:53] , as it limits,
+[34:55] uh, you know, the
+[34:55] batchiness of my
+[34:57] read requests, right?
+[35:00] This
+[35:01] limits the frequency of my read requests.  And I want to
+[35:04] queue my
+[35:05] read requests
+[35:06] so that they
+[35:07] actually go to
+[35:08] different groups of banks
+[35:09] within a rank, or
+[35:10] maybe different
+[35:11] ranks, or, you know,
+[35:13] memory modules, so that
+[35:14] this problem doesn't happen
+[35:15] .  So, similar to the
+[35:20] write command, uh,
+[35:21] it's quite similar
+[35:22] to the read command.  So,
+[35:25] writing to the first
+[35:26] write—issuing a
+[35:26] write command to the
+[35:28] first bit of data on the
+[35:29] bus—is the
+[35:30] WL write latency.  So, of course,
+[35:33] I'll have, uh,
+[35:34] different types of
+[35:35] internal delays,
+[35:36] internal record request
+[35:38] —that's AL again.  OK.  Er -er
+[35:42] , so the time to
+[35:43] calculate parity
+[35:44] is the
+[35:45] parity delay, and from the
+[35:46] internal write
+[35:48] to the first bit of data
+[35:49] on the bus is the
+[35:50] CWL write command delay.
+[35:53] So, the ratio is
+[35:55] again: WL
+[35:57] equals AL + PL + CL.  So
+[36:03] , you're probably
+[36:04] wondering what AL is—
+[36:05] it's a secret we've been
+[36:06] successfully
+[36:07] keeping until now.  So, it's not,
+[36:11] you know, its
+[36:12] acronym doesn't stand for as well
+[36:14] as, say
+[36:15] , parity delay
+[36:16] or command write delay
+[36:17] .  Or I
+[36:20] call it a
+[36:21] write command delay.  It's
+[36:23] more of what's
+[36:24] called an
+[36:25] additive delay,
+[36:26] which is just a
+[36:27] component of the command
+[36:30] reaching the memory,
+[36:31] reaching the DM from the
+[36:32] memory controller, and
+[36:34] then an
+[36:36] write event being generated.  That's why it's
+[36:38] called
+[36:40] which doesn't really
+[36:41] mean much, but the other
+[36:42] important parts are
+[36:43] parity checking
+[36:45] and, actually, sorry,
+[36:49] it should be CW.  So
+[36:57] the formula we have
+[36:58] for writes is quite
+[36:59] similar to reads.  It is AL
+[37:02] + PL + CWL and again,
+[37:06] the logic of the formula
+[37:07] remains
+[37:08] the same.  Now
+[37:10] there is an important thing
+[37:13] read-write latency
+[37:14] .  So the
+[37:16] is,
+[37:17] let's say I
+[37:18] read something,
+[37:19] can I read...
+[37:20] can I write
+[37:21] immediately?  It turns out that
+[37:22] this is not the case, and it is quite
+[37:26] difficult to explain.
+[37:27] So I will try
+[37:28] to explain slowly.
+[37:30] In fact, as
+[37:31] slowly as
+[37:32] possible.  So,
+[37:34] read command.    The
+[37:35] read command, as I
+[37:36] is synchronized with the
+[37:37] positive edge of the
+[37:38] clock signal.  This
+[37:40] looks like read,
+[37:43] no-op, write, column,
+[37:44] no-op,
+[37:45] and column.  In this
+[37:47] case, I have a
+[37:48] read command, provide a
+[37:49] column, and then
+[37:50] perform a write.
+[37:51] Since it's the same
+[37:52] line, I don't
+[37:53] need to
+[37:54] reactivate.
+[37:55] But let's
+[37:55] see what
+[37:56] happens with
+[37:57] reading.  Here is my
+[37:58] reading team.  My
+[37:59] reading delay
+[38:00] is four.
+[38:01] So, one cycle, 2, 3, 4.
+[38:04] After that, the first
+[38:05] bit of data
+[38:05] is put on the
+[38:06] bus.  Once this
+[38:09] happens, you see
+[38:10] that it is clearly
+[38:11] synchronized with the
+[38:12] data strobe as well as the
+[38:13] clock
+[38:14] signal.  I have a
+[38:16] packet
+[38:17] transmission length of eight, which
+[38:18] means I'm
+[38:19] sending eight
+[38:20] chunks of bits.
+[38:21] If there are 64 bits, then there are
+[38:22] essentially eight bits per
+[38:24] wire.  I
+[38:25] do this and it
+[38:26] syncs well with the
+[38:27] doubled
+[38:28] data rate.  So
+[38:29] my packet
+[38:30] transmission length is 8.
+[38:31] I time out after the
+[38:33] transmission, which is essentially when
+[38:37] I wait a little bit after sending the last bit on each line
+[38:38] —at which point
+[38:40] my read operation
+[38:41] is complete.  My strobe is
+[38:42] also practically
+[38:43] inactive.  Then I
+[38:48] wait here, you know, in
+[38:49] some variants or
+[38:51] versions of the protocol.
+[38:56] So, basically, I'm waiting for
+[38:58] this time because, you
+[38:59] know, reading
+[39:00] is mostly a
+[39:01] destructive process.  I
+[39:04] drain the charge from the
+[39:05] discharge lines and sense
+[39:07] .  So I
+[39:09] need the system to
+[39:10] stabilize
+[39:11] before I start
+[39:12] recording.  So I have
+[39:14] one intermediate loop
+[39:15] here and then the
+[39:16] preamble of the record.
+[39:18] Let me remind you that the
+[39:19] write preamble is needed to
+[39:20] prepare the circuits for
+[39:21] writing, since I will have to
+[39:22] open the
+[39:24] multiplexer/
+[39:25] demultiplexer.    That
+[39:29] 's right, and in this
+[39:30] case I'm essentially
+[39:31] opening the column
+[39:33] using a decoder.
+[39:35] Therefore, the
+[39:36] recording timing is slightly
+[39:37] different.
+[39:39] Let me remind you that when
+[39:40] reading,
+[39:41] bit transfer begins on
+[39:42] the edge of the clock
+[39:43] signal, but here the
+[39:44] write value......
+[39:48] must be
+[39:49] stabilized;
+[39:50] First, you need to
+[39:51] send the data,
+[39:52] stabilize it, and
+[39:53] only then
+[39:54] does the
+[39:55] clock signal transition.
+[39:57] The reason is that the time
+[39:58] when the memory reads (
+[39:59] since it is a weaker
+[40:00] circuit) is important.  So that
+[40:03] when reading,
+[40:04] stable
+[40:05] data is required on the bus, and there
+[40:06] is also a strobe, as well as
+[40:08] synchronization with the
+[40:09] strobe, right?
+[40:12] So a strobe is something that
+[40:13] accompanies the data.  This is a
+[40:15] bus with
+[40:15] synchronization from the
+[40:16] source.  So,
+[40:18] the receiver must
+[40:19] adjust its
+[40:20] clock signal
+[40:21] approximately to the strobe.
+[40:24] Here you see this
+[40:25] additional
+[40:26] idle cycle and the
+[40:27] recording preamble time.
+[40:30] The preamble of the recording is
+[40:31] called tWPRE, and the
+[40:33] postamble is the time tWPST.
+[40:37] So here you see
+[40:39] that the write latency WL
+[40:40] is 8, which
+[40:42] is essentially the segment from this
+[40:43] point to this.  This is the
+[40:45] recording delay.  This
+[40:50] delay, which is very
+[40:51] interesting, is the time between
+[40:52] issuing a
+[40:54] read command and a
+[40:55] write command.  This is the
+[40:57] minimum time.  TRTW.
+[40:59] RTW, as
+[41:01] the name suggests, is "read to write"
+[41:02] , which is
+[41:04] equal to RL.  OK.  You
+[41:06] should pay close
+[41:06] attention to this because this
+[41:08] part is critically
+[41:08] important.  RL + BL
+[41:09] divided by 2. Why BL
+[41:11] divided by 2?  Through DDR
+[41:13] .  So BL is the length of the
+[41:15] bus 8, but that's again
+[41:17] bus cycles.  BL divided by 2 +
+[41:19] 1. Here's this "+1" here.  This is the
+[41:21] preamble of the TWPRE record.
+[41:24] This brings us to
+[41:25] this point.  And again you
+[41:26] subtract the
+[41:27] recording delay.  So you
+[41:28] come back here.  You
+[41:29] go all the way like this
+[41:31] turn back.  And
+[41:32] you find yourself at this
+[41:34] point.  This distance
+[41:36] read-write latency,
+[41:37] or TRTW.  Yes?  And, well,
+[41:41] actually, that's
+[41:44] exactly what you have.
+[41:48] This is t read to, so here is the
+[41:49] read delay
+[41:50] plus BL divided by 2 + 1
+[41:51] plus the
+[41:52] write preamble, of course, minus the
+[41:54] write delay, right.
+[41:56] So this part,
+[41:57] again, sorry for this
+[41:59] little mistake, but
+[42:00] this is minus the
+[42:01] recording delay.  So, essentially,
+[42:03] you go all the way through this
+[42:04] .  This is the minimum
+[42:06] time that must be
+[42:07] provided between
+[42:08] reading and writing.
+[42:09] Therefore, the minimum time
+[42:11] is t rtw.  Then we have
+[42:15] some interaction between
+[42:16] read,
+[42:17] write, and
+[42:18] reload operations.  As we
+[42:20] saw for a
+[42:20] sequential pair of
+[42:22] commands, read before
+[42:23] write is trtw.  A certain gap must also be provided for
+[42:26] writing before reading
+[42:29] .  This is the time to write to
+[42:32] read.  The packet length, as
+[42:33] we saw, is dbl.  And
+[42:35] from the write to the
+[42:37] we have a delay
+[42:38] called TWWR.  So
+[42:41] the TRTW that we saw on the
+[42:43] previous slide is
+[42:45] essentially this
+[42:46] delay.  Recordings,
+[42:49] of course, require
+[42:50] additional work, such as
+[42:51] setting
+[42:52] the states of the
+[42:54] sense amplifiers, etc.  That's
+[42:56] why T write to read takes
+[42:57] several cycles.  Here we
+[43:00] again distinguish between the
+[43:01] same group of
+[43:02] banks and another group of
+[43:03] banks.  Yes?  Therefore, we
+[43:05] define TWTRL and TWTRS.
+[43:09] Needless to say, L is
+[43:11] for the same group of
+[43:12] banks, and S, which is shorter,
+[43:13] is for a different group of
+[43:15] banks.  Tight, which is
+[43:17] the delay from recording
+[43:19] to the previous
+[43:19] charge, is defined
+[43:21] similarly.  This is the
+[43:24] recovery time before the
+[43:26] because the write
+[43:27] first
+[43:28] forces a value onto the
+[43:29] bit lines, so
+[43:30] now there's this
+[43:31] connection between the
+[43:33] sense amplifier and
+[43:33] the cell, right?  So,
+[43:36] we can say that this
+[43:38] relationship exists
+[43:38] because they have the
+[43:39] same meaning.
+[43:41] But now, if I
+[43:41] use a
+[43:42] powerful
+[43:43] write driver and force a
+[43:44] value,
+[43:45] like if it's
+[43:46] zero, I set it to
+[43:47] one, or if it's
+[43:48] one, I set it to
+[43:49] zero, and because my
+[43:50] write driver is
+[43:51] much more powerful,
+[43:52] it can supply
+[43:53] significantly more current.
+[43:54] Therefore, it takes some time for this
+[43:55] feedback loop between the
+[43:57] sense amplifier and the
+[43:58] cell
+[43:59] to stabilize
+[44:00] .
+[44:01] And only after that
+[44:02] I can do the
+[44:04] charge process, and that takes a
+[44:05] certain amount of time, which is
+[44:06] known as the
+[44:07] write delay or the
+[44:08] write-to-
+[44:09] pre-charge delay.
+[44:12] So, next we have two
+[44:13] update commands.
+[44:15] There is a maximum
+[44:16] refresh interval,
+[44:17] which is T refi, and a
+[44:18] refresh cycle time.  As
+[44:21] we have seen, there are two
+[44:22] update modes.
+[44:24] The first is a kind of
+[44:25] manual mode where I
+[44:26] send
+[44:28] update commands.  The
+[44:30] refresh commands.
+[44:33] The second is
+[44:34] generation, as the
+[44:35] memory device
+[44:36] must store
+[44:37] its values.  So,
+[44:43] every T_refi cycles, an
+[44:46] update needs to be performed.  This essentially
+[44:48] means: for each
+[44:50] row, one update must be performed every T_refi
+[44:51] cycles
+[44:53] .  Updates
+[44:57] can be
+[44:57] initiated in
+[44:58] any of these ways,
+[45:00] manually or
+[45:00] automatically, and the entire
+[45:02] update process
+[45:03] will take TRFC cycles,
+[45:04] correct?  This is the
+[45:06] update cycle time, which
+[45:08] is the complete process of
+[45:09] updating all
+[45:10] rows.  So here's
+[45:11] how long it will take
+[45:13] .  So if I
+[45:15] look at the
+[45:16] DDR1600
+[45:20] protocol parameters, it's essentially an
+[45:22] 800 MHz bus, 1600
+[45:23] transfers through the "D" in DDR,
+[45:25] meaning double.  So
+[45:29] we see that the
+[45:30] row cycle time, TRC, is
+[45:31] correct?  So, TRC...
+[45:34] well, let me
+[45:35] backtrack again
+[45:36] , I'm going to do
+[45:37] quite a bit of movement, but it's
+[45:38] important that you
+[45:39] understand what TRC is,
+[45:41] which is the delay between
+[45:42] activations.  This is also the
+[45:44] row cycle time,
+[45:45] as it is the transition
+[45:46] from one row to
+[45:47] another.  That's a lot.  That's
+[45:49] about 38 cycles.
+[45:50] The time from activation to
+[45:52] and from pre-
+[45:53] charge to activation is
+[45:54] well distributed.
+[45:55] From activation to
+[45:56] —28, because that's where the
+[45:57] main
+[45:58] hard work is done.  From
+[46:00] to activation—not
+[46:01] much.  This is about 10.
+[46:03] The latency from
+[46:06] or write, TRCD or
+[46:08] column latency, is
+[46:10] about 10 cycles.
+[46:11] Again, the main
+[46:12] part is
+[46:13] activation.  Then
+[46:14] we have CAS latency.
+[46:16] I call it
+[46:17] column latency.
+[46:18] CAS latency,
+[46:19] no matter what, is
+[46:20] 10 cycles, and for writing it is
+[46:22] 9 cycles, approximately
+[46:23] in the same range.
+[46:24] The delay between
+[46:25] columns in one
+[46:27] group of banks is longer, 5
+[46:28] cycles, in other
+[46:29] cases, 4 cycles.  So
+[46:31] they are much smaller
+[46:33] compared to the
+[46:35] line latency of 38 cycles.
+[46:39] Now let's
+[46:40] look at other
+[46:41] parameters, which
+[46:42] mainly relate to
+[46:44] activity.  This is
+[46:46] the latency between rows
+[46:48] within the same
+[46:49] bank group, assuming a
+[46:51] page or
+[46:52] row size of 1 KB per array.
+[46:54] Since this is one
+[46:55] group of banks, it is tRRD.
+[46:59] So, just so you don't have the
+[47:00] confusion
+[47:01] that I had,
+[47:03] what's the difference between TRC,
+[47:04] which is also the time between
+[47:05] activations,
+[47:06] right?  And what is
+[47:08] tRRD_L, which is also the time
+[47:10] between activations?
+[47:11] The first one, as you can see,
+[47:13] is 38 cycles, and
+[47:14] this one is only five.  So
+[47:19] the answer is that
+[47:20] it essentially
+[47:21] involves
+[47:22] pre-charging and
+[47:23] moving into action,
+[47:24] right?  That's the
+[47:28] difference.  But in this
+[47:31] case, you activate
+[47:32] one bank, then in the
+[47:33] same bank group you
+[47:36] bank, so the previous
+[47:37] charge doesn't get into the
+[47:38] critical path;  That's the
+[47:39] difference.
+[47:44] Otherwise, it
+[47:45] might be another bank
+[47:46] in another group of banks,
+[47:47] so it's a little
+[47:48] less here;  that's four.    The
+[47:52] the four banks in
+[47:53] this case
+[47:54] is 20. So as
+[47:58] you can see, it is a 4*TR RDL.
+[48:04] Of course, it can be
+[48:05] more, it is limited to
+[48:07] 16, but in reality it can
+[48:08] be much more
+[48:09] depending on
+[48:11] temperature constraints.  And then
+[48:16] we have the write-
+[48:17] to-read delay within the
+[48:18] same group of banks.
+[48:20] So, the write-
+[48:22] to-read delay is
+[48:23] six cycles, again
+[48:24] , because
+[48:27] processes need to be stabilized, while in the other
+[48:28] group of banks, everything is,
+[48:29] of course, faster, because
+[48:30] such stabilization is not
+[48:31] needed.  That is, it is
+[48:34] two cycles, a read to the
+[48:37] —6 DRTP, and a
+[48:37] write recovery time
+[48:39] that is given after
+[48:40] the write is complete,
+[48:41] during which
+[48:42] another command cannot be started
+[48:44] .  This value is
+[48:46] high, 12
+[48:48] cycles.  This indicates that
+[48:49] it is quite
+[48:51] large.  This is a
+[48:51] disproportionately high
+[48:53] value.  This means
+[48:54] that it takes a long time for
+[48:55] all the voltages in the sense
+[48:58] bit lines,
+[48:59] etc. to stabilize
+[49:00] .  Therefore,
+[49:03] write operations in this sense are
+[49:04] not very fast in
+[49:05] memory modules,
+[49:06] mainly because of this.
+[49:10] So, we
+[49:11] talked a lot about
+[49:12] memory timings.
+[49:13] Now we have a
+[49:14] little series of
+[49:15] slides about the
+[49:16] memory controller.    The
+[49:17] memory controller is
+[49:19] also quite fast,
+[49:20] but there's nothing special to discuss here
+[49:25] In general, a
+[49:27] memory controller has four
+[49:28] stages or four
+[49:29] modules.  So, memory requests
+[49:31] continue to
+[49:32] come in.  They will,
+[49:33] of course,
+[49:33] come from cache
+[49:35] memory, in particular LLC.
+[49:37] Then each such
+[49:38] request will become a kind of
+[49:39] transaction.
+[49:40] There will be a
+[49:42] transaction scheduler.  But there's a
+[49:43] small sacrificial
+[49:44] cache, known as the
+[49:46] write cache,
+[49:47] whose job is to absorb
+[49:48] writes: if you
+[49:49] write something, you can
+[49:50] send it to
+[49:51] memory, but also
+[49:53] write it here so that
+[49:55] reads can take the
+[49:56] data from here.  Then there is the
+[50:00] address mapping module, whose job is
+[50:04] to receive
+[50:05] transactions from
+[50:06] the scheduler and
+[50:07] map them to
+[50:08] memory.  So, you
+[50:10] need to map
+[50:11] this to channel, rank,
+[50:13] bank group, and so
+[50:14] on.  Then create
+[50:16] teams, right?
+[50:17] So follow
+[50:18] all the
+[50:19] synchronization rules and
+[50:20] create all the
+[50:21] commands as we just
+[50:22] saw.  And finally,
+[50:23] send a request to
+[50:24] different banks.  Each
+[50:25] bank has a
+[50:27] bank-specific queue, and you
+[50:28] place
+[50:29] commands there, then
+[50:30] submit them, and the
+[50:31] commands are activated.
+[50:33] Of course, this is provided
+[50:34] that there is no synchronization between the banks
+[50:35] .  This
+[50:39] may be true, but
+[50:40] more often than not, banks
+[50:41] within the same rank
+[50:42] are synchronized.  This is the
+[50:45] main advantage of
+[50:46] having a rank, which is why
+[50:47] these banking queues are
+[50:48] a bit more complicated than
+[50:49] this simple diagram.  And,
+[50:54] similarly,
+[50:55] when we read something
+[50:56] from DM, the data comes from
+[50:57] DM to the reading block and
+[50:59] is sent as a
+[51:00] response to whoever
+[51:01] requested it.
+[51:03] Most often this is the
+[51:04] lowest level cache, LLC.
+[51:06] You see, moving on to
+[51:11] DM transaction planning, which
+[51:12] is essentially the first block
+[51:14] here.  You should
+[51:18] understand that different
+[51:19] operations have different
+[51:21] priorities, as
+[51:22] read operations
+[51:23] are usually
+[51:24] on the critical path.
+[51:27] So you would want
+[51:28] to perform reads
+[51:29] consecutively, and reads
+[51:30] also don't have
+[51:31] long
+[51:32] recovery times,
+[51:33] right?  They do not have a
+[51:35] wait time, unlike the
+[51:37] write recovery time.
+[51:39] So, writes are not
+[51:40] critical, so they
+[51:41] can be scheduled for
+[51:42] later when the DM is
+[51:43] relatively free, but
+[51:45] reads should be
+[51:46] prioritized.  So,
+[51:48] keeping in mind
+[51:49] the rules of
+[51:51] memory consistency,
+[51:52] read operations can be
+[51:53] reordered;  they
+[51:54] should be changed.
+[51:56] We can also
+[51:58] small write cache
+[51:59] from where we take
+[52:00] data when reading;  this
+[52:01] may or may not work
+[52:03] , depending on
+[52:03] the locality of the data.
+[52:05] But you plan
+[52:06] transactions, reorder them
+[52:07] , as I
+[52:08] said, taking into account
+[52:11] memory consistency rules, and move on
+[52:12] .  When it comes to
+[52:15] access policies,
+[52:17] two are usually preferred:
+[52:18] open page
+[52:19] and closed page.
+[52:21] So an open
+[52:22] page is what we've
+[52:24] seen so far, where an
+[52:25] entire row or
+[52:26] page can
+[52:27] store anywhere from 512 bits
+[52:29] to 2 Kbits, right?  From 512
+[52:32] bits to 2 Kbits, fine.
+[52:36] So you open a
+[52:37] row, you keep
+[52:38] it open in the
+[52:39] sense that the read amplifiers
+[52:41] are synchronized with it,
+[52:42] the row remains
+[52:43] activated, and you
+[52:46] to read from it,
+[52:47] of course, different columns
+[52:48] , and, uh, continue to
+[52:49] access the
+[52:51] read amplifiers, and these
+[52:52] amplifiers are
+[52:52] actually known as the
+[52:53] row
+[52:54] page buffer.  So you
+[52:55] can continue to
+[52:56] contact him.    The
+[53:00] good thing is that due to
+[53:01] temporal and
+[53:01] spatial
+[53:02] locality, we
+[53:03] expect a high
+[53:04] percentage of
+[53:05] page buffer hits.    A
+[53:07] page buffer is nothing more
+[53:08] than a row of
+[53:10] read amplifiers that
+[53:11] stores all the data from
+[53:12] that row;  you don't
+[53:13] access
+[53:14] the cells directly, you
+[53:15] just read them from the
+[53:16] amplifiers.  So
+[53:18] then, uh, you
+[53:18] keep the line
+[53:19] open and
+[53:20] keep
+[53:20] accessing it.
+[53:22] As soon as a
+[53:22] new
+[53:23] query phase begins, that is,
+[53:24] when the request goes to
+[53:24] another row, you
+[53:25] close the current
+[53:26] row.  So, you
+[53:27] do the pre-
+[53:28] charge and close
+[53:29] it.  You turn off the
+[53:30] word
+[53:31] line transistors.  Then we have
+[53:33] access policies with
+[53:35] page closure,
+[53:36] where the situation is that
+[53:37] you don't expect
+[53:38] much locality
+[53:39] from the start.
+[53:41] You don't expect any
+[53:42] temporal locality.
+[53:44] And you don't expect
+[53:45] any spatial
+[53:46] locality.  You
+[53:47] expect access
+[53:48] to be random.  Therefore,
+[53:50] in this case,
+[53:50] instead of the
+[53:51] read-write commands as we
+[53:52] described,
+[53:53] use the
+[53:54] "read a" and "write
+[53:55] a" commands, which will read
+[53:56] the line once and close it,
+[53:57] that is, you access it
+[53:58] once and close
+[53:59] it.  This is a good
+[54:00] idea because you don't
+[54:01] need to send a
+[54:02] separate
+[54:03] line closing command.  It
+[54:04] can be done.  We have a
+[54:07] hybrid
+[54:08] access policy where, uh, based on
+[54:10] other
+[54:11] information, we can
+[54:12] decide whether
+[54:13] to use an
+[54:14] open or closed
+[54:15] page.  Isn't that right?
+[54:16] Sure, but that
+[54:17] would require other
+[54:19] program-level prompts and so on.
+[54:22] As for the
+[54:23] address mapping,
+[54:24] this is the most interesting
+[54:25] part.  So if you
+[54:27] see there are a lot of
+[54:29] things to
+[54:29] map for
+[54:30] each address, uh, we
+[54:32] could have a CPU, we
+[54:33] could have multiple
+[54:34] memory channels.  So
+[54:36] first we have to
+[54:37] look at the channel.
+[54:38] Now, with a channel, you
+[54:40] can have multiple
+[54:42] DIMMs connected to it, and
+[54:43] let's say one
+[54:44] rank corresponds to
+[54:45] one DIMM.  So, you
+[54:46] will have to choose a
+[54:47] rank;  within the rank,
+[54:51] uh, you'll need to
+[54:53] select the
+[54:54] bank group ID and the bank, and
+[54:55] then specify
+[54:56] which row you
+[54:58] want to
+[54:59] access.  So you can
+[55:00] choose to access
+[55:01] multiple banks in
+[55:02] parallel within the
+[55:03] same group or one at a
+[55:04] time;  it's your
+[55:05] choice.  And then, uh,
+[55:07] access to a specific
+[55:08] row;  and then, uh,
+[55:10] basically, if,
+[55:10] let's say, you want to
+[55:12] get 64 bytes, you
+[55:14] need to specify the
+[55:15] column number.  So,
+[55:17] usually, since you're
+[55:19] accessing
+[55:20] many arrays
+[55:21] at once, yes, a bank is
+[55:22] made up of
+[55:23] many arrays, so
+[55:24] let's say a bank contains
+[55:26] 64 arrays, and in that
+[55:27] case you read
+[55:28] one bit from
+[55:29] each, so
+[55:30] you get a total of 64
+[55:31] bits.  And if the
+[55:34] prefetch length is 8, then you
+[55:35] get 64 bytes.
+[55:37] So, in principle, a bank
+[55:38] is the smallest
+[55:39] addressable part
+[55:40] , and in this protocol
+[55:41] you assume that
+[55:43] different banks are
+[55:43] independent—not a bad
+[55:45] assumption if
+[55:46] you have many arrays per
+[55:47] bank;  otherwise you
+[55:48] have to
+[55:49] parallelize
+[55:50] access between banks, and
+[55:51] then you have to
+[55:52] say that if I
+[55:53] want to read 64 bytes,
+[55:55] that's effectively one
+[55:56] column address plus a
+[55:57] prefetch of
+[55:58] eight.  What is this
+[56:00] column address?  So,
+[56:01] L is simply the address of a
+[56:03] column within the
+[56:04] array.  So what do we
+[56:05] have?  In general, we have a
+[56:07] channel ID, a rank ID, a
+[56:08] bank group ID, a bank ID,
+[56:10] and then a row and
+[56:11] column ID.  The block size
+[56:13] I want to read
+[56:15] is usually 64
+[56:16] bytes.  And, uh, so
+[56:18] we have a beat, uh, a beat is
+[56:20] essentially, you
+[56:21] know, a single
+[56:22] read of all the
+[56:24] arrays.  You can think
+[56:26] of this in a
+[56:27] sense as a single
+[56:28] read operation.
+[56:30] It's not, so if I,
+[56:31] say,
+[56:32] presample
+[56:33] eight, it's going to be
+[56:34] eight beats.  So
+[56:35] one
+[56:36] read operation will give
+[56:38] me 64 bits.  So a bit,
+[56:41] uh, in that sense it's
+[56:43] like a half-cycle,
+[56:44] because I'm in a
+[56:46] sense transmitting 64 bits
+[56:47] in a half-cycle.  And also
+[56:50] addresses, number of
+[56:51] addresses, uh, so if
+[56:53] I consider a DRAM address
+[56:54] to be n bits, it's in a
+[56:56] sense
+[56:57] equal to C + K + G + B + R + L.
+[56:59] So basically, you
+[57:00] know, if
+[57:01] there's, say, a 3-bit
+[57:03] channel ID, a 2-bit
+[57:04] rank ID, and so on,
+[57:05] the number of bits that
+[57:07] I actually
+[57:08] use to
+[57:09] access a particular
+[57:11] block of DRAM is the sum of all
+[57:12] six parameters.
+[57:15] So, the most important
+[57:16] question we
+[57:17] need to answer is:
+[57:18] how are they ordered?
+[57:20] For example, if I
+[57:21] put C first, you
+[57:22] know, if I say the
+[57:24] first C bits
+[57:25] are for
+[57:26] the channel, then K, then
+[57:27] let's say G B R L, that would
+[57:28] result in the same
+[57:29] type of organization and
+[57:31] access scheme.  But
+[57:32] let's say if I have
+[57:33] something like this, it would
+[57:34] result in a completely
+[57:36] different organization and
+[57:37] access pattern.  So
+[57:39] we will see that different organizations are suitable for
+[57:40] different page
+[57:41] modes, open and
+[57:43] closed page
+[57:45] .  So,
+[57:48] if I were considering an
+[57:49] open
+[57:51] page policy, I would want to
+[57:52] use two
+[57:53] approaches to
+[57:54] implement it.  This is the
+[57:55] second stage we are
+[57:56] considering.  The two
+[57:58] approaches are that
+[57:59] the younger bits
+[58:01] always change
+[58:02] more often than the older
+[58:03] bits.  So, older
+[58:05] bits change
+[58:06] less frequently.  Therefore, we
+[58:08] map the least
+[58:10] significant bits or
+[58:11] low order bits to
+[58:12] the variable.  So the variable
+[58:13] in this case is CKGB RL
+[58:16] which has the lowest
+[58:17] switching cost
+[58:18] , because as you
+[58:19] know, these bits
+[58:20] change frequently.  If,
+[58:21] say, I can
+[58:23] jump
+[58:24] from one bank to
+[58:25] another very quickly, then I would want to
+[58:26] switch that
+[58:27] most often and essentially
+[58:28] assign the lower
+[58:30] bits of the bank.  If I
+[58:32] jump between
+[58:33] ranks very quickly, I would like to
+[58:34] assign them to a rank.
+[58:35] So overall it all
+[58:36] depends on what
+[58:38] my
+[58:39] DRAM timings look like,
+[58:39] assuming I'm
+[58:40] using an
+[58:43] page policy.  In general,
+[58:45] switching between
+[58:46] channels is the
+[58:47] fastest because
+[58:48] it is done at the
+[58:50] processor's clock speed.  You just
+[58:52] say you want to
+[58:53] go to channel
+[58:54] one or channel two,
+[58:55] generally that's the fastest
+[58:57] because, as I
+[58:58] said, that's the choice the
+[59:00] memory controller makes, and very
+[59:01] quickly at the
+[59:02] processor's clock speed.
+[59:05] So you do that, and it
+[59:06] also doesn't involve
+[59:07] anything in DRAM.  Everything
+[59:09] is done
+[59:10] inside the processor,
+[59:12] which is fast.  Since
+[59:14] this is an access to an
+[59:14] open page,
+[59:15] the line remains
+[59:16] activated.  You
+[59:17] can always
+[59:18] choose a different set of
+[59:19] memory words, a different
+[59:20] set of bits within the same
+[59:21] line.
+[59:22] That's why the line
+[59:24] open.  I can
+[59:25] change
+[59:26] the column bits very easily.  So
+[59:27] let me
+[59:28] choose this next.
+[59:32] As we have seen, it is always
+[59:33] better to move to a
+[59:34] new group of banks
+[59:35] than to a different set of
+[59:37] banks within the
+[59:38] same group.  That's why
+[59:41] I'm using G here.
+[59:42] Up to this point, I've
+[59:44] decided on the
+[59:44] order of my three
+[59:46] least significant
+[59:47] variables G, L, and C. So what's
+[59:51] next for me
+[59:52] ?  I have
+[59:55] B, K, and R left. B
+[59:57] is the bank.  Uh-huh.  Yes.  So
+[60:02] quickly show you.  K
+[60:03] is the rank and R is the
+[60:04] row.  So switching
+[60:06] them all is quite
+[60:07] difficult.  So,
+[60:08] the question is to
+[60:09] find the least
+[60:10] unsuccessful option
+[60:11] among them.  In general,
+[60:13] moving to a new
+[60:14] row is difficult because it
+[60:15] requires
+[60:16] reactivation, and moving
+[60:17] to a rank is also difficult
+[60:18] because it requires
+[60:19] resynchronization of the
+[60:20] clock signal.
+[60:22] Instead, as we
+[60:23] saw from our
+[60:24] data, a new bank
+[60:26] group of banks
+[60:27] takes a little
+[60:28] longer, but not
+[60:29] much.  So,
+[60:31] move on to the new
+[60:32] bank.  Then the only
+[60:33] options
+[60:34] left are
+[60:35] rank and row.  Rank
+[60:36] again needs
+[60:38] a little more time to
+[60:39] resynchronize the
+[60:40] But this is quite
+[60:41] enough.  I can
+[60:43] do it.  I can
+[60:44] accept that.  And finally,
+[60:46] the last thing I would like to
+[60:48] change is the line,
+[60:49] as the delays for
+[60:51] activation are quite
+[60:52] high.  So,
+[60:55] given that I'm
+[60:58] page policy, the best
+[61:00] way to allocate
+[61:01] memory address bits
+[61:02] between rank, channel,
+[61:04] bank group, etc.
+[61:05] is RKBGC, following this
+[61:07] logic.  Now for the
+[61:11] closed
+[61:12] page policy, let's
+[61:13] use the same
+[61:14] ideas or principles.  So
+[61:16] I would say
+[61:19] fastest.  It
+[61:20] always is.  That's why I
+[61:21] pointed it out here.
+[61:23] Considering that
+[61:24] every time I
+[61:25] use a string, I
+[61:26] close it.  So
+[61:29] here's what I can do: I
+[61:33] can try to
+[61:34] stay within the
+[61:35] same bank group and
+[61:37] bank.  So I'll have
+[61:39] B and G because, like I
+[61:40] said, I can't
+[61:41] pull another
+[61:42] column because
+[61:43] my row doesn't
+[61:44] stay
+[61:45] open, right?
+[61:46] So let me
+[61:47] at least try to
+[61:48] stay within the confines of
+[61:49] one bank.  After
+[61:51] that, as I said,
+[61:52] moving to another
+[61:53] rank also takes
+[61:54] a little longer,
+[61:55] but not too much,
+[61:56] so let me
+[61:57] move to another
+[61:58] rank.  So, with KBGC
+[62:01] installed, the only
+[62:02] options I have
+[62:03] are row and
+[62:04] column.  The point is
+[62:09] that since I
+[62:10] may have opened
+[62:11] the row earlier, some
+[62:13] data might have
+[62:13] remained in the
+[62:15] memory controller caches,
+[62:16] right?  I can
+[62:19] try to
+[62:20] use or
+[62:21] reuse
+[62:22] this cache.  So I would
+[62:24] play it safe in a way
+[62:25] by using another
+[62:26] column of the row that
+[62:27] was opened earlier.
+[62:28] So I would use the
+[62:29] column bits.  Of course,
+[62:31] I don't know if this
+[62:32] line has been opened
+[62:33] before or not.  But I will still
+[62:34] rely on the
+[62:35] minimal temporal and
+[62:37] locality that
+[62:38] I have.  And finally, I
+[62:39] move to the line
+[62:40] because opening a
+[62:41] new line takes a
+[62:42] long time.
+[62:43] Activating a new
+[62:44] row takes a long
+[62:45] time.  So, as you can see,
+[62:47] we have
+[62:49] thing coming up again.  The previous one was
+[62:51] RKBGC.  This is RLKBGC.  In
+[62:55] any case, we
+[62:56] choose the new line
+[62:57] at the end because of the
+[62:58] high
+[62:59] activation and
+[63:00] pre-charge time.
+[63:04] Of course, if there are
+[63:05] more blocks than the
+[63:06] memory address supports, then you
+[63:08] won't be able to fit them in here
+[63:09] , so that's a
+[63:13] problem,
+[63:14] right?  The problem is
+[63:18] that you
+[63:19] would have to create
+[63:20] some kind of
+[63:21] virtual memory system
+[63:22] or
+[63:23] redirection system where
+[63:24] you first
+[63:25] get an address,
+[63:26] map it to an
+[63:27] address that
+[63:28] only supports n blocks, and then
+[63:30] move on to the
+[63:30] next level of
+[63:32] mapping.  True,
+[63:35] some level
+[63:36] of virtualization
+[63:37] is needed if,
+[63:38] say, you have
+[63:39] many more
+[63:40] blocks than
+[63:41] your memory system supports
+[63:42] , but this is
+[63:43] rare.
+[63:47] So, let's move on to the
+[63:48] third block, that is
+[63:49] , where are we now
+[63:50] ?  We
+[63:52] have planned our
+[63:53] transactions.  We
+[63:54] have completed the
+[63:54] address mapping.
+[63:56] Now we need to
+[63:57] generate our
+[63:58] commands, and
+[63:58] generate them
+[63:59] according to what?  According to the
+[64:00] time parameters
+[64:02] that we have defined.  There are
+[64:03] many ways to
+[64:04] do this.  In general,
+[64:06] we assume that the
+[64:07] bank consists of
+[64:08] many arrays and is
+[64:13] powerful enough to provide
+[64:14] complete data.  The complete
+[64:15] data, i.e. all the data
+[64:17] for a 64-byte
+[64:18] packet, can
+[64:19] come from, say, a
+[64:20] single bank.  So we
+[64:25] round robin, where we
+[64:26] have a queue of banks with
+[64:27] teams in each
+[64:29] queue.  For each
+[64:30] rank, we visit
+[64:31] each bank of the rank and
+[64:32] its corresponding
+[64:33] bank queue and
+[64:34] service it.
+[64:37] Activation and
+[64:38] reading commands can be
+[64:39] grouped together, in the
+[64:41] consider commands
+[64:42] where we first
+[64:44] perform a read-
+[64:45] read.  Therefore, we
+[64:46] would like to perform
+[64:47] as many
+[64:47] read operations as possible in a
+[64:48] single activation.  This is
+[64:49] batch processing.
+[64:51] After processing a rank,
+[64:52] we can move on to the
+[64:53] next rank.  But
+[64:56] in general, we operate
+[64:57] by rank, and within a
+[64:58] rank we perform a
+[64:59] cyclic traversal between
+[65:01] banks, and if
+[65:02] within a bank we see an
+[65:04] activation-read-
+[65:05] activation-read sequence, we
+[65:07] group them so that
+[65:08] many
+[65:11] served by a single
+[65:12] activation.  Of course,
+[65:14] this is provided that the
+[65:16] pages policy is used.  Next, we
+[65:17] have a cyclic
+[65:18] traversal of ranks.  where we
+[65:22] essentially assume
+[65:23] that we need to be
+[65:25] fair about
+[65:26] ranks.  So, we
+[65:29] same
+[65:29] bank ID
+[65:30] in each rank and
+[65:31] then move on to the
+[65:34] .  In this case, I
+[65:38] assume that my
+[65:39] data or its
+[65:40] criticality
+[65:41] is distributed evenly
+[65:42] across all ranks,
+[65:43] unlike the
+[65:44] previous case,
+[65:45] where I assumed that
+[65:46] everything in a rank is equally
+[65:48] critical, and as soon as I
+[65:49] access a rank, I
+[65:50] have to execute all of its
+[65:51] queries.  But here I
+[65:56] assume that you
+[65:57] initially have all the requests
+[65:59] to the same
+[66:01] in each rank, and
+[66:02] when you have exhausted them,
+[66:03] you move on to the
+[66:05] ID.  So,
+[66:08] under this condition, I would
+[66:10] circular traversal scheme of
+[66:11] ranks, where I simply
+[66:13] go through all
+[66:14] ranks, and within
+[66:15] one rank
+[66:15] I look at a certain
+[66:16] bank identifier,
+[66:18] go through the ranks,
+[66:19] take the next
+[66:21] go through the
+[66:22] ranks again, and so on.
+[66:26] Next is a greedy
+[66:27] algorithm that
+[66:28] essentially analyzes all
+[66:30] commands.  So, essentially
+[66:31] , if there is a delay
+[66:33] because of which this command
+[66:34] was issued, and the
+[66:35] next one can
+[66:36] only be issued after 10
+[66:37] cycles, then I
+[66:38] have to wait.
+[66:40] So I can create a
+[66:42] priority queue and
+[66:43] look at which
+[66:44] command can be
+[66:45] issued immediately,
+[66:46] regardless of bank
+[66:47] or rank, and just
+[66:48] issue it greedily.
+[66:52] In general, the greedy
+[66:53] algorithm
+[66:54] works well under low
+[66:56] system load, and it is simple
+[66:57] because it only requires a
+[66:58] priority queue.
+[67:00] But implementing such a
+[67:02] queue in
+[67:03] hardware is not so
+[67:04] simple, but
+[67:05] let's assume that we
+[67:06] can do it.
+[67:08] Then there are no problems, a
+[67:09] greedy algorithm is
+[67:10] suitable, otherwise
+[67:11] you will have to
+[67:13] cyclic traversal of
+[67:14] banks or ranks.
+[67:17] So, we have completed
+[67:19] our discussion of
+[67:20] timings and the
+[67:20] memory controller.
+[67:25] Our discussion of
+[67:27] traditional DRAM,
+[67:28] DRAM timings, and
+[67:29] how memory accesses are scheduled
+[67:31] is complete.  Now we will
+[67:36] look at the latest
+[67:38] memory technologies,
+[67:39] mostly
+[67:39] non-volatile, and
+[67:41] analyze their
+[67:42] performance using the
+[67:44] Roofline model.

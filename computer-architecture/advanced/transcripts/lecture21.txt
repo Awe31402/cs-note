@@ -1,0 +1,1548 @@
+[00:15] Welcome to the chapter on caches.
+[00:18] The design of caches and the memory
+[00:20] system
+[00:21] is by far
+[00:25] one of the
+[00:27] most important parts of a modern
+[00:30] computer system.
+[00:31] And hence we will discuss this fairly
+[00:33] long chapter over a series of several
+[00:36] lectures.
+[00:38] So first the necessary background. So a
+[00:41] cache
+[00:42] is pretty much made of SRAM and DRAM
+[00:44] arrays.
+[00:45] So we would need a background of RC
+[00:48] circuits and CMOS circuits.
+[00:50] So we don't need a lot of extensive
+[00:52] background, but at least a little bit is
+[00:54] required such that this part can be
+[00:56] understood.
+[00:57] So the notion of a time constant in an
+[01:00] RC circuit, somebody should know that.
+[01:03] And also all about current sources and
+[01:05] voltage sources.
+[01:07] Of course memory cells, latches, and
+[01:09] digital logic, it kind of flows from
+[01:11] here.
+[01:12] And we will develop mechanisms to guess
+[01:16] which memory addresses we will access in
+[01:18] the future
+[01:19] and prefetch them,
+[01:21] which means read them early.
+[01:23] So for this, the knowledge of branch
+[01:25] prediction which was discussed in
+[01:27] chapter three, this also is required.
+[01:31] All right?
+[01:32] So uh chapter three is definitely
+[01:34] required and of course knowledge of CMOS
+[01:37] logic is required.
+[01:38] Keeping these in mind, let us proceed.
+[01:44] So we'll first discuss an overview of
+[01:45] memory systems. This is essentially
+[01:48] uh an extension of
+[01:52] undergraduate knowledge.
+[01:54] It's think of this as a recap and a
+[01:58] little bit more.
+[01:59] Methods of modeling and designing caches
+[02:02] after this
+[02:03] where we will look at how tools such as
+[02:05] CACTI
+[02:06] model and design caches.
+[02:09] Then we will look at advanced aspects of
+[02:12] cache design.
+[02:15] Intel has
+[02:17] produced a very
+[02:20] novel design called a trace cache. So we
+[02:23] will discuss the idea of trace caches
+[02:25] next.
+[02:26] And finally the last two parts of this
+[02:28] chapter will focus on prefetching.
+[02:31] So prefetching is conceptually similar
+[02:33] to branch prediction.
+[02:35] Here we guess the addresses that will be
+[02:38] accessed in the future
+[02:39] and we try to fetch them from memory.
+[02:45] So without further ado, let us try to
+[02:47] introduce the memory system.
+[02:50] So before introducing the memory system,
+[02:53] I would request all of you to take a
+[02:55] look at the figure here.
+[02:57] So what this person is doing is that
+[02:59] this person is accessing his laptop.
+[03:03] There are a few books over here.
+[03:05] And of course behind him you see a shelf
+[03:07] of books.
+[03:10] So what is this typical behavior? Well,
+[03:12] the typical behavior is that the most
+[03:14] frequent data, the most frequent
+[03:16] instructions
+[03:17] that he is accessing on his laptop,
+[03:20] something that is less frequently
+[03:22] required
+[03:23] is
+[03:25] placed slightly further away and these
+[03:28] books are on the desk.
+[03:30] And then
+[03:32] uh we have a
+[03:33] large number of books on the shelves.
+[03:36] These books he will rarely access,
+[03:40] but nevertheless they are required. And
+[03:43] you can clearly see that the laptop is a
+[03:45] small device, the books are bigger.
+[03:47] And the shelves are even
+[03:50] the shelves are much, much bigger than
+[03:52] the books.
+[03:53] All right? So uh
+[03:56] the first insight is that whatever you
+[03:58] need frequently, you keep it close to
+[04:00] you.
+[04:00] Number one.
+[04:02] Number two, uh you keep books
+[04:05] on similar topics on the desk. So for
+[04:08] example, if he is
+[04:11] searching for
+[04:12] ideal vacation spots,
+[04:14] then he would also have a little bit
+[04:17] about adventure sports and so on.
+[04:19] All right? He would be reading other
+[04:21] similar topics.
+[04:23] Uh and these items will be on his desk.
+[04:30] So this kind of mimics patterns in real
+[04:32] life.
+[04:33] So we are talking of two important
+[04:35] patterns in real life, namely
+[04:38] temporal locality and spatial locality.
+[04:42] So temporal locality is that you tend to
+[04:44] do the same task over and over again in
+[04:47] a short window of time.
+[04:49] So in this case, the person is reading
+[04:51] the same book over and over again.
+[04:54] So this is an example of temporal
+[04:56] locality.
+[04:57] And furthermore, what you would see is
+[05:00] that the person will rarely fetch a book
+[05:02] from the cabinet.
+[05:04] Right? So basically the desk
+[05:08] you can think of
+[05:09] as a work area which is the most
+[05:11] frequently accessed.
+[05:13] Spatial locality is as I discussed, a
+[05:16] high probability of fetching and reading
+[05:18] books on similar topics in the sense
+[05:21] that well, if he's thinking about his
+[05:22] vacation, he might be reading books on
+[05:25] adventure sports. He might be reading
+[05:26] books on cooking.
+[05:28] Right? Uh so basically we always tend to
+[05:31] do
+[05:32] in in a small window of time similar
+[05:34] kind of activity.
+[05:36] So this is a pattern in real life.
+[05:39] Right? This is a pattern that is a
+[05:41] pattern of human behavior.
+[05:44] The question is
+[05:46] do we have something similar
+[05:48] in computers?
+[05:52] Uh so
+[05:54] well, we can generalize this behavior to
+[05:57] the memory hierarchy.
+[05:59] So the temporal locality is that
+[06:02] the way it translates
+[06:04] is that we access the same address or
+[06:06] the same set of addresses
+[06:08] over and over again in the same time
+[06:10] window.
+[06:12] So in the same window of time,
+[06:14] the same set of addresses are accessed
+[06:17] over and over again.
+[06:19] Right?
+[06:20] And spatial locality is that we access
+[06:23] similar addresses which are close by,
+[06:25] which are also called proximate
+[06:26] addresses,
+[06:28] in the same window of time. All right?
+[06:30] So temporal locality is the same thing
+[06:32] over and over again. And spatial
+[06:34] locality is that in a small window of
+[06:36] time,
+[06:38] we access
+[06:39] similar addresses, nearby addresses.
+[06:42] Why is this the case? Well, uh
+[06:44] programs spend most of their time in
+[06:46] loops.
+[06:48] So given that a set of instructions keep
+[06:50] looping,
+[06:51] so at least at the level of
+[06:53] instructions, we'll access the same
+[06:54] instructions over and over again. That
+[06:56] is temporal locality.
+[06:59] Second, programs typically work on,
+[07:01] let's say, large arrays or
+[07:03] uh you know, similar
+[07:05] data structures.
+[07:06] In that case, what happens is that you
+[07:08] sequentially scan the array elements.
+[07:11] So this is an example of spatial
+[07:13] locality because if the first element
+[07:15] was accessed, then we'll access the
+[07:17] second, then the third, then the fourth,
+[07:19] and so on.
+[07:24] So because of the way that programs
+[07:26] typically are,
+[07:28] so we can even think of a regular
+[07:30] program as an array also. Right? So we
+[07:32] access one instruction, then the next,
+[07:34] then the next, and so on. Often
+[07:36] sometimes we loop, but at least this is
+[07:38] the
+[07:40] uh the this is the default behavior
+[07:42] without taken branches.
+[07:44] Here there is spatial locality.
+[07:47] And because of loops, we have temporal
+[07:53] So
+[07:54] we are in a
+[07:55] position to make a laptop, desk, shelf
+[07:57] principle.
+[07:59] The laptop is the fastest.
+[08:01] So the most frequently read books and
+[08:03] documents are
+[08:05] in the laptop.
+[08:07] The desk is comparatively slightly
+[08:10] slower.
+[08:12] So slightly less frequently accessed
+[08:14] documents are on the desk. But it
+[08:16] clearly has
+[08:18] as you can see more storage space. Well,
+[08:20] again, that's not clear. This is just an
+[08:21] analogy.
+[08:23] Uh but uh
+[08:25] you you can have, let's say, 10 more
+[08:28] laptops on the desk, which will give you
+[08:30] more storage space.
+[08:32] And then you have shelves. The shelves
+[08:34] are clearly the slowest as you can see
+[08:36] that we have extremely rarely accessed
+[08:38] books on the shelf, but they're also the
+[08:41] largest.
+[08:42] So in terms of storage, uh it is
+[08:44] increasing
+[08:45] because uh
+[08:47] you know, it's not a strictly
+[08:48] apples-to-apples comparison with a
+[08:49] laptop and a desk,
+[08:51] but you can assume that a desk has other
+[08:54] uh it can have other laptop storage
+[08:56] drives, pen drives, and so on. So in
+[08:58] principle, it's bigger than the
+[09:01] resources of a single laptop.
+[09:04] So we can apply a similar principle to
+[09:06] the memory system
+[09:08] where we'll have the processor. And the
+[09:10] processor in this case is the person
+[09:12] who's reading or writing the data.
+[09:15] Typically, we have two small memories
+[09:18] that are attached with the processor.
+[09:21] So one is an I-cache, the other is a
+[09:23] D-cache. They are like the desk. Or
+[09:25] let's say they are like the laptop in
+[09:27] front of the processor.
+[09:29] And uh they are small and fast. So
+[09:31] smaller is the memory, faster it is.
+[09:34] The latency of an I-cache or a D-cache
+[09:38] two to four clock cycles.
+[09:40] And the I-cache supplies instructions to
+[09:42] the processor and the D-cache exchanges
+[09:45] data with the processor. So you can
+[09:47] either read or write the data cache.
+[09:51] So uh these are very fast memories, but
+[09:54] they are fast because they are small. So
+[09:56] they store a subset of the address
+[09:58] space, the most frequently accessed
+[10:00] data.
+[10:02] Then we have the L2 cache. The L2 cache
+[10:04] is a level two cache, which is
+[10:06] comparatively much slower.
+[10:08] Its latency is between 10 and 50 cycles.
+[10:13] Then we can optionally have an L3 cache
+[10:16] or an L4 cache, which are bigger and
+[10:20] In modern server processes, they often
+[10:22] have an L3 cache, even though having an
+[10:24] L4 cache is very rare.
+[10:26] After the L3 cache, we have the off-chip
+[10:29] main memory, which is not there in the
+[10:31] processor chip, but it's outside. It is
+[10:34] on the motherboard.
+[10:35] It has a long access latency, something
+[10:38] between 300 and
+[10:40] 400 cycles, right? 200 and 400 cycles.
+[10:45] So, the hierarchy is inclusive. What
+[10:47] this essentially means
+[10:50] is that the I-cache contains a subset of
+[10:52] all the data in the L2 cache.
+[10:54] And the L2 cache contains a subset of
+[10:57] all the data in the main memory, right?
+[11:00] So, the hierarchy in this sense is
+[11:04] inclusive. You can have an exclusive
+[11:06] cache design, but that is very rare.
+[11:09] Right? Uh so, the that's the reason in
+[11:11] the rest of this chapter, we'll assume
+[11:14] that the entire hierarchy is inclusive.
+[11:16] So, the set of addresses in the L2 cache
+[11:18] is a superset
+[11:20] of the set of addresses in the data
+[11:21] cache. And the same
+[11:24] holds true
+[11:25] for the addresses in the main memory and
+[11:27] the L2 cache.
+[11:29] So,
+[11:31] all the
+[11:32] addresses that a program uses,
+[11:35] so they uh the this address range is
+[11:38] known as the physical address space.
+[11:41] So, we will look at this abstraction a
+[11:44] little later, but for the time being,
+[11:46] let us assume that the main memory
+[11:48] contains data for all the addresses that
+[11:50] the program will use.
+[11:57] All right. So, let us look at spatial
+[11:59] locality. How do we leverage it?
+[12:02] So, for spatial locality, what we can do
+[12:06] that instead of storing data at the byte
+[12:08] level or at the level of what is called
+[12:10] memory words, which are essentially
+[12:13] blocks of 4 bytes,
+[12:15] we can store data
+[12:17] at the granularity of blocks,
+[12:19] which are 32 to 128 bytes.
+[12:23] A block is also called a cache line.
+[12:27] We treat the block as an indivisible
+[12:30] atomic unit in the sense
+[12:32] we fetch an entire block
+[12:35] in one go.
+[12:36] And we never
+[12:38] kind of like fetch half a block or
+[12:40] transfer half a block. So, a block is an
+[12:42] atomic unit for us.
+[12:44] The advantage is that even if we read or
+[12:46] write a single byte within the block,
+[12:49] because of spatial locality, there is a
+[12:51] very high likelihood that we will access
+[12:54] the other bytes within the block.
+[12:58] So, because of that, what we do is that
+[13:00] we fetch
+[13:02] and operate on the entire block
+[13:06] What is a cache? Well, a cache simply
+[13:08] contains a set of blocks with some
+[13:10] metadata. Metadata is some additional
+[13:12] information per block.
+[13:14] So, what we do? Well, we create these
+[13:16] blocks. Let us say we create 64-byte
+[13:19] blocks.
+[13:21] Because of spatial locality, if we
+[13:23] access any
+[13:25] memory word, which is a 4-byte chunk,
+[13:28] if we access any memory word within a
+[13:31] block,
+[13:32] there's a very high likelihood that we
+[13:34] will access other memory words within
+[13:36] the same block.
+[13:38] And a cache basically contains a list of
+[13:41] the most frequent blocks
+[13:43] that the program is expected to access.
+[13:47] So, in this case, what will happen is
+[13:49] that
+[13:50] the processor will access the cache with
+[13:52] a very high likelihood it will find the
+[13:55] block within the cache, and then it will
+[13:57] read or write the
+[14:00] corresponding bytes.
+[14:04] So, there are certain important points
+[14:06] here to keep in mind.
+[14:09] The first is that we don't want to
+[14:11] maintain
+[14:12] any state, any per-byte state in a
+[14:14] block, right?
+[14:16] So, which basically means that we'll
+[14:18] keep some high-level information for a
+[14:20] block, which is basically its memory
+[14:22] address and so on.
+[14:24] But at the level of individual bytes, we
+[14:26] don't want to
+[14:27] spend any space uh
+[14:30] keeping any extra information.
+[14:32] So, that is the reason
+[14:34] that let's say that we have a
+[14:37] 64-byte block,
+[14:40] and maybe we want to write the first 4
+[14:41] bytes.
+[14:43] Let us assume that this block is not
+[14:45] there in the cache.
+[14:47] Well, then you can always argue that
+[14:51] if I just want to write and the data is
+[14:52] going to be overwritten anyway, I can
+[14:55] simply create space for a block and
+[14:56] write the first 4 bytes.
+[14:58] But that's not the way it's going to
+[15:00] work, because what about the remaining
+[15:02] 60, right? So, the remaining 60
+[15:05] have to be fetched from the lower level.
+[15:08] And even if you're writing four, since a
+[15:11] block for us is an indivisible atomic
+[15:14] unit,
+[15:15] we never want to have a
+[15:18] like a partially formed block, where
+[15:20] some blocks are written, the rest of the
+[15:22] the contents of the rest of the bytes
+[15:24] are not known, right? We never want to
+[15:26] have a partially formed block, right?
+[15:29] With some written bytes and the rest
+[15:30] unknown bytes.
+[15:32] We don't want to do that. So, what we do
+[15:34] is that if we want to
+[15:36] write even one byte to a 64-byte block,
+[15:41] what we do is that if the block is not
+[15:43] there in the cache, for example,
+[15:46] if the block is not there in the L2
+[15:47] cache, we fetch it from the lower level.
+[15:50] Let's say it is found in the L2 cache.
+[15:52] We fetch the entire 64 bytes.
+[15:55] Once the entire 64 bytes are there in
+[15:58] the data cache,
+[16:00] then we access the corresponding bytes
+[16:02] and we write to them.
+[16:04] All right, this is important. This is
+[16:06] kind of a trick question, and many
+[16:08] students often miss it,
+[16:10] because they say that look, if I need to
+[16:12] write to the eighth, ninth,
+[16:14] uh 10th and 11th byte,
+[16:17] what is actually the need for fetching
+[16:19] the rest of the bytes? Well, the need is
+[16:22] that if you don't fetch, you'll somehow
+[16:24] have to remember the fact that look,
+[16:26] only the eighth to 11th bytes are new,
+[16:29] they have been written, and the rest of
+[16:30] the bytes uh pretty much are junk.
+[16:34] Remembering this requires computational
+[16:36] effort, it requires storage space. So,
+[16:38] this is non-trivial.
+[16:40] It also breaks our simple abstraction
+[16:43] that a block is a single atomic unit.
+[16:47] Hence,
+[16:49] we never operate on
+[16:52] subsets of it per se.
+[16:55] While reading, it is easy because the
+[16:56] entire block will be there. If you want
+[16:58] to read the 10th byte, we go ahead and
+[16:59] read it. But while writing,
+[17:02] we first ensure that the entire block is
+[17:04] there in the cache, and only then we
+[17:07] write.
+[17:08] All right, not before that.
+[17:10] So, what is the basic protocol here that
+[17:13] I'm talking of?
+[17:15] The basic protocol that I'm talking of
+[17:17] here is like this, that when a program
+[17:20] starts, all the blocks that it needs are
+[17:23] in the main memory.
+[17:25] Gradually,
+[17:27] what will happen is that the program
+[17:28] will start executing.
+[17:30] So, let's say it needs a certain block,
+[17:31] it's not there. So, then it is kind of
+[17:35] fetched from main memory. So, a copy of
+[17:38] it is maintained in the L2 cache.
+[17:40] A copy of it is maintained in the
+[17:42] I-cache. And the same for data blocks as
+[17:44] well.
+[17:45] A copy is maintained in the L2 cache,
+[17:47] and a copy is maintained in the
+[17:49] data cache. All right?
+[17:52] So, the processor will always read and
+[17:54] write from the immediate caches, which
+[17:57] which are the I-cache and the D-cache.
+[17:59] Right? The processor will not directly
+[18:01] access the rest of the caches.
+[18:03] But the I-cache and D-cache, they are
+[18:05] like the desk
+[18:08] uh
+[18:09] right in front of a person, or uh
+[18:12] in our example, the laptop.
+[18:14] So, so they are the immediate places
+[18:16] where the processor needs to read or
+[18:19] And pretty much
+[18:22] uh they are small, so even though they
+[18:25] do cache most of the frequent blocks,
+[18:27] occasionally, we'll not find one.
+[18:29] So, we again need to fetch it from a
+[18:31] lower level. And because our hierarchy
+[18:33] is inclusive,
+[18:35] uh it will never be the case that there
+[18:37] is a copy of a block in the D-cache, but
+[18:40] it's not there in the L2 cache. This is
+[18:42] never going to happen.
+[18:49] All right. So, how do we
+[18:51] uh store blocks in a cache, right? Uh
+[18:53] that's an important question.
+[18:57] So, in a 32-bit memory system,
+[19:00] let us design a cache with a 64-byte
+[19:02] block size,
+[19:03] and the total size of the cache will be
+[19:05] 64 kilobytes. All right? So, let this be
+[19:08] our running example,
+[19:11] that our memory addresses are 32 bits
+[19:13] long.
+[19:15] Our total cache size is 64 kilobytes.
+[19:19] And the size of each block is 64 bytes.
+[19:23] So, with this
+[19:25] assumption in mind, uh
+[19:28] with this problem in mind, let us try to
+[19:31] design a cache for it.
+[19:36] So, what we do is we break the address
+[19:38] into two parts. We divide one part
+[19:42] uh we call one part a block address,
+[19:46] and we call the other part
+[19:48] a byte offset.
+[19:51] So, given that we have a 64-byte block,
+[20:03] 64 bytes is 2 raised to power 6 bits.
+[20:07] So, we need 6 bits to address a byte
+[20:09] within a block.
+[20:10] So, let us refer to this as the byte
+[20:12] offset.
+[20:14] The remaining 26 bits, because the
+[20:17] length of the entire memory
+[20:19] because the length of a memory address
+[20:21] is 32 bits,
+[20:23] the remaining 26 bits are the block
+[20:25] address.
+[20:26] So, they will be used to uniquely
+[20:28] identify a block.
+[20:32] So, let's proceed. The number of cache
+[20:35] lines
+[20:36] is 64 kilobytes divided by 64 bytes. So,
+[20:39] a block is also called a cache line.
+[20:41] And these terms are typically used
+[20:44] interchangeably, even though we will
+[20:46] make a slight difference slight
+[20:48] distinction.
+[20:49] A block will be referred to as the
+[20:50] contents, the 64-byte contents, and the
+[20:53] cache line will be referred to the
+[20:54] location in a cache that stores a single
+[20:56] block.
+[20:58] So, the number of cache lines that we
+[20:59] will have is 64 kilobytes divided by 64
+[21:02] bytes, which is 1,024.
+[21:07] This is 2 to 2 raised to power 10.
+[21:10] So, we'll have 6 bits to specify the
+[21:13] byte offset.
+[21:15] We will have 10 bits
+[21:17] to specify.
+[21:20] Right, I'm talking of a simple mapping
+[21:21] here. So, we can use, as I said, 6 bits
+[21:23] to specify the byte offset within the
+[21:27] And given the fact that a cache can
+[21:29] store 1,024 blocks,
+[21:31] we'll use
+[21:33] the next 10 bits, known as the index,
+[21:37] to actually
+[21:38] uniquely address each block.
+[21:43] So, uh
+[21:44] this is shown over here that we take two
+[21:46] 32-bit addresses, we remove the bottom 6
+[21:49] bits,
+[21:50] because they specify the offset of the
+[21:52] byte in the block. So, this part is
+[21:54] removed.
+[21:56] The next 10 bits are what are known as
+[21:58] the index,
+[21:59] and they tell us that in this cache with
+[22:01] 1,024 blocks,
+[22:03] which block does it map to?
+[22:06] So, this is a direct-mapped addressing
+[22:08] scheme.
+[22:09] So, this was kind of similar to the way
+[22:12] that we were actually mapping saturating
+[22:14] counters in branch predictors.
+[22:16] So, here, unfortunately, we'll have the
+[22:18] problem of
+[22:19] destructive aliasing, as we had in
+[22:21] branch predictors.
+[22:23] So, there is one important difference
+[22:25] here. In branch predictors, even if
+[22:27] there was destructive interference,
+[22:29] there was aliasing, it was not that big
+[22:32] of an issue,
+[22:34] mainly because even if there is a
+[22:36] mistake in the branch predictor
+[22:38] predictor,
+[22:40] it is not a correctness issue. At best,
+[22:42] we will have
+[22:45] you know, a
+[22:48] in so I'm sorry, in the worst case, we
+[22:50] will have a wrong prediction, and
+[22:51] that'll lead to a loss in performance,
+[22:54] but there'll be no issue in correctness.
+[22:56] But in this case, there will be an issue
+[22:58] with correctness because
+[23:00] we can clearly see that different
+[23:02] addresses are mapping to the same entry.
+[23:05] So, we can use the same trick. We can
+[23:07] have a tag.
+[23:08] In this case, the tag is the remaining
+[23:10] bits, the remaining 16 bits.
+[23:12] And the tag can also be stored along
+[23:15] with the block. So, we So, this is what
+[23:17] I was referring to as a metadata. We can
+[23:19] store the tag,
+[23:21] and then we can store the contents of
+[23:24] the block.
+[23:25] So, this is, of course, 64 bytes.
+[23:31] And in this case, the tag is 16 bits.
+[23:36] So, if you do that, then uh along with
+[23:40] this mapping, which is something similar
+[23:41] to what we have done in branch
+[23:43] prediction, there'll be no aliasing
+[23:45] because we'll of course we'll always
+[23:47] verify the tag, and only if the tag
+[23:49] matches, we will actually access the
+[23:53] So, this has been in a sense
+[23:58] been a stand been a standard narrative
+[24:02] in this course
+[24:03] right from the days of branch
+[24:05] prediction. So, we can use this simple
+[24:08] idea to design a simple cache,
+[24:10] known as a direct-mapped cache, which
+[24:12] solves the problem of aliasing.
+[24:14] So, we have two arrays. We have a tag
+[24:16] array and a data array. The tag array
+[24:18] stores the tag,
+[24:19] and the data array stores the block.
+[24:22] How these arrays are created, well, that
+[24:25] is a subject of
+[24:27] future study in the next subsection,
+[24:31] when we will discuss SRAM and CAM
+[24:32] arrays,
+[24:33] but
+[24:35] let us bear in mind that we have two
+[24:37] arrays in a cache.
+[24:39] One is the tag array, the other is the
+[24:40] data array.
+[24:42] And of course, they are the same number
+[24:43] of entries with a one-to-one
+[24:45] correspondence.
+[24:47] So, using the index, which in this case,
+[24:50] in our running example, is the 10 bits
+[24:53] over here,
+[24:55] we access the tag array.
+[24:57] We read the tag.
+[24:59] And along with that, we also fetch the
+[25:02] tag part of the address,
+[25:04] right, of the memory address
+[25:06] that is being given to the cache.
+[25:09] So, think of the cache as kind of a
+[25:10] black box.
+[25:13] And let's see if it's a load, if it's a
+[25:15] read, we give it the address,
+[25:18] and out comes the data
+[25:20] if the data is there. Otherwise, we get
+[25:23] a hit miss signal.
+[25:27] Sorry, otherwise
+[25:28] And along with that, we get a hit miss
+[25:30] signal. So, the miss tells us
+[25:32] that the data is actually not there.
+[25:35] So, from the address, we extract its
+[25:37] upper 16 bits, which is the tag part of
+[25:40] the address,
+[25:41] and we compare the stored tag with the
+[25:43] tag part of the address.
+[25:46] If they are equal, well, we say it's a
+[25:48] hit.
+[25:49] If they are not equal, we say it's a
+[25:51] miss.
+[25:52] If we have a cache hit, which means that
+[25:55] the tag part of the address matches the
+[25:57] tag,
+[25:58] then we go to the same index over here,
+[26:00] and access the data array entry, which
+[26:02] is this block. If it's a read, well, if
+[26:05] you want to read four bytes out of this,
+[26:07] well, we read those four and
+[26:10] send it to the output.
+[26:13] If it's a write, then we'll also
+[26:15] typically write to four or eight bytes
+[26:16] at a time. So, we will, of course, uh
+[26:20] you know, select those four or eight
+[26:21] bytes and write to them.
+[26:24] Often,
+[26:26] just to improve performance, we access
+[26:28] the tag array and the data array in
+[26:31] parallel.
+[26:36] So, basically, we access these arrays in
+[26:39] parallel because, as we have seen,
+[26:43] we often do extra work
+[26:45] in the interest of performance, even
+[26:47] though some of that work might get
+[26:48] discarded.
+[26:49] So, in this case, what we do is that we
+[26:51] access
+[26:54] this entry of the tag array,
+[26:57] and we access this entry of the data
+[26:59] array in parallel, and we read both of
+[27:01] them.
+[27:02] If it's a miss, well, nothing. We just
+[27:04] discard this data.
+[27:06] If it's a hit,
+[27:08] then
+[27:09] well, uh the then there is a performance
+[27:11] advantage because we have anyway read
+[27:13] this entry. So, we can directly
+[27:17] uh send the bytes that the processor
+[27:19] wanted to the processor.
+[27:21] Or we can
+[27:25] if you have written to a temporary copy,
+[27:27] we can transfer it back.
+[27:28] So, how exactly we do the read and
+[27:30] write, that, as I said, is a subject of
+[27:33] a later section.
+[27:34] But writes are not that important
+[27:36] because they are not
+[27:38] on the critical path.
+[27:39] What are on the critical path is the
+[27:41] read, and since let us focus on reads,
+[27:44] so in the read, what we can do is we can
+[27:46] read the tag and the data in parallel.
+[27:51] If there is a hit, well, it'll save us
+[27:52] some time.
+[27:54] So, we can send the relevant part of the
+[27:56] line to the processor.
+[27:59] If there is a miss,
+[28:02] then we just discard whatever we have
+[28:04] read.
+[28:06] What is the problem? Well, the problem
+[28:08] is that you are not able to see because
+[28:11] of the ink. So, let me take
+[28:13] out the ink.
+[28:15] So, now the problem is clearly visible
+[28:17] that there will be a lot of destructive
+[28:19] interference. Well, that there will be
+[28:22] because often, you know, you might have
+[28:24] some hotspots forming at some cache
+[28:27] lines.
+[28:28] In a sense, because of destructive
+[28:30] interference, some cache lines
+[28:32] will actually see a lot of parallel
+[28:35] accesses from different addresses.
+[28:38] And so, they will essentially be
+[28:40] displacing each other's data, leading to
+[28:42] a large number of cache misses.
+[28:45] To avoid this, we should design a cache
+[28:47] in a different in a different way
+[28:49] to kind of reduce the probability of
+[28:52] destructive interference aliasing.
+[28:54] Because even though we have even if we
+[28:56] have enough space,
+[28:58] it might still be the case that some
+[29:00] entries in the cache there is heavy
+[29:02] contention.
+[29:03] Multiple addresses are mapping to them.
+[29:07] So, let us define uh
+[29:10] diff
+[29:11] a different kind of cell. So, let us
+[29:13] design a different kind of cell.
+[29:15] Let's call it a CAM cell, or a content
+[29:18] addressable memory cell.
+[29:20] We have already seen this, if you would
+[29:22] recall,
+[29:23] uh in the logic for retirement, where we
+[29:27] talked about a CAM-based RAT design.
+[29:30] So, in this case, we have an array of
+[29:32] CAM cells.
+[29:34] So, the way that CAM cells
+[29:36] function is like this, that each CAM
+[29:38] cell stores a single bit.
+[29:42] We compare this single bit with one of
+[29:44] the input bits.
+[29:46] So, let's say this is bit B1 and the
+[29:48] input bit is I1. We compare them.
+[29:52] Similarly, we compare B2 and I2.
+[29:58] If all of them are equal, which means
+[30:02] if the entire bit string B1 to BN
+[30:05] is equal to
+[30:11] If both of these are equal,
+[30:16] then the match line is set to one.
+[30:19] Otherwise, the match line is set to
+[30:21] zero.
+[30:23] So, what we have in a CAM cell is we
+[30:25] have a
+[30:26] we have an array of
+[30:29] entries.
+[30:31] And also, we have an input entry. So,
+[30:34] the input is the content.
+[30:37] So, the entry will
+[30:39] typically match with one of them.
+[30:42] So, all of these,
+[30:44] let me just maybe delete a little bit.
+[30:57] So, we provide an entry.
+[30:59] And
+[31:01] the output is the match lines.
+[31:03] So, only
+[31:05] one of the match lines will be set to
+[31:06] one.
+[31:08] And the rest will be set to zero because
+[31:09] they'll have different entries.
+[31:11] So, this will tell us which row
+[31:14] has the same has the matching entry has
+[31:16] the same contents as E.
+[31:19] So, we will see that this information is
+[31:20] very useful.
+[31:22] And it can be used to design a fully
+[31:24] associative cache
+[31:26] where a block can actually reside in any
+[31:29] cache line.
+[31:30] So, you have 1,024 cache lines.
+[31:33] So, a block can reside in any cache
+[31:34] line.
+[31:36] And the advantage is that this will
+[31:37] minimize the probability of
+[31:40] aliasing or destructive interference.
+[31:45] So, let us go back to the description
+[31:46] over here. The match line is set to one
+[31:50] only if all the CAM cells
+[31:54] right where each CAM cell contains one
+[31:55] bit, all of them match
+[31:57] the input, right?
+[31:59] So, to reduce destructive aliasing, we
+[32:02] want to use this CAM mechanism and match
+[32:06] to ensure that a block can reside
+[32:08] anywhere in the cache. So, the cache has
+[32:12] 1,024 lines.
+[32:19] The block can reside anywhere.
+[32:21] Right? So, this is what needs to be
+[32:23] ensured.
+[32:27] So, the way that the fully associative
+[32:29] cache will work is that again, it will
+[32:30] have two arrays, a tag array and a data
+[32:33] array.
+[32:35] The tag array is an array of CAM cells.
+[32:38] So, we send it the tag part of the
+[32:40] address. We will discuss how long it is.
+[32:43] And then, the we compare the tag part of
+[32:46] the address with each of the stored
+[32:48] tags.
+[32:51] Then, the results So, internally,
+[32:55] we are essentially comparing.
+[32:57] So, if there are N entries over here,
+[32:59] say in this case, if N is 1,024, we'll
+[33:02] have 1,024 match lines coming out.
+[33:05] So, we can
+[33:07] or all of them compute a logical or of
+[33:10] all of them.
+[33:12] If you compute a logical or of all of
+[33:14] them, if one of them is one, the final
+[33:16] output will be one.
+[33:18] And then, that will indicate a hit.
+[33:21] But, if all of them are zero, which
+[33:23] means that none of the tags actually
+[33:25] matched,
+[33:26] then the final output will be a miss.
+[33:33] And also, if you were to find out which
+[33:36] cache line actually mapped
+[33:38] actually matched,
+[33:40] we need to use an encoded circuit.
+[33:42] So, recall that an encoded circuit works
+[33:44] like this.
+[33:59] So, the encoder finds the index of that
+[34:02] input, which is one.
+[34:05] For example, in a four-bit encoder, if
+[34:07] the third input is one,
+[34:10] the output So, this is
+[34:12] the count starts from zero, zero, one,
+[34:14] two.
+[34:15] So, the output is one zero.
+[34:18] So, in this case, the advantage of
+[34:20] having a setup like this
+[34:22] is that the encoder can identify which
+[34:26] cache line
+[34:27] the index of that cache line
+[34:30] that has the matching entry.
+[34:32] Since there is a one-to-one
+[34:33] correspondence between the entries of
+[34:35] the tag array and the entries of the
+[34:37] data array,
+[34:39] what we can do is that we can fetch the
+[34:41] corresponding entry from the data array.
+[34:44] Right? And we can
+[34:47] uh provide that as the output. So, of
+[34:50] course, in this case, we will not be
+[34:52] accessing the data and tag arrays in
+[34:53] parallel because we'll have to then
+[34:55] access all the entries of the data
+[34:57] array, which is not practical.
+[35:00] So, what's the key idea? A block can be
+[35:01] stored in any cache line.
+[35:03] The disadvantage is that such caches are
+[35:06] slow and power hungry.
+[35:08] And we would typically not want to use
+[35:11] such fully associative caches.
+[35:14] The reason being that
+[35:17] in terms of power and performance,
+[35:20] uh the trade-offs are quite adverse.
+[35:23] However, there are a couple of
+[35:24] structures in which they are still
+[35:26] preferred. But, these structures are
+[35:27] small. They are not as large as 64
+[35:30] kilobytes. So, that no way, this is too
+[35:32] large.
+[35:33] But, these are much smaller. So, they
+[35:34] would have maybe 16 or 32 entries.
+[35:37] In that case, a fully associative cache
+[35:39] is preferred. Right? Only if it's small.
+[35:44] So, what is a compromise solution? All
+[35:46] right?
+[35:48] The compromise solution is
+[35:51] that I can have
+[35:54] a set associative cache. All right?
+[35:58] So, in this, what I can do is I can
+[36:00] divide the 1,024 cache lines
+[36:03] into 256 sets where each set contains
+[36:07] four cache lines with contiguous
+[36:09] indices.
+[36:11] So, instead of mapping a block to a
+[36:14] cache line as was mapped approach, I map
+[36:17] a block to a set.
+[36:20] So, what I do is that given the block
+[36:21] address,
+[36:33] I map it to a set. And the set can
+[36:36] contain, let's say in this case, it
+[36:38] contains four cache lines.
+[36:40] So, you map it to a set.
+[36:42] Within the set, similar to the fully
+[36:44] associative scheme, it can be stored in
+[36:46] any cache line.
+[36:47] So, I have to do a limited search. It's
+[36:49] not a full search.
+[36:51] And also, I need not use the expensive
+[36:53] CAM cell
+[36:54] because the CAM cell is much more power
+[36:59] uh I mean, it demands much more power
+[37:02] than the regular SRAM cell that is used
+[37:04] in a normal array.
+[37:07] So, this
+[37:09] set associative approach where we have
+[37:12] flexibility within a set is kind of a
+[37:14] compromise.
+[37:16] It provides a degree of flexibility and
+[37:18] it also reduces the probability of
+[37:20] aliasing.
+[37:24] it is sort of the best of both worlds.
+[37:28] So, what we do, the broad approach, is
+[37:30] that we access the tag array.
+[37:33] So, we'll have four tags in a set. We
+[37:35] read all the tags in the set.
+[37:38] Then, we compare. So, in this case, we
+[37:40] use traditional comparators. If there is
+[37:42] a successful comparison, we declare a
+[37:45] Else, we declare a miss.
+[37:48] So, let's look at the diagram of a set
+[37:50] associative cache. This will be clear.
+[37:54] So, uh what I can do over here
+[37:58] is that
+[37:59] I will divide my bits in a different
+[38:02] manner.
+[38:03] So, the bottom six bits will remain the
+[38:06] same because they specify the offset of
+[38:08] the byte within the block.
+[38:11] So, these will remain the remain the
+[38:12] same.
+[38:14] Subsequently,
+[38:16] we have 256 sets.
+[38:19] So, 256 is equal to
+[38:25] two raised to the power eight.
+[38:28] So, two raised to the power eight So,
+[38:29] eight in this case is the index.
+[38:32] And the index uniquely maps
+[38:34] the address to a set.
+[38:37] And the remaining bits, which are
+[38:38] unspecified,
+[38:40] which essentially
+[38:41] any two alias addresses might have
+[38:45] uh well, any two alias addresses,
+[38:48] these bits will be different.
+[38:50] And they are the remaining 18 bits. So,
+[38:52] where does 18 come from? 8 + 6 is 14. 32
+[38:56] - 14 is 18. So, in this case, the tag,
+[38:59] instead of being 16 bits, the tag is 18
+[39:03] bits. That's important to keep in mind.
+[39:05] So, this is the right point of time to
+[39:07] actually go back and answer one
+[39:10] unanswered question
+[39:12] in the fully associative cache,
+[39:14] which is how large is the tag in the
+[39:16] fully associative cache? So, let me go
+[39:19] back.
+[39:21] Quickly answer that
+[39:23] before I proceed because
+[39:25] I mean, that's a vital part of this
+[39:27] discussion as well.
+[39:30] So, in the fully associative cache,
+[39:33] well, the bottom six bits will remain
+[39:35] the same.
+[39:39] But, then,
+[39:40] we are not specifying anything about
+[39:43] which block can be mapped to which
+[39:45] index. It's pretty much free for all.
+[39:47] So, if you think about it, the tag
+[39:50] will actually be the next 26 bits,
+[39:53] which is the entire block address,
+[39:56] because we are not using any part of the
+[39:58] block address to index the cache line.
+[40:01] So, since no part of the block address
+[40:03] is being used, the entire 26 bits is the
+[40:05] tag.
+[40:06] Recall that in a direct mapped cache,
+[40:09] the tag was 16 bits,
+[40:11] mainly because the index was 10.
+[40:14] In the case of a
+[40:15] fully associative cache, there is no
+[40:17] index. The index is zero bits.
+[40:20] Hence, the tag is
+[40:23] the remaining bits, which is 26.
+[40:25] So, we can kind of think of the fully
+[40:28] associative cache as a set associative
+[40:30] cache, where of course there is a single
+[40:32] set and it encompasses all the lines.
+[40:36] Now, coming back, so what have we seen?
+[40:39] What we have seen is that in a direct
+[40:41] mapped cache, the size of the tag is 16
+[40:43] bits.
+[40:44] In a fully associative cache, it is 26
+[40:48] In the case of a set associative cache
+[40:50] with a
+[40:51] what is called a four-way set, which
+[40:53] means that we have four cache lines in
+[40:55] the set.
+[40:56] So, this is referred to as a four-way
+[40:58] set.
+[41:00] Uh in this case,
+[41:02] uh what we have is that we have an
+[41:05] 18-bit tag.
+[41:09] So, the method of indexing such a cache
+[41:12] is that well, we first discard these
+[41:16] We take the 8-bit index.
+[41:18] Based on this, we generate
+[41:21] four addresses,
+[41:23] which are the addresses of the four
+[41:25] cache lines within the set, which are
+[41:27] these four cache lines.
+[41:30] Then, uh we also take the tag part of
+[41:32] the address, and we compare the tag part
+[41:34] of the address with the stored tags.
+[41:38] So, since there are four of them, we can
+[41:40] have a small OR gate. The small OR gate
+[41:42] can be used to compute a hit or a miss.
+[41:46] And if there is a hit,
+[41:48] well, that's good.
+[41:50] So, what we do is then we use an
+[41:51] encoder. So, the encoder tells us which
+[41:54] one of these lines
+[41:56] uh actually
+[41:57] had a hit, right? So, we can number them
+[42:00] 0 1 2 and 3, which one of them had a
+[42:04] And simultaneously, the four addresses
+[42:06] of the lines are being sent to a
+[42:08] multiplexer.
+[42:10] So, the output of the encoder is going
+[42:11] to the multiplexer, so that that will
+[42:13] help us choose
+[42:15] what is the final index of the matched
+[42:17] entry.
+[42:18] For example, if this is the final index
+[42:20] of the matched entry, its number is one.
+[42:23] That is what the encoder will output as
+[42:26] And then,
+[42:27] basically, this input over here
+[42:30] will be chosen.
+[42:32] And this address will be the final index
+[42:34] of the matched tag entry
+[42:36] if
+[42:39] uh there is a hit.
+[42:41] Now, the important thing is the way that
+[42:42] I've described,
+[42:44] uh it should be understandable to all.
+[42:47] If it is not,
+[42:48] here is what you need to do.
+[42:50] What you need to do is you need to
+[42:53] understand the following things, and
+[42:55] that will help you understand this slide
+[42:57] better.
+[42:58] The first is you need to understand how
+[43:00] an encoder works.
+[43:02] Any book on digital logic will have
+[43:03] this.
+[43:05] Second,
+[43:07] you need to understand that how do you
+[43:09] generate four addresses from the set
+[43:11] index? Well, that is easy. We take the
+[43:13] set index like this. These are the eight
+[43:15] bits. We can just generate four
+[43:17] addresses 00 01. Just concatenate with
+[43:20] it 10 and 11.
+[43:23] Now, the question is are you able to
+[43:25] understand what I said or not?
+[43:27] If you are not able to understand, then
+[43:29] uh you need to understand
+[43:33] more of Boolean algebra.
+[43:35] So, pick up a book and go over Boolean
+[43:38] algebra.
+[43:39] The rest should be straightforward.
+[43:42] And are you able to understand the
+[43:44] connection between this encoder and this
+[43:46] multiplexer?
+[43:48] For most students of electronics and
+[43:50] electrical engineering, this should not
+[43:52] be hard.
+[43:54] If you're finding that it to be
+[43:56] difficult, then you need to understand
+[43:58] how a multiplexer works.
+[44:00] Then, you can clearly appreciate why the
+[44:02] final output will be the index of the
+[44:05] matched tag entry.
+[44:07] Let me clear off the ink
+[44:09] and uh explain the basic idea at the
+[44:12] highest level.
+[44:14] So, that at the highest level, we have a
+[44:16] We read four tags in the set and compare
+[44:19] it with the tag part of the address.
+[44:21] So, if there is a hit, it gives us the
+[44:23] index of the matched entry.
+[44:25] So, what I'm not showing in this figure
+[44:27] is that we
+[44:29] go and access the data array with that
+[44:31] index.
+[44:33] We can use the same trick over here,
+[44:36] which is that we can read the four tags
+[44:39] in parallel.
+[44:40] If we read the four tags in parallel,
+[44:43] along with reading the data array, along
+[44:46] with reading the four corresponding data
+[44:47] array entries,
+[44:49] so this is a performance enhancing trick
+[44:51] in the sense that we don't know which
+[44:53] entry will match, if at all.
+[44:55] But at least the
+[44:57] performance enhancing trick over here is
+[45:00] that the tags are being read.
+[45:02] The tag and the data
+[45:05] array entries, all of them are being
+[45:06] read in parallel.
+[45:08] And this is going to give us an
+[45:09] advantage in terms of time. Of course,
+[45:12] not in terms of power, because we are
+[45:13] doing wasted work. But at least for
+[45:16] speeding up reads, this is going to be a
+[45:18] very useful technique.
+[45:22] All right. Now, let us look at basic
+[45:24] operations in a cache.
+[45:28] So, let us look at two scenarios when
+[45:31] there is a hit and there is a miss.
+[45:33] So, what we can do, so what we have
+[45:35] discussed is that for the sake of a data
+[45:38] read,
+[45:39] we can do the look up, which is the tag
+[45:42] look up basically.
+[45:45] And also read uh the data blocks, the
+[45:49] the blocks in the data array.
+[45:51] Both of them can be done in parallel, so
+[45:53] there can be an overlap between them.
+[45:55] So, this as you can see, for a hit, this
+[45:58] is a performance enhancing exercise,
+[46:00] because there is clearly an overlap in
+[46:02] terms of time.
+[46:04] Of course, if there is a hit, we choose
+[46:06] one of the red blocks.
+[46:09] That's a performance optimization.
+[46:11] If there is a miss, well, uh so this is
+[46:13] scenario one for a hit.
+[46:16] If there is a miss, this is what
+[46:18] we do.
+[46:20] So, what we do is that we do a look up.
+[46:23] If there is a miss, we send the request
+[46:25] to the lower level.
+[46:26] Again,
+[46:28] in the lower level, we have the same
+[46:29] access protocol. If there is a hit, we
+[46:32] supply the data, otherwise we go down.
+[46:35] So, finally, when we get the data, we
+[46:37] read the block.
+[46:40] And we also try to insert it in the
+[46:42] cache. So, how do we insert it?
+[46:44] Well, we look at the four entries in a
+[46:47] set, if it's a four-way associative
+[46:49] cache.
+[46:50] So, in a set associative cache,
+[46:54] if let's say there are four
+[46:56] uh tags per set, it's called a four-way
+[46:58] associative cache.
+[47:00] If there are K tags per set, it is
+[47:02] called a K-way associative cache.
+[47:07] So, if any one of these is empty, then
+[47:09] well, we can write the block to that
+[47:13] Otherwise, we need to
+[47:15] pretty much throw out one of these
+[47:16] blocks, which is called eviction.
+[47:19] So, we first find a replacement
+[47:21] candidate, which as we shall see, there
+[47:24] are various heuristics.
+[47:25] We never want to replace frequently used
+[47:28] blocks, right? So, this is not something
+[47:31] we would like to do.
+[47:33] So, we find a candidate for replacement.
+[47:35] Right? So, the reason I have a question
+[47:37] mark here is basically because
+[47:39] uh you know, there is a possibility that
+[47:42] uh you know, this essentially captures
+[47:44] the possibility
+[47:48] uh one no entry in the set is free. No,
+[47:51] right? All the entries are full.
+[47:54] So, if all the entry entries are not
+[47:56] empty, sorry, uh then
+[48:00] uh what we need to do is that we need to
+[48:02] find a candidate for replacement,
+[48:05] evict it, which means write it back to
+[48:07] the lower level.
+[48:09] And I'll discuss what is a write-back
+[48:11] cache, but the quick idea over here is
+[48:14] that if it has been written to, if it
+[48:16] has been modified, then only there is a
+[48:18] need to actually write the contents to
+[48:22] However, if it hasn't been modified,
+[48:24] there is no need to write it, because
+[48:26] anyway there is a copy at the lower
+[48:28] level cache.
+[48:33] So, since there is a copy, and the
+[48:35] copies are guaranteed to be the same,
+[48:37] because there has been no write at the
+[48:38] upper level, we need not do a write.
+[48:41] And we will see there is uh there is a
+[48:43] variant of this scheme as well in the
+[48:45] next slide, but this is the broad idea.
+[48:49] And after creating space, so let's say
+[48:51] that all the four entries were not
+[48:53] empty.
+[48:54] So, after we create space in the sense,
+[48:56] if we let's say evict this block,
+[48:58] then space is created, and the new block
+[49:01] can be inserted over here.
+[49:05] So, this process of evicting a block,
+[49:08] creating space, and inserting
+[49:11] This is of course optional, subject to
+[49:12] the fact that we don't have an empty
+[49:15] entry in the set.
+[49:18] So, uh the
+[49:20] flowchart for a miss is clearly more
+[49:22] elaborate in the sense in the sense you
+[49:25] have a replace and evict operation.
+[49:28] So, let's take a look at this in some
+[49:31] more detail.
+[49:33] So, along with the tag in the tag area,
+[49:35] along with the tag, we have two
+[49:37] additional bits.
+[49:39] They are the valid bit and the modified
+[49:41] bit.
+[49:42] So, the valid bit indicates if the line
+[49:45] contains valid data or not. Or, in a
+[49:47] sense, is it empty or full? This is the
+[49:49] job of the valid bit.
+[49:52] The modified bit, on the other hand,
+[49:54] says that after the block has come into
+[49:56] the cache,
+[49:57] has any byte of the block been modified,
+[50:01] right? So, it captures this fact that
+[50:03] whether this block,
+[50:05] any part of it, has been written to or
+[50:08] not.
+[50:10] So, in the context of the modified bit,
+[50:12] right, in the context of writing to a
+[50:16] there are two schemes, a write-through
+[50:17] scheme and a write-back scheme.
+[50:23] So, in the write-through scheme, what we
+[50:25] do is
+[50:26] that we propagate every write to the
+[50:28] lower level. So, if you let's say we
+[50:30] have the L1 cache,
+[50:34] and we have the L2 cache.
+[50:38] Whenever we have a write, every single
+[50:41] write is propagated to the lower level.
+[50:45] So, this, of course, is expensive in
+[50:46] terms of messages. This is expensive in
+[50:48] terms of power.
+[50:50] But, the advantage is that if we want to
+[50:52] throw out any block from the cache, we
+[50:54] just throw it out. There is no reason to
+[50:57] write it to the lower level at that
+[50:58] point. The reason is because in any
+[51:01] case, the two replicas of the block at
+[51:04] the upper and lower level are
+[51:05] synchronized. They are the same.
+[51:08] This is power expensive.
+[51:10] Right, expensive in terms of power, but
+[51:13] nevertheless, eviction is simple.
+[51:17] The more performance
+[51:19] optimal scheme is actually the
+[51:21] write-back scheme.
+[51:23] See, here what we do is at the upper
+[51:25] level, let's say at the L1 level,
+[51:30] when we write to a block, we don't
+[51:32] propagate the right. Instead, we set the
+[51:34] modified bit to one.
+[51:38] So, once we set the modified bit to one,
+[51:40] we remember it. Right? So, by default,
+[51:42] it is zero.
+[51:44] At the time of eviction, if this line is
+[51:47] supposed to be thrown out,
+[51:49] then what we do is we check if the line
+[51:51] is modified. Only if it is modified, we
+[51:54] write it back to the lower level. Right?
+[51:57] Otherwise, there is no need to write it
+[51:58] back because the replicas are the same.
+[52:01] So, the write-back scheme does
+[52:03] introduce uh, some amount of additional
+[52:06] state.
+[52:07] The additional state is limited to one
+[52:09] bit, which is the modified bit, one bit
+[52:11] per block, basically.
+[52:13] But, it helps us reduce the number of
+[52:15] messages and save power.
+[52:21] So, now let us look at the write-back
+[52:23] cache. Well, the write-back cache for a
+[52:25] write operation would look like this.
+[52:28] That we will do a look-up.
+[52:30] So, we can't have the same optimization
+[52:32] that we had for a read.
+[52:34] Right? So, in the sense that even if
+[52:36] it's a four-way set associative cache,
+[52:39] we can't write to all four all four
+[52:40] blocks, right? So, we need to find which
+[52:42] index there is a hit.
+[52:44] We access that entry and we do a data
+[52:49] That is the broad idea.
+[52:55] uh,
+[52:57] once this is done, the
+[53:00] job with the the right is done.
+[53:02] Here also, if there is a miss, there is
+[53:04] more work.
+[53:05] So, as we have argued in the past, even
+[53:08] if we want to write to a single byte, we
+[53:10] still need to fetch the entire block.
+[53:15] So, there is a miss, we want to write to
+[53:16] let's say four bytes, we still need to
+[53:18] fetch the entire 64-byte block.
+[53:21] And this needs to be inserted in the
+[53:24] And then, of course,
+[53:25] so we write to the block, we let's say
+[53:27] put it in a temporary buffer, we write
+[53:28] to those four bytes.
+[53:30] And the entire block needs to be
+[53:32] inserted into the cache.
+[53:34] If you have space for it, it is great.
+[53:36] Otherwise, we replace,
+[53:38] we evict, and we insert.
+[53:42] And uh,
+[53:43] this is the standard way in which we do
+[53:45] things.
+[53:47] In comparison in a write-through cache,
+[53:51] uh, we do things slightly differently.
+[53:54] See, if you just compare the hit, uh,
+[53:56] when there is a cache hit, here we don't
+[53:58] do anything.
+[53:59] But, in a write-through cache, whenever
+[54:01] there is a cache hit,
+[54:03] every single write is propagated to the
+[54:05] lower level.
+[54:06] This ensures that the replica of the
+[54:08] block which is there at the lower level
+[54:10] and the replica which is there at the
+[54:11] upper level,
+[54:13] they always remain the same.
+[54:18] furthermore, for the benefit of this is
+[54:22] that uh, when we are actually
+[54:26] servicing a miss,
+[54:28] we can
+[54:30] save some work. Let's see how.
+[54:33] So, let us assume
+[54:35] that there is a miss at the upper level.
+[54:38] So, we access the lower level. So, let's
+[54:39] say there's a miss in L1, we access L2.
+[54:43] Then, what we do is since it's a
+[54:45] write-through cache, we perform a write
+[54:46] in the L2 cache as well.
+[54:49] And we fetch the block, the entire
+[54:50] contents of the block, and we write to
+[54:52] it. And then, we try to insert it.
+[54:55] If you are not able to find
+[54:57] a free
+[54:58] line,
+[55:00] we find a candidate for replacement.
+[55:03] We will see how.
+[55:06] And then, we just seamlessly evict the
+[55:08] line. Right? So, so this entire block,
+[55:10] sorry, we evict the block.
+[55:12] So, the end So, the block, the reason it
+[55:14] can be seamlessly evicted is because the
+[55:16] copy of the block in the upper level and
+[55:18] the lower level is the same.
+[55:20] And that is why it just can be thrown
+[55:22] out. Right? Seamlessly evicted.
+[55:25] Once space is created, we can insert the
+[55:29] the new block, into the L1 cache.
+[55:33] So, uh, this does take into account the
+[55:35] fact that the hierarchy is inclusive in
+[55:37] the sense that
+[55:39] if there is any block which is in, let's
+[55:42] say, the L1 cache,
+[55:44] there will always be an entry for it in
+[55:48] In the case of a write-through cache,
+[55:50] L1 and L2 will always have the same
+[55:53] copy. Not necessarily true in a
+[55:55] write-back cache.
+[55:59] So, what are the replacement policies?
+[56:00] Well, the replacement policy would be
+[56:02] like this. Let's say it's a K-way set
+[56:06] So, in every set, there will be these
+[56:08] K-ways, right?
+[56:13] So, one is random. So, random
+[56:15] replacement in practice is not that bad,
+[56:18] but it's not optimal. So, it's not the
+[56:20] best, clearly.
+[56:21] One is first-in, first-out.
+[56:24] So, in first-in, first-out, the way that
+[56:27] we will implement this
+[56:28] is that we need to associate some sort
+[56:30] of a timestamp
+[56:32] associated with each line.
+[56:35] So, the timestamp will record the fact
+[56:37] that when the line was brought in.
+[56:39] So, this does increase the storage
+[56:41] overhead and this does increase this
+[56:45] uh, the bookkeeping space that is
+[56:47] required. But, then what will happen is
+[56:50] anytime we need to evict, we evict the
+[56:52] oldest one.
+[56:53] The reason this doesn't work well in
+[56:55] practice
+[56:56] is because the oldest line in a set
+[56:59] might also be the one that is the most
+[57:03] Right? So, the oldest one might be the
+[57:05] most frequent one.
+[57:07] So, we are not capturing this.
+[57:10] This is why FIFO is not used that much
+[57:13] in practice.
+[57:14] What actually works the best and also in
+[57:16] many theoretical settings,
+[57:18] it can be proven that this is indeed
+[57:20] optimal,
+[57:22] uh, is the LRU, the least recently used,
+[57:25] which means you define a window of time,
+[57:28] within that a given line should be the
+[57:30] most re
+[57:31] should be the least recently used.
+[57:34] So, ideally, theoretically,
+[57:37] LRU is impractical. Why? Because here
+[57:40] again, you need to maintain timestamps.
+[57:42] And whenever you access
+[57:46] a block, you need to update its
+[57:48] timestamp. So, you need to say that,
+[57:49] "Look, I accessed it now."
+[57:51] Doing this in software is easy for other
+[57:54] uh, for higher level programs, but doing
+[57:56] this at the level of hardware, and that
+[57:58] too at the level of a cache,
+[58:00] is impractical.
+[58:03] So, you can't, you know,
+[58:05] FIFO at least was slightly practical
+[58:07] because you just create the timestamp
+[58:09] once,
+[58:10] which is while inserting the block. But,
+[58:12] in this case, every time you access it,
+[58:14] you'll have to update the timestamp,
+[58:15] which is not practical.
+[58:17] So, what instead is done is that we use
+[58:20] pseudo LRU.
+[58:22] So, along with each tag,
+[58:28] we have a three-bit
+[58:30] saturating counter.
+[58:33] Or a four-bit, I mean, a K-bit
+[58:37] Right? So, it doesn't matter. I mean,
+[58:38] two bits, three bits, four bits, doesn't
+[58:39] matter.
+[58:40] On every access, we increment the
+[58:42] saturating counter. So, this in in the
+[58:45] sense
+[58:46] shows the recency. Shows the fact that
+[58:49] something that is more recently used
+[58:51] will have a higher value of the counter.
+[58:54] But, then what will happen is that over
+[58:57] ultimately, all the counters will
+[58:58] saturate.
+[59:00] This is not what we want. Right?
+[59:02] Since we don't want this, what we do
+[59:05] is that we periodically decrement all
+[59:07] the counters
+[59:09] in the entire cache.
+[59:13] So, uh, well, whether we decrement or we
+[59:16] set them to zero, well, we will see.
+[59:19] But, let's assume that from from a
+[59:21] simplistic point of view,
+[59:23] if this is the tag array, so you have
+[59:24] all the tags over here nicely stored.
+[59:28] And then, you have all these
+[59:32] counters.
+[59:34] So, periodically we just decrement them
+[59:36] by one.
+[59:37] So, decrementing in general is a hard
+[59:39] operation, but what we can do
+[59:41] is that we can actually store these
+[59:43] counters as three. So, let's let's
+[59:45] assume it's a three-bit saturating
+[59:47] counter. So, we can store them as three
+[59:50] And what we can do is periodically,
+[59:52] maybe,
+[59:53] we can just set
+[59:56] one of these entire arrays to zero. So,
+[59:59] setting a full array to zero is
+[60:01] comparatively a much easier operation.
+[60:03] So, you can see in the book there is a
+[60:05] mechanism called flash clear.
+[60:07] So, periodically what we can do
+[60:10] is that, you know, we can set one of
+[60:11] these arrays to zero.
+[60:13] So, this will essentially ensure that
+[60:16] all of them, you know, to a certain
+[60:18] extent are getting
+[60:19] reduced, right? And this is faster than
+[60:22] decrementing.
+[60:24] Then, what will happen is that
+[60:27] all of them will get reduced,
+[60:30] and then gradually they will start
+[60:31] increasing.
+[60:32] So, with this method, which is called
+[60:34] pseudo LRU,
+[60:36] you will see that the entries that are
+[60:38] the most recently used, they will have
+[60:41] higher values of these counters.
+[60:43] And uh the counters that are least
+[60:45] recently used will have lower values.
+[60:48] So, we choose the entry in the set with
+[60:50] the least value of the counter.
+[60:54] And so, this is this means that because
+[60:56] of temporal locality,
+[60:58] you can say with high confidence that
+[61:00] most likely in the future also this line
+[61:02] will not be accessed.
+[61:04] So, you will choose this as a target for
+[61:06] replacement,
+[61:07] and you will evict it.
+[61:09] In this place of that, the new block can
+[61:12] be brought in.

@@ -1,0 +1,1073 @@
+[00:00] [Music]
+[00:22] in the last lecture of this chapter let
+[00:25] us look at the nature of dependencies in
+[00:28] an outof order pipeline and the problems
+[00:31] that these dependencies can
+[00:35] cause so we have looked at the program
+[00:38] order
+[00:38] dependence so this is rather simple so
+[00:41] this is essentially the order of
+[00:43] instructions that appear in the original
+[00:46] program so this is one
+[00:49] instruction and this is the instruction
+[00:51] after it so this is a program order
+[00:55] dependence and uh we have already
+[00:58] distinguished between the terms a static
+[01:02] instruction and a dynamic
+[01:10] instruction so a static instruction uh a
+[01:14] classic example would be let's assume we
+[01:16] have a for Loop so the for Loop will
+[01:19] have a set of assembly instructions with
+[01:21] a jump of course a backward
+[01:23] jump so how do we detect a loop in
+[01:26] Hardware well it is simple any jump with
+[01:28] a negative offset is
+[01:30] essentially well not most of the time uh
+[01:34] it points to a loop because we go back
+[01:37] again we start executing again we go
+[01:39] back right it's a loop so if you see
+[01:42] here there are 1 2 3 4 five there are
+[01:44] five static instructions but if the loop
+[01:47] has 100 iterations it is 500 Dynamic
+[01:52] instructions so here one instruction
+[01:54] appears after the other in program order
+[01:57] and we always talk about the Dynamic
+[02:00] sequence in our
+[02:04] discussion so the program order is
+[02:06] simple we have seen that uh no great no
+[02:09] major
+[02:11] issues now uh let us discuss uh read
+[02:14] after WR dependencies so these are the
+[02:17] dependencies that were causing a lot of
+[02:19] issues in in order pipelines so in in
+[02:23] order pipelines basically this was a
+[02:27] classic producer uh consumer
+[02:36] dependency for the first one
+[02:40] is the producer
+[02:43] instruction and the second uh
+[02:45] instruction is the consumer uh
+[02:50] instruction so in this producer consumer
+[02:53] dependence uh we found that the consumer
+[02:56] always has to execute after the producer
+[02:59] so this order you need to maintain both
+[03:02] in an in order pipeline as well as in an
+[03:05] out of order pipeline so hence this is
+[03:07] called a true dependence because you
+[03:10] know there is no escaping the producer
+[03:13] executes first and the consumer executes
+[03:22] next all right so now let's move on to
+[03:26] uh two other kinds of dependencies which
+[03:29] were
+[03:30] are not causing an issue in in order
+[03:32] pipelines but they will cause an issue
+[03:35] in out of order pipelines so consider
+[03:38] this piece of code where right to the
+[03:40] same register are one so essentially the
+[03:45] destination is the
+[03:46] same in this case since they write to
+[03:49] the same location and of course this is
+[03:52] the program order it is not possible to
+[03:55] reorder these two instructions we cannot
+[03:57] reorder them so even if we were to
+[04:00] execute them out of orders the way the
+[04:03] instructions stand we cannot reorder
+[04:05] because let us say this is writing three
+[04:07] to R1 and the next instruction is
+[04:09] writing five right and the first is
+[04:12] instruction one then two if you execute
+[04:15] instruction two first and then
+[04:16] instruction one then the final value of
+[04:19] R1 will be equal to three which of
+[04:21] course is wrong the final value of R1
+[04:24] should be equal to 5 which means that
+[04:28] in all out of order executions we cannot
+[04:31] break this right after right order which
+[04:34] is also or right after right dependence
+[04:36] which is also called an output
+[04:39] dependence this cannot be violated right
+[04:44] so uh this of course is not a true
+[04:46] dependence we will see why in the course
+[04:49] of the next few slides it is actually a
+[04:53] what is called a false dependence and uh
+[04:57] let us look at
+[04:58] this
+[05:00] closely if we look at this
+[05:03] closely what we will actually get to see
+[05:06] is
+[05:07] that the reason we have such
+[05:10] dependencies in assembly code is
+[05:12] basically because we have a finite
+[05:15] number of registers see if I had an
+[05:18] infinite number of registers somehow
+[05:21] then instead of sending the output to R1
+[05:24] I could have sent it to
+[05:26] R20 right so every time if I use R1
+[05:30] whenever I have R1 if I actually assign
+[05:32] it to a new
+[05:34] register then I will never have an
+[05:36] output dependence but since I have a
+[05:38] finite number of registers I need to
+[05:40] reuse registers this is where the output
+[05:43] dependence comes in right so this is
+[05:46] essentially an artifact of the finite
+[05:49] number of registers
+[06:06] all right let us look at
+[06:08] a the next kind of dependence which is a
+[06:11] right after read dependence it's also
+[06:13] called an anti- dependence so let us
+[06:16] look at the first instruction
+[06:18] instruction one so in instruction one we
+[06:22] are reading from register R2 and in
+[06:26] instruction two we are writing to
+[06:28] register R2
+[06:30] so the first
+[06:32] is a
+[06:35] read and the second is a write so we
+[06:39] have a right after read so for similar
+[06:42] reasons we cannot reorder these two
+[06:44] instructions if we reorder them we'll
+[06:47] end up with the wrong value it is
+[06:49] possible that the value that instruction
+[06:51] two writes instruction one will read it
+[06:54] which of course is not correct it is
+[06:56] wrong and this again arises this is
+[06:59] known as an anti-dependence this again
+[07:02] arises because we have a finite number
+[07:05] of registers right this is also an
+[07:07] artifact of you know this problem that
+[07:11] we have that we have a finite number of
+[07:15] registers
+[07:27] right correct so uh in this case uh also
+[07:33] if let us say that uh
+[07:37] we have some method some mechanism where
+[07:41] every time we use a uh we you know we
+[07:43] never repeat registers in the sense we
+[07:45] write to a register once and uh we keep
+[07:49] on reading from it so essentially if we
+[07:52] have this model WR once
+[08:09] read many times so we will actually not
+[08:13] have both ww output dependencies and
+[08:17] anti- dependencies and the reason for
+[08:20] that is that every time we write to a
+[08:23] register it will actually be a new
+[08:24] register so this requires an infinite
+[08:27] number of registers which of course is
+[08:29] not not feasible but we will see that we
+[08:31] can do something to get rid of both
+[08:34] output dependencies as well as anti-
+[08:37] dependencies all right so this is
+[08:39] something that we need to do and we will
+[08:44] see all right so now let us come to the
+[08:48] next category of dependencies that we
+[08:50] have seen they are known as control
+[08:53] dependencies so here uh well it's rather
+[08:57] simple we jump to a label
+[09:00] and uh when we jump to a label we
+[09:02] execute instructions after it so even in
+[09:06] out of order
+[09:08] pipelines if we do not predict the
+[09:11] branch correctly so in Out of Water
+[09:12] pipelines of course we have to predict
+[09:14] branches if we do not predict branches
+[09:20] correctly we stand to fetch instructions
+[09:23] from the wrong path
+[09:31] and wrong path instructions will pollute
+[09:32] the instruction window and as we have
+[09:34] seen uh they have to be discarded they
+[09:37] cannot be executed so they cause a lot
+[09:40] of issues so uh that is why we needed a
+[09:43] very accurate Branch
+[09:45] predictor so uh so out of order uh so in
+[09:48] out of order issues control hazards are
+[09:51] actually even more important much more
+[09:54] important than they were in inorder
+[09:57] processors
+[10:01] the some basic results well uh in order
+[10:04] processor respect all program order
+[10:06] dependencies in the sense they execute
+[10:09] instructions in program order whereas uh
+[10:13] so so this means that they execute both
+[10:16] they respect all data and control
+[10:19] dependencies whereas out of order
+[10:21] processors will only respect data and
+[10:24] control dependencies so so uh let's
+[10:28] gradually understand understand what
+[10:29] this means all right and uh so it is
+[10:33] important for us to kind of gradually
+[10:35] see uh and understand what this means uh
+[10:39] so uh
+[10:41] primarily out of order processes respect
+[10:44] data dependencies which are producer
+[10:46] consumer
+[10:47] relationships they appear to execute
+[10:49] they appear to respect all dependencies
+[10:51] including control so the way that they
+[10:54] appear is that if you have an if
+[10:56] statement we predict the direction of
+[10:58] the branch and then we fetch
+[11:00] instructions after it we can very well
+[11:03] execute these instructions before we
+[11:05] execute the F
+[11:07] statement if they are independent that
+[11:09] is right independent from a data
+[11:11] perspective and then uh we execute the
+[11:14] branch corresponding to the if statement
+[11:16] at a later point of
+[11:18] time and uh if that is fine well we
+[11:22] don't do anything because you have
+[11:23] anyway predicted it correctly so in a
+[11:25] certain sense this data dependence is
+[11:28] broken but but of course control
+[11:30] dependencies which basically means that
+[11:32] we need to always follow the correct
+[11:34] path that of course all processors need
+[11:37] to do both in order as well as out of
+[11:43] order so now the question is can output
+[11:46] and anti- dependencies be removed so
+[11:49] what we have been arguing up till now is
+[11:52] that there are an artifact of a finite
+[11:59] so let us take a look at these two
+[12:02] examples so in this example uh in the
+[12:06] first one uh we are writing to R1 as you
+[12:10] can see so there is an output
+[12:14] dependence in the second example we have
+[12:19] a write after read kind of situation so
+[12:22] we basically read from R2 and then write
+[12:24] to
+[12:25] R2 so if you look at it if you think
+[12:28] about it both both of them uh can be
+[12:30] conceptually both the situations can be
+[12:34] conceptually represented on this
+[12:36] timeline where essentially set the value
+[12:39] of a register let's say it is R1 we then
+[12:42] have several read instructions that read
+[12:44] its
+[12:45] value again so this is like the first
+[12:48] avar of the register which is
+[12:51] R1 and then uh we have the second
+[12:55] ofar uh which sets R1 again which as you
+[12:58] can see it sets it again and again a
+[13:01] couple of instructions read so as far as
+[13:04] we are concerned the first ofar over
+[13:08] here uh has a starts with a right has a
+[13:12] bunch of
+[13:13] reads again starts with a right has a
+[13:15] bunch of reads so of course it need not
+[13:17] have a bunch of reads it can have no
+[13:19] read as well but at least it needs to
+[13:21] start with a right so the typical
+[13:24] pattern would be you write then you read
+[13:26] then you you write then you read
+[13:29] so the value that has been set by this
+[13:33] instruction the value of
+[13:36] R1 uh that has been uh set by this
+[13:42] instruction uh that will be read over
+[13:45] the subsequent uh
+[13:48] instructions and uh so so essentially
+[13:52] the lifetime of this ofar over here can
+[13:55] be captured you know is kind of in a
+[13:57] sense represented by the the value that
+[14:01] has been put into R1 and similarly we a
+[14:04] subsequent ofar
+[14:06] starts so if let's say automatically we
+[14:09] change R1 to let's say R 100 and then
+[14:13] replace every single use of
+[14:16] R1 uh with I'm sorry this should be
+[14:22] used and uh
+[14:24] then replace every single use of R1 with
+[14:27] use of R 100 it will make no difference
+[14:30] at all and the
+[14:32] programmer uh will not be able to see
+[14:34] the output of the program will still be
+[14:36] the same and essentially the pro
+[14:39] everything will work in exactly the same
+[14:41] manner as long as we are consistent
+[14:44] which means that every read that uses
+[14:47] this value of
+[14:49] R1 uh that instead of using R1 uses R
+[14:53] 100 so this process of actually taking a
+[14:57] register and re renaming it to another
+[15:00] register is known by the word renaming
+[15:05] right and and as you can see what
+[15:08] renaming does is that for each avar of a
+[15:11] register it assigns it a different
+[15:14] register right so we will see the
+[15:16] advantages of renaming very
+[15:20] soon so let us see what it does so let
+[15:23] us take a look at this piece of code
+[15:25] where this is a piece of code that the
+[15:28] compiler has generated
+[15:30] so it does have architectural
+[15:32] registers and which are our normal
+[15:34] registers so normal registers are known
+[15:37] as architectural registers in this
+[15:39] particular context so as you can see
+[15:42] that because we have a finite number of
+[15:45] registers registers are repeated so we
+[15:48] write to R1 then we write to R1 then we
+[15:50] write to R1
+[15:51] again so now let us assume that we have
+[15:55] an infinite number of internal regist
+[15:58] registers which are called physical
+[16:00] registers so of course in practice they
+[16:02] are not infinite but for the time being
+[16:05] let us assume it will make our life very
+[16:07] easy so let us say we have a finite
+[16:09] number of architectural
+[16:16] registers and we have an infinite number
+[16:18] of physical
+[16:22] registers so what we do is that so so
+[16:27] this is just a convention for this
+[16:28] example example that register
+[16:31] RX is mapped to physical register PX
+[16:35] with the number of the AAR all right 1 2
+[16:39] 3 4 5 6 and so on so consider the first
+[16:42] instruction R1 so R1 we map it to P1 and
+[16:48] since it is the first ofar we say it is
+[16:51] P11 and uh so move R11 internally so it
+[16:56] is who does this process well the
+[16:58] hardware has a renaming engine and the
+[17:01] process this conversion from an
+[17:03] architectural register to a physical
+[17:06] register happens internally all right so
+[17:10] the hardware does it internally
+[17:11] unbeknown to the programmer or the
+[17:13] compiler it is kind of invisible it
+[17:16] happens internally and internally they
+[17:19] are mapped to a new set of registers how
+[17:22] that happens well we will see in the
+[17:24] next few chapters currently I'm just
+[17:27] introducing the problem conceptually so
+[17:30] making some assumptions which will later
+[17:32] on we will see they will not hold but
+[17:34] that doesn't
+[17:35] matter now let us assume that R2 and R3
+[17:39] were initially mapped to P2 and P3 so
+[17:42] you'll get the values from there since
+[17:45] we are creating a new ofar of
+[17:47] R1 we create a new physical register map
+[17:51] it to a new physical register which will
+[17:53] be P1 second ofar
+[17:56] p12 the third instruction is rather
+[18:01] important uh so here uh we are using the
+[18:04] value of R1 there is a read after right
+[18:07] dependence over
+[18:09] here so R1 we will use the latest value
+[18:12] that has been written which is
+[18:14] essentially the current ofar and this
+[18:16] has been p12 so we use p12 over here
+[18:21] since we are writing to R4 we create a
+[18:23] new AAR of R4 which is
+[18:26] p41 and we proceed
+[18:29] the now coming to the next instruction
+[18:31] we are writing to
+[18:33] R2 this is the first ofar of
+[18:38] R2 so uh we move five to p21 right the
+[18:43] pattern should be clear by
+[18:45] now furthermore after a set we have a
+[18:48] use so the use will of course use the
+[18:51] current of and uh R2 the use it will use
+[18:56] the physical register p21
+[18:59] because uh p21 is using the current
+[19:03] value R8 is mapped to
+[19:06] p8 R6 is mapped to
+[19:11] p61 all right so so that is the first
+[19:15] ofar because we have we have not written
+[19:17] to R six before and finally we write to
+[19:20] R1 again so the moment we write to R1
+[19:23] again we create a fresh ofar of
+[19:26] R1 which is
+[19:30] p13 and
+[19:34] uh so basically p13 essentially means
+[19:38] that we are creating the third ofar of
+[19:40] R1 right and uh we are writing eight to
+[19:45] it so so kindly note that this
+[19:47] particular convention is only for this
+[19:49] example so we will generalize it later
+[19:52] but currently our focus is on
+[19:54] understanding this
+[19:56] concept finally we'll use R1 which
+[19:59] version we'll use we'll use
+[20:02] p13 and uh then we will use R2 which
+[20:06] version we'll use the latest version
+[20:08] which is the one written over here
+[20:12] p21 and we'll create a new aara
+[20:15] p91 so this is the code with physical
+[20:18] registers so let us look at this
+[20:21] closely so what you see is that whenever
+[20:24] we
+[20:24] write to an architectural register we
+[20:28] actually create a new AAR of it right uh
+[20:33] so we create a new avar of it and uh so
+[20:37] then we essentially set so we write once
+[20:40] we read many times again we create a new
+[20:42] afar of it right which is a right these
+[20:45] are all
+[20:46] reads again we create a new AAR and we
+[20:50] read so let us look at each of our
+[20:54] dependencies the read after write
+[20:56] dependency well that is holding because
+[20:58] we are always reading the latest
+[21:02] version WR after right dependencies well
+[21:05] there are none because we are assuming
+[21:07] that we have an infinite number of
+[21:09] physical registers so we will never
+[21:12] actually write to the same register
+[21:14] twice given that we are not doing that
+[21:18] there will be no right after right
+[21:21] dependencies right hence we do not have
+[21:23] to bother about them what about right
+[21:27] after read dependency
+[21:29] well again we will not have to bother
+[21:32] because the read is using the previous
+[21:34] AAR so just take a look at this for
+[21:38] R1 uh the read is using
+[21:42] p12 and after that we are reading we are
+[21:45] writing to R1 again right uh which is
+[21:49] this version
+[21:50] p13 so there is
+[21:54] a right after read dependence over here
+[21:58] but this is not causing an issue because
+[22:00] these are actually separate ofarts they
+[22:02] are in separate registers so even if we
+[22:04] were to reorder these two instructions
+[22:07] it will make no difference at all
+[22:09] because they are actually writing to
+[22:11] different registers sorry they're
+[22:12] reading and writing they're accessing
+[22:14] different
+[22:15] registers right so the right after read
+[22:17] is an issue only when they are accessing
+[22:20] the same register but now since we give
+[22:22] a different physical register to each
+[22:25] ofar right after read issues will simply
+[22:29] not happen because after a read the
+[22:32] right will write after a read to an
+[22:34] architectural
+[22:36] register as you can see the ne the next
+[22:38] right will actually write to a different
+[22:40] physical register so we will actually
+[22:43] not have any right after read
+[22:46] dependencies so given the fact that we
+[22:49] will not have these dependencies and
+[22:51] they have been removed with this
+[22:53] renaming mechanism that I am
+[22:56] proposing uh they are false dependencies
+[22:59] in the sense they can be automatically
+[23:02] removed right it's only the read after
+[23:05] write which is a true
+[23:09] dependency so now uh this is another so
+[23:12] let me erase the ink on this slide and I
+[23:14] can take you through this uh through the
+[23:19] animation so as you can see there is a
+[23:22] right after right dependence over here
+[23:24] but there is no such dependence on the
+[23:27] right side the read after uh right
+[23:31] dependence is clearly visible right they
+[23:33] mapped to registers of the same
+[23:36] ofar again another read after write is
+[23:39] clearly
+[23:43] visible and another as you can see read
+[23:47] after write is clearly visible but
+[23:50] nothing else is visible right so there
+[23:52] are no other dependencies so we did draw
+[23:55] your attention to a right after right
+[23:57] problem but as you can see it's not not
+[23:58] over
+[24:00] here so what does prog renaming actually
+[24:04] do well it takes a program with real
+[24:07] registers architectural registers that
+[24:10] have uh three kinds of
+[24:13] dependencies read after write
+[24:15] dependencies write after read
+[24:18] dependencies and uh write after write
+[24:21] dependencies so they have three kinds of
+[24:25] dependencies and uh
+[24:29] so then uh the process of renaming which
+[24:32] is automatically done inside the
+[24:36] processor and nobody can see what's
+[24:39] happening neither the programmer nor the
+[24:53] compiler right so this converts the
+[24:56] program internally of course not visible
+[25:09] outside right internally of course so
+[25:12] it's not visible outside it converts it
+[25:14] to a program with physical
+[25:17] registers so a program of with physical
+[25:19] registers has only raw dependencies read
+[25:22] after right
+[25:23] dependencies and of course as you can
+[25:25] see lesser lower are the
+[25:28] sorry fewer is the number of
+[25:33] dependencies fewer are the dependencies
+[25:36] higher is the instruction level
+[25:37] parallelism to
+[25:39] ILP right so since we reduce the number
+[25:41] of
+[25:42] dependencies we have exposed more
+[25:45] instruction level parallelism which is
+[25:47] something that the program can use to
+[25:49] find
+[25:50] more independent and parallel
+[25:54] instructions that can be issued at the
+[25:56] same time
+[25:59] so where are we now well we have the
+[26:02] design of a Proto out of order processor
+[26:06] where we read instructions from the iash
+[26:09] so we are generically generally
+[26:11] referring to this as the instruction
+[26:13] memory in this uh slide
+[26:16] Set uh then we of course we need a
+[26:19] branch predictor we all have seen why
+[26:21] such that we can quickly fill the
+[26:24] instruction window then we'll have a
+[26:26] regular stages of Fetch and decode after
+[26:29] decoding an instruction we have to
+[26:31] rename the instruction such that why
+[26:34] that is essentially to
+[26:36] remove these two kind of dependencies so
+[26:39] they need to be
+[26:41] removed then we need to read the value
+[26:45] registers uh so so basically this
+[26:48] process can be done can be done after it
+[26:52] so uh I
+[26:55] uh it it is better you know I delete
+[26:58] it's a small error over here in the
+[27:00] slide so so this is actually done
+[27:02] slightly later the the register read is
+[27:05] actually done uh slightly later at this
+[27:08] stage so we will discuss
+[27:11] that um later all right so uh not now
+[27:17] and so then we create a large pool of
+[27:19] instructions so every cycle we find a
+[27:21] set of ready instructions whose operant
+[27:24] are ready and then uh these independent
+[27:28] ready instructions are sent to the
+[27:30] execution units not one but several in
+[27:33] parallel the results are computed and
+[27:36] then we write back the results to the
+[27:38] register file so this is kind of the
+[27:41] design of a simple out of order
+[27:43] processor as much as we have seen till
+[27:49] now so now let us look at the right back
+[27:53] process so the right back process has
+[27:56] some issues
+[27:59] uh these issues have to be addressed
+[28:01] these issues have to be fixed so let us
+[28:04] look at the processor from outside let
+[28:06] us look at it as
+[28:15] a let us look at it as a
+[28:18] blackbox so in the
+[28:22] blackbox uh instructions come in and
+[28:26] then the processor updates the state
+[28:28] which is the state of the registers so
+[28:30] of course outside the processor we don't
+[28:32] get to see the physical registers these
+[28:34] are the regular architectural registers
+[28:37] which the compiler and the rest of the
+[28:38] world sees are are regular registers
+[28:41] basically so this architectural register
+[28:44] file gets updated and the memory gets
+[28:46] updated the data memory gets updated and
+[28:48] the register file gets
+[28:50] updated so student out to an outsider
+[28:53] should it matter if the processor is in
+[28:55] order or out of order well the answer is
+[28:57] absolutely no
+[28:58] The Outsider should simply not care
+[29:01] whether we are using an in ordered
+[29:03] pipeline or an out of ordered pipeline
+[29:06] right so it should not it should not
+[29:08] concern The Outsider at all it should
+[29:11] not concern The Outsider to the least
+[29:13] bit uh what kind of processor is
+[29:15] actually being used all
+[29:18] right so given the fact that externally
+[29:21] we want the behavior to be the same how
+[29:25] do we ensure that so let us elaborate on
+[29:31] topic so assume that there is an
+[29:34] exception or interrupt so why so we are
+[29:36] we are executing so assume here we
+[29:39] divide by zero so whenever we have a
+[29:41] division
+[29:42] instruction uh we can have a divide by
+[29:45] zero problem so then there are several
+[29:48] options one is that the program can
+[29:56] crash so this is true for a simple
+[29:58] program but consider that you are
+[30:00] running something on Excel and you
+[30:03] divide by zero does Excel crash it
+[30:05] doesn't what it does is it tells you
+[30:07] that look you have divided by zero
+[30:09] that's an illegal operation and then
+[30:11] Excel continues its operation continues
+[30:14] its working so in most mature software
+[30:18] we actually have an exception Handler
+[30:21] the exception Handler is another small
+[30:23] function which is
+[30:25] called it shows you a message on on the
+[30:28] screen that look you have divided by
+[30:29] zero that is an illegal operation and
+[30:33] then you we either continue executing
+[30:36] from there or we jump to some other
+[30:38] function and start executing that so
+[30:41] this is the typical flow of a program
+[30:44] whenever an exceptional condition of
+[30:46] this nature is
+[30:49] encountered so almost all high level
+[30:52] languages such as C or Java have
+[30:54] features to write your own exception
+[30:56] handlers if you know program prammer
+[30:58] somehow messes up but you still don't
+[31:01] want the program to
+[31:03] crash the important question over here
+[31:06] is that should the sub instruction so so
+[31:09] let's say our exception Handler is
+[31:10] called over here right and let's assume
+[31:13] it does something and then again it
+[31:14] comes
+[31:16] back so at this point when the exception
+[31:19] Handler is
+[31:21] running should the subtract instruction
+[31:24] have completed you know what about the
+[31:27] subtract instruction
+[31:29] right in an out of order processor it is
+[31:31] very well possible that these
+[31:33] instructions could have been reordered
+[31:36] so it is possible that the subtract
+[31:38] would have completed its execution
+[31:40] written the value to
+[31:42] R4 and then since the execution is out
+[31:45] of order the Divide instruction would
+[31:48] have executed had a fault and gone to
+[31:50] the exception
+[31:52] handl so before telling you why this is
+[31:56] incorrect Behavior
+[31:58] let us first tell you that an in order
+[32:00] processor will never do this why not
+[32:04] well the reason it will not do
+[32:06] it is because it executes instructions
+[32:10] in program order right one after the
+[32:13] other first this then this then this and
+[32:15] then this so if there is a problem in
+[32:18] the division instruction it will
+[32:19] immediately stop the execution not
+[32:23] process the sub instruction subtract
+[32:24] instruction at all move to the exception
+[32:27] Handler do whatever that do
+[32:30] whatever uh that the exception Handler
+[32:33] says right and the instructions and
+[32:36] exception Handler execute them come back
+[32:39] and then execute the subtract
+[32:41] instruction so from the point of view of
+[32:43] an
+[32:44] outsider The Outsider will essentially
+[32:47] see execution in full program order in
+[32:49] the in order
+[32:52] processor however in an out of order
+[32:54] processor if we jump to the exception
+[32:56] Handler
+[32:58] we are setting ourselves for extremely
+[33:01] difficult non-intuitive
+[33:03] Behavior Where The Outsider might
+[33:05] see that the subtract instruction has
+[33:08] completed or God knows what you know you
+[33:10] can see a full mix it is furthermore
+[33:13] possible because of out of order
+[33:15] execution right uh maybe you know some
+[33:18] other instructions from here they have
+[33:21] not completed all right which are way
+[33:23] before it in program order they have not
+[33:26] completed and and uh maybe instructions
+[33:30] after Dave have completed so in that
+[33:33] case it is not possible to actually stop
+[33:36] the program at one point and restart it
+[33:39] and of course there are other things so
+[33:41] normally what happens in a modern
+[33:42] operating system we run multiple
+[33:46] programs in parallel so of course we
+[33:48] never run multiple programs in parallel
+[33:51] what actually happens is we run one
+[33:52] program for some time then we have a
+[33:55] timer chip right so the timer chip is
+[33:58] outside uh the processor it sends an
+[34:02] interrupt so the interrupt basically
+[34:04] says that look your time is up then uh
+[34:07] the operating system loads another
+[34:09] program on the processor after some time
+[34:11] the timer chip again tells look your
+[34:13] time is
+[34:14] up so that is why there is a need to
+[34:19] effectively stop a program at one point
+[34:21] and restart the execution of the program
+[34:24] at the same point so not only is this
+[34:27] very helpful from the point of view of
+[34:28] an exception Handler it is also very
+[34:31] helpful from the point of view of an
+[34:33] operating system which essentially sends
+[34:36] an interrupting an interrupt to the
+[34:38] program makes it stop at a certain point
+[34:42] and then resumes the program at the same
+[34:45] point if let's say things were executing
+[34:47] out of order something before this has
+[34:49] finished something after it sorry
+[34:51] something before this point has not
+[34:54] finished something after it has finished
+[34:57] this stop and resume will become very
+[34:59] hard right so what we want is we need
+[35:02] the power to arbitrarily stop the
+[35:06] program at points and then resume the
+[35:10] execution so what is important for us is
+[35:14] this stop and resume
+[35:18] behavior and uh this is not possible
+[35:22] appears to be very hard in an out of
+[35:25] order execution
+[35:27] so what we Define uh is the notion of a
+[35:31] precise exception for the flow of action
+[35:34] should be as follows we have a regular
+[35:37] instructions before the div which means
+[35:39] all of
+[35:41] these then we see the divide by
+[35:44] 0 then we load the exception Handler it
+[35:47] and then we execute the subtract
+[35:50] instruction alternatively it is possible
+[35:53] that maybe the there was no divide by
+[35:56] zero but the operating system
+[35:58] decided
+[36:00] to uh shelf the program and run another
+[36:04] program on the core so so know that
+[36:07] operating system is also a program right
+[36:09] so it it's nothing special but there is
+[36:11] an external timer chip which essentially
+[36:14] sends the interrupts the operating
+[36:16] system pre-programs the timer chip and
+[36:18] the timer chip is an external entity
+[36:22] send an interrupt and so then the entire
+[36:24] state of the program is stored over here
+[36:28] and the exception Handler in this case
+[36:30] is the OS it will load another program
+[36:34] so what we want is we need to stop and
+[36:36] resume
+[36:38] semantics so in a stop and resume
+[36:40] semantics is very easy in an in ordered
+[36:43] processor because we are following
+[36:44] program order we execute execute execute
+[36:47] stop at one point no problem and we just
+[36:50] store the register
+[36:51] State and
+[36:53] then uh go and execute some other
+[36:56] program with out of order it's
+[36:59] hard so what we want is that we
+[37:04] want all external agents which is
+[37:07] anybody sitting outside the processor to
+[37:10] actually look at the processor and not
+[37:12] be able to say whether it is out of
+[37:15] order or in order which means that
+[37:18] internally an out of order processor can
+[37:20] do whatever it
+[37:21] wants but externally it should appear to
+[37:24] be as if it is an inorder process
+[37:28] what do I actually mean what I actually
+[37:30] mean is that externally which means if
+[37:34] this is the processor and I have a pair
+[37:39] eyes and if I have a pair of eyes
+[37:41] looking at it
+[37:44] externally they should see this order
+[37:46] the regular instructions divide by zero
+[37:48] exception Handler and the subtract they
+[37:51] should not see this order which is
+[37:53] regular instructions divide by zero the
+[37:56] subtract and then exception Handler this
+[37:59] is indeed out of order but out of order
+[38:02] should be visible inside not
+[38:05] outside which means that to an external
+[38:08] Observer the execution should always be
+[38:11] correct should always be as per program
+[38:13] order even if there are interrupts and
+[38:17] exceptions externally it should be in
+[38:20] program
+[38:22] order so this is making our life very
+[38:25] difficult so so this is a other
+[38:28] complicated thing that we are just
+[38:30] discussing we are saying that look if
+[38:32] you want a seamless
+[38:35] stop and resume of a
+[38:39] program to an external agent an external
+[38:42] agent can be anybody an external agent
+[38:46] can be the programmer can be the
+[38:47] compiler can be the operating system or
+[38:50] can simply be an oscilloscope that has
+[38:52] probes outside the processor doesn't
+[38:55] matter and out of order
+[38:58] processor right should
+[39:06] appear to
+[39:11] be so this will kind of keep our life
+[39:15] very
+[39:17] simple
+[39:19] right internally it can do whatever it
+[39:21] wants so what are we saying we are
+[39:23] saying that look for
+[39:25] Outsiders you should you appear to be an
+[39:28] in ordered processor internally you do
+[39:31] whatever you are doing you want to
+[39:33] execute out of order no problem do it
+[39:36] how do we ensure both at the same time
+[39:39] well chapter 4 so in chapter 4 we will
+[39:42] discuss how to do it not now but at
+[39:46] least for us this is a goal so this
+[39:48] chapter is all about goal setting this
+[39:51] chapter is all about telling us what is
+[39:53] it that we expect from the out of order
+[39:56] processor
+[39:58] and a crucial aspect of this goal
+[40:01] setting is this particular
+[40:04] requirement so this uh automatically
+[40:07] takes us to the notion of precise
+[40:09] exceptions which means that the
+[40:13] following so let's first Define the
+[40:15] terminology let's say the dynamic
+[40:17] instructions in a program are numbered
+[40:19] instruction 1 2 3 4 up till
+[40:22] end assume that the process starts the
+[40:25] exception interrupt Handler after it has
+[40:28] just finished writing the results for
+[40:29] the K
+[40:31] instruction to an outsider it should
+[40:34] appear and as I said Outsider is very
+[40:37] generic can be the programmer compiler
+[40:39] operating system or even an oscilloscope
+[40:42] uh that has probes plugged in to the
+[40:45] interface of a processor it should
+[40:47] appear as if all of these instructions
+[40:50] have executed completely return their
+[40:52] state to the memory or register file and
+[40:55] none of the instru instructions after
+[40:57] this have even started so these are
+[41:00] fully done and these haven't even
+[41:04] started right so I should I should have
+[41:06] a not started in B right not started and
+[41:10] these are done and this is of course
+[41:12] where we have the exception so we have
+[41:15] an option at this point of stopping the
+[41:18] program storing its
+[41:21] state which is easy we just uh need to
+[41:23] store the value of the architectural
+[41:25] registers at this point
+[41:28] process the
+[41:30] exception and
+[41:33] resume right stop resume for a seamless
+[41:37] stop and
+[41:39] resume what you will agree with me that
+[41:42] the first K instructions have to be
+[41:44] fully
+[41:46] done and all the instructions after it
+[41:49] should not even have started so this
+[41:52] notion is known as a precise
+[41:56] exception and and uh almost all out of
+[41:58] order processes as of today provide the
+[42:02] notion of precise exceptions which
+[42:04] essentially means same things which are
+[42:07] all equivalent that Outsider C
+[42:28] right Outsiders will see an in ordered
+[42:29] execution so basically so the processor
+[42:31] in this case consists of the course the
+[42:35] the core and pipelines are the same and
+[42:36] of course the memory so let me just all
+[42:40] the memory that you are using doesn't
+[42:41] matter let me just draw a full circle
+[42:43] around them that's a black box so any
+[42:46] Outsider outside this black box will see
+[42:49] in order execution right which will
+[42:53] allow us to essentially stop the program
+[42:55] at some point so we are sure everything
+[42:58] before this is totally done in program
+[43:00] model execute the exception Handler and
+[43:04] again restart at the same point so we
+[43:06] are sure that nothing after the kth
+[43:08] instruction has even
+[43:10] started so this
+[43:13] ability is very important uh not only is
+[43:17] it required for intuitiveness and
+[43:18] correctness it is also required for
+[43:21] processing exceptions as we will see it
+[43:24] is also required for recovering from br
+[43:27] Branch M predictions because even that
+[43:28] is an
+[43:29] exception uh we will also
+[43:32] see that it is a very vital requirement
+[43:35] for operating systems because what
+[43:37] normally
+[43:39] happens uh if I can use some of the
+[43:42] additional space over here what normally
+[43:46] happens just do a control all
+[43:48] delete and uh you will see so in fact
+[43:52] let me uh do that right
+[43:55] now so what you can actually see over
+[43:59] here uh in my task manager that look I
+[44:02] have a lot of
+[44:03] tasks and uh you can see your PowerPoint
+[44:07] task over
+[44:10] here so if I have a single
+[44:14] core what I'm actually doing is that I
+[44:17] am running multiple programs right
+[44:21] program one program
+[44:24] two program 3 Etc on the single core so
+[44:29] on a single core what will actually
+[44:31] happen is that program one will execute
+[44:34] till some time as we have said we will
+[44:37] have a timer chip it's very important to
+[44:41] have the timer chip it's not a part of
+[44:42] the operating system it's a separate
+[44:44] piece of
+[44:45] Hardware it will send an interrupt it is
+[44:48] typically programmed uh to send an
+[44:50] interrupt once every 1
+[44:52] millisecond once that happens what the
+[44:55] processor does is that it saves what is
+[45:00] called the context of the program the
+[45:03] context is simple it's the program
+[45:05] counter and the set of architectural
+[45:09] registers right because the physical
+[45:11] registers are not visible to software is
+[45:14] essentially the program counter and the
+[45:16] set of architectural registers that is
+[45:18] saved and then well uh it starts
+[45:22] executing some other program maybe
+[45:25] two again after one
+[45:27] millisecond another timer interrupt
+[45:30] comes the operating system then might
+[45:33] decide to start executing program one
+[45:36] back again from exactly the same point
+[45:39] and uh you will not perceive a
+[45:40] difference it's like
+[45:42] magic so uh what's happening over here
+[45:46] what is happening over here is that
+[45:49] unbeknown to program one we stopped it
+[45:53] at one point in the middle we executed
+[45:56] another program
+[45:58] program again we brought program one
+[46:00] back we were able to
+[46:04] because program one supports precise
+[46:07] exceptions we were able
+[46:10] to nicely restore its state and execute
+[46:14] it from that
+[46:16] point so operating systems what they do
+[46:18] is that they take a small chunk of
+[46:21] program one
+[46:22] executed then execute program two then
+[46:25] execute program three maybe maybe then
+[46:27] one then two maybe they under execute
+[46:30] program two for several time slices
+[46:33] where one time slice is defined as 1
+[46:36] millisecond and if we have tens of
+[46:38] programs as as you just saw then maybe
+[46:42] you know you can
+[46:44] take all of these programs and just you
+[46:46] know execute them in any order the
+[46:49] reason we don't perceive this is because
+[46:53] this is happening hundreds of times a
+[46:56] second so it is happening so quickly
+[46:58] that we actually don't perceive the fact
+[47:01] that the operating system is actually
+[47:03] executing lots and lots of programs
+[47:05] quickly one after the other on the same
+[47:08] core so of course if we have different
+[47:09] cores where core is basically just an
+[47:12] encapsulation of a pipeline then of
+[47:15] course these programs can be run on
+[47:17] separate
+[47:18] cores but even if we have a single core
+[47:20] like in the good old days the operating
+[47:23] system can happily switch between these
+[47:25] programs what is known as
+[47:29] multitasking
+[47:33] and uh just keep switching between them
+[47:35] hundreds of times a second we will never
+[47:38] be able to perceive what's happening and
+[47:41] the reason that we are able to switch is
+[47:44] because there is a way to stop a
+[47:46] program at a point and resume it from
+[47:49] exactly the same point the Stop and
+[47:52] resume behavior is enabled because we
+[47:55] have precise exception
+[47:58] and what are precise exceptions well
+[48:01] they just say that look for a pair of
+[48:03] eyes
+[48:05] outside the processor
+[48:08] memory uh
+[48:10] blackbox they essentially perceive in
+[48:12] order execution which means that all
+[48:15] software
+[48:16] entities be the programmer the compiler
+[48:20] the operating system all of them
+[48:22] perceive in order execution even the
+[48:25] inside the processor we are actually
+[48:27] doing out of
+[48:28] audit so our important challenge most
+[48:32] important challenge would be or our Moto
+[48:38] inside in order
+[48:41] outside so out of order inside will give
+[48:44] us
+[48:45] what it is going to give
+[48:51] performance in order outside will give
+[48:55] us simplicity intuitiveness and
+[48:58] correctness right correctness from the
+[49:01] point of view of seamlessly stopping and
+[49:03] resuming
+[49:05] programs right so where have we stopped
+[49:07] we have stopped at a nice point where we
+[49:10] say out of order Insight in order
+[49:13] outside and precise exceptions are a
+[49:16] natural corer of the in order outside
+[49:20] philosophy now we come to the last slide
+[49:23] of this lecture set so this talks about
+[49:28] the five most important points that we
+[49:30] have learned in this
+[49:32] chapter so the first is that in order
+[49:35] pipelines which we have studied with so
+[49:37] much of pleasure in our undergraduate
+[49:39] texts have a limited IPC because of
+[49:43] branches and data
+[49:46] hazards if I were to have a complex
+[49:49] multi-issue in order pipeline that is
+[49:52] not really going to solve the problem
+[49:55] the reason being that there will be a
+[49:57] very complex structure of dependencies
+[49:59] and interlocks hence the problem will
+[50:02] not get
+[50:03] solved what we instead need to do is we
+[50:06] need to change our thinking and we need
+[50:09] to go for out of order
+[50:12] processors all right so in out of order
+[50:17] processors uh we need a large
+[50:19] instruction window to find a sufficient
+[50:21] number of independent
+[50:23] instructions to sustain the large
+[50:25] instruction window
+[50:27] we would need a very accurate Branch
+[50:30] predictor right so we have looked at
+[50:33] some accuracy numbers but something like
+[50:35] 97 to
+[50:36] 99% is the minimum that we need right
+[50:40] more not
+[50:42] less moreover to expose additional ILP
+[50:46] instruction level
+[50:49] parallelism uh sorry uh we can remove I
+[50:53] stand corrected here
+[50:58] write after write and write after read
+[51:01] hazards by renaming all right so for
+[51:05] additional ILP we can remove the false
+[51:08] dependencies or the right after write
+[51:10] and right after read hazards by renaming
+[51:13] which essentially Expo which essentially
+[51:15] assign a separate physical register to
+[51:18] each
+[51:20] AAR finally for the sake of correctness
+[51:24] we need to ensure precise except such
+[51:27] that we can transparently seamlessly and
+[51:30] easily stop a program at an arbitrary
+[51:33] point and resume the program at the same
+[51:36] point after a long
+[51:40] time all right so I will meet you in the
+[51:42] next chapter which discusses the fetch
+[51:45] logic and Branch prediction in great
+[51:48] detail

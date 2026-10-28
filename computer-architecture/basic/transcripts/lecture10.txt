@@ -1,0 +1,1777 @@
+[00:00] [Music]
+[00:00] n
+[00:34] now let's move to the more interesting
+[00:36] part of the arm instruction set that
+[00:38] deals with Branch instructions we need
+[00:41] Branch instructions to implement if
+[00:43] statements for Loops while loops and
+[00:47] almost any kind of program where we need
+[00:49] to make a decision on the value of a
+[00:51] certain
+[00:53] variable so arm like simple risk
+[00:56] supports some uh very simple Branch
+[00:59] instructions there are some complicated
+[01:01] ones as well but let's take a look at
+[01:02] the simple
+[01:03] ones so uh similar to simple risk the
+[01:07] format of every Branch statement is the
+[01:10] same which is essentially a branch
+[01:14] instruction and a
+[01:21] label so we Branch to the label we jump
+[01:24] to the label and the label is uh the
+[01:28] first uh instruction
+[01:30] uh at the branch Target so let's say if
+[01:33] this is a
+[01:34] program and uh so there is a certain
+[01:37] label do Fu over
+[01:39] here and we Branch to do Fu what this
+[01:43] means is that the control gets
+[01:46] transferred from here to
+[01:48] here so the basic and the simplest
+[01:51] instruction is an unconditional Branch b
+[01:55] so an example would be let's say B do Fu
+[01:57] it would jump un unconditionally label
+[02:00] Fu similar to simple risk we have beq
+[02:04] Branch if the flags indicate equality
+[02:07] and Branch if the flags indicate
+[02:10] unequality so uh what I mean by Flags is
+[02:13] that the last instruction that set the
+[02:15] flags should have had an equal to should
+[02:18] have uh concluded that both the values
+[02:22] that are being given to it are equal
+[02:24] only on that condition would this
+[02:26] particular Branch actually Branch to
+[02:29] this link
+[02:31] so the explanation is that we Branch to
+[02:33] Fu if the last flag setting instructions
+[02:36] mind you this is one phrase flag setting
+[02:39] instruction has resulted in an equality
+[02:42] and this will show up in the Zed flag
+[02:45] being equal to
+[02:46] 1
+[02:49] similarly uh we'll have Branch not equal
+[02:52] to which is just the opposite of Branch
+[02:54] if equal to for the Zed flag is equal to
+[02:58] zero so the uh fantastic thing in arm is
+[03:02] that we have many many so the we have
+[03:05] many many Branch instructions and all of
+[03:08] them have a standard format so we have B
+[03:11] first and then a branch condition
+[03:25] code uh so so this is the format of the
+[03:28] branch instruction
+[03:30] very first have the letter
+[03:32] b and then we have a condition code for
+[03:36] the branch which so one example of this
+[03:39] would be BQ where EQ is the condition
+[03:41] code equality and the other would be any
+[03:44] where any is the condition code for lack
+[03:46] of equality so we have many many such uh
+[03:50] branches and condition codes so we have
+[03:53] actually 15 such condition codes that we
+[03:55] shall see in the next
+[03:58] slide uh so first let's take a look at
+[04:00] the condition CES that we have seen so
+[04:02] mind you all of these are suffixes so we
+[04:05] have we'll have B plus this suffix so it
+[04:09] can be B Q BN or BGE or bgt any of these
+[04:13] suffixes are
+[04:15] allowed so let's take a look at the
+[04:17] first two which we have already seen b q
+[04:19] and B and E so the first equality is
+[04:23] when the zero flag has been set to one
+[04:26] by the last instruction that sets the
+[04:28] flags which we call the flags setting
+[04:31] instruction similarly uh the any flag
+[04:34] not equal to flag is just the opposite
+[04:37] of
+[04:38] this now let's take a look at one more
+[04:41] pair of conditions which are very
+[04:43] interesting so let's consider HS HS
+[04:47] means unsigned higher or equal so what
+[04:50] we do is that when we take two 32bit
+[04:52] numbers we disregard the sign bit and
+[04:55] think of them as unsigned numbers and we
+[04:58] compare them so the way that we would
+[05:00] compare any unsigned number a and
+[05:02] unsigned number B is that we'll subtract
+[05:05] B from a right so basically given any
+[05:08] two numbers what we would do to compare
+[05:11] them is that we'll subtract a minus
+[05:14] B if a minus B A is greater than b which
+[05:18] means it's unsigned higher or equal then
+[05:21] there will be no borrow right so the
+[05:24] borrow will be false so as a result the
+[05:27] carry bit will be equal to one so this
+[05:30] is pretty much the condition that the
+[05:31] hardware checks that is the carry bit
+[05:34] equal to one in this case this
+[05:36] particular condition is
+[05:39] true so C so the Cs or HS the opposite
+[05:43] of HS is L so in this case this is uh
+[05:48] the first one was unsigned higher or
+[05:50] equal right so basically greater or
+[05:53] equal in an unsign sense the opposite
+[05:55] would be less than so in this case the
+[05:58] carry bit needs to be zero or
+[06:00] alternatively when we do a subtraction
+[06:02] of the form a minus B we actually
+[06:05] generate a borrow and since a carry and
+[06:08] the borrow have a reverse sense in this
+[06:10] case the carry bit will be equal to
+[06:13] zero so there are again another pair of
+[06:17] conditions Mi and pl which means that a
+[06:21] minus so basically when we
+[06:24] subtracted uh the last result that came
+[06:28] had a minus sign
+[06:30] so in this case the N the negative bit
+[06:32] would be set to one so this essentially
+[06:35] says that the last value or the last
+[06:38] result that the flag setting instruction
+[06:40] considered had a minus sign and so the
+[06:43] Mi suffix uh condition would then be
+[06:47] true uh so the opposite of Mi is PL
+[06:51] which is positive or zero so the
+[06:54] condition is also exactly
+[06:57] opposite let's again take a look at the
+[06:59] next pair of conditions VSS and VC so
+[07:03] VSS is the case when an overflow
+[07:05] occurred and overflow is a condition
+[07:08] where uh it basically means that the
+[07:11] final result could not fit within the
+[07:15] number of bits that are available so
+[07:17] consider a 32-bit system but let's say
+[07:20] we
+[07:21] multiply uh you know the product of a
+[07:23] multiplication requires more bits more
+[07:26] than
+[07:27] 32 uh so in that case
+[07:31] case uh what needs to be done uh is that
+[07:35] you know we either allocate more bits or
+[07:37] we signal an overflow so overflow in
+[07:40] this case would mean that the result
+[07:42] cannot fit within 32 bits so the
+[07:45] Overflow flag will be one and in the
+[07:48] case of no overflow the Overflow flag
+[07:50] will be
+[07:52] zero now let's consider a different
+[07:55] variant of HS and lo so this was mind
+[07:58] you unsigned higher or equal this is
+[08:01] just unsigned higher so in the case of
+[08:04] unsigned higher we will have this
+[08:07] condition c equal 1 so this indicates
+[08:10] unsigned higher or equal but along with
+[08:13] that we'll also check that the zero flag
+[08:16] is equal to zero which means that is
+[08:18] also unequal right so if let's say a is
+[08:22] greater than equal to b and a is not
+[08:24] equal to B then we can automatically
+[08:27] infer that a is greater than
+[08:31] b similarly we can have unsigned lower
+[08:34] or equal which is just opposite of this
+[08:37] so in this case we'll also take this
+[08:39] condition C equals 0 which means it's
+[08:41] unsigned lower or equal and
+[08:46] also uh you know uh
+[08:49] ensure uh have an or condition that uh
+[08:54] it is uh either less than equal to or it
+[08:57] is just equal to
+[09:00] oh oops I'm sorry uh sorry sorry uh this
+[09:03] is a mistake uh let me see let me just
+[09:06] sorry so c equal to0 denotes that number
+[09:11] a is strictly less than b so in this
+[09:14] case unsigned lower so c equal to Z
+[09:18] means that uh if both the numbers are A
+[09:20] and B A is less than b so c equal to
+[09:24] zero uh or uh so this is either one
+[09:28] condition or it is strict equal so if I
+[09:31] combine the conditions it is less than
+[09:34] or equal we have the condition less than
+[09:36] equal to which is exactly what it says
+[09:39] that the ls uh suffix or condition means
+[09:43] that the numbers are that you know if
+[09:46] I'm comparing A and B A is unsigned
+[09:49] lower or
+[09:50] equal now let's consider some signed
+[09:53] operations so G is sign greater than or
+[09:56] equal so in this case uh I do the same
+[10:00] thing I interpret both the 32bit numbers
+[10:03] as sign numbers and I perform a
+[10:06] subtraction if the final result is not
+[10:09] negative then we can say that uh the a
+[10:13] is greater than equal to
+[10:15] B and if the final result is negative we
+[10:18] can conclude that a is less than b so
+[10:21] this is same as saying that a minus B is
+[10:25] less than zero which implies
+[10:30] uh the implication here is that if a
+[10:32] minus B is less than zero this means
+[10:35] that a is less than
+[10:39] b so similarly let's consider GT and Le
+[10:43] which is similar to the unsigned operant
+[10:46] hi and LS that we introduced so GT means
+[10:49] it's sign greater than so this
+[10:52] alternatively means that the Z flag is
+[10:54] zero if the Z flag is zero means that
+[10:56] the numbers are not equal and n equal 0
+[11:00] which means that the numbers are greater
+[11:03] than and equal so the same logic holds
+[11:05] if a is greater than equal to b and a is
+[11:07] not equal to B then we can automatically
+[11:14] b and the same logic holds for S less
+[11:17] than or equals if you consider this
+[11:20] expression and this expression they are
+[11:22] equivalent so the zero flag is needs to
+[11:25] be one which means either there is
+[11:27] equality or there is less than and this
+[11:31] is the condition for unsigned less than
+[11:33] and this is the condition for signed
+[11:36] less
+[11:37] than uh the this condition is actually a
+[11:40] default so as a result it's typically
+[11:42] not required which means always so this
+[11:45] same as an unconditional Branch so in
+[11:47] the sense b a l is also the same as B
+[11:51] which means Branch all the time and the
+[11:54] last uh suffix 15 is actually not used
+[11:58] it is res reserved such that you know it
+[12:01] can be used later when the instruction
+[12:02] set is
+[12:04] expanded so let's consider a simple
+[12:06] program first that's uh maybe the most
+[12:09] important so let's write an arm assembly
+[12:12] program to compute the factorial of a
+[12:14] positive number assume the number is
+[12:16] large enough greater than one the number
+[12:18] is stored in r0 and save the result in
+[12:21] R1 so let me give you 10 seconds to look
+[12:24] at this particular program
+[12:33] all right so the first thing that needs
+[12:35] to be done in any kind of an assembly
+[12:37] program is that we need to do register
+[12:40] assignment so let's assume that the prod
+[12:42] variable
+[12:44] product is saved in R1 which is also
+[12:47] where we need to return the result is
+[12:49] initialized to
+[12:51] one and the index the index of the loop
+[12:54] is also initialized to one and it's
+[12:55] saved in
+[12:58] R3 so let's do one thing let's start so
+[13:01] since we know that the number is greater
+[13:02] than one we can happily start with the
+[13:04] multiplication and check later so let's
+[13:08] uh first do the multiplication which is
+[13:11] prodad equals Brad time idx so in this
+[13:14] case I multiply the index which is in R3
+[13:18] with the current product in R1 and save
+[13:21] it in
+[13:22] R1 then I
+[13:25] compare uh the
+[13:28] index uh uh with the input uh number uh
+[13:33] so the index is an R3 and the input is
+[13:36] an r0 so I just compare them I compare
+[13:39] idx with the input with
+[13:42] r0 and uh then what I do is that I
+[13:46] increment the
+[13:48] index so I increment the index I do ID
+[13:52] x++ so at this uh particular Point Let's
+[13:56] assume that the index is equal to n
+[13:58] right let's assume that we infer an
+[14:01] equality and the index is equal to
+[14:05] num so since the index has already been
+[14:08] multiplied into the product we don't uh
+[14:12] need to go for another iteration of the
+[14:14] loop so what we can do is that we can
+[14:16] compare if this particular comparison
+[14:19] led to an equality or not because mind
+[14:21] you the add instruction is not setting
+[14:24] the flags so we'll only use the result
+[14:27] of this particular comparison
+[14:29] and if and if this comparison to US
+[14:32] indicates that uh the index is not equal
+[14:36] to the number then we need to go back to
+[14:40] do Loop once again and loop for one more
+[14:43] time otherwise if uh we have reached the
+[14:47] end of the iterations when index becomes
+[14:51] equal to the original number stored in
+[14:53] r0 we can exit and the product is stored
+[14:57] in R1
+[15:02] all right so now let's now that we have
+[15:04] seen a very basic uh program let's try
+[15:08] to make our uh repertoire of assembly
+[15:11] instructions slightly more complicated
+[15:14] by introducing the branch and Link
+[15:16] instruction so the branch and Link
+[15:17] instruction uh is the same as not the
+[15:21] same but similar to the call instruction
+[15:23] and simple risk we use it to invoke
+[15:26] functions to call functions so it works
+[15:28] in exactly the same way uh we jump to a
+[15:33] label and the label points to the first
+[15:36] instruction in the
+[15:38] function so it does so the BL
+[15:40] instruction branch and Link does two
+[15:42] things we jump unconditionally to the
+[15:45] function at
+[15:47] Fu and we save the next PC which is the
+[15:49] current pc+ 4 in the return address
+[15:52] register which is also called the LR
+[15:55] which is actually called the LR register
+[15:57] in arm so so this is the return address
+[16:17] register uh this uh particular register
+[16:20] over here is the return address
+[16:24] register and it's also called the link
+[16:26] register
+[16:29] uh so this uh register will contain the
+[16:33] value of the current PC +
+[16:36] 4 so let's write a simple uh assembly
+[16:40] program with a function called so let's
+[16:42] consider a simple C program first so
+[16:45] let's have a variable X that we set to
+[16:47] three then we call the fu function that
+[16:50] returns two so we add X plus the return
+[16:53] value of Fu which is 2 so 3 + 2 we get
+[16:56] five which will be again be saved in
+[17:01] y so let's uh consider what needs to be
+[17:04] done here so let's the first step is
+[17:07] always mapping the variables to register
+[17:09] so let's Map X to
+[17:11] R1 let's add three to it I'm I'm sorry
+[17:15] let's move three to
+[17:16] it uh
+[17:18] subsequently uh we call the fu
+[17:21] function so the fo function moves 2 to
+[17:25] r0 and uh so we need to return so the
+[17:28] interest interesting thing is that in
+[17:30] arm there is actually no return function
+[17:33] so this is the way that we typically
+[17:35] return well there are few more ways also
+[17:38] but this is one of the simpler ways so
+[17:40] what we do is that since the program
+[17:42] counter and the link register which is
+[17:44] the return address register are
+[17:46] explicitly visible to the
+[17:48] programmer what we do is that we set the
+[17:51] contents of the LR to the PC which is
+[17:54] exactly the same as returning because LR
+[17:58] contains a pointer to the next
+[17:59] instruction which is over here so if you
+[18:02] move the contents of the return address
+[18:04] register the LR register to the program
+[18:06] counter it'll be the same as jumping to
+[18:10] the last
+[18:11] instruction uh in the main function the
+[18:15] I'm sorry I shouldn't be saying the last
+[18:16] instruction is the instruction just
+[18:18] after the function call in the main
+[18:21] function so in this case r0 contains two
+[18:24] so we are adding r0 with R1 essentially
+[18:28] we're adding the return value of the
+[18:29] function with R1 and saving it in R2
+[18:32] where the assumption is that the
+[18:34] variable Y is mapped to R2 so what is
+[18:38] the important learning that we get from
+[18:41] this
+[18:42] slide what we get to
+[18:44] learn is that uh the link register which
+[18:49] contains the return address is mapped
+[18:53] you know if uh we transfer the contents
+[18:56] of that to the PC which is also one of
+[18:58] the registers that is exposed in a
+[19:00] register file this is the same as
+[19:03] returning from a function it's exactly
+[19:05] the same so we don't need a r
+[19:09] instruction so let's now take a look at
+[19:12] some another kind of instruction which
+[19:14] is uh slightly easier and nowadays
+[19:18] programmers are preferring it uh so this
+[19:21] particular instruction is called
+[19:24] BX uh so BX it takes a single argument a
+[19:27] single register
+[19:29] so the explanation is that let's say I
+[19:31] have an instruction of the form BX
+[19:34] R2 this means that I jump
+[19:37] unconditionally to the address contained
+[19:39] in register
+[19:41] R2 so I can think of this as a variant
+[19:44] of the B uh instruction unconditional
+[19:47] Branch but the B instruction actually
+[19:50] took a label and the BS instruction
+[19:52] takes a
+[19:54] register so nowadays this is the
+[19:56] preferred method to return from a
+[19:58] function
+[19:59] and we actually don't use move pclr I
+[20:02] mean we are advised not to use this
+[20:05] thing so let me write it over here
+[20:07] advised not to
+[20:11] use well this should be used in variant
+[20:15] of arm processor that do not provide the
+[20:17] BX
+[20:18] instruction but if the BX instruction is
+[20:21] provided which is the case in at least
+[20:23] most arm processors what we are supposed
+[20:25] to do is B
+[20:27] XLR which basically means that take the
+[20:30] address that is there inside this link
+[20:32] register and jump to it that's basically
+[20:37] the idea so instead of moving LR into PC
+[20:39] which is what we saw in the previous
+[20:42] slide uh a better idea a much much
+[20:45] better idea is to use BX LR where we
+[20:49] jump directly to the contents of the LR
+[20:54] register so let's consider the same
+[20:57] program with the BX fun function with a
+[20:59] BX instruction so we have the first
+[21:02] instruction move R1 # 3 sets X to
+[21:06] 3 we call the fu function using the BL
+[21:10] instruction branch and Link so in LR
+[21:12] register the return address gets saved
+[21:15] we move two to r0 and instead of moving
+[21:18] the contents of LR to PC this is the new
+[21:20] instruction BX
+[21:23] LR and in this case we move uh we Branch
+[21:26] to the point uh to the add address that
+[21:28] is contained inside LR which is the
+[21:31] address of the next instruction after
+[21:33] the function
+[21:36] call so let's now look at some
+[21:38] conditional variants of normal
+[21:40] instructions so it is just not the case
+[21:44] that these conditions EQ NE GT all the
+[21:48] conditions that we studied all the uh 14
+[21:51] conditions uh other than the AL always
+[21:54] condition right so basically all the 14
+[21:56] conditions that we looked at it is not
+[21:59] necessary that they will only be put
+[22:00] after a branch right so previously what
+[22:02] were we doing we were putting them after
+[22:04] a branch after the B instruction it is
+[22:07] not necessary after a a lot of normal
+[22:10] instructions like add subtract multiply
+[22:14] we can suffix the conditions as well so
+[22:16] for example we can have ADD then we can
+[22:19] have the condition EQ or we can have ADD
+[22:21] and we can have the condition Mi this
+[22:24] will basically mean that the add
+[22:26] instruction will only execute if the Mi
+[22:29] condition holds true or the subtract
+[22:32] instruction will only execute if the any
+[22:35] not equal condition holds true so these
+[22:38] kind of instructions are also known as
+[22:40] predicated instructions which means that
+[22:43] if the condition is true the instruction
+[22:46] will execute normally otherwise the
+[22:49] instruction will not execute at all it
+[22:52] is pretty much like a
+[22:55] noop so let's take a look at a slightly
+[22:58] more complicated example so let's write
+[23:01] a program in arm assembly to count the
+[23:03] number of ones in a 32-bit number which
+[23:06] is stored in R1 and let's save the
+[23:08] result in R4 so let's do let me consider
+[23:11] a 4bit number so consider a 4bit
+[23:17] number consider the number of
+[23:20] ones the number of ones
+[23:23] are one and two consider another 4bit
+[23:27] number
+[23:29] consider the uh count the number of ones
+[23:31] there are three ones so similarly we'll
+[23:34] have to do that in a 32bit number we
+[23:37] need to count the number of ones that
+[23:39] are there in its binary representation
+[23:41] of course and we need to save the result
+[23:44] in
+[23:45] R4 so let's move ahead so we want to
+[23:48] have a loop so what is the idea the idea
+[23:51] is that in a 32-bit number each of
+[23:55] these uh bits needs to be considered one
+[23:58] after the other we need to check if it's
+[24:01] a one or not and increment a counter so
+[24:05] essentially if there's a loop we need an
+[24:07] index so let's have an index variable
+[24:09] let's map it to R2 initialize it to
+[24:12] one similarly let's have a count
+[24:15] variable which is mapped to R4 because
+[24:17] the final result needs to be saved in R4
+[24:20] so let's take a count variable save it
+[24:24] R4 and uh initially the count starts
+[24:27] with zero right because we have not seen
+[24:29] any one yet so the first task would be
+[24:33] extract the least significant bit and
+[24:37] compare right extract the LSP and
+[24:39] compare so in this case how do we
+[24:41] extract the LSP so what we can do is
+[24:44] that let's take the original number
+[24:47] which is stored in
+[24:49] R1 and let's and it with one so in this
+[24:52] case all the upper 31 bits will get
+[24:55] erased and only the LSP will remain
+[24:58] so in this case the result of the and
+[25:01] will stay in R3 let us now compare R3
+[25:04] with
+[25:06] one here is the new instruction that we
+[25:09] insert over here and it is very
+[25:12] important to understand this part that
+[25:14] only if the comparision results in an
+[25:16] equality or
+[25:18] alternatively only if the LSP is equal
+[25:21] to 1 do we increment the count which is
+[25:25] in R4 by one all right so only if the
+[25:29] LSP is equal to one we increment the
+[25:32] count by one otherwise this
+[25:36] instruction uh works as if it has just
+[25:38] never been seen or never
+[25:40] executed right so uh so in this case we
+[25:44] are essentially counting if this LSB is
+[25:46] one if it is one we increment R4 now
+[25:49] let's prepare for the next iteration so
+[25:52] what we do now is that we take the
+[25:56] R1 and we do a logical shift
+[26:00] right uh mind you not an arithmetic
+[26:02] shift right because in this case we
+[26:04] don't want to replicate the sign bit so
+[26:06] we shift it right by one position and we
+[26:09] save it back in
+[26:10] R1 and simultaneously that we increment
+[26:13] the index so R2 we incremented with
+[26:18] one so then uh once the index uh reaches
+[26:25] 32 so so I'm sorry so then we compare so
+[26:28] we start with the index of one so
+[26:30] basically 1 to 32 times we need to Loop
+[26:33] but once it is 33 we need to get out so
+[26:37] we compare R2 with
+[26:39] 32 if R2 is less than equal to 32 BL
+[26:43] then we go back to the original looping
+[26:46] instruction otherwise we come out and
+[26:49] the final result is saved in R4 which is
+[26:52] the count so the important point to
+[26:55] understand for all of us is this add Q
+[26:58] instruction which made our life
+[27:00] extremely easy and uh the ad EQ
+[27:04] instruction pretty much otherwise we
+[27:06] would have had to have a branch we would
+[27:08] have had to you know after this point if
+[27:11] the comparision is successful we had to
+[27:15] uh you know add a branch statement where
+[27:17] we either increment it or don't
+[27:19] increment R4 but that entire piece of
+[27:22] code was folded into this one single
+[27:25] instruction which makes our coding
+[27:27] process very very
+[27:30] efficient now that we have seen basic
+[27:32] instructions Advanced
+[27:34] instructions and Branch
+[27:37] instructions let's move to memory
+[27:41] instructions so similar to simple risk
+[27:43] are arm has a very basic load
+[27:46] instruction which is load R1 with a
+[27:50] register indirect operant r0 so in this
+[27:53] case the address the memory address is
+[27:56] stored in r0 we read it we Access Memory
+[28:00] read four bytes and save it in R1
+[28:03] exactly the same as simple
+[28:05] risk and similarly the store instruction
+[28:08] Works in a very similar fashion here the
+[28:11] idea is that uh instead of reading from
+[28:15] memory we write to memory the address is
+[28:17] contained in r0 so we use the address to
+[28:20] access memory then we take the contents
+[28:23] of R1 and store it in memory
+[28:29] but uh you know as luck would have it
+[28:31] life is not that easy so arm has many
+[28:34] many kinds of complicated variants of
+[28:37] memory instructions so let's study uh
+[28:40] let's at least attempt to study most of
+[28:42] them in this particular
+[28:45] chapter so uh arm also has a base index
+[28:49] kind of mode where uh we use the basic
+[28:53] ldr instruction the load
+[28:56] instruction uh to load the value of uh
+[29:00] the address uh to essentially load the
+[29:03] value
+[29:04] of uh the bytes that are stored at this
+[29:07] memory location r0 being the base
+[29:10] register and four being the
+[29:13] offset so so uh I'm sorry it's not a
+[29:15] base index mode it's a base offset
+[29:18] mode and uh so in this case four is the
+[29:21] offset that is being added to r0 and
+[29:24] then this is being saved in R1 so it's a
+[29:27] base offset mode of addressing and
+[29:29] similarly we can have a base register
+[29:32] and we can have an index
+[29:33] register so in this
+[29:36] case what we do is that the so
+[29:39] essentially the address of the load
+[29:41] instruction is supposed to be between
+[29:43] these two square
+[29:45] brackets so this particular instruction
+[29:47] is working as follows that into R1 we
+[29:51] are saving the contents in memory where
+[29:54] the address is given by r0 being the
+[29:56] base register and r 2 being the index
+[29:58] register so we take their
+[30:01] contents we add the contents of r0 and
+[30:04] R2 we come up with an address and use
+[30:07] that address to access memory and read
+[30:10] in four
+[30:12] bytes so let's take a look at all kinds
+[30:17] of uh addressing modes that are possible
+[30:20] uh in arm so load and store addressing
+[30:24] modes are very symmetric so we'll only
+[30:26] consider the case of load
+[30:28] so we can have a regular register
+[30:30] indirect mode which is of the form
+[30:32] ldrr uh R1 square brackets r0 where we
+[30:37] take the contents so the memory address
+[30:39] is given in
+[30:40] r0 we have a base offset mode in this
+[30:44] case the base register is provided and
+[30:46] the offset is provided so we take the
+[30:49] contents of the base register and we add
+[30:51] four and we save it in
+[30:54] R1 similarly we have a base index mode
+[30:57] where which is r0 and R2 so we just add
+[31:00] the contents of r0 and R2 and access
+[31:04] memory save the bytes in
+[31:06] R1 then we have this mode which is
+[31:10] slightly complicated so this is a base
+[31:13] reg so r0 is still the base but we have
+[31:16] a scaled index so in this case we are
+[31:18] shifting the index to the left by two
+[31:22] positions so that's the reason I have
+[31:23] the left shift operator over here so
+[31:26] this is the base scale index mode which
+[31:29] is useful for accessing arrays and so on
+[31:32] because typically we would access arrays
+[31:34] if if we access them element wise like 0
+[31:37] 1 2 3 4 uh in terms of bytes if each
+[31:41] element takes four bytes so they need to
+[31:43] be accessed as 0 4 8 and so on so we can
+[31:48] take the sequence 012 and multiply it by
+[31:50] four or left shift it by two so this is
+[31:54] where the notion of the base and scaled
+[31:57] index comes in where uh we so the
+[32:01] portion of text within the square
+[32:04] brackets denotes the address and the way
+[32:07] that the memory address is computed is
+[32:09] as follows it is r0 + R2 multiplied by
+[32:14] the left shift amount or divided by the
+[32:16] right shift amount uh but let's say it
+[32:19] is R2 in the case of a left shift it is
+[32:22] LSL hh2 which means so this R2 LSL H2 is
+[32:26] a shifter operant and so instead of LSL
+[32:29] we can have LSR ASR and Ro so all four
+[32:32] of those shifts are allowed so in this
+[32:35] particular case we have given LSL as an
+[32:37] example so in this case we pretty much
+[32:39] taking R2 and shifting it to the left by
+[32:41] two positions so in this case r0 is the
+[32:45] base R2 is the index and we scaling the
+[32:49] index which means multiplying the index
+[32:51] by four which is the same as left
+[32:53] shifting it by two positions
+[32:58] as discussed in the last slide let me
+[33:01] explain a small example with arrays so
+[33:04] let's first take a look at the C program
+[33:06] on top so in this case the input is an
+[33:09] array of 100 elements so we have a sum
+[33:13] and we have an index so the idea is to
+[33:15] add all the elements in the array so in
+[33:17] this case the index moves from 0 to 100
+[33:20] so we iterate through all the elements
+[33:21] in the array and uh
+[33:25] we uh do sum equal sum plus a idx which
+[33:29] essentially means we're adding all the
+[33:31] elements of the
+[33:33] array uh to the sum so the final output
+[33:36] will be there in the sum variable and
+[33:39] the sum variable can be returned as well
+[33:42] but I'm not showing
+[33:44] that so in arm assembly the first task
+[33:47] is to first uh you know map the
+[33:51] variables to addresses so in this case
+[34:00] sum is equal to
+[34:02] zero which means that the sum variable
+[34:05] is maap to register
+[34:07] R1 and uh register R1 is set to zero so
+[34:13] this is also the starting point in the C
+[34:15] program and we set our index equal to
+[34:18] zero and we map index to register
+[34:21] R2 so the first thing that we do is that
+[34:25] from uh we need to load from memory
+[34:28] uh the value of the first array element
+[34:30] this can be done very easily so since we
+[34:33] assume that the Base address of the
+[34:34] array is in r0 so we use this as the
+[34:37] base
+[34:40] resistor then we use a shifter
+[34:44] operant where R2 is the index and we
+[34:48] essentially compute r0 + R2 * 4 the
+[34:52] reason four comes is because one integer
+[34:55] is 4 bytes and we are accessing memory
+[34:57] at the level of bytes so we are so we'll
+[35:00] take one uh resistor R2 which contains
+[35:03] the
+[35:04] index multiply it by four which is the
+[35:07] same as shifting it to the left by two
+[35:09] positions so R2 LSL
+[35:12] hh2 so this gives us the address of a
+[35:19] idx we read the value from memory and
+[35:22] put it in
+[35:23] R3 then we increment the index add R2 r
+[35:27] 2 # 1 and we compute sum plus equal to a
+[35:32] idx
+[35:34] uh so actually we should be having
+[35:37] a uh comment over here so basically the
+[35:42] comment should end so some plus equal to
+[35:44] a
+[35:45] idx so in this case we uh take the
+[35:48] current sum which is an R1 we add R1
+[35:51] with the value that we read from memory
+[35:53] which is R which is
+[35:56] R3 after Compu Computing the sum We
+[35:58] compare the index which is in R2 with
+[36:01] 100 so if you have reached 100 which is
+[36:04] basically if you have reached 100 over
+[36:06] here the loop
+[36:07] terminates so if you have not reached
+[36:10] 100 so if it's Branch not equal to which
+[36:12] means R2 is not equal to 100 which means
+[36:15] we have more iterations left so we go
+[36:18] back to the beginning of this phase
+[36:20] which is do
+[36:22] Loop so here uh so this let's count the
+[36:26] number of lines of coordinat see it's 1
+[36:28] 2 3 4 and actually we should count the
+[36:32] closing brace as a Fifth Line because
+[36:34] it's essentially taking us to the
+[36:36] beginning of the four instructions so
+[36:38] let's see depending upon how we count
+[36:40] it's four or five lines of code the
+[36:42] number of assembly lines is 1 2 3 4 5 6
+[36:46] 7 so four or five lines are converting
+[36:49] to seven lines which is actually not all
+[36:51] that bad and the reason that we were
+[36:55] able to have such an efficient assembly
+[36:58] representation is only because of this
+[37:01] ldr instruction over
+[37:04] here uh which allowed us to access the
+[37:07] contents of memory for an array very
+[37:09] easily because the address here we are
+[37:12] being uh we we have a very easy way of
+[37:15] computing r0 + R2 * 4 in a single
+[37:19] expression where we can specify the base
+[37:21] register the index and what the index
+[37:24] should be scaled with which in this case
+[37:26] is four so this is what enabled us to
+[37:30] write nice and compact
+[37:32] code now let's take a look at even more
+[37:35] advanced memory instructions so consider
+[37:38] an array access
+[37:39] again so I'll just take out the relevant
+[37:43] instruction so maybe if I just go to the
+[37:45] previous slide this was the instruction
+[37:48] that was being used to access the
+[37:51] array so I can again come back over here
+[37:55] and have load R3 I'm just you know
+[37:57] repeating the array accessing
+[38:00] instruction so we have this and
+[38:02] subsequently we increment the index
+[38:04] which is R2 so this is a very common
+[38:07] pattern so whenever we access an array
+[38:09] we'll most likely access it within a
+[38:11] loop and so the typical pattern would be
+[38:14] that we access an array element and then
+[38:17] increment or decrement the array
+[38:20] index so we should have a way of fusing
+[38:23] both into one
+[38:25] instruction which in this case would
+[38:28] imply that you know we have to sort of
+[38:31] tell the processor that after doing this
+[38:33] increment
+[38:35] R2 so let us have a method of doing it
+[38:40] so in this case uh let's uh so arm
+[38:43] defines a new format for the format is
+[38:46] like this that we write ldr
+[38:48] R3 and we sort of move the end of the
+[38:51] square bracket to uh so instead of
+[38:54] encapsulating the entire thing we move
+[38:57] the the end of the square bracket just
+[38:59] after r0 so we'll have ldr R3 r0 which
+[39:05] is the Base address register within a
+[39:08] square bracket and then the index and
+[39:12] the scale amount and the shift amount
+[39:14] right so the only change is uh that the
+[39:17] square bracket has moved its position so
+[39:20] it has pretty much moved from I would
+[39:22] say this position to this position
+[39:26] that's the only change
+[39:28] so this is a new kind of assembly
+[39:30] instruction format that we are
+[39:31] introducing for the ldr instruction so
+[39:34] this is equivalent
+[39:36] to
+[39:38] set R3 as the contents of
+[39:42] r0 and subsequently you compute r0 is
+[39:46] equal to r0 + R2 *
+[39:49] 4 so this is what uh this particular
+[39:54] instruction is equivalent to it's called
+[39:56] a post index addressing
+[39:59] mode right so basically the uh so so
+[40:02] what is this code snippet over
+[40:05] here equivalent 2 it's equivalent to
+[40:08] that we first read the contents of r0
+[40:09] into
+[40:10] R3 and then uh we compute r0 is equal to
+[40:15] r0
+[40:16] plus the contents of the shifter operant
+[40:19] which is R2 left shifted with
+[40:24] two similar to The Post index addressing
+[40:27] mode we have a pre- indexing addressing
+[40:29] mode as well so post indexing is s
+[40:33] something similar to i++ and c and
+[40:37] C++ uh so pre indexing is something
+[40:39] similar to Plus+ I right so where we
+[40:43] increment the value first and then uh
+[40:47] proceed with the current
+[40:49] instruction so the format over here is
+[40:53] something like this that we first we
+[40:54] will have
+[40:55] ldr uh then so this part is common uh
+[40:59] then we specify the address so the
+[41:01] address can take any format we can
+[41:03] either have the register indirect mode
+[41:06] uh you know base offset mode base index
+[41:08] mode base scaled index mode it doesn't
+[41:10] matter but the important point is we
+[41:13] need to add an exclamation mark at the
+[41:16] end so this will essentially tell us
+[41:19] that we need to go for the pre-index
+[41:21] addressing mode and this is equivalent
+[41:23] to we are accessing so basically this is
+[41:26] equivalent to the fact that we access
+[41:29] the memory at this point R1 + 4 right
+[41:33] it's equivalent to that that we first
+[41:35] add four to R1 compute the address and
+[41:38] access the memory at that location and
+[41:40] save the result in r0 and we also
+[41:43] increment R1 to R1 + 4 right uh so both
+[41:48] of these are done so the difference had
+[41:50] this been post indexed you would have
+[41:53] accessed the memory only at location
+[41:56] R1 but since it is pre-index we
+[41:58] increment R1 first use the incremented
+[42:01] value to access
+[42:04] memory so uh if I would write equivalent
+[42:07] C code this is what it would look like
+[42:08] equivalent you know SoDo code uh that we
+[42:11] access the memory at the augmented
+[42:14] location of R1 which is R1 + 4 and also
+[42:18] then we increment R1 to R1 + 4 now that
+[42:22] we have seen the pre and post indexed
+[42:24] addressing modes which is very similar
+[42:26] to I ++ and Plus+ I and C it's time to
+[42:30] see how we can use them so let's go back
+[42:33] to our example where uh we were
+[42:36] essentially adding uh
+[42:39] numbers uh so this example is uh as
+[42:42] follows that okay let me again uh
+[42:45] correct it
+[42:46] with the end of the comments so we're
+[42:49] adding 100 numbers we're adding 100
+[42:51] numbers in a loop and we use this
+[42:55] complicated expression over here to
+[42:58] pretty much compute
+[43:00] r0 +
+[43:03] R2 uh * 4 * 4 is same as left shifting
+[43:07] it by two positions so R2 contained the
+[43:10] index so this gave us the address of the
+[43:13] element in the array where r0 is a base
+[43:16] register so the address would increase
+[43:18] as follows 0 4 8 12 16 and so
+[43:24] on all right so now let's go back and
+[43:27] and take a look at the same example with
+[43:29] slightly reduced code so uh before
+[43:32] looking at the example I just want to
+[43:34] stress once again that i++ is the
+[43:39] pre-indexed uh I'm sorry i++ is the PO
+[43:42] index mode similar to what is there in
+[43:44] Java
+[43:45] cc++ and Plus+ I is the pre-indexed mode
+[43:50] right where we first increment the
+[43:52] variable and then use
+[43:54] it all right so let's take a look at an
+[43:56] examp example with
+[43:58] arrays uh the same example adding the
+[44:00] first 100 elements of
+[44:03] an uh
+[44:05] array uh so basically let's see our aim
+[44:10] is to use either a post index or a pre
+[44:13] index addressing mode so in this case we
+[44:15] shall use the post index addressing mode
+[44:18] so let's uh start so first thing that we
+[44:23] need to do is register assignment so we
+[44:26] take our
+[44:28] sum
+[44:29] variable and uh so which is supposed to
+[44:32] contain the final sum and we initialize
+[44:34] it to zero so this is common this is
+[44:36] something we have to do but here is
+[44:38] something that we want to do we want to
+[44:40] eliminate the
+[44:42] index from our computation completely uh
+[44:46] from our assembly program completely so
+[44:49] you know we don't want to use the index
+[44:50] we want to rather use the sophisticated
+[44:52] addressing modes so let's do one thing
+[44:55] let's compute the
+[44:58] end of the address of the first bite
+[45:00] that is at the end of the array right
+[45:02] the first bite which is actually illegal
+[45:05] so if you consider this as the memory
+[45:08] region that contains the array let's
+[45:10] cons consider the first bite which is
+[45:12] not in the array and it's just outside
+[45:15] it so this is essentially so since we
+[45:17] have 100 elements in Array a the
+[45:20] elements are from a0 to
+[45:23] A99 and pretty much a00 is an
+[45:27] element so the address of a00 the
+[45:30] starting address would be the first
+[45:33] address after the end of the array and
+[45:35] this will be a + 100 * 4 because one
+[45:39] integer is 4 bytes so this is a + 400 so
+[45:43] let's do that let's take the value of
+[45:44] the base uh address
+[45:47] r0 let's add 400 to it so essentially
+[45:51] we're setting r0 to the address of a00
+[45:54] and we save this in R4
+[45:58] all right uh so we are actually not
+[46:00] setting r0 this should be we setting R4
+[46:03] right so let me just uh fix this is not
+[46:07] correct so we are setting R4 to the
+[46:09] address of
+[46:10] a00 all right which is an illegal
+[46:13] address so let's do one thing so let's
+[46:15] so this is essentially all our all the
+[46:19] greatness of arm pretty much lies in
+[46:21] this instruction which is the first
+[46:23] instruction
+[46:24] where uh so we start so r0 contains the
+[46:28] Base address so we start and access r0
+[46:31] the value is transferred to R3
+[46:34] subsequently we increment r0 by 4 so all
+[46:37] of this will be done by this instruction
+[46:40] so what this instruction would do is
+[46:42] that it would set
+[46:43] R32 the contents you know the memory
+[46:47] contents uh for the address is in r0 and
+[46:51] then it would set r0 = r0 + 4 and this
+[46:55] is the Crux of the post increment
+[46:58] instruction that both of these things
+[47:00] will happen within the same instruction
+[47:04] where the instruction is ldr so in the
+[47:07] ldr the load instruction we first we
+[47:10] shall load uh the value uh you know this
+[47:14] value R uh the value from memory whose
+[47:17] address is contained in r0 then we shall
+[47:19] in increment
+[47:21] r0 subsequently the value that we read
+[47:24] we shall add that to the sum so this is
+[47:26] same as Computing sum plus equals a
+[47:30] idx and here what we do is since we are
+[47:32] incrementing r0 in every iteration we
+[47:35] just compute the fact if r0 has reached
+[47:38] R4 or not which essentially means r0 we
+[47:40] are treating it as a moving pointer
+[47:43] which is first pointing to the first
+[47:44] element then the second element then the
+[47:46] third
+[47:47] element till it reaches the end of the
+[47:49] array and sort of goes out of it so we
+[47:51] compare r0 with R4 for R4 is an illegal
+[47:55] address so if r0 is equal to
+[47:59] R4 then clearly we need to exit if it's
+[48:02] not equal to R4 we need to come to the
+[48:05] loop over here so if we'll compare the
+[48:08] previous let's again you know quickly go
+[48:10] back and count the number of lines so
+[48:13] the number of lines before the loop is
+[48:14] not important mainly because the loop
+[48:17] will actually you know heavily
+[48:19] overshadow the number of lines before it
+[48:22] the ROP runs for 100 times and each
+[48:25] iteration of the loop is 5 instructions
+[48:27] so pretty much we'll have 500
+[48:28] instructions in the loop but if you come
+[48:31] here we see that each iteration of the
+[48:35] loop actually has four instructions so
+[48:38] we'll have a total of 400 Dynamic
+[48:41] instructions which is a hly savings of
+[48:44] 20% right so we are able to reduce our
+[48:46] number of instructions by a fifth by
+[48:49] using this post indexed addressing
+[48:52] mode so both pre-indexed and po index
+[48:56] addressing mode can be used for the load
+[48:58] instruction and the store instruction as
+[49:00] well all of these examples are with the
+[49:03] load instruction but they can be uh done
+[49:05] for the store instruction as
+[49:08] well now let us discuss some of the
+[49:10] memory instructions that are used in
+[49:12] functions so you often see that uh it is
+[49:16] necessary to store a set of registers
+[49:18] before calling a function and it is
+[49:21] necessary to restore them so uh this the
+[49:25] code to store regist is called spilling
+[49:28] so uh we have two schemes caller saved
+[49:30] and Collie saved in both the schemes we
+[49:33] spill a set of registers which means
+[49:35] save it on the stack and then once we
+[49:38] return from the function we restore the
+[49:41] set of registers so we typically require
+[49:46] several instructions
+[49:47] to uh spill the set of registers and
+[49:50] restore them so arm has made this job
+[49:53] easy uh so there is one instruction stmf
+[49:57] for spilling a set of registers and
+[49:59] essentially saving it on the
+[50:05] stack saving uh not it but I would
+[50:07] rather say
+[50:16] them similarly we have the ldmf
+[50:19] instruction to restore a set of
+[50:21] registers the format of both the
+[50:23] instructions are roughly the same so we
+[50:26] first specify the stack pointer then
+[50:29] similar to the pre-index addressing mode
+[50:31] we have an exclamation mark so the
+[50:34] exclamation mark is basically to say
+[50:37] that at the end of the instruction the
+[50:39] next instruction should see an updated
+[50:41] stack pointer for example if you push in
+[50:44] three
+[50:46] registers uh then uh at the end of the
+[50:48] instruction we should see the stack
+[50:50] pointer subtracted by 12 so let's maybe
+[50:53] consider the stmf instruction first so
+[50:57] here we push the registers on the stack
+[50:59] in descending order and we update SP so
+[51:02] let's take a look at this descending
+[51:04] order let's assume that we want to push
+[51:06] the values of registers r10 uh let's say
+[51:09] R4 and
+[51:11] r10 so what the hardware would do is the
+[51:14] hardware would first sort them in in
+[51:16] descending order so it would be r10 and
+[51:19] then
+[51:20] R4 the values of these registers would
+[51:23] be pushed in the same descending order
+[51:26] so r 10 will essentially be pushed first
+[51:28] assuming the stack is downward growing
+[51:32] r10 and then we would push
+[51:37] R4 so the ldmf instruction does exactly
+[51:40] the opposite so what it does is that it
+[51:43] starts at the top of the stack and
+[51:45] pushes uh and sorry pops the stack and
+[51:48] assigns values to resistors in ascending
+[51:51] order which is the reverse order so
+[51:54] first you would pop R4 then it would pop
+[51:57] r10 and update the value of the stack
+[52:00] pointer to what it was before you shall
+[52:02] find both of these instructions lmft and
+[52:05] stdm F to be extremely useful when we
+[52:09] discuss uh you know when we Show an
+[52:11] example of how to use them to save and
+[52:14] restore
+[52:15] registers so here is the example uh so
+[52:19] the idea is like this that let's write a
+[52:21] function in C uh and implement it later
+[52:25] in arm assembly to compute X to the^ n
+[52:28] where X and N are natural numbers so
+[52:31] assume that X is passed through r0 and N
+[52:33] through R1 and the return value is
+[52:36] passed back to the original program via
+[52:39] r0 so I'll not show the C code but the C
+[52:42] code is easy uh to write so essentially
+[52:46] if you are if you have a function of the
+[52:48] form
+[52:50] power inex and Inn
+[52:58] we first want to
+[52:59] check if n
+[53:03] is equal to equal to 0 we would return
+[53:07] one because any number to the power 0 is
+[53:10] 1 so we return
+[53:13] one
+[53:15] else we
+[53:18] return so the C function is very
+[53:20] straight forward actually else we return
+[53:26] x
+[53:28] *
+[53:31] power
+[53:35] x nus one so this is just the simple
+[53:39] function in C that we have uh so I'm not
+[53:43] uh you know it's a simple oneline
+[53:45] function so I'm not further spending
+[53:47] time to explain it so the idea is that
+[53:50] if the power of n if n is equal to Z any
+[53:54] number to the power 0 is 1 so we return
+[53:56] one 1 otherwise we return x * the power
+[54:00] function x to the power x * x ^ nus
+[54:05] 1 so uh now uh let's take a look at how
+[54:08] to implement it in arm assembly so we
+[54:12] can first implement the first line which
+[54:15] is compare n with zero since n is stored
+[54:18] R1 We compare it with Z if there is an
+[54:23] equality uh so basically if there's so
+[54:26] we use a predicated or a conditional
+[54:28] instruction over here that if n is equal
+[54:31] to equal to Z and you know equality
+[54:35] holds then we will execute this
+[54:37] instruction move
+[54:39] EQ which will move one and r0 which is a
+[54:43] return value similarly if there is an
+[54:46] equality uh we will execute the BX
+[54:51] instruction and we will jump to the
+[54:53] return
+[54:54] address so so my you these two
+[54:57] instructions are conditional
+[54:58] instructions if there is an equality uh
+[55:01] found in the compare these two
+[55:03] instructions will execute otherwise the
+[55:05] hardware will just convert them to no
+[55:09] Ops so the nice thing of using
+[55:12] conditional instructions is that we
+[55:13] avoid branches and so on so it makes our
+[55:16] code look very neat and
+[55:19] straightforward
+[55:21] subsequently uh so in this particular
+[55:24] approach uh what we are are doing is
+[55:27] that we are first saving the values of
+[55:29] the registers that we will uh most
+[55:32] likely
+[55:33] change and then we go on and we do our
+[55:36] changes so think of this as
+[55:39] primarily a qual saved scheme because
+[55:43] here uh if you assume that this function
+[55:45] is a call then uh we save all the
+[55:48] registers that the caller might require
+[55:52] and uh and also the registers that we'll
+[55:54] modify and then we proceed
+[55:57] so basically since it's a recursive call
+[55:59] definitely the return address register
+[56:01] will get over written so we save it
+[56:04] along with that we save a temporary
+[56:06] register R4 because this also will get
+[56:09] overr so we save R4 and LR in the stack
+[56:13] pointer using the stmf instructions we
+[56:15] save them on the
+[56:17] stack subsequently we move the value of
+[56:20] x which is an r0 to R4 the main reason
+[56:24] for doing this is that that r0 is also
+[56:28] carrying a return value so in general in
+[56:31] the arm Abi Abi is application binary
+[56:35] interface uh the convention is
+[56:39] that uh you know return values
+[56:44] typically come via r0 and the arguments
+[56:47] are typically passed in r0 R1 R2 and so
+[56:50] on so since r0 is being used both as an
+[56:53] argument as well as a return value
+[56:56] before calling another version of the
+[56:58] power function we have to save
+[57:01] r0 in another register Let It Be
+[57:04] R4 subsequently we subtract R1 by 1
+[57:07] because R1 contains n so this is
+[57:10] equivalent to n =
+[57:12] nus1 and we call power so mind you in in
+[57:16] the power function what are the
+[57:18] arguments that have gone the arguments
+[57:21] that have gone are X and n minus1 and
+[57:24] the final result of the power function
+[57:26] is in register
+[57:28] r0 which contains x the^ n
+[57:32] minus1 we multiply this with R4 where R4
+[57:36] contains X so x * x ^ nus1 becomes X the
+[57:43] n subsequently we need to so since you
+[57:48] know this particular uh
+[57:51] approach is a qual saved uh approach uh
+[57:55] what what we need to do is that we need
+[57:59] to restore the values of the resistors
+[58:02] that we have modified so R4 is something
+[58:05] that we have modified so we need to
+[58:07] restore it and
+[58:09] similarly well LR we have modified but
+[58:12] we don't have to restore it we have to
+[58:14] do something else so uh so this
+[58:17] instruction is actually slightly tricky
+[58:19] but let me explain how it works so let's
+[58:23] first consider the case of R4 so as I
+[58:26] had said we save these in descending
+[58:28] order so essentially if this is the
+[58:30] stack which is you know downward growing
+[58:33] so this is the stack top we first
+[58:37] have
+[58:39] R4 and then we have the value of
+[58:42] LR now when we use uh execute the ldm FD
+[58:46] instruction we'll pop the registers in
+[58:49] ascending order so R4 will get popped
+[58:52] out and get assigned to R4 which means
+[58:55] that the value of R4 is getting restored
+[58:58] now here is the trick so basically we
+[59:01] have LR over here but when we next pop
+[59:05] out LR instead of saving it in LR we
+[59:08] actually save it in PC so mind you you
+[59:11] know this is the trick so let me put a
+[59:13] star over here so this is same as moving
+[59:16] the contents of LR into PC so this is
+[59:20] exactly the same as move LR into PC
+[59:24] which is exactly the same same as
+[59:26] returning from the function so as you
+[59:29] can see you know we are achieving
+[59:30] multiple objectives essentially killing
+[59:32] two birds with the same
+[59:34] Stone uh we had modified
+[59:37] R4 so as a result just before returning
+[59:42] we are restoring the value of R4 so that
+[59:45] the caller will not be able to know
+[59:48] secondly LR is something which you know
+[59:51] we had modified so that's uh we you know
+[59:54] later on modified so that's the the
+[59:56] reason we saved it on the
+[59:58] stack but now when we are returning
+[60:00] there is no real uh justification of
+[60:06] actually uh restoring LR because in any
+[60:09] case it makes little sense to restore it
+[60:12] after the function has returned what we
+[60:14] instead need to do is we need to affect
+[60:17] the return so we uh
+[60:20] essentially pop the value of LR but
+[60:23] instead of saving it in LR we save it in
+[60:25] PC
+[60:26] so this has exactly the same effect as
+[60:29] move LR into PC or essentially return
+[60:33] from the function so this is a very very
+[60:35] standard way of writing arm code where
+[60:38] we have a matching stmf and ldmf
+[60:42] instructions so it'll restore all the
+[60:44] values of the registers but instead of
+[60:46] restoring the value of LR what we do is
+[60:49] we pop the value of LR and put it in PC
+[60:52] so this is tantamount to returning from
+[60:57] function so this little piece of code so
+[61:00] actually if you take a look at it this C
+[61:02] code uh has essentially two statements
+[61:05] inside
+[61:06] it uh and in terms of assembly code it's
+[61:10] actually fairly complicated so it turns
+[61:13] 3 4 5 6 7 8 nine
+[61:16] statements uh but actually it could have
+[61:19] been actually much much more we reduced
+[61:22] it by using tricks in the um Isa so one
+[61:26] trick that we used is that we used the
+[61:28] EQ uh suffix the EQ condition uh to
+[61:32] ensure there are no branches and we put
+[61:35] in a predicated instruction there so
+[61:37] that took care of the base
+[61:39] case to take care of the recursive case
+[61:42] we decided that we have to call other
+[61:45] versions of the power
+[61:47] function so to call other versions of
+[61:49] the power function we have to save and
+[61:53] restore some registers because
+[61:55] particularly registered r0 is containing
+[61:58] an argument and is also supposed to
+[62:00] contain the return
+[62:02] value so what we do is so we again have
+[62:06] two options caller saved and qually
+[62:08] saved so had we
+[62:10] done uh uh a caller saved kind of
+[62:14] approach that would have also been
+[62:17] fine have a caller saved
+[62:20] approach uh we basically see that what
+[62:23] are the
+[62:24] registers uh that the caller would
+[62:26] actually require and we save those
+[62:28] registers so the registers are
+[62:30] essentially r0 and LR that the caller
+[62:32] will require so we should have saved
+[62:34] them and then again you know restored
+[62:37] them after the power function in a qu
+[62:40] saved approach uh the idea is slightly
+[62:43] different uh in in in in this case uh
+[62:49] what we essentially do is that we find
+[62:51] out what are the registers that the col
+[62:53] is actually
+[62:54] modifying and we save them at the
+[62:56] beginning and restore them at the end
+[62:58] such that the caller is not able to uh
+[63:01] find out what the collie did so in this
+[63:04] case R4 and LR are uh registers that we
+[63:08] save because we'll modify them later and
+[63:11] again while returning from the function
+[63:13] we restore R4 and instead of restoring
+[63:16] LR we pop it out but put its value in
+[63:19] the PC which is same as returning from a
+[63:22] branch
+[63:25] let's now look at arm instruction
+[63:27] encoding so here the basic uh problem is
+[63:30] that we need to encode instructions in a
+[63:32] bit field of 32 bits so let's first
+[63:35] Define the generic format which most of
+[63:37] the arm instructions follow so here the
+[63:40] first four bits bits uh 29 30 31 and
+[63:44] 32 these four bits represent the
+[63:47] condition uh so we had talked about 14
+[63:51] condition codes uh in a previous slide
+[63:54] so these condition codes for EQ NE GT Le
+[63:58] and so on so all of these condition
+[64:01] codes since there are total 14 of them
+[64:04] plus the AL condition code which means
+[64:07] always so 15 of them we need four bits
+[64:11] to encode them so the top four bits of
+[64:14] the encoding encode the condition
+[64:16] code the next two bits encode the type
+[64:19] of the instruction since we have two
+[64:22] bits arm can support uh mainly four
+[64:25] kinds of four broad types of
+[64:27] instructions so we'll see what the types
+[64:29] are in the next few slides so let's
+[64:32] consider the generic format of data
+[64:34] processing instructions which are
+[64:37] basically ALU instructions arithmetic
+[64:39] and logical
+[64:41] instructions so let me write
+[64:48] it so let's consider uh so the F the
+[64:52] first six bits so they follow the
+[64:54] generic format the first four bits is
+[64:57] the condition and 0 0 is the type of the
+[64:59] instruction type 0 0 subsequently the I
+[65:03] bit or the immediate bit indicates if
+[65:06] the Second Source operant so this is the
+[65:09] second uh Source operant if this is an
+[65:13] immediate or it's a shifter operant
+[65:17] essentially if is it a register shifted
+[65:20] by a certain value or it's an immediate
+[65:23] so so this uh is specified by the I
+[65:26] field the immediate bit subsequently the
+[65:29] next four bits specify the op code or
+[65:31] the operation code what kind of
+[65:32] operation it is such as add
+[65:37] subtract logical and logical or and so
+[65:41] on the 21st bit is the S bit so the S
+[65:45] bit is the S suffix bit that we talked
+[65:48] about so for example we talked about the
+[65:51] instruction add s so the adds
+[65:53] instruction sets the cpsr Flags the
+[65:56] program status register
+[65:58] flags and so this is the S suffix so
+[66:00] this can be added to any data processing
+[66:03] instruction this will automatically make
+[66:05] it set the cpsr
+[66:07] flags subsequently we have the ID of the
+[66:10] First Source register Since There are 16
+[66:13] Source registers we need four bits to
+[66:16] encode them so this is the ID of the
+[66:18] First Source
+[66:23] register uh then this is the idea of the
+[66:26] destination register
+[66:28] Rd and the last 12 bits are reserved to
+[66:32] specify either a shifter operant or an
+[66:37] immediate so encoding immediate values
+[66:39] is kind of tricky in arm arm has 12 bits
+[66:42] for immediates so 12 bits 12 is a bad
+[66:44] number it's not 8 it's not 16 so it is
+[66:48] essentially not one bite nor is it two
+[66:50] bytes so let us divide 12 bits into two
+[66:54] parts or two fields
+[67:02] so let one be an 8bit
+[67:04] payload and other a 4bit rotation value
+[67:08] so we'll see what these
+[67:09] are so the real value of the immediate
+[67:12] can be calculated like this so let's
+[67:15] again consider the 12-bit field so the
+[67:18] 12bit field over here is being divided
+[67:20] into a 8bit payload so the 8bit payload
+[67:24] is basically one bite of information and
+[67:27] a 4bit field called Ro
+[67:30] rot so the way that the immediate is
+[67:32] calculated is like this so consider an
+[67:35] arm instruction which is encoded in a
+[67:37] bit field of 32
+[67:39] bits in the arm
+[67:42] instruction the least significant 12
+[67:45] bits are encoding an
+[67:46] immediate so what the processor would
+[67:49] do is that the processor will
+[67:52] essentially expand this 12 bits to a
+[67:55] 32bit quantity Insight right so actually
+[67:58] even before that when I specify an
+[68:01] immediate an assembly
+[68:03] code right so consider this as assembly
+[68:05] code when you specify in immediate the
+[68:08] assembly code would try to convert it
+[68:10] encode it into this 12bit form if it is
+[68:13] possible so we'll discuss this later
+[68:16] subsequently once this has been encoded
+[68:18] in 12 bits once this actually executes
+[68:22] what the processor will do is that it
+[68:24] will take these 12 bits out
+[68:26] and expand the 12 bits into a 32-bit
+[68:29] quantity the way that the processor
+[68:31] would do it is as follows it will take
+[68:33] the 8bit payload and right rotate the
+[68:36] payload with a number which is 2 * Ro so
+[68:40] let's consider an examples so let us
+[68:43] consider a hex uh two hex digits one hex
+[68:47] digit is four bits so two hex digits are
+[68:49] 8 Bits so let us consider a 32-bit
+[68:53] number and let's consider
+[68:56] uh payload of the form let's say
+[68:59] Fe now let's say that the value of the
+[69:02] rot field is equal to
+[69:04] two in this case this number needs to be
+[69:07] right rotated by four
+[69:10] positions so right rotation basically
+[69:13] means that all the bits in the LSP
+[69:15] position come to the MSP position so if
+[69:19] I WR rotate a number by four positions
+[69:22] it basically means that four bits from
+[69:25] the SP come to the MSB and four bits is
+[69:28] one hex digit so what this will
+[69:30] essentially become is
+[69:33] e0 0 0 0 0
+[69:38] f so similarly uh I can encode a lot of
+[69:42] immediates and figure out their actual
+[69:44] value so the actual value that the
+[69:46] processor would use and the standard
+[69:48] formula is this one that I take the 8pit
+[69:50] payload and I write rotate it with a
+[69:53] value which is 2 * r
+[69:56] so Ro since it's a 4bit number it can be
+[69:59] between 0 to 15 so 2 * Ro can be between
+[70:03] 0 to
+[70:06] 30 so one thing that is obvious is that
+[70:09] if I take a number and I write
+[70:11] rotate by 32 positions then again the
+[70:15] number the 32-bit number will become
+[70:17] exactly the same so you can see one bit
+[70:21] is Right rotated by 32 positions it'll
+[70:23] come come come come again it will reach
+[70:25] its original position the same is true
+[70:28] for all the bits so any number any
+[70:31] 32-bit number right rotated by 32
+[70:34] positions is equal to the number
+[70:37] itself so essentially 32 is a limit but
+[70:41] what the arm format is saying is that it
+[70:44] allows you to specify 8 Bits and further
+[70:48] a right rotation such that you can
+[70:50] rotate it by any number which is in the
+[70:52] range of 0 2 4 6 just even number still
+[70:56] 30 so this sort of you know uh the
+[70:59] intuition behind this is like this
+[71:02] that's uh look we have a limited number
+[71:05] of bits in instruction format we only
+[71:08] have 12 bits so 12 is a bad number it's
+[71:11] not 8 it's not
+[71:12] 16 so what is the best that we can do we
+[71:15] can specify one bite of
+[71:18] information but the additional four
+[71:20] bytes also give us a handle of seeing
+[71:23] where that one bite will be located
+[71:26] right so basically at which position at
+[71:29] which even position that one bite will
+[71:30] be located for example it is very easy
+[71:33] to encode a number of this fashion in
+[71:35] the arm
+[71:37] Isa so what is this this
+[71:40] like so this is basically I have Fe over
+[71:44] here and a right rotate by certain
+[71:46] number of positions till it sort of
+[71:49] reaches over here so how many positions
+[71:52] would would this be if I write rotate Fe
+[71:55] by eight positions it will reach here 16
+[71:57] positions it will reach here 24
+[71:59] positions it'll reach here so basically
+[72:02] F uh I can consider 0x
+[72:07] Fe right rotated uh sorry Ro R 24 is
+[72:12] essentially this number over
+[72:19] here so the its encoding would basically
+[72:22] be so 24 divided by 2 is 12
+[72:26] so its encoding will basically be the
+[72:29] the RO field will be 12 C
+[72:34] Fe right so this is the encoding of the
+[72:36] immediate field so as we can see the
+[72:40] notion of immediates is slightly tricky
+[72:42] in arm it is actually not very simple
+[72:46] but in any case uh it is uh definitely
+[72:50] possible to encode a lot of numbers with
+[72:52] this so the first thing is that when the
+[72:55] programmer or the compiler they write an
+[72:58] assembly instruction with an immediate
+[73:00] for example let's say four the job of
+[73:03] the assembler is to convert it to a
+[73:04] 12-bit format if it is possible to do so
+[73:07] if it is not possible to do for example
+[73:11] a number of this of of this
+[73:19] form just has too many bits so it is not
+[73:22] possible to specify it in the 12 bit bit
+[73:25] formats or multiple instructions are
+[73:27] required but in any case if it is we use
+[73:30] multiple instructions each of the
+[73:32] instructions specifies an immediate
+[73:34] which can be put in this
+[73:36] format and the assembly code is created
+[73:40] subsequently the when the processor sees
+[73:43] this instruction it takes the 12 bits
+[73:46] out and expands them to 32 bits how
+[73:48] would it do it it would basically take
+[73:50] the field of 12 bits divide it into two
+[73:53] parts the R and let's say the payload P
+[73:57] it will then take payload and WR rotate
+[74:00] it with a number which is 2 * R this
+[74:04] will give us a 32-bit number which the
+[74:06] processor will internally
+[74:09] use so let's look at the explanation of
+[74:12] encoding in slightly layman terms so the
+[74:15] payload is an 8bit quantity and uh
+[74:18] number inside the processor or a number
+[74:21] in a register in any 32-bit processor is
+[74:24] a 32-bit quantity
+[74:26] so since the payload is 8 Bits we can
+[74:28] only set eight you know preferably
+[74:32] continuous bits in the 32-bit number at
+[74:36] the time of specifying an immediate
+[74:37] right only eight bits can be set the
+[74:40] additional choice that arm assembly is
+[74:43] giving us
+[74:45] is that we get to choose which eight
+[74:48] bits these are right so how many bits
+[74:51] are left out of 12 bits if this is the 8
+[74:54] bit payload
+[74:55] the choice that arm is saying is that
+[74:57] look you have four more bits do whatever
+[74:59] you want with four bits what can you do
+[75:01] you can any encode any number between 0
+[75:03] and 15 so since in general we'll not
+[75:07] Place
+[75:08] numbers at uh at odd positions starting
+[75:13] at odd positions at least arm says that
+[75:16] multiply this by two so then the range
+[75:19] will be uh so numbers will be at the
+[75:21] form 0 2 4 6 8 till 30
+[75:26] so take this 8 bit number and place them
+[75:29] at any of this position by right
+[75:30] rotating
+[75:32] it so the starting point of this
+[75:35] sequence is an even number and arm gives
+[75:37] us some amount of flexibility to
+[75:39] actually do this so This is actually a
+[75:41] fairly complicated aspect of the arm Isa
+[75:44] so I would request all the readers to
+[75:46] spend a lot of time in understanding
+[75:48] this particular aspect so the book has a
+[75:51] lot of examples and has some uh amount
+[75:54] of explanation also uh with regards to
+[75:57] this but my uh request to all readers is
+[75:59] to understand this part at least very
+[76:01] very
+[76:02] well so let's look at some examples
+[76:05] encode the decimal number let's say
+[76:07] 42 so 42 in the hex format is 0x 2A 2 *
+[76:12] 16 + 10 or alternatively if I want to
+[76:15] make it a 32-bit
+[76:17] quantity uh we can have uh we can put
+[76:20] three bytes before it all zeros so since
+[76:23] there is no right rot involved the
+[76:26] immediate field is 0x02 a now let's
+[76:30] encode the number 0x2 a 00
+[76:33] 0 the number is obtained by encoding 0x2
+[76:37] a by actually eight positions by
+[76:40] actually right rotating 0x 2 a by 8
+[76:44] positions so basically the ination is to
+[76:48] move one hex digit it takes four right
+[76:50] rotations so to move two hex digits uh
+[76:53] it'll take
+[76:55] so move to move a hex digit by actually
+[76:57] two positions two places it'll take
+[77:00] eight right rotations so the number of
+[77:03] right rotations is eight we divided that
+[77:05] by two we get four so the encoding of
+[77:08] the number is 0x 4 2 a so similarly we
+[77:13] can have all kinds of numbers and we can
+[77:15] try to encode them so these can actually
+[77:18] be thought as trick questions but the
+[77:20] main idea is that arm immediates are
+[77:22] slightly tricky and it needs to be kept
+[77:25] in mind that we are only setting eight
+[77:27] contigous bits and uh so so so
+[77:30] essentially that's the trick that eight
+[77:32] contigous bits inside a 32bit number are
+[77:36] being set and their starting position
+[77:38] can be varied using the rot the RO
+[77:44] field all right so let's now look at
+[77:46] encoding the shifter operant so
+[77:48] basically if you're not using an
+[77:51] immediate yet we are using a register
+[77:53] that can possibly be shifted
+[77:55] then let's look at how to do it so we
+[77:57] have 12
+[77:58] bits so let's so there are essentially
+[78:01] two options so one option
+[78:05] is
+[78:06] that
+[78:08] um we are actually shifting a register
+[78:12] by an immediate value so this register
+[78:15] is specified as the lower four bits this
+[78:18] called register
+[78:19] RT and the fact that we are shifting it
+[78:23] by an immediate value is encoded in the
+[78:26] next bit which if it is zero means we
+[78:28] are shifting it by an immediate value so
+[78:31] the shift type so we have four kinds of
+[78:33] shifts in our um Isa LSL LSR ASR and Ro
+[78:39] so these four shift types uh since there
+[78:42] are four they can be encoded with two
+[78:44] bits with LSL being 0 0 and Ro being 1
+[78:47] one so the shift type is encoded in the
+[78:50] next two bits and subsequently is the
+[78:52] shift amount so any
+[78:55] number uh can only be left shifted or
+[78:58] right shifted or rotated by at the max
+[79:00] of 32 positions so we need five bits
+[79:04] which is exactly what we have so that's
+[79:06] lucky for us let's now consider the
+[79:09] second variant in this case we again
+[79:12] have the RT register which requires four
+[79:14] bits but instead of this number being
+[79:17] zero the fifth bit the fifth bit is one
+[79:20] which means that we are actually
+[79:22] shifting RT by the value in a register
+[79:26] so the shift type is encoded with the
+[79:28] next two bits and the top four bits
+[79:31] encode the ID of the register which
+[79:33] contains the shift
+[79:37] amount so let's now discuss load store
+[79:41] instructions so load store instructions
+[79:44] are also follow the same uh generic
+[79:46] format so the first four bits represent
+[79:49] the condition uh the particular uh all
+[79:54] the 16 conditions that we have seen in
+[79:57] this case the type of the instruction is
+[79:59] actually
+[80:00] 01 so this is the type of the
+[80:02] instruction 01 and subsequently we have
+[80:05] six bits ipu bwl which I'll
+[80:10] discuss uh
+[80:12] subsequently uh so then uh so Rd in the
+[80:18] case of a load instruction is a
+[80:20] destination of the load and rs is the
+[80:23] base register so in the the case of the
+[80:25] store they maintain a similar
+[80:26] connotation RS is still the base
+[80:28] register and RD is the register that the
+[80:31] value comes
+[80:33] from and the most important thing is
+[80:35] that immediates in the load store format
+[80:38] are not in the road plus payload
+[80:41] format instead they are standard 12bit
+[80:44] unsigned numbers right this is an
+[80:46] important distinction to keep in mind
+[80:48] that these are standard 12bit unsigned
+[80:51] numbers and they are not in any special
+[80:54] format neither are they sign numbers so
+[80:57] what we need to discuss now is the
+[80:59] connotation of these fields IP U
+[81:03] bwl so the I bit uh basically if it is
+[81:07] zero it says that the last 12 bits
+[81:10] represent an immediate value right a
+[81:13] fixed offset from the base register and
+[81:16] if it is one it says that the last 12
+[81:19] bits represent a shifter
+[81:22] operant so that's the I bit so the
+[81:24] connotation of the I bit can slightly
+[81:26] change in one case if I is one it
+[81:28] represents an immediate but that is the
+[81:30] connotation in this
+[81:32] case the P bit if it is zero it
+[81:35] represents the PO indexed addressing
+[81:37] mode if it's one represents a
+[81:39] pre-indexed addressing
+[81:41] mode the UB bit says that if the UB bit
+[81:44] is zero we subtract the offset from the
+[81:46] base otherwise we add the offset to the
+[81:50] register if the B bit is zero we
+[81:52] transfer a memory word which in this
+[81:54] case is is four bytes or we transfer a
+[81:56] single byte which is one
+[81:58] byte uh similarly uh if the W bit is
+[82:02] zero it says that use regular addressing
+[82:05] don't use pre- or post index addressing
+[82:08] so w can be thought of as a right back
+[82:10] bit where essentially the base register
+[82:12] is changing and uh if wbit is one means
+[82:16] that use pre and post index
+[82:19] addressing lastly how do we
+[82:21] differentiate between a load and a store
+[82:23] well that's very simple
+[82:25] so if the the bit is zero means we store
+[82:28] to memory L can be thought of as the
+[82:30] load bit and if the bit is one we load
+[82:33] from
+[82:37] memory uh lastly let's take a look at
+[82:39] Branch
+[82:40] instructions so in the case of uh Branch
+[82:43] instructions we have this exactly the
+[82:45] same generic format so we have the
+[82:48] forbit condition and actually the type
+[82:50] of the instruction is one Z so that is
+[82:53] the type there is a further one bit for
+[82:55] the subtype which for at least most of
+[82:58] the common instructions is
+[83:00] one subsequently we have the L bit or
+[83:02] the link bit so with the link bit recall
+[83:05] the BL
+[83:07] instruction so if the link bit is one it
+[83:09] basically means that the return address
+[83:12] register is set so we are sort of uh
+[83:15] looking at a function call and
+[83:17] subsequently we have a 24-bit offset so
+[83:20] this is the branch offset uh very
+[83:23] similar to simple r RK and also similar
+[83:26] to simple risk this is not the offset in
+[83:28] terms of bytes it's the offset in terms
+[83:31] of memory
+[83:32] words uh a memory word is defined as
+[83:35] four bytes in this case so the offset so
+[83:38] so let's call it the byte
+[83:43] offset is equal to the offset specified
+[83:46] over
+[83:47] here multiplied by
+[83:51] 4 this is uh very similar to simple risk
+[83:54] because because the idea is if we assume
+[83:56] that every instruction starts at a
+[83:58] boundary of 4 bytes then the last two uh
+[84:02] LSP bits are zero and zero so there is
+[84:05] no need to specify an offset whose last
+[84:08] two bits are always constant so instead
+[84:11] let us uh specify the offset in terms of
+[84:13] memory words so we'll essentially save
+[84:16] two bits in this
+[84:19] case uh so for the branch instructions
+[84:22] what does the processor do it expands
+[84:24] the offset to 32 bits with proper sign
+[84:27] extensions it shifts it to the left by
+[84:30] two bits because it's in terms of memory
+[84:33] words and it adds it to pc+ 8 to
+[84:36] generate the branch Target so before you
+[84:39] ask me let me tell you why pc+ 8 this is
+[84:42] sort of non-intuitive
+[84:44] right but we are not in a position to
+[84:47] answer this you need to wait till
+[84:48] chapter 9 for the answer to this
+[84:51] question all right so this brings us to
+[84:54] to the end of uh the Beautiful chapter
+[84:56] on arm assembly so I'll see you uh in
+[85:00] the videos for chapter 5 which are on
+[85:03] x86 assembly

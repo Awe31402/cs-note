@@ -1,0 +1,987 @@
+[00:00] [Music]
+[00:21] we'll now discuss the decode stage uh
+[00:24] which is the last part of the fetch unit
+[00:27] and it's also the last part of this
+[00:30] lecture this slide Set uh so we'll
+[00:32] discuss both the decode stage as well as
+[00:35] decode time
+[00:37] optimizations so decoding typically in
+[00:40] most processes involves the following
+[00:43] five uh
+[00:45] activities so in most instruction sets
+[00:49] uh the
+[00:51] instruction uh contains an immediate
+[00:53] field inside it so if it is a risk
+[00:56] instruction set the size of the
+[00:58] immediate field is limited
+[01:00] so for example let's say it's a 4 byte
+[01:02] instruction set so there are 32 bits so
+[01:05] in this case the immediate field clearly
+[01:08] cannot take up all of 32 bits so maybe
+[01:11] it can be a maximum of 16 17 18 bits so
+[01:15] in
+[01:16] uh uh in the simple risk instruction set
+[01:19] the immediate field is 16 Bits And there
+[01:21] are two bits for
+[01:22] modifiers right uh so that's the format
+[01:25] that we have but in different
+[01:28] instruction sets the immediate field
+[01:30] will have different sizes so regardless
+[01:32] of the size in the decode process the
+[01:35] immediate field is expanded to whatever
+[01:37] is the width of the data path of the
+[01:40] pipeline so it's a 32-bit machine which
+[01:43] means that everything inside uh the
+[01:46] pipeline is 32 bits this includes
+[01:48] registers it includes uh the values that
+[01:51] are read and processed and uh processed
+[01:54] by functional units and so on so the
+[01:56] immediate field is sign expanded uh to
+[01:59] make a 32-bit field similarly if it's a
+[02:02] 64-bit processor then the immediate
+[02:05] field in this case will be expanded to a
+[02:07] 64bit field inside the
+[02:11] processor the rest of the fields which
+[02:13] are the IDS of the source and
+[02:15] destination registers all of these
+[02:17] fields are extracted so we can see these
+[02:20] are the IDS of registers can be Source
+[02:22] can be
+[02:23] destination furthermore the branch
+[02:26] Target is also stored within the
+[02:28] instruction if it's a branch
+[02:30] so most of the time for the branch
+[02:32] targets we are actually looking at what
+[02:35] are called PC relative
+[02:37] branches so a PC relative Branch uh the
+[02:40] target is essentially the program
+[02:42] counter plus an offset and the offset is
+[02:47] embedded within the instruction so if
+[02:50] this is an instruction over here uh then
+[02:53] a part of it will record the
+[02:57] offset and uh so when this is added to
+[03:00] the program counter so the P so the
+[03:03] current program counters the PC Plus
+[03:05] offset becomes equal to the branch
+[03:08] Target so uh in the decode field
+[03:11] typically if we are using an offset
+[03:14] based Branch Target the Target is
+[03:16] computed additionally we also uh process
+[03:21] special instructions for example the
+[03:23] return instruction is a special
+[03:25] instruction which has an implicit Source
+[03:28] implicit Source means
+[03:30] that the source is not named but still
+[03:32] there is a source register in this case
+[03:35] it is the ra register it's the return
+[03:37] address register so this is at this
+[03:40] point explicitly added to the
+[03:42] instruction braacket and with all of
+[03:45] these fields and everything all
+[03:47] expanded the instruction packet is
+[03:50] created and most of the time if you're
+[03:52] creating a hardware implementation we
+[03:54] also add many more pieces of information
+[03:57] uh these are typically called control
+[03:59] bits which uh control the processing of
+[04:03] the instruction in later stages so later
+[04:06] stages let's say which functional unit
+[04:08] to choose whether it's a Memory
+[04:11] instruction or not so a lot of this
+[04:13] information is at this point of time
+[04:16] also added to the instruction packet
+[04:19] such that subsequent stages will find it
+[04:22] much easier to process the current
+[04:26] instruction so now let us come to cisk
+[04:29] instruction
+[04:30] complex instruction
+[04:32] set uh
+[04:35] instructions so cisk instructions but uh
+[04:38] they create a lot of problem and the
+[04:41] stage in which they create the maximum
+[04:43] amount of problem you can see the
+[04:45] Scorpion here is actually the decode
+[04:47] stage so the primary problem here is
+[04:51] that the fetch stage basically reads in
+[04:54] a set of
+[04:55] bytes and uh in the decode stage we
+[04:58] actually need to
+[05:00] break down the instruction and break
+[05:02] understand and break down the sad part
+[05:05] is that instructions don't have a fixed
+[05:07] length see let's say if you were to read
+[05:10] 32 bytes from the instruction
+[05:12] cache uh in the case of a risk
+[05:15] instruction set it's very easy so we
+[05:17] know that every instruction is of the
+[05:20] same size right so in a risk ISC we know
+[05:23] that all instructions are of the same
+[05:25] size 4 bytes or 8 bytes and we also have
+[05:29] a strict alignment in the sense if
+[05:32] instructions are 4 bytes
+[05:34] long then they start at memory addresses
+[05:37] that are multiple of four bytes like 0er
+[05:39] bytes four 4 8 12 and so on so you
+[05:43] clearly know where an instruction starts
+[05:45] and how long it is so this is why risk
+[05:48] instruction sets processing them is much
+[05:51] easier and their decode units are also
+[05:53] way simpler in
+[05:57] comparison uh let me just erase the in
+[06:00] yeah in comparison for CIS instruction
+[06:02] sets like the Intel and AMD
+[06:05] x86 the length of an instruction varies
+[06:09] from 1 to 15 bytes right uh so
+[06:13] uh uh particularly in Intel x86 what we
+[06:17] can find is that we can have very short
+[06:19] instructions like a noop instruction for
+[06:22] example and we can also have very long
+[06:24] instructions that have complex
+[06:26] addressing modes and which actually
+[06:28] achieve a lot
+[06:30] and these will be extremely
+[06:32] long so uh so the instruction size can
+[06:35] be long and variable it's clearly not
+[06:38] fixed hence given a set of bytes finding
+[06:42] the boundaries of instructions right you
+[06:44] know they are of different sizes finding
+[06:46] out where they are is actually quite
+[06:48] tough so what we need to do is that
+[06:51] let's assume that the first instruction
+[06:52] starts at this point we need to keep on
+[06:55] reading the bytes keep on decoding and
+[06:58] find the end of the in instuction again
+[07:00] start reading the bytes so uh this
+[07:03] constrains our bandwidth because
+[07:06] decoding becomes a sequential process we
+[07:08] need to start from one end find the
+[07:10] boundary of the first instruction then
+[07:12] find the boundary of the second then the
+[07:15] third and then the fourth so unlike risk
+[07:17] instruction sets where we can read let's
+[07:20] say 16 bytes and if an instruction is
+[07:24] four bytes we can decode in parallel in
+[07:27] a cisk instruction set decoding is is
+[07:29] fundamentally a sequential process and
+[07:32] this is what causes the issue so what is
+[07:34] the issue well the issue is that
+[07:36] decoding in a CIS ISC unless we do
+[07:39] something extra decoding is a sequential
+[07:44] process which is not acceptable to
+[07:47] us because this means that we cannot
+[07:50] process multiple instructions in
+[07:53] parall right and the main reason is we
+[07:56] don't know the boundaries between the
+[07:57] instructions
+[08:00] furthermore if instructions are that
+[08:02] complicated that one instruction doesn't
+[08:04] do anything and one instruction does a
+[08:06] lot it is very hard for out of order
+[08:09] pipelines that actually rely on the
+[08:12] regularity and uniformity of
+[08:13] instructions to process such complex
+[08:17] instructions so that is why in most cisk
+[08:20] processors notably Intel and
+[08:23] AMD uh the fetch unit does read cisk
+[08:26] instructions from the instruction C
+[08:30] but internally the decode unit converts
+[08:33] the cisk instructions to internal risk
+[08:36] instructions these internal risk
+[08:38] instructions are known as Micro Ops or
+[08:42] micro code and this process of
+[08:44] conversion is done unbeknownst to the
+[08:48] programmer but this does happen it has
+[08:51] to happen such that we can gain extract
+[08:54] the maximum amount of performance from
+[08:57] the out of order pipeline right uh so it
+[09:00] is essentially cisk outside right it's
+[09:03] so essentially us Intel or AMD processor
+[09:07] is Sisk outside
+[09:09] risk
+[09:15] inside so uh let's come to x86 and show
+[09:20] the example of one of the instructions
+[09:23] which can actually become very
+[09:26] complicated it is the rep move SD
+[09:30] so what it does is that it embeds an
+[09:34] entire Loop within one instruction
+[09:36] itself so it does several things and
+[09:38] what it does is that it can be used to
+[09:41] copy n elements from one location to the
+[09:44] other so the locations are implicit
+[09:47] right two registers ESI and EDI actually
+[09:51] and uh from here what can happen is that
+[09:54] if let's say from one memory
+[09:56] location uh we can take a bunch of data
+[09:59] and how many elements well n itself is
+[10:02] stored in another register which is also
+[10:04] implicit uh so so in this
+[10:07] case uh all of this data is moved to
+[10:11] another memory location so it just
+[10:13] copies one array of bytes to another
+[10:16] array and this is achieved by a single
+[10:20] instruction and so when we
+[10:23] actually convert from CIS to risk this
+[10:27] instruction will map to a very large
+[10:29] number of micro operations okay large
+[10:32] large number of micro operations
+[10:35] primarily because an entire Loop we are
+[10:39] compressing that into a single
+[10:41] instruction in comparison in a CIS I
+[10:44] simple add and subtract instructions
+[10:47] with register operant will map to a
+[10:50] single micro
+[10:52] operation so uh to summarize our
+[10:54] discussion once we read in a cisk
+[10:58] instruction one once we fetch a CIS
+[11:01] instruction if let's say it is a simple
+[11:05] s so so we can now divide a complex
+[11:07] instruction set to a simpler complex and
+[11:10] a more complex complex so if it is
+[11:13] reasonably simple like add subtract
+[11:15] multiply divide Etc it is sent to the
+[11:18] regular decoder and the regular decoder
+[11:21] provides a stream of micro
+[11:23] operations
+[11:26] and uh if it is complex very comp Lex
+[11:29] like rep move move SD so this is not the
+[11:32] only complex instruction that doeses a
+[11:35] lot there are many more such
+[11:36] instructions in
+[11:38] x86 and for all of them we actually have
+[11:41] a table so this table is known as a
+[11:43] micro code cache or a micro Code table
+[11:46] so in this case what happens is we
+[11:49] address the table by the instruction and
+[11:51] it's a huge table so at this point we
+[11:54] just read all the micro operations that
+[11:57] this instruction would transl at to so
+[12:00] in this case if let's say translating to
+[12:02] five micro operations what we do is that
+[12:05] we simply read them and these Micro Ops
+[12:09] are sent down the pipeline so the micro
+[12:12] code cache for every complex instruction
+[12:14] stores a set of basic micro instructions
+[12:20] and uh it is necessary to read this
+[12:22] cache for Effective
+[12:24] translation so we don't use a decoder
+[12:27] for uh complex for EXT extremely complex
+[12:29] instructions we just use the cache
+[12:32] otherwise we use the
+[12:34] decoder so keeping this in mind let's
+[12:37] move
+[12:39] forward so we need to understand that
+[12:42] even though we
+[12:43] have uh solved one problem which was the
+[12:48] fact that out of order pipelines would
+[12:50] find it very hard to process this
+[12:52] constructions so we converted sis to
+[12:54] risk so this is what we have achieved up
+[12:56] till now and how did we convert assist
+[12:59] to risk well uh we have a decoder uh
+[13:03] which does that and for some very
+[13:06] complex instructions we also have a
+[13:09] micro code cache where we can just read
+[13:13] the micro instructions for a given cisk
+[13:16] instruction but our original problem of
+[13:19] finding out the boundaries of
+[13:20] instructions in just a raw stream of
+[13:22] bytes that we read from the instruction
+[13:25] cache this problem has not been solved
+[13:28] right
+[13:29] so to solve this we will refer to a
+[13:32] patent by Naran and by Narayan and Tran
+[13:36] so this is a very famous patent and
+[13:38] different versions of this
+[13:40] patent so so you will uh find different
+[13:43] versions
+[13:44] extensions or alterations augmentations
+[13:47] of this idea in various forms but pretty
+[13:51] much modern processors do something of
+[13:53] this nature to handle cisk instructions
+[13:56] otherwise there is no other way so what
+[13:59] we do is that uh to find the
+[14:03] boundaries whenever we read in an
+[14:05] instruction into the
+[14:07] iash so here it is important for us to
+[14:10] talk a little bit about the memory
+[14:13] hierarchy in a typical
+[14:16] uh processing systems if you have the
+[14:19] pipeline over here we have separate
+[14:21] Hardware structures one of them is the
+[14:24] instruction cache which we have also
+[14:26] referred to as instruction memory in the
+[14:28] past
+[14:30] and we also have a data cache so mind
+[14:32] you these are separate physically
+[14:34] separate structures so from the
+[14:36] instruction cache we only read data
+[14:38] cache we read and
+[14:39] write so they of course contain a subset
+[14:42] of the memory
+[14:43] locations then we have an L2 cache so L2
+[14:48] cache is a level two cache which
+[14:51] contains both instructions as well as
+[14:53] data right uh
+[14:56] so and uh below that that we can have
+[14:59] additional levels as well so it doesn't
+[15:02] matter what we care about is we care
+[15:04] about this step where we are reading in
+[15:07] instructions into the instruction cache
+[15:09] right uh so when we are doing it what we
+[15:12] do is we have a little decoder over here
+[15:15] which we call a pre- decoder all right
+[15:17] so we have a little decoder sitting over
+[15:19] here which we call a pre-oder
+[15:22] here if let's say we read in 16 bytes or
+[15:25] 32 bytes at a time we annotate each bite
+[15:29] which means the instruction cache has
+[15:31] some additional bits for each bite right
+[15:35] for each instruction bite we have a
+[15:36] little bit of extra bits which store
+[15:39] some amount of additional
+[15:42] information so this additional
+[15:44] information can be used to decide many
+[15:46] things one among them is finding the
+[15:50] boundaries between instructions right
+[15:52] when where one instruction ends and
+[15:54] where one begins and this of course is
+[15:57] not a problem in Risk but this is a
+[15:59] massive problem in
+[16:03] cisk all right so let's
+[16:07] see so uh this particular patent pan and
+[16:11] Tran uh in
+[16:13] 1999 uh what this says is that for every
+[16:16] instruction bite which is 8 Bits we
+[16:20] create uh we use five more bits of
+[16:24] information which if you think about it
+[16:26] is a sizable overhead but this is
+[16:28] actually required for performance
+[16:30] reasons so the five bits are as follows
+[16:33] one is the start bit this indicates if
+[16:36] this is the starting bite of an
+[16:37] instruction so clearly this is
+[16:39] indicating a
+[16:41] boundary also we have an end bit which
+[16:44] indicates if this is the last bite of an
+[16:46] instruction so between the starting
+[16:48] between the start bit and the end bit
+[16:50] lie all the instruction bytes so this
+[16:53] can be very efficiently retrieved right
+[16:56] so we can find out boundaries very
+[16:58] easily
+[16:59] then we have a functional bit uh so the
+[17:02] patent says so you're you're welcome to
+[17:05] read the patent so the patent says that
+[17:07] the interpretation depends on the
+[17:10] implementation so one implementation
+[17:12] could be right one of the
+[17:14] implementations could be that this
+[17:17] specific instruction if this bit is zero
+[17:21] it means that the decoder will be used
+[17:24] if it is one it could mean that the
+[17:26] micro code cache will be used right so
+[17:28] this can be use of this
+[17:30] bit then we have two more bits called 2
+[17:32] ROP and three ROP bits they essentially
+[17:36] refer to indicate the number of Micro
+[17:39] Ops that this instruction will translate
+[17:42] to all right uh so uh but of course uh
+[17:46] in any processor this format would
+[17:48] change in the sense we might uh so let's
+[17:52] say particularly the last three bits
+[17:54] right uh this format will change uh we
+[17:58] might use want to use these bits for
+[18:00] other purposes so this is very
+[18:03] implementation dependent but at least
+[18:06] the first two bits clearly help us
+[18:08] identify a boundary so if we have start
+[18:11] bits technically speaking an end bit is
+[18:13] not
+[18:14] required however it does make processing
+[18:17] faster and at the hardware level every
+[18:19] cycle
+[18:20] saved is
+[18:25] significant now let us look at the
+[18:27] second decode time
+[18:29] optimization so we already have looked
+[18:31] at one which is pre- decoding so what
+[18:34] does pre- decoding give us well uh let's
+[18:37] take a quick detour to the previous
+[18:38] slide so what uh CIS to risk conversions
+[18:42] we looked at two ideas basically the
+[18:44] first idea was CIS to risk
+[18:47] conversion so what this gives us is it
+[18:50] gives us a nice homogeneous
+[18:53] uniform processing environment within
+[18:55] the pipeline and this is something that
+[18:58] we needed
+[19:00] it uh all right uh so because as you
+[19:03] will see when you see the design of the
+[19:05] out out of water pipeline that a lot of
+[19:08] homogeneity is required is desirable and
+[19:12] is preferred because this allows us to
+[19:14] process instructions quickly the other
+[19:17] was the idea of pre- decoding which Al
+[19:19] also absolutely essential it helps us
+[19:22] find the boundaries between instructions
+[19:24] how do we do it well when we are
+[19:27] populating the iach by reading in in
+[19:29] data from lower levels of memory at that
+[19:32] time we pre- decode the instruction
+[19:35] which which is a much it'll be a much
+[19:37] smaller unit than a regular decode unit
+[19:40] which will just Traverse the bytes and
+[19:41] figure out the
+[19:44] boundaries now let's look at another
+[19:47] kind of optimization called optimizing
+[19:50] operations on the stack pointer so look
+[19:53] at this piece of code this piece of code
+[19:55] is representative of what we would write
+[19:59] in a function
+[20:01] normally so what we are doing is that we
+[20:04] are creating space in the activation
+[20:06] block uh so we are subtracting the stack
+[20:09] pointer by eight so this is creating two
+[20:11] slots for us so then uh we are doing
+[20:15] register spilling so registers uh R1 and
+[20:19] R2 they are being spilled into the
+[20:21] memory
+[20:22] location then uh we might be doing
+[20:24] hundreds of things calling functions
+[20:27] those functions might be calling other
+[20:28] functions it doesn't matter uh we are
+[20:31] then restoring the resistors and finally
+[20:33] in this uh uh line we are uh deleting
+[20:38] the stack
+[20:40] frame all right so so we are deleting
+[20:42] the activation block so whatever space
+[20:45] was created that is being deleted so
+[20:47] this if you see is a rather common
+[20:49] pattern but another pattern if you see
+[20:52] is that we either modify the stack
+[20:55] pointer by adding or subtracting a
+[20:58] constant
+[20:59] right so this the first pattern if we
+[21:00] look at all of them we are essentially
+[21:03] reading in the contents of the stack
+[21:04] pointer adding zero in this case adding
+[21:06] four in this case adding eight in this
+[21:08] case so in all cases we read the
+[21:11] contents of the stack pointer and do
+[21:13] some add
+[21:14] subract the other is that the load and
+[21:17] store instructions access the stack
+[21:20] pointer of course and then add and
+[21:22] subtract small constants compute a new
+[21:25] address and then go and access that
+[21:28] address
+[21:30] so why not here is the
+[21:32] idea that update the stack so create a
+[21:36] so since we anyway Fetch and decode
+[21:39] instructions in program
+[21:41] order why can't
+[21:45] we create or keep a
+[21:48] small copy of the stack pointer in the
+[21:51] decode unit itself and anytime we find
+[21:54] an instruction of this nature we quickly
+[21:57] subtract eight from the stack pointer
+[22:00] anytime we find an instruction of this
+[22:02] nature we quickly add eight to the stack
+[22:05] pointer right so so what we do is
+[22:07] instead of treating the stack pointer as
+[22:09] a regular
+[22:10] register uh we keep a small copy of it
+[22:13] in the
+[22:14] decoder and most of the instructions on
+[22:17] the stack pointer as you can see there
+[22:18] are many of them they can quickly be
+[22:21] done at the decode stage and since we
+[22:24] are only talking of one register not a
+[22:26] register file these accesses will be
+[22:29] fast so how will the scheme look like
+[22:31] here it
+[22:35] is we add a current stack pointer
+[22:39] register in the decode stage so this is
+[22:42] the Crux of the idea so we have a
+[22:46] regular decode unit that contains the
+[22:48] decoder and the micro code cache so this
+[22:50] of course Remains the
+[22:52] Same uh no changes to that so we have a
+[22:56] very quick mechanism of of detecting if
+[22:59] the stack pointer is being
+[23:01] accessed so once we can very quickly see
+[23:04] that this is happening the instruction
+[23:07] is additionally sent to the stack
+[23:08] pointer calculation logic in the decode
+[23:11] stage of
+[23:12] course and uh if we take a look at this
+[23:15] piece of code we will see that in almost
+[23:18] all cases we read the value of the stack
+[23:20] pointer and either add or subtract some
+[23:23] constant to it this value is supplied to
+[23:26] the rest of the pipeline so in this case
+[23:29] this is actually a memory address and so
+[23:32] this memory address needs to be sent to
+[23:34] the memory unit in this case the data
+[23:37] cache for reading the value so
+[23:40] regardless of what we want to use the
+[23:43] data for the address can be sent down
+[23:46] the pipeline but let's say in this
+[23:48] instruction we add eight to the stack
+[23:50] pointer and then
+[23:53] we use it to update the value so this
+[23:57] can also be done so so what we do is
+[23:59] that uh we quickly extract the immediate
+[24:02] field and we also uh read the value of
+[24:07] the current stack pointer we add both of
+[24:09] them after adding that if the stack
+[24:12] pointer is not being updated well then
+[24:15] uh the result of this addition is added
+[24:17] to the instruction packet which is
+[24:19] subsequently sent to the rest of the
+[24:21] pipeline uh stages
+[24:24] otherwise uh if this is not the case uh
+[24:28] then uh the stack pointer if let's say
+[24:30] if that is being modified well then what
+[24:33] we do is that we send it back to the
+[24:35] stack pointer calculation logic and this
+[24:38] piece of circuitry overwrites the value
+[24:40] of CSP so CSP is essentially the Central
+[24:43] State element over here that stores the
+[24:46] value of the current stack pointer and
+[24:49] whenever it is accessed or modified we
+[24:52] can use this quick logic to uh take care
+[24:55] of
+[24:56] it and uh so so why is this an efficient
+[25:00] idea well it is efficient because most
+[25:03] of the time uh in a very large number of
+[25:06] instructions we actually access the stat
+[25:09] pointer so as you as you can see over
+[25:11] here for a large number of load
+[25:13] instruction store instructions for
+[25:15] creating and destroying the stack frame
+[25:18] uh we use the stack pointer and pretty
+[25:21] much the format of instructions that use
+[25:24] the stack pointer is is the same right
+[25:27] so they used roughly in the same way so
+[25:30] that's the reason it is uh good to have
+[25:34] a CSP register right here in the decode
+[25:36] State such that the rest of the pipeline
+[25:39] does not have to bother with processing
+[25:41] these
+[25:42] instructions so what are the corner
+[25:44] cases well we could we could have an
+[25:47] instruction of this type which does not
+[25:49] fall within our format so in this case
+[25:52] we read some other value and we store it
+[25:54] in the stack
+[25:55] pointer so since this does not fall
+[25:58] within our format we but we still need
+[26:00] to handle it because it's a valid
+[26:03] instruction what we do is when we see
+[26:05] such an instruction we set the value of
+[26:07] CSP to
+[26:08] null and then we treat the stack pointer
+[26:11] as a regular register make the
+[26:13] instruction pass through the out of
+[26:15] order Pipeline and then at some point of
+[26:18] time the St out of order pipeline will
+[26:20] set the value of the stack
+[26:23] pointer right till that point what do we
+[26:25] do well till that point we will have
+[26:28] instructions of this type that uh update
+[26:31] the stack pointer so till that point
+[26:34] what we do is we just accumulate the
+[26:36] difference right so assuming the value
+[26:39] that is red 12 R1 assuming the value
+[26:43] that is so so 12 R1 in this case since
+[26:45] we writing to the stack pointer and the
+[26:47] stack pointer points to an address so we
+[26:50] are essentially reading an address from
+[26:52] here so let us say
+[26:55] that the load instruction here Will
+[26:58] return a value which we call addr see
+[27:00] addr primarily signifies that what we
+[27:03] are reading from 12 R1 is actually a
+[27:06] memory address your stack pointers are
+[27:09] supposed to store memory addresses so
+[27:11] let us name our
+[27:13] temporary variable as addr so what we do
+[27:17] is that we accumulate the difference
+[27:20] Delta between the value returned by the
+[27:22] load and the current value so let us say
+[27:25] Let Me Explain with an example let us
+[27:28] say we have this instruction over here
+[27:31] and here the value of the stack
+[27:34] pointer right whatever is
+[27:36] written is
+[27:40] essentially SP is equal to this value
+[27:43] right so then we could have instructions
+[27:46] of this form
+[28:00] so let's say at this point the value of
+[28:03] the stack pointer comes back so what we
+[28:06] do is that Delta will be equal to 16 the
+[28:10] reason being that we add 8 and then of
+[28:13] course we do other things we don't touch
+[28:14] the stack pointer again we add eight so
+[28:17] Delta will be equal to 16 so we set the
+[28:19] value of the current stack pointer which
+[28:21] is CSP equal to the value returned by
+[28:24] this load instruction which is addr
+[28:27] which we are assuming it is
+[28:28] right this is just the name that we are
+[28:30] giving it has no architectural
+[28:32] significance plus the accumulated
+[28:34] difference which is Delta in this case
+[28:36] for this example Delta is 16 so uh we we
+[28:41] can add both of them we can update the
+[28:43] CSP and
+[28:46] then our uh regular process can continue
+[28:50] so the advantage over here is that uh we
+[28:54] are sending as few instructions
+[28:56] involving the stack pointer to the
+[28:58] Out of Water pipeline as possible and
+[29:02] nevertheless we will have Corner cases
+[29:04] that is why they need to be handled but
+[29:06] a smart compiler will not generate code
+[29:08] like this because it would know that
+[29:11] this would involve this would entail
+[29:14] additional work on the side of the
+[29:16] processor and hence it is
+[29:18] not desirable to produce these kinds of
+[29:23] code so it will not do it so this
+[29:25] further tells us that there is a rather
+[29:28] intimate connection between a
+[29:31] processor and a compiler so the compiler
+[29:35] should know for which instructions the
+[29:37] processor executes well executes quickly
+[29:40] and which instructions cause cause a
+[29:43] problem right a performance problem so
+[29:46] uh this clearly causes a performance
+[29:49] problem because this is an instruction
+[29:51] that is sent down the pipeline and the
+[29:54] stack pointer registered which we
+[29:56] normally uh
+[29:58] so sort of take care in a decode stage
+[30:01] uh we will not do that so essentially a
+[30:04] full instruction needs to be
+[30:06] processed so in this case a good
+[30:09] compiler will actually not generate such
+[30:11] instructions it'll instead generate
+[30:14] instructions of this type such that uh
+[30:18] we can take care of these instructions
+[30:20] handle these instructions in the decode
+[30:23] stage all right uh so uh one point is
+[30:27] due here
+[30:28] that let's say we have an instruction
+[30:31] sub
+[30:32] sps8 so in this case we can directly add
+[30:35] 8 to CSP and update its value in the
+[30:39] decode stage subsequently this
+[30:41] instruction can be discarded or this
+[30:43] instruction can be dropped because its
+[30:46] job has already been done so since it
+[30:50] has been fully executed in the sense it
+[30:52] has updated the CSP register uh there is
+[30:55] no need for it to
+[30:58] uh occupy additional resources within
+[31:00] the pipeline and it can be discarded
+[31:02] right here itself so this this is one of
+[31:05] the many advantages of this scheme and
+[31:08] similarly here also we are not using the
+[31:12] heavy duty adders in the pipeline we are
+[31:14] just doing a quick addition over here so
+[31:17] this is saving us a lot of effort in the
+[31:20] pipeline and furthermore if let's say an
+[31:23] instruction of this kind would go into
+[31:24] the pipeline what we will see is that it
+[31:27] will involve involve a lot of processing
+[31:29] but in this case we can sort of it's
+[31:32] like a shortcut so we can do things
+[31:34] rather
+[31:35] quickly so given this uh what are the
+[31:38] advantages well advantages are many we
+[31:41] did discuss a few a few
+[31:43] more so uh consider a load instruction
+[31:48] right uh so in this case let's say you
+[31:51] are loading it from this
+[31:54] address so what we are doing in the
+[31:57] decode stages that we are Computing this
+[31:59] address which is essentially SP Plus
+[32:02] 8 right and SP is stored in CSP so it is
+[32:06] CSP Plus 8 so since we are Computing
+[32:09] this address we do not have so we are
+[32:11] essentially
+[32:12] saving several operations in the
+[32:16] pipeline so in the rest of the pipeline
+[32:18] so we are not reading the value of the
+[32:20] stack pointer and we're not performing
+[32:22] the addition we have an address and this
+[32:25] address can be sent directly to the
+[32:28] memory so we will see there are other
+[32:30] conditions later
+[32:31] on but these load instructions to the
+[32:34] stack can essentially be issued early
+[32:38] because we already know the address and
+[32:41] as we'll see if some other conditions
+[32:43] hold which we will see in a later uh
+[32:46] which we'll see in chapter 4 but if
+[32:48] those conditions hold then this address
+[32:50] can be sent to the memory system early
+[32:53] and the read can be
+[32:55] performed similarly for load and store
+[32:58] instructions there is no need to compute
+[33:00] the address in the pipeline they are
+[33:01] being computed in the decode stage
+[33:03] itself finally we can get rid of some of
+[33:07] these uh instructions for example
+[33:13] add so we can essentially get rid of it
+[33:16] uh what this would mean is that since
+[33:18] this job is done there is no need for
+[33:21] additional processing in the
+[33:24] pipeline now let's look at the third
+[33:27] optimization called instruction
+[33:30] compression so in instruction
+[33:32] compression what happens is so we will
+[33:35] have to understand that instruction
+[33:37] caches have a limited size so they are
+[33:40] between 32 to 64 kilobytes typically and
+[33:44] the performance is extremely sensitive
+[33:46] to their side to their size particularly
+[33:49] for cloud computing
+[33:51] workloads uh where they anyway have a
+[33:54] lot of instructions and uh so so a
+[33:58] little bit a small change in the
+[33:59] efficiency of the instruction Cache can
+[34:02] actually cause the create a major
+[34:05] difference hence we wish to pack store
+[34:09] as many instructions in instruction
+[34:10] cache as
+[34:12] possible so what are some of the
+[34:14] approaches so one approach is that we
+[34:17] have a reduced width instruction which
+[34:21] in any case the arm Isa does support So
+[34:24] arm has the thumb instruction set
+[34:28] the thumb is so instead of an arm it's
+[34:30] like a thumb which means it's a much
+[34:32] smaller instruction set so this allows
+[34:35] us to essentially compress it uh reduce
+[34:39] the number of bits basically and store
+[34:42] 30 or 40% more
+[34:44] instructions uh for an in in an
+[34:46] instruction cache with the same size so
+[34:49] how is this compression achieved well
+[34:52] the way that we achieve this
+[34:54] compression uh is that instead of
+[34:56] supporting all the op codes we support a
+[34:59] limited number of op codes the ones that
+[35:01] are the most common for example add
+[35:04] subtract load store call return Etc so
+[35:07] we just support a very small subset of
+[35:09] it in a in a reduced instruction set we
+[35:13] do not encode complicated flags and
+[35:16] options also in the regular rmisa we can
+[35:19] see 16 registers in the Thum Isa we can
+[35:22] see only eight so we see a reduced view
+[35:26] of architectural registers
+[35:28] so this basically uh reduces the number
+[35:31] of bits that are required to encode the
+[35:34] registers for example if we are seeing
+[35:37] 16 registers then for each register be
+[35:40] it a source or destination we need four
+[35:42] bits but if you are only looking at
+[35:44] eight registers then we actually need
+[35:46] three bits in many cases uh we don't
+[35:50] don't need that many registers so we can
+[35:53] afford to live with a reduced view of
+[35:56] the number of registers
+[35:58] similarly we can also reduce the size of
+[36:00] the immediate Fields so there is no need
+[36:03] to embed very large constants in the
+[36:05] instruction so this also can reduce the
+[36:08] size
+[36:11] furthermore we can have instead of
+[36:13] having three arguments in the
+[36:15] instruction we can have two so such uh
+[36:20] such a style is also known
+[36:22] as um you you know this approach is
+[36:26] called an accumulator based approach for
+[36:29] resistor R1 is called accumulator
+[36:31] because the operation that is actually
+[36:33] performed is R1 is equal to R1 + R2 so
+[36:37] R1 is both the
+[36:39] source is both a source and a
+[36:42] destination and the destination is of of
+[36:44] course implicit but uh what is happening
+[36:48] is R1 is equal to R1 + R2 so ideally we
+[36:51] would have written uh R1 R1 R2 but since
+[36:57] the is a reduced instruction set we can
+[36:59] write add R1 comma R2 all right so uh
+[37:06] these are several methods by which we
+[37:08] can take a regular risk instruction set
+[37:11] or a regular cisk instruction set and
+[37:14] create a reduced instruction set such
+[37:17] that to store an instruction it takes
+[37:21] requires less bits less
+[37:23] bytes this would further translate to an
+[37:26] increased instruction instruction
+[37:27] packing density in iash which will give
+[37:30] us tremendous benefits so much of this
+[37:33] we will understand when we go to chapter
+[37:35] 7 uh when we actually see
+[37:40] uh uh when we actually see how cashes
+[37:43] are designed and how the memory system
+[37:45] works but uh till now uh you simply need
+[37:49] to believe me that if we can store more
+[37:52] instructions in the iash it is always
+[37:54] better and one way of doing this is this
+[37:57] where you can clearly see that uh this
+[38:00] is a fairly effective method of
+[38:03] increasing the storage density within
+[38:05] the
+[38:07] iash one more idea well one more idea is
+[38:11] that typically we have large sequences
+[38:13] of code that are similar across the
+[38:17] program for example code to read and
+[38:19] write registers that is
+[38:21] similar uh to read and to call certain
+[38:25] known functions to perform some
+[38:28] operations uh like
+[38:31] uh uh so so so so in every program we'll
+[38:34] have some common operations that are
+[38:37] actually performed at different places
+[38:39] so uh the compiler and what is called a
+[38:43] profiler so profiler is a special piece
+[38:47] software uh that pretty much runs a
+[38:50] program
+[38:52] once with representative
+[38:55] inputs it finds
+[38:58] uh then uh the profiler takes a trace of
+[39:01] all the instructions that are executed
+[39:04] so there are different ways of doing
+[39:05] that but this is too premature a chapter
+[39:08] to discuss how to do it but let's assume
+[39:11] that the profiler has some way of seeing
+[39:14] all the instructions that the program is
+[39:16] executing then it can identify sequences
+[39:20] of frequently executed instructions
+[39:22] right so the compiler can do it at
+[39:24] compile time which is statically and the
+[39:27] profiler can do it at runtime which is
+[39:32] dynamically all right so regardless of
+[39:35] how it is done ultimately what will
+[39:38] happen is that be it static or be it
+[39:44] Dynamic uh what will happen is that we
+[39:46] will find within the program we will
+[39:50] find chunks of instructions that are
+[39:52] actually the same right so uh one uh
+[39:56] obvious source is uh when we are reading
+[39:59] or writing
+[40:00] registers spilling registers basically
+[40:03] while entering a function right so that
+[40:05] is one of the places where definitely
+[40:08] the code will be the same and it will
+[40:10] also be same in other places where maybe
+[40:12] very a similar arithmetic operation or a
+[40:15] similar logical operation is being
+[40:17] performed what we do is that for all of
+[40:20] these instructions we replace them with
+[40:22] a code word so the code word is like a
+[40:26] uh a very very small nemonic for the
+[40:29] entire sequence and the code
+[40:32] word will be stored somewhere but at
+[40:35] least it can be used to compress the
+[40:37] instruction sequence so we will have
+[40:40] regular instructions then we'll have a
+[40:41] code word again regular instructions
+[40:44] then a code word and uh the processor
+[40:47] can use some bits of the code word to
+[40:50] actually identify that it is a code word
+[40:53] but one clear Advantage is that we'll be
+[40:55] using fewer bits
+[40:57] and this will also increase the
+[40:59] instruction storage density in the
+[41:02] iach so how does the processor handle
+[41:05] the code wordss well internally it of
+[41:07] course has the I cache and it has a
+[41:09] dictionary which is something similar to
+[41:12] the micro code cache so in this case
+[41:14] whenever a code word is
+[41:16] encountered and so whenever we read a
+[41:19] code word from the instruction cache the
+[41:21] code word is sent to the dictionary the
+[41:24] dictionary looks up the code word and
+[41:26] outcome is sequence of instructions
+[41:29] these sequence of instructions are then
+[41:31] sent to the sorry this should be the
+[41:34] decode stage right uh so no no I'm sorry
+[41:39] this is actually the fetch stage because
+[41:40] there are other things that the fetch
+[41:42] stage also does so this is fine so this
+[41:45] is sent to the rest of the fetch stage
+[41:47] okay so to the rest of the fetch State
+[41:50] this instruction is
+[41:51] sent so the code word as I said is a
+[41:54] sequence
+[41:56] uh the code word to the instruction
+[41:58] sequence mapping is stored in a separate
+[42:01] Hardware structure which we call the
+[42:03] dictionary and the advantage here is so
+[42:05] there are two advantages one is that uh
+[42:10] using intelligent
+[42:12] compiling and
+[42:14] profiling we find a way of reducing the
+[42:20] both the length of a program and the
+[42:23] cache uh density right and the
+[42:27] instruction density within the
+[42:29] iash this is one and the other is so
+[42:32] this of course reduces code size both
+[42:34] static code size and dynamic code size
+[42:37] and along with that what we can do is
+[42:39] instead of storing regular instructions
+[42:42] we can store decoded instructions right
+[42:45] so then the advantage is that these
+[42:47] instructions don't have to go through
+[42:49] the decoder they can directly go to the
+[42:52] stage after decode which is renaming
+[42:55] because these instructions are already
+[42:57] decoded so uh there is so this saves
+[43:01] time as well as it saves power so we
+[43:04] will see that Intel did extend this work
+[43:08] and uh so of course it didn't do
+[43:10] compression but it did something else so
+[43:12] it created something called a trace
+[43:13] cache which stores Long sequences of
+[43:16] decoded instructions to effectively
+[43:18] bypass the Fetch and decode stages so
+[43:21] we'll look at a trace cache later on in
+[43:25] chapter 7 uh but this is just a quick uh
+[43:29] trailer uh for the
+[43:32] movie so what again is the basic idea uh
+[43:36] well the basic idea here is that
+[43:39] instruction sequences are replaced with
+[43:41] code words and code words are naturally
+[43:44] much shorter so we clearly see a code
+[43:48] reduction and the code size reduction
+[43:51] well if the compiler is doing it we will
+[43:52] see both a static and dynamic time
+[43:55] reduction and and also if the profiler
+[43:58] is doing it we'll see a
+[44:00] reduction but the profiler of course has
+[44:02] more information because it is taking a
+[44:04] look at the dynamic sequence of
+[44:06] instructions as opposed to the compiler
+[44:09] regardless of who is doing it we can uh
+[44:13] increase the efficiency of this process
+[44:16] by also storing instead of storing
+[44:18] regular instructions we store decoded
+[44:21] instructions so essentially we store the
+[44:23] Micro Ops so in this case we can bypass
+[44:26] the decod
+[44:27] and get a performance Advantage from
+[44:33] there all right uh so this completes the
+[44:36] fetch the chapter on Fetch and decode
+[44:40] stages so the next chapter uh which is
+[44:43] chapter 4 uh will focus
+[44:46] on the issue execute and commit stages
+[44:50] of an out of pipeline

@@ -1,0 +1,1267 @@
+[00:00] [Music]
+[00:28] the
+[00:35] so now we have discussed about
+[00:37] representing positive integers in our
+[00:39] system which is actually very easy so
+[00:43] let us now discuss how to represent
+[00:46] negative integers in our system using
+[00:49] zeros and
+[00:50] ones so uh what's the problem what we
+[00:53] want to do is that given a negative
+[00:56] integer we want to assign a binary
+[00:59] representation to to it in terms of just
+[01:01] you know zeros and
+[01:03] ones so consider a negative integer s
+[01:07] assume that its binary form is xn uh to
+[01:11] X1 where this is the least significant
+[01:14] bit and xn is the most significant bit
+[01:17] and henceforth we'll actually start
+[01:19] counting from one not from
+[01:21] zero so now we can also you know given
+[01:25] this number over here which we are
+[01:26] representing we can also expand it to
+[01:29] represent an unsigned unsigned means
+[01:31] without a sign assumed to be positive
+[01:33] number
+[01:34] n so we can interpret this binary
+[01:38] sequence here in two ways one is we can
+[01:40] interpret it as an unsigned number so
+[01:43] we'll get n or we can represent it as a
+[01:46] number with a sign and we'll get
+[01:52] S so the so what we need to do is we
+[01:55] need to create a mapping uh from the set
+[01:59] of all all the numbers with a sign which
+[02:01] can include both positive
+[02:03] numbers as well as negative numbers to a
+[02:08] set of binary unsigned numbers called n
+[02:14] so uh this mapping would essentially
+[02:16] tell us how to represent a number be it
+[02:19] positive or negative using a set of
+[02:22] binary bits so let the set of positive
+[02:25] and negative numbers be called s and let
+[02:30] each number irrespective of its sign
+[02:32] positive or negative be mapped to a
+[02:35] sequence of binary numbers and we can
+[02:39] alternatively interpret this number as a
+[02:42] positive number and let's call this set
+[02:46] as n if we find a mapping we'll be able
+[02:49] to represent both positive as well as
+[02:51] negative numbers using a binary
+[02:54] representation for the positive numbers
+[02:56] we already have some idea from our
+[02:58] previous discussion
+[03:00] but a previous discussion does not cover
+[03:02] negative numbers so this needs to be
+[03:04] covered over
+[03:06] here so let's now take a look at
+[03:09] properties of the mapping function so
+[03:12] preferably you need a one to one mapping
+[03:15] which means
+[03:16] that given a certain sign number it
+[03:20] needs to have only one binary
+[03:23] representation so uh also the thing is
+[03:26] that all the entries in the set s that
+[03:28] we need to map should be
+[03:30] mapped it should be easy to perform
+[03:33] arithmetic operations on them such as
+[03:36] addition and
+[03:39] subtraction and uh the so these are our
+[03:42] three main assumptions so let's look at
+[03:45] one of the
+[03:46] simplest uh possible uh ways of doing
+[03:50] it so you assume an nbit number system a
+[03:53] number system in which we have n
+[03:58] Bits uh so n Bits basically means that
+[04:01] in our number system we will represent
+[04:03] every number by a sequence of n Bits
+[04:08] right n binary bits where they can be
+[04:10] from xn to X1 every number will be
+[04:13] mapped with n
+[04:15] Bits so uh we also want to introduce
+[04:18] this function s bit U which If U is less
+[04:22] than zero if the number is less than
+[04:24] zero this sign bit uh will return one If
+[04:28] U is greater than than equal to Z it
+[04:30] will return zero so essentially the
+[04:32] number is positive or zero the sign bit
+[04:35] is zero if the number is negative the
+[04:38] sign bit is one so this is a function
+[04:40] that we want to
+[04:42] introduce so let's first look at a very
+[04:44] simple uh kind of representation called
+[04:47] a sign magnitude base
+[04:51] representation so here what we do is
+[04:54] that the way we Define the mapping is
+[04:56] something like this that we Define a
+[04:59] function function
+[05:00] Fu where U is you know where U can be a
+[05:05] negative number or a positive number so
+[05:08] we consider the sign bit multiply it
+[05:11] with 2 ^ n minus one and add it with
+[05:14] absolute value of U or alternatively we
+[05:16] can think that the absolute value of U
+[05:20] is uh the least significant portion of
+[05:24] representation and uh the sign bit which
+[05:28] is negative which is one if the number
+[05:29] is negative is the MSP of the
+[05:32] representation so this number system is
+[05:35] actually very simple so let's find an uh
+[05:38] let's look at an example so let's
+[05:39] consider minus5 so minus5 we first write
+[05:43] take the binary representation of + 5
+[05:46] which is 10 1 and its sign bit is equal
+[05:49] to 1 because the number is negative so
+[05:52] this is the representation that we have
+[05:55] if we consider + five that's also very
+[05:57] easy we take one1
+[06:00] and we treat the most significant bit as
+[06:03] zero so what we one thing that we can
+[06:06] immediately see over here is that this
+[06:09] number that we have uh in this
+[06:12] representation a positive number is
+[06:15] being represented in exactly the same
+[06:17] way as we had discussed for a negative
+[06:20] number we just add a one before it
+[06:22] consider one more example minus 3 so we
+[06:27] first write the representations of plus
+[06:29] three
+[06:30] and then we add a one as the MSP digit
+[06:34] because the number is
+[06:35] negative so what are the problems there
+[06:38] are two representations for zero so zero
+[06:42] can you know both of them are both of
+[06:44] these are valid representations because
+[06:46] the rest of the bits are all zero and
+[06:50] the sign bit is either zero or one fa
+[06:53] you know it does not matter uh but uh
+[06:56] still uh there is a the
+[07:00] there is a problem in the sense that uh
+[07:03] you you're having a positive zero and a
+[07:05] negative
+[07:06] zero so addition and subtraction are
+[07:09] difficult we can clearly see if you just
+[07:10] regularly add them as binary numbers
+[07:14] then uh there is a
+[07:16] problem so uh the most important
+[07:20] takeaway point is yes we introduced a
+[07:22] sign bit the sign bit did have some
+[07:26] advantages No
+[07:28] Doubt
+[07:29] however uh it introduced more problems
+[07:32] than it could solve for example there
+[07:35] are two representations of zero which is
+[07:37] something that we don't
+[07:39] want so now let's look at the one's
+[07:42] complement representation which is very
+[07:44] simple let's first look at the
+[07:47] examples so if you have plus three it
+[07:49] gets represented in the same way as
+[07:51] other positive numbers 0 01 1 if we
+[07:55] consider minus 3 what we do is that we
+[07:59] just invert every single bit of 0 011 to
+[08:02] get 1 1 0
+[08:06] 0 similarly if we consider + 5 we take
+[08:10] the regular unsigned representation of +
+[08:13] 5 which is 0 1
+[08:15] 01 and if we consider minus 5 then we
+[08:18] what we basically do is that we invert
+[08:22] every single bit of + 5 to get
+[08:27] minus5 here also so uh you will notice
+[08:31] that the notion of the sign bit has also
+[08:33] come in the sense that uh
+[08:38] for numbers that are positive the MSP
+[08:42] the most significant bit is zero and for
+[08:45] numbers that are negative the most
+[08:47] significant bit is one so uh in a sense
+[08:51] the notion of the sign bit has also come
+[08:54] that uh positive numbers will have will
+[08:57] start with a zero and negative numbers
+[09:00] will start with a one which helps us
+[09:03] distinguish between positive and
+[09:04] negative but it does not confer any more
+[09:08] mathematical
+[09:11] properties so let's look at the problems
+[09:13] of this
+[09:15] representation the problems of this uh
+[09:18] representation are like this that there
+[09:21] are two representations for zero which
+[09:23] is something that we wanted to avoid so
+[09:25] 0 0 0 is also 0 and 1 1 1 is also 0o
+[09:30] and this is not in our best interest in
+[09:33] the sense we didn't want it it
+[09:35] introduces ambiguity into the number
+[09:38] system it is easy to add positive
+[09:42] numbers uh how do you add positive
+[09:44] numbers let's give a simple example
+[09:47] let's assume a number a number of the
+[09:50] form 3
+[09:51] 011 and you want to add this 3 +
+[09:55] 2 well you can do simple binary addition
+[09:58] as you do decimal addition so you add 1
+[10:01] and zero you get one you get 1 and 1 so
+[10:05] 1 + 1 is 2 so two in binary is 1 Zer so
+[10:08] you write zero here you have one as the
+[10:11] carry so you again write one over here
+[10:14] so this is 0 1 0 1 which is five this is
+[10:17] absolutely fine it's easy to add
+[10:20] positive numbers
+[10:22] unfortunately it's hard to add negative
+[10:26] numbers in this particular
+[10:29] uh
+[10:30] representation and that is the S uh that
+[10:32] is a sad
+[10:34] part uh of doing this uh that adding
+[10:39] negative numbers so negative numbers
+[10:40] cannot really be added uh the way that
+[10:43] we added uh positive numbers and that
+[10:47] will create some problems for us uh
+[10:51] which is not something that we want it
+[10:54] so if you want to see uh so let's
+[10:57] consider an example so let's say we want
+[10:58] to to add 3 + - 2 so which is 3 -2 the
+[11:03] answer should be 1 so 3 is 0 0 1 1 Min
+[11:07] -2 is well let's consider plus two this
+[11:11] is+ two so we invert every bit of it 1 1
+[11:14] 0 1 then let's add them so 1 +
+[11:19] 1 is 0 and the carry is 1 1 + 1 is 2 so
+[11:26] the carry is 1 1 + 1 is again 0 1 1 + 1
+[11:31] again 0 1 again
+[11:34] 0o so clearly this answer is not correct
+[11:38] this answer is wrong and this produces
+[11:40] an output carrier one which is again you
+[11:43] know not
+[11:44] correct so the answer should have been
+[11:46] equal to one over here which is clearly
+[11:49] not the
+[11:50] case so we do not have a number system
+[11:54] where it's easy to perform arithmetic
+[11:57] operations on both positive and negative
+[12:00] numbers so but nevertheless the point to
+[12:03] note is the idea of a
+[12:05] complement that we can take the
+[12:08] complement of every bit and try to
+[12:10] represent that as a
+[12:12] number uh so so there can be some merits
+[12:15] to it but uh well so we have seen two
+[12:19] ideas the idea of a sign bit and a
+[12:21] complement individually these ideas are
+[12:24] not that strong so before we move
+[12:26] forward let me explain this formula that
+[12:29] I have skipped so here what are we
+[12:31] trying to do we are considering a number
+[12:34] U which can either be positive or
+[12:36] negative we are trying to map it so this
+[12:38] is a set s we are trying to map it to a
+[12:41] sequence of binary
+[12:43] numbers uh a sequence of binary digits
+[12:46] where n is its unsigned or positive
+[12:50] form so uh for positive numbers we do
+[12:53] nothing it is U itself where U is
+[12:55] greater than equal to zero and for
+[12:57] negative numbers we what we do is we
+[13:00] take the value of U and we complement
+[13:03] every single bit of it where the Tilda
+[13:05] sign is also the sign for a bitwise
+[13:09] complement
+[13:11] alternatively what we can do is that so
+[13:14] you consider minus 3 how did we get here
+[13:17] we took
+[13:19] 0011 and uh we essentially subtracted
+[13:23] this
+[13:27] from this number
+[13:29] number so if you subtract anything from
+[13:32] one you actually get its complement we
+[13:35] can clearly see why 1 - 1 is 0 1 - 1 is
+[13:39] 0 1 - 0 is 1 1 - 0 is 1 whiches low and
+[13:44] behold the representation for minus
+[13:47] 3 these methods are algebraically
+[13:50] equivalent so uh so let's say given a
+[13:53] Boolean variable X if I consider X
+[13:57] complement that is also the the same as
+[13:59] 1 - x why is this the case assume that X
+[14:03] is zero X complement is 1 and 1 - x is
+[14:07] also 1 assume X is 1 X complement is 0
+[14:11] and 1 - 1 is also
+[14:16] 0 so what we are doing over here is that
+[14:19] so 2 ^ n
+[14:21] minus1 uh in a 4bit number system would
+[14:24] be 15 which is represented as all ones
+[14:26] so take a complement of a number can
+[14:28] also subtract its absolute value from 2
+[14:32] ^ n minus 1 so we'll get the complement
+[14:35] of the number so there are two ways of
+[14:37] thinking about how to take a one's
+[14:39] complement uh one is we take a
+[14:41] complement every single bit or we
+[14:44] subtract the number from 2 ^ n minus 1
+[14:48] in this case n is four because we have
+[14:50] four bits so 2 ^ N - 1 is 15 so we can
+[14:55] subtract it from 15 in a sense it's
+[14:57] equivalent to complimenting every single
+[15:01] bit so as we discuss this problem has
+[15:04] this approach has its set of problems
+[15:07] the biggest problem is there are two
+[15:09] representations for zero and adding a
+[15:12] positive to a negative number or a
+[15:14] negative to a negative number is hard
+[15:17] and this is not something that we would
+[15:18] want to
+[15:20] do so then uh let's consider one more
+[15:24] approach called a bias based
+[15:26] approach uh f is is used in a different
+[15:29] number system we'll have a chance to
+[15:31] talk about
+[15:33] it uh so you consider a 4bit number
+[15:36] system with a bias equal to 7 so what
+[15:39] are we trying to do we are saying that
+[15:41] you take any number its representation
+[15:44] is a number plus the
+[15:46] bias fine so let's see minus 3 its
+[15:49] representation would be -3 + 7 so -3 + 7
+[15:55] is equal to 4 and its binary represent
+[15:58] representation is 0 1 0 0 similarly if
+[16:01] you take + 3 it'll be 3 + 7 which is
+[16:06] equal to 10 and this is exactly what we
+[16:09] have 8 + 0 + 2 + 0 which is 10 in
+[16:14] decimal if you want to add two numbers
+[16:17] it's easy so in this case addition of
+[16:19] numbers is easy uh all that we need to
+[16:22] do is the representation of U + v f of U
+[16:25] + V is f u + f V minus bias so we can
+[16:31] clearly see why that's the case let's
+[16:33] say I want to do 3 + - 3 so this would
+[16:37] be equivalent
+[16:39] to uh
+[16:42] adding
+[16:45] four sorry uh so so basically we are
+[16:48] adding 0 1 0 0 plus 1 0 1 0 so this is 0
+[16:54] 1 1 1 so this in decimal is 4 14 then we
+[16:59] need to subtract the bias which is
+[17:01] equivalent to 7 so if we subtract this
+[17:04] in decimal we get 7 and what is
+[17:07] s 7 well is the representation for zero
+[17:11] because in our system F of0 the
+[17:13] representation of 0 is 0 plus the
+[17:17] bias which is 0 + 7 equal to 7 so this
+[17:23] so what do we have we have F of 3 + - 3
+[17:30] is equal to F of 0 which is exactly the
+[17:32] answer that we wanted so the advantage
+[17:35] of this system is that there is only one
+[17:37] representation for zero which is the
+[17:40] bias and zero for zero two
+[17:43] representations are not there the other
+[17:46] is that doing addition and subtraction
+[17:48] is fairly easy there is absolutely no
+[17:51] problem uh in uh doing an uh doing an
+[17:54] addition subtraction can be slightly
+[17:57] difficult uh not very difficult though
+[18:00] so if you consider subtraction so let's
+[18:02] try to subtract F of 3 minus 3 so this
+[18:07] is essentially equal
+[18:15] to so in this case instead of
+[18:17] subtracting the bias you add the bias so
+[18:20] this is equal to
+[18:22] 7 which is the same
+[18:25] as so subtraction is also easy but
+[18:27] multip apption is
+[18:30] difficult so now we have seen three
+[18:33] kinds of systems one was the ones
+[18:37] system uh one is uh this particular
+[18:40] approach which is the bias based
+[18:43] approach and other was the sign
+[18:45] magnitude
+[18:47] system so let's now discuss one approach
+[18:50] which is used and it is used for a very
+[18:53] good reason uh that it has very good uh
+[18:56] so what are the reasons one once again
+[18:59] the reasons are we need one
+[19:01] representation for zero that is point
+[19:03] number one uh we should have some nice
+[19:07] mathematical properties in the sense
+[19:09] that uh we should be able to nicely add
+[19:13] and subtract and multiply the numbers
+[19:14] maybe not
+[19:16] divide so our all our repr previous
+[19:19] representations were simple but they
+[19:20] fell short so let's do one thing let's
+[19:23] consider the set of all four bit
+[19:26] numbers and uh
+[19:29] try to represent them as a circle so
+[19:31] this is called a number Circle so let's
+[19:34] just uh consider 0 1 2 3 4 5 6 till 15
+[19:38] and from 0 till 15 so each one of them I
+[19:42] have its binary unsigned
+[19:44] representation and uh so one thing that
+[19:47] you see is that at 15 and0 I placed a
+[19:49] line like this uh as a
+[19:52] discontinuity and as I travel
+[19:57] clockwise uh the numbers are getting
+[19:59] incremented so clockwise a increment and
+[20:01] if I travel anticlockwise which is the
+[20:04] other direction this way I am
+[20:06] decrementing the numbers r or reducing
+[20:09] the numbers by
+[20:11] one so what I can do is I can do
+[20:15] something really interesting I can take
+[20:17] the same number Circle and use the
+[20:20] concept of the sign bit so I can treat
+[20:22] all of these numbers from 0 to
+[20:26] 7 as positive
+[20:30] numbers and after
+[20:33] 7 uh I can treat them as negative
+[20:37] numbers but I'll treat them in a
+[20:39] negative number in a special way so
+[20:42] after 0 1 1 1 uh the next number is 1 0
+[20:46] 0 so let me call this -
+[20:49] 8 and then - 7 - 6 - one and so on so
+[20:55] the red ones over here are my set of
+[20:57] negative numbers
+[21:00] so uh note that in this case the point
+[21:02] of there is no discontinuity at this
+[21:04] point you have minus1 here and zero here
+[21:07] but there is a point of discontinuity
+[21:09] over here that we call the break
+[21:12] point so let's now take a look at some
+[21:14] of the Salient features of making a
+[21:16] number Circle like
+[21:18] this as I move clockwise I essentially
+[21:23] increment the number other than at the
+[21:26] break point so as you see as I I move
+[21:28] clockwise I'm incrementing the number so
+[21:31] this is feature number one that this
+[21:33] clockwise increment is there in this
+[21:37] particular number
+[21:42] Circle
+[21:45] second the notion of the sign bit is
+[21:47] there in the sense that if you take a
+[21:49] look at all the positive numbers their
+[21:52] MSP or the most significant bit is zero
+[21:55] and if you take a look at all the
+[21:57] negative numbers that MSP or the most
+[21:59] significant bit is equal to one so in
+[22:02] that sense the notion of the sign bit is
+[22:05] there and it has been
+[22:07] preserved so this will come
+[22:20] useful so let's now try to use the
+[22:23] number Circle so let's assume that you
+[22:26] want to add M to a number n
+[22:28] so the first thing that we do is we
+[22:30] locate n on the number Circle if m is
+[22:33] positive we move M steps
+[22:36] clockwise because every single step that
+[22:39] we move we increment the number by
+[22:41] one similarly if if m is negative we
+[22:45] move M steps
+[22:49] anticlockwise or uh so moving M steps
+[22:52] anticlockwise will essentially decrement
+[22:55] the number and this is equivalent
+[22:58] so so here is a very very important
+[23:01] point so moving so in this case let's
+[23:04] let me consider this point four I want
+[23:07] to subtract two so I can move two steps
+[23:10] anticlockwise One Step Second Step so
+[23:14] moving two steps anticlockwise is
+[23:16] exactly the same as moving 14 steps
+[23:22] clockwise right so this is a very very
+[23:25] important point that all of us need to
+[23:27] remember remember this is the Crux of
+[23:29] this approach that moving two steps
+[23:31] anticlockwise is exactly the same as
+[23:34] moving 14 steps
+[23:35] clockwise which is exactly what we are
+[23:38] trying to say that in an nbit number
+[23:40] system moving M steps
+[23:43] anticlockwise is the same as Moving 2 ^
+[23:46] n minus M steps
+[23:48] clockwise clearly if we cross the break
+[23:51] point we can have an overflow which
+[23:54] means the number is too large or too
+[23:56] small to be represented but but we'll
+[23:58] discuss such special cases
+[24:01] later so keeping these things in mind
+[24:04] let us uh Define the tools complement
+[24:08] notion so the Tool's complement notion
+[24:11] is something like
+[24:12] this so we'll represent positive numbers
+[24:15] as we were doing as long as a number is
+[24:19] between 0 and 2 ^ N minus1 - one so in a
+[24:23] 4bit number system 2 ^ n minus1 is
+[24:29] 2 ^ 4 - 1 and - 1 so this comes out to
+[24:32] be 2 ^ 3 8 - 1 which is 7 so as long as
+[24:37] the number is between 0 and 7 all
+[24:41] inclusive we will represent it as U
+[24:43] which is exactly what we are doing in
+[24:45] the number Circle that a number between
+[24:48] 0 and 7 let's represent it as the
+[24:52] unsigned binary representation of the
+[24:56] itself however ever if a number the
+[24:58] moment it becomes
+[25:01] negative then what we will do and the
+[25:03] number is between - 2 to the^ n minus
+[25:06] one which is like in a 4bit number
+[25:09] system Min - 8 and
+[25:10] 0 we will represent this as 2 the^ N
+[25:14] minus the absolute value of U so this is
+[25:17] very interesting why this is done so
+[25:20] let's start from point 0 Let's assume
+[25:23] that I want to represent
+[25:25] -5 so -5 is the same as 0 - 5 so I
+[25:30] should
+[25:31] walk five steps anticlockwise so 1 2 3 4
+[25:36] and five I reach over here so the as I
+[25:40] said the Crux of the idea is walking
+[25:42] five steps anticlockwise is also walking
+[25:46] 11 steps 11 steps
+[25:50] clockwise so uh the representation of
+[25:53] minus5 should be the same as walking 11
+[25:57] steps
+[25:58] clockwise which is + 11 and you would
+[26:01] see this is exactly the case that we
+[26:03] have 8
+[26:05] plus 2 + 1 which is +
+[26:09] 11 so this is exactly what is being
+[26:12] shown in this formula over here that in
+[26:16] the number that in the number
+[26:18] Circle uh representing a number of the
+[26:22] form U where U is negative is the same
+[26:25] as 2 the^ N minus the absolute value of
+[26:28] U so this is like
+[26:31] walking U steps absolute value of U
+[26:35] steps anticlockwise from zero or moving
+[26:38] these many steps
+[26:40] clockwise so Fu in this case is index of
+[26:44] a point on the number Circle and this
+[26:46] will vary from 0 to 2 ^ n minus
+[26:49] 1 so uh s simple examples for plus 4
+[26:53] what do we do for plus 4 what we do is
+[26:56] we represent it it it's within the range
+[26:58] of the number system 0 and 7 so we
+[27:01] represent this as 0 1 0 0 for minus 4
+[27:06] the way we represent this is very simple
+[27:08] we just do 16 - 4 which is 12 and this
+[27:12] is exactly the representation of 12 in
+[27:15] the binary system which is 8 + 4 is
+[27:18] 12 similarly for +
+[27:22] 5 uh what we do is that uh we represent
+[27:27] this has a regular unsigned binary
+[27:29] integer which is 0 1
+[27:32] 01 and uh for minus 3 well it's very
+[27:36] simple we just take a look at the
+[27:38] formula over here and its representation
+[27:41] will be 16
+[27:43] minus absolute value of 3 which is +
+[27:47] 13 and this is + 13 is 8 + 4 + 1 which
+[27:52] is 12 + 1 =
+[27:56] 13
+[27:58] now let's consider properties of the
+[28:00] Tool's complement
+[28:01] notation uh so typically in any uh
+[28:05] notation uh the first property that we
+[28:08] look at is the range of the number
+[28:09] system so what we had seen is that for a
+[28:12] 4bit uh number system the range was
+[28:16] between -8 to +
+[28:22] 7 this can be extended to uh an nbit
+[28:26] number system where the range is between
+[28:28] Min - 2 ^ n minus1 so you can substitute
+[28:32] the value of four over here and you'll
+[28:34] find it's - 8 to uh +
+[28:39] 7 uh so this is the first property uh so
+[28:43] one thing that we can uh infer from here
+[28:46] is that we have one more negative
+[28:49] integer than the number of positive
+[28:50] integers but that is because we have to
+[28:54] accommodate for zero also there is a
+[28:57] sing single unique representation for
+[28:59] zero which is all zeros which is a very
+[29:02] good thing this is something that we
+[29:04] wanted the most significant uh so the
+[29:07] third property is that the most
+[29:09] significant bit of Fu which is the
+[29:12] representation of a sign number in this
+[29:14] notation is equal to the sign bit of U
+[29:18] so why is this the case uh let's go back
+[29:21] to the number Circle and uh the answer
+[29:24] is there so if you consider all the
+[29:26] positive number numbers uh
+[29:29] their uh most significant bit is zero
+[29:32] which is the sign bit of the number if
+[29:35] it consider all the negative numbers uh
+[29:38] written in red their most significant
+[29:41] bit or S bit is+ one uh which is what we
+[29:44] get to see for all the numbers over here
+[29:46] so it's very easy to find if a number in
+[29:49] the Tool's complement notation is
+[29:52] positive or negative we just take a look
+[29:54] at its MSP the most significant bit
+[29:58] uh so alternatively this is more of a
+[30:01] generic proof that if fu is less than 2
+[30:04] ^ + nus 1 the MSB 0o uh you can infer
+[30:08] it's positive and for a negative number
+[30:11] it needs to be greater than equal to 2 ^
+[30:13] nus one it needs to cross the break
+[30:15] point in the number Circle this is this
+[30:17] is the break point and at this point the
+[30:20] MSP becomes equal to 1 thus the number
+[30:23] is
+[30:25] negative uh now let's let's look at some
+[30:28] more properties so every number in the
+[30:31] range in the range of the number system
+[30:34] has a unique mapping because it has a
+[30:36] unique point in the number
+[30:39] Circle so
+[30:42] uh why is this called the tw's
+[30:44] complement system we'll take a look at
+[30:47] it in the next two properties but first
+[30:49] let us Define uh something simple we
+[30:52] Define uh this point this operator
+[30:56] called equival equence with three arrows
+[30:59] I'm sorry three horizontal lines this
+[31:01] means that they refer to the same point
+[31:04] on the number Circle or alternatively a
+[31:08] is equal to B mod 2 ^ n and uh so we can
+[31:12] see why so let's consider a 4bit number
+[31:16] system and
+[31:19] uh so let's consider Point 3 if we add
+[31:23] 16 to 3 uh then we just need to walk 16
+[31:27] steps in the clockwise Direction we'll
+[31:29] again come back to three so essentially
+[31:31] 3 is equivalent to 19 in this system the
+[31:35] reason being that 3 is equal to
+[31:40] 19
+[31:43] mod 16 where 16 is 2 the^
+[31:47] 4 so the advantage of uh having this
+[31:51] particular notation is that we can say
+[31:54] that a lot of numbers on the number line
+[31:56] are equivalent
+[31:58] because there is only one representation
+[31:59] for them on the number Circle and out of
+[32:03] them only one is in the range of the
+[32:04] number system and the others are
+[32:08] not so now let's come to the first
+[32:10] serious property of the to's complement
+[32:14] notation so let's take a number
+[32:19] U so we want to find the notation of the
+[32:23] number minus U so this is equivalent to
+[32:27] where this is the same operator that we
+[32:28] have defined 2 ^ n minus F of U so this
+[32:33] is uh so let me first Give an example
+[32:37] and then we will look at the proof of
+[32:39] this so consider the representation of
+[32:43] Min
+[32:44] -4 this is equal to 16 minus the
+[32:47] representation of +4 the representation
+[32:51] of + 4 is just four so this is
+[32:54] essentially equal to 12's binary
+[32:57] representation which is 1 1 0 0 so it is
+[33:01] very easy to find the representation of
+[33:04] the negative of any number uh simply by
+[33:07] subtracting it from 2 the^ N and this is
+[33:10] also why this is called a two's
+[33:12] complement number system because we are
+[33:14] subtracting it from 2 ^ n uh that's the
+[33:17] reason now uh if we want to take a look
+[33:21] at uh a proof of this this can easily be
+[33:25] proven again with the number Circle
+[33:26] method method so this is how we'll
+[33:28] Define a number circle with a break
+[33:30] point over here so what we want to do is
+[33:34] that if you want to find F of minus U
+[33:37] this is same as moving a few steps
+[33:42] counterclockwise is this so basically
+[33:45] moving a few steps in a counterclockwise
+[33:47] direction is the same as Moving 2 the^
+[33:50] minus a few steps in a clockwise
+[33:52] Direction starting from
+[33:54] zero so what we are seeing
+[33:57] is that assume uh so let's consider If U
+[34:00] is positive then we'll have F of minus U
+[34:05] is 2 ^ n minus
+[34:08] U so what we need to do is that the
+[34:12] location for U in the number Circle is
+[34:14] let's say this point and the location of
+[34:16] minus U is let's say this
+[34:20] point so F of minus U we can
+[34:25] get by uh essentially starting at zero
+[34:29] and walking 2 ^ n minus U steps in a
+[34:33] clockwise Direction which will bring us
+[34:36] exactly over here because if you walk 2
+[34:39] the^ N steps will again come back at the
+[34:41] origin and uh at this point we'll
+[34:44] exactly reach 2^ n minus U uh which is
+[34:48] exactly the same as walking minus U
+[34:50] steps in the counterclockwise Direction
+[34:54] so what we can see is that if U is
+[34:55] positive this relation relationship
+[34:57] holds similarly If U is negative it's
+[35:00] also easy to prove the same relationship
+[35:03] this I leave for the reader but the
+[35:06] important point to note uh in this
+[35:08] number Circle based
+[35:10] logic is that walking usteps in a
+[35:14] certain direction is same as walking 2 ^
+[35:18] n minus UST steps in the opposite
+[35:22] direction this is a very important point
+[35:25] to understand for all of us
+[35:27] uh that in in a number Circle when
+[35:30] you're walking in One Direction you're
+[35:32] incrementing walking in the other
+[35:34] direction you are decrementing so when
+[35:37] we let's say want to compute the
+[35:39] notation of minus u f of minus U so uh
+[35:43] minus U basically means that we start at
+[35:45] the origin and we move U steps in the
+[35:49] counterclockwise Direction which is
+[35:52] exactly the same as we move a few
+[35:55] steps in in the
+[35:58] clockwise
+[36:00] uh I'm sorry uh which essentially means
+[36:04] that we move 2 to the power n minus a
+[36:07] few steps in the clockwise direction to
+[36:10] reach the same
+[36:13] point so now let's take a look at some
+[36:16] of the basic properties of a tools
+[36:19] complement number system and see how uh
+[36:22] you know what's the real advantage of
+[36:24] this so actually the the tools
+[36:26] compliment system has some wonderful
+[36:28] properties mathematical properties and
+[36:31] that's very interesting so let's do one
+[36:33] thing let's start at a point U so what
+[36:36] we want to prove is a basic rule for
+[36:37] addition that F of U + V where we adding
+[36:42] two numbers their representation on the
+[36:45] number Circle the point is the same as
+[36:48] Fu plus FV so this basically means that
+[36:52] we can add the representations of u and
+[36:55] v you can just do a simple binary
+[36:58] addition and that will be the
+[37:00] representation of u+
+[37:02] V so uh what do we do we start at Point
+[37:06] U its index is Fu so let's first assume
+[37:11] that V is
+[37:12] positive so then we move V points
+[37:15] clockwise and we'll arrive at Fu plus
+[37:18] v uh so the it's index will be equal to
+[37:22] Fu + V 2 ^ n and since V is equal to FV
+[37:28] we will have this relationship which is
+[37:31] exactly equal to this relationship is
+[37:33] just equal to represented by uh sorry
+[37:36] substituted by the equivalent
+[37:39] sign so we will thus have for positive v
+[37:43] f of U + V is exactly the same as f u +
+[37:50] f of V so let me give an example to uh
+[37:55] explain this Point Let's assume we want
+[37:58] to add 2 + 3 in binary so the
+[38:02] representation of this would be 0 0 1 0
+[38:05] + 0 01
+[38:07] 1 right so basically we can say that F
+[38:11] of 5 which is 2 + 3 is equal to FS2 +
+[38:19] F3 which is equal to 0 1 0 in binary
+[38:25] plus 0 1 1 which is 0 1 0
+[38:32] 1 now let's consider V to be
+[38:35] negative so if we consider V to be
+[38:37] negative what do we need to do we need
+[38:40] to start
+[38:42] at the point U on the number circle with
+[38:45] representation Fu and we need to move
+[38:48] modulus of V points
+[38:51] anticlockwise so this is the same as
+[38:53] Moving 2 ^ n minus mod V V points
+[38:58] clockwise so we will then arrive at Fu +
+[39:01] V since FV is equal to 2^ n minus mod V
+[39:07] the index Fu + V this number will be
+[39:10] equal to Fu + 2 ^ n minus mod V mod 2^ n
+[39:16] of course which is equivalent to F + FV
+[39:20] mod 2 the^ N so what we see is that this
+[39:23] relationship holds for both positive v
+[39:28] as well as negative V so let's consider
+[39:32] again an example let's assume that we
+[39:34] want to compute 2 + - 4 in
+[39:39] binary so the representation of 2 +
+[39:42] -4 what we are
+[39:45] seeing
+[39:47] is f of
+[39:49] 2 + f of
+[39:52] -4 so F of 2 if we consider in binary is
+[39:56] 0 0 1 0 if I consider F of Min
+[40:00] -4 that is essenti essentially equal to
+[40:03] F of 12 16 - 4 which is 0 0 1 0 + 1 1 0
+[40:12] 0 so let's proceed and add no
+[40:24] problem so what we get
+[40:27] is we get 1 1 1 0 which is actually the
+[40:31] representation of so this is plus 14
+[40:34] because this is 4 uh I'm sorry 2 + 4 + 8
+[40:38] which is + 14 which is actually F of Min
+[40:40] -2 which is exactly the answer that we
+[40:43] needed to get 2 + -4 is -2 so what we
+[40:47] can see is that both for positive v as
+[40:50] well as negative V if we need to add two
+[40:53] numbers where they're represented in the
+[40:55] two's complement
+[40:57] binary
+[40:58] notation we just simply need to add them
+[41:01] and the final result will be the
+[41:05] representation of what the final result
+[41:08] should be right the result of this
+[41:10] addition over here will be the
+[41:14] which is U + V should
+[41:18] be now let's consider subtraction let's
+[41:21] assume we want to subtract U minus V so
+[41:25] this from the previous theorem is Fu + f
+[41:28] of minus V which is Fu + 2 ^ n minus F
+[41:33] of V so subtraction in a sense is the
+[41:36] same as
+[41:37] addition you just compute the two's
+[41:39] complement of FV so let's consider an
+[41:42] example let's say that I want to
+[41:44] subtract in a 4bit number system 3 -
+[41:49] 5 so this I can write as F of
+[41:53] 3 + 2^ n which is 16 minus F of
+[41:59] 5 so we'll be uh writing in both binary
+[42:03] and decimal notations uh
+[42:05] the notation needs to be sort of
+[42:08] inferred from the context so in this
+[42:11] case f of3 is equal to three uh so I'm
+[42:13] not writing it in binary to just keep
+[42:16] the representation uh simple and F of 5
+[42:19] is equal to
+[42:25] 5
+[42:31] so this is equal
+[42:32] to
+[42:34] 14 which is equal to F
+[42:37] of
+[42:39] -2 this is exactly what we wanted to uh
+[42:42] prove so what one thing that we see is
+[42:45] that adding or multiplying I'm sorry
+[42:48] adding or subtracting uh two complement
+[42:51] numbers is actually very easy for
+[42:53] addition we just go ahead and add and if
+[42:55] you we want to subtract we essentially
+[42:57] add it with its tools
+[43:01] complement so here is a trick question
+[43:04] Food For Thought does a similar
+[43:06] relationship hold for multiplication as
+[43:09] well right uh this is something that
+[43:12] needs to be proven and this actually
+[43:14] does hold so this actually does hold and
+[43:17] this is a a very nice property of the
+[43:20] tw's complement notation it doesn't hold
+[43:22] for
+[43:23] division but at least for multiplication
+[43:25] this property definitely does hold and
+[43:29] uh this is a very very useful property
+[43:31] so let's maybe consider an
+[43:33] example so let's consider you want to
+[43:36] multiply 2 * -
+[43:42] 3 we claim that this is equivalent to F
+[43:46] of 2
+[43:47] * F of -
+[43:51] 3 so F of 2 is equal to 2 because the
+[43:55] representation of 2 is two on the number
+[43:58] Circle and similarly F of minus 3 is
+[44:01] actually
+[44:04] 13 because it's 16 - 3 so this is
+[44:08] equivalent to
+[44:09] 26 which is equivalent to 10 because we
+[44:12] take always mod 16 so mod 16 means
+[44:16] consider the four lower bits and so this
+[44:18] is equivalent to 10 or I can write 26
+[44:22] mod
+[44:23] 16 which is essent equal to
+[44:27] 10 which is equal to F
+[44:30] of -
+[44:33] 6 why - 6 because F of - 6 is equal
+[44:38] to 16 - 6 is equal to
+[44:43] 10 so this is exactly what we had set
+[44:45] out to prove that F of 2 * -3 is f of -
+[44:48] 6 and uh lo and behold we have a proof
+[44:52] over here so now the question is that we
+[44:56] want to prove this
+[44:57] result for any arbitrary unu andv so let
+[45:02] me prove some of the subcases and some
+[45:05] cases I will leave as an exercise to the
+[45:08] reader consider u and v both are
+[45:11] positive if both are positive then we
+[45:14] have F of U * V is just U * V of course
+[45:18] when there are no overflows we'll
+[45:20] discuss that later multiplied by U * V
+[45:23] which is trly
+[45:24] true consider the fact that both u and v
+[45:28] are
+[45:30] negative so then uh let's look at uh so
+[45:34] if u and v both are negative the product
+[45:36] is positive so the rhs is still U
+[45:39] multiplied with
+[45:41] v whereas the
+[45:43] LHS is 2 ^
+[45:48] n uh so maybe I can just write it mod *
+[45:51] mod V just to make things uh
+[45:54] straightforward
+[46:23] so since we take uh all of the numbers
+[46:26] mod 2 the^ N so why do we do that
+[46:28] because the range of the number system
+[46:30] is n Bits more than that we can't
+[46:32] represent so since we take everything
+[46:35] mod 2 the^ N we can cancel out all of
+[46:37] these terms so since this term gets
+[46:40] cancelled and this term gets cancelled
+[46:42] what we are left with is mod U
+[46:45] multiplied with Mod V and thus LHS is
+[46:47] equal to
+[46:48] rhs the only other case that we need to
+[46:51] prove is When U is positive and V is
+[46:53] negative and when U is negative and V is
+[46:56] positive is an exactly symmetric case so
+[46:59] we just need to prove one so you need to
+[47:02] so the reader needs to prove the case
+[47:04] When U is positive and V is negative the
+[47:07] reader needs to prove this result and
+[47:09] this I leave as an
+[47:12] exercise so how do I compute the to's
+[47:15] complement very quickly well uh let's
+[47:19] take a look at what needs to be done uh
+[47:23] so one thing that can be done is that
+[47:26] let's say I want to compute the two's
+[47:27] complement of uh four you know minus 4
+[47:31] so in this case what do I do uh what I
+[47:34] do is that I do 16 - 4 which is
+[47:38] 12 so I'm essentially subtracting 4 from
+[47:43] 2 ^ n to get 12 so I'm doing a
+[47:48] computation of the form 2 ^ nus U which
+[47:52] can be broken down into 2 ^ - n - - 1 -
+[47:56] U +
+[47:58] 1 if uh readers would kindly recall this
+[48:02] is the ones complement so 2 ^ N - 1
+[48:06] let's see what kind of a number it is
+[48:09] for example consider 2 ^ 4 - 1 which is
+[48:12] 15 it's 1 1 1 1 so 2 ^ n minus 1 is
+[48:18] essentially equal to 1 1 one 1 n
+[48:22] times so this minus any binary number at
+[48:27] every point would just assume you have a
+[48:30] one over here you'll get a zero here you
+[48:32] have zero over here you'll get a one
+[48:34] year you just get the complement of the
+[48:36] number so this is called the ones
+[48:39] complement so what we can do is that we
+[48:43] can take the ones complement and add one
+[48:46] to it which is exactly what we get to
+[48:49] see in this particular representation
+[48:52] that this is a nice way in binary to
+[48:55] actually get the one's complement of a
+[48:57] number and to add one to it uh so for
+[49:01] example if we want to compute minus 4 we
+[49:04] first find the complement and then add
+[49:06] one to it and this is the representation
+[49:09] of minus
+[49:11] 4 now let's take a look at one more
+[49:14] trick uh in the r of two's complement
+[49:17] numbers it's called sign
+[49:21] extension so suppose we conver convert a
+[49:24] nbit number to a m bit to complement
+[49:27] number right so the idea here is that
+[49:33] assume uh that this is a 4bit number and
+[49:38] you want to convert it to an 8 bit
+[49:40] number so what do you do so assume that
+[49:44] the number is positive so in almost all
+[49:47] proofs we uh sort of divide it into two
+[49:51] subcases in one subcase the number is
+[49:54] positive and in the other subcase the
+[49:58] number is negative so let's consider
+[50:00] that I have a number of the form in a
+[50:04] plus 4 represented in binary 0 1 0 0 and
+[50:08] I want to convert it into an 8bit
+[50:11] positive number all that I need to do is
+[50:14] that in the four MSP positions most
+[50:18] significant positions I add four zeros
+[50:21] so this is a valid representation in a
+[50:24] 8bit number
+[50:26] system now let's assume that the number
+[50:29] is negative so let's consider Min
+[50:31] -4 so -4 representation is 1 1 0 0 in
+[50:37] the two's complement
+[50:40] system so we need to calculate what
+[50:43] would be the representation of Min -4 in
+[50:45] a
+[50:46] 8bit number system right so Min -4 how
+[50:49] do we get this number this is actually
+[50:52] the decimal form is 12 and this is 16- -
+[50:55] 4 in 8 Bits we need to compute 2 ^ 8 -
+[51:02] 4 so 2 ^ 8 is
+[51:05] 256 -
+[51:10] 4 so let's do a little bit of algebra so
+[51:14] let's assume so this is the
+[51:16] representation of number in the mbit
+[51:18] number system this is the representation
+[51:21] of the number in the N bit number system
+[51:23] so let's just subtract
+[51:26] if we subtract we get 2 ^ M minus 2 ^
+[51:32] n so uh if you would actually subtract
+[51:35] it what we would find is the result is 2
+[51:38] ^ n + 2 ^ n + 1 till 2 ^
+[51:44] nus1 so maybe just giving an
+[51:47] example let's say you want to subtract 2
+[51:50] ^ 4 - 2 ^ 2 which is 16 - - 4 which is
+[51:57] 12 right so the claim here is that this
+[52:00] is equal to 2 ^ 2 + 2 ^
+[52:04] 3 which is 4 +
+[52:08] 8 so this is a very easy identity to
+[52:11] prove and uh so I leave this to the
+[52:14] reader but the interesting part is that
+[52:17] if I take this expression and I convert
+[52:21] it into binary what I would get is that
+[52:24] I would get n zeros and the remaining M
+[52:28] minus n
+[52:30] 1es all right so this is exactly what I
+[52:34] would get that I would get n Z's and N
+[52:36] minus
+[52:37] n1's now assume that the representation
+[52:40] in a 4bit number system of a number of
+[52:44] the form minus U right where U is
+[52:47] positive is 2 ^ n minus U and let's say
+[52:51] in an 8bit number
+[52:53] system we have the this equal to 2^ M -
+[52:58] U where n is 4 and M is equal to
+[53:05] 8 so what we have we have this
+[53:09] relationship over here that F of 8 -
+[53:13] U is actually equal to 2 ^ n minus U
+[53:18] which is again an N bit number right
+[53:21] which is an N bit number plus the this
+[53:25] expression over here with the first nend
+[53:27] bits are all zeros and the remaining
+[53:30] ones are all ones so I would consider a
+[53:32] relationship of a I'm sorry a number of
+[53:35] this type which is n minus n1's and the
+[53:38] rest n are
+[53:40] zeros right so if I
+[53:44] add this number plus this number what I
+[53:48] will get is that the first M minus n
+[53:52] positions you know will still be
+[53:57] sorry the first M minus n positions will
+[53:59] still be ones and then the remaining
+[54:04] positions over here will be occupied by
+[54:07] whatever is the representation of 2 ^ n
+[54:10] minus U right for the remaining n
+[54:14] positions since this number is negative
+[54:17] the MSP of this part will also be one
+[54:20] and the remaining will be
+[54:21] ones all right so the important point to
+[54:25] note is that whatever is a
+[54:28] representation in the 4bit number system
+[54:30] so let's again consider F of minus 4 F
+[54:34] of minus 4 in a 4bit number system was 1
+[54:37] 1 0 0 so F of -4 in an 8bit number
+[54:43] system will first be 1 1 0 0 and the
+[54:47] rest all the positions will be equal to
+[54:49] one so the readers can manually verify
+[54:52] that this is exactly what comes via
+[54:55] another calculation which is 256 - 4 so
+[54:59] this is also the representation
+[55:02] of uh
+[55:06] 252 all right and uh so what we see is
+[55:11] that the sign bit over here we can think
+[55:14] of it as getting
+[55:15] replicated uh across the rest of the new
+[55:18] positions this is exactly what was
+[55:20] happening for positive numbers that the
+[55:22] sign bit for the 4bit number was getting
+[55:25] replicated across the new positions that
+[55:28] uh new positions to the left and here
+[55:31] also the sign bit is being replicated
+[55:34] towards the new positions on the left so
+[55:37] this trick is called sign extension that
+[55:40] to convert a negative number from a nbit
+[55:44] number system to an mbit number system
+[55:47] you add M minus n1's in the most
+[55:50] significant MSP
+[55:52] positions so what we can do just sum
+[55:54] summarizing and closing the discussion
+[55:57] is that in both cases extend the S bit
+[56:02] by m minus n positions for example you
+[56:06] know if I want to convert from a 4bit to
+[56:08] an 8bit system uh number system and my
+[56:12] number is 0 0 1 0 all that I do is I add
+[56:15] four zeros to the left of it if I have
+[56:18] one number of the form
+[56:20] 1011 I just add four ones to the left of
+[56:23] it so essentially take a look at the
+[56:24] sign B
+[56:25] whatever it is I just extend the sign
+[56:28] bit replicate it
+[56:31] across uh the positions to the
+[56:36] left now let's consider one more point
+[56:40] which is called an overflow
+[56:42] theorem so the Overflow theorem is
+[56:44] something like this so let's assume that
+[56:47] in a 4bit number
+[56:48] system we want to add 5 +
+[56:52] 5 so 5 + 5 the answer is is 10 but 10
+[56:56] cannot be represented in four bits the
+[56:59] reason being that the largest number
+[57:01] that can be represented is actually plus
+[57:04] 7 so in this case we say that we have an
+[57:07] overflow which means that the number
+[57:10] cannot be represented in the particular
+[57:15] system similarly if I add Min -5 and
+[57:18] -5 it'll be minus 10 but the range of
+[57:22] the 4bit number system is only till - 8
+[57:26] so uh we can't do the
+[57:29] addition as a result we'll also have an
+[57:31] overflow in this case so the Overflow
+[57:34] theorem is something like this that if
+[57:36] I'm adding U +
+[57:38] V and if UV is less than zero which
+[57:41] means one of them one of the numbers U
+[57:44] or V is positive and the other one is
+[57:47] negative we will never have an
+[57:50] overflow so to prove this let us go back
+[57:53] to the number Circle
+[57:56] so there will be an overflow only when
+[57:58] we cross the break point otherwise we
+[58:00] are within the range of the number
+[58:02] Circle so if UV is equal to zero one of
+[58:05] the numbers is uh you know if UV is
+[58:08] equal to Zer means one of the numbers is
+[58:11] zero so one of the numbers is zero
+[58:13] there'll not be any
+[58:15] overflow if UV is greater than zero and
+[58:18] overflow is possible and we just saw an
+[58:21] example of this where we adding five and
+[58:23] five or adding minus 5 and
+[58:26] minus5 now UV is less than zero let's
+[58:30] see what will happen let's say that we
+[58:32] want to add 1 and minus 4 so we start at
+[58:35] 1 and we count four positions in the
+[58:40] anticlockwise direction so we can
+[58:42] clearly see that we are not crossing the
+[58:44] break point so there is no overflow
+[58:46] right this is the break
+[58:49] point but if we had Uh u and v both as
+[58:53] positive and and uh in this simple 2 bit
+[58:57] number system that we have uh we can
+[59:00] clearly see that we are crossing the
+[59:02] break point and there will be an
+[59:04] overflow so I'm adding one and three so
+[59:07] to add three I need to move three steps
+[59:10] clockwise and I will cross the break
+[59:13] point and so 1 and 3 is not minus 4 it's
+[59:16] actually plus 4 is the wrong answer so
+[59:18] I'm having an
+[59:20] overflow so what are the conditions for
+[59:22] an overflow if UV is less than equal to
+[59:25] Z will never have an
+[59:27] overflow if UV is greater than zero
+[59:29] means they have the same
+[59:31] sign uh we can have an overflow but when
+[59:35] will we have we'll have an overflow when
+[59:38] the sign of the result is greater than
+[59:42] different from the sign of both u and v
+[59:46] right in this case u and v both are
+[59:48] positive and uh we add
+[59:51] them uh so uh if the result is negative
+[59:54] ative we know there is an overflow
+[59:56] similarly if let's say we adding -3 and
+[59:59] -2 so I can start at minus 3 to add
+[60:03] min-2 I need to travel two
+[60:06] steps in the anticlockwise direction so
+[60:09] I come here and then I come here right
+[60:13] and so the answer that I get is+ three
+[60:15] which can never be the answer because
+[60:18] minus 3 and minus 2 are both negative
+[60:20] numbers so the answer cannot be positive
+[60:22] so then also I'll find that
+[60:25] I am having an
+[60:27] overflow so in the book there is a very
+[60:30] detailed proof of this result and uh so
+[60:33] in the slides you know this is our last
+[60:35] slide so we are not presenting a result
+[60:38] but I'll just give you an overview of
+[60:39] the proof but the detailed proof is
+[60:41] there in the book and I would request
+[60:43] all readers to go to the book and uh
+[60:46] take a look at the
+[60:48] proof so the proof goes somewhat like
+[60:51] this so let's go back to this example so
+[60:54] let's assume that uh you know with no
+[60:56] loss of generality U is positive and V
+[61:00] is negative right UV is less than zero
+[61:03] so if I start at a positive point to
+[61:06] have an overflow I need to sort of cross
+[61:09] this break point right so to cross this
+[61:13] break
+[61:14] point uh so let me assume by Contra
+[61:17] positive that you can have an
+[61:19] overflow so the best possible way that I
+[61:22] can have one you know to maximize my my
+[61:24] chances I would like to make U as small
+[61:28] as possible and the absolute value of v
+[61:31] as large as possible so the smallest
+[61:34] value of U uh that is not negative is
+[61:38] zero and the large and the largest
+[61:41] absolute value of V is actually 4 so the
+[61:46] V will become minus
+[61:47] 4 so if I add 0 +-4 I will still uh come
+[61:52] over here which is in the range of the
+[61:54] number system and I will not cross the
+[61:58] breakpoint right so basically whatever I
+[62:01] do I will not be able to cross the
+[62:04] breakpoint and thus I'll not have an
+[62:06] overflow so this is a very high level uh
+[62:10] handwavy kind of proof but a better
+[62:14] proof and a very rigorous mathematical
+[62:16] proof is there in the book that's the
+[62:18] reason I'm asking you to go there and
+[62:21] similarly if you know if I consider any
+[62:24] other example let's say start at two I
+[62:28] need to
+[62:29] travel more
+[62:31] than seven steps to actually cross the
+[62:36] break point and sort of need to add
+[62:38] minus 7 and since -7 is not in the range
+[62:41] of the number system will not have an
+[62:44] overflow so this is why if one of the
+[62:47] numbers is positive and other is
+[62:49] negative or the other is zero we will
+[62:51] not have an
+[62:53] overflow but
+[62:55] if both the numbers are the same sign we
+[62:57] can always cross the breakpoint as we
+[62:59] have
+[62:59] seen now a reader can argue that is it
+[63:03] possible for the two numbers to have the
+[63:05] same
+[63:06] sign and I will cross the breakpoint
+[63:09] have an overflow but the result will
+[63:10] also have the same sign which means I
+[63:13] maybe I start from this point I add a
+[63:16] positive number and I walk all the way
+[63:18] up and then I again my result is in the
+[63:21] positive half of the number Circle this
+[63:24] will never happen the reason this will
+[63:27] never happen is so my best case is that
+[63:29] I start at let's say three and add three
+[63:33] so one step two and three the result is
+[63:36] still negative and in the other case I
+[63:39] can start at minus 4 and add minus
+[63:42] 4 in this case one step two step three
+[63:46] and four right because I'm walking
+[63:48] anticlockwise now the result is still
+[63:50] non-
+[63:51] negative so what we see is that that
+[63:54] respective of whatever you do if I'm
+[63:57] adding two numbers with the same sign
+[64:00] and the result is of a different sign of
+[64:02] an opposite sign I can always infer an
+[64:05] overflow which is exactly what the
+[64:07] Overflow theorem is trying to tell you
+[64:10] that if one of the numbers is zero we'll
+[64:12] never have an overflow if one is
+[64:14] positive the other is negative we'll
+[64:16] never have an
+[64:17] overflow only when both the numbers u
+[64:22] and v have the same sign would we
+[64:26] actually have an overflow and the
+[64:28] condition is that the sign of the result
+[64:30] should be different from the sign of
+[64:32] both the
+[64:34] numbers

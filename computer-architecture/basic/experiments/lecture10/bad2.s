@@ -1,0 +1,2 @@
+.arm
+	bxeq pc, lr

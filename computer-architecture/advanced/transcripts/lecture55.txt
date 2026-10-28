@@ -1,0 +1,1803 @@
+[00:00] foreign
+[00:14] this is on architectures for machine
+[00:17] learning
+[00:18] so in this chapter we will first learn a
+[00:22] little bit about modern contemporary
+[00:24] machine learning
+[00:26] and then we will discuss
+[00:28] modern architectures for machine
+[00:30] learning so basically Ai and ml driven
+[00:32] accelerators are very popular as of
+[00:35] today
+[00:36] so there is a need to understand the way
+[00:38] that they are architected
+[00:43] so a little bit about the background
+[00:45] that is required so we need a background
+[00:47] in in order pipelines so that
+[00:50] most of you have till this point so this
+[00:54] is the last chapter of the
+[00:55] of version one of the book
+[00:59] C plus plus programming and basic
+[01:01] parallel programming so this is
+[01:03] something that is required to understand
+[01:05] how parallel programs are written
+[01:07] because if you think about it something
+[01:10] as computationally heavy as ml
+[01:13] is actually written with the help of
+[01:16] parallel programs
+[01:18] so the background chapters
+[01:21] for this chapter are chapter 6 and
+[01:25] chapter 9.
+[01:27] and chapter 6 and 9 so chapter 6
+[01:30] basically talks about GPU programming
+[01:33] and chapter 9 talks about
+[01:35] multiprocessors so this is what is
+[01:38] needed to go further
+[01:42] so we will talk about five different sub
+[01:46] chapters five different themes in this
+[01:48] lecture
+[01:49] so
+[01:51] we'll start with basics of deep learning
+[01:54] then we'll talk of the design of a
+[01:57] convolutional network this is important
+[01:59] then we will talk about how we take a
+[02:02] basic convolutional Network and then we
+[02:04] divide it
+[02:05] into
+[02:08] smaller you know smaller computational
+[02:11] units finally we'll talk about
+[02:13] optimizations and
+[02:16] the way that we architect memory systems
+[02:18] for machine learning accelerators
+[02:21] so if you think about it this is a
+[02:23] bespoke new processor so both new
+[02:25] processing as well as new memory both
+[02:27] are required
+[02:29] so let's first give a basic machine
+[02:32] learning introduction to dummies
+[02:35] so the key idea is if you think of a
+[02:37] function any regular function
+[02:39] it will take a set of inputs and provide
+[02:43] an output or we can think it will take a
+[02:45] vector a column Vector of inputs so
+[02:48] which is basically you know
+[02:50] an input with many tuples like for
+[02:52] example the input could be today's
+[02:55] temperature humidity pressure and so on
+[02:58] and it could just predict whether
+[03:00] tomorrow
+[03:02] uh we will have rainfall or not right
+[03:04] just a yes or no predictor so this for
+[03:07] us is a function
+[03:10] so in many cases like let's say you know
+[03:12] if I have a function of this type x
+[03:15] squared plus y Cube then I know the form
+[03:17] of the function so I know what the
+[03:20] function looks like but in many case I
+[03:23] don't really know the form of this
+[03:24] function
+[03:25] so what I know is I know a bunch of
+[03:27] inputs so as I said they could be a
+[03:29] single variable input or they could be
+[03:32] multi-variable inputs
+[03:34] so I know
+[03:36] inputs and their corresponding outputs
+[03:38] but I don't know the form of this
+[03:42] so when would such a case be well you
+[03:46] know whenever we are talking of any
+[03:47] intelligent action like the human brain
+[03:49] for example
+[03:50] so we know the inputs that it that are
+[03:54] typically given to it and we know the
+[03:57] output but we don't really know the
+[03:59] exact function that the human brain uses
+[04:02] so what would be some of those Advanced
+[04:04] functionalities well one would be a
+[04:06] phase recognizer
+[04:08] so face recognizer would be basically a
+[04:11] circuit
+[04:12] where uh you know you give it faces it
+[04:16] will tell you who the person is
+[04:17] so our brains can do this very easily
+[04:19] but doing this on a machine is difficult
+[04:24] same holds for speech recognition object
+[04:26] recognition or even something like movie
+[04:28] recommendation
+[04:30] so let's say that you know your friend
+[04:31] you know your friends likes and dislikes
+[04:34] so today if your friend comes to you and
+[04:37] says can you recommend a movie
+[04:39] so you know the movies that are
+[04:41] currently playing in theaters so you can
+[04:43] make a recommendation
+[04:44] but a machine does not know your friend
+[04:46] as well as you do
+[04:48] so to make a similar quality of
+[04:50] recommendation again we need a very
+[04:52] smart and intelligent function
+[04:54] and of course we need past inputs and
+[04:57] past outputs on the basis of that we
+[04:59] would like to somehow figure this
+[05:01] function out such that if a new input is
+[05:03] given to it you can predict the output
+[05:05] with an acceptable level of accuracy
+[05:10] so what are some simple ideas well a
+[05:12] simple idea is that I look at
+[05:15] all the input output patterns that I
+[05:18] have so this is also called you know
+[05:19] golden data or ground truth data so
+[05:22] basically this is kind of guaranteed to
+[05:25] be correct
+[05:27] so in this case I look at the inputs
+[05:29] that I have
+[05:30] I look at the output I look at the input
+[05:34] output correlation right and I try to
+[05:36] make a good guess this is difficult
+[05:39] if I have few variables I could use
+[05:42] curve fitting for example
+[05:44] let's say for several values of x if
+[05:46] this is the value of y
+[05:48] if I am given a new value of x let's say
+[05:50] 1 that I have not seen so let's say
+[05:52] these are the values of X that I have
+[05:54] seen and I do curve fitting if I am
+[05:56] given a new value of x I can predict the
+[05:58] value of y
+[06:00] so this is of course a 2d curve but I
+[06:02] could have a 3D 4D 5D I could have a
+[06:04] multi-dimensional curve and I could use
+[06:07] curve fitting if it is possible
+[06:09] so actually towards the mid 80s and the
+[06:12] late 90s I would say that curve fitting
+[06:14] was by far the most dominant approach
+[06:18] and then of course you know more
+[06:20] sophisticated versions of curved fitting
+[06:22] came up like support Vector machines and
+[06:24] so on
+[06:25] which actually did this
+[06:27] but very soon it was realized that for
+[06:30] very large multi-dimensional data
+[06:33] simple curve fitting is not going to
+[06:35] work
+[06:36] right uh if we know the form of the
+[06:41] like in a vvsm approximate guess whether
+[06:43] the function is linear non-linear
+[06:45] exponential whatever our job will become
+[06:48] much easier right to actually do a curve
+[06:51] fit for example if we know that the
+[06:53] function is of this type
+[06:55] then basically guessing the values of a
+[06:58] b and c is easy
+[06:59] but if I have no clue of the function at
+[07:01] all
+[07:02] then guessing that this is the form is
+[07:04] actually very difficult so that is why
+[07:07] curve fitting towards the late 80s and
+[07:09] early 90s was kind of
+[07:12] a saturated field and subsequently also
+[07:15] it hasn't grown
+[07:18] so the question that arose I would say
+[07:20] towards the early 90s is that can I have
+[07:23] an uni a universal approximator
+[07:27] so what is a universal approximator
+[07:31] the key idea is
+[07:34] that uh you know what was the key point
+[07:37] in the previous slide that I don't know
+[07:39] the form of the function
+[07:41] so the key idea is that okay it's fine
+[07:43] if you don't know the form of the
+[07:45] function it could be anything
+[07:47] but let's say I am giving you several
+[07:52] on the basis of that
+[07:54] could I have like one function which can
+[07:57] be like some master function which can
+[07:59] be approximated to this function so this
+[08:01] is a master function right let us call
+[08:03] it f master
+[08:05] so then what I can do is I can kind of
+[08:07] you know massage this function to
+[08:10] actually resemble the true hidden
+[08:13] or in other words what this means is
+[08:15] that this function is so nicely
+[08:16] parametrizable that is behavior is
+[08:19] completely determined by a set of
+[08:21] numbers
+[08:22] if I change the set of numbers it will
+[08:24] become a quadratic function if I have a
+[08:27] new set of numbers it can become an
+[08:28] exponential function in fact it can
+[08:30] become any kind of function so I am
+[08:32] calling this master or God function
+[08:35] a universal approximator where it is
+[08:37] behavior where its behavior is
+[08:39] controlled by a set of numbers and we'll
+[08:42] call it the coefficients of the function
+[08:44] of the parameters of the function and
+[08:47] basically the function is infinitely
+[08:49] flexible in the sense that the master
+[08:52] can actually Bend itself to resemble any
+[08:56] real world function right so that would
+[08:58] be for us
+[09:00] a universal approximated
+[09:03] and for example if there are multiple
+[09:05] variables it could be linear for a few
+[09:07] non-linear for a few more and the
+[09:11] universal approximator would capture all
+[09:13] patterns which other approaches will not
+[09:15] capture right so we are in search of a
+[09:18] master function that can in a sense
+[09:20] approximate any other function
+[09:23] and furthermore the behavior of the
+[09:25] master function is
+[09:27] controlled by a set of parameters in 100
+[09:29] 200 300 500 whatever but a finite set of
+[09:32] parameters
+[09:33] and all I need to do is I need to learn
+[09:36] this set of parameters which is
+[09:38] equivalent to
+[09:40] tailoring the master function to
+[09:42] resemble the certain hidden function
+[09:45] and then the hidden function
+[09:48] once it is given an input should be able
+[09:50] to predict the output if the hidden
+[09:53] function has been learned correctly so
+[09:54] what does learning mean learning
+[09:57] basically means that I'm giving a set of
+[09:59] you know
+[10:00] inputs and outputs which are known to be
+[10:03] correct based on that I am trying to
+[10:06] guess what is this function because I
+[10:08] don't know what it is right
+[10:10] and if my guess is correct and I've gone
+[10:13] by this master function root if my guess
+[10:16] is correct I should get a reasonably
+[10:18] accurate guess for
+[10:20] a reasonably accurate prediction for
+[10:22] hitherto unknown inputs
+[10:28] let us look at the properties of a
+[10:30] universal approximator so as discussed
+[10:33] we have a set of multi-variable inputs
+[10:36] and a set of their corresponding outputs
+[10:39] so the idea is to learn this function
+[10:41] but given the fact that this function
+[10:44] is a universal approximated Its Behavior
+[10:47] is completely determined by the
+[10:49] parameters that we give it which means
+[10:52] that every function is associated with
+[10:54] possibly hundreds of parameters that
+[10:56] uniquely determine its Behavior and the
+[10:59] main idea of machine learning is to
+[11:02] learn these parameters because these
+[11:04] parameters completely control
+[11:06] the behavior of the function
+[11:08] and furthermore they should be able to
+[11:10] approximate
+[11:12] on theoretical concerns based on
+[11:15] theoretical concerns any continuous
+[11:18] so which means that they can capture
+[11:20] both linear piecewise linear and
+[11:23] non-linear Behavior
+[11:26] so let's look at the simplest
+[11:30] approximator that we have again it's not
+[11:32] Universal but it's a learning mechanism
+[11:36] and we will gradually proceed towards
+[11:38] the universal approximator by looking at
+[11:40] more and more complex learners
+[11:43] so this is an example of linear
+[11:46] regression so here given an x coordinate
+[11:49] the aim is to predict the y coordinate
+[11:51] so given the fact that our data is
+[11:54] organized like this so it is pretty much
+[11:56] on a linear line
+[11:58] we can approximate the data as one
+[12:01] straight line
+[12:03] so a general form of this equation would
+[12:06] of course be y equal to m x plus C but
+[12:08] that is in a
+[12:10] single variable single variable single
+[12:14] variable input scenario
+[12:16] but if I I can have a multi-variable
+[12:18] input in the sense my input itself could
+[12:20] be a vector
+[12:22] so it could be a column Vector say if
+[12:24] that is the case this is the vector form
+[12:26] of this so here we have a set of weights
+[12:29] and the set of Weights is a vector
+[12:31] so what I do is that I take the
+[12:34] transpose of the column
+[12:36] Vector over here or this Matrix over
+[12:39] here so this is a one cross n Matrix and
+[12:42] X itself
+[12:44] is a column Vector so it's an N cross n
+[12:46] Matrix so when I multiply both the
+[12:50] result that I get is actually a scalar
+[12:52] which is a
+[12:53] a non-vector value it's a single value I
+[12:56] add that with B which is the B is known
+[12:59] as the bias
+[13:00] and then that is my predicted value of y
+[13:02] so what we see is a linear regression is
+[13:05] not limited to a 2d scenario exclusively
+[13:09] it can be used for a multi-dimensional
+[13:12] scenario as well as in this case
+[13:15] so in this case what we see is that it
+[13:18] is basically the
+[13:20] product of
+[13:23] uh you know row Matrix and a column
+[13:26] Matrix actually it's a DOT product if
+[13:27] you think about it because if I take the
+[13:30] weight Vector which is a column vector
+[13:33] and I then I basically compute its
+[13:35] transpose so it becomes a row Vector so
+[13:38] when I multiply that with x
+[13:40] so what I'm doing is I am multiplying
+[13:42] this element with this element this one
+[13:45] with this one this one with this one so
+[13:48] it is pretty much like you know taking
+[13:50] two vectors and Computing the dot
+[13:52] product right
+[13:54] so this is an important thing to kind of
+[13:57] keep in mind at this stage that we are
+[14:00] actually Computing the dot product
+[14:05] so after the dot product operation we
+[14:07] add a bias to the dot product and we get
+[14:09] the final answer which is why
+[14:11] so one important idea that we will take
+[14:14] along with us so of course along with
+[14:16] the basic idea of linear regression
+[14:19] that the output is linearly related to
+[14:21] the inputs
+[14:22] the other important idea that we are
+[14:25] going to take along with us
+[14:27] is basically that we have a DOT product
+[14:29] operation particularly when X itself
+[14:32] comprises of multiple
+[14:34] variables so we compute the dot product
+[14:37] and add it to the bias
+[14:40] so now let us extend linear regression
+[14:44] and let us look at something which is
+[14:47] slightly more complicated
+[14:49] so let us look at a classification task
+[14:51] where we have the blue dots and the red
+[14:54] dots or the blue points and the red
+[14:56] points
+[14:57] so if you think about it it is hard to
+[14:59] kind of draw a linear line or as linear
+[15:02] surface that kind of separates them
+[15:04] basically if you as you can see they're
+[15:06] all mixed up right so it is very hard to
+[15:09] actually draw a line that separates them
+[15:10] in fact in this case it's impossible as
+[15:12] well
+[15:13] so what we do is that this is basically
+[15:16] a 2d scenario
+[15:18] so we in a sense increase the
+[15:21] dimensionality of each point so at the
+[15:23] moment each point is two coordinates X
+[15:25] and Y
+[15:27] so we increase the dimensionality of
+[15:29] each coordinate such that let's say we
+[15:32] from 2 we take it to 3
+[15:35] which essentially means that every 2D
+[15:37] point we convert it into a 3D Point by
+[15:40] basically calculating its Z coordinate
+[15:43] which is not provided to us but we'll
+[15:45] use some formulas
+[15:46] to compute a z coordinate and kind of
+[15:49] project all of these coordinates to a
+[15:51] three-dimensional space as is in this
+[15:53] case
+[15:55] so it could be that in the three
+[15:56] dimensional space
+[15:58] right which is a projected space we
+[16:01] could
+[16:02] possibly find a surface as you are
+[16:05] seeing such that you know all the red
+[16:07] points are below the surface and all the
+[16:09] blue points are above the surface right
+[16:11] so if this is the case then you know we
+[16:14] have a very easy way of devising a
+[16:17] learner which is basically that we take
+[16:19] any point you know even if a new point
+[16:21] is given to us as per our formula we
+[16:24] transform its coordinates from a 2d
+[16:26] space to a 3D space
+[16:29] then in the 3D space we draw a
+[16:31] separating plane and that will
+[16:35] separate the blue and red points and for
+[16:39] an unknown Point all that we need to see
+[16:40] after the coordinate transformation is
+[16:43] whether it is below the separating plane
+[16:45] or above the separating plane if it is
+[16:48] below we can say it is red if it's above
+[16:50] it is blue and we have a high chance of
+[16:51] being correct as you can see from this
+[16:54] image over here
+[16:56] so basically the idea is that this
+[17:00] mechanism is known as the kernel trick
+[17:02] in support Vector machines where the
+[17:05] idea is that I deliberately make the
+[17:09] problem more complex in the sense I
+[17:11] increase the dimensionality of each
+[17:13] point or the number of dimensions of
+[17:15] each point
+[17:16] such that I have a multi-dimensional
+[17:18] space which can easily be separated out
+[17:20] into one kind of points versus another
+[17:23] kind of points
+[17:24] right in this case in a 2d plane I was
+[17:28] not able to separate Blue from red but
+[17:30] after increasing the dimensionality now
+[17:33] I can
+[17:34] so the other idea is that we don't
+[17:37] explicitly compute the equation of this
+[17:39] plane but instead what we do is that we
+[17:42] keep track of the points on both sides
+[17:45] on the blue side as well as on the red
+[17:47] side that are the closest to this plane
+[17:50] right
+[17:51] so basically on both sides we just keep
+[17:53] track of those points that are the
+[17:55] closest to this plane and these points
+[17:58] are known as the support vectors so in a
+[18:00] certain sense even without Computing the
+[18:03] equation of a plane just by keeping
+[18:05] track of the points on either side on
+[18:08] both sides that are the closest to the
+[18:10] plane we can have a reasonably good
+[18:12] approximation of the plane which for our
+[18:15] purposes is good enough
+[18:17] and using such support vectors which is
+[18:19] a basically a proxy characterization of
+[18:21] this plane
+[18:22] I can separate out the two points and
+[18:25] the key Advantage is that if a new point
+[18:27] is given to me I can figure out whether
+[18:29] it would be above this plane or below
+[18:31] this plane and I would make a prediction
+[18:34] accordingly so again this is you know by
+[18:38] far a linear trick only but you know the
+[18:41] dimension increase part that could be
+[18:44] non-linear so there are of course a
+[18:46] bunch of kernels that try to increase
+[18:48] the dimensions using many many different
+[18:51] linear and non-linear functions so we
+[18:53] will
+[18:55] not discuss that part but once the
+[18:58] dimensions have been increased
+[19:00] in the higher dimensional space again we
+[19:02] are trying to do a linear
+[19:04] uh you know we are trying to do a linear
+[19:07] demarcation of both the regions which in
+[19:10] a certain sense is like linear
+[19:12] regression if you think about it quite
+[19:15] similar right of course this is slightly
+[19:18] more sophisticated in terms of what it
+[19:20] does
+[19:23] now if I look at non-linear models which
+[19:25] are very different from what we
+[19:27] discussed so incidentally you know the
+[19:30] svm support Vector machines as we have
+[19:33] seen over here
+[19:35] where originally proposed for non-linear
+[19:38] models basically because you know these
+[19:41] points could be arising out of a
+[19:43] non-linear process
+[19:44] but again the idea was to change them to
+[19:47] a different coordinate space to
+[19:49] transform them
+[19:50] such that they are kind of linear in the
+[19:52] new coordinate space so you know this is
+[19:54] like a semi is like somewhere in the
+[19:56] middle you know it's like cheating in
+[19:58] the sense that
+[19:59] we have our points over here
+[20:03] and then of course we raise the number
+[20:05] of dimensions and in a new space we want
+[20:07] it to be linear so it's non-linear over
+[20:09] here and linear over here
+[20:12] but something that is truly non-linear
+[20:14] would look something like this
+[20:16] for again we apply a linear
+[20:18] transformation to the data
+[20:20] and you know that is to begin with so
+[20:22] this part is linear and we have already
+[20:25] seen this expression in our linear
+[20:28] regression right we had the same formula
+[20:32] but then we apply a non-linear function
+[20:34] to it and this function G is non-linear
+[20:38] and there are different kinds of
+[20:40] non-linear functions right if you want
+[20:42] to learn something whose behavior is
+[20:43] fundamentally non-linear you would like
+[20:46] to use something of this type
+[20:48] and for G there are several options one
+[20:50] is the sigmoid function which used to be
+[20:52] very very popular in the late 90s and
+[20:55] the sigmoid function used to look like
+[20:57] this with one negative exponential over
+[20:59] here
+[21:01] the tan H function also is popular I
+[21:04] wouldn't say it's used
+[21:06] probably as much as the sigmoid function
+[21:08] but again its reasonably popular
+[21:11] so in this case what we do is that we
+[21:13] have
+[21:14] in a mild non-linearity over here in the
+[21:18] sense we have an exponential and again
+[21:20] kind of a negative exponential one on
+[21:22] top and one on bottom
+[21:26] so the non-linear function that is used
+[21:29] most often these days
+[21:31] is actually known as the relu function
+[21:34] relu stands for rectified linear unit so
+[21:37] we'll see what is linear and what is
+[21:39] Rectify over here
+[21:42] so but first you know kindly understand
+[21:44] that both the sigmoid and tan H
+[21:46] functions are difficult objects to
+[21:48] handle
+[21:50] and the reason that they are difficult
+[21:52] is because they use these exponential
+[21:54] functions
+[21:55] which in a sense is hard to compute in
+[21:58] Hardware right so which is reasonably
+[22:00] hard to compute and Hardware
+[22:02] this is what makes the sigmoid and tan H
+[22:05] functions bad candidates
+[22:07] on the other hand we have this beautiful
+[22:09] function over here which is also
+[22:11] non-linear
+[22:12] which basically says that look if x is
+[22:14] negative
+[22:16] y 0 if x is greater than equal to 0 Y is
+[22:19] equal to X so it's a very simple
+[22:21] function which says that you know that's
+[22:24] the way it goes that if x is negative
+[22:26] well we stay at 0 otherwise we go on a
+[22:29] 45 degree line
+[22:31] so needless to say is linear over here
+[22:33] and like a full wave rectifier or half
+[22:35] wave rectifier which cuts off the
+[22:37] negative part here also we are cutting
+[22:39] off the negative part hence the name
+[22:41] real rectified linear unit and this as
+[22:45] you can see is incredibly easy to
+[22:47] compute
+[22:48] we don't have to compute any
+[22:50] Transcendent transcendental functions
+[22:52] like e raised to power x or U raised to
+[22:54] the power minus X
+[22:56] we basically just need to see whether
+[22:59] the number is positive or negative and
+[23:02] compute the result accordingly
+[23:05] so that's why it is used Simplicity is a
+[23:08] big factor
+[23:09] see if I were to kind of graph all three
+[23:12] functions if I first let me take a look
+[23:14] at sigmoid
+[23:15] so sigmoid uh given the structure of
+[23:18] sigmoid as you can see at negative
+[23:22] Infinity uh
+[23:25] the value of this would basically be
+[23:27] zero and at positive Infinity again the
+[23:30] value will be equal to 1.
+[23:32] so the sigmoid function kind of
+[23:35] transitions from 0 to 1 and quite
+[23:38] gradually you know uh so basically
+[23:40] between let's say minus 3 and plus 3
+[23:42] that is where basically the action
+[23:44] happens and otherwise the function is
+[23:46] kind of fixed
+[23:48] the tan H function on the other hand
+[23:50] goes from -1
+[23:52] till plus 1 so it again you know most of
+[23:54] the action happens between minus 2 and
+[23:56] plus 2. so this is where uh it actually
+[23:59] learns and adapts
+[24:01] relu on the other hand technically has a
+[24:04] much bigger range and again but still
+[24:07] most of the action happens around zero
+[24:09] only
+[24:10] so here basically we as long as X is
+[24:13] negative we remain at zero and then we
+[24:16] increase on a 45 degree trajectory
+[24:20] so now let's work out an example
+[24:26] so here the question is that we are
+[24:29] given two Boolean inputs
+[24:31] the Boolean inputs are Boolean variables
+[24:34] A and B
+[24:35] so we need to implement the exclusive or
+[24:38] function or the zor function which is a
+[24:40] non-linear function as we shall see
+[24:43] so the idea over here is like this that
+[24:46] if let's say a is 0 and B is 0 then
+[24:48] output is 0.
+[24:50] if any one of them is one so let's say a
+[24:53] is 0 and B is 1 then the output is one
+[24:56] similarly if a is one and B is 0 the
+[24:58] output is one however
+[25:00] this is where linearity breaks
+[25:03] that are both
+[25:05] A and B are 1. then the output you know
+[25:09] in this case you would expect expect is
+[25:10] one plus one but the output is actually
+[25:12] zero so this is why this is a non-linear
+[25:18] so if you think about it
+[25:20] uh we would need some kind of
+[25:22] non-linearity in our Network
+[25:24] to find or to compute the result of a
+[25:28] zor function
+[25:30] so the insights are that when a is equal
+[25:33] to B A minus B is the correct output
+[25:36] otherwise
+[25:39] the correct output is absolute value of
+[25:41] a minus B
+[25:43] why is that the case well look if a is
+[25:46] equal to B of course the correct output
+[25:48] is 0 the correct output is 0 so a minus
+[25:51] B is fine
+[25:52] otherwise what we do
+[25:55] is that we subtract B from a so in one
+[25:57] case it is minus 1 in one case it is
+[25:59] plus one
+[26:01] but their absolute values
+[26:03] write their modulus values both are 1.
+[26:06] so essentially we need to compute this
+[26:10] and I can further simplify that and say
+[26:12] how do we compute
+[26:14] the absolute value of x right how do we
+[26:18] modulus of x
+[26:23] let us go back to the functions that we
+[26:25] have defined
+[26:27] let us look at the relu function which
+[26:30] says that
+[26:31] if x is less than 0 then the output is
+[26:34] zero
+[26:35] otherwise if x is greater than equal to
+[26:38] 0 the output is X
+[26:40] so we can simply use this so so the
+[26:43] absolute value of x is value X Plus
+[26:45] value of minus X
+[26:47] let us consider an example
+[26:51] so assume that X is positive right so
+[26:54] the this is a general case for all
+[26:56] positive numbers
+[26:57] so in this case relux
+[27:00] will basically be equal to X because X
+[27:03] is positive and value of minus X will be
+[27:05] 0. so the result is X which is the same
+[27:09] as absolute value of x
+[27:11] now consider the case of x is 0 that is
+[27:14] trivial
+[27:15] consider the case when X is negative in
+[27:18] that case value of x will be 0. but
+[27:20] value of minus X will be actually minus
+[27:23] of minus
+[27:24] minus of a negative number which is a
+[27:27] positive number that will again be the
+[27:29] absolute value of x
+[27:31] so as you can see
+[27:33] relu X
+[27:35] Plus
+[27:36] relu of
+[27:39] minus X right
+[27:41] are both together they cover both the
+[27:45] cases
+[27:46] and in this case uh basically both the
+[27:49] cases essentially tell us that the
+[27:52] result is the absolute value of x
+[27:57] so now let us look at the network
+[28:01] so as you can see the truth table is
+[28:03] over here that if a is equal to 0 B is
+[28:06] equal to 0 then the output is zero
+[28:08] if both are equal to 1 uh the output is
+[28:12] basically a one sorry the output is
+[28:14] basically a zero
+[28:16] so as you can see over here a is 1 B is
+[28:18] 1 the output is a zero
+[28:21] and then as I said if 1 is 0 the other
+[28:23] is one the output is a one
+[28:25] and a minus B these are the values hence
+[28:29] we want to compute
+[28:30] this quantity over here
+[28:33] so this quantity over here as you can
+[28:35] see if a and b are equal then it'll lead
+[28:37] to zero otherwise it will give you the
+[28:40] correct answer
+[28:41] so what we can do
+[28:44] is that we have figured out that this
+[28:47] quantity over here
+[28:49] is value of x plus value of minus X
+[28:54] so what we do is we take a and b
+[28:58] then what we do is we compute uh a minus
+[29:02] B and we compute minus of a minus B
+[29:05] which is B minus a
+[29:07] so then we compute value of a minus B
+[29:10] and value of B minus a so if you look at
+[29:13] this this is a linear layer because we
+[29:15] are
+[29:16] Computing a linear function over A and B
+[29:19] and these two are non-linear units they
+[29:22] are value units
+[29:24] so this is uh our non-linear layer and
+[29:28] finally what do we do is that we perform
+[29:30] this addition over here
+[29:33] and after performing this addition over
+[29:35] here we get the final output
+[29:38] so we have a linear layer a non-linear
+[29:40] layer and a linear layer so we shall see
+[29:42] that this is a standard feature
+[29:44] of all
+[29:47] networks where we have linear non-linear
+[29:50] linear right and the non-linear layer is
+[29:53] quite essential because otherwise we
+[29:55] would not have been able to do it
+[29:58] and this is our simple three layer
+[30:00] Network
+[30:02] which basically computes the result of
+[30:06] is or we basically computes the function
+[30:09] ax or B right a is orbit
+[30:13] so uh there are many things that we can
+[30:16] learn so of course some may argue that
+[30:17] A's or B is too simple so why have such
+[30:20] a thing well my argument basically would
+[30:23] be that if you think about it here what
+[30:26] we are doing
+[30:27] is that we are taking the vector a b
+[30:30] right which is a 1 cross 2 Vector one
+[30:34] row two columns
+[30:35] and we are multiplying that with another
+[30:38] vectors it's actually a matrix
+[30:40] of the form one minus 1.
+[30:43] so this is giving us a minus B and Sim
+[30:46] so we can say that the weights over here
+[30:48] are 1 and minus 1.
+[30:51] similarly we can say the weights over
+[30:53] here are minus 1 and 1.
+[30:56] then what we do is that we take it
+[30:59] through this relu process
+[31:01] and uh then we can compute the zot right
+[31:06] so basically we'll have to relo units
+[31:09] over here
+[31:14] so what is the advantage of this network
+[31:16] well the advantage of the network can be
+[31:18] understood like this
+[31:20] so what we can do is that you will find
+[31:23] it is very easy to actually convert this
+[31:26] to an and gate
+[31:27] and of course we could do more complex
+[31:30] things but even what you would see
+[31:32] that is if I simply take a by B and
+[31:36] multiply it
+[31:37] with half and half
+[31:40] only when both of them are 1 will the
+[31:42] sum be equal to one otherwise you know
+[31:45] the sum will be equal to half or you
+[31:47] know less than that
+[31:49] and then I can multiply this with half
+[31:51] and half and I can multiply this with 0
+[31:53] and 0 and basically what would happen is
+[31:56] that the final output either be in a
+[31:58] zero half or one
+[32:00] so what we can do is that well there are
+[32:03] other ways of solving this and making
+[32:05] the half equal to zero right I mean
+[32:08] setting this over here but we can just
+[32:10] say that we will look at the most
+[32:12] significant bit after the decimal point
+[32:15] and if that is one we will inter
+[32:16] interpret the output to be one otherwise
+[32:19] we'll interpret it to be a zero which
+[32:21] basically means that this becomes equal
+[32:23] to an and gate that only when A and B
+[32:26] are 1
+[32:27] then what will happen is the final
+[32:29] output will be 1 otherwise we will
+[32:31] interpret the final output to be a zero
+[32:34] so what you see is that
+[32:36] in this General Network
+[32:39] just by changing some of these
+[32:41] parameters so these parameters
+[32:43] incidentally are known as weights so
+[32:45] just by changing them we could change
+[32:48] the behavior of the network and from a
+[32:49] Zord Network we could make it an
+[32:52] from his or gate we could make it an and
+[32:54] gate and of course as you can see
+[32:56] implementing an or gate and other things
+[32:58] are not very hard at all
+[33:01] and so this is kind of a generic
+[33:03] structure even though it can be made
+[33:05] more generic by basically also adding a
+[33:08] bias term where what you do is that you
+[33:11] multiply if this a b vector
+[33:15] with another Vector over here
+[33:18] and you add a bias term to it so that
+[33:21] would make the thing more generic and
+[33:24] then we can capture many more functions
+[33:26] but the idea is very clear the idea is
+[33:28] that just with these coefficients and
+[33:30] these coefficients are known as weights
+[33:32] so with the weights over here and the
+[33:34] bias over here we can realize a variety
+[33:36] of functions the network does not have
+[33:37] to be changed
+[33:41] so what are the key insights the key
+[33:43] Insight is that we made kind of a
+[33:46] pseudogenic network
+[33:48] Fair it was necessary to sandwich a
+[33:51] non-linear layer between two linear
+[33:53] layers
+[33:54] and kindly note that in many such
+[33:57] networks you can have consecutive
+[33:59] non-linear layers that is perfectly
+[34:01] possible as we shall see
+[34:03] but you never have two consecutive
+[34:05] linear layers because the thing is that
+[34:07] two consecutive linear layers are
+[34:10] equivalent to a single linear layer all
+[34:12] right so there is no difference between
+[34:14] them the two consecutive linear layers
+[34:16] are equivalent to just a single linear
+[34:18] layer
+[34:19] and hence you never have that
+[34:22] so you basically have a linear layer a
+[34:25] bunch of non-linear layers then a linear
+[34:28] layer a bunch of non-linear layers so on
+[34:30] and so forth
+[34:31] so of course we could have many of these
+[34:33] layers one after the other
+[34:36] as you have seen over here
+[34:38] so in this case we say that this is a
+[34:42] deep neural network
+[34:43] and we have a large number of layers and
+[34:45] we have these parameters which are these
+[34:48] which we have also referred to as
+[34:50] weights and weights and biases in the
+[34:53] past so parameter is basically a
+[34:56] combination of these weights and biases
+[34:59] essentially all the constants all the
+[35:01] numbers that determine the behavior of
+[35:04] the network as we just saw
+[35:06] since the weights plus the biases it's a
+[35:09] bias is a constant bias so something
+[35:11] like you know y equal to MX plus C so in
+[35:13] this case we are saying that m is the
+[35:15] weight and C is the bias
+[35:18] so uh basically these are the parameters
+[35:21] of the neural network which if you
+[35:23] change the behavior will change and
+[35:25] deeper and more complex is the network
+[35:27] you know the more you can the more
+[35:30] expressive is the network
+[35:33] so the idea of a deep feed forward
+[35:35] neural network is like this where the
+[35:38] inputs come of course at the leftmost
+[35:39] point then
+[35:42] basically they are processed
+[35:46] some more processing happens some more
+[35:47] some more some more and some some more
+[35:50] so there's a feed forward Network
+[35:52] because there are no backward
+[35:53] connections and there are no skip
+[35:54] connections but of course in
+[35:55] sophisticated networks you could have
+[35:57] skipped connections like this or you
+[35:59] could have backward connections like
+[36:01] this
+[36:03] so we could have hundreds of such layers
+[36:05] linear and non-linear with a bunch of
+[36:07] skip connections as well as packages
+[36:11] so training and inferencing in a DNN is
+[36:15] like this so what is training so let's
+[36:16] understand the idea of training so DNN
+[36:19] is a deep neural network
+[36:20] training basically means that
+[36:24] you initially you design the network so
+[36:26] you basically say that look I will have
+[36:29] these many layers this is the size of
+[36:31] each layer these many parameters will be
+[36:34] there in each layer so on and so forth
+[36:35] that's the architecture but the idea is
+[36:37] you don't know what the value of the
+[36:39] parameters is so what you do is that you
+[36:42] give an input so assume that you have a
+[36:44] set of known input output pairs
+[36:46] so a given input you measure the output
+[36:48] that is coming and compare that with the
+[36:51] ideal output
+[36:52] and based on the distance between them
+[36:54] you train the
+[36:56] parameters inside the network
+[36:58] once you do it for possibly hundreds or
+[37:00] thousands of millions of input output
+[37:03] pairs where again you know this is
+[37:05] golden data it's also called Ground
+[37:07] truth data where the output corresponds
+[37:10] to the input right so it's also called
+[37:12] Ground truth data as I'm just saying so
+[37:15] in that case your parameters will
+[37:18] adapt such that the error also called
+[37:21] the loss function is minimize
+[37:24] so of course such large networks can be
+[37:27] used
+[37:28] for all kinds of things they can be used
+[37:30] for face detection speech recognition
+[37:32] movie recommendation finding credit card
+[37:35] frauds so on and so forth
+[37:37] so to train such a neural network we
+[37:39] would need the golden data and that is
+[37:42] why there are a lot of people who are
+[37:44] called mechanical Turks the idea of a
+[37:47] Mechanical Turk is basically to
+[37:49] generate such golden data right it could
+[37:52] be human being or it could be an
+[37:54] automated agent and then that is
+[37:56] provided to a neural network and that
+[37:59] uses the classic back propagation
+[38:00] algorithm
+[38:02] to basically adjust all the weight spice
+[38:04] adjust all the parameters
+[38:06] such that the output of the neural
+[38:08] network is as close to the you know the
+[38:11] golden output as possible
+[38:13] and then what happens is that at runtime
+[38:16] you don't know the output of course but
+[38:17] you know the input so you give it the
+[38:19] input it will provide the predicted
+[38:22] output
+[38:23] so basically the idea is that the better
+[38:27] a neural network is trained the more
+[38:29] accurate is the predicted output
+[38:34] so why are neural networks hot now you
+[38:36] know you have to think about it so AI
+[38:38] is a classic case where you know it has
+[38:42] seen a lot of highs and lows and there
+[38:46] have been what are called
+[38:47] several AI Winters which basically means
+[38:50] when the field didn't make much problems
+[38:53] so the basic mathematics as such was
+[38:55] developed at least two decades ago in
+[38:57] the sense that even when I was doing my
+[38:59] undergraduate studies
+[39:01] which was in the late 90s early 2000s
+[39:04] the maths of neural networks was
+[39:06] reasonably well developed
+[39:08] but the area caught traction after 2016.
+[39:14] so the idea was that
+[39:16] you know the maths is there but we
+[39:18] didn't have the hardware
+[39:20] right so you need several things the
+[39:21] first is you need the hardware
+[39:24] second is you need the data right so
+[39:27] basically you need massive amounts of
+[39:28] data and you also need the market in the
+[39:30] sense that who is going to produce so
+[39:32] much of data and who's going to use your
+[39:34] Insight
+[39:35] so pretty much all three did not exist
+[39:37] but towards you know the last
+[39:40] uh half of the 2010-20 decade there were
+[39:45] a lot of gpus fast fpga boards high
+[39:47] performance Computing facilities
+[39:50] Fair AI operations
+[39:53] which are these machine learning
+[39:55] training inference operations could be
+[39:57] done quickly
+[39:58] furthermore there were improvements in
+[40:00] the memory technology and off-chip
+[40:03] storage technology
+[40:04] and as I just said large data sets
+[40:07] didn't exist but then they gradually
+[40:09] came where did they come from so
+[40:12] consider the case of Twitter
+[40:14] you have lots and lots of tweets for
+[40:16] Google there are a lot of search results
+[40:18] or Facebook you have a lot of user
+[40:20] actions so basically you can learn
+[40:22] you can learn that look you know
+[40:25] if I'm interested in beauty products
+[40:27] you'd suggest some products to me if I'm
+[40:30] interested in let's say travel you
+[40:33] suggest travel products to me
+[40:34] so this learning was done and that is
+[40:37] how many of the large social media
+[40:39] companies kind of came into prominence
+[40:42] and that was mainly because they were
+[40:44] relying on such automated models and of
+[40:47] course there is a market need now hence
+[40:49] neural networks at least as of today and
+[40:52] today I'm recording this video in 2022.
+[40:55] neural networks are quite popular
+[41:01] so let's now come to CNN so CNN's at
+[41:04] least by far again you know as of 2022
+[41:06] recording this video
+[41:09] convolutional neural networks so that is
+[41:11] the C in the CNN which is convolutional
+[41:14] these are the most popular
+[41:19] so let us Define a few basic
+[41:21] terminologies so how exactly it works
+[41:23] and how to design the hardware is
+[41:25] something we will predominantly look at
+[41:28] in the next lecture
+[41:30] but let's at least look at the basic
+[41:32] terminology over here
+[41:34] so what happens is that let us Define
+[41:37] the basic functional unit or an a few so
+[41:40] I'll describe the exact inner workings
+[41:43] of an fu
+[41:44] in subsequent slides
+[41:47] so let us Define an input feature map or
+[41:50] an if map the if map is nothing but
+[41:52] input feature map
+[41:54] it is typically a 2d Matrix but it could
+[41:57] be 1D in the case of let the speech or
+[42:00] it could be 3D as well
+[42:02] so that is the input to a functional
+[42:04] unit and basically a layer comprises
+[42:08] multiple functional units right so a
+[42:10] typical linear or non-linear layer would
+[42:13] comprise multiple fuse so in each a few
+[42:17] you would have multiple if Maps as input
+[42:20] and one of map which is an output
+[42:23] feature map as the output so think of it
+[42:26] in the case of a typical 2D case in the
+[42:29] case of let's say images
+[42:31] you would have multiple images or 2D
+[42:34] Maps 2D matrices as inputs and one 2D
+[42:37] Matrix as the output
+[42:40] the output feature mapper web map would
+[42:42] be the output of a functional unit
+[42:45] furthermore a layer has multiple
+[42:47] functional units so they said a single
+[42:50] linear layer or non-linear layer
+[42:52] whatever it may be will have multiple
+[42:55] functional units
+[42:57] each functional unit will take several
+[42:59] if Maps as input as you are able to see
+[43:03] and generate an output of map which will
+[43:05] again be something similar in the sense
+[43:08] if you are having in a 1D
+[43:10] vectors the output will be a 1D Vector
+[43:13] if there are two D matrices the output
+[43:14] will be a 2d Matrix
+[43:18] because this primarily came out of the
+[43:21] Imaging subfield
+[43:23] each entry of tie F map or of map is
+[43:27] called a pixel
+[43:30] furthermore what kind of layers are we
+[43:34] going to have
+[43:35] well we can have several kinds of layers
+[43:39] write a combination of linear and
+[43:43] so the non-linear layers
+[43:47] are like this so we have already seen
+[43:49] one though we have seen the relu layer
+[43:51] so that's the reason I have it at the
+[43:53] bottom
+[43:54] but the other non-linear layer that I
+[43:57] would like to talk about is the pulling
+[44:01] so in this case what you do is that you
+[44:04] try to adjust
+[44:06] for minor translational
+[44:08] deficiencies in the image in the sense
+[44:11] if this is a face
+[44:12] and let's say the face is slightly
+[44:15] translated a few pixels or if let's say
+[44:18] uh
+[44:20] the face is slightly magnified or
+[44:23] slightly compressed so you try to
+[44:25] compensate for that so this is where a
+[44:27] pooling layer is used
+[44:28] so what we do is we divide the if map we
+[44:31] kind of course in it into groups of K
+[44:33] cross K pixels
+[44:35] right say if let's say this is a matrix
+[44:37] over here and then I divide it like this
+[44:40] then I take K cross K pixels
+[44:43] and for each group I compute the maximum
+[44:46] so that is Max pooling
+[44:49] or what I can do is I can compute the
+[44:51] average so that would be average pooling
+[44:53] so so those are the two most common
+[44:55] maximum and average
+[44:57] so what you will see is that even if
+[44:59] there are small uh you know small shifts
+[45:02] in the image
+[45:04] the maximum as well as the average will
+[45:06] roughly be the same so coarsening an
+[45:09] image out
+[45:11] in a certain sense does help for a
+[45:13] little bit of error tolerance
+[45:15] then what we do is we set the
+[45:17] corresponding pixel in the of map with
+[45:20] the maximum value in the case of Max
+[45:22] pooling or we would use mean you know
+[45:25] average pulley
+[45:27] so the idea over here is that if we take
+[45:29] kind of K cross K pixels and say that
+[45:31] they are one
+[45:33] so let's say we will then have a smaller
+[45:36] Matrix which is K Square times smaller
+[45:38] it's a smaller Matrix
+[45:40] and of course you know this shape over
+[45:42] here would still be you know visible in
+[45:44] somewhat of an approximate form
+[45:47] right uh but the idea is that the key
+[45:50] features will still remain and also
+[45:54] uh if there are small translational
+[45:56] shifts
+[45:58] in the image or the little bit of
+[46:00] expansion contraction we can kind of
+[46:02] compensate for that so that would be the
+[46:04] advantage of pooling and advantage of
+[46:06] radio you have already seen which is to
+[46:09] provide a degree of non-linearity
+[46:13] so now that we have seen two non-linear
+[46:15] layers namely the relu layer and the
+[46:18] pooling layer
+[46:19] so we are now
+[46:21] kind of done with that part so now we
+[46:24] have to discuss the linear layers so the
+[46:26] linear layers you have seen if I go back
+[46:28] to this point over here you will be able
+[46:32] to see the linear layers so in this case
+[46:35] what we do is that we have a product of
+[46:39] a b
+[46:42] and 1 and minus 1
+[46:46] right so this is a linear multiplication
+[46:49] so to speak right so it's a
+[46:51] multiplication of a column vector and a
+[46:54] column Vector so of course it is the
+[46:55] transpose of one with the other so we
+[46:58] can also say it's a product of 1 minus
+[47:00] 1. sorry 1 minus 1 with
+[47:07] so in this case we can say that if this
+[47:09] is the weight vector and if this is the
+[47:11] input
+[47:12] then basically we are Computing weight
+[47:15] transpose
+[47:16] so y transpose because weight is a
+[47:18] column vector and we are transposing it
+[47:20] to a row Vector so this is a transpose
+[47:22] of the weight vector and we are
+[47:24] multiplying that with X right
+[47:28] so that is what we are doing furthermore
+[47:29] we could add a bias term
+[47:31] so this is exactly what we do in the
+[47:34] fully connected Network
+[47:36] so what we do is that we assume that
+[47:38] there is a fully connected layer or an
+[47:40] FC layer which as you can see computes a
+[47:44] linear function
+[47:45] so in comes an input X
+[47:48] so the input you know could be anything
+[47:50] it could be a 1D Matrix 2D Matrix 3D
+[47:53] Matrix you know it could be anything
+[47:55] but in general what we do is that we
+[47:57] linearize it which basically means that
+[47:59] even if it's a 3D 4D structure we just
+[48:02] linearize it and we convert it to a
+[48:05] column vector
+[48:06] so the x that comes here regardless of
+[48:08] its format is converted to a column
+[48:11] vector
+[48:12] then what we do is we do this element by
+[48:14] element multiplication and addition like
+[48:16] a DOT product so we have a weight vector
+[48:19] so if this has let's say n elements we
+[48:22] have a weight Vector whose transpose
+[48:23] would look like this
+[48:25] this would again have n elements and
+[48:28] this would be multiplied with the column
+[48:30] Vector X
+[48:31] where X again in each of these entries
+[48:34] would have n elements so we multiply
+[48:36] them
+[48:38] pair y so this is nothing but Computing
+[48:40] a DOT product so what is a DOT product
+[48:42] it's basically pairwise multiplication
+[48:44] and addition this is exactly what we are
+[48:48] doing over here this is weight transpose
+[48:50] this is the a column Vector becomes a
+[48:53] row Vector that's being multiplied with
+[48:55] X pairwise multiplication and addition
+[48:58] and finally we are adding a bias term
+[49:02] so this could be done for the pixels of
+[49:05] one if map or could be done for multiple
+[49:07] if maps with their own separate weight
+[49:10] vectors and then we could add the
+[49:12] results so this again is a possibility
+[49:16] but whatever be the case the key point
+[49:18] is that look uh
+[49:21] for
+[49:23] a large amount of data which is what you
+[49:25] would expect in a CNN
+[49:27] if let's say x is very large if let's
+[49:30] say x is one megabyte
+[49:32] right so nowadays it's also in hundreds
+[49:34] of gigabytes but let's say it's one
+[49:36] megabyte
+[49:37] then W also has to be roughly the same
+[49:39] size
+[49:41] right and if the data representation is
+[49:43] the same it'll again be one megabyte so
+[49:45] we are essentially doubling the storage
+[49:47] space right so so that's the point that
+[49:49] in terms of computational requirements
+[49:52] which means we are doubling the storage
+[49:54] space which means we need more memory we
+[49:56] need more fetching more prefetching and
+[49:59] we are essentially dealing with a much
+[50:01] larger quantity see as it is X which is
+[50:05] the input to the FC layer was large
+[50:07] enough so we were not happy with that
+[50:10] but now the point is that our array of
+[50:12] Weights is going to be as large as X
+[50:15] such that we can compute an element by
+[50:17] element
+[50:18] in a pairwise product and add them
+[50:21] so the storage requirements are straight
+[50:23] cut doubling
+[50:25] and for us this is a substantial
+[50:27] overhead which is not something that we
+[50:29] want
+[50:30] so what will happen is that if you have
+[50:32] millions of Weights then the number of
+[50:34] Weights in W will be equal to the number
+[50:36] of inputs X over here
+[50:39] switch is not something that we like
+[50:42] but again that said and done to compute
+[50:45] a pure linear transformation of all the
+[50:48] inputs we will have to do something of
+[50:50] this type
+[50:52] now the key point is that in a regular
+[50:54] CNN we have many many layers but we
+[50:56] can't afford many such FC layers
+[50:59] primarily because the storage
+[51:01] requirements the memory requirements and
+[51:04] the prefetching requirements to ensure
+[51:06] good performance will be huge right
+[51:08] so that is why we would typically have
+[51:10] one FC layer because as you can see the
+[51:13] FC layer is exactly what we had
+[51:16] in the zorgate example so we had exactly
+[51:19] the same layer a layer of the same type
+[51:22] and we were deriving a lot of Advantage
+[51:25] from it so here also we'll do a DOT
+[51:27] product
+[51:28] but we can't afford many such layers
+[51:30] because of the storage issue that I just
+[51:32] talked about
+[51:33] hence the FC layer is typically the last
+[51:36] layer in a CNN
+[51:38] and it is typically used to compute the
+[51:41] final output where you take in multiple
+[51:43] if Maps you compute this expression over
+[51:46] here add the bias terms and everything
+[51:48] and then uh you know the idea is that
+[51:52] for each one of them you have a linear
+[51:54] transformation of this kind
+[51:57] and then you add the results or you know
+[51:59] you could moist the results in some
+[52:02] other way that doesn't matter and
+[52:04] finally you come up with a single
+[52:05] integer or a single floating point value
+[52:08] which is the value that your neural
+[52:11] network is predicting
+[52:13] so the FC layer as you can see is a pure
+[52:15] linear Transformations on the lines of
+[52:18] what we have seen
+[52:19] so we let me write it
+[52:32] but as I said the overheads are quite
+[52:34] High
+[52:36] and again the basic operation is this
+[52:39] operation which is a DOT product plus a
+[52:41] bias adding a biased
+[52:45] hence we have the convolutional layer
+[52:47] which is the C in the CNN
+[52:50] and this is by far one of the biggest
+[52:52] inventions in this latest
+[52:54] uh you know wave of AIML
+[52:57] where people have said that look we
+[52:59] can't have many FC layers they're too
+[53:01] heavy so we need a computationally
+[53:03] efficient approximation
+[53:05] so what you do is that basically in this
+[53:08] equation over here the bias term is a
+[53:11] small scalar value you don't care about
+[53:13] it anyway the input is something you
+[53:15] can't change
+[53:17] the weights need not be as large as the
+[53:19] input so let us replace these
+[53:21] complicated weights with a simple filter
+[53:24] or kernel function which is nothing but
+[53:26] a small Matrix
+[53:28] typically 3 cross 3 5 cross 5 7 cross 7
+[53:31] you know something of that nature odd
+[53:33] number by odd number so I'll explain the
+[53:36] reason why so it you know in image
+[53:39] processing that kind of comes out but we
+[53:41] will discuss it slightly later but the
+[53:43] idea is that instead of this big weight
+[53:47] vector or Matrix whatever it may be but
+[53:50] for this formulation it's a vector
+[53:53] what you do is that you replace it with
+[53:55] this Ultra small filter or kernel Matrix
+[53:58] which let's say just five plus five
+[54:00] elements
+[54:02] each kernel is used to detect a specific
+[54:05] feature for example if you are trying to
+[54:08] detect an edge in an image
+[54:10] what you can do is that if you slide the
+[54:12] kernel like this in this direction we'll
+[54:15] again discuss what sliding means
+[54:17] you will see that detecting an edge is
+[54:20] very easy and so what is it that we do
+[54:23] exactly
+[54:27] so what we do is that we compute a
+[54:29] matrix dot product so Matrix dot product
+[54:32] is similar to a vector.product
+[54:34] so assume that this is the large Matrix
+[54:38] X in this case it's a 2d Matrix
+[54:41] and we place the kernel which is a
+[54:43] smaller Matrix at a certain point
+[54:46] right so let's say this point is
+[54:51] uh let's call it X1 y1
+[54:55] little bit of confusion because we have
+[54:57] X but we it is all that later uh but the
+[55:01] point is that we take a point in the
+[55:03] input Matrix so let's call it the if map
+[55:05] right instead of X let's call it the
+[55:08] input feature map and in that at point x
+[55:11] 1 y 1 I place the small kernel let's
+[55:13] assume it is 5 plus 5 elements
+[55:16] so what I do is that basically I compute
+[55:20] a pairwise product between the
+[55:23] you know one element in the
+[55:28] kernel so let's say this element in the
+[55:31] kernel an element that is just below it
+[55:33] in the original Matrix in the if map
+[55:35] Matrix
+[55:36] input feature map Matrix and similarly I
+[55:40] pairwise dot products for each point on
+[55:43] the Kernel
+[55:45] and I'll have 25 such dot products I add
+[55:47] them up and that is the value for the X1
+[55:50] y1 pixel
+[55:52] so don't worry if you don't fully
+[55:53] understand it we'll revisit this thing
+[55:55] several times but the point is that for
+[55:58] those who can understand it let's say
+[56:00] that there is an image
+[56:02] where you know your blue over here and
+[56:04] your black on this side
+[56:07] if I have my kernel over here I'll
+[56:09] compute a certain dot product
+[56:16] and clearly as is making the transition
+[56:18] the dot product will change based on
+[56:22] that I can infer the presence of an edge
+[56:26] so the point is that whenever you are
+[56:28] trying to classify the image of an
+[56:30] animal
+[56:31] you would first try to find out smaller
+[56:33] features like corners and rims and edges
+[56:36] and so on first
+[56:37] and then gradually combine the smaller
+[56:40] features into slightly bigger features
+[56:42] like horns ears teeth Etc
+[56:44] and keep combining them more and more
+[56:47] and more into larger features in later
+[56:49] layers until at the end you could have
+[56:52] one large fully connected Network and
+[56:54] make a decision
+[56:56] for example you can say that look this
+[56:59] is a kangaroo that is a cow and that's a
+[57:02] goat and so on
+[57:04] because essentially you have a
+[57:08] multiplicity of layers each layer is
+[57:11] learning a simple concept you have many
+[57:13] many such layers each of them is
+[57:15] learning a simple concept
+[57:17] different layers are combining the
+[57:19] concepts to learn a bigger concept
+[57:22] so on and so forth ultimately you will
+[57:24] be able to figure out what kind of
+[57:26] animal is this
+[57:29] and what is really helping you what is
+[57:32] really helping you is this convolution
+[57:33] operation
+[57:35] where if we just go back over here let
+[57:37] me just clear off the Clutter
+[57:39] that's important
+[57:41] our key issue with the fully connected
+[57:44] layer was that X was too large
+[57:47] and unfortunately the weight Matrix had
+[57:50] to have or the weight Vector had to have
+[57:52] the same size
+[57:54] we didn't want that so we went for an
+[57:56] ultra small kernel and we found out that
+[57:59] an ultra small kernel or filter both
+[58:01] mean the same in this case
+[58:03] is reasonably good in the sense you can
+[58:06] find edges and so on and then
+[58:08] furthermore if you have many many such
+[58:09] layers you can learn complex Concepts
+[58:13] towards the end for example this looks
+[58:15] like a kangaroo that looks like a
+[58:17] giraffe
+[58:20] so what is the basic idea of the
+[58:22] convolution operation again
+[58:24] so let's consider an input feature map
+[58:27] with h h stands for height rows and W W
+[58:31] stands for width columns
+[58:33] consider as Point small H small W so
+[58:36] this is the coordinate of this point
+[58:39] so I overlay the kernel over here but
+[58:42] the kernel has R rows and S columns
+[58:44] which is overlay the kernel over here
+[58:47] then what I do is I compute an output
+[58:49] feature map or of map where what I am
+[58:52] doing is that in a sense I'm convolving
+[58:56] the filter with the if map so now the
+[58:58] question is why the name convolution
+[59:00] well the reason the name convolution
+[59:02] comes is that this is similar to the
+[59:06] classical convolution operation but then
+[59:08] you would argue that that looks very
+[59:12] different in the sense you know that is
+[59:14] more like the integral of f x
+[59:18] g y minus X right how is this not
+[59:21] looking the same well they are actually
+[59:23] the same and you need to look at the
+[59:25] book to understand you know why are they
+[59:28] actually the same so that part I will
+[59:29] not cover here but again you know the
+[59:32] key idea here
+[59:34] is basically that
+[59:37] we are overlaying the kernel over the
+[59:39] point h w
+[59:41] and in the of map the value of
+[59:45] the hwf pixel
+[59:48] is essentially the convolution of
+[59:51] so in this case the 3 cross 3 kernel is
+[59:53] the convolution of this three cross
+[59:55] three range
+[59:56] with the
+[59:59] filter
+[60:01] so for this what do we do well we
+[60:04] compute nine pairwise products in the
+[60:06] sense this value of the filter and this
+[60:08] value of the if map pixel underneath it
+[60:11] so on and so forth we add them and this
+[60:13] becomes the final result
+[60:15] so what we are doing is that for each
+[60:17] position h w we are Computing a matrix
+[60:20] dot product right a pairwise product and
+[60:23] sum
+[60:24] and we are setting the hw8 pixel in the
+[60:27] of map
+[60:28] right uh so this is being done kind of
+[60:32] as a proxy for the fully connected
+[60:36] and the reason is that number one the
+[60:41] has lots and lots of weights
+[60:45] storage is an issue computation is an
+[60:47] issue but also you know just figure out
+[60:49] out the right values of the weights
+[60:51] using a training process that also is
+[60:54] very difficult so it increases our
+[60:56] training time and overhead substantially
+[61:01] so now that we have seen the convolution
+[61:03] block
+[61:04] right and the fact that we have seen how
+[61:07] it works as a proxy for the fully
+[61:10] connected Network we can just go back to
+[61:12] this diagram over here
+[61:14] what we have said sorry uh for the
+[61:17] diagram for an fu yeah
+[61:19] that multiple input feature maps come in
+[61:22] some operations are done and a single of
+[61:24] map
+[61:25] is generated and in a layer we have
+[61:28] multiple such a fuse so if we kind of go
+[61:31] back to that slide
+[61:33] so this is what you will have in a
+[61:35] convolutional fu
+[61:37] Fair let's say that there are capital c
+[61:39] well C is a comes for channel but we'll
+[61:42] discuss what is the channel later
+[61:44] but if there are capital c if Maps then
+[61:48] for each my if map you convolve it
+[61:51] with its corresponding filter so if map
+[61:54] I filter I if map C filter C
+[61:57] so then we'll have multiple convolution
+[61:59] results which means multiple of maps all
+[62:02] of them are added again however they
+[62:05] added they are added pairwise or element
+[62:07] wise once they are added the output
+[62:10] feature map comes which is the output
+[62:12] feature map of a fu
+[62:14] of a functional unit all right
+[62:18] sorry it should be of n f u right
+[62:22] so then the idea is that we just add the
+[62:25] individual of maps that are produced
+[62:28] add them element wise and we come at the
+[62:31] output of map
+[62:34] so as you can see the issue is that
+[62:38] multiple convolutions have to be
+[62:40] computed with different input
+[62:43] uh you know different if Maps each one
+[62:45] of them is called an input Channel
+[62:47] so we're assuming that there are C input
+[62:49] channels in the sense the previous layer
+[62:52] has actually produced five
+[62:55] output feature Maps
+[62:57] which are five input feature maps for
+[62:59] this layer so C is five
+[63:03] for a single output feature map that we
+[63:05] compute we'll have to consider all the
+[63:07] input feature maps that the previous
+[63:09] layer is computed
+[63:10] again this is a very important concept
+[63:13] so let me repeat that assume that you
+[63:16] have one layer right the ith layer
+[63:19] that is producing five output feature
+[63:23] Maps right so c equal to 5
+[63:26] for the I plus 1 f
+[63:29] and the I plus 1 8 layer
+[63:33] be producing maybe let's say three
+[63:35] output feature Maps right where each one
+[63:37] of them could be a 1D Vector a 2d Matrix
+[63:40] or a 3D Matrix
+[63:43] so then for each one of them we have for
+[63:45] each one each one of the of maps we have
+[63:49] a dedicated functional unit
+[63:51] the functional unit will have five
+[63:53] inputs so the five inputs so the five
+[63:55] channels each
+[63:56] then uh there will be one filter each so
+[63:59] for the ith input there will be a filter
+[64:02] a filter and the kernel are being used
+[64:05] interchangeably over here which is a
+[64:08] small Matrix we'll compute the
+[64:10] convolution again for all the C input
+[64:13] channels all the five input channels
+[64:15] will compute the convolution
+[64:17] we will add them and then basically we
+[64:20] will arrive at the final of map which is
+[64:22] essentially this guy over here the
+[64:24] result of this point
+[64:27] so uh let's look at a short discussion
+[64:31] the filter of course Remains the Same
+[64:34] for a single convolution
+[64:36] it is typically quite small Three cross
+[64:38] three five cross five seven cross seven
+[64:42] furthermore convolution operations for
+[64:45] different of map pixels are mutually
+[64:47] independent so as you can see if I have
+[64:50] this large if map then you know whether
+[64:53] I am Computing the convolution in this
+[64:55] zone or in that zone it should not
+[64:57] matter
+[64:59] of course there is an issue that if
+[65:01] let's say this is my if map then at the
+[65:05] right and bottom edges right which is
+[65:07] basically at this region there will be
+[65:09] issues
+[65:10] why will there be issues the issues will
+[65:13] be there because the kernel would be
+[65:15] looking at some pixels but some of it
+[65:17] will overlap with regions that are
+[65:20] beyond the of map right so essentially
+[65:23] with this region
+[65:24] so what we can do is that this
+[65:26] additional region at the right and the
+[65:29] bottom we could Pat them with zeros so
+[65:31] this is known as zero padding
+[65:34] at the right and bottom I just to ensure
+[65:36] that our mathematical operations still
+[65:39] makes sense all right
+[65:41] so uh if I come to the summaries the
+[65:44] summary of what we discussed right and
+[65:46] we did discuss a lot though uh a lot in
+[65:49] terms of machine learning a lot in terms
+[65:52] of network design
+[65:56] so what we said is that look in a
+[65:58] typical CNN it is a feed forward Network
+[66:01] for the layers are organized as a linked
+[66:03] list one after the other after the other
+[66:06] so on and so forth
+[66:08] the original inputs are fed into the
+[66:12] leftmost layer
+[66:13] and then we have linear layers as well
+[66:16] as non-linear layers
+[66:18] and the final output is typically an
+[66:20] integer which is a classification label
+[66:24] we never have two linear layers one
+[66:26] after the other because that would make
+[66:28] little sense because two linear layers
+[66:30] one after the other would actually turn
+[66:32] out to be one linear layer
+[66:36] the fully connected FC layer is quite
+[66:39] computationally heavy all right so that
+[66:41] we have discussed that is heavy because
+[66:45] the number of Weights has to be equal to
+[66:48] the size of the input and also the other
+[66:52] reason is that you know just training
+[66:55] the neural network to find all of these
+[66:57] inputs so it's that you know the error
+[66:59] is minimized
+[67:00] that is also a big task in fact many may
+[67:03] want to argue that you know the storage
+[67:06] and memory cost is not much but just the
+[67:09] cost of finding out so many of these you
+[67:12] know weights right just the cost of
+[67:14] finding them out with the training
+[67:16] process is very hard because you need a
+[67:18] lot of training examples and even if you
+[67:21] do have them somehow
+[67:24] finishing the training process will take
+[67:26] a long long time
+[67:28] so the idea is to replace the heavy FC
+[67:32] layer with a lighter version known as
+[67:34] the convolution layer
+[67:36] the convolution layer is also a linear
+[67:37] layer but it is you know much lighter
+[67:39] and it's much easier to learn
+[67:41] and the FC layer could still be there
+[67:43] maybe like one in the network and it
+[67:46] could be the last layer so what we have
+[67:48] seen in our experiments is that even in
+[67:50] a 30 40 layer Network
+[67:52] roughly 10 to 15 percent of the time
+[67:55] which is disproportionately large is
+[67:57] taken by the single FC layer which is
+[67:59] there at the end so this is like a white
+[68:02] elephant and you would not want to have
+[68:04] many of these
+[68:06] right so uh so this is the
+[68:08] architecture of a typical CNN
+[68:12] so again the problem uh if I were to
+[68:15] break it down for a single convolutional
+[68:17] layer so so again you know here there is
+[68:20] a point so why am I focusing on
+[68:22] convolutional layers
+[68:24] exclusively
+[68:26] when I have the value layer I have the
+[68:29] pulling layer
+[68:30] and of course I have the plain old FC
+[68:33] so let's maybe answer this first because
+[68:36] we move because when we move forward
+[68:39] uh you will actually be ignoring the
+[68:41] rest of these three layers
+[68:43] so the first answer is quite simple
+[68:49] the relu layer is very easy to compute
+[68:51] so there is actually nothing all that we
+[68:54] have to do
+[68:55] is figure out if a given value if it is
+[68:59] negative or not uh so how would we
+[69:01] figure out if it's negative or not
+[69:04] well we will take a look at the sign bit
+[69:06] if it's negative we'll replace it with a
+[69:07] zero otherwise we'll let it be
+[69:10] the same is true for the pooling layer
+[69:13] we take a bunch of values
+[69:15] and then we basically replace them with
+[69:18] a maximum or average again that's easy
+[69:21] fully connected the hardware is easy to
+[69:23] build no big surprises over there the
+[69:26] only issue is that it is a nightmare
+[69:29] when it comes to training and also a
+[69:31] nightmare when it comes to storage and
+[69:33] memory space and so on that's the reason
+[69:35] we'll not have many of these maybe one
+[69:37] or two in a large Network that's it
+[69:40] what we will have and what actually
+[69:43] would determine the performance of the
+[69:46] network will be the convolutional layer
+[69:48] because we'll have many many of these
+[69:51] right and in each layer we will have
+[69:54] multiple functional units
+[69:57] so let's assume that in a convolutional
+[69:59] layer there are C input channels or C
+[70:01] inputs
+[70:03] so uh all of these inputs will be sent
+[70:06] to
+[70:07] all the functional units for example if
+[70:10] you want the inputs will be all the C
+[70:12] input channels if UK the inputs will be
+[70:16] all the C input channels
+[70:18] of course what would happen so what
+[70:20] would each Fu do each Fu would basically
+[70:25] compute convolution between
+[70:29] an if map and a filter right so
+[70:31] basically you know if you come to an a
+[70:33] few
+[70:34] it'll basically compute the convolution
+[70:36] between an if map filter pair
+[70:39] and then basically add them up so
+[70:42] basically we can say that for a few
+[70:46] if it is the ith fu
+[70:49] right and so sorry let's see if it's the
+[70:52] ith Fu map
+[70:54] and
+[70:57] if it is the jth output map
+[71:00] then we will basically use the ijth
+[71:03] filter so basically for every input if
+[71:06] map and of map pair will have a unique
+[71:08] filter or a unique kernel so let me
+[71:11] explain this in a different way so let
+[71:13] us assume that we have C input channels
+[71:16] and as I said the convolutional layer it
+[71:20] is basically taking in C input channels
+[71:22] and producing K output channels or kof
+[71:26] Maps
+[71:27] right so so that is its input see uh
+[71:30] inputs and K outputs
+[71:33] internally you will have
+[71:37] basically
+[71:39] K functional units for each functional
+[71:41] unit will take as an input all the input
+[71:44] channels
+[71:45] then what it would do is it would
+[71:47] basically do this
+[71:49] and as I said the filter will be will
+[71:53] have many many filters we'll quickly
+[71:55] compute how many but the filter will be
+[71:58] a function of the if map
+[72:00] and it will be a function of the output
+[72:02] map that is being computed
+[72:04] so let us say that there are
+[72:07] CIF maps and you know Capital CIF maps
+[72:11] and capital kof Maps then the total
+[72:13] number of sorry the total number of
+[72:15] filters that we'll have is c times K
+[72:18] because as I said a filter is a unique
+[72:20] combination or is determined by unique
+[72:23] combination of the if map and of map
+[72:27] will have a unique filter
+[72:30] and the convolutional layer as a whole
+[72:32] will take in CIF maps capital CIF Maps
+[72:36] as input and produce Capital kof Maps as
+[72:41] all right so that is exactly what it's
+[72:43] going to do
+[72:45] so now the important point
+[72:50] is basically that uh well how do we
+[72:53] design this so designing this is not
+[72:54] difficult we need to design each
+[72:56] functional unit and each functional unit
+[72:58] what it would do it would basically
+[73:03] compute an of map and then we can
+[73:06] combine all of them into a layer or
+[73:09] maybe we can treat the entire layer as
+[73:11] one unit and design you know kind of a
+[73:14] large neural network processor
+[73:17] to implement all of these functional
+[73:19] units because there's a fair amount of
+[73:20] parallelism in the computation as well
+[73:23] so we will kind of leave the reader or
+[73:26] the viewer of this video at this point
+[73:29] then in the next video of this lecture
+[73:33] series we'll begin from here
+[73:35] but the key point is that we have seen
+[73:38] good scale outputs right we have CK
+[73:41] filters one for each if map of map pair
+[73:45] and the key computation that is
+[73:47] happening is this that you are seeing on
+[73:49] the screen
+[73:51] so what we'll do now is that we will
+[73:53] discuss the design of a CNN and discuss
+[73:55] the parallelism that is available
+[73:58] and then we will move on to
+[73:59] optimizations and finally how do you
+[74:01] design a memory system
+[74:03] to sustain the computational and memory
+[74:06] bandwidth of a CNN accelerator because
+[74:09] the processing that is done is not
+[74:11] something that a general purpose
+[74:13] processor can handle you need a
+[74:15] dedicated application specific processor
+[74:18] or which is also called a neural
+[74:20] processor an euromorphic processor many
+[74:22] names but a neural processor is required
+[74:34] thank you

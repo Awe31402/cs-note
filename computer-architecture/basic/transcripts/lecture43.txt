@@ -1,0 +1,1927 @@
+[00:00] n
+[00:06] [Music]
+[00:34] welcome to chapter 12 so this chapter is
+[00:37] uh an extension of what we have studied
+[00:40] up till now it's on input output systems
+[00:43] commonly known as IO
+[00:45] systems and on storage devices so in
+[00:48] storage devices we'll discuss many kinds
+[00:50] of storage devices like hard drives pen
+[00:52] drives flash drives uh CDs DVDs so we'll
+[00:56] discuss all of these Technologies along
+[00:58] with uh ton and the nature of Io Io
+[01:02] stands for you know generic input output
+[01:05] things like mouse keyboard monitors uh
+[01:07] IO systems in modern process so uh just
+[01:10] to remind you the 12th chapter of the
+[01:12] book computer organization
+[01:14] architecture is published by mcro in
+[01:17] 2015 so the slides are only meant to be
+[01:20] you know just to introduce the topic but
+[01:23] all the details you'll find in the
+[01:25] book so the outline of this chapter is
+[01:28] like this that initially we'll uh
+[01:30] discuss an overview of the io systems so
+[01:34] we have subsequently divided uh the io
+[01:37] Technologies into four layers where uh
+[01:41] the layers sort of capture different
+[01:43] aspects of the system so we have a
+[01:45] physical layer that deals with uh
+[01:48] physical signaling uh voltages and noise
+[01:51] and so on the data link layer is more
+[01:54] about packing the bits and creating
+[01:56] frames of bits which are groups of bits
+[02:00] the network layer has to do with how to
+[02:02] send a message to an IO device and uh
+[02:06] the protocol layer is at the highest
+[02:07] level where uh essentially a protocol is
+[02:10] defined to achieve a complex high level
+[02:13] task then we'll look at some of the most
+[02:15] common IO Technologies here in case
+[02:18] studies and lastly we will take a look
+[02:20] at different storage media namely hard
+[02:23] drives and Pen drives and CD DVD drives
+[02:26] and so
+[02:27] on so let's first uh look look at a
+[02:30] basic diagram of IO devices in a
+[02:33] computer so as you have discussed way
+[02:36] back in the first chapter that we have a
+[02:39] CPU the CPU communicates with memory and
+[02:43] furthermore we discussed in chapter 9 uh
+[02:45] that you know a program's working set
+[02:48] means the amount of data it accesses at
+[02:50] any single point in time can actually be
+[02:53] more than the capacity of
+[02:55] memory so there uh in such a situation
+[02:59] the data can be stored on the hard
+[03:03] disk uh in addition so this is
+[03:05] essentially the Computing system the
+[03:07] blue box over here you know this blue
+[03:10] box but that is not enough because we
+[03:13] have to interact with it in some way so
+[03:16] interaction either we can give it data
+[03:20] and ask it to do something or we can
+[03:21] take a look at the results so for
+[03:24] feeding in data we typically use the
+[03:26] keyboard and the mouse and for seeing
+[03:29] the results of a computation so even in
+[03:31] know playing a game is also a
+[03:33] computation so even for seeing the
+[03:35] results we use uh the Monitor and uh if
+[03:39] you want to print it we use the
+[03:43] printer all right so different kinds of
+[03:45] IO devices that we
+[03:47] use there a lot of IO devices so uh we
+[03:50] can start with some of them so the hard
+[03:53] disk we are categorizing as an IO device
+[03:55] and not as a you know not as a device
+[03:58] that is integral to the computer
+[04:00] system because it is not necessary that
+[04:02] all machines will have a hard disk they
+[04:05] need not have
+[04:07] one right so it is not
+[04:09] necessary that they will actually have a
+[04:12] hard disk so in that sense they need not
+[04:14] have one and they can have other
+[04:16] Technologies as well and also all the
+[04:19] methods used to communicate with a hard
+[04:21] disk are uh pretty much based on iO
+[04:25] Technologies that's the reason hard disk
+[04:27] has been put under the category of an i
+[04:29] I devices even though it's you know it's
+[04:31] sort of a stretch the network card is
+[04:34] definitely an IO device it's used to
+[04:36] communicate with other computers over
+[04:38] the network and we'll always have
+[04:41] traditional uh IO devices a printer a
+[04:43] scanner camera this pair of speakers so
+[04:47] these are connected to the motherboard
+[04:48] of the processor with IOP ports so
+[04:51] what's an IO Port it's a set of metallic
+[04:54] pins for attaching with external
+[04:56] connectors essential set of pins with
+[04:59] which we add attach external connectors
+[05:02] and you know for example we have a USB
+[05:04] port uh on a laptop so you just take a
+[05:06] look at the side of your laptop you'll
+[05:09] find uh you know this small hole so it
+[05:12] would if I were to draw it maybe you
+[05:15] know the view would be a rectangle like
+[05:18] this with
+[05:21] another structure that is jutting out so
+[05:24] there is a USB port so USB cable goes in
+[05:27] similarly you can have other kinds of
+[05:28] ports
+[05:30] uh for attaching other kinds of
+[05:32] connectors so DVI port for Display
+[05:34] Devices is one more such
+[05:39] Port so let's take a look at uh so let's
+[05:42] start from the highest level right which
+[05:45] is uh the software uh the application so
+[05:48] the way that things typically work is
+[05:51] that uh you know let's assume I want to
+[05:53] write something uh on the screen or I
+[05:57] want to read something from the keyboard
+[05:58] so then uh the user this is the user
+[06:03] application and uh the user application
+[06:06] sits on top of the operating system
+[06:09] which is a special program whose job is
+[06:11] to coordinate with IO devices then of
+[06:14] course you'll have the processor over
+[06:15] here and uh you'll have the io
+[06:18] devices over here so the job of the
+[06:21] operating system is to go via the
+[06:23] processor and connect with the io
+[06:25] devices either get data from them or
+[06:28] send data to them
+[06:30] so the way the application uh actually
+[06:33] talks to the operating system is why a
+[06:35] mechanism called system calls so this
+[06:37] mechanism will be taught to students in
+[06:40] an operating systems course but let me
+[06:41] tell you what's the broad idea the broad
+[06:44] idea is with an example the Linux
+[06:47] operating system exports two kinds two
+[06:50] system calls we are essentially two
+[06:52] functions which applications can call
+[06:54] think of it that way these are special
+[06:56] functions which the operating system is
+[06:59] providing two applications such that
+[07:02] applications can call them and either
+[07:05] send their data or receive some data
+[07:08] from the functions and the functions in
+[07:11] turn which are part of the operating
+[07:13] system code will uh interact with the io
+[07:16] devices via the processor and you know
+[07:20] perform some IO task so in this case uh
+[07:23] the functionality is
+[07:25] read read basically means uh that we
+[07:29] want want to read something from an IO
+[07:31] device so every IO device is you know
+[07:34] has a what is called a file descriptor
+[07:36] and the file descripted is essentially a
+[07:38] unique ID of some storage area within an
+[07:41] IO device so we pass it the pointer to a
+[07:45] storage area in memory and we say that
+[07:47] we need to read these many bytes num
+[07:49] bytes from the io device to a location
+[07:52] in memory similarly when we write it's
+[07:56] the reverse process that something uh
+[08:00] goes from our memory to the io device so
+[08:04] we specify the region in the memory and
+[08:06] the number of bytes that we need to read
+[08:08] our data from and this is sent to an IO
+[08:12] device so all devices in Linux you know
+[08:16] maybe I should have this additional
+[08:18] little thing over here that all devices
+[08:21] in Linux are perceived to be files you
+[08:24] know by the operating system and also by
+[08:26] applications that's the abstraction that
+[08:28] is given and it's a/d file system which
+[08:32] means that/ Dev is/ device so all of
+[08:35] them we essentially treat them as files
+[08:37] and give a file descriptor even though
+[08:39] they're actually fronting for Io devices
+[08:42] so then we can either read bytes from
+[08:44] them or write bites to them which is
+[08:47] exactly being achieved by these two
+[08:49] system calls what again is a system call
+[08:52] so a system
+[08:53] call is a special kind of function
+[09:05] which is being exported by the operating
+[09:08] system to uh
+[09:11] applications such that they can use it
+[09:13] to perform read and right kind of task
+[09:17] so there are two kinds of devices that
+[09:19] the Linux uh operating system
+[09:21] recognizes so these are uh character
+[09:24] devices which essentially read and write
+[09:26] character by character such as the
+[09:27] keyboard and the mouse and you have
+[09:29] block devices which at one point of time
+[09:31] deal with larger blocks of data such as
+[09:34] the hard disk or the network card where
+[09:37] we essentially at one call at one go we
+[09:41] deal with a much larger amount of
+[09:44] data so let's take a look at what is
+[09:47] called the iio stack what again is the
+[09:49] iio stack is the set of modules within
+[09:51] an operating system which actually
+[09:53] process an IO request so let's consider
+[09:57] the blue lines here as the request
+[09:58] pathway and the red lines as the
+[10:00] response pathway so let's see what
+[10:03] happens to a request an IO request when
+[10:06] an application makes it so when an
+[10:08] application makes an IO request of
+[10:11] course it does what is called a system
+[10:14] call system call means calling and
+[10:17] invoking an operating systems function
+[10:20] so it does a system call the system call
+[10:24] uh invokes certain modules within the
+[10:27] kernel of the operating system
+[10:31] so uh kernel is basically the core part
+[10:33] of the operating system that interacts
+[10:35] with the application so the kernel uh
+[10:38] then uh passes control over to another
+[10:42] program within the operating system
+[10:43] called a device driver the job of the
+[10:46] device driver program is to explicitly
+[10:48] interface with
+[10:50] devices so then the device driver will
+[10:53] send an a message to the io system via
+[10:56] the
+[10:56] processor so the job of the iOS system
+[10:59] system so the io system is not an IO
+[11:01] device it's an IO system so the io
+[11:04] system is basically as we will see it's
+[11:07] a set of chips and wires and protocols
+[11:09] and so on so this is essentially entire
+[11:11] network on its own whose job is to Route
+[11:15] messages from the processor to an IO
+[11:18] device so once an IO device gets a
+[11:21] request here it will basically send it
+[11:23] over here to the once the iOS system
+[11:26] gets a request it will send that request
+[11:29] to the io device so let's say the io
+[11:31] device is a keyboard then the keyboard
+[11:33] will send the next character that it has
+[11:35] read if the io device is a network card
+[11:38] then it will uh basically either send a
+[11:41] message from the network or receive a
+[11:43] message from the network
+[11:46] after you know once the io device has
+[11:48] something to report it can send a
+[11:51] message back which is the response
+[11:53] pathway again via the same route so VI
+[11:55] the io system the processor the device
+[11:58] driver the kernel and the
+[12:02] application so this is the typically the
+[12:04] way that we have iio stack
+[12:07] operating uh in a
+[12:09] system and of course the io devices you
+[12:12] know the iio device can be on the
+[12:14] motherboard itself or can be via an
+[12:17] add-on card or can be USB device there
+[12:19] are many ways of connecting an iio
+[12:21] device so let us look at a typical
+[12:24] network card over here so this network
+[12:27] card is connected uh to the CPU sorry
+[12:31] I'm sorry the network card is connected
+[12:32] to the computer and if you see the
+[12:35] connectors over here so essentially this
+[12:37] is this will be connected to the
+[12:40] motherboard uh of the CPU but other than
+[12:44] this this entire circuitry so
+[12:46] essentially the black boxes here are the
+[12:49] chips so the chips do most of the
+[12:51] processing so it has many small chips
+[12:53] and one big one of course which is the
+[12:55] network processor so this this one
+[13:03] is the network
+[13:07] processor the network processor exposes
+[13:10] an IO Port which is over here and the io
+[13:15] Port this IOP Port is used to connect
+[13:17] the Ethernet cable so the ethernet cable
+[13:19] goes in
+[13:20] here and this the ethernet cable can be
+[13:23] used to connect with the
+[13:26] network right so this is you know uh
+[13:30] typically the way that any IO system
+[13:32] works that we have an external Port we
+[13:34] have little bit of processing and then
+[13:36] we connect to the motherboard of the
+[13:39] CPU so if you look at it this is the
+[13:43] internals of uh computer system one that
+[13:47] I photographed so here uh what you get
+[13:51] to
+[13:52] see uh is
+[13:56] that uh this entire green structure here
+[13:59] you know this big green board this is
+[14:02] the motherboard right this this entire
+[14:04] you know starting from here till here
+[14:07] this entire green structure is the
+[14:08] motherboard so the entire structures all
+[14:11] the everything inside the computer
+[14:13] system is over here and here of course
+[14:16] we have the main CPU with a fan on top
+[14:18] fan to cool it
+[14:20] down and uh so this part uh well uh this
+[14:26] looks like the hard disk so the hard
+[14:28] disk is connected here and uh the hard
+[14:32] disk communicates these are the memory
+[14:33] modules so the memory chips go in here
+[14:35] and this is the hard disk so any request
+[14:38] from the CPU would go via the memory
+[14:40] into the hard disk and again would come
+[14:42] back we have other modules here and
+[14:45] definitely you have IO ports on the site
+[14:47] and we have some IO ports here also so
+[14:50] uh we have some of these ports these
+[14:52] might be USB ports might not be and we
+[14:55] have some IO ports here
+[14:57] also so pretty much the cpu's entire uh
+[15:01] range of operation ends here and uh
+[15:05] after this uh the entire this part of
+[15:08] the motherboard is pretty much the iio
+[15:10] system or the io
+[15:12] subsystem its main job is to Route
+[15:16] messages between the different IO ports
+[15:18] that are there in the system the hard
+[15:19] disk bring everything closer to the
+[15:22] processor and the memory so that is the
+[15:24] job all the data in this sense is moving
+[15:26] in this direction and it is is going uh
+[15:30] you know some of it goes directly to the
+[15:31] CPU some goes to the CPU via the memory
+[15:34] but never you know nevertheless the CPU
+[15:37] memory subsystem gets in all the data
+[15:40] and after that it again writes back data
+[15:43] to the respective I ports so the
+[15:46] additional chips in in a motherboard in
+[15:50] motherboard uh so all of these chips you
+[15:52] know the all of these black boxes over
+[15:54] here the additional chips whose job is
+[15:57] pretty much to process IO messages
+[15:59] mainly they are known as they comprise
+[16:02] the chipset so the motherboard basically
+[16:04] has the chipset it has the main memory
+[16:07] modules it has the processor itself and
+[16:09] it has connectors to external iio
+[16:11] devices and the hard
+[16:14] disk so let's not take a look at a
+[16:17] reference architecture of a motherboard
+[16:20] it's a uh this is this architecture was
+[16:23] followed by Intel and others so of
+[16:25] course now some of these things have
+[16:27] changed but by and large we have you
+[16:31] know even other uh machines other
+[16:34] processors have a similar architecture
+[16:36] the architecture per se is not very
+[16:38] different even though some of these
+[16:40] things might have actually come inside
+[16:42] the chip but nevertheless let's see this
+[16:45] architecture is fairly generate so we
+[16:48] have the processor so uh it communicates
+[16:51] with a chip called the Northbridge
+[16:53] chip uh so why North Bridge because this
+[16:56] is a North Bridge and this is a South
+[16:57] Bridge right so North and South so the
+[17:00] North Bridge
+[17:02] chip uh communicates with the graphics
+[17:05] processor you know if there is one with
+[17:08] a typically a very fast bus like a PCA
+[17:10] express bus what again is a bus it's a
+[17:13] set of copper wires and it also
+[17:15] communicates with the memory modules now
+[17:18] things have slightly changed in the
+[17:19] sense that this North Bridge chip has
+[17:21] actually come inside the ship and so we
+[17:25] directly have memory controllers here so
+[17:28] the norbridge chip previously used to
+[17:30] have a memory controller whose job was
+[17:32] to interact with the memory modules see
+[17:34] if this have these in some Advanced
+[17:38] processors have actually come inside the
+[17:40] processor so they control the memory
+[17:42] modules
+[17:44] directly in some other cases even the
+[17:47] GPU the graphics processor has come
+[17:50] inside the processor chip so there are
+[17:52] other modules that interact with it
+[17:55] directly uh so all of these modules
+[17:58] together let's go call it as a North
+[17:59] Bridge functionality in this particular
+[18:02] diagram it's outside the processor chip
+[18:04] but need not be that way so then the
+[18:06] North Bridge chip communicates with the
+[18:08] with another chip called a Southbridge
+[18:10] chip so both of these are essentially IO
+[18:12] chips so the South Bridge chip even in
+[18:15] current processor is still outside you
+[18:18] know the main processor chip so it's on
+[18:20] the motherboard so I would say even in
+[18:22] current
+[18:24] processors these things are in the
+[18:26] motherboard
+[18:29] right they are definitely not within the
+[18:31] main casing of the
+[18:33] processor this part over here and of
+[18:35] course the memory modules are not uh let
+[18:38] me know partially erase
+[18:49] something so this aspect and even the
+[18:52] GPU right these might have come within
+[18:56] the chip for some modern designs the
+[18:57] memory modules are still outside but in
+[19:00] our simplistic diagram we'll consider
+[19:02] the G the graphics processor the North
+[19:04] Bridge and the memory modules to be
+[19:07] outside the processor chip and uh so we
+[19:11] can live with this assumption and of
+[19:13] course we have we'll have a front side
+[19:15] bus to communicate with the GPU and the
+[19:18] modules which require a lot of bandwidth
+[19:20] in comparison the rest of the io modules
+[19:22] don't need that much of bandwidth that's
+[19:25] the reason there's another chip to take
+[19:26] care of their needs called the
+[19:27] Southbridge chip
+[19:29] which is connected to the North Bridge
+[19:31] chip so the Southbridge chip in our
+[19:34] example talks to the hard disk via a SAT
+[19:37] bus so again you know different buses
+[19:39] have different bus protocols so it it
+[19:42] can talk to audio and microphone ports
+[19:45] using either Intel high definition audio
+[19:47] on a PCI bus it can talk to you know 2 3
+[19:51] 4 6 USB puts that's also doable and can
+[19:56] also talk to a network card interface a
+[19:58] network card so viia PCI Express bus so
+[20:01] there are different kinds of bus
+[20:02] Technologies we'll discuss them in great
+[20:04] detail and uh but I'm just you know
+[20:07] throwing names here such that people
+[20:09] have a certain familiarity with the
+[20:11] names right such that next time when a
+[20:13] name comes up people know that exact
+[20:16] they have heard of this name before so
+[20:18] so this is the broad
+[20:20] architecture of a system uh with a
+[20:24] motherboard and a processor where uh
+[20:28] basically we have some high bandwidth
+[20:30] components like the GPU and the memory
+[20:33] modules and then we have some low
+[20:35] bandwidth components which are mainly
+[20:36] connected to the South Bridge chip and
+[20:39] they include the hard disk the network
+[20:41] card USB devices audio ports I haven't
+[20:44] included the keyboard and the mouse here
+[20:45] but they should be there and any other
+[20:48] kinds of peripherals we would like to
+[20:52] attach so let's talk about iob buses a
+[20:54] little bit so they are different
+[20:56] components on the motherboard are
+[20:58] connected with IO buses and the io bus
+[21:01] is basically a set of wires that carry
+[21:04] uh data and control signals between a
+[21:07] set of devices and these devices use the
+[21:10] iob buus to transmit data and control
+[21:13] signals between each other essentially
+[21:14] set of copper wires with a
+[21:18] protocol so what we have done is that we
+[21:21] have divided the entire IO system into
+[21:24] different
+[21:26] layers note that it is very common to
+[21:29] actually divide an IO system into
+[21:31] multiple
+[21:32] layers so on a routine basis we divide
+[21:35] other kinds of communication systems
+[21:37] into
+[21:38] layers namely the internet is divided
+[21:41] into seven layers a seven layer OSI
+[21:43] protocol so many more such networking
+[21:46] protocols you know for larger networks
+[21:48] are actually divided into layers so
+[21:51] let's do the same with our little
+[21:53] network of IO
+[21:55] devices so let's have a physical layer
+[21:59] physical layer deals with actual signals
+[22:02] and voltages so we have a transmission
+[22:04] layer there and a synchronization layer
+[22:06] we'll see what they are about then let's
+[22:09] have a data link layer which assumes
+[22:11] that yes we can reliably send a single
+[22:14] bit over a copper wire but how do we
+[22:17] send a bite of data or larger packets of
+[22:20] data then we can have a network layer
+[22:23] which talks about sending a message via
+[22:25] an IO system and ensuring that reach is
+[22:28] the right device and finally we can have
+[22:31] a protocol layer which tries to achieve
+[22:33] something big something L something at a
+[22:37] very high level on an existing IO system
+[22:40] you know like a complicated transaction
+[22:42] between two IO devices should be
+[22:44] possible to do with the protocol
+[22:47] layer so let's talk about the physical
+[22:50] layer so the it has two Su layers the
+[22:53] transmission sublayer defines the
+[22:55] electrical standards of the bus and the
+[22:57] methods for encoding data using voltages
+[23:00] and sending them right so mind you
+[23:03] encoding can have different connotations
+[23:04] so I made it clear the synchronization
+[23:07] sub layer talks about the timing of
+[23:09] signals such that they can be recovered
+[23:11] by the receiver the data link layer
+[23:14] talks about taking the bits creating
+[23:16] frames buffering means storing the data
+[23:19] such that you know you will wait for an
+[23:21] entire set of bits to come before we
+[23:23] make a
+[23:25] frame uh error correction so error
+[23:27] correction means it's possible that
+[23:30] there can be error in a single bit
+[23:32] because of noise so the so this should
+[23:33] be possible to do and also Implement
+[23:36] transactions which means that uh you
+[23:39] know Implement a request and a response
+[23:41] a
+[23:41] synchronous uh transaction where
+[23:44] multiple messages are being sent with a
+[23:46] certain ordering and rules between the
+[23:48] messages so pretty much beyond the data
+[23:51] link layer we can be sure that a given
+[23:54] message has reached its destination
+[23:58] at least across a single hop
+[24:01] reliably so then we'll have a network
+[24:03] layer which talks about addressing iio
+[24:05] devices locating them and of course
+[24:07] sending the message to them which is
+[24:09] called routing which means find a
+[24:11] certain route and then sort of uh send
+[24:14] the message on that
+[24:17] route so the protocol layer is
+[24:20] uh talks about doing complicated things
+[24:23] on the iOS system like you know end to
+[24:25] endend request processing which means
+[24:27] that we are trying to do a big
+[24:29] complicated activity here so there will
+[24:32] be issues of interrupts and polling
+[24:34] we'll discuss that and something called
+[24:36] direct memory access which means that we
+[24:39] will uh allow IO devices to directly
+[24:41] write to memory without the cpu's
+[24:44] involvement so we'll uh discuss these
+[24:46] things essentially there are four layers
+[24:49] with the physical layer having two Su
+[24:52] layers so let us now discuss the
+[24:54] physical layer in some more detail and
+[24:57] after that we shall take a look at the
+[24:59] rest of the
+[25:01] layers so in the physical
+[25:05] layer we can have uh different
+[25:08] conventions for sending data so let's
+[25:11] take a look at some of the simplest
+[25:13] methods of actually sending data so the
+[25:16] simplest method is active High signaling
+[25:19] so what this means is that uh so let's
+[25:22] say if we have a clock so here we are
+[25:24] assuming that at the downward edge of
+[25:26] the clock that is pretty much when the
+[25:29] clock cycle begins so it goes from one
+[25:31] downward Edge to the next downward
+[25:34] Edge so let's assume that the data that
+[25:36] we want to transmit is 0 1 1 1 0 1 0 1 0
+[25:40] 0
+[25:41] 0 so let us have a convention that if
+[25:45] you know the y- axis is voltage then uh
+[25:48] essentially uh when
+[25:51] the physical voltage is 0 volts that
+[25:54] also means that the data that we are
+[25:55] transmitting is a logical zero and and
+[25:58] when the physical voltage is a
+[26:00] certain uh is a certain value maybe one
+[26:03] Volt or 2 volts or 3 volts then we are
+[26:06] transmitting a logical
+[26:08] one so we can transmit in this fashion
+[26:11] this is uh very common it's called
+[26:13] active High signaling which means that
+[26:15] if the voltage is high we can infer a
+[26:17] logical one so here we have 1 one one so
+[26:20] the voltage for all the three clock
+[26:22] periods is high which is one
+[26:25] subsequently uh we have a voltage of Z
+[26:28] which means we are transmitting a
+[26:30] logical zero then again a trans
+[26:32] transition to 1 0 1 0 0 0 and so on so
+[26:37] now we can have the reverse so we can
+[26:39] have the reverse policy which basically
+[26:41] is active low signaling which means that
+[26:44] you know
+[26:46] logical so let this be the logical and
+[26:49] let this be the voltage and let the
+[26:51] voltage be between 0 volts and let's say
+[26:54] uh V volts where V uh is greater than Z
+[26:58] Z and it corresponds uh to an active
+[27:01] state so in an active low system uh if
+[27:05] you're trying to send a logical zero
+[27:08] we'll actually set the voltage to V
+[27:10] volts and if you're transmitting a
+[27:12] logical one will'll set the voltage to 0
+[27:15] volts it's sort of the reverse of active
+[27:17] high so if you can see over here we are
+[27:20] transmitting a logical zero and the
+[27:22] voltage is high uh whereas for the next
+[27:25] three clock Cycles we are transmitting
+[27:27] 11 one
+[27:28] so the voltage is
+[27:30] low so then again zero the voltage
+[27:33] becomes High one it becomes low 0o high
+[27:36] one low and finally for the last three
+[27:38] clock Cycles the voltage is high so so
+[27:41] this diagram and this diagram are pretty
+[27:43] much just the reverse of each
+[27:49] other all right so let's now uh so now
+[27:52] that we have discussed active high and
+[27:54] active low let us uh discuss
+[27:59] about how uh you know we want to send uh
+[28:04] you know we want to
+[28:05] infer uh that a certain you know voltage
+[28:08] difference has been uh created right so
+[28:12] so what are we doing we pretty much have
+[28:13] a sender and we have a
+[28:16] receiver and the sender is either
+[28:19] setting a voltage to be high or it is
+[28:22] setting a voltage to be low and on the
+[28:24] basis of the high and low we are
+[28:25] figuring out whether it's a logical zero
+[28:27] or logical one so in our simple
+[28:30] rendition of the idea we are saying that
+[28:32] let 0 volts be physically zero and let V
+[28:37] volts be a physical one and of course in
+[28:39] a active low kind of scheme which is
+[28:42] this if let's say we want to transmit a
+[28:45] logical zero then we set the voltage to
+[28:47] high otherwise we set the voltage to low
+[28:52] so now there are many uh ways per se of
+[28:55] doing this so let's take a look at one
+[28:58] of the way so so mind you it's not
+[28:59] necessary the voltage voltages are 0o
+[29:01] and 1 volt they can also be minus 1 volt
+[29:04] and + one volt so they can be anything
+[29:07] they can also be -
+[29:09] mols and you know plus 200 Ms anything
+[29:12] is possible as long as we clearly know
+[29:15] that one voltage corresponds to one
+[29:17] state and One More Voltage corresponds
+[29:19] to one more state so typical way of
+[29:22] signaling is called lvds signaling low
+[29:25] voltage differential signaling so we
+[29:28] have a circuit over here so where this
+[29:31] is a constant current source which is
+[29:33] pumping in 3.5 milliamp of current so uh
+[29:37] let's take a look at this so this is a
+[29:41] value that we want to transmit so now if
+[29:44] the value a is equal to 1 so then this
+[29:47] transistor is in the on State
+[29:52] and this transistor is in the on state
+[29:56] so the way that current can actually
+[29:58] flow is that it'll flow this way VIA
+[30:02] this and then it'll flow via the
+[30:04] resistance over here again come back and
+[30:08] then it'll flow like this and go to
+[30:10] ground so since 3.5 milliamp is Flowing
+[30:13] across this 100 ohms resistance the
+[30:16] voltage difference that is being created
+[30:18] is 350 Ms so this 350 Ms with a small
+[30:23] voltage difference will again be
+[30:25] Amplified by the opamp over here here to
+[30:29] a much larger voltage difference which
+[30:31] the rest of the circuit can use but the
+[30:34] important point to note is that we are
+[30:36] essentially creating a path such that
+[30:39] the current can
+[30:40] flow and uh it'll create a 350 molt uh
+[30:45] voltage
+[30:46] difference now oh oops sorry now let's
+[30:49] do one more
+[30:51] thing let us see what happens if a is
+[30:54] equal to Z so if a is equal to 0 then
+[30:58] this transistor is not enabled but this
+[31:00] transistor is enabled this is enabled
+[31:03] and this transistor is not enabled so
+[31:06] the way that the current would flow is
+[31:07] that it will go like this go like
+[31:12] this right it sort of flow in a reverse
+[31:15] way and again uh come back this way
+[31:20] right so that is exactly how it's going
+[31:23] to flow so pretty much the current in
+[31:25] this case would flow this way so the
+[31:28] voltage difference between these two
+[31:29] terminals will actually be minus 350 MTS
+[31:33] so plus 350 in one case and minus 350 in
+[31:37] the other case so essentially what the
+[31:39] circuit is doing is that it is
+[31:41] monitoring the difference in voltages
+[31:43] between these two wires and as we see
+[31:46] that if we want to send a logical one
+[31:48] then the current uh across this resistor
+[31:52] over here will flow in the downward
+[31:55] Direction otherwise it will flow in the
+[31:56] upward Direction so in one case we can
+[31:59] have a 350 mol potential difference in
+[32:02] the other case we will have a minus 350
+[32:05] Ms potential difference which again can
+[32:08] be translated into other voltage levels
+[32:10] which the rest of the circuits can
+[32:12] use so there are a couple of things we
+[32:15] need to note recall that this design is
+[32:17] very similar to uh an SRAM design which
+[32:20] had parallel bit lines extremely similar
+[32:23] so the idea is also simple so the
+[32:26] smaller is the voltage swing right uh so
+[32:30] instead of plus 350 minus 350 if we can
+[32:33] make it even
+[32:34] smaller then it'll mean that uh the
+[32:38] circuit will be made faster because for
+[32:41] all the capacitances inside the circuit
+[32:44] a smaller voltage swing also means a
+[32:46] lesser amount of charge needs to be
+[32:48] deposited especially you know at the
+[32:50] inputs of these terminals since a lesser
+[32:53] amount of charge needs to be deposited
+[32:54] and the current is constant we'll take a
+[32:57] lesser amount of time so the circuit
+[32:59] will be much faster right and uh so
+[33:03] that's the reason we want to make this
+[33:04] voltage difference as small as possible
+[33:07] and then of course we can amplify it and
+[33:09] have another bigger voltage difference
+[33:12] which the rest of the circuit will
+[33:13] happily use so why do we have two
+[33:16] parallel lines you know somebody can
+[33:18] just argue that we could have had uh
+[33:22] just one
+[33:23] line right so one reason for actually
+[33:25] monitoring a voltage difference and not
+[33:28] the voltage itself is very important the
+[33:32] reason that we monitor the voltage
+[33:33] difference both in this case as well as
+[33:36] in the case of srams with parallel bit
+[33:38] lines is that assume that there is some
+[33:41] amount of noise uh some amount of
+[33:43] electromagnetic noise in the circuit for
+[33:46] example nearby if we turn on a microwave
+[33:48] oven or we turn on a mobile phone then a
+[33:51] little bit of potential will be
+[33:52] introduced on this line and little bit
+[33:54] will be introduced on this line right so
+[33:57] they will essentially
+[33:59] uh because of amp's law some amount of
+[34:03] potential difference uh will be
+[34:06] introduced and uh so so so basically you
+[34:10] know uh this uh potential difference
+[34:13] that will come
+[34:15] here uh will uh you know has the
+[34:20] potential of
+[34:22] actually changing the values across
+[34:25] these two terminals right so let's
+[34:26] assume the massive am amount of noise
+[34:29] and instead of two lines we had a single
+[34:31] line and the single line you know was
+[34:34] sort of swinging between uh plus 350 and
+[34:36] minus
+[34:38] 350 and let's say that there was
+[34:41] a additional potential of 400 MTS then
+[34:45] it would be very hard to find out
+[34:47] whether it was a logical one or zero but
+[34:49] since the lines are closed
+[34:52] by uh so any kind of electromagnetic
+[34:55] noise would increase the potential of
+[34:57] both the lines to roughly similar values
+[35:01] as a result what exactly matters is the
+[35:03] difference and the difference is being
+[35:04] set by our
+[35:06] circuit that is one reason why it is
+[35:10] very very important to actually monitor
+[35:15] difference so such kind of differential
+[35:17] pairs of wires so these wires are by the
+[35:20] way called also called known as
+[35:22] differential
+[35:23] pairs so this is a very common design
+[35:27] technique in iio systems where instead
+[35:30] of one wire whose you know potential can
+[35:33] be affected by noise so fa again the
+[35:35] noise comes from look a lot of wires can
+[35:38] be there on the side of you know this
+[35:39] wire right so these wires are passing
+[35:42] current and any passage of electrons is
+[35:45] associated with a changing magnetic
+[35:47] field and a change in a magnetic field
+[35:50] can induce a potential by farad law so
+[35:54] so basically you know by a combination
+[35:56] of ampers law here and Faraday law here
+[35:59] so this is the wire that we are
+[36:01] concerned with you can actually have a
+[36:04] change in potential at the output right
+[36:07] and uh because of that instead of a
+[36:10] logical zero we might predict a logical
+[36:12] one or because of a logical one we might
+[36:14] predict a logical zero so to sort of
+[36:18] take care of all of these problems and
+[36:20] eliminate them you have a differential
+[36:23] pair such that we can have a very small
+[36:25] swing between them and uh they will not
+[36:28] be affected by noise because the
+[36:30] assumption is if the lines are closed by
+[36:32] noise will affect both of them in a
+[36:34] roughly similar manner so the difference
+[36:36] will be more important so we'll use
+[36:39] similar Technologies in a host of IO
+[36:42] practical IO Technologies later in this
+[36:45] chapter but it's important to keep this
+[36:46] in
+[36:47] mind so let's now introduce a little bit
+[36:50] of terminology so a physical
+[36:52] bit is a value of zero or one on the bus
+[36:56] so what this basically means means that
+[36:58] zero corresponds to one
+[37:04] right and one corresponds to One More
+[37:07] Voltage right so this is a physical bit
+[37:10] that we are transmitting and they are
+[37:12] associated with different voltages can
+[37:14] be active high can be active low doesn't
+[37:16] matter but in end of the day we get a
+[37:18] physical bit up till now we have been
+[37:20] assuming that the physical bit and The
+[37:22] Logical bit are the same in the sense
+[37:25] that if a zero is transmitted we infer a
+[37:27] zero
+[37:28] this need not be a uh this need not be
+[37:31] the case as we shall see so function of
+[37:35] a sequence of physical bits can be a
+[37:37] logical bit as we shall see and logical
+[37:40] bits are the ones which is the actual
+[37:42] message so the actual
+[37:44] message uh
+[37:46] contains logical bits which are the
+[37:49] actual zeros and
+[37:51] ones right so mind you a logical bit
+[37:54] let's say zero can actually be encoded
+[37:57] as 0 0 and a one can be encoded as 1 one
+[38:00] we shall see why and these are called
+[38:03] physical
+[38:05] bits and a physical zero or one can
+[38:08] actually correspond to different
+[38:11] voltages all right so up now our
+[38:14] assumption was physical bit and logical
+[38:16] bit is the same that you sent to zero
+[38:18] the receiver will read a zero but we
+[38:20] will see we'll try to extend this idea
+[38:22] what is the most important at this point
+[38:24] is to know that a physical bit is ass is
+[38:26] associated with the different voltage
+[38:29] and a logical bit in principle can be a
+[38:32] combination or a sequence of physical
+[38:35] bits so now let's define one more term a
+[38:39] bit period which is the time it takes to
+[38:41] transmit a single bit and an IO clock
+[38:45] period is one clock cycle of the io
+[38:50] clock all right so let's introduce a
+[38:52] little bit more of terminology in a
+[38:54] binary signaling system the physical bit
+[38:57] can either take a value of 0 or 1 all
+[39:01] right and in the tary signaling system
+[39:04] we have three physical bits which is 01
+[39:06] and idle idle basically means that
+[39:08] nothing is being transmitted so the idle
+[39:11] state of the bus corresponds to the case
+[39:14] where no signal is being
+[39:16] transmitted so lvds naturally supports
+[39:20] uh tary signaling this is because when
+[39:22] the voltage difference is less than the
+[39:25] threshold so mind you you know the vol
+[39:27] voltage difference across this uh has to
+[39:30] be either greater than you know the
+[39:32] voltage difference its absolute value
+[39:34] has to be greater than a threshold if
+[39:37] it's less than a threshold we can assume
+[39:38] that nothing is being transmitted and
+[39:41] the bus is in idle State otherwise we
+[39:43] not make the Assumption and infert a
+[39:45] physical zero or a physical
+[39:48] one so let us now uh look at a different
+[39:53] kind of a uh message sending scheme
+[39:57] which in a sense
+[39:59] differentiates between a physical bit
+[40:02] and a logical
+[40:05] bit let me also make one important
+[40:08] clarification uh which I thought I might
+[40:10] have missed out so the bit period over
+[40:13] here that we have defined is a time it
+[40:15] takes to transfer a single logical bit
+[40:18] because you know transferring a physical
+[40:20] bit is not something that we are
+[40:21] interested in because at a higher level
+[40:23] we only want our zeros and ones to get
+[40:25] transmitted so that is the bit p
+[40:28] period so let's come back we'll be able
+[40:30] to realize this a little bit better now
+[40:32] so let's let's consider the Return To
+[40:35] Zero or RZ scheme of signaling so this
+[40:38] has three distinct voltages so it has a
+[40:40] high voltage here right it has a low
+[40:44] voltage here and it has a medium or an
+[40:47] idle State over here so the way that we
+[40:51] actually transmit a logical zero you
+[40:54] know in and one clock cycle is a
+[40:57] essentially one bit period so if we want
+[40:59] to transmit a zero what we do is that
+[41:02] for half of the clock cycle we set the
+[41:04] voltage to low and then for the
+[41:06] remaining half of the clock cycle we
+[41:08] bring the voltage back to the medium
+[41:11] voltage the idle
+[41:12] State similarly if we wish to transmit a
+[41:17] log a logical one we first set the
+[41:20] voltage to high so which means the
+[41:22] physical bit is one and then the
+[41:24] physical bit is corresponds to the idle
+[41:26] state
+[41:27] right so here we are assuming three
+[41:29] physical States and the physical states
+[41:32] are 0 1 and
+[41:35] idle and we are assuming two logical
+[41:38] States logical 0 and one for a logical
+[41:41] Zer the way it's encoded is that we
+[41:43] first go go down to the low voltage and
+[41:46] then do a transition to idle and in a
+[41:49] logical one we first go up to the high
+[41:52] voltage and then do a transition to idle
+[41:55] so same is the case for the rest of the
+[41:56] logical ones one here one here
+[42:01] 0 uh
+[42:03] 1 0 and so on right so in this case we
+[42:07] can clearly see that a physical bit and
+[42:10] a logical bit are not the same because a
+[42:12] physical bit you know multiple physical
+[42:14] bits are being used to encode one
+[42:16] logical bit uh in specific uh two
+[42:20] physical states are being used or two
+[42:22] physical bits right if we assume that
+[42:25] you know one state is uh represented by
+[42:27] two bits uh so it's better to talk about
+[42:30] physical state over here because you
+[42:32] know you have three each state is
+[42:34] associated with a different voltage zero
+[42:37] with low voltage one with high voltage
+[42:39] and idle with medium
+[42:41] voltage so uh one thing that is clear is
+[42:44] that for a logical
+[42:46] zero we uh are using two physical States
+[42:50] and there is a transition so you always
+[42:52] return to zero that's where the name
+[42:54] comes from in the later half of the
+[42:57] clock Cycles initially we set the
+[42:59] voltage either high or low and then
+[43:01] later half we Return To Zero so that is
+[43:04] the way that we do the uh signaling and
+[43:08] in one bit period which is one clock
+[43:10] cycle what we basically do is we find
+[43:13] out what was the voltage transition like
+[43:16] was it high to medium or low to
+[43:19] medium so this is clearly far more
+[43:22] elaborate and far more intricate in
+[43:24] nature than our basic active High high
+[43:27] and active low signaling right so what
+[43:30] is the reason for this well the reason
+[43:32] for this is very simple the reason is
+[43:34] that let's say we are
+[43:36] transmitting a sequence of signals from
+[43:41] the sender to the receiver and there is
+[43:44] sequence of ones sequence of ones means
+[43:46] logical ones so in an active High system
+[43:49] the voltage would have been like this
+[43:52] and the voltage is like this we would
+[43:54] have had to guess the number of ones by
+[43:57] pretty
+[43:58] much you know trying to divide it by the
+[44:00] clock period right and then trying to
+[44:03] see that how many ones are fitting in
+[44:05] this clock period so the main problem
+[44:07] with this kind of signaling is that we
+[44:09] also need to transmit the clock you know
+[44:12] somehow ensure that the sender are re
+[44:15] and receiver are exactly using the same
+[44:16] clock so we'll discuss this more in the
+[44:19] synchronization stage but this is
+[44:22] difficult to do ensuring that the sender
+[44:24] and the receiver uh make them making
+[44:26] them use the same clock is very very
+[44:29] difficult to do and the clocks can vary
+[44:31] a little bit and also you know there's
+[44:33] something called clock skew so the same
+[44:35] clock sending it to the sender and
+[44:37] receiver
+[44:38] exactly is somewhat hard and difficult
+[44:42] as a result it is possible that you know
+[44:45] if we have a signal of this kind and
+[44:48] actually the message sent is 11 one one
+[44:51] 5 ons the receiver might actually read
+[44:53] it as 11 one one and omit a one a little
+[44:56] bit of issues and
+[44:58] timing that's the reason while
+[45:00] transmitting we actually transmit a
+[45:03] transition right so we are transmitting
+[45:06] a Transitions and every bit period there
+[45:08] is a transition all that the receiver
+[45:11] has to do is take a note of the
+[45:13] Transitions and essentially even if
+[45:15] you're transmitting one one one one one
+[45:18] here in the same way we have this
+[45:20] sequence of three ones we have three
+[45:23] Transitions and just by keeping a count
+[45:25] of these transitions the receiver will
+[45:27] accurately get the data so it does not
+[45:30] actually need to be 100% clock
+[45:33] synchronized with the sender this is the
+[45:36] advantage that you know uh the issue
+[45:38] that comes up is typically
+[45:40] synchronization so the clock can
+[45:43] somewhat be moved to the background
+[45:45] because we already have a transition
+[45:47] inside each bit period and that can be
+[45:50] used to decide uh
+[45:52] if uh we are doing the you know that can
+[45:55] be used to decide what exactly is being
+[45:57] transmitted let us now look at one more
+[46:00] scheme which does something similar it's
+[46:02] called Manchester encoding it's also
+[46:04] very very popular extremely
+[46:07] popular so here what we do is that we
+[46:10] have instead of three physical States we
+[46:12] have two physical
+[46:21] States the physical states are basically
+[46:24] zero uh for one voltage and one for one
+[46:26] One More Voltage so in our diagram we
+[46:29] are seeing that zero is a low voltage
+[46:31] and one is a high voltage so The Logical
+[46:34] bits are essentially encoded like this
+[46:37] that a logical zero is encoded as a
+[46:39] downward transition from uh a physical
+[46:42] one to a zero it's a 1 to zero
+[46:44] transition right so mind you these are
+[46:55] bits so uh any logical zero again has a
+[46:59] 1 to0 uh transition and a logical one
+[47:02] has 0 to one transition so here what we
+[47:05] see since we have three consecutive ones
+[47:07] you have 0 one a transition here a
+[47:09] transition here and a transition here
+[47:13] then we have one more zero so this
+[47:14] voltage continues but we again have a
+[47:17] one to zero transition which is again
+[47:19] here so the idea is also very simple
+[47:23] very very similar to uh RZ uh return to
+[47:26] Z it is just that instead of three
+[47:29] physical States we have two physical
+[47:31] states that makes things slightly
+[47:33] simpler and here also the clock need not
+[47:36] be explicitly sent or you do not need a
+[47:40] sophisticated clock synchronization
+[47:42] circuit between the sender and the
+[47:45] receiver the clock in a sense can be
+[47:47] inferred from the transitions in the
+[47:49] data because in in every bit period
+[47:52] there will be one
+[47:53] transition and uh so we will uh always
+[47:57] figure out what the clock is and what's
+[47:59] the rate at which data is being sent and
+[48:02] moreover to figure out what the logical
+[48:04] bits are we basically have to take a
+[48:06] look at the
+[48:08] transition and uh see if it is a 0 to1
+[48:11] transition or a one to zero transition
+[48:14] right uh so once we have figured that
+[48:17] out uh the rest is easy right so same
+[48:20] way that we have you know these
+[48:22] transitions only thing is we need to
+[48:24] have a circuit to figure out what these
+[48:27] to record what these transitions are and
+[48:29] then figure out the logical bits let us
+[48:31] now look at a different kind of
+[48:33] encoding which is uh very very commonly
+[48:36] used particularly in commercial settings
+[48:38] you know in protocols such as
+[48:42] USB uh these methods are
+[48:44] used so to motivate the scheme let's
+[48:47] take a look at a basic simple system so
+[48:50] a simple
+[48:51] system uh which we will call not Return
+[48:54] to Zero nrz
+[48:57] uh
+[48:58] that uh you know for American English
+[49:00] speakers
+[49:01] nrz so uh in this simple system a
+[49:04] logical 0 would correspond to a physical
+[49:07] 0 and a logical one to a physical one so
+[49:10] the simple system would be of this type
+[49:12] 0 one one one so for all the three ones
+[49:15] the voltage is at a high level then for
+[49:18] the zero it's at this level again for a
+[49:20] one for a zero and so on so we have
+[49:23] already discussed this scheme it's just
+[49:25] that we didn't give it a name well we
+[49:27] were referring to it as active high but
+[49:30] now we have given it another name not
+[49:32] Return To Zero or non Return To Zero and
+[49:34] r z and uh so now uh what we want to do
+[49:41] is that uh we first want to see what is
+[49:44] wrong with this protocol which also we
+[49:46] have discussed what we have discussed is
+[49:48] that if there's a run of continuous ones
+[49:50] unless the clock is perfectly
+[49:52] synchronized asume there's a run of 100
+[49:54] ones right you know one one one one 100
+[49:57] times the clock is not synchronized we
+[49:59] might read 99 ones or we might read 101
+[50:02] ones which is again not correct so let's
+[50:06] Motif uh let's motivate a different
+[50:08] scheme based on this we'll use this but
+[50:10] then we will change it to something
+[50:12] which is very
+[50:14] practical non Return To Zero inverted NR
+[50:18] zi so this is uh very popular the idea
+[50:21] is very
+[50:23] simple uh so the idea here is that in a
+[50:27] logical zero so so also you know let me
+[50:30] uh let me just go back let's look at
+[50:33] let's look at some of the protocols and
+[50:35] look at them once again in Manchester
+[50:38] encoding for every single bit there is a
+[50:40] transition right so for zero there is a
+[50:42] transition for one there is a
+[50:44] transition uh for even Return To Zero r
+[50:47] z for every single bit there is a
+[50:49] transition so the transitions are
+[50:51] expensive in the sense that they are not
+[50:53] power efficient because every time
+[50:55] there's a transition transition this
+[50:57] means that the voltage changes how does
+[51:00] the voltage change by a flow of current
+[51:03] and when the moment current flows over a
+[51:06] resistance
+[51:07] right there is an i Square R uh heat
+[51:11] loss which is essentially dissipated as
+[51:13] heat so we also want to minimize the
+[51:15] number of
+[51:16] transitions keeping that in mind we you
+[51:19] know we looked at RZ and Manchester
+[51:23] which
+[51:24] have at least one transition in every
+[51:27] bit
+[51:27] period so we came down
+[51:30] to the nrz scheme where there's a
+[51:34] transition only if the value changes
+[51:37] which in any case will be there but
+[51:38] otherwise there are no transitions like
+[51:40] for a rner once there is no transition
+[51:42] in the voltage this again is not right
+[51:45] mainly because of clock issues so let us
+[51:48] have something which is sort of in the
+[51:49] middle sort of like in the middle of
+[51:52] Manchester on one
+[51:54] side and
+[51:57] n RZ on the other side right somewhere
+[52:00] in the middle of this spectrum let's
+[52:02] have
+[52:03] something so uh here the idea is that we
+[52:06] will keep on inferring a logical zero if
+[52:10] there are no transitions for example uh
+[52:14] this is the existing level of the signal
+[52:17] since there are no transitions in a bit
+[52:19] period we infer a logical zero however
+[52:22] if there is a
+[52:24] transition we will infer a logical one
+[52:28] so that's the idea that if there is a
+[52:30] transition we'll infer a logical one
+[52:32] otherwise we will infer a logical zero
+[52:35] so let's take a look at this since there
+[52:37] is no transition zero there's a
+[52:39] transition here one again one more
+[52:43] transition so then uh we again infer a
+[52:46] logical one so recall the transitions
+[52:48] can be from 0 to 1 physical bit 0 to 1
+[52:52] or physical bit 1 to0 but as long as
+[52:55] there is a transition in a bit period we
+[52:57] infert a logical one so again one more
+[53:00] transition but note that at this level
+[53:03] uh logical zero continued you know the
+[53:07] voltage continued to be the same
+[53:09] throughout the bit period consequently
+[53:11] we inferred a logical zero so also one
+[53:15] more point to be noted a logical zero is
+[53:17] not really associated with a voltage
+[53:19] level for example this is at a high
+[53:21] voltage and this one is at a low
+[53:24] voltage rather it is associated with the
+[53:28] fact that in a bit period the voltage
+[53:30] does not change so again for one we have
+[53:33] one more transition for zero the voltage
+[53:35] remains constant one more transition and
+[53:37] finally for the last three zeros the
+[53:39] voltage remains constant so what is good
+[53:42] with this scheme well what is good with
+[53:45] this scheme is that as compared to
+[53:46] Manchester encoding the number of
+[53:49] transistors transitions get reduced by a
+[53:52] factor of two that is one thing right
+[53:55] the number of transitions get reduced by
+[53:57] a factor of two this is because for
+[54:01] logical zeros we don't have transitions
+[54:04] well but the same problem remains so the
+[54:06] problem that remains is that we still
+[54:09] can have a run of 100 zeros and we will
+[54:13] not be able to
+[54:15] detect uh whether there are 100 zeros or
+[54:19] 99 or 101 unless we have very tight
+[54:21] clock
+[54:22] synchronization so we will see that the
+[54:24] USB protocol which is Maybe one of the
+[54:26] most common IO protocols as of today has
+[54:30] this
+[54:31] issue so what they do is that they
+[54:35] essentially the standard approach of
+[54:37] solving such issu solving such problems
+[54:41] is that you consider the original
+[54:42] message consider K bits for the original
+[54:45] message ensure that every k+ 1 bit is a
+[54:49] one right ensure means in artificially
+[54:51] plant a one again transmit K bits
+[54:56] again transmitter
+[54:58] one again K and again transmitter one so
+[55:02] the advantage of doing this is that in
+[55:04] at least every
+[55:06] k+1 Cycles in k+1 IO clock Cycles you
+[55:10] guaranteed to have at least one at least
+[55:12] one one right so let me write it at
+[55:24] least at least one one and that one will
+[55:28] have a transition So based on that we
+[55:32] can actually synchronize the clock of
+[55:34] the receiver so it will not drift very
+[55:36] far away so this a standard approach
+[55:38] which is adopted in the USB protocol as
+[55:41] well that we use the nrz scheme non
+[55:45] Return To Zero
+[55:46] inverted but uh we artificially
+[55:49] introduced some ones in the Stream uh
+[55:52] which are again you know ignored or
+[55:54] dropped by the receiver such that some
+[55:56] extra transitions come up which the
+[55:59] receiver clock can use to
+[56:01] synchronize all right now that we have
+[56:03] discussed methods of encoding data you
+[56:06] know physical bits logical
+[56:09] bits let us look at that was the
+[56:12] transmission sublayer let us look at the
+[56:15] synchronization
+[56:16] sublayer so how does the receiver know
+[56:19] when to exactly read the data so recall
+[56:21] we have been talking about sender
+[56:24] receiver clock synchronization
+[56:26] so this problem that has arisen now is
+[56:28] how does the receiver exactly know that
+[56:31] we are going to you know we need to read
+[56:34] the data exactly so it might not have
+[56:36] the same clock as the sender so in the
+[56:38] clock there are couple of issues so one
+[56:42] is the clock frequency and other is the
+[56:44] phase of the clock so another clock can
+[56:46] have the same frequency but it might be
+[56:48] slightly you know out of phase so in
+[56:52] that case again reading the data will be
+[56:55] difficult so we are talking of both the
+[56:57] frequency as well as the phase of two
+[56:59] clock signals they need to be exactly
+[57:02] the same if that's the case no
+[57:04] problem also the signal might have a
+[57:07] variable amount of delay which means
+[57:10] that if a signal is going from the
+[57:11] sender to the receiver it is not
+[57:13] guaranteed that it would reach within a
+[57:15] certain amount of time there might be
+[57:18] some amount of
+[57:20] variance right mainly because the
+[57:22] properties of the material might change
+[57:24] because of temperature so you know those
+[57:26] issues are
+[57:27] there so also there is something called
+[57:30] a keep out region so let me discuss what
+[57:34] a keep out region is which means that
+[57:37] the signal cannot be sampled sampled
+[57:39] means being read so the signal cannot be
+[57:42] sampled in a certain time interval
+[57:45] interval of
+[57:47] time so this interval of time is when uh
+[57:51] no data can be read into a
+[57:54] flip-flop so the interval is different
+[57:56] Point like this that if we have this
+[57:58] let's consider the Negative Edge of the
+[58:00] clock so there is uh so there are two
+[58:03] terms one is the setup time so setup
+[58:05] time is the is a small duration
+[58:08] before uh the clock transition before
+[58:11] the Negative Edge let's call it as a
+[58:13] setup
+[58:18] time and uh there is one more window
+[58:22] after the clock transition this is
+[58:25] called the hold whole
+[58:31] time so during this window which is
+[58:34] called the keep out region basically
+[58:35] between the setup the which includes the
+[58:38] setup time and the whole time if there
+[58:40] is a signal transition if you if you
+[58:42] read in some value which is different
+[58:45] from what we already had then it is not
+[58:48] guaranteed that the flip-flop will
+[58:50] actually uh store the new value in fact
+[58:53] it can go into a funny state called a
+[58:55] met stable State and the value can even
+[58:58] oscillate so that's the reason we want
+[59:01] to avoid transitions in this zone right
+[59:04] input transitions in this
+[59:07] region definitely because otherwise not
+[59:10] only will we read the wrong value uh we
+[59:13] will have fairly unstable behavior for
+[59:17] some period of time right so this means
+[59:19] that during this period in a clock
+[59:22] interval so basically in know during a
+[59:25] certain period around the Negative Edge
+[59:28] we cannot reden a new value into a
+[59:30] flip-flop right which is the output
+[59:33] buffer essentially at the end of the
+[59:35] receiver so let's take a look at a
+[59:37] synchronous bus which is a very simple
+[59:40] kind of bus so here the sender and the
+[59:43] receiver have the same clock so we
+[59:44] assume that the clock is perfectly
+[59:46] synchronized so the signal arrives at
+[59:49] the receiver before its clock enters the
+[59:51] keep out
+[59:52] region and uh so then uh what will
+[59:55] happen we we can immed so this shows the
+[59:57] receiver circuit this is the clock and
+[59:59] this is the io link and this is
+[60:01] essentially a d
+[60:03] flipflop so once the signal so for D
+[60:05] flip flops if you're unsure go to
+[60:07] chapter six and uh find out what a d
+[60:10] flip flop is it's essentially a register
+[60:14] to store a value so once the data comes
+[60:18] in uh it can be stored we just need to
+[60:21] ensure that it's not coming in the keep
+[60:22] out region so this can be ensured if you
+[60:25] know the delay is in advance and just in
+[60:27] case it's coming we can add a delay
+[60:29] element over here we'll discuss more
+[60:31] about it you can slightly delay the
+[60:33] signal so push it out of the cout region
+[60:36] and then uh we can essentially store the
+[60:40] value of the signal that is being
+[60:43] sent uh so then the logical bit uh can
+[60:47] be
+[60:49] stored so
+[60:51] uh this figure here shows the Circuit of
+[60:57] receiver now let's take a look at a
+[60:59] mocros
+[61:00] bus uh
+[61:02] so so so so mind you in a in a
+[61:05] synchronous bus they have the same clock
+[61:07] and the signal never arrives at the keep
+[61:10] out region so that's the reason delay
+[61:12] element is typically not added however
+[61:14] in a Mes in a mocros bus you can have a
+[61:17] fixed or a known propagation delay and
+[61:20] it might be the case that
+[61:23] uh signals are coming in the keep out
+[61:26] region right transitions are there in
+[61:28] the keep out region so that's the reason
+[61:31] it is necessary to have a tunable delay
+[61:33] element which will keep these
+[61:35] transitions out of the keep out region
+[61:38] all right so delay element is very
+[61:40] simple it's basically in
+[61:42] one simple implementation of it is
+[61:45] basically a sequence of diodes so as the
+[61:48] signal goes through the sequ or it can
+[61:51] be a sequence of inverters uh I'm sorry
+[61:54] it's not a sequence of Di sorry it's
+[61:57] it's a sequence of inverters so
+[61:59] basically this is the signal it gets
+[62:01] inverted again the original signal again
+[62:03] inverted and again the original signal
+[62:06] so this introduces certain amount of
+[62:08] delay and so this a fixed delay element
+[62:10] but you can always have a tunable delay
+[62:12] element where maybe you know this signal
+[62:15] can be bypassed over
+[62:17] here so we can thus uh have a chain of
+[62:20] inverters and also you know we can uh
+[62:23] have a tunable form so basically if I
+[62:26] want to make this thing tunable what I
+[62:27] can do is I can have one inverters uh
+[62:31] you know have something over here again
+[62:34] uh two more and then you know have a
+[62:39] small multiplexer here which chooses
+[62:41] between this value and maybe this value
+[62:45] so if I want to make it tunable what I
+[62:47] can do is that I can uh set the
+[62:50] multiplexer in a way such that this
+[62:52] value directly gets by passed by the
+[62:56] multiplexer this way and it skips these
+[62:58] two inverters so this will have a lower
+[63:00] delay as compared to the value uh as
+[63:03] compared to the signal Crossing all the
+[63:05] four inverters so this is standard way
+[63:07] of having sorry this a standard way of
+[63:10] having a tunable delay element uh where
+[63:13] uh we know that the clocks uh well so so
+[63:17] basically the idea mocus is slightly
+[63:19] more it also can be used in a case where
+[63:22] there is a known uh clocks drift which
+[63:25] means so the clocks are the same
+[63:27] frequency but there is a known skew in
+[63:29] the clocks in the sense
+[63:32] that right both the clocks have a know
+[63:34] drift and it's possible that the signal
+[63:36] is coming in the keep out region so to
+[63:39] keep it out of the keep out region we
+[63:41] can have it enable delay element so
+[63:42] whatever be the case the main difference
+[63:45] between a synchronous and a mocros bus
+[63:49] is that in a synchronous bus we assuming
+[63:51] exact clock
+[63:53] synchrony and also that you know either
+[63:56] the time of propagation is minimal or
+[64:00] signals are arriving before the clock
+[64:02] enters the keep out region but the
+[64:04] moment that we feel that the signals
+[64:07] might be coming in the keep out region
+[64:09] either because you know because of a
+[64:13] known delay of the link or because there
+[64:16] is some amount of clock skew which means
+[64:19] the clocks are slightly out of phase we
+[64:21] need to have a delay element which can
+[64:23] also be tunable to ensure that there are
+[64:26] no no new data is read during the keep
+[64:29] out
+[64:31] region so now let's look at a more
+[64:33] generic scheme so basically see
+[64:35] synchronous and mocros are not uh
+[64:39] extremely practical schemes because they
+[64:41] are assuming that uh you know at two
+[64:44] locations at the sender and the
+[64:46] receiver clocks are extremely well
+[64:50] synchronized and the delay is more or
+[64:52] less
+[64:53] predictable and uh there is hardly any
+[64:56] phase difference you know any variable
+[64:59] phase difference between the clocks
+[65:01] right so everything is known in advance
+[65:03] that is barely ever the case so what can
+[65:06] happen is because of temperature changes
+[65:08] or because of other kinds of
+[65:10] electromagnetic
+[65:12] interference uh thingss the environment
+[65:15] in which the signal is being sent can
+[65:17] really change so uh because of the
+[65:20] variable amount of delay in modern buses
+[65:23] right and mind you modern IO buses can
+[65:25] be fairly long for example at the moment
+[65:29] I'm writing using a tablet that is
+[65:31] connected to my desktop computer via a
+[65:35] cord a USB cord right I have a tablet
+[65:38] and then I have a pen that I'm using to
+[65:41] write so the cord will roughly be around
+[65:45] 1 M long so if a signal is going from
+[65:49] the sender to the receiver and this is
+[65:51] one meter we can never you know one
+[65:54] meter is a lot if we consider the speed
+[65:56] of light at which signals propagate and
+[66:01] uh so we will never be able to say for
+[66:03] sure whether you know these two clocks
+[66:06] will remain synchronized or even if the
+[66:08] value changes by a little bit it might
+[66:11] uh skip a couple of clock Cycles or
+[66:14] alternate
+[66:15] alternatively it might arrive at the
+[66:19] time at a keep out region right so which
+[66:22] is what we have to stop so the most most
+[66:25] practical solution for this is that the
+[66:28] sender sends the clock along with the
+[66:31] signal right so it sends the clock along
+[66:34] with the signal such that even if there
+[66:37] is some delay introduced in the bus the
+[66:39] clock and the signal will get delayed
+[66:41] together in the same
+[66:43] way this is pretty much similar to all
+[66:45] our traditional designs that we have
+[66:47] been doing see even in lvds and there
+[66:50] are two parallel
+[66:51] wires if for some reason a delay is
+[66:53] introduced both the wires will get
+[66:55] delayed in a roughly similar fashion so
+[66:59] as a result it's only the the difference
+[67:01] in that case was counting in this case
+[67:03] if there are similar delays they will
+[67:04] still remain synchronized with each
+[67:06] other so the idea here is that we send
+[67:09] data over an IO link and the transmitter
+[67:12] also sends its clock called The X clock
+[67:14] the transmitter is
+[67:16] clock at the same
+[67:19] time uh what we do is that we have uh so
+[67:24] once the transmitters clock stock comes
+[67:26] in uh it is basically the data is
+[67:29] latched stored in One D flipflop which
+[67:33] runs at the transmitter's clock so there
+[67:35] is no issues in that in the sense that
+[67:38] we'll never it'll never come at the keep
+[67:39] out region simultaneously we compute the
+[67:43] difference the clock skew between the
+[67:45] transmitter's clock and the receiver's
+[67:46] clock and based on that we uh tune a
+[67:51] tunable delay element so the delay
+[67:54] element what it does is that that it
+[67:56] introduces a little bit of delay such
+[67:58] that when this signal arrives over here
+[68:00] it's not arriving at the keep out region
+[68:02] of the receiver's clock so the
+[68:05] receiver's clock can then be used to
+[68:08] clock a
+[68:09] flipflop over here A D flip flop again
+[68:12] you know for background of D flip flops
+[68:14] go to chapter number six so that talks
+[68:17] about how D flip flops work and a little
+[68:21] little bit about setup time and hold
+[68:23] time and the keep out region so let me
+[68:26] just in at the cost of sounding boring
+[68:28] by being repetitive let me again uh tell
+[68:31] you what is the main issue here the main
+[68:34] issue here is that we are saying that a
+[68:37] clock begins at a Negative Edge so till
+[68:40] sometime before this clock transition
+[68:43] where this is called the setup time
+[68:46] until sometime after the clock
+[68:47] transition which is called the whole
+[68:49] time we are defining this region as the
+[68:52] keep out region we are saying that let's
+[68:55] say at this time if the input changes
+[68:58] right input of what input of the D
+[68:59] flip-flop
+[69:01] changes then it is possible that we
+[69:03] might read the wrong value or the
+[69:06] flip-flop will tend to have oscillating
+[69:08] values that's the reason what we do is
+[69:11] we find the difference between the
+[69:13] sender clock and the receiver's clock
+[69:15] appropriately delay the incoming of the
+[69:18] data such that it remains out of the
+[69:20] critical the critical keep out region
+[69:23] and then read the value into the
+[69:26] receiver's clock
+[69:27] domain uh using the receiver's clock
+[69:30] once it is over here it can pass on to
+[69:32] the receiver so let me explain the same
+[69:36] concept slightly differently such that
+[69:38] it's clear so we have a sender the
+[69:41] sender has its own
+[69:43] clock we have the receiver where the
+[69:46] receiver has its own clock both of these
+[69:49] clocks have the same
+[69:52] frequency however the clocks need not be
+[69:55] in Phase they can be out of phase and
+[69:58] the clock Q which means the difference
+[70:00] in Phase can also be variable you know
+[70:01] it can slightly vary now if the sender
+[70:04] send something over an IO link so it'll
+[70:07] essentially send in data using its own
+[70:09] clock but the iio link can have a
+[70:12] variable
+[70:13] delay since it has a variable delay the
+[70:17] receiver will not know where the data
+[70:19] transitions are
+[70:21] happening so that will cause some
+[70:23] problem uh so what the does is it does a
+[70:26] smart idea it sends its clock along with
+[70:30] data the Assumption here is that if
+[70:32] there is some delay it will affect both
+[70:34] the wires equally and the clock and the
+[70:37] data will still remain synchronized so
+[70:40] the first thing that we do is that we
+[70:42] Rin data here using the senders clock
+[70:45] simultaneously we compute the
+[70:48] difference you know the clock skew the
+[70:50] phase difference between the sender
+[70:51] clock and the receiver's clock so if
+[70:53] this is the sender's clock
+[70:55] and this is the receiver's clock we
+[70:58] compute the phase difference so we need
+[71:01] to ensure that the data goes into some
+[71:04] flip-flop within the receiver's clock
+[71:06] domain and it's not within a critical
+[71:08] keep out region so just in case the
+[71:11] assume that the data was coming in the
+[71:13] keep out region we'll delay it a little
+[71:16] bit so if let's say the data was coming
+[71:18] at this point we'll delay the data such
+[71:20] that it comes over at this point such
+[71:22] that it can be happily seamlessly read
+[71:26] by the flipflop in the receiver's clock
+[71:28] domain so this is called a source
+[71:30] synchronous
+[71:31] bus because the source or the sender is
+[71:35] sending its own IO Data and its
+[71:38] clock so uh this is per say a pretty
+[71:42] simple circuit but the idea is very very
+[71:45] profound and far-reaching so the idea
+[71:49] here is
+[71:52] that uh well so so let's take a look at
+[71:55] the assumptions so the assumptions are
+[71:58] and the insights are that buses will
+[72:01] have a
+[72:07] delay right so they're bound to have a
+[72:10] delay not all buses are synchronous or
+[72:12] micronus you know with either ideal zero
+[72:15] delay or with a known delay that's never
+[72:17] the case we'll have a delay and the
+[72:19] delay is most likely
+[72:22] variable so that's the reason the big
+[72:25] idea over here is that send the senders
+[72:28] clock along with the
+[72:40] data so once this so now what the
+[72:42] receiver can do is that it'll be able to
+[72:46] readin the data using the received clock
+[72:49] and then you know so this is the senders
+[72:51] clock domain and this is the receiver's
+[72:53] clock domain so the receiver can then
+[72:55] figure out when to read the data from
+[72:59] sender and uh insert an appropriate
+[73:02] delay if there's a kout region problem
+[73:06] and then read it into its clock domain
+[73:09] so Source synchronous procet are used in
+[73:11] most high performance buses and there is
+[73:14] a good reason for doing that and the
+[73:16] reason is that delays are unpredictable
+[73:18] that's the reason we do
+[73:20] it now let's take a look at the worst
+[73:23] kind of bus in which you know
+[73:26] the sender clock domain the receiver
+[73:28] clock domain can be really really out of
+[73:31] sync so there is no guarantee of timing
+[73:33] whatsoever so this is called an
+[73:35] asynchronous bus where essentially the
+[73:38] signal comes but we are not sure of
+[73:40] anything so in this case we can use
+[73:44] something like Manchester
+[73:48] encoding or RZ or in some cases NR zi
+[73:53] but NR zi with the modified scheme we
+[73:56] mentioned where we introduce some dummy
+[73:59] transitions right such that at least we
+[74:01] have some idea of what is the rate of
+[74:04] sending data some ones in the middle so
+[74:08] we can use any of these encoding schemes
+[74:10] so then when the data comes we have a
+[74:13] clock recovery circuit which sees the
+[74:15] transitions in the data and then uh
+[74:18] users start to recover a clock so this
+[74:21] we can call this as the senders clock so
+[74:24] mind you in this case the sender clock
+[74:26] is not being
+[74:27] transmitted rather we are guessing what
+[74:29] the sender clock is by looking at the
+[74:31] trans transitions in the physical
+[74:33] bits so then uh we load in the data so
+[74:38] basically here there is one box that I'm
+[74:41] not showing but that should probably
+[74:42] should be shown it converts physical
+[74:45] bits into a logical bit and The Logical
+[74:48] bit is read into a
+[74:51] flipflop the rest of the circuit is the
+[74:53] same exactly the same as a Source
+[74:55] synchronous bus we compute the phase
+[74:58] difference between the senders clock and
+[74:59] the receiver's
+[75:00] clock we have a tunable delay
+[75:04] element and uh the delay element uh
+[75:08] ensur signals are not in the keep out
+[75:10] region of the
+[75:11] receiver and finally we
+[75:14] have at the receiver
+[75:20] side we have a flip-flop to Rin the data
+[75:24] into the receiver's clock domain using
+[75:26] our clock which is the receiver's clock
+[75:29] all right so we always use a delay
+[75:31] element just to introduce some critical
+[75:32] delays such that nothing is read in the
+[75:35] critical region of a clock right
+[75:38] critical region being the keep out
+[75:39] region right I should rather use the
+[75:41] word keep out
+[75:44] region all right so now let's look at a
+[75:50] method uh so this will be a method for
+[75:53] operating asynchronous buses
+[75:55] mainly a synchronous proces that's it
+[75:58] but the the method otherwise is generic
+[76:00] so we'll use what are called strobe
+[76:02] signals so the strob signal indicates
+[76:04] the availability of data Because unless
+[76:06] you know it's a so see if it's a Turner
+[76:09] bus we can always have the idle state
+[76:11] which says that look there is no data
+[76:13] right and then we can have a high
+[76:15] voltage and a low voltage to indicate
+[76:17] there is data but sometimes if we have a
+[76:20] binary bus we first need to indicate the
+[76:23] data is coming and this can be done with
+[76:26] a strobe signal which will tell the
+[76:28] receiver that data is coming and uh also
+[76:32] the sender has to have some way of
+[76:33] knowing that the receiver has read the
+[76:36] data mind you because the connection is
+[76:38] absolutely asynchronous such that it can
+[76:40] send in more data right more
+[76:43] bits so there are two ways that we will
+[76:46] do it one is called four-phase handshake
+[76:48] and one is two-phase handshake so let's
+[76:50] take a look at the next protocol which
+[76:52] is four-phase handshake
+[76:55] so the four-phase handshake protocol
+[76:57] works like
+[76:58] this that
+[77:01] uh so so basically this is the sorry
+[77:05] this is the
+[77:06] sender and uh this is the
+[77:10] receiver so the sender puts data on the
+[77:13] bus then it asserts the strobe signal
+[77:16] telling the receiver the data is there
+[77:18] on the bus the receiver gets the strobe
+[77:22] signal and uh leads the
+[77:26] data and then asserts the ACT signal so
+[77:30] the ACT signal means that the receiver
+[77:32] has read the data right has read
+[77:34] whatever was being sent right so mind
+[77:37] you why is all of this being done
+[77:38] because we are not assuming that a clock
+[77:40] is there because if a shared
+[77:43] synchronized clock is there the sender
+[77:45] will always be sure that the receiver is
+[77:47] read it but in this case we are not very
+[77:49] sure that's the reason the receiver has
+[77:51] an acknowledgement line which it asserts
+[77:54] assert means changes its voltage to
+[77:57] indicate that it has read the data once
+[78:00] it has done that the sender basically
+[78:03] stops sending the data as well as de
+[78:05] asserts the probe sorry the
+[78:08] strobe and uh once the receiver sees
+[78:12] that the strobe has been
+[78:14] deasserted it knows that the sender
+[78:18] has uh basically
+[78:20] seen uh its act so it de asserts its Act
+[78:24] right d asserts means uh basically sets
+[78:27] it back to a zero level we're assuming
+[78:30] this is a logical zero that's a logical
+[78:32] one now once the sender sees that the
+[78:35] receiver has deasserted its
+[78:37] act it begins to send the next piece of
+[78:42] data and uh the next piece of data is
+[78:44] very similar you put the data first and
+[78:47] then the strobe the reason being that
+[78:49] data takes time to settle down so if you
+[78:52] asserted the strobe before the data the
+[78:55] receiver might wake up and still not
+[78:56] find the data that's the reason you put
+[78:59] the data first once it sort of
+[79:02] settled and uh then you assert the strob
+[79:05] the receiver reads it after the receiver
+[79:08] read it you deassert the strob the
+[79:10] sender de asserts the strobe and then
+[79:13] the receiver de asserts the
+[79:15] acline so this is a classic protocol for
+[79:19] sending bits of data or maybe bytes of
+[79:22] data if uh you are sure that a single
+[79:24] bite can be read correctly on the other
+[79:26] side in an asynchronous fashion so uh
+[79:30] this can be done but of course you need
+[79:31] additional lines a strobe and an a uh to
+[79:35] affect the communication so why is this
+[79:38] called a four-phase handshake well
+[79:40] because this message is phase one so
+[79:43] actually sorry uh this message over here
+[79:48] is phase two then by seeing the act the
+[79:51] sender d asserts a data and strob that
+[79:54] is
+[79:55] phase three and seeing the fact that the
+[79:58] strobe has been deasserted we don't need
+[80:00] to acknowledge anymore so that is Phase
+[80:03] 4 so this is called a four-phase act
+[80:05] protocol so it ensures that even if
+[80:09] there is no synchrony
+[80:11] whatsoever between the sender and the
+[80:13] receiver we can still assume a fully
+[80:16] asynchronous bus and send data but of
+[80:19] course in this case you need far more
+[80:21] coordination between the sender and the
+[80:23] receiver that is achieved via the strobe
+[80:26] and the
+[80:27] aclines uh you know because since there
+[80:30] is no clock you need to do something
+[80:31] some additional work and this is the
+[80:33] additional work that needs to be done
+[80:36] and of course there are several messages
+[80:37] that are sent between the sender and the
+[80:39] receiver so the protocol per say is in
+[80:42] inefficient you would rather uh you know
+[80:45] want some kind of a synchronous bus but
+[80:47] nevertheless uh this is important in
+[80:50] situations where the amount of
+[80:52] synchronization is very very little
+[80:57] now let's take a look at a two-phase uh
+[81:00] handshake so in a two-phase handshake we
+[81:03] have a slightly reduced number of
+[81:05] messages so we observe that instead of
+[81:08] you know asserting and de asserting
+[81:10] signals we can uh toggle their values
+[81:13] this will indicate a change of state
+[81:15] this will indicate that you know some
+[81:16] some message has been received and on
+[81:19] the basis of that we have changed the
+[81:21] state so this will still indicate the
+[81:23] information that we want to pass
+[81:26] on also there is no need to pause
+[81:29] between transmitting bits so recall that
+[81:31] in this case there was a pause over here
+[81:34] the reason we had a pause is because the
+[81:37] sender needed to see that the ACT has
+[81:39] been
+[81:40] deasserted only then it would send the
+[81:43] new data so here things are different so
+[81:48] uh we have the same logic we put in the
+[81:50] data first on the bus and then the
+[81:53] sender
+[81:55] right uh the
+[81:58] sender uh sets the strobe
+[82:01] signal once this is done the receiver
+[82:04] sees that there is data so it uh after
+[82:06] reading it sets the axe signal and the
+[82:09] axe signal is directly sent to the
+[82:12] sender so what the sender sees so since
+[82:15] the receiver has read the data can be
+[82:16] changed it immediately places the new
+[82:18] data on the bus and it toggles the value
+[82:22] of the strob that's very important
+[82:24] toggles means does either changes one to
+[82:27] Zer or changes 0 to one changes the
+[82:30] value right and uh so it toggles the
+[82:34] value of the stroke so this toggling
+[82:36] indicates that the sender has seen the
+[82:39] act so basically the receiver then again
+[82:42] reads the new
+[82:43] data and after that it again toggles the
+[82:46] value of the ACT this tells the sender
+[82:49] that look yes the new data has been read
+[82:52] so the same cycle continues
+[82:55] so instead of four
+[82:57] phases uh there are actually two phases
+[83:01] so the two phases are somewhat like
+[83:04] this that of course you know we place
+[83:06] data sorry we place data on the
+[83:10] bus and uh but the thing is and then uh
+[83:14] let me just clean
+[83:16] that so it is we place data on the bus
+[83:19] and we assert the strob this is one
+[83:21] phase and then the next phase is that we
+[83:25] uh see that we read the data and set the
+[83:29] acknowledgement such that the new data
+[83:31] can be placed right we just do a toggle
+[83:34] so this is Phase One and phase two so
+[83:36] this is simpler look at the number of
+[83:37] messages previously that we had and the
+[83:40] number of messages we have now so we
+[83:42] have reduced the number of messages so
+[83:44] this is a more efficient protocol also
+[83:48] it is efficient because there are no
+[83:49] gaps between data in this case we are
+[83:51] not transmitting anything but in this
+[83:54] case there are are no gaps between data
+[83:56] and the main Insight that we're using is
+[83:58] it is not necessary to actually assert
+[84:01] and deassert signals toggling them is
+[84:03] good enough so you need a small state
+[84:05] machine on the other side to remember
+[84:07] what was the previous value of these
+[84:09] strobe and ax signals but that's very
+[84:11] very easy to do so with toggling what we
+[84:14] have essentially achieved is a simpler
+[84:16] protocol for an asynchronous
+[84:20] bus all right so we have completed a
+[84:23] discussion of the overview of an IO
+[84:25] system and the physical layer so what
+[84:28] the physical layer has pretty much given
+[84:30] us is that from a source a sender to a
+[84:35] receiver we have reliably been able to
+[84:38] send our bits they might be from
+[84:41] different clock domains have different
+[84:43] synchronization requirements there are
+[84:45] different ways of coding data different
+[84:47] ways of sending data in terms of
+[84:50] voltages whatever the case may be
+[84:52] finally data from the sender has reached
+[84:54] the receiver and the right uh you know
+[84:58] the all the logical bits from the sender
+[85:01] have been transferred to the receiver
+[85:03] there might have been errors in this
+[85:06] process we don't know that yet so this
+[85:08] we'll get to know when we look at the
+[85:11] data link cayer

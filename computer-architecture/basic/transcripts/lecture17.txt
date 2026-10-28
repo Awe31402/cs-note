@@ -1,0 +1,1028 @@
+[00:02] [Music]
+[01:14] welcome to the third lecture on risk 5
+[01:18] Assembly
+[01:19] Language so we have actually covered
+[01:21] quite a bit up till now we have looked
+[01:23] at the ISA the integer instructions the
+[01:25] memory instructions and the
+[01:28] branches and the most difficult nut that
+[01:30] we have cracked up till now is the
+[01:34] recursive function call so we have
+[01:36] looked at that and that pretty much
+[01:39] involved everything so it involved
+[01:40] integer operations memory operations
+[01:42] function calls stack management
+[01:45] everything so this is the last lecture
+[01:47] third lecture in this risk 5 Series so
+[01:50] we will talk about floating
+[01:53] point and uh also instruction
+[01:58] encoding so uh these two points floating
+[02:01] Point instructions and instruction
+[02:04] encoding let us now look at the floating
+[02:07] Point register set so the same way that
+[02:10] the integer register started with x uh
+[02:13] floating Point register start with an f
+[02:16] and we have 32 registers so they go from
+[02:18] F0 to
+[02:21] F31 so total we have 32
+[02:27] registers and uh the 3 two registers are
+[02:30] numbered F0 fub1 FS2 till
+[02:34] F31 and uh in this case we do not have a
+[02:37] floating Point register that is
+[02:39] hardwired to zero and clearly the
+[02:42] integer register x0 cannot be used in
+[02:45] floating Point unless this also under
+[02:48] goes an a floating point
+[02:51] conversion so we will see that you know
+[02:55] it did not does not make sense or did
+[02:57] not make sense to have a dedicated
+[03:00] floating point0 register the main reason
+[03:02] being that loading values into floating
+[03:05] Point registers is not as
+[03:07] straightforward as in loading
+[03:10] integers so it's much better to kind of
+[03:13] store them save them somewhere in memory
+[03:15] and load them this primarily because
+[03:18] integers have a simple format and
+[03:20] floating points if you would recall from
+[03:23] chapter 2 have a more complex format so
+[03:26] basically they have
+[03:30] you know the standard U mantisa and
+[03:32] exponent right and that to a biased
+[03:35] exponent s bit and so on so it's
+[03:37] complicated 1 + 8 + 23 kind of
+[03:40] structure so here also we have neonics
+[03:44] which should be used it's always a good
+[03:46] idea ft means the temporary ones that
+[03:50] are not saved same uh is just that the
+[03:53] prefix F gets added otherwise the
+[03:56] convention is the same then we have FS
+[03:59] which is a saved
+[04:00] register arguments and return values
+[04:03] same uh we had a0 A1 there we have fa0
+[04:07] and fa1 here and finally fa 2 to7 again
+[04:12] eight function
+[04:14] arguments so these ones so we have more
+[04:17] more of the saved registers because we
+[04:19] don't need the other specialized
+[04:21] registers like uh stack pointer or a
+[04:24] frame pointer return address these
+[04:26] things are not needed so that's the
+[04:28] reason there are only three classes the
+[04:31] first is the argument and return value
+[04:33] class then the saved stored registers
+[04:36] and then the temporary registers that
+[04:38] are not meant to be stored across
+[04:41] invocations right only these three types
+[04:43] so we have more registers in each of
+[04:46] these
+[04:48] buckets so there is a special register
+[04:50] and this is kind of there in all
+[04:53] floating Point ISS it's known as the
+[04:56] fcsr register floating Point control and
+[04:59] Status Reg
+[05:01] so it stores a lot of information and as
+[05:03] I said floating Point math is complex so
+[05:06] that is the reason that there are a lot
+[05:08] of these kind of specialized conditions
+[05:11] and exceptions that we all need to track
+[05:14] so the first five bits store this
+[05:16] specialized
+[05:18] exceptions so because you know we have
+[05:22] so many complex floating Point
+[05:23] operations and not all the operations
+[05:25] kind of can yield a crisp value or even
+[05:28] a correct value you may have divide by
+[05:30] zero and you know square root
+[05:33] of a negative number and so on so this
+[05:37] kind of makes life
+[05:39] tough so uh that's the reason these
+[05:41] flags are set the first is an invalid
+[05:44] operation
+[05:46] NV divide by zero again not allowed an
+[05:51] overflow overflow is when the result
+[05:54] does not fit within the range of the
+[05:57] floating Point number system
+[06:00] and
+[06:01] underflow and then when the result
+[06:03] cannot be specified exactly so we are
+[06:06] kind of it's
+[06:09] inexact akin to all other floating Point
+[06:12] instruction sets there is a need for
+[06:15] rounding that is mainly because you know
+[06:18] you would compute extra bits so let's
+[06:21] say that you know you're adding to
+[06:22] floating Point
+[06:24] numbers and one is uh let's say 3 4 5
+[06:29] and then you
+[06:30] add uh
+[06:33] 2.36 * 2 ra to
+[06:38] power let's say minus
+[06:40] 40 so this will clearly not kind
+[06:44] of fit within the same range right it's
+[06:48] not within 23
+[06:50] bits uh so this is sort of going to be
+[06:54] hard to represent mainly because we'll
+[06:57] be losing some Precision here right so
+[07:00] of course this part we can ignore but
+[07:02] what if let's say this is like minus
+[07:06] 23 so always when we are adding because
+[07:10] we have 23 mantisa bits there'll be some
+[07:12] additional bits which will kind of fall
+[07:14] down and some of these will kind of be
+[07:17] well towards the right but some of them
+[07:19] will just be over here so clearly some
+[07:22] degree of precision is being lost and
+[07:24] that is what we need to see how the
+[07:26] rounding needs to be done so there are
+[07:29] many round rounding modes so the first
+[07:32] one so we have seen this so I'm not uh
+[07:35] we have seen this in earlier chapters
+[07:37] I'm not spending a lot of effort on it
+[07:39] the first is that you round to the
+[07:41] nearest in a sense let's assume we want
+[07:44] to keep only one point after one digit
+[07:47] after the decimal point then let's say
+[07:50] it's
+[07:51] 3.46 I would round it to
+[07:55] 3.5 but let us say it is 3.45
+[07:59] then I would prefer the even LSP so in
+[08:03] this case if I kind of import that to
+[08:06] decimal it would be the even number
+[08:08] digit so in this case it would actually
+[08:10] be
+[08:12] 3.4 and similarly if I'm having 3.55 but
+[08:16] that needs to be rounded it'll actually
+[08:21] 36 but again uh 3.54 would become 3.5
+[08:25] and 3.56 would become
+[08:28] 3.6 so we always round to the nearest
+[08:31] point and whenever there is a we are at
+[08:33] a midpoint we prefer the even
+[08:35] LSP the other is round it towards
+[08:39] zero so which basically means that if
+[08:41] you are positive go towards the lower
+[08:44] values in this case if let's say it's
+[08:47] 3.46 and I would kind of go down so I'll
+[08:49] go to
+[08:50] 3.4 if it is minus
+[08:53] 3.46 and again I want to go towards zero
+[08:57] this will then become Min - 3. .4 in a
+[09:00] sense this is the same as truncation
+[09:02] where the last digit is kind of cut
+[09:04] off then I can do other things I can
+[09:07] round towards plus infinity always go up
+[09:10] round towards minus infinity right
+[09:13] always go down so rdn minus infinity R
+[09:16] up plus
+[09:18] infinity I can round to the nearest
+[09:22] where I can try to just increase the
+[09:24] absolute
+[09:25] value so absolute value would mean like
+[09:28] this the 3.4 4 5 I would round it to
+[09:34] 3.5 right and minus
+[09:38] 3.45 I would kind of round it to minus
+[09:42] 3.5 because I'm preferring the larger
+[09:45] absolute value so in this case I'm kind
+[09:47] of spreading it I'm going away from zero
+[09:49] so this is the opposite of round towards
+[09:51] zero it is the opposite of that it's
+[09:53] going go away from
+[09:55] zero then there are other rounding modes
+[09:58] that I can Define but of course these
+[10:00] two have not been defined so they are at
+[10:02] the moment reserved for future
+[10:05] use sometimes I may not want to specify
+[10:08] the rounding mode at the time of
+[10:10] compilation or even at the time of
+[10:13] starting the program and I would like to
+[10:15] specify dynamically it could be it could
+[10:17] come along with the instruction so an
+[10:20] instruction could say that this is my
+[10:21] rounding mode so in this case I would
+[10:24] use the D mode in this floating Point
+[10:27] register for the instruction has an frm
+[10:30] kind of a format field that would
+[10:32] specify the rounding
+[10:36] mode so let's look at floating Point
+[10:39] load and store
+[10:41] operations so they look very very
+[10:43] similar to their integer counter part so
+[10:46] if let's say it's a 32-bit floating
+[10:48] Point number it is stored in memory the
+[10:50] 4
+[10:51] bytes in the case of a load same this is
+[10:55] the memory address the contents get
+[10:56] transferred here and the contents are
+[11:00] clearly in the floating Point format so
+[11:03] the moment they are transferred to a
+[11:05] register nothing needs to change the the
+[11:08] bits and bytes remain as they are and
+[11:11] when they go to the ALU they will be
+[11:13] interpreted as a floating Point number
+[11:15] the same with
+[11:17] store that if let's say something has to
+[11:20] be stored in a memory
+[11:22] location uh sorry this part Small Change
+[11:26] yeah it has to be F1 not X1
+[11:30] one so uh Whenever there is
+[11:33] a floating Point store the contents of
+[11:37] F1 will go to the memory location over
+[11:40] here and here again there is no bit
+[11:44] conversion nothing because this is in
+[11:46] the floating Point
+[11:51] format so now let's see exactly how uh
+[11:55] the process of loading a constant
+[11:57] happens so as we have argued
+[12:01] earlier there are no instructions that
+[12:04] actually take a floating Point immediate
+[12:06] the main reason being that the floating
+[12:08] Point format is kind of long so every
+[12:10] immediate would be 32 bits so we can't
+[12:12] have this short shortened 12bit
+[12:16] immediates so whenever we have floating
+[12:18] Point constant it's much better to
+[12:20] associate it with a label so clearly the
+[12:22] type is
+[12:23] float we associate this with a label
+[12:27] Val so internally the 32bit value is
+[12:31] stored in a memory
+[12:33] location this memory location can be
+[12:35] read into a register using the LA
+[12:38] instruction that we have seen earlier
+[12:40] the job of this is to take the address
+[12:42] and kind of store it in A1 the register
+[12:47] A1 and then the A1 has the register of
+[12:51] the location corresponding to this
+[12:53] floating Point number so then we can use
+[12:56] a regular load instruction floating
+[12:58] Point Lo Lo instruction to load it into
+[13:01] a floating Point register
+[13:05] FS1 all right uh so this is what we do
+[13:08] so the way that we load a constant is
+[13:11] that we do not specify an immediate
+[13:14] field in the instruction instead what we
+[13:18] do is that we store it uh the constant
+[13:24] is stored in memory associated with a
+[13:26] label in the assembly code
+[13:31] we read the value of the label store its
+[13:34] address in a
+[13:35] register and then from that address we
+[13:38] transfer the contents into a floating
+[13:41] Point register after which it can be
+[13:45] used so the arithmetic instructions
+[13:49] look very very very
+[13:52] similar here but of course the immediate
+[13:56] forms are not there so we have fad fad.
+[14:00] s s is single Precision 32 bits D would
+[14:03] be double Precision 64 bits so you'll
+[14:06] find this do s
+[14:08] everywhere so F add basically same same
+[14:12] format Rd rs1 R2 so fub1 is FS2 + F3 F
+[14:17] add F sub F Mal so mind you in the case
+[14:21] of integers the result of a
+[14:24] multiplication was 64 bits right 32 + 32
+[14:29] and the result of a division again was
+[14:31] 64 bits because you had a 32-bit
+[14:33] quotient and a remainder but in the case
+[14:35] of floating point that will not
+[14:38] happen so uh I
+[14:41] mean uh there is the result will fit of
+[14:46] course if some bits have to be let go
+[14:49] then the rounding mode will take care of
+[14:51] it and there will be no floating Point
+[14:54] remainder so that is why the result is
+[14:57] still 32 bits and and if it doesn't fit
+[15:00] then we can signal an overflow underflow
+[15:02] but that would be a rare
+[15:04] occasion so that is why in the case of
+[15:06] floating point the result fits in 32
+[15:10] bits and then uh we have other uh
+[15:14] minimum and
+[15:16] maximum so in general okay we have
+[15:19] square root so square root takes a
+[15:22] single uh single argument so in general
+[15:25] it makes little sense to actually
+[15:27] compare floating Point numbers
+[15:30] the reason is that two real numbers are
+[15:33] never
+[15:34] equivalent in a theoretical sense I mean
+[15:38] unless they are like exact copies of
+[15:40] each other because the point is that you
+[15:42] know 4 and 4 + 10^ minus
+[15:45] 15 they are sort of uh not equal but
+[15:51] because uh it all depends on whether you
+[15:54] can represent 10 ^ minus5 in your
+[15:56] representation or not if if you can they
+[15:59] are not equal if you cannot then they
+[16:01] are equal so that is why this
+[16:03] instruction is always tricky the right
+[16:06] way to do it is actually to subtract it
+[16:09] find the absolute value and see if this
+[16:12] is less than some
+[16:14] threshold then you can sort of infer
+[16:17] that they are within the same window
+[16:18] hence they're equal in the following
+[16:22] sense so let's keep going so let's look
+[16:26] at an interesting example
+[16:29] assume we want to compute square root of
+[16:32] piun + e + piun into e right uh this
+[16:36] complex thing not very hard so Define pi
+[16:40] as a label 3.14 Define e as a label
+[16:45] 2.72 read the address of
+[16:49] Pi then the contents into FS1 address of
+[16:53] e contents into
+[16:56] FS2 so first we do p plus C so we add
+[17:00] both these FS1 FS2 temporary FT1 Pi + C
+[17:06] multiply Pi * C use the multiplication
+[17:08] operation store it in
+[17:10] ft2 then we add Pi + C and Pi * C add
+[17:15] FT1 ft2 store the result in
+[17:18] ft3 and finally we compute the square
+[17:21] root in FA Z which is the register in
+[17:24] which it is supposed to be returned so
+[17:27] as you can see this is very similar to
+[17:29] integers no difference it is very very
+[17:32] similar in terms of the way that the
+[17:35] assembly code is structured so no
+[17:37] surprises here of course the zero
+[17:40] register is not there which was playing
+[17:41] a huge role over there so that is not
+[17:45] there
+[17:47] here so uh for supporting modern neural
+[17:51] network kind of dot product kind of
+[17:55] computations there is an interesting new
+[17:58] instruction that takes three register
+[18:00] arguments FM add dos FM sub dos so what
+[18:06] they actually do is they compute FS2
+[18:08] into F3 +
+[18:10] F4 and FS2 into F3 minus F4 and this has
+[18:14] been done you know my presumption is to
+[18:18] support operations like matrix
+[18:20] multiplication dot products and so on
+[18:24] where we multiply two things and we kind
+[18:26] of accumulate uh the product right so
+[18:29] the multiplication is like the partial
+[18:31] product which is in a sense
+[18:35] accumulated uh so this is a very
+[18:37] powerful operation for modern workloads
+[18:40] so keeping this in mind these two
+[18:43] operations were introduced and of course
+[18:45] now you know with neural networks and Ai
+[18:47] and so on this uh instruction
+[18:50] particularly this one it's called a
+[18:52] multiply and accumulate actually so this
+[18:54] instruction it has a name it's called a
+[18:56] Mac and uh this instruction is very very
+[18:59] popular in the neural network World
+[19:02] primarily because of this
+[19:06] reason so uh the subtract instruction
+[19:10] similar and these two instructions are
+[19:15] important mainly because they allow
+[19:17] conversion from int to float and Float
+[19:19] to int which in many many cases is
+[19:22] required the main reason being that it
+[19:25] is hard to read in an immediate into a
+[19:28] floating Point assembly program that is
+[19:31] why we need these two instructions so F
+[19:35] convert and uh so there are two forms s
+[19:39] w and WS so s w means that you are
+[19:43] converting an integer word into a
+[19:45] floating Point say F1 is float of X5 so
+[19:49] this is the type is being changed
+[19:52] internally it's hard to do because
+[19:53] integers are represented differently
+[19:55] floating points are represented
+[19:57] differently so a type conversion has to
+[20:00] be done similarly F convert
+[20:04] WS the first one is s w this is WS is
+[20:08] where you take a single Precision
+[20:10] floating point and you convert it back
+[20:12] to an integer so this also can be done
+[20:16] and of course we can create an analog of
+[20:19] the Zero
+[20:20] registor by doing a conversion and sort
+[20:23] of creating an
+[20:25] F0 which is nothing but the floating
+[20:28] point equ equalent of
+[20:30] zero this can be done but of course
+[20:32] there is no hardwired registered but
+[20:34] these convert instructions have been
+[20:36] provided which in practice are very
+[20:39] useful and they allow you to sort of
+[20:42] load custom values if immediate values
+[20:45] if they are integers but you want to
+[20:48] represent them as a floating point for
+[20:50] example if it is three but you want to
+[20:52] represented as 3.0 then you use that
+[20:59] so let's uh solve another problem let's
+[21:03] compute &lt; * e + 4 store the result in F
+[21:08] a0 and convert it to an integer and
+[21:11] store the result in
+[21:13] a0 same thing we Define pi and D we
+[21:16] Define their
+[21:18] addresses uh load them load their
+[21:22] values so FS1 contains pi and this
+[21:25] contains
+[21:26] e then what we do
+[21:29] is that we need to add four to this
+[21:32] product here there is a trick here in
+[21:34] there is a trick we need to convert 4 to
+[21:37] 4.0 right so four is useless 4.0 so what
+[21:43] we do is that first we load four into an
+[21:46] integer register by adding it to the
+[21:48] zero register can be done we have seen
+[21:50] this trick after that we do a conversion
+[21:53] so basically we
+[21:56] convert uh so we use f convert s w where
+[22:00] F convert s w converts an integer to
+[22:03] floating point so it converts an integer
+[22:06] to floating points F2 FT1 now contains
+[22:10] 4.0 so what I now
+[22:13] do I do another interesting trick let
+[22:16] me is that I take FT1 which contains
+[22:21] 4.0 and I take FS1 and FS2 FS1 contains
+[22:25] Pi this contains e and I use the FM ad
+[22:28] instruction so fmad if you would recall
+[22:32] can do everything in one go it's very
+[22:34] fast so it does Pi * C plus
+[22:37] 4.0 everything in one instruction
+[22:40] nothing needs to be done beyond that uh
+[22:42] this is the greatness of this
+[22:45] instruction that it folds a product and
+[22:48] an addition in the same instruction
+[22:51] which we did here by time C +
+[22:55] 4.0 the result gets stored in ft0
+[22:58] now this we had to
+[23:01] convert uh well so we wanted to show the
+[23:03] result in
+[23:05] fa0 uh well uh let's uh change that to
+[23:09] ft0 okay uh so and then uh
+[23:14] ft0 what I do is I convert it back I
+[23:18] kind of back convert it
+[23:22] into
+[23:25] a0 and uh then I use the other
+[23:27] conversion operation which takes an S
+[23:30] here single precision and converts it to
+[23:34] an integer over here so the final result
+[23:37] is a
+[23:39] z so what we get to see is that we used
+[23:42] a host or a bunch of advanced floating
+[23:46] Point features to
+[23:49] actually load the constants convert an
+[23:53] integer to a floating
+[23:55] point do a Mac operation and convert it
+[23:58] back back to an
+[24:03] integer so let us now look at floating
+[24:06] Point comparison
+[24:09] instructions so as we have said earlier
+[24:13] floating Point equality is sort of
+[24:15] tricky the only thing that you can
+[24:18] actually check is if both the
+[24:19] representations are exactly the same bit
+[24:22] to bit so the 17th bit is the same as
+[24:25] the 17th bit on the right hand side
+[24:28] the first bit is the same as the first
+[24:30] bit 31st is same as 31st so on and so
+[24:36] forth and uh that is only thing that can
+[24:41] done right that ath bit is same as ath
+[24:44] that is what is equality for less than
+[24:46] greater than of course standard
+[24:47] algorithms apply but equality is always
+[24:50] tricky so any quote if you want to do it
+[24:53] correctly just uh follow that absolute
+[24:56] and Epsilon trick that I said but of
+[24:58] course this increases the number of
+[25:01] instructions so things have to be done
+[25:06] judiciously so the First floating Point
+[25:09] comparison instruction is FLT less than
+[25:13] and single F is for floating Point s is
+[25:16] for single
+[25:17] Precision so basically here we compare
+[25:20] F2 and F3 and the result is stored in an
+[25:23] integer register that is important we
+[25:25] set S1 to one which is an integer
+[25:28] registor it is set to one if the result
+[25:32] of the comparison is FS2 is less than
+[25:37] fs3 similarly if
+[25:41] uh FS2 is less than equal to
+[25:45] F3 then we use fle right less than equal
+[25:49] to and in this case the integer register
+[25:52] S1 is set to
+[25:54] one finally if they are equal right and
+[25:58] this is a tricky one but as I said this
+[26:00] is an absolute bitto bit comparison we
+[26:04] set S1 to
+[26:07] 1 so this is in a sense conceptually the
+[26:10] same as integer comparison with the
+[26:12] caveats that I
+[26:15] mentioned so let us say that I would
+[26:18] like to First initialize a0 to
+[26:21] 0 then set a 0 to 17 if e is less than
+[26:26] Pi where e is 2.72 rough and Pi is
+[26:29] 3.14 so e is indeed less than pi and
+[26:33] that is why I would like to set a 0 to
+[26:36] 177 again I do the same I Define pi and
+[26:40] d i define labels corresponding to
+[26:44] them and then I load the value of pi
+[26:47] into FS1 load the value of e into FS2
+[26:51] using the trick that I
+[26:53] showed then what I do is I
+[27:00] uh set a0 to be equal to Z so this is
+[27:04] simple I just add 0 and 0 and set a z
+[27:07] nice trick I compare pi and E that is
+[27:11] important so if e is less than Pi so
+[27:14] recall that e is there in FS2 so this is
+[27:18] e i compare if this is less than what is
+[27:22] there in FS1 which is
+[27:25] pi so if e is less than pi then I set
+[27:29] the value of
+[27:30] t0 so if t0 is zero which means this
+[27:33] value is not set then of course I exit
+[27:36] right so it means that the less than was
+[27:39] not successful but in this case we
+[27:41] know that this is not the
+[27:45] case but because t 0 in this case will
+[27:48] get set to one because e is indeed less
+[27:50] than Pi we will come here and in this
+[27:54] case what we will do is we will set a0
+[27:56] to 17 which is our original a so we are
+[28:01] setting it uh to
+[28:04] 17 uh which is our a over
+[28:08] here and uh what we have effectively
+[28:12] done is that we have done uh for
+[28:15] floating Point uh
+[28:18] comparison and on the basis of the
+[28:21] comparison we have actually taken a
+[28:23] decision and the decision has been to
+[28:27] set
+[28:31] uh a0 to 17 based on the result of the
+[28:34] comparison and the result of the
+[28:36] comparision was stored in t0 and t0 in
+[28:40] this case if e is less than Pi it will
+[28:42] be one so it's going to come here
+[28:44] because equality with zero is not there
+[28:47] and a0 gets set to
+[28:50] 17 so now we will look at the last set
+[28:54] of slides not many there are five or six
+[28:55] slides on instruction and coding
+[29:00] so the instruction formats in 32-bit
+[29:03] risk 5 actually there are quite a few
+[29:06] right so unlike simple risk that
+[29:09] had much fewer formats here there are
+[29:12] quite a few
+[29:13] actually and uh let's go through them so
+[29:15] the regular uh one the simplest one is
+[29:18] the register R
+[29:20] format which has a destination register
+[29:23] and two Source
+[29:25] registers so all our arithmetic
+[29:28] instructions add sub malive and or
+[29:31] shifts everything falls in this
+[29:34] class the other simple class is the one
+[29:38] that takes an immediate as input instead
+[29:41] of the Second Source register this
+[29:44] becomes an
+[29:45] immediate again all the I variants of
+[29:48] you know all the I variants of these
+[29:50] guys this Falls within the I format
+[29:53] where simply instead of a register we
+[29:55] have an immediate and there are are two
+[29:58] interesting additions here one is the
+[30:00] load
+[30:01] instruction so the load instruction has
+[30:04] a destination it has a source register
+[30:06] and an immediate of course it is written
+[30:09] differently it is not written in this
+[30:11] comma fashion it's written like this but
+[30:14] nevertheless there are three arguments
+[30:15] and they are the same Rd rs1 and
+[30:17] immediate so hence the load also has the
+[30:20] same
+[30:22] format the Jr
+[30:26] instruction so this also has the same
+[30:30] format primarily because it has a return
+[30:33] address register and it has a base
+[30:37] register and immediate so the format is
+[30:39] the same two registers one being a
+[30:41] destination and one being an immediate
+[30:44] so jlr also follows the same
+[30:47] format store has always been a difficult
+[30:52] case for us so in some cases in the case
+[30:55] of simple risk we didn't
+[30:58] design a new format but we kind of
+[31:00] repurposed an existing format in this
+[31:03] case of course we have to design a new
+[31:05] format and uh because the ISA is more
+[31:10] expressive so we have in the case of
+[31:13] store two Source registers and an
+[31:15] immediate all three have to be
+[31:18] represented two Source registers both
+[31:20] the source registers and the immediate
+[31:23] all three needs so store will have its
+[31:25] separate
+[31:26] format and and mind you all of these up
+[31:29] till now are 12bit
+[31:32] immediates so then we'll have the U
+[31:35] format U type which is a 20bit immediate
+[31:39] to be loaded in the upper 20 bits for
+[31:42] the Lei instruction of course but the
+[31:45] idea here is there's one destination
+[31:47] registered and a 20 bit immediate rest
+[31:50] all are 12
+[31:52] bits so then what are the types R kindly
+[31:56] remember R for register I for immediate
+[31:58] s for store U
+[32:01] for essentially upper immediate that's
+[32:03] what it is for but let's call it
+[32:05] extended you know large immediate 20bit
+[32:08] immediate r i SN U registered immediate
+[32:12] Store Upper immediate R
+[32:15] IU so the r type is like this that the
+[32:19] op code is the first seven
+[32:22] bits so we do indeed support a lot of op
+[32:26] code so we'll see that the op code
+[32:28] information is there in other fields as
+[32:30] well and that is mainly because the risk
+[32:33] 5 instruction set has so many
+[32:36] extensions and that is why we need to
+[32:38] support a lot of op codes so as it is we
+[32:42] have seven bits so 128 op codes can fit
+[32:45] here but it will become
+[32:47] more the next five bits are for the
+[32:50] destination
+[32:52] register then this is like an OP code
+[32:55] extender where you have the add
+[32:57] additional three bits for example add
+[33:01] SLT and zor actually share the same op
+[33:04] code but they are different and that
+[33:06] difference gets manifested in this
+[33:08] field so what is the hardware reason for
+[33:11] Designing it this way well the hardware
+[33:13] reason is that if you kind of want to
+[33:17] process all the instructions you're sort
+[33:19] of like creating a hierarchy so all the
+[33:22] instructions that say share the same op
+[33:24] code you want them to be processed in
+[33:27] the same way inside the
+[33:29] processor and so that is why you would
+[33:31] kind of let them go through on the same
+[33:33] route and make a differentiation later
+[33:36] which is why you have a separate a
+[33:38] different
+[33:40] field then both the registers given we
+[33:42] have 32 registers we spend five bits
+[33:45] each in storing rs1
+[33:47] rs2 again there is a function kind of an
+[33:51] extender op code extender right to
+[33:54] further differentiate between the op
+[33:56] codes so for example add and sub uh
+[33:59] which are so if you see add SLT and zor
+[34:01] are not very strongly related they are
+[34:05] related but they're not very strongly
+[34:07] related as much as add and subtract so
+[34:10] add subtract Etc uh add and subtract
+[34:13] will not get differentiated here but
+[34:15] they'll get differentiated here and uh
+[34:18] because you know there's this minor
+[34:19] change where subtraction is essentially
+[34:21] addition with the two's complement so
+[34:24] that is why the differentiation happens
+[34:26] here so pretty much what we are seeing
+[34:28] is that off code is like a high level
+[34:31] differentiator then similar
+[34:33] instructions will have a same fun three
+[34:36] field which is again a kind of a medium
+[34:39] level discriminator and the lowest level
+[34:41] discriminator is the funct 7 field so
+[34:44] this gives us a choice of a lot of op
+[34:46] codes where the instructions in a sense
+[34:48] can be sort of managed
+[34:51] hierarchically which is anyway our aim
+[34:53] that's the reason we are creating
+[34:55] extensions and then we kind of group
+[34:57] extension
+[34:58] so the main aim is this hierarchical
+[35:01] management of instructions which is a
+[35:03] Hallmark of risk 5 and the way that it
+[35:06] manifests in the format is that we have
+[35:08] an OP code a fun 3 fun 7 and so
+[35:12] on so let's look at the I type uh
+[35:15] reasonably similar we have 7bit op code
+[35:18] 5bit Rd so one of the main names here
+[35:21] was kind of consistency across the
+[35:24] formats so we wanted all the formats to
+[35:26] roughly look the same
+[35:28] uh such that the decoder is not that
+[35:30] complex fun three rs1 is the First
+[35:34] Source register so the logic is very
+[35:36] clear of why rs1 was placed here the
+[35:39] reason being that rs2 can be substituted
+[35:42] with the immediate so that is why you
+[35:45] keep rs1 here so in a sense the decoder
+[35:47] sort of makes the differentiation here
+[35:50] at this point so as I said the maximum
+[35:55] overlap that you can have the better it
+[35:57] is across different instruction types
+[35:59] you want to maximize the overlap so in
+[36:02] this case the overlap has been maximized
+[36:04] hence uh you know that's a good
+[36:06] desirable trait so the immediate field
+[36:10] is actually 12 bits so 7 + 5 12 so we
+[36:15] store a 12bit signed immediate over
+[36:21] here now let's look at the S type for
+[36:23] stores so for store as we said we do not
+[36:27] it's still a kind of a different format
+[36:30] but it's not a very different format so
+[36:32] I have said you know do not Define a new
+[36:34] format well but there are two ways of
+[36:36] interpreting this the first is that it
+[36:39] is indeed a different format because it
+[36:41] is St type but we have not made a lot of
+[36:44] changes hence I'm saying do not
+[36:47] Define so op code 7 bits fine so here is
+[36:51] something that we you know it's a
+[36:53] brilliant idea that we don't want to
+[36:56] move fields around because the moment we
+[36:58] do that the decoder becomes
+[37:00] complex so you just see what was there
+[37:02] after the op code there was a
+[37:05] register the store does not have a
+[37:08] destination so let us instead use these
+[37:10] five bits to store five bits of the
+[37:13] immediate so they get used and the
+[37:16] destination is not there then we have
+[37:19] fun three it remains where it is we have
+[37:22] rs1 and rs2 they also remain where they
+[37:24] are just kindly verify rs1 and rs to
+[37:27] remain where they
+[37:29] are and then the remaining Seven Fields
+[37:32] we don't have a fun seven the rest of
+[37:34] the immediate bits are stored here so
+[37:37] the main aim here is that we maximize
+[37:39] the
+[37:46] overlap in the instruction
+[37:54] formats right and the Rd field since
+[37:57] it's not there we use its space to store
+[38:00] immediate bits so five are stored there
+[38:02] and seven are stored
+[38:06] elsewhere then we have a 20 bit uh
+[38:09] immediate in the U type so again U type
+[38:12] as you can see consistency is clearly
+[38:14] visible we have seven bits here we have
+[38:19] uh five
+[38:21] bits of Rd because this has an RD this
+[38:25] has a destination you're load putting
+[38:27] the immediate into the destination so a
+[38:30] destination is nonetheless there so the
+[38:33] five bits of the destination go here so
+[38:36] 7 + 5 12 gone 20 left and the entire 20
+[38:40] bit immediate is saved here so this is
+[38:44] why we have 20 bits here and 12 there so
+[38:47] as you can see everything kind of nicely
+[38:48] and snuggly fits in and also most of the
+[38:53] time we try to reuse all the fields so
+[38:56] we don't we don't change the field
+[38:58] boundaries rs1 and rs2 remain where they
+[39:01] are everything remains where it is so
+[39:04] whatever is new in a format only those
+[39:06] bits are changed like in this case we
+[39:09] could have kind of shifted rs1 and rs2
+[39:12] over here but we didn't do that we made
+[39:15] it we made them remain where they are
+[39:17] and we intelligently partitioned the
+[39:19] immediate bits between these locations
+[39:23] and these location so we have had a lot
+[39:25] of fun with the four instruction formats
+[39:29] so we have had so much of fun that let
+[39:31] us introduce two more so we'll introduce
+[39:35] the B
+[39:36] format right and the J format so J is
+[39:41] also called the UJ format right so but
+[39:44] I'm not writing
+[39:46] that so the main idea here is as follows
+[39:52] so let's take a look at the branch
+[39:53] format Branch format is for conditional
+[39:56] branches
+[39:58] so here we directly compare two
+[40:00] registers if the comparision is
+[40:01] successful we jump to a label the label
+[40:05] as we have seen throughout all isas is
+[40:08] essentially a PC relative
+[40:12] offset so ultimately it becomes an
+[40:14] immediate because that immediate is
+[40:16] added to the current
+[40:19] PC so that is why the format is rs1 rs2
+[40:23] and immediate and there is clearly no
+[40:25] destination register
+[40:27] so in the B type we do the same the
+[40:30] seven bits here represent the op
+[40:34] code now we play there is a little bit
+[40:37] of a trick here so we need to understand
+[40:39] right the instruction set encoding is
+[40:42] full of tricks you know visible tricks
+[40:45] hidden tricks tricks tricks
+[40:48] everywhere so what happens is that in
+[40:51] the immediate because it's a PC relative
+[40:55] offset the least significant bit is
+[40:59] zero so we assume a certain alignment to
+[41:03] at least two white
+[41:07] boundaries so the least significant bit
+[41:09] is zero hence that bit is not
+[41:11] represented because why was a bit so
+[41:14] ideally the way that the bits would have
+[41:17] been represented would have been like
+[41:19] this that bit number zero here then 1 2
+[41:24] 3 4 but Bit Zero is not being
+[41:27] represented so the smart trick is that
+[41:29] bits 1 to 4 are stored
+[41:32] here
+[41:34] and this space is left empty and later
+[41:38] on bit number 11 is put here so we'll
+[41:41] see in a second why so but at least zero
+[41:44] in Zero's position nothing the same
+[41:45] position for the rest of the bits is
+[41:47] maintained which is a main stay of the
+[41:49] encoding of this uh
+[41:52] Isa and so one to 4 go here the fun
+[41:55] three field is still required mainly to
+[41:57] specify the type of uh the
+[42:01] comparision rs1 and rs2 maintain their
+[42:04] positions and then the immediate so
+[42:07] again in the
+[42:09] immediate uh the key uh Point here is
+[42:13] that we would like to have some degree
+[42:16] of you know consistency with other
+[42:19] formats right
+[42:24] uh especially consistency with the J
+[42:27] type format that we will describe next
+[42:29] because we sort of want the same
+[42:31] immediate bit to be in the same position
+[42:33] of the instruction so that is why we
+[42:36] store bits 5 to 10 here it'll quickly be
+[42:38] visible because even if you don't
+[42:40] understand the format below you can
+[42:42] quickly see that bits 5 to 10 are
+[42:45] actually in the same position right that
+[42:47] is uh exactly that is kind of precisely
+[42:50] where they are and uh they are in
+[42:53] exactly the same
+[42:55] position and then you have one bit left
+[42:58] here one bit left here as I said put bit
+[43:00] 11 here and put bit 12 here so
+[43:03] essentially you what you are doing is
+[43:05] that you're storing a 13bit
+[43:07] immediate and but the the implicit
+[43:11] assumption is that the LSB is zero so
+[43:14] you are storing 12 bits in instruction
+[43:16] and one is assumed so it's a 13bit
+[43:19] immediate space which is approximately
+[43:22] plus minus 2 the^ 12 bytes which is 4 KB
+[43:26] so this is roughly what uh can be
+[43:28] achieved in uh for an for a branch for a
+[43:32] conditional Branch like within a page
+[43:35] right so this is the advantage within
+[43:36] one page right on the positive direction
+[43:40] within one page of the negative
+[43:42] Direction uh this much of branching is
+[43:45] possible Right in a conditional Branch
+[43:48] more than that of course other uh things
+[43:50] are
+[43:51] required you have to do an indirect
+[43:53] Branch pretty much uh but otherwise this
+[43:56] is
+[43:57] doable so for that for the indirect
+[44:00] Branch recall that you will have to use
+[44:03] the Jr instruction which is shown here
+[44:07] where you take the address stored in a
+[44:09] register add an immediate so there
+[44:11] arbitrary points you can Branch to but
+[44:14] in this case this is what you can do
+[44:18] coming to the J format so J format as
+[44:20] you can see well uh so here you of
+[44:23] course the immediate is much larger so
+[44:26] this is again a case of uh a 21 bit
+[44:29] immediate same logic 20 bits are
+[44:32] specified and one B bit is assumed to be
+[44:34] zero so this is much larger so most of
+[44:37] the time uh the J format is actually
+[44:39] good enough and uh the return address is
+[44:42] stored in Rd if at all you will store in
+[44:45] the sense if this is a zero register
+[44:48] then nothing is
+[44:49] stored same uh maintain consistency 7
+[44:53] bits for the op code this does have a
+[44:55] return address register uh destination
+[44:57] register Rd so Rd gets stored here just
+[45:01] to maintain
+[45:02] consistency the real magic happens here
+[45:05] but as you can see the main aim here is
+[45:09] sort of to be consistent with other
+[45:13] formats so the bits 5 to 10 are still
+[45:16] stored
+[45:17] here and uh then uh we store bit 20
+[45:22] which is the last
+[45:23] bit and that is stored here because you
+[45:26] know many time
+[45:27] if this is signed then you can get the
+[45:29] sign bit of the immediate very quickly
+[45:32] that is that can come out like this so
+[45:35] that is one advantage and the rest of
+[45:38] the immediate bits are distributed like
+[45:40] this bit number 11 here and uh bit
+[45:43] numbers 12 to 19 over here so this
+[45:47] distribution is like that because mainly
+[45:49] you know the B type and J type
+[45:51] instructions will be processed in a
+[45:53] similar way in a similar part of the
+[45:55] pipeline so some degree of consistency
+[45:58] of bit positions is required and given
+[46:01] that we are looking at a 21 bit space
+[46:04] the total addressable range is plusus 1
+[46:08] Megabyte
+[46:12] approx now let's take a look at the
+[46:15] floating Point formats so floating Point
+[46:18] formats we will look at two there are
+[46:20] two slides so I promise after that we
+[46:23] finish so the first is this FLW load uh
+[46:27] FP right so the floating Point
+[46:29] load so same 7bit op code 5bit
+[46:36] register this part instead of fun three
+[46:39] this part is new and sort of
+[46:42] special we are specifying the width of
+[46:45] the data that needs to be loaded in the
+[46:47] sense are we loading one by 2 bytes four
+[46:50] bytes so one two don't make a lot of
+[46:52] sense but is it like a 4 byte float or
+[46:55] an 8 by double
+[46:57] so the data type is coming
+[47:00] here and finally the ID of the register
+[47:03] so rs1 still maintains its position and
+[47:06] a 12bit immediate so this 12bit
+[47:09] immediate is uh basically the offset for
+[47:12] the load so this also maintains its
+[47:14] position this also is there where it
+[47:16] should be so broadly speaking this is
+[47:19] like a regular
+[47:21] load but the point is that uh the rs1 is
+[47:25] an integer uh is a register that has an
+[47:27] address so it's an integer
+[47:29] register and uh the floating Point
+[47:32] register is a destination because you
+[47:34] read from memory and put it
+[47:36] here the store for uh the
+[47:40] fsw instruction 7bit op
+[47:44] code uh so store does not have a
+[47:47] destination but if you would recall it
+[47:50] has two Source registers so they
+[47:52] maintain their positions the width
+[47:55] maintains its position and the immediate
+[47:58] like the earlier case so let's go to
+[48:00] that earlier case the immediate was
+[48:03] split between this field and this field
+[48:05] so here also the immediate is split
+[48:08] between these two Fields five bits over
+[48:11] here seven bits over there it is
+[48:16] split all right so now we come to the
+[48:19] regular floating Point arithmetic
+[48:21] instructions which are used by all
+[48:23] arithmetic instructions including
+[48:25] compare and conversion
+[48:29] instructions a 7bit op code
+[48:33] standard 5 bit destination register
+[48:36] again standard instead of fun three we
+[48:39] store the rounding mode here because as
+[48:41] I said if you are choosing Dynamic
+[48:44] rounding which means the instruction is
+[48:46] coming with its rounding mode that can
+[48:49] be specified here rs1 and rs2 also
+[48:53] maintain their positions but of course
+[48:55] in this case
+[48:57] all three registers are floating Point
+[49:00] registers the Precision of the operation
+[49:04] can be specified here in
+[49:06] fmt and finally there is one fun field
+[49:10] for basically again the same creating a
+[49:13] hierarchy of instructions and choosing
+[49:15] between them so we use fun 3 and fun s
+[49:19] for integers for floating point we'll
+[49:21] use fun five so this uh five bits have
+[49:25] been sort of allocated ated for this
+[49:28] purpose so we had also seen this fused
+[49:31] multiply ad instructions like the Mac
+[49:33] instructions that take that have three
+[49:35] registered
+[49:36] sources so we still uh maintain
+[49:39] consistency op code Rd rounding mode rs1
+[49:44] rs2 uh the format which provides the
+[49:47] Precision instead of the fun five these
+[49:50] five bits are used to store the third
+[49:54] registered source
+[50:10] so this brings us to an end of the
+[50:12] chapter we are always happy to see this
+[50:14] slide indicating that the chapter is
+[50:17] finished it is over so hopefully you
+[50:20] enjoyed uh the lecture on risk 5 the set
+[50:22] of three lectures this was the third one
+[50:25] so uh we will see you in the next uh
+[50:28] chapter where we will look at digital
+[50:31] design and pipeline design and so on

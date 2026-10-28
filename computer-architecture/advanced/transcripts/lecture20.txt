@@ -1,0 +1,1331 @@
+[00:00] [Music]
+[00:20] welcome to the third lecture on gpus
+[00:23] so in this lecture we will talk about
+[00:26] the design of
+[00:27] general purpose gpus design of gpg views
+[00:34] so let's take a look at the structure of
+[00:36] the nvidia voltage g3
+[00:39] so as you can see gpus are typically
+[00:42] large chips
+[00:43] so they have a large number of computing
+[00:45] elements
+[00:48] so the first green box that you need to
+[00:52] look at
+[00:53] is the pci express interface with the
+[00:55] host
+[00:56] and the host in this case is the cpu so
+[00:59] the cpu and gpu typically communicate by
+[01:03] an external bus which is a pci express
+[01:06] 3.0 interconnect
+[01:09] then every gpu task regardless of
+[01:12] whether it's a general purpose
+[01:14] or a graphical task is a thread
+[01:17] so gpu has its internal thread manager
+[01:20] and thread shield in there
+[01:21] known as the giga thread engine so think
+[01:23] of this as kind of the brain of the jk
+[01:29] so this does the job of the scheduling
+[01:31] aspect it's not much it's a very simple
+[01:33] brain it's not a human brain
+[01:35] it's more like a bird's brain but it's a
+[01:37] small brain
+[01:40] then we have these graphics processing
+[01:42] clusters
+[01:43] which is basically a large collection of
+[01:46] small cores
+[01:48] so the voltage gpu we have six of these
+[01:51] one two three four five six we have six
+[01:53] of these
+[01:55] and we have a large amount of on-chip
+[01:57] memory so as i said
+[01:58] as opposed to as compared to cpu caches
+[02:03] gpus are bigger they have more resources
+[02:06] so they have a big l2
+[02:08] cache and furthermore nvidia also allows
+[02:11] us to connect multiple gpus together
+[02:15] so if you have one gpu they all can be
+[02:17] connected interconnected together
+[02:20] so then we have these high speed hubs so
+[02:23] with this high speed hubs via the envy
+[02:25] link interconnects
+[02:27] it is possible to interconnect gpus
+[02:32] and then we have a set of eight memory
+[02:34] controllers
+[02:36] the eight memory controllers are then
+[02:38] connected to high bandwidth
+[02:40] all right so we'll study what is high
+[02:42] bandwidth memory in chapter 10.
+[02:46] so as i have said all these four points
+[02:49] are covered
+[02:50] so the broad idea or the broad take away
+[02:52] point from this slide is that every gpu
+[02:54] has a large amount of gpu processing
+[02:58] and we have six of these which we shall
+[03:00] see
+[03:01] in a deeply hierarchical structure but
+[03:04] we have six of these on a voltage
+[03:08] all right so coming to the gpc
+[03:13] the gpc has a raster engine so if you go
+[03:16] back to the first chapter where we
+[03:18] talked about rasterization
+[03:20] we did discuss that rasterization is not
+[03:22] something which is
+[03:24] amenable to parallelism so rasterization
+[03:27] requires
+[03:28] its separate unit and
+[03:31] so that's the reason the separate
+[03:32] hardware for the raster engine
+[03:34] has been provided and then
+[03:37] uh in this case every gpc has seven
+[03:41] tpc's
+[03:42] right i'll come to a second what is the
+[03:43] tpc it's a textured processing cluster
+[03:46] so that's like a historical name it's
+[03:48] not that this only processes textures
+[03:51] but this is more like a historical name
+[03:53] for
+[03:54] this piece of hardware so in this piece
+[03:57] of hardware
+[03:58] we have seven such tpcs one two three
+[04:00] four five six seven
+[04:02] in a gpc and then we have a little bit
+[04:06] of extra graphics processing hardware
+[04:08] so as you can see the philosophy was to
+[04:11] limit
+[04:11] the amount of graphics processing
+[04:14] hardware
+[04:15] to be as little as possible
+[04:18] all right
+[04:22] so the special hardware unit that we
+[04:25] have over here
+[04:27] along with the raster engine we also
+[04:29] have a special hardware unit called the
+[04:30] polymorph engine
+[04:32] so the polymorph engine does the tasks
+[04:35] that a regular polymorph engine is
+[04:37] starts to do
+[04:38] so which we have discussed in great
+[04:40] detail in chapter one
+[04:42] sorry in in lecture one of this series
+[04:45] on gpus where the polymorph engine as we
+[04:48] have seen was divided into five stages
+[04:50] does
+[04:50] tessellation and all of that so large
+[04:54] amount of the computations are actually
+[04:55] mapped to all the cores in these essence
+[04:58] and sm is a streaming multiprocessor
+[05:01] which again has a large number of codes
+[05:02] as you can see this is a
+[05:04] deeply deeply deeply hierarchical
+[05:07] structure
+[05:08] but the key point to notice that there
+[05:10] are two separate units over here
+[05:12] for asterization and the polymorph
+[05:14] engine which are kind of dedicated for
+[05:17] graphics
+[05:18] but the raster the raster engine is more
+[05:20] dedicated
+[05:21] the polymorph engine what it does in
+[05:23] modern gpus to a large extent
+[05:25] is that it tries to map the computations
+[05:28] to general purpose units
+[05:29] as much as possible right that is the
+[05:32] best
+[05:33] thing to do from an engineering
+[05:34] standpoint such that you can reuse the
+[05:36] gpu
+[05:38] for uh regular computations as much as
+[05:41] possible
+[05:43] so now let's drill down so where were
+[05:45] views so we had
+[05:46] six gpc's eight gpc has seven tpcs and
+[05:50] the tpc has two sms
+[05:52] right so let's now further take one
+[05:55] level deeper
+[05:56] and look at the structure of these sms
+[06:01] so the structure of an sm is as follows
+[06:04] that an sm has an l1 instruction cache
+[06:08] and it has four of these processing
+[06:10] blocks so again you see one more level
+[06:12] of hierarchy
+[06:14] so just in case you have forgotten about
+[06:16] it let me remind you it's a gpc
+[06:19] then a tpc all right then an
+[06:22] sm and then the sm is now divided into
+[06:26] four pvs
+[06:28] right so for the nvidia voltage we had
+[06:30] six gpc's
+[06:32] per gpc we had 70 pcs per tpc were two
+[06:36] of these sms
+[06:37] and per sm we had four of these pps wow
+[06:40] that's a lot so that's 6 times 7 42
+[06:43] times 2 is 84
+[06:45] and 84 times 4 is 336
+[06:51] and we still haven't reached the bottom
+[06:54] level code
+[06:55] but we are getting there so the key
+[06:57] points over here
+[06:58] what all the processing blocks share in
+[07:00] an sm
+[07:02] is the l1 instruction cache so of course
+[07:05] one
+[07:05] instruction in a gpu can actually do a
+[07:09] lot
+[07:10] because the same instruction is being
+[07:12] executed by multiple kernels as we shall
+[07:15] sorry wait i'm sorry multiple threads in
+[07:17] the kernel
+[07:18] as we shall see so that's the reason one
+[07:21] instruction can actually translate to
+[07:24] a lot of instructions across the thread
+[07:28] block
+[07:28] of course the same static instruction
+[07:30] but multiple dynamic instructions
+[07:33] then we have a 128 kb shared l1 cache
+[07:35] for data
+[07:37] and then we have four dedicated units
+[07:40] for texture
+[07:41] storing texture data so these they are
+[07:44] called the texture cache
+[07:46] and this is required primarily because
+[07:49] in modern graphics such as games and so
+[07:51] on it's a much better idea
+[07:53] to have a dedicated storage of texture
+[07:55] caches
+[07:56] which store only textured information
+[07:59] right nothing more
+[08:02] so this is again one of those units that
+[08:04] are dedicated for saving
+[08:06] graphics oriented information
+[08:12] so there are four kinds of memories in
+[08:13] an sm so what we have seen
+[08:15] on the last slide is that we have seen
+[08:18] the l1 instruction cache which is quite
+[08:20] similar to our i cache
+[08:22] we have seen the l1 cache it stores
+[08:24] regular data
+[08:27] then we have seen the texture cache also
+[08:28] which stores texture information
+[08:32] so there are a few more types of caches
+[08:36] so there is a constant cache that stores
+[08:38] constants
+[08:40] and we have also discussed the shared
+[08:42] memory directive uh
+[08:44] when we discuss the cuda processing
+[08:46] language
+[08:47] so this cache over here is actually
+[08:49] shared
+[08:51] so whenever we have the underscore
+[08:53] shared underscore underscore identifier
+[08:56] it is used to store arrays in this
+[08:58] region
+[08:59] which i'm sorry which in this case
+[09:03] does map to the shared l1 cache so this
+[09:05] is the reason that
+[09:06] whenever we are writing a piece of code
+[09:08] we need to be mindful of the resources
+[09:10] of the gpu
+[09:11] for efficiency and
+[09:15] let's say that if the size of our shared
+[09:18] variables or shared arrays are
+[09:19] more than the size of the shared cache
+[09:22] it is not really an error but of course
+[09:25] things will get slowed down
+[09:29] so now let's come to the structure of a
+[09:31] pb which is
+[09:32] the last level because pb is the one
+[09:34] that contains spores
+[09:36] and contains a lot of curves so if you
+[09:39] look at the pb the pb
+[09:40] also has an instruction cache so it is
+[09:42] an l0 instruction cache
+[09:45] so if you if you would recall we had an
+[09:47] l1 instruction cache with each sm
+[09:50] but each pp has an l0 instruction cache
+[09:54] and it can deal with or it can handle it
+[09:57] can manage
+[09:58] 32 threads every clock cycle so these
+[10:01] threads
+[10:02] are like a subset of a thread block
+[10:05] right something that we had studied in
+[10:06] the previous
+[10:07] lecture so what we do is that we should
+[10:10] use or we group
+[10:13] 32 threads into one group or one block
+[10:16] and they operate in log step so this is
+[10:19] known as award
+[10:20] so we'll discuss more about warps later
+[10:23] but what each pp has is that it has a
+[10:25] warp sheet here
+[10:27] so the warp should do that basically
+[10:29] schedules an entire warp in one go so
+[10:31] we'll discuss more about what that means
+[10:33] later and then there is a dispatch unit
+[10:37] which dispatches a bar to all of these
+[10:40] force we will see in a second what they
+[10:42] are
+[10:42] but essentially the entire bar
+[10:46] which is a group of 32 threads is
+[10:49] treated as one atomic indivisible unit
+[10:53] so the fun part with a pb
+[10:56] or a gpu in general is the register file
+[10:59] is very large so just look at how large
+[11:01] the register file is
+[11:02] so in principle uh even though ptx does
+[11:05] assume that we have an infinite number
+[11:07] of resistors
+[11:08] it is not that far from reality because
+[11:11] if you see that we have 16k
+[11:14] 4 byte registers with a lot of registers
+[11:16] roughly
+[11:17] 64 kb of space so such a large register
+[11:21] file is required mainly for data
+[11:23] locality
+[11:24] as well as to support the very high
+[11:27] levels of parallelism that we have
+[11:29] within a pb so now let's count the
+[11:32] number of ports
+[11:34] so if you look at it we have eight
+[11:36] double precision ports
+[11:38] so each core is a is like more of an
+[11:41] embellished alu
+[11:43] in a sense it has a very simple pipeline
+[11:45] maybe a two or three stage pipeline
+[11:48] right in many cases it's a single cycle
+[11:49] pipeline as well
+[11:51] but the key point is that these are very
+[11:53] very simple pores
+[11:55] which basically
+[11:58] enclose and nail you pretty much and
+[12:01] there are few double question units
+[12:02] because the idea is it's a bad idea to
+[12:05] use double precision
+[12:07] all the time it's expensive so there are
+[12:10] more of these single precision units
+[12:12] so we have 16 integer units and we have
+[12:15] 16 floating point rates
+[12:17] all right so
+[12:22] any warp if let's say there is an
+[12:24] integer operation and there are 32
+[12:26] it will take two cycles to process the
+[12:28] entire world
+[12:30] right in terms of throughput the reason
+[12:31] being that the first 16 threads go
+[12:34] they execute in lock step so we will
+[12:36] discuss what lock step business means
+[12:38] and then the next 16 threads similarly
+[12:41] if it's a floating point instruction
+[12:43] then uh 16 threads execute the fp32 32 a
+[12:47] single position
+[12:48] a float whereas 64 is a double precision
+[12:51] or a double
+[12:54] so we execute 16 threads and then 16
+[12:56] more
+[12:58] finally we have uh two tensor cores
+[13:01] so what we will discuss in chapter 14
+[13:03] which is a chapter on deep learning
+[13:06] is that most of the operations in cnns
+[13:08] and in deep learning are essentially
+[13:10] matrix operations
+[13:12] matrix adds subtract multiply primarily
+[13:14] matrix sublime
+[13:16] operations so the tensor code that we
+[13:20] is specialized for matrix multiplication
+[13:24] and this is a direct support for any
+[13:26] kind of a deep learning algorithm
+[13:28] because the tensor code directly
+[13:30] offloads the matrix operation
+[13:32] and essentially works on an entire
+[13:34] matrix in one form
+[13:36] of course if we are multiplying to large
+[13:38] matrices
+[13:39] then it is necessary to split them into
+[13:41] smaller sub matrices
+[13:43] but that is done later
+[13:46] and then we have a bunch of load store
+[13:48] units to
+[13:49] talk to memory and a special function
+[13:52] unit
+[13:53] so there may be several special function
+[13:54] units but i've just drawn one rectangle
+[13:58] so the reason again is that if you look
+[14:01] at many scientific ports they use many
+[14:04] trigonometric functions such as sine cos
+[14:06] and tan
+[14:08] a lot of deep learning actually uses the
+[14:10] sigmoid function that is based on
+[14:12] computing this value
+[14:14] so such functions are computed in sfu
+[14:18] primarily using lookup tables
+[14:22] so let's now discuss the concept of a
+[14:24] warp
+[14:26] right which was one of the key concepts
+[14:28] that emerged from the previous slide
+[14:30] but we didn't discuss it in great detail
+[14:34] so first let's do a little bit of math
+[14:35] of the number of parallel threads that
+[14:37] can run on an
+[14:38] nvidia gpu so we have six dpcs
+[14:43] we have seven dpcs right per gpc
+[14:47] two sms per tpc four pbs per sm
+[14:51] and let's assume we can multiply we can
+[14:53] process 16 threads in one go
+[14:56] which means either all of this is being
+[14:57] used or all of this is being used
+[14:59] but we will then see that in modern gpus
+[15:02] they can actually run two separate
+[15:04] kernels at the same time and use both
+[15:06] but that's slightly more sophisticated
+[15:08] but the number will double
+[15:10] but if you just were to multiply this 6
+[15:12] into 7 is 42 times 2 is 84
+[15:15] 84 times 4 is 336 times 16
+[15:19] is 5 376. so just look at the shear
+[15:22] parallelism
+[15:23] within a gpu we can run these many
+[15:26] threads together in one book
+[15:29] if you assume that there are no memory
+[15:30] stalls
+[15:32] then just look at the shear
+[15:33] computational throughput of a gpu
+[15:35] it is true that the frequency of a gpu
+[15:37] is slightly lower
+[15:39] so it's not as high as three three three
+[15:41] point five years it's lower it's around
+[15:43] 1.5 or so
+[15:44] but still this degree of parallelism is
+[15:47] huge
+[15:48] and this is pretty much like a
+[15:49] supercomputer
+[15:52] made of cpus right we are bringing all
+[15:54] of that within one gpu
+[15:56] and then if we go with the modern after
+[15:59] which is that we can
+[16:00] execute both of these together lb by
+[16:03] different kernels
+[16:05] or let's say different warps then this
+[16:08] number gets multiplied
+[16:09] by two so we basically have
+[16:11] approximately
+[16:12] 10 000 threads that we execute
+[16:16] together and that is a huge huge
+[16:19] huge increase in the total computational
+[16:22] throughput
+[16:24] so if you look at let's say one cpu for
+[16:27] cpu it will provide you around you know
+[16:31] around best case let's say three
+[16:33] gigaflops where a flop is a floating
+[16:34] point operation per second
+[16:37] and just multiply this by 1000 this will
+[16:39] become three teraflops
+[16:41] by 10 more this will become 30 teraflops
+[16:45] so 30 teraflops is pretty much what one
+[16:48] gpu can give you
+[16:50] and if you have you know 300 of these
+[16:52] gpus
+[16:54] right then no i'm sorry if
+[16:57] you have 30 of these gpus 33
+[17:01] then you can pretty much realize the
+[17:02] petaflop machine
+[17:05] so it's actually not that hard to get a
+[17:08] petaflop worth of computing
+[17:10] just using gpus of course using cpus it
+[17:12] is much much harder
+[17:13] as you can see right but of course if
+[17:15] you have multi-core cpu then this number
+[17:17] will get multiplied so it's it's not
+[17:20] that simple so
+[17:21] basically this number that i gave is for
+[17:23] a single port
+[17:24] and it's clearly not that simple because
+[17:27] multi-core cpus are also better
+[17:29] but that said and done the sheer
+[17:32] computational throughput that a gpu
+[17:34] offers
+[17:35] is huge right is very very large
+[17:38] and it is it's quite hard to beat that
+[17:42] so the question is that can we afford to
+[17:44] give each thread its pc right so can the
+[17:46] threads be executing different
+[17:48] instructions
+[17:49] so this is something the clear answer is
+[17:51] no this would involve too much overhead
+[17:53] so what do we do
+[17:57] so what we do is that we create groups
+[17:59] of 32 threads in the wire
+[18:00] i'd call them a mark so think of this as
+[18:03] a subset of a thread block
+[18:05] they give them the same pc so because
+[18:07] they execute the same code
+[18:09] so what happens is that all the 32
+[18:11] threads execute in lock step
+[18:13] which basically means that we execute
+[18:15] the same instruction for all the threads
+[18:18] so even if let's say there are 16 units
+[18:20] so for the same instruction
+[18:22] we first execute 16 threads and then we
+[18:25] execute the next
+[18:26] system once that instruction is done
+[18:31] we move to the next instruction so this
+[18:33] is what we mean by logs
+[18:38] so let me further explain in a warp all
+[18:40] the threads complete the execution of an
+[18:42] instruction first
+[18:44] and then we move to the next instruction
+[18:47] so just to reiterate if we have 32
+[18:50] threads in the award
+[18:51] and we have 16 codes
+[18:54] the first group of 16 threads executes
+[18:57] and the second group of 16 threads
+[18:59] executes
+[19:00] and if let's say that we have only eight
+[19:02] functional units then instead of this
+[19:04] taking two cycles it will take four
+[19:06] cycles
+[19:06] first group of eight second group of
+[19:08] eight third and fourteen
+[19:11] so there are several good things about
+[19:13] it the first is that you know it's
+[19:14] simple
+[19:16] no doubt we don't have to maintain
+[19:20] a per thread pc
+[19:26] okay so
+[19:29] let's say because of a long latency
+[19:31] operations i'm not talking of a
+[19:33] disadvantage
+[19:33] because of a long latency operation one
+[19:37] of the threads needs to wait then the
+[19:39] entire walk will wait so warp
+[19:41] essentially does not leave a thread and
+[19:43] go forward
+[19:44] right the reason is that we are not
+[19:46] maintaining a per thread counter
+[19:47] or a per thread pc so because we don't
+[19:50] have a per thread program
+[19:52] counter what we do is that if one of the
+[19:53] threads stops the entire warp stops
+[19:56] this may sound inefficient but given the
+[19:58] fact that gpu ports are incredibly
+[20:00] overgenerous
+[20:02] right you know quite predictable and
+[20:04] quite homogeneous
+[20:07] this normally doesn't happen right
+[20:10] normally it's not the case that you know
+[20:15] thread gets delayed substantially
+[20:18] the reason being that also the data in
+[20:20] memory is co-located so normally this
+[20:22] doesn't happen so that's the reason it's
+[20:24] typically not that concerning
+[20:28] so before you ask the question let me
+[20:30] answer what about code with conditional
+[20:32] branches
+[20:32] if we have code with conditional
+[20:35] then of course as you can see there is a
+[20:38] if part and there is an else part
+[20:40] the notion of log step execution doesn't
+[20:43] work because maybe out of 32 threads
+[20:46] 10 threads will execute the code
+[20:49] of the body of the if statement and 22
+[20:52] threads will execute the code in the
+[20:54] body of the else right
+[20:56] so then how do we execute by executing
+[20:59] log step
+[21:00] so here we do predicated executions if
+[21:03] you would go back to chapter 5
+[21:06] write the lecture on titanium
+[21:09] all right then we will have the notion
+[21:12] of predicated execution
+[21:14] so predicated execution is like this
+[21:16] let's assume two threads
+[21:18] so then what will happen is thread one
+[21:20] and thread two will process both the
+[21:23] but for thread one the predicate will be
+[21:25] true which means that this is on the
+[21:27] correct path
+[21:28] so it will both process execute and
+[21:30] commit the results
+[21:31] whereas thread 2 will process in the
+[21:33] sense it will just
+[21:34] get get the instruction in but will
+[21:36] ignore it it will not do anything with
+[21:38] it
+[21:39] so they will still proceed in lock step
+[21:41] so the
+[21:42] key point that i'm trying to make here
+[21:45] is that all the threads in a bar will
+[21:48] still proceed in lock step it's not the
+[21:50] case
+[21:51] that lock step execution will not happen
+[21:54] it is just that for every instruction a
+[21:56] thread needs to assess
+[21:58] whether the instruction is in its
+[22:00] correct
+[22:01] path or not right if it is on the
+[22:07] then uh what it will do
+[22:13] is that uh it will basically process the
+[22:15] instruction compute the results and
+[22:17] update the state
+[22:18] otherwise it will ignore it all right
+[22:21] and uh for more predicated execution you
+[22:24] can go to the chapter on titanium
+[22:27] chapter five the lecture on italian the
+[22:29] last lecture of chapter
+[22:31] five so let's look at predicated
+[22:35] execution the previous example assume
+[22:38] there is thread one and thread 2.
+[22:40] so both will execute the if statement
+[22:42] because here they are evaluating whether
+[22:44] x is greater than 0 or not
+[22:46] so of course x is a thread specific
+[22:48] variable here
+[22:51] that is why this instruction falls in
+[22:53] the correct path of both threads one and
+[22:55] two
+[22:56] now if we look at the body of the if
+[23:00] statement then the body of the if
+[23:01] statement
+[23:02] is in the correct path of thread one but
+[23:05] for thread two it is on the wrong part
+[23:07] so thread one will process the
+[23:08] instructions and thread two will just
+[23:10] ignore
+[23:12] finally the body of the else well for
+[23:14] thread one will not process
+[23:15] thread two will process and this is
+[23:18] known as the point of reconvergence
+[23:22] because this is when thread 1 and thread
+[23:24] 2 start processing
+[23:26] both of them start processing the
+[23:27] instruction
+[23:29] so you can say that this is where the if
+[23:30] statement kind of ends
+[23:32] so this is the point of the convergence
+[23:38] so how is predicated execution achieved
+[23:42] well each thread maintains a stack
+[23:46] when we enter the body of an afrl
+[23:50] what we do is we push on one or zero
+[23:52] onto the stack
+[23:54] depending on whether we are on the
+[23:55] correct path or the wrong path
+[23:57] respectively right so let's say i'm
+[23:59] entering the body of an if statement
+[24:01] or an else what i do is that i push a
+[24:04] value onto the stack
+[24:06] so i'll come to a second why it's a
+[24:08] stack
+[24:10] so if uh let's say i'm on the correct
+[24:11] path it will share one otherwise it's a
+[24:13] zero
+[24:13] now coming to the fact why it's a stack
+[24:16] well because we could have nested
+[24:18] if statements right see if that is the
+[24:22] it is very well possible that
+[24:28] i may be on the wrong path of the first
+[24:31] if statement
+[24:33] and after that i come and then
+[24:36] you know maybe i do a comparison and i
+[24:40] see that i'm the correct part
+[24:42] of a if statement that is
+[24:46] nested in the outer if statement but
+[24:48] this doesn't matter because i would have
+[24:50] not entered this piece of code anyway
+[24:52] right
+[24:54] so what i basically do right or what is
+[24:57] supposed to be done
+[24:58] is that the stack maintains the fact if
+[25:01] you see there is a last in first
+[25:02] out behavior the last in first order
+[25:05] behavior comes because if i have one if
+[25:08] one more i have one more and so on
+[25:11] then i enter this if statements body at
+[25:14] the end
+[25:15] and also exited the first so it's last
+[25:18] in and first out
+[25:19] again last ten and first term again last
+[25:22] in the first term
+[25:23] so the moment we have a lasting first
+[25:25] order behavior
+[25:26] we use the stack data structure the
+[25:29] stack data structure is basically used
+[25:31] to store the outcomes of the branches
+[25:33] or whether i am on the correct path or
+[25:36] on the wrong part
+[25:38] so to ensure that i execute an
+[25:42] all the entries in the stack assuming
+[25:44] that even if i'm in the wrong part of a
+[25:46] new statement at least i do the
+[25:47] comparison
+[25:48] right all the entries of the stack have
+[25:52] to be one
+[25:53] then only i can say that a given
+[25:56] instruction is on the correct path it
+[25:58] should be executed its result should be
+[26:00] computed and committed to permanent
+[26:02] state
+[26:03] otherwise if any one of these entries is
+[26:07] then i will say that i am on the wrong
+[26:09] path
+[26:10] okay and
+[26:14] the the instruction should not be
+[26:16] executed
+[26:18] so there are two conditions over here
+[26:20] the first is that the instructions are
+[26:21] executed if the stack is empty
+[26:23] yes that's obvious or as i have just
+[26:26] described
+[26:28] right that the last one for south stack
+[26:30] if all the entries in the stack are one
+[26:33] so this is so we have a separate stack
+[26:35] for each thread this is not
+[26:37] the programming stack okay it's a
+[26:39] separate stack which only stores the
+[26:41] results of predicated execution
+[26:44] so for all the entries in this
+[26:46] predicated stack are one
+[26:47] so we have one stack per thread one
+[26:49] percent okay
+[26:51] so we maintain one stack per thread in
+[26:54] the wall
+[26:55] so if all the entries are one then the
+[26:57] instruction is on the correct path and
+[26:59] it is executed
+[27:00] so when we leave the body of the a for
+[27:03] else statement
+[27:04] we pop the stuff all right
+[27:07] so this is what is done that we
+[27:11] push an entry when we enter the if
+[27:13] statement and when we leave it
+[27:16] we pop an entry of the stack so who adds
+[27:19] all of these sports well all of this
+[27:21] code is added by the cuda runtime
+[27:24] in terms of special instructions or
+[27:26] directives or bits that are
+[27:28] sent to the hardware and the hardware
+[27:31] then picks up these queues and maintains
+[27:32] the stack for the thread
+[27:34] so the stack is maintained in hardware
+[27:36] but of course the directives of when to
+[27:38] push and pop are given by software
+[27:43] let us now look at a slightly longer
+[27:47] example with three threads
+[27:49] so in this case we have nested if
+[27:50] statements
+[27:52] so the first if statement is executed by
+[27:54] all three threads as you can see over
+[27:56] here
+[27:58] then we have our first if statement
+[28:05] so the first if statement is executed
+[28:09] only by the first two threads and not by
+[28:11] the third one which is thread two
+[28:13] the reason being that this predicate for
+[28:15] thread two is false
+[28:16] x is less than zero foreign
+[28:20] then we execute the body of this if
+[28:23] so as you can see the body of the if
+[28:26] for thread one
+[28:29] both the predicate bits are one and one
+[28:32] which essentially indicate
+[28:34] that
+[28:38] it is on the correct path of thread one
+[28:40] a
+[28:41] but for thread one b even though it
+[28:44] passed the first if statement it was not
+[28:46] able to pass the second
+[28:47] if statement so that is why for thread
+[28:51] 1b
+[28:53] this predicate here is false so that's
+[28:55] the reason instead of put
+[28:57] pushing a one onto the stack we push a
+[29:00] and because we have one zero valued
+[29:02] entry this instruction is on the wrong
+[29:05] path of
+[29:06] set one b and that is why this
+[29:09] instruction is
+[29:11] not going to be executed it will be
+[29:13] ignored
+[29:14] similarly since we are already on the
+[29:17] wrong path
+[29:18] as i said we may decide to do a
+[29:20] comparison we may decide to omit it
+[29:22] in this case we don't do a comparison
+[29:24] with thread two because we are on the
+[29:26] wrong path anyway
+[29:27] see again it pushes zero onto the stack
+[29:31] and so the thread two also this
+[29:33] instruction is not exact
+[29:35] at this point threads one a and one b
+[29:37] reconverge
+[29:39] so we pop the stack so this entry is
+[29:41] bought
+[29:42] for all three so you're left with one
+[29:45] one and zero
+[29:46] so again for thread two this instruction
+[29:48] is not executed whereas
+[29:50] for threads one a and one b this
+[29:52] instruction is executed
+[29:55] finally we have
+[29:59] two instructions over here
+[30:02] uh four thread one a and one b
+[30:05] uh the the else path for both of them
+[30:09] right is that they're on the wrong path
+[30:11] so how did we
+[30:12] arrive from this state to this state
+[30:14] well the moment we exited
+[30:16] the if statement's body you pop the
+[30:19] stack it
+[30:19] became empty and then we pushed zero
+[30:22] onto the stack because
+[30:25] we are on the else path for thread one a
+[30:28] and one b
+[30:29] so it's a wrong path so you push zero
+[30:31] and zero so clearly
+[30:32] for these two instructions thread
+[30:37] but for thread two the else path is the
+[30:41] so that's the reason i push one onto the
+[30:43] stack so thread two will execute them
+[30:46] so as you can see in every stage
+[30:49] are executing in logstep right so uh
+[30:52] basically the same
+[30:54] instruction uh instructions are
+[30:56] executing quite well in fact in lobster
+[30:59] and now for the last instruction which
+[31:02] is x equal to c
+[31:04] this is where all the threads reconverts
+[31:06] it's called the por
+[31:08] or the point of reconvergence so at this
+[31:10] point
+[31:11] all the threads which are threads one a
+[31:13] one b and two
+[31:15] they reconverge so then what happens is
+[31:18] that we
+[31:20] execute the same instruction for all
+[31:22] three threads
+[31:26] so this is a good idea
+[31:29] in the sense that using warps has made
+[31:32] the operations of gpus extremely
+[31:34] efficient
+[31:36] however such log stepped execution has
+[31:39] its share of problems
+[31:41] and we will see why so assume that
+[31:47] we have code like this
+[31:51] okay
+[31:55] so if we have port like this let's
+[31:58] assume that we take an internal variable
+[32:00] x
+[32:01] okay and we initialize it to 0. so this
+[32:04] is a per thread variable
+[32:07] no i'm sorry i'm sorry this is a shared
+[32:10] variable
+[32:12] and it's not a power thread variable
+[32:14] it's a shared variable it's initialized
+[32:16] to x
+[32:18] then assume that we have four threads
+[32:20] zero one two and three
+[32:23] so for the four threads let's say for
+[32:26] the first two threads
+[32:29] you will find that thread idx dot x is
+[32:31] less than two
+[32:32] why because it is zero and one
+[32:36] okay so so this x and this x are
+[32:38] different so this is the x coordinate of
+[32:40] the thread index and this
+[32:41] these are shared variables so they are
+[32:42] different
+[32:44] so for thread 0 and 1 they will enter
+[32:46] this if statement
+[32:48] and because they are entering the other
+[32:50] two threads threads 2 and 3 will also
+[32:52] enter
+[32:53] because we execute this instruction
+[32:56] where the same instruction and the mark
+[32:58] is executed by all the threads
+[33:00] of course for the threads two and three
+[33:02] this instruction is on the wrong path
+[33:04] but they will wait for their sister
+[33:06] thread 01 to complete this
+[33:09] so here the fun begins if we have a
+[33:12] while loop over here
+[33:13] which waits until x is 0 will be stuck
+[33:16] forever
+[33:17] the reason will be start forever is
+[33:20] basically because
+[33:22] there is nobody who is going to set x to
+[33:24] a value which is not zero
+[33:26] but if you look at this logic so by this
+[33:29] logic
+[33:30] threads two and three should be
+[33:31] executing these two instructions
+[33:34] which of course are on the wrong path of
+[33:36] zero and one but for 2 and 3 they are on
+[33:37] the correct path
+[33:39] on the correct path they will set x
+[33:41] equal to 1
+[33:42] and this is going to release the while
+[33:44] loop over here
+[33:46] but the point is that we will never
+[33:50] come here
+[33:55] okay and uh so so basically the point is
+[33:59] that we are never never ever going to
+[34:03] and the reason is that the other two
+[34:04] threats which are supposed to
+[34:06] set x to one and release it they will
+[34:08] not come here because they'll keep
+[34:10] waiting for their sister threads which
+[34:12] are zero and one to exit
+[34:14] right and they are never going to exit
+[34:16] the while loop so we'll be stuck forever
+[34:19] even though we should not
+[34:20] be so of course we are not assuming two
+[34:22] threads over here we are assuming four
+[34:26] so the point is that if you look at the
+[34:28] simple logic
+[34:29] as such there is no problem but when you
+[34:32] take a deeper look you will realize
+[34:35] that we are never going to reach this
+[34:37] statement only because of our
+[34:39] constraints on
+[34:40] lock stepped execution within the wall
+[34:43] so this is of course a slightly
+[34:45] contrived
+[34:45] example but we will find many more such
+[34:49] situations in real life
+[34:51] where such interactions do happen and
+[34:53] many times the code goes into a deadlock
+[34:56] and the developer has no clue why so
+[34:58] that's the reason in modern gpu design
+[35:00] such
+[35:00] situations have been avoided
+[35:08] to precisely avoid such situations
+[35:12] which may arise inadvertently in an
+[35:15] execution
+[35:17] there is a notion of limited yet
+[35:19] controlled
+[35:20] thread divergence so let us consider
+[35:23] the two code blocks so let this be the
+[35:26] while loop
+[35:28] let's call it w and the other port block
+[35:31] let's just call it
+[35:32] x for the one that's setting x equal to
+[35:35] 1 and y
+[35:38] so what we can do is that we will not
+[35:41] stop
+[35:42] our basic lock stepped execution
+[35:45] paradigm
+[35:47] we will go with what is called
+[35:48] restricted lock step execution
+[35:51] we'll execute the while loop for some
+[35:53] time which is the first point we execute
+[35:55] the while loop for some time
+[35:57] we see that we are not making progress
+[35:59] right so this can be seen
+[36:01] that you know the while loop is just
+[36:02] going on and on so of course
+[36:04] we can't detect an infinite loop but at
+[36:07] least we will see that
+[36:08] we are there in one region of port for
+[36:10] some time
+[36:12] we can then go to the else part and
+[36:15] again execute it for some time
+[36:18] this again will follow the log step
+[36:20] paradigm so all the threads will again
+[36:23] execute the else part of course all the
+[36:24] predicate relations will be preserved
+[36:27] so only for all the threats whose
+[36:31] predicates are all one in this stack
+[36:33] they will execute others will not you
+[36:34] have seen that
+[36:36] so the x and y blocks will be executed
+[36:38] the advantage of doing this over here is
+[36:41] that x equal to 1 will be set by some
+[36:44] thread
+[36:44] doesn't matter who finally we can come
+[36:47] back to the while loop
+[36:49] and the two threads which should have
+[36:52] executed instructions in the while loop
+[36:54] they will execute it
+[36:56] and basically the others will ignore but
+[36:59] at least
+[37:00] they will exit the while loop so since
+[37:02] the if part and else part both the
+[37:04] all the threads have exited both we can
+[37:07] enter the point of reconvergence over
+[37:10] so what you are basically seeing is that
+[37:12] we are again
+[37:13] coming back to the while loop after
+[37:16] executing the else part so this was the
+[37:18] f part
+[37:20] this was the else part and this was the
+[37:21] f part for the second time
+[37:23] so again coming back to the f part
+[37:26] so this is an example of restricted log
+[37:29] step executions where we are not really
+[37:31] letting the threads diverge or go their
+[37:33] own way right so the threads are still
+[37:38] executing together they're still in lock
+[37:40] strip mode
+[37:42] so we are referring to this as the
+[37:43] restricted lock step
+[37:45] execution fair as you can see there's
+[37:47] this afl safe kind of jump
+[37:50] so this allows for reconvergence as we
+[37:52] have seen
+[37:53] and the deadlock situation that was
+[37:55] arising here in the previous thread
+[37:58] in the previous example i'm sorry uh
+[38:00] this is not
+[38:01] arising over here right so this is one
+[38:04] of the
+[38:05] big inventions that happened in nvidia
+[38:08] volta
+[38:08] and has subsequently been kept
+[38:12] and because this was required otherwise
+[38:14] there were many of these sticky kind of
+[38:16] race conditions
+[38:17] which were happening primarily because
+[38:20] of our
+[38:21] you know insistence to target exist
+[38:24] insistence
+[38:25] on lock stepped execution
+[38:28] so now we're in the position to see the
+[38:30] gp gpu pipeline
+[38:34] kind of in full glory so this is let's
+[38:36] say the pipeline of a pp
+[38:38] so we have a fetch logic and instruction
+[38:40] cache which uses
+[38:41] both the i0 and i1 levels
+[38:46] then we have a decode
+[38:49] so then the rest of the so then the
+[38:51] scheduling part the warp scheduling has
+[38:54] uh so the decode could be part of the
+[38:56] fetch could be part of the warp shooting
+[38:58] that doesn't matter but the key aspect
+[39:00] of the mark schedule
+[39:02] over here is that it uses a scoreboard
+[39:05] so we have seen a scoreboard earlier so
+[39:07] that's the reason i'm not explaining it
+[39:09] once again
+[39:10] uh we have seen it when we were
+[39:13] discussing italian which was the last
+[39:15] part of
+[39:16] chapter five so if you go to the video
+[39:19] the
+[39:20] last part of chapter five you will find
+[39:24] the videos on titanium
+[39:27] and the videos on titanium have a
+[39:29] discussion on the scoreboard
+[39:31] the scoreboard is nothing but a hardware
+[39:33] data structure that keeps
+[39:35] an instruction stalled until there are
+[39:38] no hazards
+[39:40] for the hazards are four types
+[39:45] and structural hazards until these four
+[39:49] hazards
+[39:50] there's no probability of any any
+[39:53] correctness problem happening because of
+[39:55] these hazards we just stole an
+[39:58] after that we issue so since the
+[40:00] scoreboard has been
+[40:01] discussed in detail i am skipping that
+[40:03] part but this was
+[40:04] discussed in detail in italian and
+[40:07] finally we have the register file access
+[40:09] as you have seen the register file is a
+[40:11] it looks like a memory in a pd
+[40:14] and then we have a bunch of these
+[40:16] functional units
+[40:18] which could be the integer alu floating
+[40:20] point single precision double question
+[40:22] alu special function unit
+[40:24] for sine cos transcendental functions
+[40:28] load stored units node store units talk
+[40:31] to the l1 cache the shared l1 cache and
+[40:33] finally to the tdab
+[40:34] right so i fought to add an l2 cache
+[40:37] over here
+[40:38] that should have been there but still
+[40:41] gpu dram has a very large role to play
+[40:45] in the gpu because a lot of the data
+[40:48] because we're dealing with big data over
+[40:50] a lot of the data ultimately ends up
+[40:52] getting stored in the drag
+[40:54] and for regular functional units once
+[40:58] the operands have been calculated
+[41:00] there's a register right back
+[41:02] and we again write the results back to
+[41:04] the register file
+[41:05] this is as such a regular pipeline the
+[41:08] scoreboard is new
+[41:09] but the rest are not that clear the
+[41:12] scoreboard basically tracks the
+[41:13] dependencies
+[41:15] and stalls instructions until the
+[41:17] dependency is met
+[41:19] and it's an inorder pipeline it's not an
+[41:21] out of order pipeline it's
+[41:23] primarily an inorder pipeline to a large
+[41:27] extent but of course you will see in
+[41:29] an ordered pipeline wow and bar hazards
+[41:32] don't
+[41:32] come up so basically there is a very
+[41:36] small amount of outer ordnance over here
+[41:40] and which is sometimes you know if you
+[41:43] have this kind of execution as i just
+[41:45] showed
+[41:46] on the previous slide
+[41:49] there is a limited amount of that but in
+[41:51] general is the job of the school board
+[41:53] to take care of these issues right
+[41:55] particularly when we are
+[41:57] executing threats in this fashion
+[42:00] is the job of primarily the scoreboard
+[42:03] to take care of it
+[42:05] so the important question that needs to
+[42:07] be answered now
+[42:08] is that if let's say we have 32 node
+[42:12] instructions in a month
+[42:14] or 32 store instructions pretty much one
+[42:16] instruction per
+[42:18] thread what do we do how do we access it
+[42:22] so let us first count the number of
+[42:27] bits that we need to read
+[42:30] at the same time so of course same time
+[42:32] need not mean the same cycle
+[42:34] but let's say in the window of two or
+[42:36] three cycles
+[42:37] so it's 32 cross 32 well why because we
+[42:40] have 32 threads in a bar
+[42:42] and each value is 32 bits so this is
+[42:45] 1024 bits or 128 pipes
+[42:49] so this would require a very high
+[42:50] register read bandwidth
+[42:52] and a very high register right bandwidth
+[42:54] as well
+[42:56] so if i were to argue in a different way
+[42:58] so you may say that look
+[43:00] instead of
+[43:04] sending 32 requests per cycle
+[43:08] you may send 16 or we may send eight and
+[43:11] that's
+[43:12] that's fine so if we send 16
+[43:15] you should also factor in the fact
+[43:19] that if let's say an instruction has two
+[43:20] operands we are not reading one operand
+[43:22] we're actually reading two
+[43:24] so this will become 16 times 232 again
+[43:27] multiplied with 32 it will remain 1024
+[43:29] bits
+[43:31] right and let's see if we send eight
+[43:34] well then it will become 512
+[43:36] but that's still a lot of bits a simple
+[43:39] yet impractical solution could be that
+[43:43] we just have
+[43:44] a register file bank a bank is nothing
+[43:47] but
+[43:47] like a sub register file and then
+[43:51] each entry could be 1024 bits where all
+[43:54] the entries are kept together but all
+[43:56] the information is kept together
+[43:58] this is impractical okay this simple
+[44:00] idea is impractical
+[44:01] because we don't know in advance which
+[44:03] registers will access and
+[44:05] whether they'll all be kept at the same
+[44:07] place or not
+[44:08] so this is rather impractical and
+[44:10] doesn't work that way and also reading
+[44:12] out so much of data takes a lot of time
+[44:15] a far more efficient solution
+[44:18] is to actually split the register file
+[44:20] into multiple banks sub register files
+[44:24] and distribute these 1024 bits across
+[44:27] these register file banks
+[44:29] so one bank can keep you know let's say
+[44:32] 64 bits or 128 bits
+[44:36] if let's say it keeps 128 bits
+[44:39] then across eight banks
+[44:43] the data will be distributed so we'll
+[44:45] need to have an elaborate network so
+[44:47] that is what the cross bar network is
+[44:49] which is controlled by an arbiter
+[44:51] circuit
+[44:52] to access all those banks which have the
+[44:55] data
+[44:56] read them or write them so let's look at
+[44:58] read because read is more performance
+[44:59] and sitting
+[45:01] and we put all of that data in a
+[45:03] dedicated hardware structure called an
+[45:05] operand collector
+[45:07] so the job of the operand collector over
+[45:10] is to basically work like a temporary
+[45:12] buffer
+[45:14] till the data is completely read from
+[45:16] the register file banks
+[45:18] so clearly we are accessing multiple
+[45:20] banks so from each bank
+[45:22] we are reading a lesser amount of data
+[45:26] so what is happening is that this is a
+[45:28] fast access and also there is
+[45:30] parallelism we have exported the
+[45:32] complexity to the network that's the
+[45:34] reason we need an intelligent arbiter
+[45:37] but once that is done all the 1024 bits
+[45:41] can be read and they
+[45:42] can be stored in the operand collective
+[45:45] and from the operand collector
+[45:47] the data can then seamlessly pass
+[45:49] through to the execution units
+[45:51] and the execution units can then execute
+[45:54] on the data execute the function
+[45:56] whatever it is add subtract multiply on
+[45:58] the data
+[45:59] so the key innovations over here
+[46:02] are the crossbar network the arbiter and
+[46:05] the operand collectors
+[46:08] so as we have discussed the simple yet
+[46:10] impractical solution
+[46:12] is to just make a registered file bank
+[46:14] entry white
+[46:15] 1024 or 120 bits why press that's not
+[46:19] practical you have to have a large
+[46:21] number of banks in the register file
+[46:24] use the operand collectors to collect
+[46:25] the values
+[46:27] and then use the on-chip network to
+[46:29] route register and file values
+[46:31] to the operand collector as we have seen
+[46:36] even in the l1 cache when you are
+[46:38] accessing the caches
+[46:40] not l2 to that extent but l1 definitely
+[46:43] there is a far elevated chance of bang
+[46:45] conflicts the reason is if we are
+[46:47] writing data
+[46:48] we are writing 128 bytes or it's maybe
+[46:52] easier to say 32 memory words
+[46:55] the reward is four bytes
+[46:58] so clearly if you are accessing multiple
+[47:01] banks there is a chance of ban
+[47:02] conflicts in the sense that a single
+[47:05] bank may contain
+[47:06] two of these words so if you have
+[47:09] concurrent
+[47:10] accesses to the same bank that's a
+[47:12] problem
+[47:14] so what we can do is we can have a
+[47:15] dedicated piece of hardware
+[47:18] that will send all the mutually
+[47:19] non-conflicting accesses to the banks
+[47:21] first
+[47:22] sort of let's say all the accesses let's
+[47:24] say 32
+[47:26] we might find 25 accesses that are
+[47:28] mutually non-conflict to
+[47:29] send them first then in the rest of that
+[47:33] then the rest of the accesses are sent
+[47:35] to subsequent cycles
+[47:37] are sent to the banks in subsequent
+[47:39] cycles they're gradually trained
+[47:42] for rights what we can do is that let's
+[47:46] say there is a cache line
+[47:49] then what will happen is the data will
+[47:52] either gradually come in because of band
+[47:54] conflicts and so on
+[47:57] so whenever we bring in a line from a
+[47:59] lower level we can lock the line in the
+[48:01] cache
+[48:03] and let's say we'll have an mshr kind of
+[48:05] structure so we'll discuss that in great
+[48:07] detail
+[48:08] in chapter seven but what we can do is
+[48:11] that let's say
+[48:13] uh i'll give a realistic scenario so
+[48:15] let's say that
+[48:16] in the l1 cache there is a write miss so
+[48:18] the block has to come from
+[48:20] l2 in the time being a lot of reads and
+[48:23] writes would have arrived at the l1
+[48:26] so they're buffered in a temporary
+[48:27] structure that'll be called an mshr in
+[48:29] the next chapter
+[48:30] but in this chapter let's call it a
+[48:32] temporary structure
+[48:34] so the temporary structure will hold on
+[48:36] to all of the outstanding leads and
+[48:38] whites
+[48:39] and the moment that the block comes from
+[48:41] the lower level
+[48:42] will basically replay all the load store
+[48:44] accesses
+[48:46] for the set of all the lines that
+[48:49] arrived
+[48:49] in the shadow of the miss which means
+[48:51] when the mist was being serviced
+[48:53] from the lower level whatever reads and
+[48:55] writes we got we immediately apply them
+[48:57] to this block
+[49:01] so now we have reached the end of the
+[49:02] chapter so let me
+[49:04] quickly conclude you always have five
+[49:06] computing points
+[49:08] gpus are no doubt
+[49:11] a vital requirement a modern numerical
+[49:14] scientific and high performance
+[49:16] completed
+[49:17] they are required for accelerating
+[49:19] graphics based applications
+[49:21] no doubt cpus in comparison have
+[49:25] severely inadequate resources
+[49:28] early stage gpus were too customized for
+[49:31] specific applications
+[49:33] but then gpgpus arrived on the scene and
+[49:35] they had a very generic application
+[49:40] in the cuda language was developed
+[49:43] to basically run generic ports on gpus
+[49:46] akura binary is a fat binary that has
+[49:48] both gpu
+[49:49] and gpu specific for cpu and gpu
+[49:53] specific
+[49:54] and gpus have a complex hierarchical
+[49:56] structure with five to ten thousand
+[49:58] ports these days which is massive
+[50:00] right several teraflops of computational
+[50:03] power is there within one single gpu
+[50:07] so here we have a gpc then a tpc smpb
+[50:10] and a bunch of variants
+[50:13] a warp requires 1024 bits in one group
+[50:18] this necessitates a complex and a
+[50:21] multiband register file
+[50:23] and a complex multiband l1 cache as well
+[50:27] so we will discuss in the next chapter
+[50:29] on caches
+[50:31] a lot more about the way that these
+[50:33] caches are designed because what you
+[50:35] would have realized by this time
+[50:37] which is at this time meaning that we
+[50:40] have completed the first part of the
+[50:41] book
+[50:42] where we have discussed out of order
+[50:44] pipelines and gpus
+[50:46] and it is possible to embed a sea of
+[50:48] computational units and increase the ipc
+[50:51] for some quotes not for all but the
+[50:53] memory system can be important
+[50:55] because the memory system also needs to
+[50:57] provide data at a high rate
+[51:00] and also read out results at a high rate
+[51:02] correct the memory system could be a
+[51:04] bottle
+[51:06] given the fact that the memory system is
+[51:09] a bottleneck
+[51:10] or can be one we should invest a lot of
+[51:13] our resources
+[51:14] in designing a very fast and efficient
+[51:16] memory structure
+[51:18] memory system i'm sorry so this will be
+[51:21] the subject of study in the second part
+[51:22] of the book
+[51:24] which is from chapter 7 to 10 and the
+[51:27] lectures for this you will find on the
+[51:30] website
+[51:30] for chapters 7 to 10 so kindly follow
+[51:47] you

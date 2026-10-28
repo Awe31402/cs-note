@@ -1,0 +1,1430 @@
+[00:00] [Music]
+[00:24] in this
+[00:25] video we will
+[00:28] discuss uh cash Corin protocols so cash
+[00:31] uh Corin Protocols are
+[00:33] required for making a distributed cash
+[00:37] behave as if it is a shared
+[00:41] cache so I'll first start with the
+[00:44] simplest protocol which is the right
+[00:46] update
+[00:49] protocol so what is it that we need to
+[00:52] ensure so we need to ensure that uh plsc
+[00:57] is uh so we need to enforce plsc in
+[01:00] hardware and from there uh we came to
+[01:04] the two cach Corin aums the first is
+[01:07] that all the rights to the same location
+[01:09] are seen in the same order so seen in
+[01:12] the same order basically means that all
+[01:17] the
+[01:18] threads see the same location being
+[01:21] updated in the same way in the sense
+[01:24] that if we have a location X if we write
+[01:27] one to it then two then three and so on
+[01:31] all the threads will agree on this order
+[01:34] based on this when we were creating our
+[01:37] execution
+[01:38] witness we made the Ws Edge and the F
+[01:42] Global in the sense that there is
+[01:45] complete Global agreement about the
+[01:48] order of rights to a single
+[01:51] location then uh we had uh one more
+[01:54] condition which did not come from
+[01:56] plsc but which basically said that all
+[01:59] All rights ultimately
+[02:02] complete it means a right message is
+[02:04] never lost so let us call this the right
+[02:09] serialization condition and let's call
+[02:10] it the right completion or right
+[02:13] propagation condition right so these are
+[02:16] the two basic axioms that we need to
+[02:19] ensure uh for creating any cach cence
+[02:22] protocol so let's start with the
+[02:24] simplest model where all the sister
+[02:27] caches are connected with a shared bus
+[02:31] the shared bus is basically a set of
+[02:34] copper
+[02:35] wires and uh so in this case it's not
+[02:37] the case that cash one sends a message
+[02:39] to cash 2 it just sets the state of the
+[02:42] shared bus to the message it wants to
+[02:44] send and then all the caches can read it
+[02:48] so it is like one writer and multiple
+[02:50] readers all of them can read it but of
+[02:53] course uh most of them will ignore the
+[02:56] message because it will not be meant for
+[02:58] them but the C that are interested in
+[03:01] the message can read it directly so a
+[03:02] shared bus by definition is a broadcast
+[03:07] media where something is written and
+[03:09] everybody else can read so these are
+[03:11] also called Snoopy buses because in a
+[03:13] sense if something is being written the
+[03:16] rest of the sister caches are in effect
+[03:19] snooping on the data and the data is
+[03:23] visible to them the message is visible
+[03:25] to them so this is also called a Snoopy
+[03:27] bus
+[03:30] so this of course is a very simple
+[03:32] design and it will not scale to
+[03:35] something uh more than let's say eight
+[03:38] caches but nevertheless if we have two
+[03:41] to four sister caches the Snoopy design
+[03:43] can be used so we'll start with
+[03:47] it so in the right update protocol what
+[03:50] we do so this is something that we will
+[03:52] continue to do from here on is that we
+[03:56] will augment each cach line with three
+[03:59] states m s and I so m stands for
+[04:03] modified so which we have seen this
+[04:05] before this basically means that a right
+[04:07] has happened so it has been written
+[04:13] too s means that the line is possibly
+[04:17] shared with other sister caches so that
+[04:20] is the S State and I means it is invalid
+[04:23] which means it does not contain valid
+[04:27] data so what we will be stud studying in
+[04:30] these cach gance protocols is we'll be
+[04:32] studying a set of State diagrams and a
+[04:35] set of
+[04:36] transitions so with each edge with each
+[04:39] state transition Edge we'll have a event
+[04:42] and a vertical bar message
+[04:44] notation so which basically means if a
+[04:47] certain event happens you send this
+[04:49] message right or you do
+[04:51] this and also we can have a message
+[04:54] event notation where if we receive a
+[04:57] certain message from the bus then then
+[05:00] we either fire the certain event or we
+[05:02] do something so let's see so Rd is a
+[05:06] read request WR is a right
+[05:09] request evict means that there is a need
+[05:13] to evict the
+[05:15] block write back is we write it back to
+[05:18] the lower level and update is that we
+[05:20] receive an update on the bus Which sets
+[05:24] the value of a certain
+[05:25] variable so let's say it sets X to 5 so
+[05:28] we quickly update the local copy of x to
+[05:32] five so what again is the broad idea
+[05:35] over here the broad idea over here is
+[05:38] that we have a shared bus which is just
+[05:40] a set of shared copper wires we have the
+[05:43] sister caches connected to it the only
+[05:47] way for cashes to communicate is by
+[05:49] setting the state of this bus and of
+[05:52] course we assume that we have a smart
+[05:53] circuit a bus master that allows only a
+[05:57] single right at a time and once a right
+[06:00] is has been done it is immediately
+[06:02] visible to the rest of the other caches
+[06:06] and each one of them runs a state
+[06:09] machine so it is possible that one
+[06:11] variable might be present in many caches
+[06:14] and so then the state machine needs to
+[06:16] run on all those cach
+[06:20] lines there are several message types
+[06:22] several kinds of messages that can be
+[06:25] sent on the bus so when we later on
+[06:28] extend this protocol to the nooc we will
+[06:31] also
+[06:32] have the same message format so RDX is a
+[06:37] read Miss message so we send it on the
+[06:40] bus nooc if
+[06:43] required similarly WRX is a right Miss
+[06:47] message so uh recall from our discussion
+[06:50] on caches that whenever there's a right
+[06:52] Miss we need to get a copy of the block
+[06:57] first and then we need to write uh to
+[07:00] whichever uh subset we intended to write
+[07:03] all right but getting the copy of the
+[07:05] block is
+[07:06] important so this we have already
+[07:08] discussed in chapter 7 so now the
+[07:11] question is why do we have separate
+[07:12] messages a read Miss and a write Miss
+[07:14] well we will see so because reads and
+[07:17] wrs we treat somewhat differently and so
+[07:20] the wrs the order to the same location
+[07:23] does matter so they have to be separate
+[07:26] messages and write x.u is just
+[07:30] to get the permission from the rest of
+[07:32] the sister caches to write so in this
+[07:34] case the current cache actually has a
+[07:37] copy of the blog but it does not have
+[07:39] the permission to write to it so write
+[07:42] tex. message is sent to actually get
+[07:46] permission to write to the
+[07:48] block broadcast is where we broadcast a
+[07:51] right on the bus we basically say that
+[07:53] look I have set X to
+[07:55] five so then this is a message to the
+[07:57] rest of the sister caches to do
+[07:59] something something and finally send
+[08:02] send means send a copy of the block to
+[08:04] the requesting cache if the current
+[08:06] cache has it right so this is of course
+[08:09] assuming the current cache has a copy of
+[08:11] the block so it sends it so what again
+[08:13] is the idea well the idea is that the
+[08:15] block that contains the variable
+[08:18] x uh might be present in multiple caches
+[08:21] so there'll be multiple replicas these
+[08:24] replicas have to be kept synchronized or
+[08:27] what is called coherent which which
+[08:29] means that the action axum of cash
+[08:32] coherence need to be
+[08:38] followed so as we discussed cash cence
+[08:41] protocols use buses uh they are known as
+[08:44] Snoopy
+[08:46] protocols all the messages are
+[08:48] essentially broadcast messages right uh
+[08:52] so in effect their broadcast messages
+[08:55] and all the caches can read to them and
+[08:58] such protocols
+[09:00] have serious scalability issues in the
+[09:03] sense that they do not scale Beyond 4
+[09:07] to8 course right this is the maximum so
+[09:10] beyond this actually they do not scale
+[09:13] right so they have this fundamental
+[09:16] scalability issue all right and so that
+[09:20] is why we will use other protocols that
+[09:22] will rely on the nooc not on a Snoopy
+[09:25] bus but we will gradually extend our
+[09:27] ideas to an nooc
+[09:31] so let us now come to
+[09:33] reads so we will be having as I had
+[09:36] promised we will be having uh such kind
+[09:39] of state
+[09:40] machines so for reads if the block is
+[09:44] not present we send a read Miss message
+[09:47] on the bus so let's say we come here we
+[09:50] find the invalid state which basically
+[09:52] means the block is not present right and
+[09:55] we want to read so we send a read Miss
+[09:57] message on the bus
+[10:00] fair enough if it is already present so
+[10:04] then uh so let's say if it's already
+[10:06] present in the shared State then we
+[10:09] don't do anything we just read it so we
+[10:11] read it don't do anything so this minus
+[10:14] indicates nothing is done all
+[10:17] right and from the shared State also
+[10:21] what we
+[10:22] do is that we have seamless eviction so
+[10:26] this is an important thing seamless
+[10:28] basically means if we want to evict the
+[10:30] block we just throw it out and we don't
+[10:33] do anything so this is known as a
+[10:35] seamless
+[10:37] eviction which is a good idea because
+[10:40] every time we aake there should be no
+[10:42] need of actually doing something it will
+[10:45] make the process of eviction more
+[10:47] complex all right so this for us is a
+[10:50] simple State diagram so what is this
+[10:53] again if I don't have it I send a read
+[10:56] Miss message on the bus
+[10:59] and then I hope that somebody will
+[11:02] respond and if the if no one responds of
+[11:06] course uh So within a certain maximum
+[11:08] time frame I read it from the lower
+[11:10] level and then in the shared state right
+[11:13] and then of course I transition to the
+[11:15] shared State and in the shared State I
+[11:18] can keep on reading as well as I can
+[11:20] seamlessly evict and the seamless
+[11:22] eviction will become a big deal
+[11:26] later so now let us come to rights and
+[11:28] let us look at the same i2m
+[11:32] transition so in the in this case if the
+[11:35] block is not present I send a write Miss
+[11:38] message on the
+[11:39] bus indicating that I would like to
+[11:42] write and of course some other cache
+[11:44] needs to reply within a finite period of
+[11:47] time otherwise I read it from
+[11:49] the lower level now let's consider the M
+[11:54] state if you need to write the right is
+[11:57] broadcasted first so from the M state if
+[12:00] I want to read I don't do anything I
+[12:02] just read but if I want to write I first
+[12:07] broadcast it to the rest of the sister
+[12:09] caches and then I do a
+[12:11] right uh so we will so this this is why
+[12:14] this is called an update protocol so so
+[12:16] what is it that I'm doing so what I'm
+[12:19] doing is that if I want to read nothing
+[12:21] needs to be done I have the block but if
+[12:23] I have a right given the fact that all
+[12:27] the sister caches have to age on the
+[12:29] order of Rights anytime that a right is
+[12:33] actually done it is broadcast to the
+[12:35] rest of the sister caches because they
+[12:38] possibly might have a copy of the block
+[12:41] so they will also update themselves with
+[12:43] a copy of the
+[12:45] block so that is why I do a broadcast
+[12:48] and then I do the right all right so
+[12:51] that's an important uh thing and also if
+[12:55] you uh read this chapter in the book so
+[12:58] a subtle point is made that I broadcast
+[13:00] first in the sense I tell everybody this
+[13:03] is what I'm writing and then uh the
+[13:06] sister cach updates its cach
+[13:09] line so why not the other way around
+[13:12] well the reason is that there might be
+[13:14] two concurrent rights
+[13:16] right so let's say one wants to set X is
+[13:19] equal to 3 the other wants to set X is
+[13:22] equal to
+[13:23] 5 so if it goes ahead and writes first
+[13:26] then one sister cach X will get written
+[13:28] to three first and in The Other Sister
+[13:32] cache X will get written as five first
+[13:36] and then they will do the broadcast
+[13:37] which is not
+[13:38] right so if if there is a shared medium
+[13:41] the bus Master will ensure that one of
+[13:43] these requests gets control of the bus
+[13:46] first and then the second one so this
+[13:49] ensures that there is a Global Order of
+[13:51] Rights so if let's say xal to 3 succeeds
+[13:54] first then everybody records this and
+[13:58] then everybody records that X was set to
+[14:02] five so so this is the key uh this is
+[14:05] the broad
+[14:08] idea uh that uh if you want to write
+[14:11] from the invalid State we move to the
+[14:13] modified State there we can keep on
+[14:15] reading there is no issues but if you
+[14:18] want to write the right needs to be
+[14:20] broadcasted which of course is an
+[14:22] overhead but this is why it is called an
+[14:24] update protocol that whenever we write
+[14:27] we just broadcast the right
+[14:30] all right uh then uh the M state so this
+[14:34] state this state which is the m state
+[14:37] does not allow seamless evictions in the
+[14:40] sense that if the block needs to be
+[14:43] evicted so uh well in this case the
+[14:46] block has been modified right so if
+[14:48] let's say that we evi the block we don't
+[14:51] want to lose the update because we do
+[14:54] not want to lose the update we write it
+[14:56] back to the lower level so seamless
+[14:59] evictions in this state are not actually
+[15:02] allowed so we write data back the data
+[15:05] to the lower level while evicting
+[15:07] otherwise the update will be lost and
+[15:10] clearly the most important source of
+[15:12] overheads is the fact that we broadcast
+[15:15] on every right and this is an overhead
+[15:19] in terms of time power and performance
+[15:22] ultimately
+[15:24] right so uh this is this part of the
+[15:27] state machine where we have seen a Sim
+[15:29] interaction with the S State and an M
+[15:31] state so let us now complete the state
+[15:36] diagram so the complete State diagram
+[15:39] feure all the transitions due to read WR
+[15:42] and EV evict events is shown over here
+[15:45] so we have seen seen this kind of Peace
+[15:47] meal so we have not seen one part I will
+[15:50] come to it so we have seen the
+[15:52] transition from the I to the S State and
+[15:57] back so in this
+[16:00] case uh what we do is that we read and
+[16:03] then a read Miss message is sent over
+[16:07] bus and uh similarly there is an
+[16:10] eviction it's a seamless eviction from
+[16:12] the shared state but from the modified
+[16:15] state it is not uh seamless eviction in
+[16:18] a shared State we can keep on reading so
+[16:21] the transition that we would like to uh
+[16:24] introduce over here is actually this
+[16:27] transition where from from the shared
+[16:29] State let's say we want to
+[16:31] write so then because the copy of the
+[16:34] block is there nobody else needs to send
+[16:36] a
+[16:37] block but the block will be now be
+[16:41] recorded to be modified so a transition
+[16:43] from the s to the m States is necessary
+[16:46] so that's the reason there is an s2m
+[16:48] transition and in addition we broadcast
+[16:51] the right for the same reason to
+[16:54] maintain a Global Order of Rights and
+[16:56] such that the rest of the copy is also
+[17:01] themselves and needless to say this
+[17:03] operation is a power hungry step in the
+[17:06] M State because every right involves a
+[17:09] broadcast and not just that whenever a
+[17:12] cash sees a broadcast on the bus it
+[17:15] needs to locally
+[17:17] query itself and find if it has a copy
+[17:20] of the block or not if it does it needs
+[17:22] to update it so that is also another
+[17:25] source of overhead both the broadcast as
+[17:28] well as the fact that all the caches
+[17:30] internally have to check and uh this
+[17:34] overhead is clearly avoidable as we
+[17:36] shall see
+[17:39] later now let us look at events received
+[17:42] from the bus so we can receive several
+[17:45] events from the bus so let us say we are
+[17:47] in the shared State we receive a
+[17:49] broadcast well uh nothing needs to be
+[17:52] done what we do is we update the value
+[17:56] we receive a read Miss where well again
+[17:59] nothing needs to be done we send the
+[18:02] data and we receive a right Miss again
+[18:06] uh nothing needs to be done we send the
+[18:08] data similarly in the M state if there
+[18:12] is a broadcast message we update the
+[18:16] value and any read or write misses we
+[18:18] send the
+[18:20] data so of course here there is a subtle
+[18:23] point and we we will make a big deal out
+[18:25] of the subtle Point later that let's say
+[18:29] there are two copies of the blocks in
+[18:31] two sister
+[18:32] caches and now a new sister cache wants
+[18:36] a copy of the block who supplies it this
+[18:39] one or this one well whoever gets access
+[18:42] to the bus first supplies it sorry that
+[18:46] was
+[18:47] a that was a wrong diagram of a bus but
+[18:50] at least conceptually it should be clear
+[18:53] so whoever gets control of the bus first
+[18:56] supplies the data
+[18:58] and uh the other cash snoops the bus so
+[19:02] it moment it sees that data has been
+[19:05] supplied it keeps
+[19:06] quiet so here of course given that only
+[19:09] one sister Cache can use the bus or get
+[19:12] permission to the bus at any point of
+[19:15] time a Global Order of Rights is
+[19:18] automatically enforced the same order in
+[19:20] which you acquire the
+[19:22] bus and also the bus Master disallow
+[19:25] starvation in the sense if every right
+[19:28] ultim imately gets access to the bus
+[19:30] then all rights will also complete so
+[19:33] this ensures the axioms of cerence the
+[19:36] fact that they actually
+[19:39] hold so what we have been arguing up
+[19:42] till now is that the right broadcast
+[19:45] protocol has high
+[19:48] overheads and that is because on every
+[19:50] right we need to broadcast the right so
+[19:53] we will optimize this and propose the
+[19:55] right invalidate protocol
+[19:59] so what we see is that in practice we do
+[20:02] not have that much of sharing okay so uh
+[20:06] it is not that a single line is like
+[20:09] concurrently accessed all the time and
+[20:12] so variables are protected within
+[20:14] critical sections so we typically access
+[20:17] a bunch of data then somebody else
+[20:18] accesses it and so
+[20:21] on so the common pattern is that at one
+[20:24] point of time we can have a single
+[20:25] writer and nothing else right just a
+[20:29] single writer no readers so maybe I
+[20:31] should note it down or we have multiple
+[20:34] readers but no
+[20:37] writer so if I were to take this
+[20:40] particular case in mind I can create a
+[20:42] new
+[20:44] protocol and if I am just so let's say
+[20:47] for every block if I sort of create some
+[20:50] kind of a token and I just pass around
+[20:53] the token between the writers in the
+[20:55] sense that whoever holds the token that
+[20:57] cach can write right nobody else can
+[21:01] then the order in which the token is
+[21:03] passed will ensure a Global Order of
+[21:05] rights to the same memory location right
+[21:08] conceptually furthermore if let's say I
+[21:11] am a cash and I want to write if it is
+[21:14] guarantee that ultimately I'll get the
+[21:16] permission to write or ultimately I'll
+[21:18] get this
+[21:19] token then there will be no starvation
+[21:22] and all the rights will ultimately
+[21:25] complete right so the right propagation
+[21:27] XM is
+[21:29] guaranteed so if we can design a
+[21:31] protocol on these lines it'll be more
+[21:34] efficient at least more power efficient
+[21:37] than the right update
+[21:40] protocol so in this case what we will do
+[21:43] is I'll directly introduce the state
+[21:46] diagram primarily because we have
+[21:48] already become mature in interpreting
+[21:52] these uh State diagrams from the
+[21:54] previous
+[21:55] exercise so we will directly be in a
+[21:57] position to appreciate this dat diagram
+[22:00] if you're not able to understand I will
+[22:02] request you to go to the previous right
+[22:05] update protocol and understand such
+[22:07] diagrams in great detail so you'll have
+[22:10] the same MSI protocol same three states
+[22:13] their meanings will slightly change I'll
+[22:15] tell you
+[22:17] how so let us first look at the Salient
+[22:21] points so it is that only one Cache can
+[22:24] contain a block in the M state so for a
+[22:27] given block right
+[22:29] only one of the caches can have it in
+[22:31] the M State at that point no other cache
+[22:34] will have a valid
+[22:37] copy however it is possible that
+[22:39] multiple caches can have the Block in
+[22:41] the EST State and they can all read from
+[22:44] it but not write to it right so we have
+[22:47] the single writer or multiple readers
+[22:51] philosophy so as per this uh particular
+[22:55] philosophy we'll only have a single
+[22:57] cache which can write to it in the M
+[22:59] State and we will have multiple readers
+[23:03] right or we will have multiple readers
+[23:05] right or in the case in the sense
+[23:08] exclusive so let us look at the state
+[23:13] transitions in this case we have the I
+[23:16] state so from the I state if we have a
+[23:20] read read uh request we send a read Miss
+[23:24] message and we transition to
+[23:26] S and of course as I have said uh if you
+[23:30] don't get it in finite time we read from
+[23:32] the lower level but we still transition
+[23:34] to the estate and a similar
+[23:36] transition on a right to
+[23:39] the uh right Miss uh we send a right
+[23:43] Miss message and we move to the m State
+[23:45] all
+[23:47] right in the S State a cach can continue
+[23:51] reading there is no problem so think of
+[23:54] the S State as a readon state for this
+[23:57] protocol of course in in the previous
+[23:59] protocol we could write here but not now
+[24:02] this is only a readon state you want to
+[24:04] keep reading be in the S
+[24:06] state but let's say in the shared s is
+[24:09] for shared right in the in the shared
+[24:11] State we decide to write well then it is
+[24:14] necessary to get permission to write
+[24:17] first we just cannot write like that so
+[24:21] if there is a need to write a write an
+[24:24] update or an sorry an upgrade message uh
+[24:27] you write text. an upgrade message needs
+[24:30] to be sent to the rest of the caches and
+[24:34] once there is an agreement so agreement
+[24:37] by the fact that the message is actually
+[24:39] sent on the bus and you see the message
+[24:40] being sent on the bus and since the bus
+[24:43] enforces a global order everybody else
+[24:46] would get it so then uh the rest of the
+[24:49] caches will essentially invalidate
+[24:51] themselves which means that they will
+[24:54] discard the copies of the blocks that
+[24:56] they have
+[24:59] and uh so then what can be done is that
+[25:02] from the S to M State we can make a
+[25:06] transition and here is the fun part the
+[25:08] fun part is in the modified State we can
+[25:11] continue to read and write no messages
+[25:13] are sent so this makes the this part of
+[25:17] the protocol extremely power efficient
+[25:20] the reason being that we can continue to
+[25:23] write in the M State without
+[25:25] broadcasting a message and broadcasting
+[25:27] a message the point that I made
+[25:30] before that first power goes in the
+[25:32] broadcast and second power goes in
+[25:35] actually
+[25:37] reading uh in for all the caches to
+[25:40] actually check if the broadcasted value
+[25:42] is there in their caches or not the
+[25:44] broadcasted
+[25:45] address but in the invalidate protocol
+[25:48] the nice thing is that since only one
+[25:50] cache has it has the Block in the M
+[25:52] State you are sure that no other cash
+[25:54] has a copy so you want to write well
+[25:56] continue writing
+[25:59] now here is uh a few settled points so
+[26:01] the evictions are still seamless in the
+[26:04] shared state that is mainly because it
+[26:06] is read only nothing has been modified
+[26:08] so if you want to evict well we just go
+[26:10] ahead and
+[26:11] evict but from the M State evictions are
+[26:15] not seamless because
+[26:17] the block has been modified so in this
+[26:21] case a right back to the lower level is
+[26:23] necessary
+[26:33] all right so this is the key idea here
+[26:36] that we do not allow readers and writers
+[26:39] to
+[26:40] coexist and if a cach wants to write it
+[26:42] better be the sole exclusive owner of a
+[26:46] block so the M State enforces this
+[26:49] exclusive
+[26:51] ownership so then it means that you want
+[26:53] to write will keep writing and
+[26:55] furthermore the order in which the
+[26:57] caches reach the M state is a globally
+[27:00] visible order and that ensures the right
+[27:03] serialization axium of cash
+[27:08] quance all right so the upgrade was the
+[27:10] new part and that we have discussed so
+[27:13] that you might not be able to see it so
+[27:14] I'll clear the ink on the
+[27:20] slide and uh sorry we have seamless
+[27:23] reads and wrs sorry A W is due over here
+[27:28] let us now look at transitions because
+[27:31] of messages received on the
+[27:35] bus so clearly if I'm in the invalid
+[27:38] State then transitions do not matter
+[27:41] transitions only matter for the m and S
+[27:45] States so in the S State several
+[27:48] messages can come a read Miss message
+[27:50] can come in this case the data is sent
+[27:53] the block is sent unless of course
+[27:56] another cache send it earlier uh you
+[28:00] know send it gets access to the bus
+[28:02] earlier and sends it the contents of the
+[28:05] blocker
+[28:07] sent but if let's say a right upgrade
+[28:12] message is received then there is a need
+[28:14] to transition to the invalid State
+[28:17] because it is not possible for one cash
+[28:19] to have a block in an M State and at
+[28:21] same time another cash to have it in the
+[28:23] estate this is not possible so we either
+[28:26] have a single writer or we have multiple
+[28:28] readers we never mix them so because we
+[28:31] do not mix them what we do is that we
+[28:33] invalidate ourselves so this is where
+[28:36] the name of the protocol also comes from
+[28:38] the right invalidate
+[28:40] protocol and similarly if there is a
+[28:42] right miss the block is
+[28:44] sent from the M State we can either have
+[28:48] a write Miss or a read Miss message
+[28:49] clearly no upgrade messages because
+[28:52] there is no
+[28:53] sharing so if there is a right Miss
+[28:55] message which means another cach would
+[28:57] like to
+[28:59] write then uh what happens is that the
+[29:03] data is sent the block is sent to the
+[29:06] other cache there is no reason to do a
+[29:08] write back over here because the
+[29:11] contents of the block whatever has been
+[29:13] written to will be transferred to the
+[29:16] other cach and then the other cash can
+[29:18] do a right back if there is a
+[29:20] need in this case if there is a read
+[29:24] Miss right uh so then because if any
+[29:27] line is in a modified State a state
+[29:30] transition is necessary if there's
+[29:32] another request so if there is a read
+[29:34] Miss then uh the current line has to
+[29:37] transition from the m to the S State the
+[29:40] reason is that we cannot have an m and S
+[29:43] State together right M state in one
+[29:45] cache and S state in another cache
+[29:47] either one writer or all readers so get
+[29:50] into the all readers we have an m2s
+[29:54] transition and the block is also
+[29:56] Center in addition a right back is
+[29:59] performed to the Lower State because we
+[30:02] have seamless evictions from this state
+[30:04] so we can just toss a block out but what
+[30:07] if it was modified and it came from this
+[30:11] state so that is why to enable semless
+[30:14] evictions in the shared State the data
+[30:17] is uh the block is written back to the
+[30:19] lower level so this is why a right back
+[30:21] is necessary because the S state has
+[30:23] seamless evictions which means we can
+[30:26] just evict a block without doing
+[30:30] anything so this was the MSI protocol uh
+[30:33] the two State
+[30:35] diagrams uh for cach Corin with the
+[30:38] right invalidate mechanism so let us now
+[30:40] make this more
+[30:44] efficient so the crucial Insight over
+[30:47] here is that uh consider a core that
+[30:50] reads a block and this block is never
+[30:52] shared so what will it do it will first
+[30:56] read in the shared state
+[30:58] and then uh if it wants to write it'll
+[31:01] send an additional upgrade message write
+[31:04] x.u and then transition to the m State
+[31:08] this for us is an overhead because if
+[31:10] let's say we just read first and write
+[31:13] later it is clearly an overhead right so
+[31:16] we should avoid this that is why we
+[31:18] proposed the messy protocol with an
+[31:20] additional State called The Exclusive
+[31:23] State or the
+[31:25] eate the eate essentially indicates that
+[31:28] the block is only present in the current
+[31:32] cache and how do we set it in the East
+[31:35] State well uh if we have a read Miss uh
+[31:38] and we request the rest of the caches
+[31:41] but none of them has a copy and we read
+[31:43] it from the lower level then the block
+[31:46] is directly put in the E state or in the
+[31:49] State and the rest Remains the Same so
+[31:53] the MSI protocol actually becomes the
+[31:55] Messi protocol where we have an
+[31:57] additional e state or exclusive state
+[32:00] which indicates that there is a single
+[32:02] copy of the
+[32:13] block right so this is what it indicates
+[32:16] that the block there is a single copy we
+[32:18] don't have multiple copies we just have
+[32:20] a single uh copy just
+[32:22] one and uh so this uh is the message
+[32:28] protocol which we will look at next so
+[32:30] it will reduce some of our work right
+[32:32] some of our additional work particularly
+[32:35] that captures the pattern that we read
+[32:37] something and then we write and we are
+[32:39] of course the solo reader and the solo
+[32:42] writer previously more some messages
+[32:44] were required uh to be sent on the bus
+[32:47] now nothing will be
+[32:49] required so let's
+[32:51] see so in this case in the Messi
+[32:54] protocol this is how uh we actually work
+[32:57] instead instead of three states we have
+[32:59] four states and we can clearly see the E
+[33:02] State over here so let us start
+[33:04] describing the protocol from the eate
+[33:07] first and then we will see the rest of
+[33:09] the states and they are roughly the same
+[33:13] right so this state diagram should be
+[33:15] correlated with the earlier State
+[33:17] diagram on the basic MSI protocol and we
+[33:20] will take it from
+[33:24] there so initially from the I state if
+[33:28] there is a read and we are reading from
+[33:31] the lower level not from a sister cache
+[33:33] so we clearly make a differentiation
+[33:35] over here whether we are reading from a
+[33:38] sister cache or we are reading from the
+[33:40] lower level if we are reading from a
+[33:43] sister cash we transition to the estate
+[33:45] which is the usual thing that we had
+[33:48] seen previously with the MSI protocol
+[33:52] but in this case if a read is being made
+[33:54] from the lower level after sending a
+[33:55] read Miss message it clearly indicates
+[33:58] that no other cach has a copy right so
+[34:01] this is what it indicates so no other
+[34:04] cach has a copy we directly transition
+[34:06] to the exclusive State all right so
+[34:10] there is uh uh so this is clear that we
+[34:13] directly make a transition to the E
+[34:15] state in the E State we can keep on
+[34:18] reading there's no problem and we can
+[34:20] also seamlessly evict it because no
+[34:22] right has been
+[34:24] done so here is the trick we
+[34:28] from an e to an M transition can be done
+[34:30] if you desire to write nothing needs to
+[34:33] be sent on the bus so this is totally
+[34:36] seamless right nothing is sent on the
+[34:38] bus and this transition is the most
+[34:42] important uh new aspect of this protocol
+[34:46] that if let's let's say we read
+[34:48] something and then we desire to write to
+[34:50] it then we can easily make a transition
+[34:55] all right and this transition does not
+[34:57] not require any additional permissions
+[34:59] from the bus and as you can see uh we
+[35:02] transition from E to
+[35:04] S all right and U so so nothing else is
+[35:09] required so these are only the read
+[35:11] write and evict events I will look at
+[35:13] the events from the bus in the next
+[35:16] Slide the rest of the transitions for
+[35:18] the Ms and I State remain the same so
+[35:21] this part is identical I will not
+[35:23] discuss this right so we have already
+[35:26] seen this part it Remains the Same it is
+[35:29] identical and the only difference is we
+[35:31] make a differentiation between reads
+[35:34] from the lower level and reads from a
+[35:35] sister cache from a sister cache goes to
+[35:38] the upper triangle otherwise we come to
+[35:40] the E State as we have
+[35:44] described so here are the
+[35:47] transitions on bus events so let's say
+[35:50] we are in the E State we have a right
+[35:54] Miss so then it is guaranteed that the
+[35:57] other sister cash will not have a copy
+[36:00] of the block so we send the
+[36:02] block if you have a read Miss then of
+[36:05] course there is a need to transition to
+[36:06] the shared State
+[36:10] because uh multiple caches cannot have
+[36:14] uh if let's say multiple caches have the
+[36:16] Block in with read only permissions all
+[36:19] of them need to be in the shared State
+[36:22] the rest of the transitions again for
+[36:23] this upper triangle remain the same
+[36:27] which is in a shared State we can keep
+[36:29] reading uh right and uh if let's say
+[36:32] read Miss comes we send the data and
+[36:35] from a m state if a read read Miss comes
+[36:37] we do do a send and write back for
+[36:40] evictions and if from an M state right
+[36:43] Miss comes we send and from a shared
+[36:45] State any
+[36:46] right we invalidate and send if the
+[36:50] other gash does not have a copy all
+[36:53] right so this was a simple addition to
+[36:56] the basic MSI protocol to make the messy
+[36:59] protocol and the important point is the
+[37:01] e2s transition where if let's say
+[37:04] another cash request for a copy we
+[37:06] transition to the shared
+[37:10] state so we are unfortunately not
+[37:13] satisfied we have gone far but we still
+[37:16] want to go even further so in this case
+[37:19] we would like to ask a basic question so
+[37:22] who supplies the data if a sister cash
+[37:27] uh send a read miss or write Miss
+[37:30] message right so see that's an important
+[37:33] question up till now we have been saying
+[37:35] that look your multiple sister caches
+[37:37] have a copy of the
+[37:45] block and if one of them requests the
+[37:48] other can whoever gets access to the bus
+[37:51] first will send it so this does
+[37:55] have issues right does have overheads
+[37:58] you need additional circuitry so the
+[38:01] cashes who have a copy of the block
+[38:02] arbitrate for the bus so they send
+[38:05] request to the bus Master they arbitrate
+[38:07] for it source of overhead number one the
+[38:10] one who gets access to the bus first
+[38:13] sends the data so whichever cash gets
+[38:15] access to the bus first will send the
+[38:17] data the rest will Snoop this value and
+[38:21] see that look yes the data has been sent
+[38:23] so some sort of an additional State
+[38:25] machine has to be maintained and and
+[38:27] then they will cancel their request so
+[38:30] this is a substantial overhead in terms
+[38:33] of time and power and in terms of time
+[38:36] and power clearly this additional State
+[38:38] machines their time power area
+[38:41] performance overheads are
+[38:44] there so that is why we would like to
+[38:46] reduce this overhead as much as possible
+[38:50] that is you know that is a let's say
+[38:52] opportunity number one that for
+[38:55] providing data if he we can add an extra
+[38:58] State well why not opportunity number
+[39:02] two on an m2s transition We have
+[39:05] basically been writing back data why
+[39:07] because we want a seamless eviction in
+[39:11] estate so because we want a seamless
+[39:14] eviction over here whenever there is a
+[39:16] transition from modified to Shared we
+[39:18] write data back of course this does have
+[39:22] an implication on performance as well as
+[39:24] power is it actually required
+[39:28] right and is it actually required can we
+[39:31] do it later can we do it lazily so in
+[39:34] this case what happens is that whenever
+[39:36] there is a transition we write data back
+[39:38] so there is no opportunity for an
+[39:41] optimization in a sense we cannot do it
+[39:43] slowly or lazily right at a later point
+[39:45] of time where the lower level memory is
+[39:48] slightly less loaded so such
+[39:50] opportunities are not there with us so
+[39:52] can we explore this so there are two
+[39:55] opportunities one and two let's solve
+[39:58] them and how have we been solving it by
+[40:00] adding an additional State called an
+[40:02] owner
+[40:04] State all right so now the state
+[40:07] diagrams keep getting more complicated
+[40:09] but the assumption is that you have
+[40:11] become an expert in this kind of stuff
+[40:15] already so here what we do is we have an
+[40:18] owner state which is an additional uh
+[40:21] addition on the Messi protocol so we
+[40:24] have a moi protocol where the additional
+[40:26] owners state is
+[40:28] extra so the idea the owner state is
+[40:31] that look yes the data can be shared
+[40:34] fair enough right multiple copies can
+[40:37] have multiple caches can have a copy of
+[40:40] the block but I am the owner if I am the
+[40:43] owner then it is my job to send data so
+[40:47] let's uh slowly go through it so uh I
+[40:52] have deliberately reversed the order of
+[40:54] the slides so in this case we talk about
+[40:58] the events from the bus first messages
+[41:00] received from the bus first the
+[41:02] transitions due to them and then we talk
+[41:05] about events uh we talk about the read
+[41:08] write and evict events right so the
+[41:10] order is reversed and it's important
+[41:12] because it's easier to understand if we
+[41:14] present it this way so whenever another
+[41:18] cache requests for data from an e or M
+[41:21] state right from the eate so of course
+[41:24] this spot Remains the Same
+[41:27] and but from an e or M State whenever
+[41:29] another cash requests for data so
+[41:32] previously what what used to happen well
+[41:36] what used to happen is that uh there was
+[41:41] a transition to the shared
+[41:43] state right so let us look at the read
+[41:45] Miss messages from the e or M State
+[41:48] previously they used to go to the S
+[41:49] state but now we don't do that now
+[41:52] whenever there is a request we send the
+[41:54] data Whenever there is a request we send
+[41:56] the data
+[41:57] and we make a transition to the O state
+[42:00] which means that this records the fact
+[42:03] that the current cash is the owner of
+[42:06] the block right so it is true that
+[42:10] multiple caches have copies of it and
+[42:12] that to in a readonly state so o state
+[42:15] is a readon state you're not allowed to
+[42:17] write but that's not important what is
+[42:19] important is that the current cash is an
+[42:22] owner so later on if a new cash joins
+[42:25] and wants a copy of the block the owner
+[42:27] will supply right so if let's say new
+[42:31] cash uh does not have a copy of the
+[42:34] block it sends a read Miss message it is
+[42:36] the job of the owner to
+[42:38] supply and if another cach wants to
+[42:41] upgrade well the owner of course
+[42:42] invalidates but if there is a right Miss
+[42:44] again the owner supplies right so that's
+[42:48] important so what do we do so what we do
+[42:51] is that from the e or M
+[42:53] States uh well if the right Miss comes
+[42:56] then of course we send the block send
+[43:00] the contents of the block and we
+[43:01] invalidate ourselves which in any case
+[43:04] has to be done because it is a right
+[43:07] invalidate protocol otherwise what
+[43:11] happens
+[43:12] is that in the O State we send the data
+[43:15] to other requesting caches and we enter
+[43:18] the O State when we receive a read Miss
+[43:20] to the e or M States and this records
+[43:23] the fact that it's my I am an owner it's
+[43:25] my job to send so we are not going to
+[43:27] compete on the bus anymore so this makes
+[43:30] this part of the protocol very power
+[43:32] efficient and the owner's job is just to
+[43:35] send an answer all queries for a given
+[43:39] block then uh let's look at the S State
+[43:42] the Sate by and large Remains the Same
+[43:45] in the sense if anybody else requests
+[43:47] for the
+[43:48] data uh then there is an invalidate
+[43:51] there is a key important difference here
+[43:53] so previously when there was a right
+[43:55] Miss uh the State used to possibly send
+[43:58] a copy of the blog but now that is not
+[44:00] required so just look at this so now
+[44:04] that is not required because you already
+[44:06] have an owner and the owner will send
+[44:08] right so other Estates need not concern
+[44:11] themselves
+[44:14] with uh actually uh becoming an owner
+[44:18] right so so basically they don't really
+[44:21] uh try to send a copy of the
+[44:24] block and similarly if there is a read
+[44:26] Miss also they don't send a copy of the
+[44:28] block they only send a copy of the block
+[44:31] if let's say they get a probe message
+[44:33] which we will see so the probe message
+[44:36] is sent to handle a certain Corner case
+[44:39] so this will be discussed in the next
+[44:40] slide so only on a probe message is the
+[44:44] S State responsible for sending data
+[44:47] otherwise it is not so by and large this
+[44:50] simplifies our state machine to a large
+[44:52] extent in the sense that whenever a copy
+[44:56] of a block needs to be sent we do not
+[44:59] have to actually compete and arbitrate
+[45:02] for the bus and send so this part of
+[45:05] operating the protocol becomes
+[45:07] substantially simpler but of course to
+[45:10] do that from MSI we have moved to Mesi
+[45:14] no problem so I hope that by this point
+[45:17] these five states are well
+[45:19] understood and the fact that the owner
+[45:21] state is actually the owner in this
+[45:25] case so now
+[45:27] oh oops did I show that so this does
+[45:30] look complicated but it is not that
+[45:32] complicated so let's take a look at our
+[45:34] familiar friends m i s and m the new
+[45:41] States we add three more States right so
+[45:43] we add two temporary States St and SE
+[45:46] and we add an owner State
+[45:49] o so let's go slowly uh so we will not
+[45:52] go very quickly so let us for the time
+[45:55] being ignore the two temporary States St
+[45:58] and SE so let's just ignore them for the
+[46:00] time
+[46:01] being so what is the main problem so
+[46:04] let's take a look at what happens uh
+[46:06] with the owner state so for an internal
+[46:10] read write and
+[46:11] evict uh message uh event we actually do
+[46:15] not enter the owner state so see just
+[46:17] see that there are no incoming arrows to
+[46:19] the owner state so I become an owner if
+[46:22] I was let's say previously I had it in I
+[46:25] had a copy of the Block in the modified
+[46:27] exclusive State and then somebody else
+[46:29] wanted read access so then I become the
+[46:32] owner so in the owner state if I want to
+[46:36] read well I can continue to read there
+[46:37] is no
+[46:39] problem but if there is a need to write
+[46:42] then we need to invalidate the rest of
+[46:44] the copies so write an upgrade message
+[46:48] is sent on the bus if there is a right
+[46:50] request and for the M State everything
+[46:53] Remains the Same so we don't have to
+[46:54] bother and similarly for the estate also
+[46:58] everything Remains the
+[46:59] Same so what is important is that we
+[47:02] need to take a look at the own the owner
+[47:05] state so the owner State as I just said
+[47:08] it is again a readon state so reads are
+[47:11] not an issue and rights will require an
+[47:14] upgrade to the m State let us now see
+[47:17] what is
+[47:19] the uh what is the big deal with
+[47:22] eviction so eviction in this case is the
+[47:25] same for s M and E so eviction in this
+[47:30] case uh is that from an e State we
+[47:33] seamlessly evict from the M State we
+[47:37] evict it and we do a right back to the
+[47:38] lower level this again is required and
+[47:41] from the S State we evict and it's a
+[47:44] seamless eviction so we don't do
+[47:46] anything now the important thing is that
+[47:48] what do we do from the M
+[47:50] state so sorry what do we do from the O
+[47:53] state from the O State when there is an
+[47:56] eviction
+[47:58] what we actually do is that we do a
+[48:00] right back so this right back is
+[48:02] actually required the reason it is
+[48:05] required is basically because we
+[48:08] transition to the O state from an M
+[48:11] State as you can see in the previous
+[48:13] slide and here no right back is being
+[48:18] done so in this case no right backs are
+[48:20] being done the O State possibly contains
+[48:23] a modified
+[48:25] copy and since it contains a modified
+[48:29] copy which is not reflecting in the
+[48:30] lower level Whenever there is an
+[48:33] eviction from the O State there is a
+[48:36] need to actually write back and of
+[48:38] course we can have Smart versions of the
+[48:40] protocol which can actually once a block
+[48:45] reaches the O States uh lazily or
+[48:48] opportunistically write it back to the
+[48:50] lower level whenever the lower level is
+[48:52] free all right so that can be done but
+[48:55] in any case when we are evicting in the
+[48:57] O State we need to ensure that the block
+[49:01] is reflecting in the lower level because
+[49:03] the O State possibly contains modified
+[49:05] data right and also the other thing is
+[49:08] that any transition from m to the O
+[49:11] State when let's say in a consider a
+[49:14] piece of data which actually doesn't
+[49:16] leave the caches so there is no reason
+[49:19] uh to actually write it back from an m2s
+[49:22] transition it'll go from M2 and later on
+[49:25] if you want to write from from the O
+[49:28] state will again we transition back to M
+[49:30] so there are no right backs involved the
+[49:33] problem is that if we decide to evict
+[49:35] from the O State the first problem is we
+[49:37] need to do a right back well that's okay
+[49:39] that's not that bad but the other is
+[49:42] that we the other is that this block
+[49:46] will not have an owner right so we might
+[49:48] have multiple other
+[49:51] caches uh that have it in the shared
+[49:55] state but none of them is actually the
+[49:57] owner right because there used to be one
+[50:00] owner but we evicted the block and uh so
+[50:04] now currently there are no owners so
+[50:07] there are sophisticated versions of the
+[50:09] cash Corin protocol where we can search
+[50:12] the rest of the caches and designate one
+[50:14] copy as the owner this of course is
+[50:17] tricky uh so because this will take more
+[50:20] time right it's not tricky but the
+[50:21] overheads are more so what is done in
+[50:24] this case which of course is not all
+[50:27] that common is that we introduce two
+[50:29] temporary states to take care of this
+[50:32] and the transitions of the I State
+[50:34] become more involved so we will see why
+[50:36] and how in the next slide so now we will
+[50:39] discuss these two temporary States St
+[50:41] and
+[50:43] SE so the rest remaining the same will
+[50:45] confine our attention to this part of
+[50:49] diagram so let us say that from the I
+[50:51] State there is a read Miss okay let's
+[50:54] first see what happens if there is a
+[50:56] right Miss in I state so if there's a
+[50:59] right Miss in I State well what is done
+[51:01] is that we simply invalidate the rest of
+[51:04] copies all right and uh so all of them
+[51:08] are
+[51:09] invalidated and if there is an
+[51:12] owner uh then the owner supplies the
+[51:15] data and if there are no
+[51:18] owners so then uh either one of the
+[51:21] caches supplies the data or we read from
+[51:23] the lower level right so that really
+[51:25] doesn't matter because since rights are
+[51:28] often off the critical path we can
+[51:31] afford to read from the lower level as
+[51:33] well uh that will not be uh you know
+[51:36] that's not that serious a thing uh so
+[51:39] that can be done but what we are more
+[51:41] concerned about is
+[51:43] reads so there's a read Miss from the IE
+[51:46] state right so there's a read and the
+[51:47] read leads to a read Miss from the I
+[51:49] State then we transition to the St
+[51:53] State St is the first temporary state
+[51:57] in this case if a reply is received
+[51:59] which means the valid owner exists then
+[52:02] we have a regular State transition to
+[52:04] the estate because we received a reply
+[52:07] nothing needs to be done we just
+[52:09] transition to the estate because the
+[52:11] owner supplied a copy of the
+[52:13] block otherwise there will be a timeout
+[52:16] in the St state which means that look I
+[52:19] waited and I didn't get
+[52:20] anything so if there is a time out a
+[52:23] probe message is sent so what the probe
+[52:25] message does is
+[52:27] so you recall that original probe
+[52:29] message where uh if let's say a probe
+[52:32] message comes then from the S State we
+[52:35] send a copy of the
+[52:37] block so in this case what we do is that
+[52:41] we send a probe
+[52:42] message and the probe message is sent to
+[52:45] all the rest of the sister caches and
+[52:48] let's say multiple sister caches have a
+[52:50] copy of the block like the previous
+[52:52] mechanism they arbitrate for the bus and
+[52:55] one of them sends a copy but in this
+[52:59] case because probe messages are rare the
+[53:02] additional power overheads are kind of
+[53:04] low so then we enter the SE state so we
+[53:08] wait for a reply to the probe message if
+[53:11] you get a reply which means if one of
+[53:13] the cashes had it in the shared State
+[53:15] well we are happy so we transition to
+[53:17] the EST State and we resume our work
+[53:21] otherwise if there is a time out which
+[53:23] means that the rest of the caches do not
+[53:25] have a copy
+[53:27] uh then uh there's a need to read it
+[53:30] from the lower level read the block from
+[53:32] the lower
+[53:33] level and uh we transition to the E
+[53:37] State or the exclusive State all right
+[53:41] uh so because that has been a read from
+[53:43] the lower level so a transition to the
+[53:45] exclusive state is required and the rest
+[53:47] of the state diagram works the way that
+[53:49] it used to work right so in this case
+[53:53] the aim of these two temporary States St
+[53:55] and SE
+[53:57] is to basically take care of the case
+[53:59] when there is no
+[54:01] owner so uh ideally speaking uh we
+[54:05] should have some way of ownership
+[54:07] transfer so there is a protocol called a
+[54:10] massive protocol where F stands for the
+[54:12] forwarding state that does some of this
+[54:15] so I'll not describe it but you can take
+[54:17] a look at it uh in your free
+[54:21] time all right so as I have said if
+[54:25] there is a timeout in State we read from
+[54:27] the lower level and we transition to the
+[54:29] E state so this completes our
+[54:32] description of the M moesi protocol with
+[54:35] a right invalidate
+[54:37] flavor and since all of these were using
+[54:41] bus at their
+[54:43] core uh they have scalability issues so
+[54:48] we'll try to fix the problem with
+[54:49] scalability
+[54:52] next so we will introduce the directory
+[54:55] protocol which to a large extent a very
+[54:58] large extent rather tries to fix this
+[55:01] issue so this is the current state of
+[55:03] the art for a bigger
+[55:06] system so in this case we do not have a
+[55:09] bus we have a dedicated structure called
+[55:13] directory and so the directory is one of
+[55:16] the nodes that is connected on an nooc
+[55:18] so in a complex nooc we have our caches
+[55:20] kind of scattered everywhere and then we
+[55:22] have one centralized structure called a
+[55:24] directory
+[55:26] so the directory coordinates the actions
+[55:28] of the cerence
+[55:29] protocol it sends and receives messages
+[55:32] from the caches and the lower level so
+[55:35] we can think of the directory as like
+[55:37] one
+[55:38] centralized coherence protocol
+[55:40] urer and a caches uh primarily
+[55:44] communicate with the directory and the
+[55:46] directory orchestrates the entire cence
+[55:49] protocol for the cashes so of course the
+[55:52] Snoopy protocol is faster in a smaller
+[55:54] system given the fact that we have a bus
+[55:57] it is faster it just that it fails to
+[56:00] scale the directive protocol to begin
+[56:03] with has high overheads right but it
+[56:06] scales so for a large system a directory
+[56:08] is required not a Snoopy but a small
+[56:10] system a Snoopy protocol is small and
+[56:16] efficient so here our basic philosophy
+[56:19] is slightly
+[56:21] different so the basic philosophy is
+[56:24] that a centralized directory for each
+[56:27] block maintains a list of sharers so
+[56:30] sharer is basically a sister cache that
+[56:34] contains a copy of the block so we
+[56:36] explicitly maintain a list of sister
+[56:39] caches that contain a copy of the block
+[56:42] and each such sister cache is called a
+[56:44] sharer all right so we explicitly
+[56:48] maintain a list of sharers or a list of
+[56:50] sister caches that maintain a copy of
+[56:53] the block and furthermore some amount of
+[56:56] state is kept with the directory so we
+[56:58] have a state of the entry we have a
+[57:00] block address and a list of
+[57:03] sharers the list of sharers is typically
+[57:07] maintained as a bit Vector so let's see
+[57:09] if there are 64
+[57:12] cores then we maintain one bit per core
+[57:17] where we are assuming that we have one
+[57:19] sister cache with each core or let's
+[57:21] make it General let's say we maintain
+[57:23] one bit per sister cache
+[57:26] so in this case what happens is that we
+[57:28] for the ith bit indicates whether the
+[57:34] present in the I sister cache or not so
+[57:38] just a simple bit Vector we maintain so
+[57:40] if we have K sister
+[57:43] caches so uh we maintain K bits over
+[57:46] here right so we have a list of sharers
+[57:49] a block address and a state so the
+[57:51] philosophy here is different we don't
+[57:52] have a shared bus we have a onchip
+[57:55] network
+[57:57] so what are the messages that the
+[57:59] directory receives the same messages
+[58:01] read Miss write Miss upgrade and evict
+[58:04] what should the directory
+[58:06] do so well uh from the point of view of
+[58:09] an individual cash the state transition
+[58:12] diagrams remain the same right uh so
+[58:15] they actually do not change instead of
+[58:18] dumping a message on the bus uh they
+[58:22] simply dump it uh they simply send it to
+[58:25] the director
+[58:27] so so that doesn't change but the
+[58:30] directory of course is a new Beast that
+[58:33] we need to look at so when it receives a
+[58:36] read Miss message it locates a sister
+[58:38] cache that contains the block that is a
+[58:41] sharer and it fetches the block from it
+[58:43] and it transfers or it asks that cash to
+[58:47] transfer a write Miss message it asks
+[58:50] all sharers to invalidate their lines
+[58:53] and then you need to give exclusive
+[58:55] rights the cash that wants to write so
+[58:58] let's say I want to write I want to
+[59:00] write well I send the directory a write
+[59:02] Miss message it sends a message to all
+[59:04] the sharers all the sharers invalidate
+[59:07] their
+[59:08] copies and it also requests for a copy
+[59:10] from one of the sharers and this copy is
+[59:13] transferred to the requesting
+[59:16] cache evict well we can have different
+[59:20] versions of the directory protocol in
+[59:21] one case we do not inform the directory
+[59:23] in one case we do so let's assume that
+[59:26] we inform the directory so once a block
+[59:28] is evicted we delete it from the list of
+[59:31] sharers and the basic protocol as I said
+[59:34] at the caches Remains the
+[59:36] Same the state transitions or directory
+[59:38] entries are as
+[59:41] follows so we will have three states U
+[59:44] stands for uncashed in the sense it is
+[59:46] not cached s stands for shared and E
+[59:50] stands for exclusive all right and we
+[59:53] assume that each of the individual uh
+[59:56] caches follows the Messi protocol
+[59:58] because MO is not required you know with
+[60:00] a directory and owner is not required so
+[60:03] let's go from u2e so let's assume that
+[60:05] it receives a read Miss
+[60:07] message from uh let's say core P so it's
+[60:12] actually processor P assuming that it's
+[60:14] for the L1 level so that same
+[60:16] terminology has been kept so we said
+[60:19] sharers is equal to p and we read from
+[60:21] LL LL being the lower level all right
+[60:24] because it's not cach right so we read
+[60:26] from the lower
+[60:27] level and if there's a right Miss
+[60:29] message then also it is entering an
+[60:32] exclusive state in the sense nobody else
+[60:34] has a copy and since e2m transitions are
+[60:38] silent the directory will have no idea
+[60:41] whether an e2m transition has actually
+[60:43] happened so for that reason what is done
+[60:46] is that the directory only maintains a
+[60:48] single state which is
+[60:50] exclusive and it set sharers is equal to
+[60:52] p and it initiates a read from the lower
+[60:58] level all right so now let us look
+[61:01] at uh the S
+[61:06] state so so yes so these are the
+[61:08] transitions of directory from the U and
+[61:10] S States right so they originate from
+[61:12] the UN Estates not from the
+[61:14] estate so in the estate let us say that
+[61:17] we receive an evict message so an evict
+[61:21] message we just sub delete the list of
+[61:24] sharers and with a set of sharers become
+[61:26] empty we enter the uncashed
+[61:29] state if we read a receive a read Miss
+[61:32] message then the read Miss message is
+[61:34] sent to one of the sharers and the
+[61:36] directory will ask that sharer to
+[61:38] forward a copy directly to the
+[61:40] requesting cache over the nooc so it
+[61:43] need not be sent via the directory it
+[61:45] can be sent directly and this is more
+[61:47] efficient and the requesting cach is
+[61:50] made a sharer right so sharers plus
+[61:52] equal to p means we make it a sharer
+[61:56] if there is an upgrade
+[61:59] message then what needs to be done is
+[62:02] that this Miss message needs to be sent
+[62:04] to all
+[62:05] sharers and other than the requesting uh
+[62:08] cash of course and it needs to be told
+[62:10] that look all of you kindly invalidate
+[62:12] yourselves you don't have to send a copy
+[62:15] because it's an upgrade message and the
+[62:18] set of sharers is only a single entity
+[62:20] which is the one that is requesting a
+[62:22] right
+[62:24] permission and if there is a right Miss
+[62:28] well if there is a right Miss we need to
+[62:29] do three things we send a right Miss to
+[62:32] all sharers we ask one of the sharers to
+[62:35] forward a copy and a list of sharers is
+[62:38] just B so this I hope was very
+[62:41] straightforward of what the directory is
+[62:43] going to do so there is no hidden uh you
+[62:46] know rocket signs or or magic sauce in
+[62:49] here this part is relatively
+[62:53] simple so let us now look at the State
+[62:56] transitions from the eate or from the
+[62:59] exclusive state so here the state
+[63:02] transitions are as
+[63:05] follows so let us say that we receive an
+[63:08] evict in the
+[63:11] estate then of course the sharers become
+[63:14] empty and we enter the uncashed stage so
+[63:16] that is
+[63:17] obvious if we receive a right Miss well
+[63:22] then we still remain in the exclusive
+[63:24] State the we send a right Miss to the
+[63:27] sharer the only sharer that has a
+[63:29] copy it forwards its modified copy to
+[63:32] the new to the requesting cache and the
+[63:36] set of sharers is set equal to P
+[63:39] because only one Cache can have right
+[63:42] access to the
+[63:44] block if we receive a read Miss message
+[63:46] well we do two things first is we send a
+[63:49] read Miss to the sharer so we ask it to
+[63:51] forward a copy of the block and sharers
+[63:54] plus is plus equal to p
+[63:56] so this is very similar uh to what we
+[63:59] had in the basic MSI and Mesi M
+[64:03] protocols uh so there is no as I said no
+[64:07] rocket science no secret Source over
+[64:10] here it is absolutely plain and simple
+[64:13] it is just that we have a dedicated
+[64:15] directory that maintains
+[64:18] State per block right in the entire
+[64:21] system this of course will become an
+[64:22] overhead but we will see so after
+[64:25] discussing the basic protocol let us
+[64:27] move
+[64:29] on so let us look at some enhancements
+[64:32] to the directory
+[64:34] protocol so let us list some of the
+[64:37] common problems associated with the
+[64:41] directories and then we will look
+[64:43] at the
+[64:46] optimizations so uh in the next lecture
+[64:49] we will
+[64:49] discuss uh some Advanced versions of the
+[64:52] directory protocol and we will also see
+[64:55] that cach cerence is a generic mechanism
+[64:57] to implement many other higher order
+[65:00] Primitives like synchronization
+[65:01] operations and so on and all of these
+[65:04] essentially build or let's say piggyback
+[65:06] on uh the cash sorry the cash Corin
+[65:11] protocol right and so this we will uh
+[65:14] discuss in the next lecture
+[65:25] oh

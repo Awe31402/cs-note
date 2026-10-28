@@ -1,0 +1,1120 @@
+[00:00] [Music]
+[00:00] n
+[00:35] now let us look at memory
+[00:37] cells so memory is a far denser storage
+[00:40] technology than uh flip flops and so
+[00:43] that's the reason it's used in
+[00:45] structures inside the processor uh to
+[00:48] actually store a lot of data not just
+[00:51] one bit or several bits but thousands or
+[00:54] millions of
+[00:56] bits so the two kinds of memory
+[00:58] technologies that are normally used are
+[01:01] SRAM static Ram cells and Dam Dynamic
+[01:04] Ram
+[01:05] cells so an SRAM cell works like this
+[01:08] that uh so so what is the main
+[01:11] philosophy here the main philosophy is
+[01:14] that we want to reduce the number
+[01:17] of uh transistors that are required to
+[01:20] store a single bit because we'll be
+[01:22] saving millions of bits possibly
+[01:24] billions of bits so that's the reason we
+[01:26] need to keep the number of transistors
+[01:29] as low as possible POS and we also want
+[01:31] to provide a memory technology that is
+[01:34] as fast as
+[01:35] possible so what we do is that to reduce
+[01:39] the number of transistors instead of
+[01:42] using cross coupled nand Gates as was
+[01:45] the case in
+[01:46] flip-flops right uh we use a cross
+[01:49] coupled pair of inverters which does the
+[01:51] same thing but we need some additional
+[01:53] circuitry as we shall see so in this
+[01:56] case this is an example
+[01:59] of a cross coupled pair of inverters
+[02:02] where the output of one inverter draw is
+[02:05] connected to the input of the other and
+[02:07] similarly the output of the lower
+[02:09] inverter is connected to the input of
+[02:11] the upper
+[02:13] inverter so let's say value X is stored
+[02:15] here then the complement of X is stored
+[02:18] on the other side so this structure by
+[02:22] itself is potent enough to store the
+[02:25] value of one bit and how many
+[02:27] transistors does this require if you
+[02:29] would reord all the structure of an
+[02:31] inverter was that it required two
+[02:35] transistors a posos
+[02:37] transistor and an nmos
+[02:46] transistor so uh since one inverter
+[02:49] requires two transistors we need a total
+[02:51] of four transistors in this structure
+[02:55] but however uh this much of circuitry is
+[02:57] not enough to read and write values into
+[03:01] this
+[03:01] structure so what we need to do is that
+[03:04] we need to have something else to
+[03:08] actually read and write into this
+[03:10] structure so there something else is
+[03:12] like this so we let's first consider a
+[03:14] cross coupled pair of
+[03:17] inverters which is here at the
+[03:21] bottom and so here uh as shown in the
+[03:24] previous diagram we have four
+[03:26] transistors 1 2 3 and four and uh but
+[03:30] let's uh sort of isolate this as a black
+[03:32] box so we'll need two more transistors
+[03:37] so what do the transistors do so we have
+[03:39] one transistor W1 and one transistor
+[03:43] W2 these are simple nmos
+[03:47] transistors so when the uh so these are
+[03:49] called word line
+[03:51] transistors so when the word line is set
+[03:53] to
+[03:54] zero at that point the nmos transistors
+[03:57] are off so it is like that uh this
+[04:02] memory cell is disconnected from the
+[04:05] rest of the world so it is not possible
+[04:07] to read its values neither is it
+[04:10] possible to write its values so the
+[04:13] value that is stored inside the memory
+[04:15] cell will be
+[04:16] maintained on the other
+[04:21] hand uh if the value of the word line
+[04:24] transistors is equal to one
+[04:30] then uh this transistor is on so this
+[04:34] line gets connected and pretty much what
+[04:38] we see is that this four transistor cell
+[04:42] is connected to the outside world and is
+[04:44] possible to both read and write its
+[04:47] values so let's consider writing first
+[04:50] uh so so since you know we have two
+[04:52] inverters whatever value is saved here
+[04:55] the complement of the value will be
+[04:57] saved on the other side so uh it's a
+[05:01] symmetric structure so one copper line
+[05:04] connected to one side is called a bit
+[05:06] line and the other one is also a bit
+[05:08] line but it stores the complement of the
+[05:10] value so both of these copper wires are
+[05:12] called bit lines so one stores a value
+[05:15] and the other stores the complement or
+[05:17] the value stored inside the cell so if
+[05:20] you want to
+[05:21] write let's say one into the cell we set
+[05:25] this bit line to a logical
+[05:27] one uh which is the supply V voltage and
+[05:30] we set this bit line to a logical zero
+[05:33] which is ground so in this case if the
+[05:37] voltage drivers are strong enough then
+[05:40] the four transistor cross coupled pair
+[05:43] of inverters will be programmed such
+[05:46] that the value saved over here is one
+[05:50] and the value saved at this point which
+[05:52] is also the same as the value stored in
+[05:54] these points right is zero right and
+[05:58] here it is one
+[06:00] similarly if you want to save uh zero in
+[06:02] the four transistor SRAM
+[06:05] cell I'm sorry in the four transister
+[06:09] inverters what we need to
+[06:13] do is that we need to set uh of course
+[06:17] we need to set the word lines to one to
+[06:19] enable uh the SRAM cell then we need to
+[06:23] store a zero over here you know set
+[06:26] Drive the bit line to a zero BL to a Z
+[06:29] and bl bar we need to drive it to a one
+[06:32] so that will set the values the voltages
+[06:35] at these points to zero and the voltages
+[06:37] at these points to
+[06:40] one so writing is easy reading is also
+[06:43] easy so in this case what we
+[06:46] do uh for the purpose of reading is that
+[06:50] we
+[06:51] enable uh the transistor by setting the
+[06:53] word lines to one and we don't use any
+[06:57] circuitry to explicitly Drive the
+[06:59] voltage of BL and bl bar instead we
+[07:03] allow their voltage to become the same
+[07:06] as the
+[07:07] voltages that are stored inside the cell
+[07:11] for example if this voltage is a logical
+[07:14] one and this is a logical zero so over
+[07:17] time the voltage of BL will become a
+[07:20] logical one and the voltage of BL bar
+[07:24] will become a logical zero and thus we
+[07:27] can infer that one is stored inside the
+[07:31] cell that's uh how we will
+[07:35] read all right so the what are the
+[07:37] important points that need to be taken
+[07:39] care of uh so our basic cross coupled
+[07:43] pair of inverters had four transistors
+[07:46] now we have our two wordline transistors
+[07:48] six transistors are there now in each
+[07:51] cell and then these are connected to two
+[07:54] bit
+[07:56] lines so an alternative representation
+[07:59] of an Ram cell looks something like
+[08:02] this where we have a pair of inverters
+[08:05] and the voltage at one side is V and the
+[08:08] voltage at the other side is a
+[08:09] complement of
+[08:11] V so uh then the wordline transistors
+[08:14] can be treated as
+[08:16] switches and this entire six transistor
+[08:19] cell called an SRAM cell it's a static
+[08:22] uh it's called a static Ram cell we'll
+[08:24] see why when we discuss Dynamic Rams so
+[08:27] they drive the voltage of BL and bl bar
+[08:31] in the read
+[08:32] mode uh the bit lines are kept floating
+[08:35] so what does floating mean floating
+[08:37] means that they are not explicitly
+[08:39] connected to either the supply voltage
+[08:41] or the ground voltage so we allow the
+[08:45] voltages V and V bar to
+[08:49] propagate to to set the values of the
+[08:53] bit lines BL and bl
+[08:56] bar so that is how we can read the
+[08:58] contents for writing what we do is that
+[09:01] we again enable the word lines and then
+[09:05] uh we explicitly set the voltages of BL
+[09:09] and bl bar such that uh this four
+[09:14] transistor SRAM cell gets appropriately
+[09:19] programmed now let's create an array of
+[09:22] SRAM
+[09:23] cells so to create an array of SRAM
+[09:26] cells uh let's see what needs to be done
+[09:29] so what we do is that we create one SRAM
+[09:32] cell and we arrange them in a matrix
+[09:35] form so let all the SRAM cells on a
+[09:39] single row be connected via the same
+[09:42] word
+[09:43] line and uh let all the and let the rest
+[09:46] of the SRAM cells along a
+[09:49] column uh be connected to the same pair
+[09:51] of bit lines so the first thing that we
+[09:55] do number one you know this is like step
+[09:58] number one
+[09:59] so let's assume that we have 128 rows so
+[10:04] we need to enable one of the rows so how
+[10:06] do we do that we use a decoder to set
+[10:10] only one word line to one which is true
+[10:14] based on the address and the rest are
+[10:16] zero so uh let's assume that each row
+[10:20] can store one in integer which is four
+[10:24] bytes so uh since 4 bytes is 32 bits
+[10:28] we'll need 3 to SRAM cells and let's
+[10:31] assume that there are 128 such
+[10:35] rows so the address of a 128 is 2 ^
+[10:41] 7 so what can be done is that uh we can
+[10:45] send a 7 bit
+[10:54] address uh the 7 bit address can be used
+[10:58] in the decoder to set one of the uh word
+[11:02] lines to one and the rest will remain
+[11:04] zero so let us assume that this word
+[11:07] line gets set to one which means that
+[11:09] this entire row gets enabled and the
+[11:12] rest of the SRAM cells and other rows
+[11:14] are
+[11:15] disabled so now what we do is that this
+[11:19] particular row after it is enabled uh so
+[11:22] so mind you only one row can be enabled
+[11:24] at a time so after doing that all the
+[11:28] SRAM cells are enabled and they will be
+[11:31] setting the values of BL and bl bar
+[11:34] subsequently what we can do is either we
+[11:36] can consider the values in all the SRAM
+[11:40] cells or let's say we want to read only
+[11:42] two bytes if we want to use two bytes we
+[11:45] can use a pair of
+[11:47] multiplexes such that for this example
+[11:50] if four bytes are coming in we can
+[11:53] choose the two bytes that we need to
+[11:56] read and then this can go out and same
+[11:59] is the case for writing as well if we
+[12:02] want to write to two bytes then uh we
+[12:05] will have driver
+[12:06] circuits that can help
+[12:09] us
+[12:11] uh uh that can essentially help us set
+[12:14] the
+[12:15] voltages uh as we shall see of BL and bl
+[12:18] bar and then the multiplexor circuit
+[12:20] over here will enable certain SRAM cells
+[12:24] such that we can read or write them for
+[12:26] example if we just want to enable this
+[12:28] and this
+[12:30] then uh the multiplexer will only ensure
+[12:32] the the outputs of these cells actually
+[12:35] flow out of
+[12:39] it so how do we operate an array of SRAM
+[12:42] cells so the an array of SRAM cells will
+[12:45] have two modes a right mode and a read
+[12:48] mode in the right mode we'll use a
+[12:51] driver circuit to set the values of the
+[12:54] pair of bit lines BL and bl
+[12:57] bar simultaneously we need to enable the
+[13:00] word line from the
+[13:02] decoder the values in BL and bl bar will
+[13:06] get transferred to the SRAM cell thus
+[13:08] affecting a
+[13:11] right in the case of a
+[13:13] read what we need to do is the first
+[13:16] step disconnect the bit lines from
+[13:20] Supply from the supply voltage and from
+[13:22] ground using transistors so basically
+[13:25] what we can do is we can have a circuit
+[13:27] of this type
+[13:29] where this is the supply
+[13:31] voltage right this is VCC the supply
+[13:34] voltage and we'll have a transistor so
+[13:37] what we so here if we set the gate
+[13:39] voltage of the transistor to zero
+[13:42] essentially this line is disconnected
+[13:44] from the supply voltage so we say that
+[13:46] it is floating right if a certain copper
+[13:49] wire is disconnected from Supply as well
+[13:51] as the ground we say that the wire is
+[13:56] floating then we enable the word line
+[13:59] uh once we enable the word line right so
+[14:03] there are there are a pair of bit lines
+[14:05] then there is the SRAM cell here in the
+[14:09] middle and then there is a word line so
+[14:12] once we enable the word line the SRAM
+[14:14] cell gets enabled and the values of BL
+[14:17] and bl bar get set to logical one and
+[14:20] zero depending upon the values stored in
+[14:22] the SRAM
+[14:25] cell so there are some issues with this
+[14:28] you know very simple design the first is
+[14:31] so let's go back let's actually go back
+[14:33] to this particular slide once again
+[14:37] remove all our
+[14:39] annotations and look at it once again so
+[14:41] we have an array of SRAM cells so mind
+[14:43] you this array can be very big so the
+[14:46] array can have literally thousands of
+[14:50] rows so if you want me to give a typical
+[14:53] example so let's assume that I have a
+[14:57] 256 kilobyte
+[14:59] SRAM array so 1 kilobyte is 2 ^ 10 and
+[15:04] 256 is 2 ^ 8 so total total there
+[15:11] are 2 ^
+[15:14] 18 bytes so the number of bits would be
+[15:17] 2 ^ 18 * 8 which is 2^
+[15:20] 21 so even if you try to make a nice
+[15:24] structure which is sort of looks like a
+[15:26] square and we have 2 2 the^ 11 rows here
+[15:30] and 2 ^ 10 columns here we will still
+[15:35] have 248
+[15:38] rows so which means that one SRAM array
+[15:41] is a very big structure and to each bit
+[15:44] line which is a thin copper wire 248
+[15:48] SRAM cells are
+[15:49] connected if that is the case this long
+[15:53] wire will have a lot of resistance as
+[15:56] well as
+[15:57] capacitance and the RC delays see you
+[15:59] recall what you were taught in first
+[16:01] year if a wire is very long and a wire
+[16:05] is connected to a lot of other elements
+[16:08] its resistance and capacitance will be
+[16:10] high so driving the voltage of the wire
+[16:13] either towards the ground or towards the
+[16:15] supply voltage will take a lot of
+[16:17] time right so basically why is the wire
+[16:20] long the wire is long basically because
+[16:24] a lot of SRAM cells you know literally
+[16:27] thousands of s Ram
+[16:35] cells are connected to
+[16:37] it so this will make the SRAM very very
+[16:40] slow and the question is can we do
+[16:42] something better we definitely can do
+[16:45] something better but let's start with
+[16:47] this idea so let us do one thing let's
+[16:51] consider the simple SRAM cell which is
+[16:54] six
+[16:55] transistors which is connected to two
+[16:57] very very long
+[16:59] bit lines they are called BL and bl
+[17:05] bar so and it takes a long time to
+[17:07] charge both of these bit lines to either
+[17:09] zero or one so let's do one thing let us
+[17:13] pre-charge both the bit lines to let's
+[17:15] say 0.5 volts where the assumption is
+[17:18] that a logical one is 1 VT using very
+[17:22] very strong pre-charge driver circuits
+[17:25] so what we do is that before we begin
+[17:27] reading so mind you reading is slow
+[17:30] writing is not slow the reason writing
+[17:33] is not slow because we can connect very
+[17:35] strong you know write driver
+[17:38] circuits to the BL and bl bar bit lines
+[17:44] right so D is for a driver such that you
+[17:46] know you can quickly drive them to a
+[17:47] logical zero or logical one but that is
+[17:51] not the case when you're
+[17:52] reading the reason that is not the case
+[17:55] when you're reading is because this
+[17:56] small little SRAM cell has to drive the
+[18:00] voltages of the bit lines to either zero
+[18:03] or one so what we do is that before we
+[18:06] start to
+[18:08] read we have these pre-charge circuits
+[18:12] right P is for
+[18:13] pre-charging which are connected to the
+[18:16] BL and bl bar lines and we quickly drive
+[18:19] them up to 0.5 volts where the
+[18:21] assumption is that a logical one is 1
+[18:23] volt so we drive them to the
+[18:25] midpoint once the voltage has reached
+[18:28] point5
+[18:29] volts then using a
+[18:32] transistor by programming a transistor
+[18:34] we disconnect both of these pre-charged
+[18:36] circuits and the lines are now floating
+[18:39] and we enable the word
+[18:41] line so what will happen is that so
+[18:44] initially t equal to Zer the voltage at
+[18:48] both the bit lines is5
+[18:53] volts subsequently one of the bit lines
+[18:56] will move towards 0 volt so let's asse
+[18:58] assume that this bit line is moving
+[19:00] towards 0 volt and the other bit line
+[19:03] will move towards 1
+[19:05] V so now the question is that if we know
+[19:09] that ultimately one bit line will reach
+[19:12] one volt and other one will ultimately
+[19:14] reach Z volts the moment we have made
+[19:18] determination we don't really have to
+[19:20] wait for the bit line to reach one volt
+[19:23] and the other one to reach Z volts right
+[19:26] so it is similar to the fact that assume
+[19:28] a student is not not doing well and a
+[19:30] course has let's say five exams and
+[19:32] after the first two exams the student
+[19:34] has found out that uh you know there's
+[19:37] no hope of passing the course it is not
+[19:40] necessary for the student to sort of
+[19:43] wait till all the five exams are over
+[19:45] right the student can at that point
+[19:47] withdraw from the
+[19:48] course so it's similar you know like in
+[19:50] a game of chess you actually don't wait
+[19:53] for the king to be killed long before
+[19:56] the king is killed typically one I
+[19:58] realizes the game is up and they resign
+[20:02] so the case is similar here we start by
+[20:04] pre-charging both BL and bl bar to.5
+[20:09] volts subsequently one of the lines will
+[20:12] move towards 0 volts and the other line
+[20:14] will move towards 1 volt so let us
+[20:17] monitor the difference in voltages
+[20:19] between the bit lines right so let's
+[20:21] have a simple circuit over here whose
+[20:24] only job is to subtract the voltages of
+[20:27] vbl and VB L bar right so we monitoring
+[20:33] difference and in this case you know so
+[20:37] so so again you know this sort of a
+[20:40] repeat of what I said should we wait for
+[20:42] one of the bit lines to reach 0 volts
+[20:43] and 1 volt the answer is no so this is
+[20:46] what we
+[20:47] do let's monitor the difference Delta
+[20:50] which is voltage of BL minus voltage of
+[20:52] BL
+[20:54] bar so there can be a little bit of
+[20:56] electrical noise in the system why is
+[20:59] this the case you would have typically
+[21:00] seen that if you turn on some electrical
+[21:03] Appliance like a microwave oven or a
+[21:05] washing machine there is a little bit of
+[21:08] noise in your phone so that is basically
+[21:11] because a little bit of inductance
+[21:13] happening so uh it's possible that
+[21:16] inside an SRAM also we have a little bit
+[21:18] of electrical
+[21:20] noise so let us Define a noise threshold
+[21:23] and let's call it
+[21:24] t right so this is the amount of random
+[21:27] noise that can come on a copper wire so
+[21:31] the moment the absolute value of the
+[21:33] difference in voltages is beyond that
+[21:36] noise threshold which means that this is
+[21:38] a real difference it's not a random
+[21:40] difference we can declare the result
+[21:44] right so the voltage of BL so assume
+[21:47] that we start at 0.5 and
+[21:49] 0.5 after let's say
+[21:52] one
+[21:54] Nan let's say that the voltage of
+[21:59] BL becomes 6 volts and voltage of BL bar
+[22:03] becomes point4 volts so at this point
+[22:06] we'll be very very sure that 6 will
+[22:08] ultimately go till
+[22:11] one similarly at this point we'll be
+[22:13] very very sure that point4 will
+[22:15] ultimately go till one so it's also the
+[22:18] same as declaring the results of an
+[22:19] election right so let's assume that
+[22:21] there are two candidates and one
+[22:24] candidate is just racing ahead so see at
+[22:27] the beginning we'll not not be able to
+[22:29] say because the candidates might be
+[22:31] going neck and neck and there might be
+[22:32] some noise in the accounting process so
+[22:35] maybe uh you know the votes for one
+[22:38] candidate uh are sort of uh
+[22:41] disproportionately mixed up but
+[22:43] gradually as the time
+[22:46] passes clearly one candidate will emerge
+[22:49] to be the winner and once we are sure we
+[22:52] can pretty much declare one candidate as
+[22:54] the winner and uh in a sense not wait
+[22:57] for all the votes to be counted so it's
+[22:59] very similar over here so let's assume
+[23:03] that the amount of noise that the system
+[23:05] will introduce is very small so maybe
+[23:08] from0 5 when it reaches 6 and other one
+[23:11] reaches point 4 we can be sure that in
+[23:15] this case BL will reach logical one
+[23:18] ultimately we don't have to wait and bl
+[23:21] bar will reach oh I'm sorry this should
+[23:24] be logical zero yeah this should be
+[23:26] logical zero it'll reach logic it'll
+[23:29] reach 0 volts ultimately we don't have
+[23:33] wait so what we can do is that at this
+[23:36] very point at 1 nond we can declare the
+[23:39] result so this is a very very fast way
+[23:43] and it's a very standard approach in
+[23:45] Hardware uh where what we do is that uh
+[23:49] we instead of waiting for the bit lines
+[23:52] one bit line to get fully discharged and
+[23:54] one bit line to get fully charged we
+[23:57] monitor the difference once we are sure
+[23:59] we declare the result in this case if
+[24:02] the difference is positive we infer a
+[24:04] logical one otherwise we infer a logical
+[24:07] zero this is a very very fast method of
+[24:09] reading because assume that for one line
+[24:12] to reach logical one and other to reach
+[24:15] logical zero it would have taken like 20
+[24:19] NS in this case in one nond we have the
+[24:24] result so what does an array of SRAM
+[24:27] cells now look like we have our
+[24:30] previous uh
+[24:35] diagram uh the only additions are as
+[24:38] follows so we have a set of pre-charge
+[24:40] drivers as you can see on the top so
+[24:45] what these pre-charge drivers do is that
+[24:48] they help in pre-charging the bit lines
+[24:50] before a
+[24:51] read subsequently after the column
+[24:54] Multiplex so let me just repeat what a
+[24:57] column Multiplex
+[24:59] does is that it helps you choose a
+[25:03] subset of columns that you want to read
+[25:04] or write because typically if the array
+[25:07] is very large we don't want to be we
+[25:09] don't want the array to be like one long
+[25:11] strip we want it to be nicely organized
+[25:14] as a square for certain circuit design
+[25:17] considerations so that makes it
+[25:19] necessary to choose a subset of SRAM
+[25:21] cells within each
+[25:23] row right a subset of columns within
+[25:26] each row so that's the reason we have a
+[25:28] multiplexer over
+[25:29] here and this is connected so the pair
+[25:32] of bit lines comes out so for the case
+[25:35] of a right we can use these right
+[25:37] drivers which are very powerful circuits
+[25:40] to set the values of the bit lines to
+[25:42] zero or one for the case of a read we
+[25:45] have this simple circuit called a sense
+[25:47] amplifier so the role of the uh sense
+[25:52] amplifier is
+[25:54] basically to monitor the difference
+[26:01] between the voltage of the one bit line
+[26:05] minus the voltage of the other bit lines
+[26:08] it just monitors the
+[26:09] difference once the difference increases
+[26:13] an acceptable threshold it declares a
+[26:15] result either a logical zero or a
+[26:19] logical one so what are the only
+[26:21] additions in this most important
+[26:24] circuit uh well we started out with an
+[26:26] array of SRAM cells and then decoder to
+[26:29] choose the right row when enabling the
+[26:31] word line we also had the column
+[26:34] multiplexer D multiplexer to basically
+[26:36] choose a set of columns the additions
+[26:39] are the set of pre-charge drivers that
+[26:41] help pre-charge the two bit lines a set
+[26:45] of right drivers in this diagram uh to
+[26:47] basically set the voltages of the bit
+[26:50] lines and some very specialized circuits
+[26:53] called sense amplifiers that help
+[26:57] between the bit lines such that we can
+[27:00] declare a logical zero or a logical one
+[27:02] depending upon which way the difference
+[27:04] is
+[27:05] going now let's consider a drram cell
+[27:08] which is even smaller than an SRAM cell
+[27:11] so smaller is the cell more compact it
+[27:14] is so for the same area more cells can
+[27:17] be packed so the memory can be more
+[27:19] dense but also smaller is the
+[27:22] cell uh the Lesser is its power to
+[27:25] actually drive the bit line uh to a zero
+[27:29] or one so in a sense it's also slower so
+[27:32] that also needs to be kept in mind that
+[27:34] latches and flip-flops are very
+[27:36] fast uh because they are more
+[27:38] transistors and as a result it is easier
+[27:41] for them to program them you don't have
+[27:44] bit lines S Rams are still fast enough
+[27:48] but D Rams are slow and we shall see
+[27:50] why uh so the reason for this is that uh
+[27:55] instead of having a cross coupled pair
+[27:57] of inverters
+[27:59] the main circuit in a dam is a
+[28:02] capacitor so charge is stored across the
+[28:06] capacitor so
+[28:08] if the voltage across the capacitor is
+[28:12] close to the supply voltage we can infer
+[28:15] a logical
+[28:16] one but if the voltage across the
+[28:19] capacitor is zero which means at this
+[28:22] point uh here is uh close to a logical
+[28:25] zero or the potential is close to 0
+[28:28] volts we can infer a logical
+[28:31] zero so that's the only structure there
+[28:34] is no cross-coupled pair of inverters so
+[28:36] we shall see that there is you know
+[28:38] there are good aspects to this and there
+[28:40] are bad aspects to this uh but this is
+[28:42] pretty much the only uh structure inside
+[28:45] the dam cell a single
+[28:47] capacitor and the way that we control
+[28:50] access to it is that we have a single
+[28:52] transistor here which is controlled by
+[28:55] the word line so the word line is set to
+[28:58] we can assume that uh the switch is
+[29:01] connected and the capacitor is directly
+[29:03] connected to the bit line and here also
+[29:06] there is a single bit line instead of
+[29:08] two bit lines there is a single bit line
+[29:11] so we infer the value of the voltage uh
+[29:15] stored across the capacitor by taking a
+[29:17] look at the voltage of the bit
+[29:20] line also for writing what is done is
+[29:23] that when we write we connect a driver
+[29:27] circuit to the bit
+[29:29] line right the connection is again done
+[29:31] with the help of a transistor switch and
+[29:34] the driver circuit can do one of two
+[29:37] things so if it pumps and charge into
+[29:40] the capacitor and its potential
+[29:43] increases then we are trying to write a
+[29:45] logical one otherwise if it drains out
+[29:50] charge uh from the capacitor then we are
+[29:53] writing a logical
+[29:55] zero and once the word line trans
+[29:58] transistor is
+[30:00] disabled uh disabled basically means
+[30:03] that we set its voltage to
+[30:06] zero then the capacitor is
+[30:10] disconnected right you can sort of think
+[30:12] that the switch is disconnected so
+[30:14] whatever is a voltage across the
+[30:15] capacitor will
+[30:19] remain so now let's consider an array of
+[30:21] dram cells so this is very similar to an
+[30:24] array of SRAM cells as we had seen there
+[30:27] is a single bit line right so that's one
+[30:29] difference in an SRAM array there were
+[30:31] two bit lines here there's a single bit
+[30:33] line for writing we enable the word line
+[30:36] and charge uh the bit line with a driver
+[30:39] circuit and then uh the bit line
+[30:42] transfers the charge to the
+[30:45] capacitor for reading we do something
+[30:48] very very similar to what we have done
+[30:50] in the case of
+[30:51] srams we pre-charge the bit line to 0.5
+[30:54] volts so fair again the assumption is
+[30:56] that logical zero is0 volts so which
+[31:01] this assumption is most of the time
+[31:03] correct actually nowadays most of the
+[31:04] supply voltages are close to 1 volt so
+[31:07] we pre-charge the bit line to half of
+[31:09] the supply voltage which in this
+[31:11] case is5
+[31:14] volts we enable the word
+[31:17] line and we monitor the difference of
+[31:20] the voltage with respect to5 volts so
+[31:23] basically if this is the bit line so we
+[31:27] have a simple
+[31:29] oh I'm sorry I shouldn't have added the
+[31:31] bar uh just a bad habit from the SRAM
+[31:34] days one
+[31:38] second
+[31:42] yeah so if this is the bit
+[31:45] line uh we will have a sense amplifier
+[31:48] which is essentially a comparator and
+[31:50] the other signal that is going into it
+[31:52] is a fixed signal in this case of5 volts
+[31:57] so we essentially monitor the difference
+[31:58] and the idea is the same once the
+[32:01] difference exceeds a threshold we
+[32:03] declare the result whether it's a
+[32:05] logical zero or a logical
+[32:08] one and what is a threshold the
+[32:10] threshold is expected to be a small
+[32:12] value of the order of several Mill volts
+[32:15] so that will be the amount of noise that
+[32:17] is introduced in The Wire because of
+[32:18] external electromagnetic
+[32:20] fields that's all so so that's the only
+[32:23] difference that instead of comparing BL
+[32:25] and uh BL bar We compare uh a single bit
+[32:29] line with uh another fixed voltage which
+[32:33] is5 volts and we see whether the voltage
+[32:36] is going up shooting above 0.5 or going
+[32:39] below and based on the direction we
+[32:41] infer uh the value stored uh in the dam
+[32:47] cell so there's the problem so so
+[32:49] basically you know we initially had a
+[32:52] cross coupled pair of nand gates so in a
+[32:55] flip-flop if you would recall in a free
+[32:58] flop we had a cross coupled pair of n
+[33:01] Gates so since there were more
+[33:03] transistors it was possible to uh Drive
+[33:07] in more current there were more paths
+[33:09] from the ground and
+[33:11] VCC and uh also the it was easier to
+[33:16] program these devices in comparison an
+[33:19] SRAM cell is a cross coupled pair of
+[33:23] inverters and you have bit lines and so
+[33:26] on which make it slow and even slower
+[33:29] are Dam
+[33:30] cells which have a single
+[33:33] capacitor but there is a problem with it
+[33:37] so the problem is that after every read
+[33:39] operation so let's assume that the
+[33:41] capacitor throws a logical one we lose
+[33:44] some charge from the
+[33:46] capacitor so this mean and also right uh
+[33:49] so this should be we lose some charge
+[33:51] definitely so the charge is shared
+[33:53] between the capacitor and the bit line
+[33:55] and
+[33:57] uh on a regular basis you know charge
+[34:00] from the capacitor leaks out right on a
+[34:02] regular basis hence it is
+[34:05] necessary to uh so so what will happen
+[34:08] so what will happen is that let's say at
+[34:10] t equal to Z if we store let's it you
+[34:14] know time equal to zero we store 1 Volt
+[34:17] across the capacitor what will happen is
+[34:20] that maybe at T equals 2
+[34:23] NS a little bit of see no dialectric is
+[34:26] perfect
+[34:28] so you would hope that you know between
+[34:29] the two parallel plates of a capacitor
+[34:31] there's no leakage but there is always
+[34:33] some amount of leakage via the capacitor
+[34:36] little bit of current and even the
+[34:38] transistor when it is turned off there's
+[34:41] still a little bit of leakage a little
+[34:43] bit of current that flows out so maybe
+[34:46] after T = 2 NS the voltage can be8
+[34:50] volts and maybe after like 20 NS or 50
+[34:54] nond or you know 1 microc you will find
+[34:59] that the entire voltage across the
+[35:01] capacitor has disappeared so this will
+[35:04] cause an error that's the reason it is
+[35:07] necessary to periodically read each and
+[35:09] every Dr cell and read the data back and
+[35:12] and sorry write the same data back for
+[35:15] example if we write one to a dam cell
+[35:19] and uh let's say that after 50 NS we
+[35:22] read it and find that uh the voltage
+[35:26] across the capacitor is 7
+[35:28] volt that is fine we can still infer a
+[35:31] logical one but we will also be aware
+[35:34] that the voltage has decreased so what
+[35:37] we will do is we'll write a logical one
+[35:39] back again and in this case the voltage
+[35:42] across the capacitor will again become 1
+[35:44] volt so this sort of you know
+[35:47] periodically compensates for the charge
+[35:49] that is leaking out of a capacitor
+[35:52] because dielectrics are not perfect and
+[35:54] also if there's a read operation then
+[35:57] basically
+[35:58] the charge will get shared between the
+[36:01] long bit line and the capacitor right
+[36:04] and since a charge gets shared the
+[36:06] voltage across the capacitor will
+[36:08] decrease so that's the reason it is
+[36:10] necessary that after every
+[36:13] read uh we need to
+[36:17] uh write the data that we read back
+[36:20] again and also periodically we need to
+[36:22] read each and every Dam cell and write
+[36:25] the same data back
+[36:29] uh so this process is called restoring
+[36:31] the value of a single dram cell and the
+[36:34] overall process where we read the entire
+[36:38] uh dram array so where where we read so
+[36:40] given an entire Dam array right where we
+[36:43] read the contents of the entire dram
+[36:45] array and refresh all the contents is
+[36:49] known as a dram refresh it's known as a
+[36:52] dram refresh cycle where all the
+[36:54] contents are read and again they are
+[36:56] written back
+[36:58] right so it's not that we read all of it
+[36:59] and then write it back we read let's say
+[37:02] one bite and then we write back that
+[37:04] same bite or we read 64 bytes and we
+[37:07] write back the same 64 bytes so it's
+[37:09] definitely not done at the entire array
+[37:11] level at one go but the aim is that
+[37:14] periodically we read some lines and then
+[37:17] again write them back to sort of restore
+[37:19] their voltages across the capacitors to
+[37:23] the maximum levels to the highest levels
+[37:28] so here is what an array of dram cells
+[37:30] looks like it is very similar to an
+[37:32] array of SRAM cells uh the only
+[37:36] differences are that there is a single
+[37:39] bit line instead of multiple bit lines
+[37:43] the address and the decoder part are all
+[37:45] there and the cells are organized as a
+[37:48] matrix the column multiplexer D
+[37:50] multiplexer is also there and addition
+[37:53] is a refresh
+[37:55] circuitry right uh so the refresh
+[37:57] circuitry what they do is they
+[37:59] periodically read values from each row
+[38:02] and write them back right to uh restore
+[38:06] the original voltage
+[38:07] levels for writing we have write drivers
+[38:10] which are fast circuits to set the
+[38:12] values of the bit lines and for reading
+[38:15] we have sense
+[38:16] amplifiers similar to the case of srams
+[38:20] where we read the values of a dram cell
+[38:22] out so rest everything is same as an
+[38:24] SRAM array the only difference is we
+[38:27] have a single bit line and we have
+[38:29] refresh
+[38:33] circuits now let's consider one more
+[38:35] type of cell called a cam cell so the
+[38:41] idea is that instead of enabling cells
+[38:43] by their address can we find them by
+[38:46] their contents so let's go back to the
+[38:48] previous slide so let's assume that
+[38:50] there are only four cells in each
+[38:54] row so let's assume that the problem is
+[38:58] that we want to find the row that
+[39:00] contains 1 0 1 1 and let's for the sake
+[39:05] of Simplicity assume that only one row
+[39:07] contains this particular value the
+[39:10] question is that can we find out which
+[39:12] row it is so one simple solution is that
+[39:15] we just like a for Loop we read the
+[39:19] contents of each row and we compare we
+[39:21] read and compare we read and compare
+[39:23] till we find the row that is possible
+[39:26] but what's the problem the problem is
+[39:29] that we need to read the contents of the
+[39:32] entire SRAM array or the drram array so
+[39:36] which is not a good idea we can do
+[39:38] something better right so this is called
+[39:40] content based addressing and a cam cell
+[39:43] is called a Content addressable memory
+[39:45] where you're trying to find it by its
+[39:47] content not by its address mind if the
+[39:50] address is coming the decoder is setting
+[39:53] one of the word lines to one and then
+[39:56] that row is getting in enabled but in
+[39:58] this case we want to see if there is any
+[40:04] row uh whose contents are same as the
+[40:07] contents that we
+[40:09] want so we design a cam cell which is
+[40:12] nothing but a simple SRAM cell plus more
+[40:15] so this part that you see in this dotted
+[40:19] rectangle is a simple SRAM
+[40:22] cell subsequently what we have is that
+[40:26] we have these additional connections
+[40:29] over here of where we get in the values
+[40:32] so we call them V and V bar V is the
+[40:35] value and V bar is its
+[40:37] complement and we get in the values that
+[40:41] we want to compare this again so this is
+[40:42] a single bit we'll compare it with a
+[40:44] single bit so this value V will go into
+[40:48] transistor
+[40:49] T1 and we want to compare value V with
+[40:52] another bit value called a so a bar the
+[40:56] compliment of a is sent to
+[40:58] transistor T2 over here so this is
+[41:02] basically the complement of a and this
+[41:05] is the value V similarly this is the
+[41:10] value V bar the complement of v and this
+[41:13] is the value
+[41:15] a and so these transistors are connected
+[41:17] in series so one side of them is
+[41:19] connected to the ground and the other
+[41:22] side is connected to this blue wire
+[41:24] called the match line so let's see what
+[41:26] it is
+[41:28] so let's consider the pair a
+[41:30] and v bar right so transistors T3 and
+[41:34] T4 and let's consider the case when a is
+[41:37] equal to
+[41:39] V so one of the if a is equal to V one
+[41:42] of the values has to be zero right so
+[41:46] let's assume that a is 1 then V bar has
+[41:49] to be zero if a z v bar has to be one so
+[41:53] one of them has to be zero so either T3
+[41:56] or T4 four is off one of them is off so
+[41:59] essentially this path over here is
+[42:03] pretty much disconnected from the ground
+[42:06] right because of any one of these
+[42:07] transistors T3 or T4 one of them is
+[42:10] off similarly in the pair a bar and
+[42:14] V one of the values has to be zero so
+[42:18] either T1 or T2 one of them is off so
+[42:20] you can find out you can use values if a
+[42:23] is 1 then a bar is zero if a is zero
+[42:27] then since a is equal to v v is zero so
+[42:29] one of these values is zero so which
+[42:32] means one of T1 or T2 is off so even
+[42:34] this path is turned
+[42:36] off which basically means that for this
+[42:39] particular cam cell which has 1 2 3 4 5
+[42:43] 6 7 8 9 10 which is a 10 transistor cam
+[42:49] cell uh the match line is not connected
+[42:52] to the ground right uh so it is in a
+[42:55] sense floating so it's not connected to
+[43:00] ground so uh this is what we get to find
+[43:04] just to summarize that when a is equal
+[43:06] to V the match line will be disconnected
+[43:10] from The Ground
+[43:11] Terminal fine so let's see what happens
+[43:14] when a is not equal to
+[43:16] V so when a is not equal to
+[43:20] V Let's see what is the case so we say
+[43:24] so let's assume what we claim is either
+[43:28] a comma V bar or a bar comma V is equal
+[43:31] to 1A 1 so let's see why so let's assume
+[43:34] a is 1 and V is
+[43:35] zero so in this case a is 1 and V
+[43:40] complement is one so this pair is equal
+[43:43] to 1 and one assume that a is zero and V
+[43:46] is 1 so in this case a bar is 1 and V is
+[43:52] 1 so basically irrespective of the value
+[43:55] of a one of the pair
+[43:57] a v complement or a complement and V one
+[44:01] of the pairs is equal to 1A 1 so with no
+[44:05] loss of generality let's assume that
+[44:07] t3's input is one and T4 input is one
+[44:11] which means both of them both of these
+[44:13] transistors are turned on so we
+[44:16] basically have a direct connection from
+[44:18] the match line to the
+[44:19] ground and uh this means that if a is
+[44:23] not equal to V there is a mismatch and
+[44:26] in this case the match line will be
+[44:28] driven to 0 volts because it is
+[44:30] connected to the
+[44:32] ground so what do we understand we
+[44:35] understand that if a is equal to V then
+[44:38] the match line is kept
+[44:40] floating which means it's not connected
+[44:42] to the
+[44:44] ground and and if a is not equal to V
+[44:49] then the match line is driven to 0
+[44:52] volts right so that is the important
+[44:55] takeaway point from this particular
+[44:59] slide that uh you know if there is
+[45:03] equality between a and v then we are
+[45:06] fine the match line is still kept
+[45:08] floating otherwise it is driven to 0
+[45:11] volts so given this we can design a very
+[45:14] simple circuit we can design an array of
+[45:16] Cam cells which looks very very similar
+[45:18] to an SRAM array absolutely no
+[45:20] difference so let's consider a regular
+[45:22] SRAM array so essentially all of this
+[45:25] part that you see all right uh all of
+[45:28] this part is a
+[45:30] regular SRAM array the only difference
+[45:34] is that we have this additional cam
+[45:37] mode
+[45:38] where pretty much all the uh so so
+[45:43] basically it is all the word lines in
+[45:45] this case can be turned off it's not a
+[45:48] problem and uh we the only difference is
+[45:51] that instead of an SRAM cell we have a
+[45:53] cam cell over here and it has its
+[45:56] regular B lines as inputs because a cam
+[45:59] can work as an SRAM as well and you can
+[46:01] see right drivers and sense amplifiers
+[46:03] and everything else but the only extra
+[46:07] part other than the cam cell is
+[46:09] connections to these values so for the
+[46:12] First Column We compare it with the
+[46:14] first bit A1 so one side we connect to
+[46:17] A1 complement and other to A1 as was
+[46:20] shown in in the previous figure
+[46:22] similarly the second column we connected
+[46:24] to A2 complement and A2
+[46:27] and similarly you know the nth column We
+[46:31] compare We compare it with the nth
+[46:34] bit and all of the cam cells are
+[46:36] connected to a single match
+[46:39] line so here is what we do we pre-charge
+[46:42] all the match lines to let's say a
+[46:44] logical
+[46:46] one subsequently let's consider one of
+[46:49] the match lines so let's consider maybe
+[46:51] the first one so let's assume in this
+[46:54] case there is an inequality in the sense
+[46:56] that value stored in the cam cell is not
+[47:00] equal to A2 so what do we know from the
+[47:03] previous slide when it's not equal to
+[47:05] the match line is driven to 0 volts so
+[47:08] immediately the value on the match line
+[47:11] will be zero so what did we do we
+[47:13] pre-charge all of them to one then we
+[47:15] disconnected the pre-charging circuit
+[47:18] and we started comparing so whenever
+[47:20] there is a mismatch even in a single bit
+[47:23] all of these match lines will get driven
+[47:25] to Zer volts but let's assume for this
+[47:28] row all the bits match right there's a
+[47:31] complete 100%
+[47:32] match then
+[47:36] uh the match line will not be driven
+[47:39] this match line will not be driven to Z
+[47:41] volts it will maintain the value that it
+[47:44] was pre-charged with right because this
+[47:47] is not connected to
+[47:48] ground so it'll maintain the value that
+[47:51] it was pre-charged with which was a
+[47:55] one right
+[47:57] and so what do we get to see now when we
+[47:59] put in all of these match lines to
+[48:02] orgate all the rows that do not match
+[48:04] will have a zero and all the rows that
+[48:06] do match will have a
+[48:08] one so let's assume with no loss of you
+[48:11] know let's assume for the simple case
+[48:14] that only one line matches so what we
+[48:17] will see is that you know one or okay
+[48:20] let's first assume that one line matches
+[48:22] so one line matches then the or of all
+[48:24] of these functions is a one and net
+[48:27] match is equal to one which means that
+[48:28] there is a
+[48:29] match now let's assume that no line
+[48:32] matches if no line matches all the
+[48:34] values are zero if all the values are
+[48:36] zero the orgate at this point will
+[48:38] compute a
+[48:40] zero so what we can pretty much do is
+[48:43] but is that by aing all the match lines
+[48:46] we can find out if we found a match in
+[48:49] the cam array or
+[48:51] not subsequently what we can do is we
+[48:54] can use an encoder to find the IDE of
+[48:56] the row that matched so if you would
+[48:59] recall what is an encoder so in an
+[49:01] encoder pretty much it takes 2 the^ N
+[49:05] inputs where one of the inputs is one
+[49:07] the rest are zero
+[49:09] subsequently you have a n bit output
+[49:12] which gives the ID of the input that
+[49:15] matched this is exactly what we need
+[49:17] over here that we can use an encoder to
+[49:20] find out so for example if this is the
+[49:21] second one then the output will pretty
+[49:24] much be 0 0 0 uh uh one right so where
+[49:29] the first line we're assuming is all
+[49:30] zeros so this if they match in the
+[49:32] second row it will be 0 0
+[49:37] 1 uh now assume that multiple rows match
+[49:40] so we can always have some sort of a
+[49:43] priority scheme of choosing one row over
+[49:46] the other and use a priority encoded so
+[49:48] that is relatively straightforward but
+[49:50] if you want to do further reading you
+[49:53] can take a look at the term called the
+[49:55] priority and encoder on Google and you
+[49:59] will see a
+[50:01] circuit where if there are multiple
+[50:03] match lines that are true then how do
+[50:06] you choose one over the other right but
+[50:09] in a simple case if we assume that there
+[50:11] is a single
+[50:12] match then uh the encoder will tell you
+[50:15] the ID of the row that
+[50:18] matched all right so this finishes the
+[50:20] end of this chapter a very short quick
+[50:23] 3-hour lecture on digital logic so what
+[50:26] did we cover we covered basics of
+[50:29] transistors so maybe I can write down we
+[50:32] covered basics of
+[50:34] transistors we looked at logic gates and
+[50:37] our logic gates you'll find something
+[50:40] called Caro maps in the book so I have
+[50:42] not covered that but that you'll find in
+[50:44] the book then we covered latches and
+[50:47] flipflops where our definition is that a
+[50:50] flipflop is basically a latch with a
+[50:54] clock and then we looked at me memory
+[50:57] cells right and in memory cells we
+[51:00] looked at three kinds of
+[51:02] cells uh we looked at SRAM cells which
+[51:05] is a cross coupled pair of inverters
+[51:08] connected with bit lines and the main
+[51:10] idea was there was that we it is true
+[51:13] that we connect an slam cell with two
+[51:15] bit lines right if this is the slam cell
+[51:19] BL and D complement and the reason is
+[51:23] such that we can get take the difference
+[51:25] of the voltages between the two bit
+[51:27] lines uh the advantage of uh taking the
+[51:30] difference is that we don't have to wait
+[51:32] till a bit line goes to logical Zer or
+[51:34] one from the direction in which the
+[51:37] voltages are moving we can infer the
+[51:40] value stored in the SRAM
+[51:42] cell the other kind of cell that we
+[51:45] looked at is a dam cell so a dynamic Ram
+[51:50] cell uh the data is stored in a
+[51:58] here there are some problems where the
+[51:59] capacitor can leak and so on so
+[52:02] necessary to periodically read the value
+[52:03] and write it back again so that the
+[52:05] voltage can be restored to normal levels
+[52:08] so this is called the process of
+[52:10] refreshing and finally we looked at cam
+[52:12] cells content addressable cells where we
+[52:15] have a 10 transistor cam cell and a
+[52:18] match
+[52:19] line all right so uh in the next chapter
+[52:22] we'll look take a look at computer
+[52:24] arithmetic which is to do which which is
+[52:26] methods to do addition subtraction
+[52:28] multiplication in Hardware

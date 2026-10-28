@@ -1,0 +1,1304 @@
+[00:00] [Music]
+[00:21] welcome to the fourth lecture in this
+[00:23] series so this is about uh emerging
+[00:26] memory Technologies well some have
+[00:28] emerged like flash but the others are
+[00:30] still emerging so they are mostly
+[00:32] nonvolatile so we'll discuss what a
+[00:35] nonvolatile memory technology
+[00:37] is so what's the main problem with Dam
+[00:40] the main problem with dam is that when
+[00:42] you turn off the power all the data
+[00:44] disappears the next time so let's say
+[00:46] next time you are booting a machine all
+[00:49] the data has to be read from the hard
+[00:52] disk so that makes things slow and also
+[00:56] the other thing is that another problem
+[00:59] is you need to do free frequent
+[01:00] refreshes that is a
+[01:02] problem if I were to use memory that is
+[01:05] nonvolatile in the sense you store it
+[01:08] once and it remains there forever it can
+[01:11] also act as a storage device in fact
+[01:13] it's primarily a storage
+[01:15] device you can use it in place of main
+[01:18] memory but that would not be the best
+[01:20] use at least uh it's always a good idea
+[01:23] to have some main memory and use this to
+[01:25] kind of enhance its capacity kind of
+[01:27] work as both like memory and Storage at
+[01:30] the same time but otherwise it is more
+[01:33] of a bad
+[01:34] idea and because these are these should
+[01:37] be thought of as storage devices but
+[01:39] faster than much much faster than hard
+[01:42] disk and so they're only slightly slower
+[01:44] than male memory so what I can say is
+[01:46] that nonvolatile memory or
+[01:50] nvms are let's say slightly slower so
+[01:53] how slightly well we will see but uh
+[01:56] they're slightly slower than D memory
+[01:58] but much much faster
+[02:00] right so much faster than hard disks
+[02:03] that's the
+[02:04] idea so for constructing all of these
+[02:08] non-volatile memories or nvms there is a
+[02:11] generic approach there is a single
+[02:13] standard approach that you take for all
+[02:16] such
+[02:17] memories and of course the technology
+[02:20] can vary but the as I said the high
+[02:23] level approach is still the same so you
+[02:26] construct a device that has two physical
+[02:28] States two separate two different
+[02:30] physical States you designate one state
+[02:33] as a logical one and the other as a
+[02:36] logical zero so typically again there's
+[02:39] a matter of convention this is not a
+[02:41] hard and fast rule that you have two
+[02:43] states High Resistance and low
+[02:45] resistance we will see that you know one
+[02:47] is assigned to a logical zero other to a
+[02:50] logical one kind of consistently but as
+[02:53] I said it's not a hard and fast rule but
+[02:55] pretty much the two states of the device
+[02:58] electrically would manifest as High
+[03:00] Resistance and low
+[03:02] resistance we create an array of such
+[03:06] devices same way as we create a Dr ARR
+[03:09] exactly the same
+[03:11] idea then uh there will be reliability
+[03:15] problems mainly because you know they
+[03:17] are not as durable as data memory so
+[03:21] there are reliability problems so we use
+[03:24] a combined Hardware software approach to
+[03:28] deal with all of the liability problems
+[03:31] that henceforth
+[03:35] arise so uh we have different types of
+[03:38] nonvolatile memories so we have flash
+[03:41] memory then uh we have uh you know four
+[03:44] more but let's start with flash The
+[03:46] Flash is the typical USB card the USB
+[03:49] drive that all of us
+[03:51] use so here the idea is that you have a
+[03:54] transistor with two gates you have one
+[03:56] transistor you have one gate and then
+[03:58] you have another gate the other gate is
+[04:00] known as the floating gate so you use a
+[04:02] floating gate transistor to store the
+[04:05] additional to store some additional
+[04:07] charge in terms of
+[04:08] electrons So based on electron storage
+[04:11] or you know storage or lack of storage
+[04:14] you have two resistance States uh right
+[04:16] high and low
+[04:18] resistance and of course in this case
+[04:20] what happens is that storage of
+[04:22] electrons leads to a change in the
+[04:25] threshold voltage which is the most
+[04:26] important thing right so that's the most
+[04:29] important thing
+[04:30] then we have Ferro electric Ram where we
+[04:33] use a Ferro electric material for the
+[04:35] degree of
+[04:37] polarization that is a function of the
+[04:39] voltage that you have applied in the
+[04:41] past right not necessarily now but based
+[04:43] on the voltages that you have applied
+[04:45] you can change the electrical
+[04:47] polarization because of that what would
+[04:49] happen is that you would again have a
+[04:51] high and low resistance
+[04:53] State and you can store a bit so
+[04:56] essentially the bit they have two states
+[04:58] so two State means that it is one
+[05:00] bit Magneto resistive Ram or M
+[05:04] Ram here again instead of a fero
+[05:06] electric material you use a
+[05:08] ferromagnetic material where the
+[05:10] direction of magnetization so either you
+[05:12] know north south this way or the other
+[05:15] way this is dependent upon uh you know
+[05:19] the current that was flowing through the
+[05:20] device in the past so then what you can
+[05:23] do is you can flip the magnetization so
+[05:25] then uh it so happens that magnetization
+[05:29] and One Direction corresponds to the
+[05:31] high resistance State and in the other
+[05:34] direction corresponds to the low
+[05:35] resistance State similarly phase change
+[05:38] memory which does not rely on either
+[05:40] electrical polarization or the direction
+[05:43] of magnetization
+[05:46] instead uh it relies on the fact that
+[05:50] you have a device its structure is can
+[05:53] either be amorphous or it can be
+[05:55] crystalline and how is that happening uh
+[05:58] you basically use a thermal heater if
+[06:00] you kind
+[06:01] of heat it up abruptly then the atoms
+[06:04] can't rearrange it becomes amorphous but
+[06:07] if it's a slower process then it is it
+[06:09] sort of comes down to a crystalline
+[06:12] State Ram is a similar idea where we
+[06:16] have an anode and
+[06:19] cathode and uh between the anode and
+[06:22] cathode if a conductive filament forms
+[06:26] of the material of course then uh
+[06:29] basically you have a low resistance
+[06:31] State because now there's a path
+[06:34] otherwise you have a high
+[06:36] resistance so in this case a physical
+[06:39] path of ions has to be established
+[06:42] between the anode and cathode of a
+[06:44] device and the existence of the path
+[06:46] means that it's a low resistance path
+[06:48] otherwise if there's no path then it's a
+[06:50] high resistance
+[06:53] state so without further Ado let's move
+[06:56] to the first kind of Technology called
+[06:58] flash which is the most most common our
+[07:00] USB Keys use this so as I said we have a
+[07:03] transistor with two
+[07:04] gates not one but two so one is called
+[07:08] the control gate which is the original
+[07:10] gate and the gate in the middle is
+[07:11] called the floating gate this is the
+[07:13] floating
+[07:14] gate so in the floating gate transistor
+[07:17] which is uh over
+[07:22] here this determines the character of
+[07:25] the
+[07:26] device how does it do that well what you
+[07:28] do is that if you apply a very strongly
+[07:32] positive voltage over here then
+[07:35] electrons will kind of Escape right so
+[07:38] if electrons Escape they'll get caught
+[07:40] in here similarly if the voltage here is
+[07:42] negative you're kind of pushing
+[07:43] electrons but we will see that in a One
+[07:45] Direction is better than the other but
+[07:48] the main idea is that within this
+[07:50] floating gate we can trap
+[07:53] transistors sorry I'm sorry uh we can
+[07:55] trap electrons and based on whether
+[07:58] charge is trapped or not not we'll have
+[07:59] two
+[08:00] states so if the charge is trapped the
+[08:03] state will be a logical zero if there is
+[08:06] no charge trapped if there are no
+[08:07] electrons trapped the state will be a
+[08:10] logical one and the Crux of all of this
+[08:12] is this floating gate over here which is
+[08:15] like an extra
+[08:18] gate so what we will see is that when no
+[08:21] charge is trapped the threshold voltage
+[08:24] is what it is supposed to be which is
+[08:27] voltage one
+[08:29] but when charge is trapped when
+[08:31] electrons are trapped within the
+[08:34] gate then the threshold voltage will
+[08:37] increase right so we will see in a
+[08:39] second why but the threshold voltage
+[08:42] will increase it will become VT plus
+[08:44] where VT plus is greater than VT or VT
+[08:46] is less than VT plus we will designate
+[08:49] this state as a logical zero so what
+[08:52] happens is that if you look at a typical
+[08:55] nmos
+[08:57] transistor then the gate voltage the
+[09:00] gate to Source voltage has to be greater
+[09:02] than the threshold voltage for the
+[09:04] transistor to
+[09:06] conduct now what is happening is that if
+[09:09] you have
+[09:10] electrons
+[09:13] here if we have electrons in the
+[09:16] floating layer what they basically do is
+[09:19] that they introduce a negative charge
+[09:22] right so if let's say this is the gate
+[09:24] terminal this is the source terminal
+[09:27] then what they basically do is that they
+[09:29] induce a negative charge so in the sense
+[09:31] they virtually reduce the gate voltage
+[09:34] with respect to the source voltage so
+[09:37] effectively when charge is
+[09:39] trapped vgs does not remain vgs because
+[09:43] but it is perceived as vgs minus a
+[09:45] voltage Delta because in a sense the
+[09:48] gate to Source voltage is actually
+[09:50] coming down as I said because we have
+[09:53] electrons so the effective gate to say
+[09:56] Source voltage is lower so what happens
+[10:00] because of that is that this equation
+[10:02] would still hold but if I were to
+[10:05] slightly rearrange the terms this would
+[10:08] be vgs is greater than vth plus Delta so
+[10:12] in a sense for the transistor to conduct
+[10:14] or be not be in the cut off range the
+[10:20] than the threshold voltage plus more
+[10:22] right so that is why it has to be so so
+[10:25] we are referring to this as in a sense
+[10:28] as VT Plus plus of course vth and VT are
+[10:30] the same
+[10:32] so slightly abuse the notation here but
+[10:36] vth and VT are the same so effectively
+[10:38] what happens is that the gate to Source
+[10:40] voltage should be greater than a VT Plus
+[10:44] in a sense it would appear if charge is
+[10:47] trapped that the threshold voltage is
+[10:50] higher right higher than the
+[10:52] nominal that is what it would appear to
+[10:55] be so uh we will use this fact to
+[10:59] essentially create a device that has
+[11:02] multiple resistance States and that's
+[11:04] not very hard to find out so let us say
+[11:06] that you apply a get to Source
+[11:09] voltage which is kind of between VT and
+[11:14] VT plus so what will
+[11:18] happen the if the state is one it is
+[11:21] going to conduct right so for this it
+[11:24] will be a low resistance
+[11:26] State for the state zero it will not
+[11:29] conduct because it is less than the the
+[11:31] gate Source voltage is less than the
+[11:33] threshold voltage so it will be in the
+[11:35] high resistance state so that is how we
+[11:39] can differentiate
+[11:41] between the two states of the transistor
+[11:44] so this I'm not using a lot of uh
+[11:46] information here all I'm using is basic
+[11:49] firste transistor physics which is that
+[11:52] if the gate to Source voltage is
+[11:54] slightly higher than the threshold
+[11:56] voltage the nominal threshold voltage VT
+[11:59] then if the logical state is one the
+[12:01] transistor will conduct which means that
+[12:04] if no charge is trapped but if charge is
+[12:07] trapped the transistor will not conduct
+[12:09] it will be in the high resistance
+[12:14] state so uh the question is that now we
+[12:18] know how to operate such a transistor
+[12:20] but how do we write a zero or one so
+[12:22] writing a zero which means basically
+[12:25] trapping charge is known as programming
+[12:28] cell or a
+[12:35] device so what I do is that if this is
+[12:40] you know if this is my transistor right
+[12:42] in this case I
+[12:46] have two
+[12:49] Gates Right small silicon two silicon
+[12:53] dioxide layers so what I do is I apply a
+[12:56] very strong positive potential at the
+[12:58] the gate so electrons kind of move
+[13:03] up so as they move up some of them get
+[13:06] trapped in the floating gate and they
+[13:10] remain there right so so this gate as
+[13:12] you can see is connected to a positive
+[13:15] voltage source electrons will escape but
+[13:17] all the electrons here let's say in the
+[13:19] floating gate here will get trapped so
+[13:21] they will remain there because they
+[13:24] remain there the cell will remain
+[13:26] programmed so even if I remove the power
+[13:28] source the electrons will still remain
+[13:30] in the floating gate so if this is the
+[13:32] floating gate then the electrons will
+[13:35] kind of still remain there and the next
+[13:38] time that I put in the USB key in a
+[13:42] separate computer I can always read the
+[13:45] value that is present in the cell how do
+[13:47] I do that well I set the gate to Source
+[13:50] voltage somewhere between VT and VT plus
+[13:55] so then based on whether the cell is
+[13:57] conducting current or not
+[13:59] I can make a decision writing a one
+[14:03] which is called erasing basically would
+[14:05] mean do the reverse process which is
+[14:09] kind of extract all the electrons out of
+[14:11] the floating gate so you what you do is
+[14:14] that instead of a positive potential
+[14:16] here you apply a negative potential will
+[14:18] kind of push the electrons back so you
+[14:21] apply a very strong negative potential
+[14:23] it has to be a strong
+[14:24] voltage that will push the electrons
+[14:27] back into the substrate
+[14:30] and the cell will again come back to a
+[14:33] low resistance state or a logical one
+[14:37] because the electrons that were trapped
+[14:38] have been pushed back so the idea is
+[14:40] quite simple either you pull up or you
+[14:42] push
+[14:44] back so this is a basic flash cell uh
+[14:47] which is not very hard we are
+[14:50] setting two threshold voltages pretty
+[14:53] much by programming or non or by erasing
+[14:56] and to read it all that we have to do is
+[14:58] set the gr to Source voltage to
+[15:01] something between VT and VT plus so
+[15:04] there are two configurations let's first
+[15:06] look at nor flash so nor flash is the
+[15:09] way that you would kind of create an
+[15:11] array so nor flash you would kind of
+[15:13] pair two cells which are connected to
+[15:16] the respective word lines because the
+[15:18] point is that for every cell you don't
+[15:20] want separate Electronics you kind of
+[15:23] want to Bunch group
+[15:25] them in this case there are two
+[15:29] uh so this is a classic nor
+[15:33] combination so the first question is why
+[15:36] is or why are we calling this a n
+[15:39] combination well uh what happens in a
+[15:41] nor gate if any one of the inputs is a
+[15:43] one the output is driven to zero so in
+[15:46] this case if any one of these
+[15:49] cells is in a low resistance
+[15:52] State then basically the bit line will
+[15:55] get discharged like this so that is why
+[15:57] it's called a n combination so in
+[15:59] general what we would do is that if you
+[16:02] want to read the value in let's say cell
+[16:04] one you would set the word line voltage
+[16:07] to zero here and we would read the value
+[16:10] of cell one by setting the reading
+[16:16] the word line voltage I could have a
+[16:18] more compact
+[16:21] organization uh called n
+[16:24] flash where again I have eight of
+[16:30] these cells or transistors floating
+[16:33] it transistors one after the other with
+[16:37] an enabling transistor to select this
+[16:39] bit line and an enabling transistor
+[16:41] between this and ground so many of these
+[16:43] are made for reducing leakage power
+[16:47] and and increasing the Fidelity of the
+[16:49] signal on the bit line but the key point
+[16:52] is that to read any
+[16:54] one uh to let's say I want to read the
+[16:56] value of wl6
+[16:59] what I need to do is that I need to
+[17:02] ensure that all of these are on a low
+[17:07] resistance state right so basically all
+[17:10] of these are conducting but some of
+[17:12] these could be in high resistance state
+[17:15] right so in a sense I can't ensure that
+[17:17] something is in low resistance but I can
+[17:19] always ensure that all of these are
+[17:21] conducting so the gate to Source voltage
+[17:24] to be on the safer side should be
+[17:26] greater than VT plus so that regardless
+[17:28] of the value that they are storing all
+[17:30] of these are
+[17:31] conducting so once all of these are
+[17:33] conducting this becomes a straight
+[17:35] wire this becomes a straight wire and
+[17:39] then uh what we do is we enable ground
+[17:41] select and bit line select and the
+[17:44] voltage on wl6 is between VT and VT plus
+[17:47] because that's the reading voltage so
+[17:49] that is how we get to and then we can of
+[17:53] course monitor the voltage on the bit
+[17:54] line using our old techniques so then we
+[17:58] will get an idea of what is the state of
+[18:01] wl6 is it in a high resistance state or
+[18:04] a low resistance State and consequently
+[18:06] what is the value that it stores so as
+[18:09] you can see even uh so this design is
+[18:11] more
+[18:12] compact no doubt
+[18:16] but it takes more time to read and write
+[18:19] mainly because you'll have to enable or
+[18:21] disable all of these
+[18:24] transistors so uh basically not disabled
+[18:27] but enabled so on once you are enabling
+[18:29] these transistors setting vgs greater
+[18:31] than VT plus then we
+[18:34] basically uh read the value here so this
+[18:37] takes a fair amount of time so reading
+[18:39] and writing hence are on much much
+[18:42] slower than what you would have in a
+[18:47] d so nor flash as I said is very simple
+[18:51] that you enable one of the
+[18:53] transistors and for the other
+[18:56] one uh what you basically Ally do is
+[18:59] that you ensure that you know nothing
+[19:00] flows through it so you kind of set this
+[19:02] to zero and then you see uh what's the
+[19:05] case so if it's a logical one this will
+[19:07] get discharged so the bit line voltage
+[19:10] will be the reverse of a logical one if
+[19:12] logical zero the bit line will maintain
+[19:14] his voltage so you just have to flip it
+[19:16] uh this is not very hard at all n flash
+[19:20] is basically as we have said much more
+[19:23] compact
+[19:25] representation and uh
+[19:29] uh for this you'll have to ensure that
+[19:31] regardless of the value that the rest of
+[19:32] the transistors
+[19:33] store the vgs is greater than VT plus
+[19:37] greater than equal to VT plus so here uh
+[19:41] what we will what will happen is that
+[19:43] all of these will be conducting this
+[19:45] will be conducting and this can be
+[19:49] read of course what is more common these
+[19:52] days is not the single level flash that
+[19:55] you are seeing but it is multi-level
+[19:57] Flash where you store multiple bits per
+[20:01] cell not one so let's say you want to
+[20:04] store three bits so you need eight
+[20:08] distinct charge levels so what you do is
+[20:11] that uh you basically
+[20:14] have you know a more sophisticated
+[20:16] device that can store eight different
+[20:19] charge levels so one of them of course
+[20:21] would be no charge but then uh you would
+[20:24] have seven different densities of
+[20:26] electrons in the floating gate
+[20:28] transistor and then you could of course
+[20:32] uh have different enabling voltages and
+[20:35] figure out what exactly is the
+[20:37] concentration of
+[20:42] transistor and based on that figure
+[20:45] out
+[20:46] the uh logical value that is
+[20:51] stored so uh in this case of course we
+[20:54] need uh far more fine grain charge
+[20:58] storage and a way of exactly detecting
+[21:02] how much of charge is stored so if there
+[21:04] are let's say
+[21:06] eight distinct uh concentrations of
+[21:09] charge so there would be eight different
+[21:13] threshold voltages associated with them
+[21:15] vt1 vt2 to
+[21:18] vt8 so what essentially a controller
+[21:21] needs to
+[21:22] do is basically
+[21:25] apply either apply one threshold voltage
+[21:27] and based on the amount of current
+[21:29] figure out what is the actual threshold
+[21:32] voltage or serially kind of apply one
+[21:34] threshold voltage after the other until
+[21:37] it finds out exactly what is the
+[21:40] threshold voltage of the cell so this of
+[21:43] course takes more time but if you think
+[21:46] about it we have increased the density
+[21:47] of storage
+[21:50] substantially right uh so if we we are
+[21:53] storing n Bits in one cell but of course
+[21:56] then we need to 2 the^ N distinct charge
+[22:00] levels and a way of figuring out what is
+[22:03] the charge
+[22:04] level at uh reading
+[22:08] time so of course in this case uh in the
+[22:11] case of flash our storage density is
+[22:14] high we are of course much faster than a
+[22:16] hard disk because we don't have any
+[22:18] mechanical Parts but the price that we
+[22:21] pay is the lower
+[22:23] endurance we will see in a second why so
+[22:26] the endurance of these devices are not
+[22:28] high and also the error rate will be
+[22:30] high mainly because you know you're
+[22:31] storing some charge a little bit of
+[22:33] charge can leak out so extensive error
+[22:36] correction is required so ECC codes are
+[22:38] required to correct a lot of
+[22:42] Errors so given that these are primarily
+[22:45] storage devices they are not really
+[22:47] competing with Dr in terms of speed but
+[22:49] they are definitely better than hard
+[22:51] drives which all of us can attest to our
+[22:53] phones don't have hard disk right they
+[22:55] have flash based memory the reason is
+[22:57] this this
+[22:59] speed so flash devices because of the
+[23:02] fact that they are storage devices
+[23:04] fundamentally provide access at the
+[23:06] level of pages a page can be somewhere
+[23:09] between 512 to 496 bytes like half KB to
+[23:14] 4
+[23:15] KB furthermore writing is tough mainly
+[23:18] because you'll have to apply a very
+[23:20] strong negative voltage to push out the
+[23:23] electrons from the floating gate
+[23:25] transistor so writing is tough so what
+[23:28] you do is that even though you read at
+[23:30] the page level you kind of uh write so
+[23:35] writing has to be preceded by erasing so
+[23:37] what you would actually do is that you
+[23:39] would kind of deprogram
+[23:41] everything and then you would want to
+[23:45] write all right so basically uh if you
+[23:49] if I just go back to the programming
+[23:51] slide uh which was here then writing a
+[23:54] zero would be programming right and
+[23:57] writing a one one would be erasing so
+[23:59] essentially at in an Unwritten State
+[24:02] everything contains ones until you
+[24:04] convert one to a
+[24:06] zero but the first thing to write would
+[24:09] be to kind of
+[24:10] erase uh what is called a block which
+[24:13] comprises 32 to 128 pages I first erase
+[24:16] all of it and then I write so writing
+[24:19] that is why is tough and the main reason
+[24:21] for this is that we don't want to
+[24:23] provide fine grain right drivers for
+[24:26] each and every cell that would add a lot
+[24:29] of area and be very complex right so our
+[24:32] storage densities can't be achieved so
+[24:35] that is why what we do is that we read
+[24:37] at a slightly smaller
+[24:39] granularity and we write at a much
+[24:41] larger granularity because WR would
+[24:42] involve erasing data and uh so because
+[24:46] see erasing and programming are two
+[24:48] different things erasing would mean a
+[24:51] strong negative voltage
+[24:55] right programming then which is is
+[24:57] nothing but writing a
+[25:00] zero right programming is exactly the
+[25:03] same as writing a
+[25:08] zero would be the same
+[25:11] as applying a positive voltage and
+[25:14] pulling electrons
+[25:16] up so I've erased the ink so let's now
+[25:19] look at this once again in a different
+[25:22] way so our key argument is that
+[25:26] programming or
+[25:28] erasing a flash cell or even reading for
+[25:32] that
+[25:33] matter requires some amount of
+[25:36] electronic
+[25:38] circuitry and that circuitry is
+[25:40] something that
+[25:42] takes a fair amount of area a lot of
+[25:45] wires and you know you need uh large uh
+[25:48] voltage drivers so that is why you don't
+[25:51] want to provide access at the level of a
+[25:54] bite or several bytes instead you
+[25:56] provide page level
+[25:58] access you definitely read at the level
+[26:01] of pages you also write but there's a
+[26:03] little bit of a catch with WR so we'll
+[26:05] come at that later but the first point
+[26:07] which is that you read and write data at
+[26:09] the level of pages is mostly true but
+[26:12] not fully true because for reads you do
+[26:15] that for wres as I said you do something
+[26:18] more what you do is that you group pages
+[26:21] into blocks where a block can contain 32
+[26:24] to 128
+[26:25] Pages you then first erase the entire
+[26:30] block which means convert everything to
+[26:32] a logical
+[26:34] one and the reason is so what is the
+[26:37] need need what is the need for erasing
+[26:38] the need for erasing is that once you
+[26:40] have written to a page which means
+[26:43] converted it from one to a zero in the
+[26:47] sense you have charge there you can't
+[26:49] rewrite it rewrite basically means zero
+[26:51] will remain a zero but for zero to go to
+[26:53] one you will essentially have to apply a
+[26:56] strong negative voltage and push the
+[26:58] electrons back and that process is known
+[27:01] as
+[27:03] erasing
+[27:06] which I mean requires a fair amount of
+[27:09] circuitry fair amount of fair number of
+[27:12] thick wires to actually get done so
+[27:15] that's the reason writing again is not
+[27:17] possible unless we
+[27:19] erase right uh so that is why we read at
+[27:24] the level of pages after erasing we
+[27:26] write at the level of pages
+[27:28] but a page that is once written cannot
+[27:30] be written to once again prior to
+[27:32] erasing but the granularity of
+[27:34] erasing is much more it's a block it's
+[27:37] not a page and it has to do with the
+[27:40] fact that erasing requires a high
+[27:41] voltage source pretty much and uh you
+[27:45] would want to do that at a much larger
+[27:48] granularity so now the only question
+[27:50] that remains unanswered which is
+[27:52] something that many would ask is that if
+[27:54] you a lot of Rights what do you do right
+[27:57] a lot of rights to let's say the same
+[27:58] set of addresses so we have a right
+[28:01] right right right so on and so forth
+[28:04] what do you
+[28:05] do so what you basically need to do is
+[28:08] that you need to filter out the rights
+[28:10] such that only one right is sent to the
+[28:13] underlying device so what we can do is
+[28:17] that every flash device can have a small
+[28:20] dam based cache which will absorb this
+[28:24] entire sequence of Rights and con
+[28:27] convert this entire sequence into a
+[28:29] single right all right so the entire
+[28:33] sequence will be replaced by a single
+[28:36] right so we will kind of absorb all of
+[28:38] them so this would be sort of like a
+[28:41] small right buffer before the flash
+[28:44] device this will ensure that the stream
+[28:47] of Rights will sort of get more
+[28:50] disciplined in the sense the number of
+[28:51] Rights would reduce then we can do this
+[28:54] block based page based system that I
+[28:57] just
+[28:59] described so we H thus have a program
+[29:03] erase cycle where a program erase cycle
+[29:06] is that you could consider a fresh page
+[29:08] that has not been written to after it
+[29:10] has been erased we then write the entire
+[29:13] page in one go which is half to 4 KB so
+[29:16] by default a cell contains one if we
+[29:18] want to write a one we do nothing
+[29:19] otherwise we program it and we convert
+[29:22] the one to a
+[29:24] zero so back conversion from a 0 to a
+[29:27] one is not possible without erasing and
+[29:30] erasing as we have seen is done at a
+[29:32] higher granularity so that's the reason
+[29:34] it is pretty much if you write
+[29:37] once then you just write right so the
+[29:39] right remains over
+[29:41] there the erase phase on the other hand
+[29:45] is when we take a block of pages not a
+[29:48] single page but a block of pages this is
+[29:50] very important and we set all of the
+[29:53] bits to one in the not program State
+[29:55] such that we can subsequently write
+[29:59] so that is unfortunately the reality
+[30:03] of a flash device that we have these PE
+[30:06] Cycles program erase Cycles where you
+[30:09] program and then you erase then again
+[30:11] program then erase then program then
+[30:12] erase so on and so forth and basically
+[30:16] let's say that final Point here if let's
+[30:19] say we want to write a some part of the
+[30:21] block but not all of it then of course
+[30:23] we read it
+[30:24] out and we store it uh in a local Dam or
+[30:29] in some other part of the flash memory
+[30:32] and then we rewrite it so the question
+[30:34] that you know we have been trying to
+[30:36] answer is how do we write to a page
+[30:38] after writing to it once well the first
+[30:41] is what I just said that you copy the
+[30:43] full block to a fresh
+[30:46] block right other than the page that you
+[30:49] want to be modified and the fresh block
+[30:51] is something that has been erased and
+[30:53] you replace its contents with the new
+[30:55] contents so in this case case what you
+[30:57] are doing what every flash device has is
+[31:00] something called an FTL or a flash
+[31:03] translation
+[31:05] layer so it Maps logical addresses to
+[31:10] physical addresses so logical address is
+[31:13] the address that the external World
+[31:15] perceives but in this case what happens
+[31:17] is that let's say logical address was
+[31:19] mapped to one block in Flash and now
+[31:22] let's say you want to write to this page
+[31:23] in this block so what you do is that you
+[31:26] copy this entire contents of this entire
+[31:29] block minus that page to another
+[31:32] location which is fresh it has just been
+[31:34] erased for this page over here you since
+[31:38] you can write at the granularity of
+[31:39] pages you
+[31:41] write then uh the flash translation
+[31:45] layer for a given logical address it was
+[31:49] pointing to a physical address which
+[31:51] used to be this at the moment it is not
+[31:54] this but it is this
+[31:57] all right so this change has to be made
+[32:00] in the sense the mapping has to be
+[32:02] changed from one block to another Block
+[32:06] in the flash translation layer and that
+[32:08] is how we can affect a
+[32:11] right so as you can see writing is a
+[32:14] complex process where there is a need to
+[32:17] move the
+[32:18] block right so we can either move the
+[32:20] block to another place within the flash
+[32:22] array or move it to some uh location in
+[32:25] the dam cache and and then pretty
+[32:29] much erase and then uh rewrite the
+[32:33] contents of the block minus the page and
+[32:35] then rewrite the page I mean write the
+[32:37] page with fresh values and then change
+[32:41] mapping so this is the P Cycle and it
+[32:45] turns out that the P Cycle is
+[32:47] problematic because every flash device
+[32:50] can
+[32:51] only endure or tolerate a suff a finite
+[32:55] number of P Cycles not a lot so what
+[32:58] happens is that in modern multi-level
+[33:00] flash devices pretty much you are making
+[33:03] electrons tunnel through the oxide
+[33:05] layers right so the voltage gradient is
+[33:09] so high that you are kind of pushing
+[33:11] electrons you know up or down you're
+[33:14] pushing electrons you're pushing and
+[33:16] pulling so the oxide layer ultimately
+[33:19] disintegrates so that is why only a
+[33:21] finite number of P Cycles can be
+[33:23] tolerated which is 50 to
+[33:25] 150k
+[33:28] so this basically means that the blocks
+[33:30] kind of wear out or age and the moment
+[33:33] they reach this limit they totally die
+[33:36] right so that is why we would want the
+[33:38] wearing out of
+[33:40] blocks to kind of
+[33:43] happen equally right equally throughout
+[33:45] the flash device such that no single
+[33:47] physical block kind of wears out at a
+[33:49] higher rate than others so what we can
+[33:52] do is we maintain a PE counter for each
+[33:55] block within flash itself
+[33:57] then we maintain the flash translation
+[34:00] layer which basically converts between
+[34:03] logical addresses or what we would call
+[34:06] virtual flash addresses so maybe let's
+[34:09] also refer to them as
+[34:11] virtual similar to virtual memory a
+[34:13] mapping table then this is mapped
+[34:18] to a
+[34:21] physical location within
+[34:24] Flash the physical location that we have
+[34:28] within
+[34:30] flash would first be one location and
+[34:33] then the point is if this is having too
+[34:35] many P Cycles then what we would do is
+[34:38] that we would kind of unmap it and map
+[34:41] this block to let's say some other
+[34:43] region right which is not having that
+[34:45] many P Cycles such that as I said we
+[34:49] things wear out at the same rate so
+[34:51] which basically means we need to have a
+[34:53] precise idea of the counts of
+[34:57] all the blocks how frequently they are
+[34:59] being accessed particularly written to
+[35:02] and uh how we can sort of distribute
+[35:05] them such that physically the wear out
+[35:06] level is roughly homogeneous so we need
+[35:09] a mapping table and we need a lot of
+[35:11] logic to kind of keep track of accesses
+[35:14] as well as predict future
+[35:17] addresses and the process of remapping
+[35:19] happens within the flash device anytime
+[35:22] you know we buy an USB key which sort of
+[35:25] would look something like this
+[35:29] the entire flash mapping part is
+[35:32] happening within the key so we don't
+[35:35] even get to see that right and uh it's
+[35:40] all happening inside including the
+[35:42] tables and everything so what we see is
+[35:45] a very well- behaved device which
+[35:47] presents itself as a storage device as
+[35:50] just as an array of bytes in reality it
+[35:53] is not that way so in reality we have
+[35:57] a small dam cache or we may have a small
+[36:00] dam cache I'm not saying that all
+[36:02] devices would have one then uh we would
+[36:05] have these tables of course to ensure an
+[36:09] even wear
+[36:10] out so this is known as wear
+[36:14] leveling what do we achieve with
+[36:23] remapping so where leveling can achieved
+[36:27] via remapping here is how we would do it
+[36:31] so let's say that there is a physical
+[36:33] block with a very high P
+[36:36] count then uh we would first copy the
+[36:40] contents of this block to another free
+[36:43] Block which we will use as sort of a
+[36:45] temporary a buffer
+[36:47] zone so this copying is easy because all
+[36:51] that we have to do is we have to read
+[36:52] and write and we assume that the free
+[36:54] Block is uh fresh in the sense it has
+[36:57] just been erased so this part can be
+[37:00] done the second option would be to erase
+[37:04] the contents of this
+[37:05] block the third is we identify another
+[37:08] block which has a low PE count it's a
+[37:11] physical block which has a low PE count
+[37:14] so then what we do is we do a remapping
+[37:17] so we basically The Logical block that
+[37:20] this would correspond to is remapped
+[37:23] over here and the advantage of doing
+[37:25] that is the next time that we access it
+[37:28] of course we will go here but the
+[37:30] probability of going here is not that
+[37:32] high because this has a low PE count so
+[37:35] in a sense we are doing wear leveling
+[37:36] homogenizing the
+[37:38] accesses now the point is that this are
+[37:41] a low PE count so we should rather focus
+[37:43] on increasing it again to
+[37:45] homogenize so what we do is that
+[37:48] we erase the contents here and we copy
+[37:52] from the free Block to this point so we
+[37:54] we are using an additional temporary
+[37:56] which is needed but the swapping of
+[37:59] blocks with a low P count and a high P
+[38:01] count is
+[38:03] essential for the sake
+[38:05] of wear leveling right so wear leveling
+[38:08] has to be done in Flash to ensure that
+[38:11] parts of it don't wear out and
+[38:13] ultimately burn out so this is an
+[38:16] essential
+[38:18] thing so this has been done and this
+[38:21] would require some State and as I said a
+[38:23] remapping
+[38:25] table
+[38:27] there is something else that happens
+[38:28] which is sort of conceptually similar to
+[38:32] we leveling it's known as read
+[38:34] disturbance so what happens is that if
+[38:36] we read a given cell
+[38:39] continuously so we just keep on reading
+[38:41] reading reading and reading then uh we
+[38:43] are essentially setting the voltage uh
+[38:46] to high and then reading so the
+[38:48] neighboring cells right in a n flash
+[38:52] particularly because of the transition
+[38:54] they start getting programmed
+[38:57] right so what we do is that we need to
+[39:00] enable them so in N Flash the rest of
+[39:03] the cells need to be enabled means the
+[39:05] voltage at the gate gate Source voltage
+[39:08] has to be greater than VT plus this is
+[39:10] of course not as high as the programming
+[39:13] voltage but this is sufficient to pull a
+[39:15] lot of electrons
+[39:17] up so gradually they get accumulated in
+[39:20] the floating gate which causes an
+[39:22] issue over time the cell gets
+[39:27] program right over time that
+[39:30] happens this is known as read
+[39:32] disturbance which basically means that
+[39:33] in an array of flash cells like in nand
+[39:37] Flash the moment we are accessing one
+[39:39] cell for reading the rest are getting
+[39:42] kind of subtly programmed like leakage
+[39:44] current this causes a lot of issue in
+[39:47] multi-level flash or multi-level
+[39:51] uh so they're known as mlc flash uh
+[39:54] drives so it causes a lot of issues
+[39:58] there so mlc stands for a multi-level
+[40:01] cell where as we discussed we store
+[40:04] multiple voltage levels not just a
+[40:06] binary but more than binary this again
+[40:09] increases the storage
+[40:11] density so the solution for read
+[40:14] disturbance is the same as the solution
+[40:16] for a
+[40:17] p uh cycle for a for a we leveling
+[40:20] solution which is that we maintain a
+[40:22] read counter at each
+[40:24] block the moment the number of reads
+[40:27] let's say for all the transistors within
+[40:29] the block exceeds a threshold we do the
+[40:32] same we copy it to a new location and
+[40:35] start from a fresh state so this ensures
+[40:38] that whatever little bit of spous
+[40:40] programming that has
+[40:42] happened all of that will all get uh
+[40:46] destroyed right all of that will get
+[40:48] discarded so that is why uh we just move
+[40:51] the block to a new physical location and
+[40:53] start from there and needless to say the
+[40:55] mapping table is
+[40:58] changed so now that we have discussed
+[41:02] flash let us uh quickly move to fero
+[41:06] Electric Ram we'll not have a lot of
+[41:07] slides for the subsequent
+[41:11] Technologies but enough to give you a
+[41:14] basic
+[41:15] idea so what happens is that whenever we
+[41:18] are looking at any kind of
+[41:21] a metall like uh material you will have
+[41:26] have slightly separate clusters of
+[41:29] positive and negative charge so a dipole
+[41:31] moment would
+[41:32] form and the density of these dipole
+[41:35] moment vectors including their
+[41:37] orientation is known as the
+[41:39] polarization and clearly this is a
+[41:41] function of the externally applied
+[41:43] electric field in the sense that
+[41:45] whenever I apply an electric field then
+[41:48] uh all the negatively
+[41:52] charged uh ions or electrons would move
+[41:55] towards the positive terminal and vice
+[41:57] versa so the polarization in the sense
+[41:59] would align itself to the electric
+[42:02] field now here is a so this is simple uh
+[42:06] physics but here is the fun part that
+[42:09] there are some materials that exhibit
+[42:11] something called the fero electric
+[42:14] effect they have or they seem to have a
+[42:18] memory so what do they remember well
+[42:20] they remember the
+[42:21] polarization so ideally speaking when
+[42:24] the applied electric field is zero when
+[42:26] external electric field is zero the
+[42:28] positive negative charges should all you
+[42:30] know uniformly distribute themselves so
+[42:32] the sum total of the polarization should
+[42:34] be zero right because there is no clear
+[42:37] external potential but that doesn't
+[42:39] happen you tend to see a polarization of
+[42:43] a separation of the charges which is
+[42:47] what makes things very
+[42:50] interesting because this is dependent
+[42:52] upon
+[42:53] the potential that you applied to that
+[42:56] material in the past it seems to
+[42:59] remember so even when the electric field
+[43:01] is removed right the polarization does
+[43:03] not become zero and that is the memory
+[43:08] aspect so uh let us look at this
+[43:10] somewhat in more detail so when applied
+[43:12] electric field is
+[43:14] zero there can be two values for the
+[43:16] polarization there can be two logical
+[43:18] States right so these logical States as
+[43:21] we shall just
+[43:22] see in a sense
+[43:25] determine whether the cell has a high
+[43:28] resistance or a low
+[43:30] resistance and the polarization needless
+[43:32] to say is dependent on the history of
+[43:34] the applied electric field as we have
+[43:36] just said because the cell appears to be
+[43:39] ex uh exhibiting some sort of a memory
+[43:42] some sort of a memory of what was the
+[43:45] electric field that was applied to it so
+[43:49] there are a few common ferroelectric
+[43:51] materials which show a very high level
+[43:54] of remembering the applied electric
+[43:57] field and having a polarization even
+[44:00] when the electric field is zero
+[44:02] basically the voltage across it is zero
+[44:03] the electric field is pretty much
+[44:05] voltage divided by the
+[44:07] distance one uh common such material is
+[44:12] pz
+[44:14] t uh sorry just a small quick correction
+[44:17] the electric field I uh the electric
+[44:20] field is proportional to the derivative
+[44:23] of the potential the space derivative of
+[44:25] the potential so basically if this is
+[44:28] the material and the voltage across it
+[44:30] is V and let's say that uh you know it's
+[44:33] kind of uniformly degrades and the
+[44:36] separation is D then electric field is
+[44:38] proportional to V by D it's actually the
+[44:40] negative space derivative but let's say
+[44:42] that the minus one I'm kind of including
+[44:45] that in the proportionality sign it's
+[44:48] pretty much the negative space
+[44:49] derivative of the potential and so when
+[44:51] the voltage becomes zero there is no
+[44:54] derivative right so the electric field
+[44:56] becomes zero so that was a small
+[44:57] correction I needed to uh have over here
+[45:01] now coming back to pz t pz t is
+[45:05] basically lead zirconate plus lead
+[45:08] titanate right so essentially lead
+[45:11] Alloys shows a fantastic uh
+[45:14] ferroelectric effect a few more common
+[45:18] ferroelectric materials are again barium
+[45:21] Titanite strontium barium Titanite right
+[45:26] so SBT is actually a fairly popular
+[45:28] material with a fairly strong Ferro
+[45:31] electric effect and uh sorry stum barium
+[45:34] tantalum sorry I stand corrected and
+[45:38] here again uh you can see that you know
+[45:41] some of these are kind of uh slightly
+[45:44] unconventional materials but again you
+[45:47] know uh the reason we run after tantalum
+[45:49] and other uh Rare Earth uh Metals is
+[45:54] basically because of the fact that they
+[45:56] are used in these uh novel memory
+[45:59] devices and they hold a lot of
+[46:04] potential so the hysterisis curve of f
+[46:08] Ram uh would look something like this
+[46:11] where the xaxis is the voltage that is
+[46:13] applied and you already know the
+[46:15] relationship between voltage and
+[46:17] electric field the electric field is
+[46:19] essentially the negative space
+[46:20] derivative of the
+[46:24] voltage so uh what is happening over
+[46:30] here is that if we start from let's say
+[46:34] point a so this point is when the
+[46:38] voltage across the material is negative
+[46:40] it's minus vdd then the polarization the
+[46:43] direction of polarization is
+[46:45] negative then what happens is that the
+[46:48] moment the voltage becom zero it
+[46:51] remembers the polarization to become
+[46:53] negative so this is the memory
+[46:56] effect and a negative polarization in
+[46:59] this case we say corresponds to logical
+[47:02] State
+[47:03] one and then what happens is as we
+[47:06] increase the
+[47:07] voltage at one point the polarization
+[47:10] becomes zero but it keeps on increasing
+[47:11] increasing till we come to point D again
+[47:14] when we come to point D when the voltage
+[47:17] is positive the polarization becomes
+[47:20] positive now when we reduce the voltage
+[47:22] it takes a different path it does not
+[47:24] come back on the same path instead it
+[47:27] takes a different path from D it goes to
+[47:29] e again e is a point of zero voltage but
+[47:33] in this case the polarization is
+[47:34] positive and this corresponds to logical
+[47:37] state zero so e and B are the points
+[47:41] where some degree of memory is being
+[47:44] shown where the voltage across the
+[47:47] device is zero but the device is
+[47:49] appearing to remember something namely
+[47:52] the polarization which is just a
+[47:54] agglomeration of of the dipole moments
+[47:57] and then uh we come to point F and then
+[48:00] to point a which is the point at which
+[48:02] we started so we can make a full cycle
+[48:05] of increasing the voltage then reducing
+[48:07] and then
+[48:08] increasing right so this is how you go
+[48:10] if you if I want to go
+[48:12] from any path B to D then it's kind of a
+[48:16] one-way path I can't come back unless I
+[48:19] go all the way to a and then come back
+[48:21] so that so this is essentially the path
+[48:23] that I follow
+[48:26] all right where B and D are the memory
+[48:29] points so this is by far the most
+[48:31] important graph for a fer electric
+[48:36] material so the diagram of a fe RAM
+[48:39] memory cell it's a fero electric RAM
+[48:41] memory cell would be very simple very
+[48:44] similar to what we have for a dam we
+[48:47] have a word line we have a bit line and
+[48:50] we have a sense amplifier so all of
+[48:51] these parts are common what is not
+[48:54] common is basic basically this thing
+[48:57] which is not a normal capacitor but a
+[48:59] fero electric capacitor which shows
+[49:01] exactly the effect that we saw in the
+[49:03] previous slide so it is connected to the
+[49:06] bit line on one side and a plate line on
+[49:08] the other side the reason it is not
+[49:10] ground is because voltage has to be both
+[49:12] positive as well as negative so that's
+[49:15] the reason you can't have ground
+[49:17] otherwise the voltage would kind of
+[49:18] swing in Only One Direction so we need a
+[49:21] plate line and basically between the bit
+[49:23] line and the plate line so pretty much
+[49:26] if the word line is connected this
+[49:27] becomes the bit line point between BL
+[49:30] and pl we need to vary the voltage and
+[49:33] then by varying the voltage we can set
+[49:35] different values of the
+[49:39] polarization writing to a cell so
+[49:42] writing to a cell is much easier than a
+[49:45] read operation because a read operation
+[49:46] is tricky we'll look at that later
+[49:49] writing to a cell does not appear to be
+[49:52] very
+[49:53] hard so what we do is we set the voltage
+[49:56] to minus vdd then it's going to come to
+[49:58] point a which is a well defined point
+[50:00] for a logical one right so for a logical
+[50:03] one we come here the moment the voltage
+[50:05] is removed it will automatically
+[50:07] transition to point p and we want it to
+[50:11] stay
+[50:11] there if we want a logical zero
+[50:14] automatically we set the voltage to plus
+[50:17] vdd the moment the voltage is removed
+[50:20] automatically the cell will come to
+[50:22] point T it'll remain there right pretty
+[50:26] much forever unless of course another
+[50:28] voltage is applied and that would be the
+[50:30] logical Point Z for
+[50:32] us so whenever we say that there is a
+[50:35] voltage there are two terminals right so
+[50:37] this is like a capacitor one terminal is
+[50:39] PL one terminal is BL so what do I mean
+[50:42] by voltage well the voltage is
+[50:44] positive uh so voltage is always with
+[50:47] respect to the plate line voltage with
+[50:49] respect to BL so if we say that the
+[50:51] voltage is whatever 1 volt then the
+[50:54] voltage of P is 1 volt more than the
+[50:56] voltage of BL so that is our
+[50:59] convention now when the cell is disabled
+[51:02] that is the word line is set to zero the
+[51:04] cell would revert to a stable point and
+[51:07] remain there which is what we wanted all
+[51:09] that we have to do is either set
+[51:11] ourselves to minus vdd or plus
+[51:15] vdd the read operation on the other
+[51:18] hand is
+[51:21] tricky okay is uh reasonably tricky so
+[51:25] let's uh look at that in somewhat more
+[51:28] detail reading from a
+[51:32] cell so in the process of reading what
+[51:35] we do is that we set PL to vdd and the
+[51:38] bit line to zero which means that the
+[51:40] voltage is plus vdd so it'll move to
+[51:43] point D but this is not this is easy
+[51:46] right the point is either it is moving
+[51:49] to point D in the b2d direction if it
+[51:53] was at a logical one or it is is moving
+[51:55] in the e2d
+[51:58] direction so what will happen is that in
+[52:01] both the cases the magnitude of the
+[52:03] current flow will be different if it is
+[52:07] moving from B to
+[52:09] D then what will happen is that the
+[52:12] magnitude of the current flow will be
+[52:14] much more so the Delta V1 or the change
+[52:17] in the bit lines voltage because it was
+[52:19] in state one will actually be more
+[52:21] because as you can see there is more
+[52:23] movement right more movement in terms of
+[52:25] voltage so the current flow will be much
+[52:27] much more as opposed to this movement
+[52:30] which will be much
+[52:38] lower so as opposed to the e2d movement
+[52:41] so by the way you know we are only
+[52:42] showing one movement but the other uh
+[52:45] movement is you know definitely uh
+[52:47] possible if let's say from EI change the
+[52:50] voltage to vdd it's not going to like
+[52:52] come this way it'll just you know go the
+[52:54] reverse way right
+[52:56] right here so uh the point is as I said
+[52:59] the arrows are not strictly one
+[53:01] way all right so of course at the point
+[53:04] D you have a choice you can go two ways
+[53:07] depending upon how you came but let's
+[53:09] say at Point e uh if uh you provide a
+[53:14] vdd voltage it'll just take the Ed path
+[53:16] back right this path back and uh
+[53:20] similarly at point B If You Give A minus
+[53:23] vdd voltage it will just ret this path
+[53:25] and go back so as I said not all arrows
+[53:28] are one way but the important point is
+[53:31] that if I let's
+[53:32] say
+[53:34] uh if I let's say move to vdd I have two
+[53:38] parts BD and Ed where one part will
+[53:42] clearly consume more current which would
+[53:44] lead to a higher potential increase on
+[53:48] the bit line in absolute terms so Delta
+[53:51] V1 will be larger than Delta V 0 which
+[53:53] we can clearly see from the the diagram
+[53:56] also this is can be sensed using the
+[53:59] sense
+[54:01] amplifiers but again there is a problem
+[54:05] the problem is that if let's say we went
+[54:08] from E to D when we remove the charge it
+[54:11] will come back to e right so we went
+[54:13] this way if the charge is removed it
+[54:16] will kind of retrace its path but if it
+[54:19] went from B to
+[54:21] D when the charge is removed it would
+[54:23] retrace its path it will not retrace its
+[54:26] path but it will come back to e which is
+[54:29] not something that we want so if a cell
+[54:31] was storing a logical one it will move
+[54:34] to cell D the point D but the moment the
+[54:38] potential is removed instead of coming
+[54:40] back to B it will come back to e right
+[54:43] instead of coming back here it's going
+[54:45] to come back here which is not something
+[54:47] that we want so like Dam this is an
+[54:50] example of a destructive read where
+[54:53] after reading you are pretty much
+[54:54] destroying the the value if a logical
+[54:56] one is stored there so that is why after
+[54:59] reading we'll again have to write to
+[55:01] restore the value exactly the same as
+[55:05] dam so F ram versus
+[55:08] Dam well uh ferroelectric RAM is
+[55:11] nonvolatile this part is absolutely
+[55:13] correct there are no refreshes
+[55:15] absolutely correct we are very happy it
+[55:17] uses uh you know very rare and expensive
+[55:20] materials that is why F Ram is quite
+[55:23] expensive Beyond 64 to 128 KB or half an
+[55:26] MB maximum anything else will burn your
+[55:30] pocket Dam on the other side has a much
+[55:33] smaller size very easy to
+[55:36] manufacture it is silicon based is very
+[55:39] easy very
+[55:40] cheap right uh dram is a huge market now
+[55:43] you know why but as I said Ferro
+[55:46] electric Ram is good for small embedded
+[55:48] devices and there it works quite well
+[55:51] it's very fast also destructive reads
+[55:54] are an issue but refreshes are not
+[55:55] required
+[55:58] thankfully magnetoresistive
+[56:02] Ram so this kind of a memory
+[56:05] device thankfully does not rely on
+[56:09] electric charge something that we have
+[56:10] been seeing it of course does rely on
+[56:13] electric current and a direction of
+[56:14] magnetization which is
+[56:17] different and one good thing is the
+[56:19] moment you don't deal with electric
+[56:21] charge charge doesn't move so there is
+[56:23] less of ir Heat loss less of dissipation
+[56:27] and of course here we are dealing with
+[56:29] magnetization but changing the
+[56:30] magnetization in general does not lead
+[56:34] to that much of an expenditure in terms
+[56:36] of current we will see but these devices
+[56:39] have other challenges but in terms of
+[56:41] non-volatile
+[56:43] memory magnetic Rams M Rams
+[56:46] magnetoresistive Rams actually they're
+[56:48] not fully magnetic but Magneto resistive
+[56:50] Rams because you'll always have a
+[56:51] resistive component because some or
+[56:53] other current is flowing they are very
+[56:55] very worthy candidates but uh we have
+[56:59] unfortunately reached the end of the
+[57:00] lecture so we will discuss mams and
+[57:03] particularly sttm Rams right so not just
+[57:06] mams but a certain variety of mrams that
+[57:10] have a lot of prominence
+[57:13] now we will discuss them in the next
+[57:18] lecture not in this one in the next one
+[57:20] right in the fifth lecture of this
+[57:22] series we will discuss magnet resistive
+[57:25] Rams and look at other few devices and
+[57:28] hopefully conclude with a discussion of
+[57:30] the roofline model which is a good
+[57:32] performance model for systems with a
+[57:35] large amount of main memory main memory
+[57:39] uh either traditional types or uh
+[57:41] nonvolatile type where it's also
+[57:43] doubling up a
+[57:53] storage oh

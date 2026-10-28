@@ -1,0 +1,1908 @@
+[00:00] [Music]
+[00:34] So let us now consider the design of
+[00:37] Nvidia Tesla GeForce 8800 uh GPU. So
+[00:43] there are many kinds of GPUs. Nvidia
+[00:46] itself has released several GPUs after
+[00:49] this version. So this version as of now
+[00:51] is at least around 5 years old. But
+[00:54] nevertheless, you know, be it Nvidia, be
+[00:56] it Intel, uh the basic concepts are more
+[00:58] or less similar. So, let's just overview
+[01:02] the basic concepts even though note that
+[01:03] the designs themselves can
+[01:06] change. So, in this case, uh we first
+[01:09] have the host
+[01:11] CPU which via a bridge uh which is also
+[01:14] called a bus uh will actually you know
+[01:18] access the GPU. So pretty much you know
+[01:21] this is where the GPU begins. So we'll
+[01:25] learn much more about bridges and buses
+[01:27] and so on. So a bridge is
+[01:29] essentially some sort of a device that
+[01:31] allows the GPU to talk to the CPU, the
+[01:33] GPU to talk to memory, the memory to
+[01:35] talk to the CPU, right? It's something
+[01:37] that allows us to do that. What exactly
+[01:40] is a bridge? We'll uh learn more about
+[01:42] it in the next chapter. Uh for the time
+[01:45] being, you know, let's live with this
+[01:46] abstraction.
+[01:48] So the first thing is we have a host
+[01:50] interface. Uh the host interface
+[01:53] interacts with the host CPU gets work
+[01:55] from it. Subsequently you know there are
+[01:58] different units of the GPU. So there are
+[02:00] first some traditional units whose job
+[02:03] is to actually do the graphics oriented
+[02:05] tasks. So the first is the vertex. So if
+[02:08] you would see the vertex processor uh
+[02:11] which processes shapes, objects, rules
+[02:14] and effects. So essentially the first
+[02:16] part is a vertex processor uh which does
+[02:19] all the vertex work. After the vertex
+[02:22] processor we had the rasterization uh
+[02:25] phase uh
+[02:27] phase. So uh we then have the raster uh
+[02:31] phrase and uh essentially the fragment
+[02:33] processing engines. So uh all of this
+[02:37] part is essentially becomes the
+[02:40] traditional GPU which is exactly what we
+[02:42] have seen in the previous slide which is
+[02:45] this slide that this is the work of the
+[02:47] traditional GPU vertex processing raster
+[02:51] rasterization fragment processing and
+[02:53] frame buffer
+[02:54] processing. So all of this work is done
+[02:57] in this part of the circuit.
+[03:00] uh the GPGPU nest the general purpose
+[03:04] character of a GPU right comes from this
+[03:08] uh particular block which sort of makes
+[03:11] it general
+[03:12] purpose and
+[03:14] uh this block is called a you know this
+[03:19] the job of this block is to distribute
+[03:20] the compute work. So as I
+[03:23] said GPUs had a lot of processors and a
+[03:28] lot of circuitry to basically mainly
+[03:31] process and compute graphics data. But
+[03:34] then uh architects realize that a lot of
+[03:36] that circuitry can be in a sense reused
+[03:41] to do traditional uh computations such a
+[03:43] linear algebra, matrix multiplication,
+[03:45] matrix inversion all of that and that is
+[03:49] managed by this compute work
+[03:50] distribution unit whose job is to
+[03:53] actually access the computational part
+[03:55] of the GPU. So mind you this part of the
+[03:58] GPU is shared between the regular
+[04:00] graphics tasks which come via this route
+[04:02] right which essentially come via this
+[04:04] route and this route and the compute
+[04:07] work which comes via this work this
+[04:09] route. So basically if I uh let me just
+[04:13] clear off the
+[04:15] ink. So pretty much above this we have a
+[04:18] certain differentiation of the source of
+[04:21] the work.
+[04:23] So what we have is that above the line
+[04:26] we can have you know different sources
+[04:28] of work and of course the pre-processing
+[04:31] is there below the line it is somewhat
+[04:33] more generic even though not 100%
+[04:36] generic. So we have uh
+[04:39] A8
+[04:41] TPCs so TPC is defined as a texture
+[04:45] processor cluster. Uh so let me
+[04:49] see. So it means it has units to process
+[04:54] the texture. So once if if you just go
+[04:56] back once again we will see that uh the
+[05:00] fragment processing part uh you know
+[05:02] this part can also add little bit of
+[05:03] texture uh to the different fragments.
+[05:07] So uh also it has regular processors. So
+[05:10] both of these are required in graphics
+[05:12] jobs as well as the processors are
+[05:14] required in general purpose jobs.
+[05:16] So uh this particular GPU has eight TPCs
+[05:20] but of course in other GPUs can have
+[05:22] more
+[05:22] TPCs. Each TPC has two
+[05:27] SMs.
+[05:29] Uh and SM is defined as a streaming
+[05:32] multiprocessor which means that uh
+[05:35] streams of data uh come from the top
+[05:38] from the host CPU or from the memory and
+[05:40] the SM process them and SMS themselves
+[05:43] have multiple processing units. So the
+[05:45] nature of the data is streaming in the
+[05:47] sense like you know water streams down a
+[05:50] river uh we have instructions and data
+[05:53] streaming down. So uh an SM is a
+[05:56] streaming uh
+[06:02] multipprocessor. So uh a TPC contains
+[06:05] two SM where one SM contains multiple
+[06:08] processors and then they have a texture
+[06:10] unit whose job is to do additional
+[06:12] texture processing. All of these eight
+[06:16] uh TPCs are connected via an
+[06:18] interconnection network. So note that
+[06:20] this is an important structure. So we'll
+[06:22] study more about it after we finish
+[06:25] GPUs. We'll look at interconnection
+[06:27] networks. So you know they can be
+[06:29] interconnected in many ways. We'll look
+[06:32] at the different ways. But let's assume
+[06:34] that in any network any SM can
+[06:37] communicate with any of these modules
+[06:39] over here. So we have six DM modules. So
+[06:43] where one module can contain a fair
+[06:45] amount of graphics DAM and there is an
+[06:47] L2 cache between the interconnection
+[06:49] network and the DM and also there is an
+[06:53] ROP and RO is a raster operations
+[06:56] processor which has which does
+[06:58] additional processing for raster
+[07:09] operations right so that is what an RO
+[07:11] does that it's It's a raster operations
+[07:13] processor and also we have some we have
+[07:16] a traditional part of the memory
+[07:17] hierarchy with six L2 caches the address
+[07:20] space of course being divided between
+[07:22] these six and individual DAM modules. So
+[07:25] this DAM is separate from the system
+[07:27] memory which is also DAM but you know
+[07:30] this is sort of the GPU part of things
+[07:33] GPU side of things. So the GPU has a
+[07:36] nice uh division between the traditional
+[07:40] GPU features and the new features which
+[07:44] are which are the compute features. So
+[07:47] both of them are supported. So that is
+[07:49] the greatness of the general GPGPU
+[07:51] concept that you can actually do
+[07:54] both. So let's look at an SM. So so
+[07:57] let's go back and let's uh look at a
+[08:00] TPC. There are eight TPCs and inside a
+[08:03] TPC we have multiple things. So let's
+[08:05] see we have a geometry controller. So
+[08:08] this is again part of the graphics part.
+[08:11] So it converts operations and basic
+[08:13] shapes to multi-threaded code. So the
+[08:15] great thing about graphics processors is
+[08:18] that we actually uh so we don't give it
+[08:21] very low-level instructions. the
+[08:23] instructions are
+[08:26] somewhat at a higher level and then
+[08:29] low-level instructions in the PTX you
+[08:32] know typically in the PTX instruction
+[08:34] set or other internal uh you know
+[08:38] representations of low-level
+[08:40] instructions are used. So essentially
+[08:44] based on the operation a set of
+[08:46] instructions here are created and these
+[08:48] set of instructions are conveyed to the
+[08:50] processing
+[08:52] units. So it is essentially convert
+[08:55] first conveyed to the SMC. The SMC is an
+[08:58] SM controller. So it scheduules
+[09:01] instructions on the SMS right. So there
+[09:03] are two SM in every TPC. On the SMS it
+[09:07] schedules the instructions.
+[09:09] So one SM is you know as described as
+[09:13] streaming
+[09:14] multiprocessor. So uh it has many many
+[09:18] compute units. So so let's see the first
+[09:21] thing is that it has three caches. So
+[09:24] the the this is the memory part of it.
+[09:26] So it has these three caches and then it
+[09:29] these are all the compute units.
+[09:38] It has a little bit of shared memory for
+[09:40] all the compute units uh to communicate
+[09:43] between each other and it also has a
+[09:46] texture unit whose job is uh you know
+[09:48] almost exclusively to process texture
+[09:50] information and the texture unit inside
+[09:53] has a texture L1 cache for its own work.
+[09:56] So what we are mainly concerned with is
+[09:59] the caches here and the compute units.
+[10:04] So the broadly speaking there are two
+[10:05] kinds of
+[10:07] caches. So the caches are somewhat like
+[10:10] this that we have an instruction cache.
+[10:13] So the I cache over there is an
+[10:14] instruction cache. So we always need an
+[10:17] instruction cache. So this is over
+[10:19] there. So one instruction cache per SM.
+[10:22] But since it is a you know it's broadly
+[10:25] a vector kind of uh processing is
+[10:28] happening. So we'll see exactly what's
+[10:30] the model. But the model is broadly you
+[10:32] know a vector kind of processing. So
+[10:34] that's the reason the instruction cache
+[10:35] can actually be highly efficient because
+[10:37] the same instruction actually ends up
+[10:39] executing in the entire SM in all the
+[10:42] SPS and the
+[10:43] SFUS. The empty issue is a special unit
+[10:46] like the SMC. So it's a multi-threaded
+[10:49] issue unit that coordinates the actions
+[10:51] across all of them. And the C cache is
+[10:54] one more cache which is a constant
+[10:55] cache. So a lot of algorithms actually
+[10:59] use you know constants. for example, E,
+[11:01] pi and so on. So all of these constants
+[11:04] can be saved here in the constant cache.
+[11:08] Right? So beyond these caches actually
+[11:12] one
+[11:13] uh SM has eight SPS. SP is a simple
+[11:18] streaming processor core. So mind you
+[11:20] this is a very very simple core. You
+[11:22] know it is far simpler than the in order
+[11:25] processor that we have designed in
+[11:27] chapter 9. It might be at best a one-
+[11:29] stage or a two-stage pipeline. So, you
+[11:32] know, it's a very simple device and its
+[11:34] main role is to fetch an instruction
+[11:37] from the Icash, do some very basic
+[11:39] decoding, do the execution and uh
+[11:43] essentially send the data to shared
+[11:45] memory and some uh graphics processors
+[11:48] also have graphics registers. I don't
+[11:49] want to go into all of those details uh
+[11:52] but let's just uh think of it as
+[11:55] something that pulls data from. So I'm
+[11:58] sorry, pulls instructions from the
+[11:59] Icash, pulls data from the shared memory
+[12:02] or the DM, does some processing and the
+[12:04] data goes back to the shared memory and
+[12:06] the DAM. So going back to the previous
+[12:09] diagram, each SM will essentially pull
+[12:12] data from
+[12:13] here and process it and send data
+[12:17] back or it can even send data back to
+[12:20] system memory. So there are different
+[12:21] pathways possible. Uh so we'll not
+[12:24] explore all the pathways but essentially
+[12:26] it's something the main advantage of
+[12:29] streaming is that you're mostly looking
+[12:31] at data once. So you take a look at data
+[12:33] you process it then you take a look at
+[12:35] some more data and so on. So you
+[12:37] typically don't look at the same data
+[12:39] item twice. So if you think about it uh
+[12:43] all of these simple codes that we have
+[12:45] over here we have eight SPS per
+[12:47] SM and we also have two of these SFUS
+[12:51] which are called special function units.
+[12:54] So SFUs as compared to SPS are fairly
+[12:57] advanced in the sense that one SFU can
+[13:01] actually take in four instructions per
+[13:03] cycle and execute them simultaneously
+[13:06] right at least in this version of the
+[13:09] GPU. Uh sorry not four instructions not
+[13:12] uh yeah four uh
+[13:16] uh it it can uh take yeah eight
+[13:19] instructions in two cycles. So, so
+[13:21] that's what it can do and it can execute
+[13:23] them
+[13:24] simultaneously. In addition, what it can
+[13:27] do is that it can compute the results of
+[13:29] complicated functions like
+[13:30] transcendental functions and log and so
+[13:33] on. So it can its processing powers are
+[13:36] much much more than the simple SPS
+[13:38] because SPS are pretty much good enough
+[13:40] only for add subtract multiply and
+[13:42] divide whereas the advanced functions
+[13:45] trigonometric functions and others can
+[13:47] be handled by the SFUS. So if you just
+[13:50] count cores right irrespective of how
+[13:53] many instructions they can process then
+[13:55] we have 10 cores in each SM 10 * 20
+[13:59] cores per TPC right and we have eight
+[14:04] TPCs so total we have 160 cores right
+[14:08] even in this you know relatively old
+[14:11] graphics processor that we're seeing
+[14:13] which is also pretty simple we have
+[14:15] roughly 160 cores and 160 cores This is
+[14:19] you know fantastic. We can uh do 160
+[14:22] additions simultaneously and we'll see
+[14:25] actually slightly more than that but you
+[14:28] know there's a fantastic thing that we
+[14:29] can do uh which is uh that basically
+[14:36] uh uh we can uh enjoy a massive amount
+[14:39] of parallelism. Actually I take back
+[14:42] this 160 additions at the same time
+[14:44] because the calculation is slightly
+[14:46] different but we will see the
+[14:47] calculation when we go to the next
+[14:49] slide. But the main thing is that we
+[14:51] have 160 coursees active at the same
+[14:53] time and which means that you know 160
+[14:56] instructions are being processed at the
+[14:58] same time which will give us a massive
+[15:00] amount of
+[15:01] parallelism. After this the texture unit
+[15:04] does uh the texture processing but that
+[15:07] is not really important for us at this
+[15:09] stage. we are only we are mainly
+[15:12] concerned with the SPS and the
+[15:15] SFUS. So the computition on the GPU goes
+[15:19] on like this. So the GPU groups a set of
+[15:21] 32 threads into a warp, right? So of
+[15:24] course you know 32 is not a number
+[15:26] written on stone. So it can be 32 for
+[15:29] one GPU, 64 for one more. But let's
+[15:32] assume you know a number that is you
+[15:34] know 16 32 or 64 some power of two. So
+[15:37] in this case 32 threads they're grouped
+[15:39] into a
+[15:40] warp and each thread has the same set of
+[15:44] dynamic instructions means that the this
+[15:46] is you know it's exactly sim which means
+[15:51] the instructions are exactly the same
+[15:54] for all the threads right so you know
+[15:56] all 32 threads the instructions are
+[15:59] exactly the same even though the data is
+[16:02] different so in a sense it's also a sim
+[16:04] kind of computation uh but It's just
+[16:07] that since it's across threads, we call
+[16:09] it
+[16:10] SIM and uh so basically 32 threads and
+[16:14] their data sources are different. So
+[16:15] they work on different pieces of data
+[16:18] and uh very very similar to what we have
+[16:20] studied uh on vector processors and very
+[16:24] very conceptually similar is just that
+[16:26] instead of multiple functional units we
+[16:28] have multiple threads. Similar to vector
+[16:31] processors we have predicated branches.
+[16:34] Uh so so essentially you know the we
+[16:38] don't have any branches per thread and
+[16:40] it's never the case that different
+[16:42] threads actually fall out of sync with
+[16:44] each other. So for all of them we just
+[16:47] execute them instruction by instruction
+[16:49] and finish off all you know finish off
+[16:52] at least n instructions for each warp.
+[16:55] So what the GPU does is that it maps a
+[16:58] warp to an
+[16:59] SM. So right. So the W warp is a set of
+[17:02] 32 threads and uh one SM is essentially
+[17:07] mapped a
+[17:09] warp. All right. So each instruction in
+[17:13] the warp executes atomically which means
+[17:15] that uh either it fully executes or it
+[17:18] doesn't execute at all to an external
+[17:20] observer.
+[17:22] All the units in the SM first execute
+[17:24] the I if instruction of each thread in
+[17:26] the warp before considering the I + 1
+[17:30] instruction or an instruction from
+[17:32] another warp. So it is possible that at
+[17:35] one point of time multiple warps
+[17:38] uh can actually be uh scheduled on an
+[17:42] SM. So the SM will you know maybe
+[17:46] consider warp one and execute its IAT
+[17:49] instruction fully before even executing
+[17:52] the I + 1 instruction in warp one then
+[17:55] it'll consider warp 2 execute some of
+[17:57] its instructions again for all the
+[17:59] threads within warp 2 then come back to
+[18:02] warp one execute a few more instructions
+[18:04] of warp one but the important thing is
+[18:07] that the execution of an instruction is
+[18:09] atomic in the sense for all 32 threads
+[18:12] will essentially progress by the same
+[18:14] number of instructions before the warp
+[18:17] gets swapped out and another warp comes
+[18:19] in. So this kind of a model is a single
+[18:22] instruction multiple threads kind of
+[18:26] model. So let us look at an example
+[18:29] computation on a
+[18:30] GPU. So let us assume we have SM
+[18:33] multi-threaded instruction scheduleuler
+[18:34] and this is the schedule it
+[18:36] produces. So let's say we start out with
+[18:39] WP number eight. we execute instruction
+[18:42] 11. So after executing one instruction
+[18:45] fully for all the 32 threads, the GPU is
+[18:49] free to choose another
+[18:51] warp. So let's say it chooses
+[18:53] instruction uh instructions from warp
+[18:56] one and instruction 42 and then it again
+[19:00] chooses instructions from WP 3 uh with
+[19:04] uh instruction 95. After that it chooses
+[19:07] other warps but it does not choose warps
+[19:10] 1 3 and
+[19:11] 8. So after that let's say it comes back
+[19:15] and chooses WP 3 again. So in this case
+[19:18] since it has already executed
+[19:19] instruction 95 it will start with
+[19:23] instruction number
+[19:25] 96 and execute 96 fully. And then again
+[19:29] the GPU might decide to go back to warp
+[19:32] number eight. And since instruction 11
+[19:34] was executed, so it will execute
+[19:39] 12. Finally, it might uh decide to again
+[19:42] look at W number one. And since
+[19:44] instruction 42 was executed, it will now
+[19:47] execute
+[19:48] instruction
+[19:52] 43. Now let us look at how computations
+[19:55] happen uh in a GPU.
+[19:58] So we pretty much the throughput of a
+[20:01] GPU is designed like this is decided
+[20:04] like this that we execute a new
+[20:06] instruction every four cycles. So the
+[20:09] throughput uh so so mind you you know an
+[20:11] instruction means something else in the
+[20:13] context of a GPU. So what an instruction
+[20:16] means is that given a warp
+[20:21] uh a warp has 32
+[20:23] threads. So all the 32 threads execute
+[20:26] one instruction each the same
+[20:28] instruction the ayat instruction and the
+[20:31] rate of such kind of an execution is
+[20:34] once in every four cycles. So the way
+[20:36] that things work is that uh if you would
+[20:39] go back to the diagram of one
+[20:42] SM. So inside an SM there are eight
+[20:45] SPS and there are two
+[20:49] SFUS. So on the SPS we schedule eight
+[20:53] threads that run on the eight SP cores
+[20:56] of course one thread running on each SP
+[20:58] core once every two cycles right. So
+[21:01] once every two cycles we schedule eight
+[21:03] threads
+[21:04] and so then uh they can execute one
+[21:08] instruction each. So basically in four
+[21:11] cycles we can execute 8 * 2 uh 16 uh
+[21:17] instructions.
+[21:19] Uh so so then uh for the two SFUS so the
+[21:23] SFUS can actually one SFU can execute
+[21:27] four instructions you know it can take
+[21:29] in four instructions in the same cycle.
+[21:32] So uh basically if you have two SFUS
+[21:35] right one in SFU can take in four
+[21:37] instructions every cycle. So if you have
+[21:40] two SFUS, they can take in eight
+[21:42] instructions uh every cycle. So uh SFUS
+[21:46] are also uh scheduled once every two
+[21:48] cycles. So this means that uh since once
+[21:51] every two cycles they can process eight
+[21:53] threads. So in four cycles they can
+[21:55] process 16 threads. So we have 16 + 16
+[21:59] 16 coming from SFUS and 16 coming from
+[22:02] SP cores. So the sum total is 32 which
+[22:06] means that every four cycles we can uh
+[22:08] pump in 32 instructions into each SM
+[22:13] right so you know it would be better to
+[22:15] say uh we can execute a new instruction
+[22:18] for a warp so that it's clear it's not a
+[22:20] single instruction it's a single
+[22:22] instruction for all 32 threads so that
+[22:24] actually makes a total of 32
+[22:26] instructions so if you think about it
+[22:29] the throughput of each SM is 32
+[22:31] instructions it depends you know on how
+[22:33] you count. So if we count the total
+[22:36] number of instructions, it's 32. And but
+[22:38] if we count it from a program point of
+[22:40] view, it's one. So so it doesn't matter.
+[22:43] But uh if you look at total
+[22:45] instructions, then uh it's 32 for every
+[22:48] four cycles. Eight instructions per
+[22:49] cycle per
+[22:51] SM. So threads uh so
+[22:54] moreover threads in a VARP uh can share
+[22:58] data through the SM specific shared
+[23:00] memory. you know just in case they're
+[23:02] accessing some shared you know a shared
+[23:04] data structure or something. So the
+[23:06] shared memory that is there in each SM
+[23:08] can be used to share data between
+[23:11] threads of the same
+[23:12] warp. So a set of warps are grouped into
+[23:15] a grid and different warps in a grid can
+[23:18] execute independently. So what we do is
+[23:21] that each
+[23:22] warp has a set of
+[23:25] threads and a set of different
+[23:29] warps are uh grouped into a
+[23:36] grid and uh different WPS will not
+[23:39] communicate through the SM specific
+[23:41] shared memory but they will communicate
+[23:43] through glo global
+[23:45] memory which is essentially the DAM
+[23:48] modules that are either in the GP CPU or
+[23:50] offchip uh DM modules. So just to give
+[23:53] you one more idea of the net throughput
+[23:55] that we are talking about. So here what
+[23:58] we have said is 32 instructions
+[24:03] uh per four
+[24:06] cycles per SM. So this is essentially
+[24:10] eight instructions per cycle,
+[24:13] right? Eight instructions per
+[24:16] cycle per SM.
+[24:19] So if we have eight TPCs and each TPC
+[24:21] has 2 SM so that is 16
+[24:24] SM. So in a GPU you know even a GPU that
+[24:27] is slightly old in this case Nvidia
+[24:29] Tesla. So it can execute 8 * 16 or 128
+[24:35] instructions in parallel you know at the
+[24:37] max in a given cycle which is fantastic.
+[24:41] you know this is a massive amount of
+[24:43] throughput and uh so you know in general
+[24:46] a multi-core processor will not have
+[24:48] this much of a throughput. So, so mind
+[24:50] you these instructions are all very
+[24:52] simple. They're not very complicated at
+[24:54] all simple add subtract multiply but we
+[24:57] can use this to actually you know
+[24:59] process a lot of data and also you know
+[25:02] generate and render very very
+[25:03] complicated scenes but it should be
+[25:05] understood that the IPC of a GPU is
+[25:08] actually very high and in this case the
+[25:10] IPC is 128 which is actually genuinely
+[25:14] you know very very high. So that's the
+[25:16] reason GPUs are uh very power consuming
+[25:20] devices but again for you know high
+[25:22] intensity graphics high fidelity
+[25:24] graphics and uh playing you know games
+[25:27] where multiple characters and guns and
+[25:29] bazookas everything zooming around or
+[25:32] you know watching movies creating movies
+[25:34] GPUs are you know should definitely be
+[25:37] used and are definitely
+[25:40] used. So now uh let's look at a very
+[25:43] very simple program that we'll write on
+[25:45] a GPU. So mind you you know there is
+[25:47] this is just the start of this is just
+[25:49] the tip of the iceberg. So a lot of
+[25:52] programs can be written that uh you know
+[25:55] work on GPUs and there are also you know
+[25:57] different kinds of flavors of GPU
+[26:00] languages. So uh one of the most uh
+[26:02] common uh flavors is CUDA called the
+[26:05] common unified device architecture. So
+[26:08] this is uh very popularly used
+[26:10] particularly in Nvidia GPUs. So it's a
+[26:13] custom extension to
+[26:14] C++ where there's a separate CUDA
+[26:17] compiler that you know separately
+[26:18] compiles the code for the GPU and you
+[26:21] have a separate CPU compiler that
+[26:23] separately compiles the code for the
+[26:25] CPU. So in the context of a GPU we
+[26:28] define the term called a kernel which is
+[26:31] a piece of code that executes in
+[26:33] parallel you know on the GPU of course.
+[26:37] So we define two concepts over here. The
+[26:40] first is a block. A block or a CTA
+[26:43] called a cooperative thread array is
+[26:46] something similar to a warp in a
+[26:48] programming language terminology in the
+[26:51] sense the threads in a block are
+[26:53] supposed to execute together same as the
+[26:55] threads in a warp. And the blocks
+[26:58] together are grouped in a grid. So
+[27:00] similarly you know we defined a grid of
+[27:03] warps. So in this case we're defining a
+[27:05] grid of blocks. So a part of the code
+[27:08] executes on the CPU and a part of the
+[27:10] code executes on the
+[27:14] GPU. So let's look at a simple KOD
+[27:17] program. So in this case this is similar
+[27:19] to the example that we saw with uh
+[27:23] SSE and uh here the idea
+[27:26] is that we want uh so here the idea is
+[27:29] that we want to add uh two arrays A and
+[27:33] B uh so which are essentially vectors
+[27:34] and produce a result vector C. So we
+[27:37] want to add a vector A and vector B and
+[27:41] uh produce vector C. So this particular
+[27:44] uh program is written
+[27:47] uh is sort of is written in C using the
+[27:50] CUDA API. So one more API uh is called
+[27:53] Open CL which the AMD GPU uses. So Open
+[27:57] CL is similar to CUDA but of course you
+[27:59] know there are differences. So let's
+[28:02] take a look at a CUDA
+[28:04] program. So let us first take a look at
+[28:06] the main function. We'll take a look at
+[28:08] the GPU part somewhat later. So in the
+[28:11] main function let us declare three
+[28:12] arrays A, B and C each having n elements
+[28:16] each where n is defined to be 1,024. So
+[28:19] fairly large uh you know arrays well not
+[28:23] that large on a GPU scale but uh you
+[28:26] know large enough uh for us to see what
+[28:28] is the benefit of actually running it on
+[28:30] a
+[28:31] GPU. So uh you know one set of,024 we
+[28:34] can make it a million. So I will ask uh
+[28:36] you know I would ask readers to consider
+[28:39] a much larger array and then they can
+[28:41] say the real benefit but that's okay you
+[28:43] know for purpose of demonstration that's
+[28:45] fine. So now let's do one thing let us
+[28:48] declare the corresponding arrays in the
+[28:50] GPU. So mind you these arrays are being
+[28:52] declared in the CPU but they are not
+[28:55] being declared within the GPU. So let's
+[28:57] do one thing. Let's declare them in the
+[29:00] GPU.
+[29:01] So let us now see how uh we need to
+[29:04] create some amount of space within the
+[29:06] GPU to store a copy of these arrays A, B
+[29:10] and
+[29:12] C. So the function in CUDA to allocate
+[29:17] space within the GPU is CUDA
+[29:20] melo. So what CUDA meal does is that it
+[29:24] um allocates uh space within the GPU and
+[29:29] uh so it basically allocates it at these
+[29:31] pointers. If you would recall we had
+[29:33] defined GPU A, GPU B and GPU C as instar
+[29:37] pointers means that they point to
+[29:39] integer arrays. So what we
+[29:42] do is that uh we send a pointer uh to
+[29:47] these arrays uh to the CUDA malog
+[29:49] function and of course they need to be
+[29:52] uh they need to have the type void star
+[29:54] means pointer to a pointer of uh objects
+[29:59] uh of type void. So void star means a
+[30:01] pointer to anything. So it's an array of
+[30:03] pointers to anything. So it needs to be
+[30:05] type cast in uh this fashion to be
+[30:08] actually sent to this function. And size
+[30:10] is the size of the arrays. So recall
+[30:13] that the size we had defined over here
+[30:16] as the number of elements in the array n
+[30:20] times the size of a single integer which
+[30:22] can be either four bytes sometimes 8
+[30:25] bytes depending upon the
+[30:27] system. After this once so basically
+[30:30] cuda melo creates space within the
+[30:33] memory space of the GPU. Once that is
+[30:36] done, we initialize the arrays A and B.
+[30:38] You know, we fill them with data because
+[30:40] finally we need to add uh the vectors A
+[30:43] and B to get the vector
+[30:46] C. Then what we do is that we transfer
+[30:50] the data which is essentially array A
+[30:53] into the GPU. So the that is done by
+[30:57] transferring array A to the uh pointer
+[31:01] GPU A which is basically a reference to
+[31:04] the array where uh you know this space
+[31:07] GPU A is actually stored uh inside the
+[31:11] GPU size is again the number of bytes
+[31:13] which is the size of the array and this
+[31:16] is a flag which tells us that we are
+[31:18] doing a memory copy from the host to the
+[31:21] device. So in this case the host is the
+[31:23] CPU and the device is the GPU. So data
+[31:28] is flowing from the CPU to the
+[31:31] GPU. All
+[31:33] right. And similarly for the array B we
+[31:37] transfer the contents of array B to
+[31:39] GPU_B. Uh what this basically means is
+[31:43] is that GPU_B is the place uh where the
+[31:48] array is stored uh inside the GPU and we
+[31:52] have already created space for it using
+[31:54] CUDA melo. So we transfer size bytes
+[31:57] again from the host to the
+[32:00] device. Once we have done that the next
+[32:04] uh step is to invoke the vector addition
+[32:07] operation inside the GPU. So what we do
+[32:11] is that we basically invoke the vector
+[32:15] add uh operation and the way the vector
+[32:19] add operation is invoked is something
+[32:21] like this. So vector add is the name of
+[32:23] the operation right? So it's the
+[32:25] function but the way that the function
+[32:27] is
+[32:28] called is somewhat different. It's a
+[32:31] special way of calling the function.
+[32:33] What we are doing is that within these
+[32:35] three less thans and these three greater
+[32:37] thans we are specifying the number of
+[32:42] uh threads in a block and the number of
+[32:45] blocks uh in the grid. So we are sort of
+[32:48] creating a 2D structure over here where
+[32:51] let's say uh so we have n elements. So
+[32:55] uh in principle we we'll have we are
+[32:57] creating n threads where the job of one
+[32:59] thread is to add one pair of elements.
+[33:02] So essentially we are creating a matrix
+[33:04] of GPU threads uh which has n by 32
+[33:10] rows and 32
+[33:11] columns. This is a matrix of GPU threads
+[33:14] where each cell represents a GPU thread
+[33:17] and the job of this cell is to basically
+[33:20] add two elements within the arrays GPU B
+[33:23] GPU A and GPU B right perform an
+[33:27] addition operation and save the result
+[33:29] in GPU C. So essentially this is the
+[33:32] same as for all i
+[33:35] uh essentially add a i plus b
+[33:37] i and assign the result of a i + b i to
+[33:42] c i and of course i varies from 0 is
+[33:47] less than i which is less than n minus
+[33:49] one. So so essentially I can take n
+[33:52] values. So way the way that we are
+[33:54] invoking this function is different.
+[33:56] It's not a part of C syntax but that's
+[33:58] the reason this program needs to be
+[34:01] parsed by a CUDA compiler first such
+[34:04] that it can generate the GPU code and
+[34:06] subsequently a C compiler will generate
+[34:09] the CPU code and both the codes the CPU
+[34:12] code and the GPU code will work
+[34:15] together. So this vector add function is
+[34:18] essentially a kernel whose job is to do
+[34:21] the addition inside the GPU. But mind
+[34:24] you this is not a it's not a built-in
+[34:28] function of CUDA. So uh it is something
+[34:31] else and I'll come to what that
+[34:32] something else is. So in this case but
+[34:35] the most important thing that the user
+[34:38] should basically look at is uh this n by
+[34:41] 32 and 32 where essentially we're
+[34:44] dividing all the threads uh into a
+[34:47] matrix and so this will help us create
+[34:49] you know warps and uh a grid right. So
+[34:53] let us now look at this vector add
+[34:54] function which is which was there on the
+[34:56] previous slide but we
+[34:58] skipped. So here it is. So this vector
+[35:01] add function actually we have written
+[35:03] it's not something that you know CUDA is
+[35:05] providing as a built-in but the way that
+[35:07] you divide. So this is the GPU kernel.
+[35:09] This is the part of the code which will
+[35:12] actually execute on the GPU and the rest
+[35:14] will execute on the CPU of course most
+[35:17] of it. See so the way we define it is
+[35:20] that it's a global function. underscore
+[35:24] global this function does not return
+[35:26] anything so it's a
+[35:28] void and it takes three arrays as input
+[35:31] it takes GPU A GPU B and GPU C and the
+[35:35] final aim is to ensure that GPU C is
+[35:40] equal
+[35:40] to sorry GPU
+[35:44] A
+[35:47] plus GPU
+[35:50] V. So uh this function we have written
+[35:53] we always need to write one such
+[35:55] function because you know CUDA does not
+[35:57] have that many built-ins also it tells
+[36:00] us how to write a function right we
+[36:02] might uh instead of addition we might be
+[36:04] doing some other operation. So in any
+[36:06] case we always uh have a underscore
+[36:08] global identifier then we write a
+[36:11] function. So the first thing that we do
+[36:14] within this function is that we compute
+[36:16] the index right. Uh so the index is
+[36:20] basically you know when
+[36:22] in in an array the same way that we were
+[36:26] using my id in our openmp and npi
+[36:29] programs index refers to the index of
+[36:33] the element which element it is. So it's
+[36:35] very easy to compute it. So every thread
+[36:39] ID so thread so these things are all
+[36:40] built in right. So uh so every thread
+[36:45] has a thread ID it has an
+[36:47] xcoordinate. So uh it is the id of the
+[36:50] thread within the block plus the block
+[36:54] ID of the block multiplied with the
+[36:57] uh dimensions of the block. So what we
+[37:00] are doing is that we are taking our
+[37:02] threads and we are grouping them
+[37:05] into blocks right. So one more
+[37:10] block. So ultimately the ID of a thread
+[37:14] is the ID of the block multiplied with
+[37:16] the size of the block which is this part
+[37:20] plus the ID of the thread within the
+[37:23] block. So this is exactly what this is
+[37:25] trying to specify. So this is how we get
+[37:27] the identifier you know the global
+[37:30] identifier the index after that we just
+[37:32] perform an addition which is exactly
+[37:34] what the GPU is supposed to do. It's an
+[37:37] element byelement addition. So we
+[37:41] basically uh take the idx
+[37:44] element and uh for a b add them together
+[37:48] and save it in the idx element of gpu c.
+[37:53] So for those who have seen all the
+[37:55] parallel programs that we have written
+[37:57] in this chapter starting
+[38:00] from
+[38:03] OpenMP to something which was inspired
+[38:06] by
+[38:06] MPI to one of the raw parallel programs
+[38:09] we wrote for an SC machine to one more
+[38:11] that we wrote for an WC machine. All of
+[38:14] them worked in pretty much the similar
+[38:18] manner where we just create multiple
+[38:20] threads. Each thread has a thread
+[38:24] ID and uh the thread ID tells us which
+[38:29] elements we need to operate on. We
+[38:31] operate on those elements and of course
+[38:33] this function is spawned in parallel for
+[38:35] each of the threads. So this vector add
+[38:38] function we have written and uh so
+[38:41] thread idx block idx and block dim are
+[38:44] all CUDA built-ins and finally we are
+[38:46] doing the addition. So once the CUDA
+[38:48] compiler will convert this to
+[38:50] appropriate GPU
+[38:52] code once we have called vector add uh
+[38:56] so then after this function it means the
+[38:58] result is there within the GPU. So what
+[39:01] we do is we again transfer the contents
+[39:04] from GPU C to C which basically is from
+[39:08] the device to the host. So device is the
+[39:11] GPU. So from the GPU to the CPU we
+[39:14] initiate a command to transfer the data
+[39:17] and of size bytes. So it again comes
+[39:20] within the array C which is the final
+[39:23] result. So now that we have computed the
+[39:26] final result from the GPU and we have
+[39:28] gotten it with into the memory space of
+[39:30] the CPU. What's left? Well, what's left
+[39:33] is fi final
+[39:35] cleanup. So we free the space within the
+[39:38] GPU. So we call the CUDA free call uh
+[39:42] which uh frees up the space for GPU A, B
+[39:45] and C. So this is essentially the code
+[39:49] to do a computation within a GPU and to
+[39:53] get the results from the memory space of
+[39:57] the GPU to the memory space of the CPU.
+[40:00] The important elements, let me again
+[40:02] clean this up. The important elements of
+[40:06] this
+[40:08] computation are uh basically that we
+[40:11] define our own function the GPU kernel
+[40:14] which of course first first gets the ID
+[40:17] of the element by finding the ID of the
+[40:20] thread and the ID of the block. We tell
+[40:23] the GPU what needs to be done and after
+[40:26] that is just a matter of making the
+[40:28] arrays moving data between the first the
+[40:34] CPU to the GPU invoking vector add to do
+[40:38] the addition within the GPU and again
+[40:41] moving data from the GPU to the CPU. So
+[40:45] this is mostly how all GPU computations
+[40:48] proceed. So it's uh in a sense fairly
+[40:51] simple but of course you know getting a
+[40:53] high performance implementation as we
+[40:55] shall uh you know as you shall see if
+[40:57] you study more is fairly difficult. So
+[41:00] that's the reason you know this is just
+[41:02] the very tip of the iceberg but there is
+[41:05] much more to be learned and much more to
+[41:06] be studied for those who are looking at
+[41:09] GPU
+[41:11] seriously. All right let's move
+[41:13] on. Let's now look at interconnects. So
+[41:17] interconnects is something we have not
+[41:19] discussed but if you go back we have
+[41:21] always said that our multiore single
+[41:24] cores right within a multi-core
+[41:26] processor connected in some way we have
+[41:29] always said that you know if you would
+[41:30] recall let me just go back to the GPU
+[41:33] diagram if you recall this thing we are
+[41:36] seeing that all the TPCs and the memory
+[41:38] modules are connected in some way right
+[41:42] also it is possible that I can take
+[41:44] individual chips and create a cluster
+[41:46] cluster of machines, right? A cluster of
+[41:48] servers. So again, they will be
+[41:50] connected, you know, in some way. So let
+[41:53] us look at the different kinds of
+[41:55] interconnection networks and study their
+[41:58] properties. Again, this is very basic,
+[42:00] but this is something that everybody
+[42:02] should know at least at this
+[42:04] stage. So a typical multi-core
+[42:06] processor, this is how it looks. So the
+[42:09] blue ones are the cores. So you can have
+[42:11] lots of cores actually a lot of blue uh
+[42:14] boxes as you can see. So this uh
+[42:17] particular multi-core
+[42:19] processor has 32 cores. You can also
+[42:23] have cache banks which are essentially
+[42:25] uh large pieces of SRAMM memories to
+[42:28] store parts of the address space. So you
+[42:30] will have cache banks and the cache
+[42:32] banks are also distributed all over the
+[42:34] chip. So there are elaborate protocols
+[42:36] of accessing the course and the cash
+[42:38] banks but we'll not discuss that. Then
+[42:41] we have these routing elements which
+[42:43] essentially connect you know so if you
+[42:45] consider this small cluster of course
+[42:46] and cash banks they are connected to the
+[42:49] network. So it's sort of similar to the
+[42:51] diagram of a city. So let's imagine a
+[42:54] small community over here that is
+[42:56] connected with one you know big fat road
+[42:58] and then there are other communities
+[43:00] that connect to this road. There are
+[43:02] other communities which connect to this
+[43:04] road. So similarly you can consider this
+[43:07] as a small community. So they are
+[43:09] connected to the interconnection network
+[43:11] in some way via these routing modules
+[43:13] whose job is to interact with the
+[43:15] network simultaneously. We also have
+[43:20] uh these red elements called memory
+[43:23] controllers. So you can have one 2 or
+[43:26] eight memory controllers depends on you
+[43:28] know the requirements. So the job of
+[43:31] these memory controllers is to interact
+[43:33] with uh offchip memory mainly DM modules
+[43:37] since you can have many DRM modules and
+[43:40] since a lot of requests are going you
+[43:42] can have many memory controllers. So the
+[43:45] crux is basically how they are
+[43:46] connected. So let's look at a couple of
+[43:48] connection
+[43:50] strategies. So the router is the core in
+[43:53] an onchip network which is also called a
+[43:56] network on chip. Right? A network on
+[43:58] chip is also a common uh term for an
+[44:01] onchip network. And what's even more
+[44:03] common as an abbreviation is NOC, right?
+[44:06] Network on chip and O small N capital C
+[44:10] capital. So router sends and receives
+[44:13] all the messages for its tile. A tile is
+[44:16] defined as a small community that the
+[44:18] router is serving which is uh not
+[44:21] connected. you know there's only one
+[44:24] connection from this uh small uh group
+[44:26] of course and cache banks to the
+[44:28] network. So between them they can have a
+[44:30] very simple interconnect. So this is
+[44:33] actually called a tile you know a set of
+[44:35] coursees and cache banks. So router will
+[44:38] connect this to the
+[44:40] network. In addition the router
+[44:43] participates in almost all activities of
+[44:45] the network. So it forwards messages
+[44:48] originating at other routers to their
+[44:50] destination. So multiple routers are
+[44:53] connected you know like this with the
+[44:55] message going from here to here. This
+[44:57] router will take the message from here
+[44:59] and again you know send it to this
+[45:02] router over here. So in a typical NOC
+[45:05] terminology routers are referred to as
+[45:07] nodes and adjacent nodes are connected
+[45:10] with links right. So links are network
+[45:13] links essentially copper wires.
+[45:16] So the routers and links form the onchip
+[45:19] network or the network on chip called an
+[45:24] NOOCC. So up till now what have we seen?
+[45:27] What we have seen is that we have seen a
+[45:30] very very basic NOOCC where essentially
+[45:32] you have a copper wire and you have all
+[45:35] the cash
+[45:36] banks. So you have all the caches
+[45:39] connected to it, right?
+[45:42] And if I send anything from here to
+[45:45] here, all the other caches can see
+[45:46] because you know copper is a very good
+[45:49] conductor of electricity. So everybody
+[45:50] can see the message. So this was called
+[45:53] a bus. But the main disadvantage of a
+[45:55] bus is that you know only one sender can
+[45:59] be alive at one point of time. You know
+[46:01] you can have only one writer on the bus.
+[46:04] Multiple caches cannot write on the bus
+[46:06] simultaneously. Otherwise there'll be
+[46:08] interference and both the messages will
+[46:10] be gone.
+[46:12] This has scalability problems in the
+[46:14] sense more than four or eight processors
+[46:17] four or eight is the maximum more than
+[46:19] that no way right you know it'll simply
+[46:23] not scale we'll not be able to send
+[46:26] messages so let us look at bigger
+[46:28] networks so bigger networks mainly have
+[46:31] two
+[46:32] properties one of the properties is
+[46:34] called bisection bandwidth so this
+[46:37] basically means the number of links that
+[46:40] need to be snapped that need to be cut
+[46:42] to divide an NOOCC into roughly two
+[46:44] equal parts. Let's ignore small additive
+[46:47] constants like one here and there. For
+[46:49] example, if an odd number of no nodes,
+[46:53] right? Uh let's say have 17 nodes, then
+[46:56] one side will have eight, other side
+[46:58] will have nine. So let's ignore the
+[46:59] small differences. But essentially what
+[47:02] is the number of links? So uh again you
+[47:05] know what is the minimum number of
+[47:07] links? Not the number of links. the
+[47:09] minimum number of links that need to be
+[47:11] cut to actually partition the network.
+[47:14] So this is a why is this important?
+[47:16] Well, for two reasons. One is it's a
+[47:18] measure of reliability. Just in case a
+[47:21] link fails, what happens? And the other
+[47:24] is also tells you you know for those who
+[47:26] have studied algorithms, there is
+[47:29] something called a max flow min cut
+[47:30] theorem which essentially tells you the
+[47:33] maximum amount of data that can flow
+[47:35] from one side to the other. So let me
+[47:37] give an example. Let's assume there's a
+[47:40] big city like this. Let's a big city
+[47:42] like this. They're connected with a
+[47:44] narrow bridge. Then all the traffic from
+[47:48] both the
+[47:49] cities will basically flow via this
+[47:52] narrow bridge. If the cities have
+[47:54] roughly the same size, then the
+[47:57] bisection bandwidth of this system is
+[48:00] one. you just this bridge for some
+[48:03] reason if it breaks
+[48:04] down then uh both the cities will get
+[48:07] disconnected and trade and commerce
+[48:09] between the cities will absolutely stop.
+[48:12] So in a sense it is always possible that
+[48:15] there can be some faults in a network
+[48:18] and links can go down. Alternatively
+[48:21] even if there are no faults still this
+[48:24] bridge is going to get heavily stressed
+[48:26] because a lot of traffic there'll be
+[48:27] huge traffic jams.
+[48:30] So as a result having a low bisection
+[48:32] bandwidth means that some of the links
+[48:34] will get really clogged as is happening
+[48:36] in this case. So it's a bad
+[48:39] idea. The other property is
+[48:44] diameter. So uh basically if I consider
+[48:48] a network right so let me consider a
+[48:50] network of this
+[48:52] type. So what is the
+[48:55] maximum distance between any two pair of
+[48:58] nodes? Right? Distance meaning the
+[49:00] optimal distance, the shortest distance.
+[49:02] Well, distance between this and this is
+[49:04] one. But the distance between this and
+[49:06] this is actually a maximum two. So let
+[49:10] me consider one more network.
+[49:19] Sorry. What is the maximum distance
+[49:21] between any two pair of nodes? Well, the
+[49:24] maximum distance will probably be
+[49:26] between you know this node and uh this
+[49:28] node which is one you know one okay two
+[49:31] links one and two similarly it's also
+[49:34] the maximum between this and this but in
+[49:36] this case it'll be 1 and two so this is
+[49:39] known as the diameter of the network so
+[49:42] diameter in our example will be pretty
+[49:45] much from you know one city over here
+[49:47] traverse the maximum distance and go
+[49:49] over
+[49:51] here so why is the diameter are
+[49:53] important. Well, it gives you a measure
+[49:55] of the latency, the time required to go
+[49:58] from one
+[49:59] node to another node where of course
+[50:02] we're assuming that all distances are
+[50:04] shortest
+[50:06] paths. So our aim is to maximize the
+[50:09] bisection bandwidth such that you know
+[50:11] no single link gets clogged and
+[50:14] simultaneously minimize the diameter
+[50:16] such that it is possible to go from you
+[50:19] know any end of the network to any other
+[50:21] end very very
+[50:23] quickly. So in terms of network
+[50:26] topologies we have already seen a bus.
+[50:29] So I'll not discuss the bus once again.
+[50:31] So I'll discuss the chain and the ring
+[50:34] which are fairly simplistic topologies.
+[50:37] So in a chain all the nodes are arranged
+[50:40] in this
+[50:41] fashion and one connects to the other
+[50:44] and the other one connects to the next
+[50:45] and so on. Well the nice thing of this
+[50:48] is this is simple but the bisection
+[50:49] bandwidth is really low. it is one and
+[50:52] the diameter is really large which is
+[50:56] you know if I let's say I'll have to
+[50:57] pretty much traverse n minus one links
+[51:00] the diameter is fairly large so if you
+[51:03] see what was our aim aim was to maximize
+[51:05] the bisection bandwidth minimize the
+[51:07] diameter we are not doing that we are in
+[51:10] fact doing the reverse so another common
+[51:13] topology which can be used for moderate
+[51:16] size systems 4 86 processors is actually
+[51:21] ring. So in the case of a ring, the
+[51:24] bisection bandwidth is two because we
+[51:27] need to snap two links to disconnect the
+[51:29] network to split it in 50/50. So two
+[51:32] rings, two links have to be
+[51:35] snapped. The diameter is also not n. It
+[51:39] is closer to nx2 because we can either
+[51:42] traverse this way or we can traverse the
+[51:45] other way. So roughly you know this is 2
+[51:48] and n by2 roughly approximate figures
+[51:51] which is better than a ring better than
+[51:53] a chain. So a ring can be preferable in
+[51:56] some
+[51:58] situations especially you know when we
+[52:00] don't have many
+[52:02] nodes. Now let's take a look at a
+[52:05] factory. So a factory is not a typical
+[52:07] network that is inside a chip but it is
+[52:10] a typical uh network for a cluster of
+[52:13] chips.
+[52:14] So in the case of a factory uh what
+[52:18] happens is that we actually have our
+[52:21] nodes which are the leaves of the tree.
+[52:24] So all the
+[52:25] blue nodes over here are the leaves of
+[52:29] the tree in all the blue nodes right. So
+[52:33] then uh what they actually do is that
+[52:36] and all the green nodes are essentially
+[52:39] router nodes but they don't per say
+[52:41] produce or consume any data. Say any
+[52:43] message from here to here can traverse
+[52:45] like this. But any message going from
+[52:47] let's say this node to this node will
+[52:50] have to go up up up
+[52:52] up again come down down down down and
+[52:55] this way. So one thing that is obvious
+[52:59] is that a lot of messages right you know
+[53:02] if you think about it statistically 50%
+[53:05] of the
+[53:06] messages will go via the route right
+[53:09] because you know if we assume that the
+[53:11] traffic pattern is random then uh you
+[53:15] know there's a 50/50 probability that a
+[53:17] message will be in this half or in that
+[53:19] half so half of the messages will
+[53:21] actually be traversing the
+[53:23] route because of that uh the route can
+[53:27] be a point of
+[53:28] contention and what will happen is there
+[53:31] can be a lot of congestion over here. So
+[53:33] think of it this way there are two
+[53:35] cities and then they are going via this
+[53:38] bridge. So well uh you know there will
+[53:41] be a lot of traffic within the cities
+[53:42] but all the intercity traffic will be
+[53:44] via this bridge and this will become a
+[53:47] point of contention. So what do we
+[53:49] typically do? What we typically do
+[53:52] within a city is that if you if we have
+[53:55] one lane or two lane roads in the city,
+[53:58] then this bridge is actually eight
+[53:59] lanes, right? You know, this is a
+[54:02] typical thing that is done in cities
+[54:04] that these bridges are very very wide.
+[54:06] So, sort of take care of the traffic.
+[54:09] Similarly, inside the city also, you can
+[54:11] have these many bridges which will be
+[54:12] four lanes. So that's exactly what
+[54:14] happens that these links are very narrow
+[54:18] but these links can uh take multiple
+[54:20] requests in parallel and they sort of
+[54:23] get wider which means that maybe this
+[54:25] link can carry four requests in parallel
+[54:27] the these links can carry two requests
+[54:29] in parallel to ensure that we don't have
+[54:32] a lot of clogging at the top. So that's
+[54:34] the reason it's called a fat tree
+[54:36] because towards the root the links get
+[54:38] wider which means that they can carry
+[54:41] more requests in parallel. So as a
+[54:43] result the throughput of the system does
+[54:45] not suffer because there is really no
+[54:47] congestion towards the upper nodes.
+[54:51] Right? So as I said this network is not
+[54:54] very popular inside a chip. It is more
+[54:57] popular in a cluster of chips like a
+[55:00] data center or a cluster or something
+[55:02] where we have a lot of
+[55:03] machines. So there we'll have these
+[55:06] individual switch elements and uh the
+[55:09] switch elements will be connected with
+[55:10] wires but the throughput of these the
+[55:13] bandwidth that these wires can support
+[55:15] and the bandwidth that these routing
+[55:17] nodes can support will keep on
+[55:19] increasing as we move towards the
+[55:22] root. So let's now take a look at one
+[55:26] topology which is
+[55:29] uh well actually let me go back I didn't
+[55:31] discuss the bisection bandwidth. So the
+[55:33] bisection
+[55:35] bandwidth is uh actually when we you
+[55:37] know cut off one of these links and
+[55:40] these links technically speaking is one
+[55:42] link but it can contain you know since
+[55:44] this link is fat means that it can take
+[55:47] in multiple requests in the same cycle.
+[55:50] Uh so you know the bisection bandwidth
+[55:52] can even be more and uh if you consider
+[55:55] these as different links and the
+[55:58] diameter is not much. It is basically
+[56:00] login steps till the root and login
+[56:02] steps back to the destination node. So
+[56:06] the diameter per se is
+[56:09] small. Now let's look at a topology
+[56:12] which is most commonly used within
+[56:14] onchip networks because it's very very
+[56:16] easy to implement. It's a mesh. So as
+[56:19] you can see a mesh is exactly a matrix.
+[56:22] So we can think of the mesh here as
+[56:24] having you know root n a root end by
+[56:28] root n a square kind of
+[56:32] mesh. So uh essentially you know it's
+[56:35] very very easy to implement because
+[56:36] these can just be adjacent tiles. So any
+[56:40] message that is going from let's say
+[56:43] here to here this will be the longest
+[56:45] path.
+[56:47] The longest part of the message, the
+[56:49] message will actually go like this and
+[56:51] it'll go like this. So the diameter is 2
+[56:55] * roo&lt;unk&gt; n approximately because you
+[56:58] traverse root end steps like this and
+[57:00] then root 10 steps is an approximate
+[57:02] figure. We are ignoring small constants
+[57:05] and the bisection bandwidth. Well, so
+[57:07] what we need to do is we need to cut off
+[57:09] all of these links to you know break the
+[57:13] network in half. So the bisection
+[57:15] bandwidth is also high right. So the
+[57:17] bisection bandwidth in this case is
+[57:20] roughly roo&lt;unk&gt; 10 and the diameter in
+[57:23] this case is roughly 2&lt;unk&gt;10 which
+[57:25] means it's good. The diameter is fairly
+[57:28] small. The bisection bandwidth is fairly
+[57:30] high. So this as such so bisection
+[57:33] bandwidth high meaning there are many
+[57:35] paths which the request can take to go
+[57:38] from one side of the network to another
+[57:40] side of the network. So this network
+[57:43] having a good bisection bandwidth is a
+[57:45] very good
+[57:46] thing and uh which means that you know a
+[57:50] good throughput can be sustained and
+[57:52] having a low diameter is also a very
+[57:54] good thing uh because uh it'll be uh the
+[57:58] diameter is not as low as a fat tree
+[58:01] because that was of the order of log n.
+[58:03] This is the order of root n square root
+[58:05] of n. But nevertheless, it's much better
+[58:08] than a chain and a ring where the
+[58:10] diameter was order of
+[58:13] n. So it turns out we can do better than
+[58:16] a mesh. So what we can do is let me just
+[58:19] go back. We can connect the ends of a
+[58:22] mesh. So we can connect this and this.
+[58:25] We can connect this and this. So if I
+[58:28] connect the ends of a mesh. So basically
+[58:31] both the rows as well as the columns.
+[58:34] See if you s if you see this mesh you
+[58:35] will find that all the rows are
+[58:37] connected. You know this one is
+[58:40] connected here. All the rows are
+[58:41] connected. Similarly all the columns are
+[58:43] connected right. So all the columns are
+[58:46] connected like this. So this kind of a
+[58:48] structure is called a 2D
+[58:50] Taurus.
+[58:52] Okay. So the advantage of
+[58:55] this is something like this that you
+[58:58] know let's study the bisection bandwidth
+[59:00] and the diameter. So what were the
+[59:01] previous values for a mesh? There were
+[59:04] roo&lt;unk&gt; n and 2&lt;unk&gt;10 roughly. So let
+[59:07] us compute the bisection bandwidth of
+[59:09] this and let's compute the diameter of
+[59:12] this. So the bisection bandwidth it
+[59:15] turns out well the cut is at the same
+[59:18] point. If you cut the network like this
+[59:20] it'll get disconnected. But as you can
+[59:23] see instead of cutting root end links we
+[59:25] actually need to cut two root end links
+[59:28] right because you know if you from this
+[59:32] cut there are actually two links that
+[59:34] are uh there right so in a one two one
+[59:38] two so we need to cut both of them to
+[59:41] disconnect again we need to cut both of
+[59:43] these so we have two * uh square root of
+[59:46] n links that potentially need to be cut
+[59:50] so the bisection bandwidth as compared
+[59:52] to the mesh is actually double which is
+[59:56] a good thing. Uh now in terms of the
+[59:59] diameters so what are the farthest nodes
+[60:02] right that's the most important thing
+[60:04] the farthest nodes are not this and this
+[60:07] that's the wrong answer because within
+[60:09] one hop I can reach this within one more
+[60:12] hop I can reach this so they are not the
+[60:15] farthest what is the farthest is pretty
+[60:17] much a node here and a node in the
+[60:19] center maybe this so in this case I need
+[60:22] to travel roughly root n by two nodes to
+[60:26] reach the Again I need to travel
+[60:29] roo&lt;unk&gt; nx2 nodes you know in this way
+[60:33] to again reach the
+[60:35] middle. So the diameter is approximately
+[60:39] square root of n. As you can see
+[60:41] previously the diameter was 2 * square
+[60:44] root of n. Now it is square root of n.
+[60:47] So what has happened is the diameter has
+[60:48] become halved and the bisection
+[60:51] bandwidth has doubled as compared to a
+[60:54] simple mesh. So Taurus in that
+[60:57] sense is a much better
+[61:02] uh interconnect. Of course we are using
+[61:04] far more wires but in terms of the basic
+[61:07] properties which are the bisection
+[61:09] bandwidth and the
+[61:10] diameter. A Taurus does much much better
+[61:15] because you know its diameter is half of
+[61:18] that of a mesh and its bisection
+[61:21] bandwidth is twice. But of course the
+[61:23] wire requirement is also more. So those
+[61:25] issues are there and there'll be some
+[61:27] more amount of routing
+[61:29] complexity but nevertheless if a Taurus
+[61:31] can be implemented it should be done and
+[61:34] in onchip networks a Taurus is
+[61:37] implemented. It's not uncommon to
+[61:39] actually have a
+[61:42] Taurus. So I'll uh let's go back to this
+[61:46] uh Taurus thing once again. So if you
+[61:48] see there is a certain imbalance in the
+[61:50] Taurus. The imbalance is that these
+[61:52] links are
+[61:53] short. These are short links. And this
+[61:56] link from one end to the other is
+[61:59] actually very very long. Right? It's
+[62:01] just not long. It's very long. It's root
+[62:02] 10 times longer. Similarly, here also
+[62:05] the links are
+[62:08] short. Right? Here also the links are
+[62:10] short. But this link is actually long.
+[62:13] It is root 10 times longer. And this is
+[62:16] a problem. This is an imbalance. So this
+[62:18] basically means that if a message takes
+[62:22] one cycle to go from here to here, it
+[62:25] might not take one cycle to go from here
+[62:26] to here because the propagation delay is
+[62:29] much
+[62:30] more. So to remedy this, what is
+[62:34] typically done is that we have a folded
+[62:36] Taurus which has the same properties as
+[62:38] the Taurus. But if you would recall on
+[62:41] the link you know so let's assume that
+[62:44] this is
+[62:45] one you know this is so basically this
+[62:48] is one column right so one column is
+[62:50] basically a ring by
+[62:53] itself. So if you look at one column
+[62:56] here then all of these nodes were one
+[63:00] node apart and the first and the last
+[63:02] were root 10 nodes apart but here if you
+[63:06] see they are actually placed on
+[63:08] different ends of the ring. So this is
+[63:10] placed on the upper one.
+[63:13] Uh sorry this is placed on the left one.
+[63:16] This on the right half. This on the left
+[63:19] half. Right half. Left right right left
+[63:22] right. Similarly if I consider any
+[63:25] single row over
+[63:28] here. So if you see a row in the case of
+[63:30] a mesh all of them would have been just
+[63:32] placed close
+[63:34] by and there would have been one long
+[63:36] link. But that is not exactly how it has
+[63:38] happened. So here this one is on the
+[63:41] upper half of the row. This is at the
+[63:43] lower half. Again upper half lower half
+[63:46] upper lower upper lower. So what has
+[63:49] happened is that the distance between
+[63:51] two nodes instead of being in this case
+[63:54] if you if I assume that this distance is
+[63:56] one unit then the distance between two
+[64:00] nodes instead of one unit has actually
+[64:01] become two units. But we have avoided
+[64:04] that ultra long wire. Right? So now
+[64:07] everything is uniformly two units away
+[64:10] from each other which is fine because
+[64:14] that ultra long wire would have created
+[64:16] a lot of problems and a lot of
+[64:18] imbalance and it also might have
+[64:21] artificially restricted the length of
+[64:24] the clock cycle. But in this case the uh
+[64:27] in a single row or in a column uh the
+[64:31] distance between adjacent nodes is con
+[64:34] constant. It is fixed and the reason for
+[64:36] that is this particular topology that we
+[64:39] have used. So I would like to request
+[64:41] readers to stare at this for some time
+[64:44] till you can appreciate why it has been
+[64:46] done in this manner. So you will then uh
+[64:49] realize that uh doing this in this
+[64:53] manner uh ensures that you know we can
+[64:56] avoid those ultraong links uh from the
+[65:01] you know start of a column to the end of
+[65:03] the column or start of a row to the end
+[65:05] of the row. Otherwise the properties of
+[65:08] a folded Taurus are no different from
+[65:11] that of an ordinary
+[65:14] Taurus. Right? you know
+[65:17] uh so so uh essentially that is an
+[65:25] invariant. So since that does not change
+[65:28] let's move forward and take a look at a
+[65:30] few more
+[65:32] topologies. So let's take a look at the
+[65:34] hyper cube. So the hyper cube and one
+[65:36] more topology the butterfly. Uh well the
+[65:39] butterfly might still be used in onchip
+[65:41] networks but a hyper cube is more for an
+[65:44] offchip network where we take individual
+[65:47] processors and we can use a hyper cube
+[65:49] configuration to actually connect them
+[65:52] in a larger room like a server room or
+[65:54] something. But anyway the hyper cube is
+[65:56] a very very you know central topology to
+[65:59] the study of interconnection networks.
+[66:02] So let us define hyper cube of order
+[66:04] zero as a single node.
+[66:07] Then let us define a hyper cube of order
+[66:09] one as taking that single node
+[66:12] replicating it and connecting them with
+[66:15] wire. Similarly, let's take a hyper cube
+[66:18] of order two as we take a hyper cube of
+[66:21] order one. Two hyper cubes of order one
+[66:24] and where their corresponding nodes are
+[66:25] connected with wires which is exactly
+[66:28] what we get. And a hyper cube of order
+[66:31] two is the same as a square. So we if we
+[66:34] actually start numbering the nodes. So
+[66:37] if a hyper cube of order one has the
+[66:39] nodes 0 and one. So you will see that we
+[66:42] first copy paste two hyper cubes of
+[66:44] order one. 0 and one. 0 and one are of
+[66:47] course connected. After that what we do
+[66:51] is that we connect 0 and 0. Uh before 1
+[66:54] 0 we put 0 0. Before the other one we
+[66:57] put uh 1 0. Right? zero before one and
+[67:01] sorry zero before one and one before the
+[67:04] other and
+[67:06] similarly we connect the one and one but
+[67:09] we have the same numbering scheme 0 1
+[67:12] 1. So if we actually see between any two
+[67:15] nodes there is a difference of only one
+[67:17] bit 0 0 is connected to 0 1 or 1 0.
+[67:21] Similarly between 1 0 and 0 0 or 1 0 and
+[67:23] 1 1 there's also a difference of one
+[67:25] bit. So we'll sort of generalize this
+[67:28] concept.
+[67:29] So similarly for creating a hyper cube
+[67:32] of order three, we take two hyper cubes
+[67:35] of order
+[67:40] right and we connect their corresponding
+[67:43] nodes. So basically you know this node
+[67:46] is the same as this. This is the same as
+[67:50] this. This is the same as
+[67:53] this. So this becomes a regular cube. As
+[67:57] you can see over here, the hyper cube of
+[67:59] order three is a regular cube. And we
+[68:02] have done exactly the same thing. We
+[68:04] have reproduced two hyper cubes of order
+[68:06] two. And their corresponding
+[68:09] nodes have been connected. So 0 0 has
+[68:13] been connected to 0 0 of one has been
+[68:17] connected to 0 0 of the other. In one
+[68:20] case we have prefix 0. In other case we
+[68:22] have prefix one. Similarly, one one of
+[68:26] one hyper cube has been connected to one
+[68:28] one of the other hyper cube. And for
+[68:31] example, what we have had over here is
+[68:35] that you know this one one right? You
+[68:38] know this one one was connected here. In
+[68:41] this case we prefixed a zero. In this
+[68:43] case we prefixed a one. So the same
+[68:46] property holds that each node of the
+[68:48] hyper cube is connected to three other
+[68:50] nodes here because it's an hyper cube of
+[68:52] order three.
+[68:54] And each of these nodes there's a
+[68:55] difference of one bit. So 1 1 0 and 0 1
+[68:58] 0 difference of one bit. The MSP 1 1 0
+[69:02] and 1 0 0 difference of one bit. 1 0 and
+[69:05] 11 1 again difference of one bit. So if
+[69:09] we do the same for
+[69:11] uh hyper cubes of order three, we can
+[69:14] have a hyper cube of order
+[69:16] four which is similar. We take one hyper
+[69:19] cube of order three, one hyper cube of
+[69:21] order three and just connect the
+[69:23] corresponding nodes. So in this case
+[69:26] each node will have four neighbors.
+[69:29] Right? So for example this node has four
+[69:31] neighbors. This one, this one, this one
+[69:35] and this
+[69:37] one. And
+[69:40] uh uh basically all the neighbors will
+[69:43] have a difference of one bit. Right? So
+[69:46] this node will have a 4bit ID and each
+[69:49] of these neighbors will differ from it.
+[69:52] Their ids will differ from it in only
+[69:55] position. So it is fairly easy to
+[69:59] compute the properties of the hyper
+[70:01] cube. So in terms of bisection bandwidth
+[70:04] the property will basically be that we
+[70:06] cut it over here. So
+[70:10] the bisection bandwidth is essentially
+[70:13] equal to the number of nodes in. So the
+[70:15] bisection bandwidth of an hn hyper cube
+[70:18] right the bisection bandwidth of an
+[70:21] order of n hn hyper cube is essentially
+[70:24] the same as the number of nodes of an h
+[70:27] n minus one hyper cube for example if I
+[70:30] were to take this cube and sort of cut
+[70:33] it. So I'll have to snap it like this.
+[70:36] So I'll be cutting uh 1 2 3 four links
+[70:40] which is same as the number of nodes in
+[70:41] an h2 hyper cube. Similarly, if I take a
+[70:45] H4 hyper cube, the number of nodes I
+[70:48] need to cut is the same as the number of
+[70:50] uh number of links I need to cut is the
+[70:53] same as the number of nodes in an H3
+[70:56] hyper cube. Computing the diameter is
+[70:59] very easy. In an HN hyper cube, the ID
+[71:02] of one node actually contains n
+[71:06] bits. So, if I traverse one link means
+[71:09] that one of these bits changes. So the
+[71:12] maximum number of bits that can change
+[71:14] are n and this means that the maximum
+[71:17] number of links that I can traverse is
+[71:19] also n and thus the diameter is equal to
+[71:23] n. Right?
+[71:26] So you know these are some interesting
+[71:28] properties of a hyper cube. But of
+[71:30] course a hyper cube requires a lot of
+[71:34] wires between the nodes and it's often
+[71:37] so these are called higher radics
+[71:39] topologies mainly because you know the
+[71:41] number of wires that it requires right
+[71:44] but if you actually think about
+[71:46] it so let's look at the number of nodes
+[71:49] and hyper cube of order three actually
+[71:51] has two cube nodes and hyper cube of
+[71:54] order four has 2 ^ four nodes so hyper
+[71:58] cube of order n has 2 ^ n n n n n n n n
+[72:01] n n n n n n n n n n n n n nodes. If I
+[72:02] say that capital n is equal to 2 ^ n
+[72:05] then the diameter which we computed to
+[72:09] be n is actually log of the number of
+[72:11] nodes. So the hyper cube pretty much has
+[72:14] similar properties as the factory where
+[72:18] the diameter is only a log of the number
+[72:19] of nodes unlike a mesh or something.
+[72:22] It's not square root of n but it's a
+[72:24] much slower function. It's a log of the
+[72:26] number of nodes which is a fantastic
+[72:29] thing for us which means that any two
+[72:32] nodes on a network are at best login
+[72:35] links away extremely
+[72:38] scalable. Uh but of course you know the
+[72:41] number of wires that we require is
+[72:43] fairly high and that's the reason
+[72:45] implementing this within a chip is
+[72:47] somewhat difficult.
+[72:50] Now let us look at a different kind of a
+[72:53] topology called a
+[72:55] butterfly. The butterfly is far more
+[72:58] aminable to be implemented on a chip as
+[73:01] compared to a hyper cube. And there are
+[73:04] different implementations of a butterfly
+[73:06] network uh that you will find for onchip
+[73:09] networks or NOC's. So let us consider a
+[73:12] butterfly of eight nodes. So in this
+[73:15] case there can be different ways of
+[73:18] numbering the nodes. As you have seen uh
+[73:20] numbering the nodes is important in a
+[73:22] hyper cube but we have not done this
+[73:24] here in the slides or in the book but
+[73:27] can be and maybe you know should be done
+[73:29] but that's okay. Uh what we do but the
+[73:32] important thing to understand is that
+[73:34] unlike the hyper cube the actual shape
+[73:38] of a butterfly conceptually is actually
+[73:40] a cylinder right so it's a circular in
+[73:44] the sense the network folds on
+[73:47] itself. So, but it's very hard to draw a
+[73:50] cylinder. So, I've sort of cut the
+[73:52] cylinder and flattened
+[73:54] it. So, basically this node over here
+[73:57] and this node over here are actually the
+[73:59] same. So, these these are the same node.
+[74:02] So, what I could have alternatively done
+[74:05] is that I could have just extended this
+[74:07] wire and made it connect to this node. I
+[74:09] could have made I would have removed
+[74:11] this and just made it connect over here.
+[74:13] But that would have made the diagram
+[74:15] very clumsy. Right? So I did not do
+[74:19] that. What I have essentially done is
+[74:22] that I have sort of created for the same
+[74:24] node one I've created two circles. But
+[74:27] mind you you know this node one and this
+[74:28] node one are exactly the same. They are
+[74:31] not different. They are the same. Okay I
+[74:33] I'm repeating it several times because
+[74:36] this can be non-intuitive but hopefully
+[74:38] with several repetitions it will become
+[74:42] uh far more intuitive. You know this
+[74:44] diagram will become far more intuitive
+[74:46] that similarly two and two are actually
+[74:48] the same node. We just have drawn it
+[74:50] twice to make the drawing look better.
+[74:53] That's all. Similarly seven and seven
+[74:54] are actually the same node. It has been
+[74:57] drawn twice to make the drawing look
+[74:59] somewhat
+[75:00] better. Now if we consider the network
+[75:06] uh what we see is that two nodes are
+[75:10] connected. So these blue uh nodes uh it
+[75:14] follows the same terminology the same uh
+[75:18] format as the factory where we have two
+[75:21] kinds of nodes. So the blue nodes are
+[75:24] the ones that both produce and consume
+[75:26] data. So these are the data
+[75:28] nodes and then the green nodes here are
+[75:31] only for the routing.
+[75:35] So the job of these green routing nodes
+[75:38] are basically to route data
+[75:41] from one node to the other and but these
+[75:45] green nodes do not per say produce or
+[75:47] consume any data. They only route data
+[75:49] from one end to the other. So the first
+[75:52] thing is that we transfer the data. So
+[75:54] assume that four wants to send a message
+[75:57] to
+[75:59] seven. So we transfer the data to the
+[76:02] switch. Right? So that's the first thing
+[76:04] that we do. So these routing nodes are
+[76:06] also called switches right because they
+[76:08] don't produce and consume any data. So
+[76:10] from the blue node it comes to the green
+[76:13] node. So then we find the idea of the
+[76:15] destination switch which is 1 one. So if
+[76:19] you see every switch is connected to one
+[76:21] more switch at the same level
+[76:24] right. So if there are
+[76:27] nodes, these nodes are connected to nx2
+[76:31] switches and the number of levels is
+[76:34] basically you know it can be uh it's
+[76:37] it's there in the book. So the number of
+[76:39] levels are essentially login.
+[76:43] So at
+[76:44] every level one of the bits changes but
+[76:48] that is uh again you know it'll require
+[76:50] some more analysis but the analysis is
+[76:52] there in the book so you can go and read
+[76:55] it. So here what we are doing is that we
+[76:58] are going from switch 01 here in this
+[77:01] column to switch one one in the third
+[77:05] column. Say every switch is connected to
+[77:07] one more switch at the same level n by2
+[77:10] such
+[77:12] levels. So and it is connected to one
+[77:14] more switch at a different level at a
+[77:18] different row. So since the first bit
+[77:21] MSB of the switch ID is different zero
+[77:23] is different from one. So what we do is
+[77:26] we take what is called this cross link
+[77:28] and come to this switch. So then the
+[77:30] first bit becomes the same. Now we take
+[77:33] a look at the second bit and the second
+[77:35] bit is also the same. Uh so basically
+[77:39] what we do is that we continue along the
+[77:42] same path till we reach this switch and
+[77:46] then the message finally goes to
+[77:48] seven. Now assume that from four we
+[77:52] wanted to send the message to node
+[77:53] number six.
+[77:56] So in this
+[77:58] case the message from four would have
+[78:01] gone to this switch 01. Uh the node with
+[78:05] switch 6 is 1 zero. So of course the MSP
+[78:09] is zero here and one here. So we need to
+[78:11] take the cross link. So we will come
+[78:13] here. So now at least one matches. But
+[78:17] then the next bit which is one and the
+[78:19] next bit here is zero. So this there is
+[78:21] again a mismatch. So to make it the same
+[78:23] we need to take this cross link. So
+[78:25] we'll reach the switch 1 Z and from here
+[78:29] we will go to node 6. So that's the way
+[78:32] that routing happens. And since we can
+[78:36] have login such bits. So there are login
+[78:39] columns. You know here all logs are to
+[78:42] the base two login columns and n by2
+[78:45] such rows of switches. So with having so
+[78:49] many switches routing elements which do
+[78:51] not produce or consume data we can uh
+[78:55] route messages from any node to any
+[78:58] other node. So as you will see uh in the
+[79:02] book and also in other relevant
+[79:05] references the bisection bandwidth can
+[79:08] basically be computed by uh cutting the
+[79:11] network at this level. And at this level
+[79:14] pretty much there are these cross links
+[79:16] between uh nodes of one end to the other
+[79:19] and nodes from this end to this end. And
+[79:23] also the diameter for this network is
+[79:25] very small.
+[79:26] Uh the diameter for this network is
+[79:29] basically login uh you know login plus
+[79:32] minus one or two depends on how you
+[79:34] count. Uh basically because you have
+[79:36] these many columns and in every uh in
+[79:40] every step we go from column I to column
+[79:42] I + 1 and the number of columns of
+[79:45] switches are limited to
+[79:47] login. So let me now summarize all the
+[79:50] networks that we have seen. So uh we
+[79:53] have looked at different kinds of
+[79:55] topologies other than the bus of course
+[79:57] but I'm not including the bus because it
+[79:59] is not really an onchip network right
+[80:02] the bus is uh not a network in the
+[80:04] traditional network sense so that's the
+[80:06] reason it's not included so for for we
+[80:09] have seen the chain which is a simple
+[80:11] linear chain like a link list a ring is
+[80:14] a ring a factory is like a tree no doubt
+[80:18] but since the root can be a point of
+[80:20] contention as we go towards the root the
+[80:23] links get fatter. What do we mean by a
+[80:26] fat link? Basically, it can take more
+[80:28] parallel requests per cycle. We can have
+[80:31] a mesh which is the same as a regular
+[80:34] matrix. We can have a Taurus which is
+[80:37] again the same as a mesh but of course
+[80:39] the ends are connected for each row and
+[80:41] column. The ends are connected right? So
+[80:43] the ends of each row and column you know
+[80:45] will be connected like
+[80:47] this. we can have a folded Taurus where
+[80:50] the advantage is that a Taurus always
+[80:52] has if I consider a Taurus like this
+[80:55] right so then you know you'll have these
+[80:58] long links you'll have these long links
+[81:01] so the advantage of the folded Taurus is
+[81:03] that we don't have these ultraong links
+[81:06] instead nodes are distributed in such a
+[81:08] way that uh the inter node distance is
+[81:12] more than a Taurus but these long links
+[81:14] are not there then we have a hyper cube
+[81:17] which is sort of a generalization of a
+[81:18] square and a cube. So an order two hyper
+[81:21] cube is a square. An order three hyper
+[81:24] cube is basically a cube. An order four
+[81:28] hyper cube is essentially two copies of
+[81:31] an order three hyper cube with you know
+[81:34] adjacent nodes connected. So this is
+[81:36] connected here. This is connected here
+[81:39] right? You know in in that
+[81:41] fashion. Uh so so then we have looked at
+[81:44] a butterfly. Oops. Sorry. This should be
+[81:47] butterfly. Yeah. So then we have taken a
+[81:50] look at a
+[81:51] butterfly. So the butterfly uh
+[81:53] essentially is a topology like a
+[81:55] cylinder but we flattened it out. So we
+[81:58] have a set of nodes and uh so mind you
+[82:01] you know both say the same set of nodes
+[82:03] and we have a set of switches which are
+[82:05] essentially routing nodes which don't
+[82:07] produce or consume any data. So it's a
+[82:10] matrix of switches and each switch can
+[82:12] either send the message uh horizontally
+[82:15] to the right or to another node called a
+[82:18] cross
+[82:19] link. So let's take a look at the number
+[82:22] of switches. A factory will have n minus
+[82:24] one switches. But the rest of the
+[82:26] topologies don't have a switch because
+[82:28] all their nodes either produce or
+[82:30] consume data. And the butterfly will
+[82:32] again have n log nx2 nx2 switches. In
+[82:36] terms of links, uh almost all the all
+[82:40] the topologies other than the hyper cube
+[82:43] butterfly have order n links. But a
+[82:46] hyper cube has more links n login
+[82:48] divided by two and a butterfly also
+[82:53] has a lot of links n + n login. So uh we
+[82:59] have that many links that's the reason
+[83:01] we can afford a small diameter.
+[83:03] The diameter for the chain and ring are
+[83:07] n. A factory has a much smaller diameter
+[83:10] but again it's not the best topology for
+[83:11] onchip
+[83:13] networks. Uh for a mesh taurus and
+[83:16] folded taurus the diameter is of order
+[83:19] of root n right and for a hyper cube and
+[83:23] butterfly here the diameter is small. So
+[83:26] these are a hyper cube and butterfly are
+[83:29] actually meant for very very large
+[83:31] networks. So both onchip networks as
+[83:34] well as offchip networks if the number
+[83:37] of cores or the number of nodes is in
+[83:39] the tens or hundreds or thousands then
+[83:41] the hyper cube and butterfly are the
+[83:43] best. The main reason being yes we do
+[83:46] require a lot of wires but the end to
+[83:49] end the worst case end to end distance
+[83:51] is still you know bounded by login
+[83:54] right. Uh so then the bisection
+[83:57] bandwidth for a chain is really bad.
+[83:59] Just snap one link the entire network is
+[84:01] gone.
+[84:02] much better for a ring but still this is
+[84:04] order of
+[84:06] one for a fat tree the bisection
+[84:08] bandwidth we are seeing is nx2 where the
+[84:11] assumption is the the size of each link
+[84:13] is equal to the number of leaves in a
+[84:15] sub tree if you make that assumption so
+[84:17] as I had said actually let me clean this
+[84:19] slide
+[84:21] up so as I had said you know it all
+[84:24] depends on the assumptions that we
+[84:27] make so then for a mesh taurus and
+[84:30] folded taurus The bisection bandwidth is
+[84:32] again order of square root of n. So, so
+[84:36] you know these are sort of in the
+[84:37] middle. I would say the chain and ring
+[84:40] are at one end of the spectrum. The
+[84:42] hyper cube and butterfly are another end
+[84:44] of the spectrum. So, the mesh taurus and
+[84:46] folded taurus are somewhat in the middle
+[84:50] and they have a order of square root of
+[84:52] n kind of uh complexity.
+[84:55] Then we have the hyper cube and
+[84:57] butterfly which have a fairly large
+[85:00] bisection bandwidth order of n and uh
+[85:04] but that's also because see since the
+[85:06] number of wires are more it takes more
+[85:08] wires need to be snapped to actually
+[85:10] partition the network. So depending upon
+[85:13] the size of the network and the
+[85:16] requirements. So if the network is
+[85:18] really small we can go for a chain or a
+[85:20] ring. If if it's a moderate size, we can
+[85:23] look at a mesh or a Taurus. If it's an
+[85:25] offchip network, we can consider a
+[85:27] factory. And if the network is sorry,
+[85:30] Taurus also comes here. And if the
+[85:32] network is fairly large, we should look
+[85:34] at a hyper cube or a butterfly topology.
+[85:37] So this completes our discussion on
+[85:40] multiprocessor
+[85:41] systems. So now we will discuss storage
+[85:45] devices and IO systems in the next
+[85:48] chapter.

@@ -1,0 +1,1856 @@
+[00:00] n
+[00:06] [Music]
+[00:34] so let us restart with the fln
+[00:37] classification so as discussed in the
+[00:39] previous
+[00:42] lecture so as discussed in the previous
+[00:46] lecture uh instruction stream refers to
+[00:49] the set of instructions that are
+[00:51] executed and the data stream refers to
+[00:54] the data that is being accessed so we
+[00:57] Define the terms s and m s for
+[01:12] single and M for multiple so s is single
+[01:16] instruction single data Mis is multiple
+[01:19] instruction single data and so on so
+[01:22] let's discuss these four paradigms so s
+[01:26] is a standard uni processor a standard
+[01:29] processor standard pipeline that you
+[01:30] have studied in chapter 9 which means
+[01:33] instructions come from a single Source
+[01:35] there is a single process single thread
+[01:37] data comes from a single
+[01:39] source and uh then the program executes
+[01:43] so this is you know pretty much a
+[01:45] nonstarter for us SD also called simd
+[01:50] means that one instruction actually
+[01:52] operates on multiple pieces of data so
+[01:55] one instruction and add instruction will
+[01:57] add a also CD also EF so we'll see we'll
+[02:00] see an example of this so Vector
+[02:05] processors uh pretty much fall in this
+[02:07] category and we'll we'll discuss Vector
+[02:10] processor later on uh you know in in the
+[02:12] same chapter so they have one
+[02:14] instruction that operates on many pieces
+[02:17] of data in parallel for example you know
+[02:19] one instruction can compute the S
+[02:21] inverse of four values in parallel right
+[02:23] so Vector processors can do that so for
+[02:26] the same instruction multiple data items
+[02:29] are actually t Ed or
+[02:31] accessed Mis is very rare it means
+[02:34] multiple instruction single data is very
+[02:37] rare in
+[02:38] practice so what this is trying to say
+[02:41] is that for the same data multiple
+[02:45] programs would be accessing
+[02:47] it and uh you
+[02:49] know uh you know accessing it processing
+[02:52] it so one uh celebrated and classic
+[02:55] example is an airline system so in an
+[02:58] airline system what happen happens you
+[03:00] know in an
+[03:02] aircraft uh well so this rather instead
+[03:05] of an airline system I would rather make
+[03:07] it an aircraft because that is somewhat
+[03:11] more accurate you know
+[03:14] accurately conveys my idea so consider a
+[03:17] plane consider an aircraft right which
+[03:19] is carrying a lot of passengers so it is
+[03:22] possible that you know a given processor
+[03:24] might have a bug might have a mistake
+[03:26] and that could lead to a failure so a
+[03:28] failures in an a can be catastrophic in
+[03:31] the sense that uh let's say the pilot
+[03:34] decides to turn left but then the
+[03:36] computer has a fault so the computer
+[03:38] turns right well it can lead to an
+[03:41] accident and a lot of loss of life so
+[03:44] that's the reason uh what modern
+[03:46] aircrafts have is that they have
+[03:48] actually three
+[03:49] processors which uh pretty much run the
+[03:52] same code or the same kind of
+[03:55] code and they actually access the same
+[03:58] data which is the data coming from the
+[04:00] aircraft's
+[04:02] controls so uh in this case an aircraft
+[04:05] can have a myips processor can have an
+[04:07] arm processor and an x86 processor
+[04:09] pretty much operating on the same
+[04:11] data uh so uh the data is the same but
+[04:15] of course the
+[04:16] instructions are in a sense different
+[04:19] the reason that they are different is
+[04:20] because you know mips uh has
+[04:23] instructions in the myips instruction
+[04:25] set arm has instructions in the arm
+[04:27] instruction set and x86 has instructions
+[04:30] x86 instruction set and of course you
+[04:33] know the same program has been encoded
+[04:35] in three separate instruction sets but
+[04:37] it might be different programs as well
+[04:40] uh so different programs which are
+[04:41] trying to do the same thing but just to
+[04:44] avoid uh you know errors in the program
+[04:48] what modern aircraft companies do is
+[04:51] that they assign one team of programmers
+[04:53] to write a program and compile it in
+[04:55] mips they assign one more team of
+[04:57] programs to write the same program which
+[04:59] is to process access the flights data
+[05:00] and operate the controls so at a high
+[05:03] level all the programs do the same but
+[05:06] if different set of programmers write
+[05:08] them you ensuring that they will at
+[05:09] least not do the same mistakes so they
+[05:12] can then write a program for arm and
+[05:14] another program can write it for
+[05:16] x86 so what will happen is that of
+[05:18] course they become three separate
+[05:20] programs but mind you their objectives
+[05:22] are the same their input and output
+[05:24] formats are the same but nevertheless
+[05:27] they are different instruction streams
+[05:29] so they will operate on all the data
+[05:31] that is coming in which means all the
+[05:33] data that is coming in from the aircraft
+[05:35] sensors and then make decisions of what
+[05:38] should be done so let's say in autopilot
+[05:40] mode they might decide to turn left turn
+[05:42] right reduce the speed you know anything
+[05:44] and
+[05:45] everything and let's assume that it does
+[05:48] happen that one of these processors you
+[05:51] know suggests a different
+[05:53] output that can uh be the result of a
+[05:56] bug A Fault In the processor or a fault
+[05:58] in the program that's running on the
+[06:00] processor so what will happen is that
+[06:02] the final outcome of what the aircraft
+[06:04] should do uh you know let's say two mips
+[06:07] and arm say turn left and x86 say turn
+[06:09] right so what they should do will be
+[06:12] decided on the basis of a majority vote
+[06:14] so out of the three processors if two of
+[06:16] them say turn left then we turn
+[06:19] left otherwise if two of them say turn
+[06:21] right we turn right this is uh you know
+[06:24] one of the rare examples where there are
+[06:26] different you know very different
+[06:28] instruction streams but the data stream
+[06:30] is the same and we are trying to create
+[06:33] more reliability via this
+[06:36] process but Mi is typically not
+[06:39] discussed what is discussed is
+[06:41] mimd so MD is multiple instructions and
+[06:45] multiple data which means that we have
+[06:47] different programs that are operating on
+[06:50] different kinds of data which you just
+[06:53] saw maybe which you actually just saw in
+[06:57] the previous lecture so in the previous
+[06:59] lecture what we were trying to do is
+[07:02] that we were trying to take a large
+[07:04] array and we're trying to compute the
+[07:06] sum of its elements the way we did it is
+[07:09] that we actually split it into you know
+[07:11] n separate portions where N is a number
+[07:14] of processors and each portion each
+[07:17] portion of the array was given to One
+[07:19] processor so in this case the data was
+[07:22] different and uh well we had the uh we
+[07:27] had you know the processors uh executing
+[07:30] different instructions at least at the
+[07:32] same point of time so it is true that
+[07:34] they were executing the same
+[07:39] program so uh what we basically mean by
+[07:43] MD here is that at the same point in
+[07:48] time uh the same instruction is not
+[07:50] being executed so it is true that in
+[07:53] examples that we have seen essentially
+[07:55] different threads or different processes
+[07:57] actually run the same program right
+[07:59] right but and the same program means the
+[08:02] same overall set of instructions even
+[08:05] though they are actually different in
+[08:06] some cases for example in the case of
+[08:09] the one with a on a Loosely coupled
+[08:11] system the root node did something and
+[08:13] the non-root nodes did something else
+[08:16] but the spirit of the definition is that
+[08:18] at the same point of time are they
+[08:19] executing the same instruction or
+[08:22] not so clearly you know different
+[08:24] processors run at different rates and
+[08:27] they can do different things so clear at
+[08:29] the same point of time they were
+[08:30] definitely not executing the same
+[08:33] instruction right uh so you know they
+[08:37] were or they were not but not
+[08:39] necessarily for example if you know if
+[08:41] you have one thread on a slow processor
+[08:43] one thread on a fast processor uh it's
+[08:46] not necessary that at the same point of
+[08:48] time they'll be executing the same
+[08:50] instruction that's the reason you say
+[08:52] that they are multiple instruction
+[08:54] streams and also in the case of uh the
+[08:57] Loosely coupled system non-root nodes
+[09:00] did something very different and the
+[09:01] root node also did something very
+[09:03] different so in that sense you know the
+[09:05] instruction streams were different so
+[09:08] that's the reason we have multiple
+[09:09] instructions and since all of them
+[09:12] focused on different parts of the array
+[09:15] right one uh thread focused on this part
+[09:17] one thread focused on the other part
+[09:19] even the data streams were
+[09:21] different so uh there are two main uh
+[09:25] types of MD MD processing one is spmd
+[09:28] one is MP MD so spmd is basically what
+[09:32] we have seen in our previous
+[09:34] lecture which is of course you know
+[09:37] multiple instruction streams but uh the
+[09:40] instruction streams are coming from the
+[09:41] same program so spmd means single
+[09:45] program multiple
+[09:47] data uh so that basically means that the
+[09:50] program is the same but of course you
+[09:52] know different threads can execute
+[09:54] different parts of the program so that's
+[09:56] the reason it's multiple instructions
+[09:58] comes from from there but at least it's
+[10:00] the same same compiled program and
+[10:03] multiple data you know multiple data
+[10:06] regions so
+[10:10] uh so this is the openmp so one one
+[10:13] example of this can be the openmp
+[10:14] example that we showed or the MPI
+[10:17] example that we showed you know so both
+[10:19] of them will fall in this category so
+[10:22] here we will typically have multiple
+[10:24] processes or threads executing the same
+[10:27] program elbe with different input so the
+[10:29] different input in our case was the
+[10:32] process was the fact that the process ID
+[10:34] was different so as a result you know
+[10:36] they ended up executing slightly
+[10:37] different kinds of
+[10:39] instructions not slightly but in some
+[10:41] cases very different kinds of
+[10:43] instructions so that's the reason M IMD
+[10:45] but at least the program was the same so
+[10:48] we call it spmd mpmd is slightly
+[10:51] different so in this case the programs
+[10:53] are actually different uh so T the
+[10:56] typical uh model here is that we have a
+[10:59] master program which delegates work to
+[11:02] multiple slave programs and the master
+[11:05] program is different and the slave
+[11:06] program is different for example we will
+[11:10] uh have one master program here and a
+[11:12] slave program the slave programs will be
+[11:15] running on the different processing
+[11:17] units they will do their
+[11:19] job and after that the master program
+[11:22] will process the results so in this case
+[11:25] you know that this program and this
+[11:26] program are very different so of course
+[11:28] the instructions streams are different
+[11:31] and this kind of a model you know as an
+[11:33] example was there in the IBM cell
+[11:36] processor which
+[11:38] is uh at least not in the market as of
+[11:43] 2017 so this had a separate master
+[11:46] program and multiple slaves so that's
+[11:48] the reason it was mpmd so what we shall
+[11:51] Focus mostly in this lecture and what
+[11:53] most people actually focus on in spmd
+[11:56] where at least we have the same program
+[11:58] the same binary but the binary has
+[12:01] different behaviors depending on uh
+[12:05] which uh thread or which uh process uh
+[12:09] you know is executing it right so maybe
+[12:12] process zero typically called the root
+[12:14] process has a very different behavior
+[12:16] from the rest of the processes but that
+[12:18] may not be the case you know that that
+[12:20] was only the case for our examples other
+[12:22] examples might be different so we will
+[12:25] mainly focus on this spmd paradigm
+[12:29] so let's now uh engage in a deeper study
+[12:32] of MD multiprocessors in specific the
+[12:35] spmd
+[12:41] Paradigm so let us first look at a
+[12:43] logical uh point of view of how the
+[12:46] different processes and memory are
+[12:47] organized so this will be on the same
+[12:50] lines as a volum and machine uh a bit
+[12:53] different because we have different
+[12:55] processing units so what we have is that
+[12:58] inside the same chip right ins sorry
+[13:02] inside the same physical chip instead of
+[13:05] one processor we have multiple
+[13:07] processors and each processor has a
+[13:09] separate
+[13:10] pipeline so we can have in this case
+[13:13] let's say n processors all of them have
+[13:15] a separate
+[13:16] Pipeline
+[13:18] and uh they pretty much share the entire
+[13:22] memory space as well as the memory
+[13:25] structures as well so uh all the
+[13:27] processors see and un ified uh view of
+[13:31] memory in the sense that if this
+[13:33] processor writes to address X gets xal 5
+[13:37] and after some time this processor reads
+[13:40] the address of variable X right assuming
+[13:43] that these are multiple threads which
+[13:44] share the memory space it will get the
+[13:47] same value which is five right so
+[13:50] whatever was written by processor 1 uh
+[13:53] processor 2 is going to get exactly the
+[13:55] same value similarly processor 2 can
+[13:58] subsequently write y = 10 after some
+[14:02] time if processor one reads the value of
+[14:04] y it will get the value of 10 so uh
+[14:07] different threads in such a
+[14:09] system pretty much communicate via a
+[14:12] unified memory mechanism so this is
+[14:16] pretty much the way this is our
+[14:18] abstraction of course this is you know
+[14:20] an ideal situ situation of what is it
+[14:22] that we want to have in reality this
+[14:26] model this theoretical model that we
+[14:27] have over here will be implemented with
+[14:30] different you know we'll have different
+[14:34] implementations so one of this uh so so
+[14:36] let's first look at what what are the
+[14:38] main
+[14:40] challenges see implementing a unified
+[14:43] view of memory is in reality pretty
+[14:45] difficult and the reason is that we
+[14:48] actually have multiple processors right
+[14:51] we have separate
+[14:52] processors and you know these processors
+[14:56] might have their own small caches right
+[14:59] might have their own you know small L1
+[15:02] caches and then these L1 caches then
+[15:05] might be you know communicating with a
+[15:08] much larger L2 C is one of the ways that
+[15:11] we can do things so pretty much the
+[15:13] memory system is not one structure
+[15:15] rather it is many many structures right
+[15:18] where one structure is a cache there are
+[15:20] wires between these caches right there
+[15:23] there might be buffers associated with
+[15:24] these wires so the memory system just to
+[15:27] summarize is extremely comp licated
+[15:29] extremely complex so it can contain many
+[15:32] many
+[15:33] caches in many different
+[15:36] configurations it can contain many kinds
+[15:38] of temporary buffers as we have
+[15:40] discussed in chapter 9 for example the
+[15:44] caches can uh contain victim
+[15:47] caches the caches can have right
+[15:51] buffers uh moreover uh it is also
+[15:55] possible so so how will you communicate
+[15:57] with the memory system you'll send a
+[15:58] message message and a message can be a
+[16:00] read message or a write message so what
+[16:03] can happen is in that uh in a
+[16:05] complicated system like this there can
+[16:08] be many messages that you are sending to
+[16:10] the memory system messages which are in
+[16:13] flight at any point of time so these
+[16:15] messages can
+[16:17] be read
+[16:22] messages they can be right
+[16:25] messages so uh
+[16:30] uh you know many kinds of messages can
+[16:32] be sent many of these messages would not
+[16:34] have reached their destinations so the
+[16:36] entire uh situation actually can be
+[16:39] pretty complicated within the memory
+[16:41] system so it's not a very simple thing
+[16:43] as we have discussed in chapter 9 rather
+[16:46] with so many structures and messages
+[16:48] because in know reading and writing for
+[16:51] somebody who's sitting outside the
+[16:53] process like compiler writer looks like
+[16:55] just a single instruction but inside
+[16:57] pretty much the process from the ma
+[17:00] stage needs to issue let's say a read
+[17:03] instruction this will go to maybe one
+[17:06] cache then the cash will might send it
+[17:09] to a victim cash the victim cash might
+[17:12] send the request to one more cash and
+[17:16] you know if you consider right buffers
+[17:17] and other things the entire sequence has
+[17:20] many many
+[17:21] messages so as a result uh the you know
+[17:25] the entire situation is pretty messed up
+[17:27] pretty complicated
+[17:29] also if messages are sent you know
+[17:31] messages can be reordered even if One
+[17:34] processor sends two well in in our
+[17:37] system it's not possible but uh in other
+[17:40] systems it's possible but let's consider
+[17:42] our simple pipeline that we have if you
+[17:45] have two processors and both of them
+[17:47] send out One sensor read at one point of
+[17:50] time and the other sendor write at a
+[17:52] roughly similar point of time to the
+[17:53] same
+[17:54] address if I run the same program
+[17:56] multiple times it might happen in one
+[17:59] set of runs this read is before this
+[18:01] right and in one more set of runs this
+[18:04] right is before this read so you can
+[18:07] actually get different values so let's
+[18:09] assume that the initial value of x is
+[18:11] zero and then processor One issu issues
+[18:15] a load instruction for X right for the
+[18:18] address of X and uh processor one uh
+[18:22] issues a store instruction for X so
+[18:25] depending upon their Mutual order so
+[18:27] let's say you know you're trying to
+[18:29] store five in X right you're sorry
+[18:31] you're trying to write set x equals
+[18:34] 5 uh depending on the mutual order of
+[18:36] the
+[18:37] messages uh you can either read X here
+[18:40] to be zero or five right so the behavior
+[18:43] will be
+[18:44] non-deterministic basically because we
+[18:47] have many entities that are working in
+[18:49] parallel and uh
+[18:53] since we cannot replicate all the
+[18:57] conditions uh before each run uh what
+[19:00] will happen is that in particularly in
+[19:03] this case uh where we are trying to read
+[19:06] and write the values of the same
+[19:07] variable we can have non- determinism in
+[19:10] execution because these messages their
+[19:12] order is not defined the order is
+[19:15] defined for messages from a same
+[19:17] processor and that also not necessarily
+[19:19] but across processor the order is
+[19:21] definitely not defined so we can have a
+[19:24] reordering of messages and that will
+[19:26] cause different behaviors
+[19:29] so uh characterizing the behavior of a
+[19:33] memory system for of a shared memory
+[19:36] system is uh difficult but it is broadly
+[19:39] divided into two subclasses right so one
+[19:44] such uh subclass of uh you know one such
+[19:48] category of behaviors is the behavior of
+[19:51] the memory system with respect to access
+[19:54] to one memory location the same example
+[19:56] I was giving here that one processor is
+[19:59] to read the value of the variable X and
+[20:02] the other processor is trying to set the
+[20:04] value of the variable X to five so if I
+[20:07] consider one single memory location one
+[20:10] Global variable then the behavior with
+[20:12] respect to that variable is known as
+[20:14] coherence it's also referred to as cache
+[20:17] coherence but in general coherence so
+[20:19] let's consider some examples but here
+[20:21] are the assumptions will be making for
+[20:24] all the
+[20:25] examples that all the global variables
+[20:28] are initially to Zer so let's make this
+[20:30] assumption that all variables are
+[20:32] initialized to zero and all the local
+[20:34] variables which are most likely stored
+[20:36] in registers so let's assume that they
+[20:38] are stored in registers right they are
+[20:40] not stored in memory locations so let
+[20:43] they start with a t so in a variable
+[20:45] like T1 T2 T3 and so on our local
+[20:49] variables they're not Global and they
+[20:51] can be stored in
+[20:53] registers so let's see let's consider
+[20:56] this simple example where I have I have
+[20:58] a thread one and I have a thread 2
+[21:01] thread one is writing one to x and x in
+[21:04] this case is a global
+[21:17] variable so thread one is trying to set
+[21:19] it to one and thread two is trying to
+[21:21] read the value of the same variable X
+[21:24] and put it in a temporary variable a
+[21:26] local variable so I would rather say
+[21:28] local temporary is the wrong word a
+[21:31] local variable that's saved in the
+[21:32] register and let this be called T1 so
+[21:35] recall our convention all local
+[21:37] variables that are stored in registers
+[21:40] are prefix start with a t the rest of
+[21:43] the variables start to be uh start with
+[21:46] other
+[21:47] letters so the first question that we
+[21:49] ask is T1 guaranteed to be
+[21:52] one well uh so this depends this depends
+[21:56] on the order in which these instructions
+[21:58] execute
+[21:59] so assume that the uh so the starting
+[22:01] value of all Global variables is zero
+[22:04] can it be zero so the answer is it can
+[22:06] be either zero or
+[22:08] one and uh so it depends on what is the
+[22:12] relative ordering of execution so x = 1
+[22:15] happens first and then T1
+[22:20] = so if T1 = X happens much
+[22:24] later uh then of course we will read the
+[22:27] value of x X to be one you know that's
+[22:30] at least what we expect to
+[22:33] read but if let's say this read happens
+[22:36] before so T1 equals happen X happens
+[22:39] before uh xal 1 then of course we will
+[22:43] read this to be zero so it depends on
+[22:45] the mutual
+[22:46] ordering and we cannot you know say for
+[22:49] sure uh what the value of x will be
+[22:52] sorry what the value of T1 will
+[22:55] be so you know given this situation if
+[22:58] when ever I write a code of this type
+[23:02] what I'm essentially doing is that this
+[23:04] kind of code is defined as a data
+[23:06] Ras so it's a race for data in this case
+[23:10] the race is for data X so in a data race
+[23:15] if I consider the variable
+[23:17] x uh then uh pretty much what's
+[23:22] happening is
+[23:24] that uh you know uh this read and this
+[23:29] right are pretty much concurrent in the
+[23:31] sense there is nothing to tell us that
+[23:33] this right this right will happen before
+[23:35] this read so read read and write is
+[23:38] always with respect to a global variable
+[23:40] so of course we writing to T1 but that's
+[23:42] not counted we always so this considered
+[23:44] a read operation because we're reading
+[23:46] from X and this is considered a right
+[23:47] operation because we're writing to
+[23:49] X so uh there is no order between this
+[23:53] read and write right so they can happen
+[23:55] in any order so in that sense it pretty
+[23:57] much depends it's possible that while
+[23:59] reading this misses in the cash and this
+[24:01] hits in the cache so this can happen
+[24:04] faster the reverse can happen so this
+[24:05] can happen earlier anything can happen
+[24:08] so in such kind of a data rase kind of
+[24:10] situation we can of course we can always
+[24:12] get you know either of the values the
+[24:15] one before uh this right or the one or
+[24:19] the value of this
+[24:21] right so let us consider uh one more
+[24:25] example so let us consider thread one
+[24:28] that writes to X consecutively x = 1 and
+[24:31] x = 2 and let's consider thread two that
+[24:35] reads from X consecutively t1al X and T2
+[24:39] equals x and x of course is initialized
+[24:42] to zero and T1 T2 are a local variable
+[24:45] stor in registers so the question that
+[24:48] we ask is T1
+[24:50] T2 equal to 2 comma 1 a valid outcome
+[24:54] right is this valid if this is valid
+[24:57] this means that this value is being read
+[25:00] here and this value is being read here
+[25:03] so in a sense either the reads are
+[25:05] reordered or the rights are reordered so
+[25:08] but the first question is should we even
+[25:10] allow this kind of a behavior is it
+[25:12] intuitive the answer is a clear
+[25:16] no the outcome is not intuitive at all
+[25:21] uh because if you expect that you know X
+[25:24] and 1 xal 1 and xal 2 have been written
+[25:27] in this order by the same thread then we
+[25:30] also expect to read it in the same order
+[25:33] right there's no reason why we would
+[25:35] expect to read it in a different order
+[25:38] right so this outcome is definitely not
+[25:39] intuitive otherwise you know X would
+[25:42] write uh in know thread one would write
+[25:45] x = 1 to x =
+[25:47] 10 and sorry 10 yeah and T2 might read
+[25:52] it in any order if this if he allow such
+[25:55] outcomes the outcome is not intuitive so
+[25:57] we will not allow it so the order of
+[26:01] updates to the same location should be
+[26:04] the same for all threads you know all
+[26:06] threads should see that xal 1 you know
+[26:10] if I consider this location X first one
+[26:14] came to it after that two came to it so
+[26:18] since thread one is seeing this order
+[26:20] all the thread should see the same
+[26:22] order so uh what is it that we can
+[26:25] conclude from this example we can
+[26:27] conclude that this outcome is something
+[26:29] we don't want to allow and uh if if if
+[26:33] you generalize this we can say that the
+[26:35] order of updates to the same location or
+[26:37] the same variable in this case X should
+[26:40] be the same for all the threads or all
+[26:42] the threads should see the order of the
+[26:44] updation of x to be the same so in the
+[26:48] in thread One X is being updated as one
+[26:52] is coming first and then after that two
+[26:54] is coming so all the threads inclusive
+[26:57] of thread 2 should see the same order of
+[26:59] updates for X so it should they should
+[27:02] first see one and then two so this
+[27:04] outcome will not be
+[27:06] valid so let me explain this in one more
+[27:09] way so what is essentially happening is
+[27:12] that this is the order axm so of course
+[27:16] let me look at some other valid outcomes
+[27:19] one valid outcome can be zero for T1
+[27:23] T2 one valid outcome can be zero and two
+[27:27] why well so basically it is possible
+[27:30] that we first have T1 = X which means T1
+[27:33] is r as zero after this x = 1 and x = 2
+[27:38] execute very quickly and there for some
+[27:41] reason the processor gets stalled
+[27:42] between this maybe an interrupt comes so
+[27:44] so this processor gets stalled and then
+[27:47] we have T2 = X so it will read the value
+[27:50] of two over here so 0 and two is a valid
+[27:56] outcome well uh
+[27:59] similarly even 1 and one is a valid
+[28:02] outcome let's see how let's assume we
+[28:05] have xal 1 and then this thread somehow
+[28:07] gets slowed down because maybe an
+[28:09] interrupt comes
+[28:12] here after that thread to quickly Sho T1
+[28:16] = X and T2 as X in both cases we will
+[28:19] read one and one after this if I do xal
+[28:23] 2 then of course nobody would read the
+[28:26] value of two
+[28:28] so what we see is that uh we can of
+[28:31] course read different sets of values
+[28:34] similarly we can read 2 comma 2 also if
+[28:36] these two finish and then these two
+[28:38] begin so you know there's no hard and
+[28:41] fast Rule and also we can read 0 comma 0
+[28:44] 0 comma 0 if uh both of these reads
+[28:48] execute before these two wres recall the
+[28:51] definition of read and write in the
+[28:54] slide so uh in this case 0 comma 0 is
+[28:57] also a valid
+[28:59] outcome uh but it's just that some
+[29:02] outcomes and this is valid because we
+[29:04] are still seeing the same order of
+[29:05] updates to X it is just that these two
+[29:08] can happen before these two what is not
+[29:11] valid 2 comma 1 is not valid because you
+[29:14] know we should see one and then two
+[29:16] right but we can't see two first and
+[29:18] then one so this is not valid 2 comma 0
+[29:21] is also not
+[29:22] valid uh one and zero is also not valid
+[29:25] which means first we saw this and then
+[29:27] we didn't then we stopped seeing it so
+[29:30] so these outcomes are not valid so the
+[29:33] order is xal 0 is at the beginning then
+[29:36] one and then two so I should definitely
+[29:39] see some sequence of values where at
+[29:42] least the value Remains the Same or
+[29:44] increases if you see all of these valid
+[29:46] outcomes all of these outcomes which are
+[29:49] valid uh 2 is greater than equal to 0 1
+[29:53] is greater than equal to
+[29:54] 1 right 2 is greater than equal to 2 0
+[29:58] is greater than equal to greater than or
+[30:00] equal to zero right so basically the
+[30:03] order axum that we are seeing over here
+[30:07] uh we are in a sense following it with
+[30:11] all of these valid outcomes so let's
+[30:14] again look at both of these examples in
+[30:16] a slightly renewed fashion in one
+[30:20] example we looked at a single read and a
+[30:22] single right and we said that look
+[30:24] there's a data race here so depending
+[30:27] upon the order of the read and write we
+[30:29] can get different
+[30:30] values however there is one thing that I
+[30:33] not discussed which I want to discuss
+[30:35] now that let's say set x xals 1 and
+[30:40] after a long long time you know can be
+[30:42] even 10 days or you know 3 weeks I read
+[30:45] t1al X and let's assume that in the
+[30:49] middle no other uh thread has changed
+[30:52] the value of x so what is it that you
+[30:55] expect do you expect this to be still
+[30:59] non-deterministic and give you any value
+[31:02] because of course there's nothing to
+[31:03] order this read and this right or do you
+[31:05] still have some sort of an
+[31:07] intuitive uh
+[31:10] expectation well intuitively if the
+[31:13] physical time you know intuitively the
+[31:15] physical time between uh this right over
+[31:18] here and this read over
+[31:20] here is long is very very long and is
+[31:24] sort of tending towards infinity and
+[31:26] from the processor scale even 2 minutes
+[31:28] is infinity but if if I let's say wait
+[31:31] for 2 weeks I should ultimately see the
+[31:33] value of this right you know this light
+[31:35] this right should not get
+[31:37] lost so this is uh one thing we need to
+[31:41] keep in mind that every thing that I
+[31:43] write should ultimately be visible to
+[31:45] somebody else and example so this is
+[31:49] intuitive that we expect a right which
+[31:52] you know after sufficiently long time
+[31:55] will actually be visible to other
+[31:57] threads
+[31:58] for example I can have one more thread
+[32:01] here thread
+[32:02] three which is writing x
+[32:05] equals 2 so in this case it is perfectly
+[32:10] possible that uh xal 2 happens first the
+[32:15] value of two is seen by thread 2 so
+[32:17] thread 2 reads T1 equal 2 and after that
+[32:22] x = 1 happens at the end so any such
+[32:25] reordering is possible but what would we
+[32:28] want is that if you wait for a
+[32:30] sufficiently long time and there are no
+[32:33] other intervening rights to X we should
+[32:36] read the value
+[32:37] one moreover what we see in this example
+[32:40] is at the same thread where there is an
+[32:42] ordering of course between the updates
+[32:45] to
+[32:45] X if this you know is seeing this
+[32:49] ordering that I first write one and then
+[32:51] I write two all the thread should see
+[32:53] the same ordering no thread should see
+[32:55] an ordering that is not consistent with
+[32:57] thread one's order so the way we have
+[33:00] captured this is with one more axm
+[33:02] called the order axium which says that
+[33:05] the order of updates the same location
+[33:07] in this case X should be the same for
+[33:09] all the threads so if thread one is
+[33:11] saying that look I X was first zero I
+[33:13] Chang it to one and then again I change
+[33:16] it to two well thread 2 should agree
+[33:19] with this view thread 2 should agree
+[33:22] that yes uh you know it can read any
+[33:24] values because of course the execution
+[33:26] is non-deterministic but you it should
+[33:28] never say that I read two first and then
+[33:30] I read zero or I then I read one or I
+[33:33] read two first and then I read zero
+[33:35] because it's not consistent with uh
+[33:38] thread one
+[33:39] sortage see if I Define coherence you
+[33:42] know broadly I'm talking about coherence
+[33:44] I'll sort of uh reduce the scope to
+[33:47] Cache coherence later so coherence has
+[33:50] two axum that's the way it's defined
+[33:53] it's very simple completion and Order
+[33:56] completion means a right must ultimately
+[33:58] complete what does complete mean means
+[34:01] that it should ultimately be visible to
+[34:03] all the processors right ultimately well
+[34:06] how long one 1 second 2 seconds one
+[34:09] cycle one nond or one year well uh this
+[34:14] is theoretical so ultimately
+[34:17] means ultimately you know the time
+[34:19] cannot be infinite it has to be finite
+[34:21] if I write ultimately uh the right
+[34:23] should
+[34:25] happen second is the order axium which
+[34:28] is which says that all the accesses to
+[34:30] the same memory address need to be seen
+[34:32] by all the threads in the same order so
+[34:35] this outcome is essentially not a valid
+[34:37] outcome because it violates the order
+[34:39] aume right that uh 012 is the order seen
+[34:43] by thread 1 but thread 2 is basically
+[34:46] seeing 02 and 1 right and 0 2 and 1 and
+[34:51] 012 are not consistent are not the same
+[34:54] so we are violating the order XM
+[34:58] so let's look at the cerence aums with a
+[35:01] different pair of
+[35:05] eyes so uh the completion AUM basically
+[35:09] means that a read or write message to
+[35:11] the memory system is never lost it
+[35:14] always reaches its
+[35:16] destination the order axium also means
+[35:19] that write messages to the same memory
+[35:22] location uh well I should
+[35:26] uh okay this there are two ways of uh
+[35:28] looking at this so let's look at one way
+[35:31] so it says that WR messages to the same
+[35:33] memory location are never reordered but
+[35:36] uh I should also say that from the same
+[35:39] processor or they are never perceived in
+[35:41] different orders by different processors
+[35:43] for example let's look at
+[35:47] this thread one T2 T2 is thread 2 T3 and
+[35:52] T4 so let's consider some examples so
+[35:56] let's assume that this writes x = 1 this
+[35:59] writes x = 2 so let's read T1 as X T2 as
+[36:05] X and again T3 is X and T4 is X and of
+[36:11] course X is initialized to
+[36:13] zero so is it possible that T1
+[36:19] T2 is red as 1A 2 1 and two and T3 T4
+[36:27] is read
+[36:29] as uh 2 and one right so of course see
+[36:33] between this right and this right uh
+[36:36] there is no ordering so either in you
+[36:39] know this right can happen before this
+[36:41] or this can happen before
+[36:43] this but one of them in any execution
+[36:47] one of them would have happened before
+[36:49] the other and then uh so let's consider
+[36:52] the case of T3 if T3 sees that this
+[36:54] right has happened before this it would
+[36:56] read the values as 1 and two similarly
+[37:00] if
+[37:01] T4 we'll also read them in some order
+[37:05] but if you go by the order axum what
+[37:07] what that says is that in a coherent
+[37:09] system all the accesses to the same
+[37:11] memory address are seen by all the
+[37:14] threads in the same order so we can not
+[37:18] see one two so one two basically means
+[37:21] it was first zero then one and then two
+[37:24] and then we cannot see it as 0 2 and 1
+[37:27] so these cannot be seen for the same
+[37:28] execution by different threads these two
+[37:31] orders are not the same they are not
+[37:33] consistent with each other so this
+[37:35] execution is not possible this violets
+[37:38] cerence of
+[37:40] course T3 and
+[37:43] T4 can
+[37:45] however see the order to be 0o and one
+[37:48] so that is perfectly possible maybe this
+[37:50] executed way back so this would see X to
+[37:53] be zero and this can see uh X to be one
+[37:57] or or even it's perfectly possible that
+[37:59] you see 0 and two so many of these
+[38:01] things are possible but mind you uh 012
+[38:05] and 021 are not not possible because you
+[38:08] are seeing one thread is saying that
+[38:11] this right happened before this right
+[38:13] another thread is saying that this and
+[38:15] this right happened before that right
+[38:17] both of them cannot be true right so I
+[38:20] cannot say that I'm holding a pen right
+[38:23] now and I'm hold not holding a pen right
+[38:26] now right I can't say these things these
+[38:28] statements are contradictory so one of
+[38:30] them has to be correct so that's the
+[38:33] reason this is violating the order axum
+[38:35] of the cach cence of the I'm sorry of
+[38:39] cence uh of of cerence let's just use
+[38:42] the word cerence for the time
+[38:44] being so this is why I say that write
+[38:47] messages to the same memory
+[38:49] location uh either by the same processor
+[38:52] are not reordered because the processor
+[38:54] would see that order or as I showed and
+[38:57] just showed in this example write
+[38:59] messages will not be re will not be
+[39:01] perceived in a different order okay let
+[39:03] me change this let me say that are
+[39:06] never perceived in different
+[39:20] orders right by different threads of
+[39:23] course so that is
+[39:24] implicit so I'll I'll change this the
+[39:26] final version the slides instead of
+[39:28] reordered I'll say perceived in
+[39:29] different
+[39:30] orders so these two axm guarantee that a
+[39:33] querent memory system you know or a
+[39:35] memory system that observes quarin
+[39:38] appears the same way as a single shared
+[39:40] cache across all processors where there
+[39:43] is only one storage area per memory word
+[39:45] so here we are sort of going back and
+[39:47] trying to motivate the reason for these
+[39:49] two axm in the first place so let us
+[39:52] assume a system where we have all the
+[39:55] processors which are connected to one
+[39:58] large memory right it's not a cache it's
+[40:00] just one large memory can be one large
+[40:02] cache but doesn't matter it's
+[40:04] essentially one large
+[40:06] structure
+[40:08] right so if we have one large structure
+[40:12] all the variables are stored inside
+[40:15] there now if I look at the completion
+[40:17] axm it means that one processor sent a
+[40:20] right and it's possible that maybe
+[40:22] multiple process sent a right to the
+[40:23] same variable so this structure will
+[40:26] order those rights and some way but if
+[40:28] it maintains a que this right will
+[40:30] ultimately reach its destination cell
+[40:32] which is within here and perform its
+[40:35] operation if I consider the order aums
+[40:38] the way that I look at it is assume that
+[40:40] there is an external person outside is
+[40:43] taking a look at this memory location it
+[40:46] will see the memory location getting
+[40:47] updated in same order and since these
+[40:50] processors are also issuing read
+[40:52] messages they will of course get the
+[40:54] same order right because there's only
+[40:56] one copy of the memory location for
+[40:59] example that consider the memory
+[41:01] location for variable X and consider an
+[41:04] external that is just looking at it so
+[41:06] it will first see that X was Zero then
+[41:09] it will see let's say x changed to one
+[41:11] and then it changed to two now if
+[41:13] somebody says that look I was reading x
+[41:16] and I read zero first of course and then
+[41:20] I read two and then I read one the
+[41:22] external Observer Observer will say no
+[41:25] this is wrong you could not have read
+[41:28] two and then one because X first from
+[41:31] zero it became one and then it became
+[41:33] two so this is not consistent with the
+[41:35] order
+[41:36] aium so that's what I'm saying that the
+[41:39] reason that
+[41:42] uh this uh the reason that cence aums
+[41:46] have been defined in this fashion is to
+[41:49] make a complicated memory system appear
+[41:52] to behave the same way as a simple
+[41:55] system does
+[41:58] so something that the readers can try to
+[42:00] do is try to prove that uh complicated
+[42:04] memory system and a simple memory system
+[42:07] behave in a roughly similar way if we
+[42:10] have the axm of Quin but this is of
+[42:12] course
+[42:13] complicated all right so let me move
+[42:15] ahead and before I discuss sorry there
+[42:18] just one more thing I need to add before
+[42:20] I discuss memory consistency so the
+[42:23] overall let me just summarize you know
+[42:25] for somebody who does not want to get
+[42:26] into cence into deep but just wants to
+[42:30] know what on Earth cerence is
+[42:34] about so let's look at uh system once
+[42:39] again let's assume that I have a
+[42:41] multiprocessor with multiple processors
+[42:43] or cores as they are called so in one
+[42:46] case the memory system is very
+[42:49] complicated with lots of structures and
+[42:51] wires between the structures very
+[42:54] complicated in the other case I have a
+[42:57] processor well similar where I also have
+[43:00] multiple cores but they are connected to
+[43:03] one large cache right all of them there
+[43:06] are no sub caches no buffers nothing and
+[43:09] the cash has you know uh space for all
+[43:12] the global variables and every Global
+[43:15] variable is assigned a unique
+[43:17] location so to an external Observer the
+[43:20] behavior of a program on this system and
+[43:22] this system should appear to be exactly
+[43:24] the same right in the in the sense he
+[43:28] should not see something that is
+[43:29] happening here which is non-intuitive I
+[43:31] this is complex and this is simple so an
+[43:34] external Observer should see nothing
+[43:36] that is happening here is non-intuitive
+[43:38] so what have we seen to be non-intuitive
+[43:41] one is that I being a processor issue a
+[43:44] right and the right never happens well
+[43:46] this will not happen here and the same
+[43:49] memory address should be seen to be
+[43:51] updated in the same order right so if
+[43:54] these are not happening here then of
+[43:56] course the external Observer will
+[43:58] complain but if this system by some
+[44:01] means if it obeys the axium of cerence
+[44:05] which are completion and order then the
+[44:07] external Observer will be happy and he
+[44:10] will say that okay fine this system
+[44:12] passes the Corin
+[44:14] test so let us now discuss memory
+[44:17] consistency which is similar to Corin
+[44:19] but different in the very fundamental
+[44:21] aspect so the aspect is like this that
+[44:23] cerence was Behavior across a single
+[44:26] memory location
+[44:27] and uh consistency specifies the
+[44:29] behavior across multiple memory
+[44:32] locations right so the memory locations
+[44:34] per se are different that is the biggest
+[44:37] difference and here also we can have a
+[44:39] set of behaviors that are intuitive and
+[44:42] a set of behaviors that are
+[44:44] non-intuitive
+[44:48] so let us first get a taste for the
+[44:51] intuitiveness of behaviors in systems
+[44:54] that access multiple variables
+[44:57] so let's consider this example where
+[44:59] thread 1 writes to x x being a global
+[45:02] variable and thread one writes to Y so
+[45:05] recall that all the global variables are
+[45:07] initialized to
+[45:09] zero and thread two reads from the
+[45:13] global variables which are Y and
+[45:17] X all right uh so now let's take a look
+[45:20] at the pair of temporary variables T1
+[45:22] and T2 what are the possible outcomes
+[45:25] right which we think are intuitive and
+[45:27] reasonable right that being very
+[45:30] important so T1 and T2 can both be zero
+[45:33] there's no problem in that what this
+[45:36] basically means that these two
+[45:38] instructions they executed first and
+[45:41] subsequently you know after some time
+[45:43] maybe for some reason thread one got
+[45:46] delayed subsequently the instructions of
+[45:49] thread one executed so we read T1 and T2
+[45:53] uh to have 0 and zero similarly it's
+[45:57] possible that first we set X to 1 then
+[45:59] we execute these two instructions and
+[46:02] then we set y to 1 so in this case T1
+[46:06] which is equal to Y will
+[46:10] read uh the value T1 is equal to Y right
+[46:13] so that will read the value zero because
+[46:16] y has been is being assigned here and
+[46:18] not before that so T1 will be 0 and T2
+[46:22] which reads the value of x that will
+[46:25] read
+[46:28] one all right so T2 will uh be one so 01
+[46:32] is a valid outcome because uh we can
+[46:35] inter leave the instructions to generate
+[46:37] an outcome
+[46:38] 01
+[46:42] similarly so uh in this case even the
+[46:45] outcome one one is possible that is if
+[46:49] uh both the Rights happen early and then
+[46:52] the two reads happen so one one is also
+[46:55] possible so the question now is is one
+[46:57] Zer a valid outcome do you think it's
+[46:59] reasonable do you think it's
+[47:01] intuitive so let's see uh when I say
+[47:05] that T1 and T2 are one and zero what
+[47:08] does it
+[47:09] mean uh so what it means that T1 has red
+[47:13] y to be equal to 1 so definitely the
+[47:16] ordering has to be X is 1 then we have y
+[47:20] is 1 and then we have
+[47:24] T1 as y and so basically T1 gets the
+[47:29] value of one and then we'll have T2 as X
+[47:33] so then T2 is forced to get this value
+[47:37] it is one so as a result if we let's say
+[47:42] proceed in the fashion that we are
+[47:44] proceeding and we inter leave
+[47:46] instructions I mean bring instructions
+[47:48] from different threads the way we are
+[47:50] doing then the outcome one Z is not
+[47:53] valid is not intuitive
+[47:57] so it is simply not an output that we
+[47:59] expect given our model so what is our
+[48:01] model we are basically taking one
+[48:03] instruction from here one from here and
+[48:06] we are just interleaving but we are
+[48:07] never changing the order of instructions
+[48:09] in the same thread this is reasonable
+[48:12] because the instructions pass through
+[48:14] the pipeline right they pass through the
+[48:16] pipeline in the program's order and then
+[48:19] they are sent by the ma stage to the
+[48:21] memory system so since that does not get
+[48:24] reordered we are not reordering the
+[48:26] instructions here so we see that one Z
+[48:29] is not a valid outcome so essentially
+[48:31] what a memory consistency model says is
+[48:34] that given a program or rather given an
+[48:37] so given a program if we run it given
+[48:40] given a parallel program it'll have a
+[48:43] set of executions right a set of ways in
+[48:45] which it can execute so it basically the
+[48:48] set of executions will have two
+[48:51] types uh so you know it can
+[48:54] theoretically have many many types of
+[48:56] execu tions but some of the executions
+[48:59] the memory consistency model says are
+[49:00] valid and some are invalid so in this
+[49:03] case all the executions that produce T1
+[49:07] and T2 are 0 0 0 1 and 1 one are valid
+[49:10] right so 0 0 in this case is valid 01 is
+[49:13] valid 1 one is valid what is not valid
+[49:16] is 1 Z so the memory consistency model
+[49:20] that we have in mind that uh disallows
+[49:24] one Z and allows uh these three outcomes
+[49:28] and the way that we are reasoning is
+[49:31] that we inter leave the instructions in
+[49:33] the different thread so that is the Crux
+[49:36] of our reasoning right so that is how we
+[49:39] have defined something to be intuitive
+[49:42] or something to be
+[49:43] reasonable so a machine so different
+[49:46] machines allow different inter leavings
+[49:49] you know allow different
+[49:50] outcomes so it is not necessary that you
+[49:53] know one machine will you know has to
+[49:56] follow a certain logic so so maybe you
+[49:59] know in some machines one Z might also
+[50:01] be a valid outcome so we will see and uh
+[50:05] but a model basically tells you that
+[50:07] let's say for a program of this type
+[50:09] with two threads what are the valid
+[50:11] outcomes and what are invalid and if a
+[50:13] machine respects uh that memory model or
+[50:17] a memory consistency model then uh it
+[50:20] will ensure that any execution will
+[50:23] always produce a valid
+[50:25] outcome so let's do a couple of
+[50:28] definitions here so an order of
+[50:30] instructions that is consistent with the
+[50:33] semantics of a thread semantics of a
+[50:35] thread means uh okay let me go back so
+[50:39] basically the semantics of a thread
+[50:42] refers to the instructions that are
+[50:43] there in the thread right so any order
+[50:46] that is consistent with the order of
+[50:47] instructions in the
+[50:49] thread that is set to be in program
+[50:52] order so for example if I consider a
+[50:54] single cycle processor it always always
+[50:56] executes instructions in program order
+[50:59] or let me explain with an example let's
+[51:02] say I
+[51:02] have an instruction of the form add R1
+[51:05] R2 R3 and then
+[51:12] load so this is instruction one and this
+[51:14] is instruction
+[51:16] two so in the program instruction one
+[51:19] appears first and instruction two
+[51:22] appears after instruction one so any
+[51:25] processor that is executing you know
+[51:26] this simple two instruction program
+[51:29] should actually send uh execute one
+[51:31] first and then it should execute
+[51:35] two right uh so we can have a lot of
+[51:39] instructions and if I consider the
+[51:41] dynamic instruction stream then uh what
+[51:44] will happen is that we'll have a set of
+[51:46] instructions and maybe we have a for
+[51:47] Loop so then the loop will go around
+[51:49] several times and again uh it'll come
+[51:52] out of that so we are essentially
+[51:54] producing a sequence of dynamic
+[51:56] instruction in the program so this order
+[51:59] which is the program's natural order
+[52:01] right the way in which uh you an
+[52:04] outsider perceives the instructions to
+[52:06] be executed let's call that the program
+[52:08] order so any order that is consistent
+[52:11] with the program order is uh said to be
+[52:14] the program's order and and uh what is
+[52:17] the program order so consider a single
+[52:19] cycle processor right the one that we
+[52:22] saw in chapter 8 so let's say chapter
+[52:24] 8's processor
+[52:27] or even the chapter 9's processor it
+[52:28] doesn't matter so uh what it basically
+[52:30] does is it takes an instruction in or
+[52:33] eight or nine let me do it this way uh
+[52:35] it takes one instruction
+[52:37] in and then at after some time one more
+[52:40] instruction comes out so the order in
+[52:43] which
+[52:44] instructions uh come in in the same
+[52:47] order instructions get executed and
+[52:49] leave the pipeline so this order in
+[52:52] which instructions come in is called the
+[52:54] program order right because that is the
+[52:56] order in which instructions are arranged
+[52:58] in the program and these are Dynamic
+[53:01] instructions of course so if you have a
+[53:02] for Loop then you'll have more of these
+[53:05] instructions so out of these let's only
+[53:08] focus on the read and write instructions
+[53:10] because they are the ones that go to
+[53:11] memory the read and write instructions
+[53:14] can also be arranged in program order
+[53:16] for example in this case uh this
+[53:20] instruction is always before this
+[53:22] instruction in program order similarly
+[53:25] this instruction is always before this
+[53:27] one in program
+[53:29] order so what we say is that if we
+[53:31] consider a memory system or a memory
+[53:34] consistency model right we have defined
+[53:37] the model of a memory system or a
+[53:39] consistency model of a memory system
+[53:42] that determines the set of likely
+[53:43] outcomes for parallel
+[53:46] programs so so this is known as a memory
+[53:49] consistency model or a memory model so
+[53:52] let me read it once again the model of a
+[53:55] memory system that that determines the
+[53:57] set of likely outcomes or parallel
+[53:59] programs likely or uh you know likely SL
+[54:03] valid uh so all of these outcomes also
+[54:06] have to be valid right outcomes for
+[54:10] parallel programs is known as a memory
+[54:12] consistency model or memory model so
+[54:15] different kinds of memory models are
+[54:16] possible as we saw uh on this slide we
+[54:20] are essentially reasoning about valid
+[54:23] outcomes or likely outcomes
+[54:26] uh like this that we are seeing we will
+[54:30] generate all our outcomes by intering
+[54:33] instructions from both the threads since
+[54:35] one Z cannot be generated in this way we
+[54:38] are saying that the outcome is not valid
+[54:41] so uh here what I'll do is I'll also
+[54:43] update uh this slide have likely as well
+[54:46] as valid in
+[54:49] Brackets so let us look at a very simple
+[54:52] memory model called sequential
+[54:54] consistency and let let's again come
+[54:57] back uh go back to that slide uh where
+[55:00] we looked at the set of valid outcomes
+[55:03] so what we did did is we arbitrarily
+[55:05] interleaved instructions of both the
+[55:07] threads so one thread had instructions
+[55:09] one 2 3 another had instructions one
+[55:13] dash two dash and three dash we
+[55:18] arbitrarily created so one uh execution
+[55:21] can be one two dash sorry I'm sorry uh
+[55:24] it should be one dash sorry about
+[55:34] that yeah one execution could be one
+[55:38] then one dash then two then three then
+[55:44] two dash then three dash one more
+[55:47] execution could be one 2 1 dash 2
+[55:54] Dash 3
+[55:56] right you know these two could be so you
+[55:59] know we can generate a lot of executions
+[56:01] in this manner but every execution has a
+[56:04] property which is that all the
+[56:05] instructions in the same thread observe
+[56:08] program order right so they are in the
+[56:10] program order so one is always first
+[56:12] then two then three but between them
+[56:15] they can be arbitrarily interleaved so
+[56:17] you can think of it this way that you
+[56:19] take your five fingers and try to inter
+[56:21] leave them you can generate many
+[56:23] possible interleavings but all of them
+[56:25] have the same
+[56:26] property that in any inter leaving one
+[56:29] dash will come before two dash and two
+[56:31] dash will come before three dash that's
+[56:33] exactly what we are doing in this figure
+[56:36] over here is that we are creating many
+[56:39] interleavings uh of instructions but if
+[56:41] you see this instruction is always
+[56:43] before this and this is always before
+[56:46] this so such kind of an interleaving of
+[56:51] instructions where the program order is
+[56:53] preserved right so program order is
+[56:55] always within a thread it's never across
+[56:57] threats right uh when this is preserved
+[57:00] it is known as a sequentially consistent
+[57:03] interleaving right so that's a very old
+[57:05] term uh discovered in is uh invented in
+[57:10] 1978 but uh this is essentially called a
+[57:13] sequentially consistent interleaving so
+[57:16] a memory model that allows only
+[57:18] sequentially consistent interleavings is
+[57:20] known as sequential consistency SC it's
+[57:24] called SC sequential consisten see so uh
+[57:27] in this example the outcome one is
+[57:31] basically not an sc because SC does not
+[57:34] allow you know it's not possible to
+[57:36] interl the instructions in any possible
+[57:39] way to generate this so this outcome is
+[57:41] not allowed by sequential consistency or
+[57:46] SC so what is sequential consistency
+[57:49] again it is basically every thread has
+[57:51] to preserve its program
+[57:53] order this comes at a cost the cost is
+[57:57] performance so uh let's see what's the
+[58:01] relationship between SC and uh
+[58:03] performance of course this is an
+[58:05] advanced topic and uh you know only a
+[58:08] little bit of it will be covered in this
+[58:11] course most of it should be left for a
+[58:13] course on Advanced
+[58:15] architecture uh nevertheless let me
+[58:18] explain so let us assume uh that we are
+[58:22] doing two rights X as one and then y as
+[58:25] one
+[58:26] so both of
+[58:28] them will enter the ma stage from the ma
+[58:31] stage they'll go to the memory system so
+[58:34] now the question is that should we
+[58:36] actually wait for the entire right to
+[58:38] complete and then uh for uh you know the
+[58:42] once you know the right is over then
+[58:44] actually execute the next
+[58:47] store so we have been up till now
+[58:50] assuming that all our rights finish in a
+[58:52] single cycle but that is not the case
+[58:55] because you realistically you have
+[58:56] caches you might have an L1
+[58:58] cache below that you might have an L2
+[59:01] below that you might have a main memory
+[59:03] so it is very well
+[59:05] possible
+[59:07] that uh you don't find X in L1 but you
+[59:10] find it in L2 so should you actually in
+[59:13] in your ma stage and you know given the
+[59:15] fact that this is your pipeline should
+[59:18] you actually wait for X to actually
+[59:21] finish Its Right In L2 and again come
+[59:23] back or can you do something
+[59:27] better so what a lot of processors would
+[59:30] do is that they will send X to the
+[59:32] memory system and then execute the next
+[59:35] instruction and uh the next instruction
+[59:37] will be y equals 1 and they might find y
+[59:40] in the L L1 gache so in that case the
+[59:43] right to Y in a sense will complete
+[59:45] sooner than the right to X so for an
+[59:49] outsider he will perceive the order
+[59:52] differently he will essentially perceive
+[59:54] the order as first y was updated and
+[59:57] then X was updated so mind you in this
+[60:00] case of course you're gaining additional
+[60:02] performance in the sense that uh you're
+[60:06] able to reorder these rights and you're
+[60:08] not waiting for this right to complete
+[60:11] but yes it comes at a certain uh
+[60:15] cost and the cost is that your memory
+[60:17] model
+[60:18] changes so uh so mind you the execution
+[60:21] of this single thread this is not
+[60:23] changing at all you know this will
+[60:24] remain correct it is just that for an
+[60:27] outside process instead of seeing this x
+[60:30] getting updated before y they will see y
+[60:33] getting uh uh updated before X so let's
+[60:38] take a look at another
+[60:40] example uh well uh let me actually go
+[60:44] back let me take a look at another
+[60:54] example so let us say that I set X as
+[60:57] one and I read another variable
+[61:01] y so in this case also if I look if you
+[61:04] look at the ma
+[61:05] stage then the ma stage of the processor
+[61:08] will first write to
+[61:10] X so it might be using the right buffer
+[61:13] optimization where right buffers
+[61:15] basically what they do is that you have
+[61:16] this
+[61:17] small uh cache you know with maybe four
+[61:21] entries or eight entries which
+[61:23] essentially absorbs all the rights this
+[61:25] is because you don't want to you know if
+[61:27] it's a large block of 64
+[61:29] bytes and you are essentially writing to
+[61:32] every variable within the block you
+[61:35] don't want to send 16 rights you know
+[61:38] 64x 4 assuming size of an integer is 4
+[61:41] bytes you don't want to send 16 rights
+[61:43] to the L1 cache so you typically have a
+[61:45] right buffer where you uh collate all
+[61:49] the rights for a single block over a
+[61:50] period of time and then send it so if x
+[61:53] is equal to 1 uh this right can go to a
+[61:56] right buffer in which case other threads
+[61:58] will not be able to see it but the read
+[62:01] operation can go directly till the L1 GH
+[62:04] or even lower and actually get the value
+[62:06] of y so for any Observer so assume an
+[62:10] observer who's standing outside the
+[62:12] score that will basically see that this
+[62:16] operation this is a right operation it's
+[62:18] a load and it's a read operation sorry
+[62:21] right operation is a store and the read
+[62:23] is a load so anybody standing on outside
+[62:26] would basically not see the right
+[62:28] because the right buffer is a Private
+[62:30] Structure but rather it would see the
+[62:32] load happening first so it would
+[62:34] basically see T1 = y happening first and
+[62:38] x = 1 happening
+[62:40] later so in this case you you'll have
+[62:43] the load first and the store to X
+[62:46] later so it is very much possible that
+[62:50] when different locations are concerned
+[62:52] this will not happen again with a single
+[62:53] location for single location the the
+[62:55] rules of cerence will apply but cerence
+[62:58] is not for a s uh is not for different
+[63:01] locations so in this case what we will
+[63:04] see is that uh processors will do some
+[63:08] reordering if you if they need
+[63:10] performance enhancing optimization such
+[63:12] as WR buffers so uh it will appear to
+[63:16] another core or any other entity outside
+[63:19] the processor that memory operations are
+[63:22] getting reordered instead of write and
+[63:25] then a read we are having a read first
+[63:27] and then a
+[63:29] write so uh let's so but you know these
+[63:33] things are nevertheless complicated so
+[63:36] it's much better to teach all of these
+[63:38] things in a course on Advanced
+[63:40] architecture not in a basic course but
+[63:43] nevertheless people should have some
+[63:45] idea because multicore processors are
+[63:47] very very prevalent these days and uh
+[63:51] even a phone will have four cores or
+[63:52] eight
+[63:53] cores so uh as I said you know
+[63:56] sequential consistency will disallow a
+[63:58] lot of performance enhancing functions
+[64:02] one is a right buffer because right
+[64:05] buffer will sort of delay the right so
+[64:07] you will find that if there is a right
+[64:10] and then there is a read it is possible
+[64:12] that the read might complete first and
+[64:14] the write later this is not allowed by
+[64:17] sequential
+[64:18] consistency so basically you know not
+[64:22] allowed so performance will suffer
+[64:24] similarly we cannot reorder right
+[64:27] operations if I if I'm writing X as one
+[64:29] and Y as
+[64:31] 1 then I need to write I need to finish
+[64:35] I have something like this I need to
+[64:38] ensure that this right is completely
+[64:40] over before I do this and it's very well
+[64:44] possible that I get y in the L1 cache
+[64:46] and I get X in the main memory then I'll
+[64:49] unnecessarily have to wait for a long
+[64:51] time uh
+[64:53] so you know given this they cannot
+[64:56] reorder rights so you will see in an
+[64:58] advanced course that there are many many
+[65:01] restrictions that are imposed on a
+[65:04] system if it needs to obey sequential
+[65:06] consistency so we need to add a lot of
+[65:09] constraints in the memory system to make
+[65:11] it sequentially
+[65:13] consistent but uh so what happens is
+[65:15] fortunately most of the
+[65:18] time uh you know these constraints are
+[65:21] artificial right so they need not be
+[65:24] there so what I'm writing on the slide
+[65:26] is most of the time we need to wait for
+[65:28] the current memory request to complete
+[65:30] before we can issue the subsequent
+[65:32] memory request this is very restrictive
+[65:36] artificial and most of the time it does
+[65:38] not make a difference you know which one
+[65:40] completes first which one completes
+[65:42] later and we just have to write our
+[65:44] program in a different way so that's the
+[65:47] reason in almost all commercial systems
+[65:49] sequential consistency is not observed
+[65:53] what is rather observed is something
+[65:55] called weak consistency so you know
+[65:58] there are there can be many many other
+[65:59] models but I'll only discuss two in this
+[66:02] book so it weak consistency allows
+[66:06] arbitrary orderings of course within
+[66:09] some constraints so you know it's not
+[66:10] the case that if I write X as one in the
+[66:13] same thread you assume that this is the
+[66:15] same thread right and then I uh read X
+[66:20] it is not the case that I will read T1
+[66:22] as zero that's not the case I will
+[66:24] definitely read T1 as one or any later
+[66:27] update to X that is always the case
+[66:30] because uh you know coherence will take
+[66:32] care of it and also you know single
+[66:35] thread there is an order so that will
+[66:37] take care of it so this will you know
+[66:39] this particular case will never happen
+[66:42] but what can happen is that if I write
+[66:45] one tox and then I read another Global
+[66:50] y then for a single thread it does not
+[66:52] matter whether this executes first or
+[66:55] this execut first because anyway they
+[66:57] are to different locations but to a
+[66:59] multiprocessor it does matter and this
+[67:03] can be reordered so in a sense a weak
+[67:05] memory model a weekly consistent memory
+[67:07] model allows such kind of arbitrary
+[67:10] reorderings such that we can put in more
+[67:13] performance enhancing optimizations
+[67:15] think of it that
+[67:17] way so in the weak consistency Paradigm
+[67:21] uh where you know all orderings are
+[67:24] allowed
+[67:25] uh so uh all auditing are allowed
+[67:27] especially when for multiple locations
+[67:30] and you know single thread correctness
+[67:32] is never compromised with in such a
+[67:34] situation it's a typically higher
+[67:36] performing uh implementation so that's
+[67:39] the reason as of today nobody has
+[67:41] sequential consistency but almost all
+[67:43] the big server companies IBM
+[67:46] HP they have a very relaxed memory model
+[67:49] Intel and arm to a certain extent and
+[67:52] model is not that weak but we are not in
+[67:55] a position to discuss what is that weak
+[67:57] and what is very weak so let's assume uh
+[68:01] for the sake of Simplicity that Weekly
+[68:03] consistent means that none of the
+[68:05] orderings between reads and rights to
+[68:07] different locations are
+[68:09] observed and uh let let's live with this
+[68:12] that'll uh keep our life easy and if we
+[68:15] assume that a system is weakly
+[68:16] consistent but it's actually stronger
+[68:19] that's actually a good idea because that
+[68:20] will not break the correctness of our
+[68:22] code but instead if we assume that a
+[68:26] system is sequentially consistent but it
+[68:28] turns out to be weakly consistent then
+[68:30] of course our code might not
+[68:34] work so uh we have let's assume that to
+[68:37] program in a weekly consistent system we
+[68:40] have two kinds of memory
+[68:42] instructions we will have regular load
+[68:44] store instructions read write
+[68:47] instructions but since ordering is not
+[68:50] very strictly
+[68:52] followed we will have some additional
+[68:54] instruction called synchronization
+[68:57] instructions so an example of a
+[69:00] synchronization instruction is as
+[69:02] follows so uh we can have a fence
+[69:06] instruction so the idea here is that
+[69:08] this fence waits till all the memory
+[69:11] accesses before the fence instruction in
+[69:13] the same thread complete which means
+[69:16] that if I have a set of reads and wres
+[69:18] or loads and stores and then there is a
+[69:20] fence the fence will wait for all of
+[69:23] them to complete complete for a read
+[69:25] means it comes back with its value
+[69:27] complete for a write means it goes and
+[69:29] modifies the actual memory location so
+[69:32] it'll wait for all of this to complete
+[69:35] and then the fence will
+[69:37] execute and any subsequent instruction
+[69:40] in the same thread read or
+[69:42] write uh can start only after the fence
+[69:46] instruction completes right so it is
+[69:48] like you know uh it's an execution fence
+[69:51] in the sense that the fence will not
+[69:53] start till all the instructions before
+[69:55] it have
+[69:56] completed and no other instruction after
+[70:00] the fence can start before the fence
+[70:03] instruction has ended so this basically
+[70:06] ensures a complete separation of the
+[70:09] lifetimes of memory requests before and
+[70:12] after the fence so they are absolutely
+[70:16] disjoint let us now solve the same
+[70:18] problem that we have been uh that we
+[70:21] have been trying to solve and we have
+[70:23] given two implementations for it which
+[70:25] is to add n numbers in parallel so what
+[70:28] are the approaches that we have used
+[70:30] before this we have used open
+[70:32] MP for a strongly coupled system and we
+[70:35] have used a language similar to MPI for
+[70:37] a Loosely coupled system but let's look
+[70:40] at open MP and openmp what did we do
+[70:44] well uh it was very simple for us what
+[70:46] we did is openmp provides a mechanism
+[70:49] for a parallel for Loop so every
+[70:52] iteration of the for Loop runs in
+[70:54] parallel and once the for Loop ends and
+[70:57] we come out of the for Loop so let's see
+[70:59] in the for Loop there are n iterations
+[71:01] the N threads are
+[71:03] spawned and all the uh threads work
+[71:08] separately and once the for Loop ends we
+[71:11] assume that all the threads have died
+[71:13] right they have done their work and then
+[71:15] they have uh all the threads are dead
+[71:19] now so what is open MP well open MP is a
+[71:23] library in a sense it's some amount of
+[71:25] code code that has been written by
+[71:27] somebody else and that code is being
+[71:29] given to us we are using the features of
+[71:32] that code high level Primitives
+[71:34] functions that that code is providing
+[71:36] and we are writing our own parallel
+[71:39] program but being a good computer
+[71:41] scientist is it a good idea to use
+[71:43] somebody else's code well often yes but
+[71:46] we should know how it works so let us
+[71:48] try to write a program from
+[71:50] scratch uh which will not use any openmp
+[71:54] primitive will just go with whatever uh
+[71:57] language like C or Java gives us and we
+[72:00] will essentially try to write openm you
+[72:02] know we'll essentially try to write
+[72:04] something which we achieved with openmp
+[72:06] we'll try to do it without it so let's
+[72:09] see so let's assume a sequentially
+[72:12] consistent machine because we always
+[72:14] need to assume a memory model otherwise
+[72:16] our program will not work so hopefully
+[72:19] after the an example on a sequentially
+[72:22] consistent SC machine and an example on
+[72:25] a weekly consistent machine uh the
+[72:29] viewers of this video will at least
+[72:31] appreciate that yes the programming
+[72:33] model is important so let's have the
+[72:36] same uh the memory model I'm sorry so
+[72:39] let's have the same uh data structure
+[72:41] that we had we have a partial sums array
+[72:44] which stores a partial sum for each
+[72:46] thread we'll have an additional
+[72:48] structure called the finished AR which
+[72:50] stores the status that each thread is
+[72:52] done uh we'll have all the numbers the
+[72:54] numbers that we want to add the final
+[72:57] result and another uh flag called done
+[73:00] in it uh so so let's uh look at the code
+[73:04] and then by looking at the code all the
+[73:08] meanings of all of these fields will be
+[73:10] self-evident so let's do one thing let's
+[73:12] initialize all the elements in the
+[73:14] partial sums array to zero and the
+[73:17] finished flag all the elements in the
+[73:20] finished array all the flags which are
+[73:22] Boolean Flags in the finished array to
+[73:24] zero after doing this let's set done in
+[73:27] it to one which means that our
+[73:29] initialization is done so let's start
+[73:32] the parallel
+[73:33] section so uh let us assume that we have
+[73:36] a primitive parallel which ensures that
+[73:39] there are n copies of this code running
+[73:42] that is assumption we are doing of
+[73:44] course if we use a library like P
+[73:46] threads which is provided in Linux then
+[73:49] we just have to replace this directive
+[73:52] parallel with one more directive
+[73:55] what that basically does uh is that uh
+[74:00] that uh creates and threads and each
+[74:04] thread executes the same code but you
+[74:06] know that would become very very
+[74:08] technology specific so I've sort of kept
+[74:10] it slightly abstract so we are assuming
+[74:13] that this part of the code you know n
+[74:15] separate threads are spawn each is
+[74:17] running the
+[74:18] same so uh now it is
+[74:22] possible you know very much possible
+[74:24] that let let's see uh
+[74:26] when
+[74:28] uh the thread start to ensure that the
+[74:31] initialization is done let's just ensure
+[74:35] that done in it uh is equal to one
+[74:38] because uh sorry I think this bracket
+[74:42] should not be there over here so so
+[74:44] while uh done in it is not equal to
+[74:47] one uh we will
+[74:51] uh you know keep uh repeating in an
+[74:55] empty Loop or we will rather wait for it
+[74:57] now the question is why should this
+[74:59] happen well the reason this can happen
+[75:02] is that in a sequentially consistent
+[75:04] machine it is true that all our memory
+[75:07] all our memory accesses follow program
+[75:10] order so here what we are doing is that
+[75:12] this might be the thread equal to zero
+[75:15] and then we are starting a new thread a
+[75:17] new thread will have its own reads and
+[75:19] wrs so technically speaking this right
+[75:23] here and the read reads and writes in a
+[75:26] new thread there's no reason why they
+[75:28] should follow this because they're not
+[75:29] part of the same thread so they don't
+[75:32] have to follow the ordering right so
+[75:34] what does sequential consistency say it
+[75:37] basically says that given a thread all
+[75:40] the reads and rights in the thread
+[75:41] follow the program order right so this
+[75:44] completes and then we start this this
+[75:46] completes and then we start
+[75:48] this but now since we are having
+[75:51] separate threads it is possible that you
+[75:54] know we are trying to read something
+[75:55] from the partial sums or finished array
+[75:58] and these accesses are not fully done
+[76:00] yet because you know SC does not
+[76:02] maintain any ordering across threads so
+[76:05] that's the reason we explicitly set a
+[76:07] flag called done init so when done in it
+[76:10] is set to one It means that by the SC
+[76:12] assumption all the initialization is
+[76:15] done once the initialization once other
+[76:18] threads see that the initialization is
+[76:21] done they will start and when is it done
+[76:23] when done in it is equal to 1 so as long
+[76:26] as done in it is not equal to one we
+[76:29] just keep waiting and after it is one we
+[76:32] start so the algorithm is the same we
+[76:35] get the ID of the thread using the get
+[76:37] thread ID call uh we have a starting
+[76:40] index which is my ID times size by n so
+[76:44] we essentially breaking the large array
+[76:46] into chunks you have this exact approach
+[76:48] we did with open MP and each one of them
+[76:50] starts at a different starting
+[76:53] point similarly we have an ending index
+[76:56] which is a start index plus size by n so
+[76:59] we just Loop through the chunk of the
+[77:01] array assigned to this particular thread
+[77:03] and update the partial sums array and
+[77:07] finally we set finished my ID equal to 1
+[77:10] so finished recall is an array of n
+[77:13] elements so current thread just says
+[77:15] that it is done and it comes out so
+[77:18] unlike openmp at this point you know so
+[77:22] all of the threads will be over but one
+[77:24] of the threads which let's say is thread
+[77:27] number zero which started the code that
+[77:30] might or might not you know participate
+[77:33] in this parallel execution so it might
+[77:35] be one of the threads in this parallel
+[77:37] region or might not be one of the
+[77:40] threads but pretty much even if it
+[77:42] finishes you know even if thread equal
+[77:45] to Z is a part of this and it finishes
+[77:47] its work when it comes here it needs to
+[77:50] wait till all the N threads are done
+[77:53] right all the N threads all the end
+[77:55] threads are done okay and otherwise it
+[77:58] will not be able to proceed so here is
+[78:01] how you wait for the rest of the threads
+[78:03] to finish so this part of the code we
+[78:05] did not have to write in open MP because
+[78:09] it was already written by somebody else
+[78:11] right who is that somebody else the
+[78:14] people who created the openmp library
+[78:17] but in this case since we have said that
+[78:19] we will not take code from anybody we
+[78:21] need to write our own code to find out
+[78:23] if all the n sets are done and so we
+[78:26] don't have any open MP to rely on we
+[78:29] just have to rely on ourselves so we can
+[78:31] do it so for as SC machine it's very
+[78:34] easy we set a flag to one and then we
+[78:38] simply uh so we assume that all the
+[78:40] thread IDs are between 0 and N minus one
+[78:44] that's the assumption that we make so we
+[78:46] just iterate from 0 till n minus one and
+[78:49] for each one of them we see the value of
+[78:51] this finished of the finished array ENT
+[78:54] Tre so recall that when a thread
+[78:57] finishes its work it sets finished my ID
+[79:00] to be equal to 1 so if finished I is
+[79:04] equal to zero this basically means that
+[79:06] some thread is not done yet it's still
+[79:09] doing its work so we set flag as
+[79:13] zero and uh flag as zero means we cannot
+[79:16] get out so we break so do while as long
+[79:20] as flag is equal to zero well we'll have
+[79:22] to iterate so we again go back
+[79:26] so when is
+[79:30] it
+[79:35] uh that we actually get out right uh so
+[79:41] we actually get out of this Loop when we
+[79:43] sort of when we come here and uh flag
+[79:48] is set to one so when will flag be equal
+[79:53] to so that's when we'll exit this do
+[79:55] while loop and when will flag be set to
+[79:58] one it'll be set to one when we never
+[80:00] enter this part of the code that sets
+[80:01] flag to zero and we enter this part of
+[80:04] the code if for any of the threads
+[80:07] finish I is zero or it has not completed
+[80:10] so when all the threads complete this if
+[80:12] statement will always evaluate to false
+[80:15] because all the threads would have
+[80:16] finished so we will not enter this part
+[80:19] of the code so while coming here our
+[80:21] flag will be one so we will exit the V
+[80:24] Loop which means at this
+[80:27] point all the parallel threads have died
+[80:30] right so uh so at this point you are
+[80:33] sure that all the results all the
+[80:35] partial sums are
+[80:38] computed right and all the part uh
+[80:40] parallel threads are dead and we just
+[80:43] need to add the partial sums so recall
+[80:46] that you know we didn't have any
+[80:48] necessity of actually having this piece
+[80:52] of code in a machine with open MP
+[80:55] but here you know since we not using any
+[80:57] Library we need to write it furthermore
+[81:00] since this system has sequential
+[81:04] consistency when we actually read
+[81:06] finished I to be equal to 1 which means
+[81:10] that this statement has executed we are
+[81:14] sure that the partial sums has also been
+[81:17] correctly computed and written to in
+[81:19] memory because within the same thread SC
+[81:23] does not reorder instruction s so if
+[81:25] this has executed means that all of the
+[81:28] updates to partial sum are also done so
+[81:31] once we see that a thread is finished we
+[81:34] will automatically be sure that all of
+[81:37] its partial sums have been computed
+[81:39] correctly well then what then life is
+[81:42] easy we then compute the final result
+[81:45] which is just a simple pass through the
+[81:47] partial sum Sur we just add all the
+[81:49] partial sums and we have the final
+[81:51] result as simple as that so as we see
+[81:55] you know a difference from openmp is
+[81:57] like
+[81:58] this that we well you know this entire
+[82:03] part of the code where we actually
+[82:05] checked if each of the entries is done
+[82:07] or not and then we waited this was
+[82:09] hidden from us it was taken care of also
+[82:13] when we uh waited for the initialization
+[82:16] to be done and why did we have to wait
+[82:19] well we waited mainly because well we
+[82:21] are not sure uh that uh
+[82:25] you know uh all of these things are done
+[82:29] uh the the main idea is that you
+[82:32] know this creation of the parallel
+[82:35] thread and the right could have been
+[82:36] reordered we didn't want that even on an
+[82:39] sc machine we didn't want that so what
+[82:42] we wanted is we are sure that all the
+[82:44] initialization is done and then we start
+[82:46] and since the machine is sequentially
+[82:49] consistent if this instruction has
+[82:51] executed all the memory instructions
+[82:53] before it would have
+[82:55] completed that's all that's the main
+[82:57] change is only at the beginning of the
+[82:59] parallel for Loop and end of the
+[83:01] parallel for Loop the rest remained
+[83:03] exactly the same and finally we produce
+[83:06] the result

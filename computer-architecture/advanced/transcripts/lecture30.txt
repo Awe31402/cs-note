@@ -1,0 +1,1536 @@
+[00:00] foreign
+[00:24] so in this lecture we will discuss more
+[00:28] about the intricacies of routers
+[00:31] and how to make the router pipeline more
+[00:34] efficient and then you know time
+[00:36] permitting will also discuss how the
+[00:39] cache subsystem and NOC are supposed to
+[00:42] be co-designed
+[00:44] so we recall that in our previous
+[00:47] lecture we had discussed the first three
+[00:49] stages which is buffer right this is
+[00:51] mandatory for all slits in the sense
+[00:53] that they need to be returning to
+[00:55] buffers first before processing
+[00:57] then this was only for the head plate
+[01:00] the next two stages where we perform
+[01:02] route computation
+[01:05] so route computation they basically
+[01:07] figured where do you need to go north
+[01:08] south east or west and given that the
+[01:11] physical channel has been decided we
+[01:13] then allocate the virtual channel so we
+[01:15] do VCR location over here
+[01:20] just give me one second yeah
+[01:23] so we do VC allocation over here
+[01:28] so we discussed these three stages so
+[01:30] two more stages are remaining one is the
+[01:32] allocation of switch ports
+[01:34] uh so here we reserve a path to the
+[01:37] output Port share fairness is important
+[01:39] we will discuss this majorly here and
+[01:42] then switch traversal which is not a big
+[01:43] deal which basically means that we need
+[01:46] to Traverse the switch once the
+[01:48] connection between the input and output
+[01:50] has been made and this is done so then
+[01:52] we release resources
+[01:54] so let's discuss more about switching so
+[01:57] if you would recall from the previous
+[01:59] lecture we have 10 inputs if we are
+[02:03] assuming two VCS per physical Channel
+[02:06] ah because the physical channels are not
+[02:09] south east west and local so 5 into 210
+[02:12] and the outputs are five uh what are
+[02:15] those five uh the outputs are basically
+[02:18] uh north south east west and local
+[02:21] so it's a 10 cross 5 switch so there are
+[02:23] many ways of making a 10 cross 5 switch
+[02:26] we could go for bigger Twitter
+[02:31] so we could go for switches of this type
+[02:34] that have the 10 inputs divided like
+[02:37] this a 5 cross 2 switch here a 5 cross 2
+[02:40] switch there so five here two output
+[02:43] five here two output and this is four
+[02:46] cross five
+[02:48] so you think about it there is some
+[02:49] amount of internal quenching in the
+[02:51] sense this could be a bottleneck because
+[02:53] in principle you know all five outputs
+[02:55] could be used but we are kind of
+[02:57] creating a bottleneck over here but
+[03:00] again this is one design option
+[03:02] another design option could be we are
+[03:05] many of these two crossed one switches
+[03:07] and then we connect a five cross five
+[03:09] over here
+[03:11] so then you know the other issue is that
+[03:13] if
+[03:14] let's say all four of these are empty
+[03:17] then both the requests could possibly go
+[03:19] along different routes this could maybe
+[03:21] go along here but we are precluding that
+[03:24] possibility so there is always a
+[03:26] trade-off right big switch small switch
+[03:28] how they are connected this trade-off is
+[03:30] always there
+[03:34] so let us now have some metrics right
+[03:37] some sort of a metric to quantify the
+[03:40] latency and area of a switch so this is
+[03:42] more like a thumb rule right it's not a
+[03:43] metric it's more like a rule of thumb
+[03:46] that can be used to kind of get an
+[03:47] approximate estimate right not an exact
+[03:51] one but
+[03:52] an approximate estimate so in this case
+[03:55] for an M cross and switch if you think
+[03:58] about it we have n inputs over here and
+[04:03] so pretty much the traversal that is
+[04:05] happening right the latency
+[04:06] we are like traversing endpoints here
+[04:09] end points here so the latency is
+[04:11] approximately M plus n
+[04:13] arbitrary units of course and the area
+[04:16] is M multiplied by n again arbitrary
+[04:18] units
+[04:19] so if you look at a single level 10
+[04:23] cross 5 switch is area cost is 50 and
+[04:25] latency cost is 15 as per these formulas
+[04:32] so now if you have five two cross one
+[04:34] switches and then we have one five cross
+[04:37] five switches
+[04:39] so basically the area cost will be much
+[04:41] lower the area cost will be 13. and the
+[04:44] latent sorry the area cost will be 35
+[04:46] and the latency cost will be 13.
+[04:49] right so that is this is the sorry uh
+[04:52] the big switch design which is over here
+[04:54] and we go with the small switch design
+[04:56] which has several of these smaller ones
+[04:58] and one five cross five
+[05:00] then uh here uh basically uh
+[05:07] oh I'm sorry uh so this is the small
+[05:10] switch design
+[05:11] sorry I went the other way this is the
+[05:14] small switch design
+[05:15] where we have these five two cross one
+[05:17] switches so this was so in this case for
+[05:20] a small switch design the area cost is
+[05:22] 35 the latency cost is 13. but for the
+[05:26] big switch design which is two five
+[05:27] cross two and one four cross five the
+[05:30] area cost is kind of in between but the
+[05:32] latency cost is very high and hence you
+[05:35] know this is not a good design because
+[05:37] ah you know the smaller one was actually
+[05:40] better it was faster and the area was
+[05:42] also lower so as you can see there is a
+[05:44] very complex optimization space if you
+[05:47] have like two levels of switching with
+[05:49] regards to what is the best and of
+[05:51] course we could go even one step further
+[05:53] and have three levels so then the
+[05:55] optimization space will become even more
+[05:58] complicated
+[06:01] so now let's now look at a special kind
+[06:03] of switch called a dimension sliced
+[06:05] switch
+[06:08] uh so this is used for XY routing
+[06:11] so in this case what happens if you take
+[06:14] a look at this
+[06:15] the switch at the bottom the inputs are
+[06:18] East West and local
+[06:21] and given the fact that you know since X
+[06:23] Y routing right so if you are coming
+[06:25] from the east or west you could still go
+[06:27] along the y-axis
+[06:28] so that's the reason there is one
+[06:30] connection for all the messages that
+[06:32] want to go along the y-axis there is a
+[06:34] connection to us another switch which is
+[06:36] smaller but we are assuming again that
+[06:39] we will not have a lot of such messages
+[06:40] because
+[06:42] uh in a large network with XY routing
+[06:46] most of the time you will be reversing
+[06:48] only along the x-axis or only along the
+[06:50] y axis
+[06:51] that's the reason there's only one arrow
+[06:53] and finally you know you could in this
+[06:56] case you could emerge along east or west
+[06:58] or if you want to go to north south and
+[07:01] local then any message along the x-axis
+[07:03] can go to the switch at the top
+[07:06] the switch at the top the only inputs
+[07:08] are north and south
+[07:10] so kindly recall that if you are coming
+[07:13] from the North or South Direction which
+[07:15] is pretty much along the y axis
+[07:18] you cannot make a turn to the x axis
+[07:21] from X you can go to Y but from y you
+[07:23] cannot come to X that is not possible
+[07:26] given the fact that you cannot come to
+[07:28] the x axis
+[07:30] right the only outputs are either
+[07:32] continuing north or south
+[07:36] and for all the messages that are coming
+[07:38] from here they also get routed
+[07:40] so you either go to North South or you
+[07:42] go to local
+[07:44] so this in a certain sense
+[07:47] is reasonably efficient
+[07:53] basically you know because of this
+[07:55] symmetry
+[07:57] uh let's compute the area cost and the
+[07:59] latency
+[08:01] so look if we are going from north to
+[08:03] North or in the north to local South the
+[08:05] latency here is not much it's only eight
+[08:08] and the latency here is only 9 units so
+[08:12] of course worst case it is 17 units if
+[08:14] you are going this way if you are making
+[08:16] a turn that is but given the fact that
+[08:18] turns very rare the latency is
+[08:21] you know you'll actually an XY routing
+[08:23] and only make a single turn right if at
+[08:26] all so the point is that in most cases
+[08:29] latencies are 8 or 9 which means it's
+[08:31] very fast
+[08:32] and if I look at the area so this would
+[08:34] be 15 and this would be 18 so the area
+[08:36] cost would also be 33. which if you just
+[08:39] look at the previous figure
+[08:42] 33 is a smaller number
+[08:46] I repeat 33 is a much smaller number
+[08:48] than these numbers 35 40 50 Etc and of
+[08:52] course the latency cost within most
+[08:54] distance is eight or nine again this is
+[08:56] a much smaller number
+[08:58] so the key idea is that
+[09:01] we have been able to design a circuit
+[09:03] where the insights are given here no
+[09:06] turns are allowed from north south to
+[09:08] East West hence you know this is a
+[09:10] one-way Arrow no nothing can come from
+[09:13] here to here
+[09:15] the lower router would send Clicks in a
+[09:17] horizontal direction or for an X Y turn
+[09:20] would send it here
+[09:22] and the upper router can only send it
+[09:24] either straight or to the local tile
+[09:26] so with these insights as you can see we
+[09:29] were able to design
+[09:31] a switch which is more efficient
+[09:33] undoubtedly it is more efficient and
+[09:36] basically you know it is kind of
+[09:38] co-designed with the routing protocol
+[09:41] which
+[09:43] is a good thing it basically allows us
+[09:46] to
+[09:48] kind of look at the protocol and the
+[09:50] switch together and basically mutually
+[09:52] optimize them
+[09:55] so let us now discuss allocation and
+[09:58] arbitration which takes things one notch
+[10:01] higher
+[10:02] so other so we first looked at switching
+[10:04] but along with looking at switching we
+[10:06] would also like to look at this process
+[10:09] of you know switch allocation VC
+[10:11] allocation right so we'll also like to
+[10:12] look at these things
+[10:14] so the difference between an allocator
+[10:16] and arbiter is kind of fine it's an
+[10:18] Arbiter chooses one out of n requests
+[10:21] for resource and location
+[10:22] so these are end requests for resource
+[10:24] allocation the Orbiter would just
+[10:26] basically choose one
+[10:28] an allocator on the other hand would
+[10:30] choose
+[10:32] a subset of n requests and map them to
+[10:35] resources or in other words it would
+[10:38] create a one-to-one mapping between n
+[10:41] requests and M resources so if these are
+[10:43] requests over here resources over here
+[10:47] it will kind of create a mapping between
+[10:49] them that is an allocated
+[10:52] so then allocated of course at reveal ID
+[10:55] would be achieved with the Arbiters in
+[10:57] the sense that for the first resource
+[10:59] right you can map one of the requests
+[11:01] remove that request from contention then
+[11:03] for the second resource on and so forth
+[11:05] but there are ways and methods of
+[11:09] creating custom structures which are far
+[11:12] more efficient
+[11:17] so the matching between resources and
+[11:19] requests is somewhat interesting and
+[11:21] theoretical so again I would like to go
+[11:23] back over here
+[11:24] an Orbiter chooses 1 out of N and
+[11:27] allocator does the matching of requests
+[11:30] and resources
+[11:31] so the matching is a somewhat
+[11:32] theoretical problem but this is how it
+[11:35] can be explained
+[11:37] let's say that I draw a bipartite graph
+[11:39] what is bipartite graph well there is
+[11:42] resources and the requests are on two
+[11:45] lines
+[11:46] right you know there is no Arrow between
+[11:48] two resources and two requests
+[11:50] so the request in this case is R1 R2 and
+[11:54] the resources this is the request
+[11:57] and this is the resource
+[12:01] say every request is mapped to at most a
+[12:04] single resource that is a first
+[12:06] condition
+[12:07] that a request cannot be mapped to two
+[12:09] resources
+[12:10] the second condition is every resource
+[12:13] is mapped to at most a single request
+[12:14] which means a resource also cannot be
+[12:16] mapped to two requests
+[12:18] if request RI is mapped to Resource SJ
+[12:23] then this basically means this function
+[12:25] f r i s j is true
+[12:29] right
+[12:31] the FRS function is true if requests are
+[12:36] so the so the idea is that only is
+[12:40] f r i s j is true then only the request
+[12:44] RI is mapped to Resource SG or in other
+[12:46] words the FRS function
+[12:48] basically denotes
+[12:51] an interest function that will request
+[12:53] are
+[12:54] is interested in resource s right so the
+[12:57] FRS function is true if a request R is
+[13:00] interested in resources and then only
+[13:02] you can map the request and the resource
+[13:04] together you cannot map a request to a
+[13:07] resource that it is not interested in
+[13:11] so what you do is that with these three
+[13:13] conditions in mind we draw a bipartite
+[13:17] graph with the requests here and the
+[13:18] resources here and there is a dotted
+[13:21] line between requests and resources
+[13:24] which essentially indicate that there is
+[13:27] no mapping that the there is no mapping
+[13:29] but
+[13:30] request R2 is interested in two
+[13:32] resources S1 S2 and R1 is interested
+[13:34] only in S1
+[13:36] so what we could do is we could make a
+[13:39] matching which is sub-optimal
+[13:42] in the sense R2 could be mapped to S1
+[13:45] if R2 is mapped to S1 we can't clearly
+[13:48] do any more matches because R2 is taken
+[13:51] right S1 is taken R1 was interested in
+[13:54] S1 but R1 can't get mapped to S2 because
+[13:57] it was not never interested in S2
+[14:00] so this matching that you see over here
+[14:03] is maximal in the sense that
+[14:07] we cannot convert any more interested
+[14:09] edges to match stages but it is not
+[14:13] maximum
+[14:14] right we will see a maximum exists
+[14:18] the maximum is over here
+[14:20] we map R1 to S1 and R2 to S2 so in this
+[14:24] case we have two matchings whereas in
+[14:26] this case we have only one right and uh
+[14:30] this
+[14:32] basically indicates that this is maximum
+[14:35] anything maximum is also maximal but in
+[14:38] this case we in the previous case which
+[14:40] is this one we see that this is not
+[14:42] maximum only one is being mapped but it
+[14:45] is maximal in the sense we can't make
+[14:46] any forward problem
+[14:48] so some optimal matchings can be maximal
+[14:51] but an optimal matching is always
+[14:53] maximum and consequently maximal
+[14:56] so our aim is of course to match as many
+[14:59] resources to requests as possible which
+[15:02] means Computing a maximum matching
+[15:05] in Hardware in real time
+[15:08] which of course is difficult but
+[15:10] thankfully our requirements are not are
+[15:12] not that deep that we would actually
+[15:15] need to
+[15:17] you know go to that level uh and you
+[15:20] know have a really optimal solution
+[15:23] because number one we are not dealing
+[15:25] with too many resources over here we are
+[15:28] dealing with a limited number of
+[15:29] resources and that is why we will see
+[15:33] that you know
+[15:34] interesting and good and efficient and
+[15:37] effective Hardware algorithms are
+[15:38] possible
+[15:41] so now we will discuss a couple of
+[15:44] arbitration and allocation mechanisms
+[15:47] given the fact that we have seen the
+[15:49] overall state
+[15:50] the simplest idea is the round robin
+[15:53] Arbiter which is a simple circuit that
+[15:55] you can see over here
+[15:57] in this case we have basically three
+[16:00] requests
+[16:02] and we have a single resource
+[16:06] we have request lines and a Grant Line
+[16:13] so basically
+[16:16] request has to be one which essentially
+[16:19] indicates that
+[16:21] you know
+[16:23] request one is granted the resource
+[16:26] write the request indicates interest
+[16:28] and then we have a round robin scheme so
+[16:32] first it is you assert brand one then
+[16:34] Grant two grand three then again Grant
+[16:36] one Grant two grand three so on and so
+[16:39] forth
+[16:40] so let us assume uh that you know let us
+[16:44] assume a base case where
+[16:46] none of the grant lines are zero are
+[16:49] ones all of them are zeros if all of
+[16:51] them are zero
+[16:52] then the output of the nor gate is one
+[16:54] the output of this is one
+[16:57] right and basically this as we said
+[17:00] Grant 3 is 0 over here
+[17:04] so if the value of the priority one is
+[17:07] let's say P1
+[17:08] then P1 and 1 is going to be P1 P1 or 0
+[17:13] is going to be P1 this is a d flip flop
+[17:16] essentially it is going to maintain its
+[17:19] value right so essentially whatever is
+[17:22] the value of the priority so priority
+[17:23] can either be 0 and 1 right so in this
+[17:26] case if we say that the priority is
+[17:28] equal to 1.
+[17:30] over here it will just maintain its
+[17:32] value
+[17:33] whenever say request is 0 the Grant Line
+[17:36] is 0 but if request is one then one and
+[17:38] one together
+[17:40] will make the Grant Line 1 which means
+[17:42] the first request is granted
+[17:45] the moment the first request is granted
+[17:48] let us see a lot of things will happen a
+[17:50] lot of things will change right so as I
+[17:54] said when no request is granted all of
+[17:57] these D flip flops maintain their status
+[17:59] quo
+[18:00] right when no request is granted and no
+[18:03] request is also won all of them are zero
+[18:05] all of them will maintain their status
+[18:07] but the idea is that the moment we
+[18:09] decide
+[18:11] that you know we will grant one request
+[18:16] you know the priority here was set to
+[18:19] one and the request one line uh just
+[18:22] went from zero to one so one and one and
+[18:24] it will become one right so in this case
+[18:27] what we do
+[18:33] is that Grant 1 becomes one
+[18:36] so the output of the nor gate becomes
+[18:38] zero
+[18:39] the output of the and gate does become
+[18:43] and given that Grant 3 was 0 anyway so
+[18:46] this becomes zero and this becomes 0 and
+[18:49] Grant 1 becomes zero
+[18:51] right so what we basically see
+[18:54] is that in one cycle if Grant one is
+[18:57] equal to one
+[18:58] then in the next cycle it basically
+[19:01] becomes zero because why because output
+[19:03] of the nor gate becomes zero which makes
+[19:06] this zero
+[19:07] and gradually anyway was zero to begin
+[19:09] with
+[19:10] so then uh in the next cycle 0 gets
+[19:13] written into this D flip flop
+[19:15] so basically Priority One becomes 0 and
+[19:18] Grant 1 becomes 0.
+[19:20] all right so basically this means that
+[19:23] one request was granted one for one
+[19:25] cycle and then it lost its value
+[19:28] but now let's see what happens so let us
+[19:30] again look at the previous Cycles when
+[19:32] Grant one was one
+[19:34] so in this case again if Grant one was
+[19:36] one this is zero
+[19:38] the output of the and gate over here is
+[19:41] 0 because one of the inputs is zero
+[19:44] if I saw sorry if I compute an or
+[19:47] between 0 and 1 this becomes one
+[19:50] and this basically means that in the
+[19:52] next cycle
+[19:54] of course the priority for
+[19:56] request 1 becomes 0 so the priority for
+[20:00] you know request 2 becomes one right
+[20:02] because the D flip flop value at the
+[20:04] Negative Edge gets transferred from here
+[20:07] to here
+[20:08] the moment that happens this gets set to
+[20:11] 1.
+[20:12] and if request 2 is 0 then you know this
+[20:15] Grant Line is 0 anyway this was 0 to
+[20:17] begin with if this is 0 this is 0 so
+[20:19] this status go over here maintained
+[20:22] but the moment request 2 becomes 1 then
+[20:26] 1 and 1 get ended and this becomes 1. so
+[20:29] for one cycle
+[20:31] the second request gets to access its
+[20:33] resource and then the same process
+[20:36] happens that again you know here Grant
+[20:40] two becomes 1 so then the output of the
+[20:43] nor gate becomes 0 so this becomes 0 and
+[20:46] again you know the grant one line was 0
+[20:49] to begin with right in this case so then
+[20:53] what happens is this becomes 0 and
+[20:55] finally this becomes 0.
+[20:57] so then so on and so forth so this is
+[21:01] like a token that is being passed from
+[21:02] Grant 1 to Grant two to Grant three
+[21:05] again back to Grant one
+[21:07] so what we are essentially seeing is
+[21:09] that this is a typical round robin
+[21:11] allocation scheme where you first
+[21:14] allocate
+[21:15] the resource to the first request of
+[21:18] course if it's not interested you wait
+[21:20] till it is interested then you allocated
+[21:22] then it comes to request to you wait
+[21:25] till it is interested then it comes to
+[21:27] three
+[21:28] again you wait till it is interested
+[21:31] once it is done Grant 3 will become 0
+[21:33] and Grant 1 will become 1 subject to
+[21:35] request 1 but at least
+[21:37] Priority One will become one right the
+[21:39] moment Grant 3 is set to
+[21:42] 1 right and that is mainly because this
+[21:45] becomes one so this becomes one so this
+[21:47] becomes one
+[21:49] so this is a classic round robin scheme
+[21:51] where it's like a token that flows from
+[21:54] request 1 to 2 to 3 to 1. and of course
+[21:58] if one request is not interested we wait
+[22:00] until it is interested once it is we use
+[22:04] the resource for one cycle and then
+[22:08] the token goes to the next
+[22:11] request right as per round robin order
+[22:15] so of course this is a nice and simple
+[22:17] scheme in the sense we could draw the
+[22:19] full circuit very easily on the screen
+[22:20] and it's easy to understand
+[22:23] of course there is no way of enforcing a
+[22:25] priority between requests because you
+[22:27] follow around Robin
+[22:29] second let's see if an agent is not
+[22:31] interested you know it still has to be
+[22:33] given a chance it's not given a chance
+[22:36] it has to be given a chance because
+[22:40] ah it basically needs to use the
+[22:42] resource or let's say not use the
+[22:44] resource but at least
+[22:46] get the permission to use the resource
+[22:48] and then hand over the permission to the
+[22:51] next in line
+[22:53] so if you think about it
+[22:55] given the fact that we have a strict
+[22:57] round robin order
+[22:59] you have to be interested even if you
+[23:01] are not interested you'll still get the
+[23:03] token and you will have to
+[23:06] pass it on
+[23:09] we can have another scheme which is
+[23:11] again you know conceptually not very
+[23:14] different from round robin if you would
+[23:16] ask but uh
+[23:20] the idea is that
+[23:23] there is the you know there is a small
+[23:26] difference in the sense there is a
+[23:28] notion of priority here right which is
+[23:30] which makes it quite interesting
+[23:33] so in this case what we do is that we
+[23:35] are still looking at a single resource
+[23:37] kind of scenario
+[23:39] where all our agents who are requested
+[23:41] they are arranged in The Matrix form so
+[23:43] you have n agents let's say n requesters
+[23:46] then M cross n Matrix
+[23:48] and if let's say the
+[23:51] so it's a Boolean Matrix so let's say
+[23:53] the I jth entry is equal to 1. this
+[23:56] would basically mean that agent I has a
+[23:58] priority over Agent J this is the same
+[24:01] you know agent and request is the same
+[24:02] so it's basically
+[24:10] that certain request has a priority over
+[24:12] some other requests the ith request or
+[24:15] ith agent as we are calling has a
+[24:18] priority over the jth request or jth
+[24:21] agent
+[24:23] so then what happens is if a given agent
+[24:25] is not interested
+[24:27] then what it does is it sets all the
+[24:30] entries in its row to zero so it sets
+[24:33] everything to zero
+[24:35] and all the entries is column to one of
+[24:37] course other than diagonal entries the
+[24:39] diagonal entries don't matter so this is
+[24:41] basically like seeing that look
+[24:43] everybody else has a higher priority
+[24:45] than me
+[24:46] right so for that I set my row to zero
+[24:49] and column to 1.
+[24:52] because the idea basically is that you
+[24:56] know you want to look at kind of a row
+[24:58] and its transpose
+[24:59] so basically what you do is you say that
+[25:02] look if I am the ith agent
+[25:05] and basically I all the entries in my
+[25:09] row are zero I don't have higher
+[25:11] priority than anybody else
+[25:13] and in all of the entries in ith column
+[25:15] are one
+[25:16] that means everybody else has a higher
+[25:18] priority than me
+[25:20] so in every cycle the request is granted
+[25:23] to the agent which is once in all of its
+[25:25] entries in its Rook
+[25:27] so basically who gets it if you have one
+[25:30] in all of your entries again the
+[25:31] diagonal element doesn't matter
+[25:34] right if you have one everywhere
+[25:37] you are basically granted the request
+[25:39] the request is granted
+[25:42] this basically means that you have a
+[25:45] higher priority than everybody else and
+[25:47] we maintain the transpose properties so
+[25:50] basically it is always the case
+[25:52] that if this is the Matrix a and we look
+[25:54] at non-diagonal elements a i j which
+[25:58] means is basically the not of
+[26:01] AGI
+[26:05] which basically means that if I has
+[26:07] higher priorities and J then J are lower
+[26:09] priority than I and if I has lower
+[26:11] priority than J
+[26:14] then J has higher priority than I so
+[26:16] this always holds the transpose property
+[26:18] always hold
+[26:21] so then the idea is that once I have the
+[26:24] highest priority I get the resource
+[26:26] so once the ith agent is kind of
+[26:29] non-servicing its request it sets all
+[26:33] the entries in its flow to zero
+[26:35] and sets all the entries in its column
+[26:38] which is ith column right ith row ith
+[26:41] column let me mention that
+[26:45] to one
+[26:46] this basically says that look I am done
+[26:49] now I set all the entries in the row to
+[26:52] zero which basically indicates
+[26:55] that
+[26:57] I now have the lowest priority everybody
+[26:59] else has a priority higher than me so
+[27:02] you people may go out
+[27:04] so this means it relegates itself to the
+[27:06] lowest priority but again this mechanism
+[27:09] is possible to generalize by saying that
+[27:13] you know instead of setting all the
+[27:14] entries to zero it will still maintain a
+[27:16] few as one which indicates it is not
+[27:18] relegating itself to the lowest priority
+[27:20] but somewhere in the middle like an
+[27:22] intermediate priority that also is
+[27:24] possible and this approach allows that
+[27:26] but of course you may still you may then
+[27:29] have problems of starvation but at least
+[27:31] this approach does in principle allow
+[27:35] so the Matrix Arbiter here is how it
+[27:37] looks
+[27:40] to consider the state of the Matrix for
+[27:42] the first row so we see that all of the
+[27:45] elements are 1. bearing the diagonal of
+[27:48] course and for the First Column all the
+[27:50] elements are zero so we are all set the
+[27:52] request can be given to it so the
+[27:55] resource can be given to it so that's
+[27:56] the winner
+[27:58] once it is done
+[28:00] it sets all the entries to zero in its
+[28:02] row and all the entries in its column to
+[28:05] so now we have a new winner in this case
+[28:07] it is
+[28:09] request number three because this is the
+[28:11] only request whose all the entries are
+[28:15] one
+[28:16] and you can also see the third column
+[28:18] all the entries are zero
+[28:21] so this clearly means it has the highest
+[28:24] planet
+[28:25] after that it too does the same it sets
+[28:28] the row entries to zero column entries
+[28:31] and we have a new winner again which is
+[28:33] request number four
+[28:35] same thing it does exactly the same
+[28:38] thing after releasing the resource which
+[28:41] is all zero in its row and all once in
+[28:44] its column
+[28:45] and finally we have a request number two
+[28:49] which is the last to get so it sets all
+[28:52] the entries once it is done to zero zero
+[28:55] zero and these entries to 1 1 1. so you
+[29:00] can see the state of the Matrix is the
+[29:02] same as what we began with x 1 1 0 x 0 0
+[29:06] 0 1 x 1
+[29:09] 0 1 0 x right so we again come back to
+[29:12] this state so we again basically in this
+[29:15] case also we are having a round robin
+[29:17] but there is a notion of priority in the
+[29:19] sense it's not strictly one two three
+[29:21] four
+[29:22] we can change this initial State and we
+[29:24] could have a different
+[29:26] ordering as well and also it's not we
+[29:30] are not obligated to clear off
+[29:31] everything in the rows or columns in the
+[29:34] sense we need not delegate ourselves
+[29:36] to the lowest point and also it is
+[29:39] possible to alter this Matrix in the
+[29:41] middle it's not like a logic circuit
+[29:43] that maintains state
+[29:47] so let us now clean the ink and
+[29:50] basically reiterate the message so the
+[29:53] message is that this is still
+[29:55] you know a form of limited round robin
+[29:58] but given the fact that we are
+[30:00] maintaining State we can Ensure
+[30:04] a degree of priority
+[30:07] so let's now look at
+[30:09] other forms of allocators
+[30:12] so let us look at a separable allocator
+[30:15] so here as you can see we have nine
+[30:18] request lines and we have nine Grant
+[30:20] Line
+[30:21] select r i j it's rig as you can see
+[30:24] there are numbers written here there is
+[30:26] I written over here there is J written
+[30:29] so rij means
+[30:32] that the ith agent is interested in the
+[30:36] j3 source so basically if there are you
+[30:39] know three agents and three resources
+[30:41] right so let us say there are three
+[30:43] agents
+[30:50] and three resources
+[30:56] then what we will have is we'll have 3
+[30:58] cross 3 9 combinations
+[31:01] and this is what rig would denote
+[31:05] so what we have over here is that we
+[31:07] have these you know three cross three
+[31:08] switches or boxes
+[31:10] and uh essentially
+[31:14] for the first resource
+[31:21] the switch over here basically gets the
+[31:24] corresponding requests from the agents
+[31:28] right then it figures out that look one
+[31:30] of them needs to be granted right
+[31:33] and it makes the grant
+[31:36] similarly this is for the second
+[31:37] resource this is for Resource number
+[31:39] three so this is an example of an
+[31:42] allocator which is separable where there
+[31:44] are multiple agents multiple resources
+[31:46] and a matching has to be done
+[31:49] this look simple but there is a problem
+[31:52] the problem is that it is possible that
+[31:54] all the requests get selected for the
+[31:57] same resource in the First Column of
+[31:59] switches so it is possible
+[32:01] that this column over here so given the
+[32:04] fact that one agent can only be mapped
+[32:07] with one resource all of them will say
+[32:09] that look okay you are interested you
+[32:11] get mapped to the first resource
+[32:14] so then what will happen is this will be
+[32:16] selected this will be selected this will
+[32:18] be selected ultimately this will choose
+[32:20] only one even though it is possible that
+[32:22] let's say the first agent was also
+[32:24] interested in the second resource but
+[32:26] this switch will not forward this
+[32:28] request to here as a result you know you
+[32:32] could have had
+[32:33] more mapping clearly but that would not
+[32:36] have happened so the matching in this
+[32:38] case is not maximum
+[32:42] and
+[32:46] luck would have it it is also not
+[32:48] maximal so let me tell you why it is not
+[32:50] maximal so let us say that the first
+[32:53] agent is interested in resources one and
+[32:56] two and the second agent is interested
+[32:58] in only Resource One
+[33:00] so it is possible that this switch would
+[33:03] basically so at the first level at the
+[33:05] First Column that is
+[33:06] all the requests for resource one will
+[33:09] be the ones that get selected
+[33:10] essentially this will be one and the
+[33:12] rest will be zero and then this switch
+[33:15] over here will basically choose the
+[33:17] second request as the winner so the
+[33:19] winner will be chosen as the second
+[33:21] so in this case as you can see an
+[33:23] additional match could have been made in
+[33:25] a sense it could have matched the First
+[33:26] Resource sorry the first request with
+[33:29] the second resource
+[33:30] this is something that could have been
+[33:32] done but this is not being done so hence
+[33:34] this is not maximum it's not even
+[33:36] maximal so not being maximal basically
+[33:39] means that an additional matching could
+[33:41] have been done but it is not being done
+[33:44] if I were to kind of draw it over here
+[33:47] with these being the requests
+[33:51] and these being the resources
+[33:55] so what you can clearly see
+[34:02] is that at the beginning
+[34:04] the first request is interested in two
+[34:07] right and
+[34:10] writes the first request is interested
+[34:12] in two resources the second request is
+[34:16] interested in only one and this is only
+[34:18] interested in this
+[34:20] so what we do is that if we Grant this
+[34:23] one over here
+[34:24] then it is clear that this is locked and
+[34:26] this is locked but then an additional
+[34:29] granting or an additional mapping could
+[34:31] be done which is between this and this
+[34:34] but this is exactly not what is being
+[34:36] done you know in this case if all the
+[34:39] first requests are chosen and which is
+[34:42] why it's not really a maximal mapping
+[34:44] allocator and we would at least want our
+[34:47] allocators to be maximal if not maximum
+[34:49] of course maximum is preferable but that
+[34:51] is harder
+[34:53] so let's now look at a wavefront
+[34:55] allocator which in many ways is a very
+[34:58] neat idea it's a very neat and very
+[35:01] interesting idea
+[35:04] so here the idea is that you consider an
+[35:07] engross n Matrix
+[35:12] the encrossman NY so it is basically n
+[35:15] agents and N resources right or n agent
+[35:18] slash request agent and request is the
+[35:20] same so we have n agents and we have n
+[35:25] and basically again we have these cells
+[35:29] so i j basically means to the ith row or
+[35:32] the ith request is interested in the jth
+[35:35] resource rights the ith agent is
+[35:38] interested in the jth resource
+[35:41] so as you can see 2 1 2 1 means I am you
+[35:45] know I am in the second row I am agent
+[35:47] number two I am interested in Resource
+[35:50] One similarly this is three four four
+[35:52] four so on and so forth so of course if
+[35:54] I am interested I have a different color
+[35:56] if I am not interested I do not have a
+[35:59] color amp when I'm uncolored
+[36:01] so as you can see here this is a matrix
+[36:03] it's a square Matrix because it is n
+[36:05] cross n and sum of these squares have it
+[36:09] have a different color which basically
+[36:11] indicates that there is an interest for
+[36:14] example this Square would indicate that
+[36:17] the third agent or the third request is
+[36:20] interested in the second resource this
+[36:22] is what it would indicate
+[36:24] so now the idea is that we need to do a
+[36:27] mapping and this is the hardware so we
+[36:28] take all of these things these are like
+[36:30] you know like
+[36:31] kind of very very small processing units
+[36:35] with a tiny amount of logic and they are
+[36:38] connected in a Taurus shaped Network so
+[36:40] this is essentially the sub Circuit of
+[36:41] our
+[36:42] allocated it's called a wave front
+[36:44] allocator why a wave front it will be
+[36:46] very clear in the next slide
+[36:49] so the key point is that we give it two
+[36:51] tokens so the pinkish one is the row
+[36:53] token which only traverses along the
+[36:56] rows
+[36:57] and the bluish one is a column token
+[37:00] which only traverses along the columns
+[37:02] so we start by giving a row and a column
+[37:05] token to each diagonal element so as you
+[37:08] can see in all the diagonal elements
+[37:09] we'll have two tokens each one row token
+[37:13] and one column token then what we do is
+[37:16] that we run this algorithm for multiple
+[37:18] rounds
+[37:19] so in each round we move the row token
+[37:22] right the row token is the pinkish one
+[37:24] we move it one step to the left so this
+[37:27] goes One Step left this goes One Step
+[37:29] left this goes One Step left which means
+[37:32] it comes here
+[37:33] and we move the column token one step
+[37:36] down so the bluish column token goes
+[37:38] down this goes down and again of course
+[37:40] shows up over here and this goes down
+[37:43] this close down
+[37:45] so what will again happen is that if the
+[37:48] blue token will arrive over here this is
+[37:50] blue this pink token will arrive over
+[37:52] here so again you will still have a pair
+[37:55] that is forming similarly two tokens
+[37:57] will collide here so what we will see is
+[38:00] that after one round
+[38:02] this will be the situation so let us
+[38:04] shows let us now remove the interested
+[38:06] information right so this will come
+[38:08] later
+[38:09] but this is just an example showing the
+[38:12] movement of tokens so initially as you
+[38:14] can see all the tokens are on these
+[38:16] diagonal cells so this is like
+[38:19] you know a diagonal over here
+[38:21] then if I move to the second round as I
+[38:24] said the column token comes here the row
+[38:27] comes here right so basically at every
+[38:30] Point again you know the rows and column
+[38:32] tokens Collide and they form a pair
+[38:35] so this is something like you know you
+[38:37] can visualize it's like this wavefront
+[38:39] propagating in this direction so you
+[38:41] have a smaller wavefront here and it's
+[38:43] like the wavefront again you know kind
+[38:45] of showing up over here
+[38:47] so you will again have this situation
+[38:50] here why is that the case because this
+[38:52] row token would again come here and this
+[38:54] column token would come here and they
+[38:56] would collide
+[38:58] so this is as you can see it's like a
+[39:00] wavefront that is propagating in this
+[39:02] direction and kind of getting reflected
+[39:03] and showing up over here at the other
+[39:06] diagonal end now if I consider round
+[39:08] three so this wave front will propagate
+[39:11] like this which is nothing but you know
+[39:14] this moving in this direction this
+[39:15] moving in that direction
+[39:17] so then again we'll have a smaller pair
+[39:20] of two here and then another pair of two
+[39:23] here
+[39:24] and similarly then they will propagate
+[39:27] in this direction which is where you
+[39:30] know the wave front will be over here
+[39:31] and over here and the final state will
+[39:34] actually be round one where in the next
+[39:36] round of propagation we'll come back to
+[39:38] this state
+[39:39] so why is this happening so if you think
+[39:41] about it the tokens themselves are
+[39:43] moving independently the row token moves
+[39:47] along the rows and the column token
+[39:49] moves along the column so the movement
+[39:51] as such or the movement per se is
+[39:54] independent
+[39:59] all right
+[40:02] and but it appears so it appears it is
+[40:05] like you know these small waves of water
+[40:06] where the molecules of course move
+[40:08] independently but it so appears given
+[40:11] the synchrony that a wave is propagating
+[40:13] a wave is Rippling through which is
+[40:15] something that we get to see over here
+[40:17] as well right so this is where the
+[40:20] wavefront in the wavefront allocator
+[40:22] comes
+[40:24] now let us add this information that
+[40:29] uh basically some of these cells are
+[40:32] interested which means the second
+[40:34] request is interested in the secondary
+[40:36] source so in a third request is
+[40:38] interested in the first resource
+[40:41] so what happens is that if there is an
+[40:44] interest the moment both the tokens
+[40:46] comes mind you I
+[40:48] would like to do this both the tokens
+[40:50] have to come the row and the column so
+[40:53] of course needless to say no cell will
+[40:55] ever have two blue tokens or two pink
+[40:57] because they travel in perpendicular
+[41:00] Direction so if you have two tokens one
+[41:02] will be blue one will be pink
+[41:04] the moment you have both if you absorb
+[41:06] them and remove them from circulation it
+[41:09] is as if a mapping has been created from
+[41:12] the ith
+[41:14] request or agent to the GTH resource so
+[41:18] the moment the ijth cell
+[41:21] absorbs both the tokens and removes them
+[41:23] from circulation it is as if a request
+[41:26] resource mapping has been made
+[41:29] so in this case what happens is that in
+[41:31] round one
+[41:32] well
+[41:34] what happened so what happened is 2 2
+[41:36] was interested so it grabbed both the
+[41:38] tokens so then what happened is that
+[41:40] this token was absorbed so the only
+[41:42] downward movement was of this blue token
+[41:44] over here and similarly this token was
+[41:47] absorbed so the only movement was for
+[41:49] this pink token which kind of went over
+[41:54] so now what has happened is that we uh
+[41:57] so now of course as you can see no cell
+[41:59] has two tokens that is you know no
+[42:02] interest rate cell has two tokens then
+[42:04] we come to round three here again we see
+[42:06] a situation developing so what happens
+[42:09] is this moves this way this moves this
+[42:11] way so now we have both the tokens over
+[42:14] and this cell is also interested so in
+[42:16] this case both the tokens are grabbed
+[42:19] and they are removed from
+[42:21] circulation
+[42:23] so once they are done as you can see now
+[42:26] we kind of have you know these
+[42:28] interesting situation of single tokens
+[42:30] each and of course we have tokens
+[42:32] circulating but again no cell has two
+[42:34] tokens right or let's say no interested
+[42:37] cell has two tokens so as a result four
+[42:40] rounds are over and algorithm completes
+[42:42] we made two mappings one was mapping two
+[42:45] two that was one mapping that we made
+[42:47] the other mapping that we made was three
+[42:52] so those are the two mappings that we
+[42:55] made two two and three one those are the
+[42:58] two tokens that we craft and those are
+[43:01] the two mappings that we made
+[43:05] so what are the properties of this
+[43:07] wavefront allocator
+[43:09] so once the token is absorbed it is
+[43:11] clearly put out of circulation so that's
+[43:13] not very hard to fathom
+[43:15] this means that no cell in the same row
+[43:17] which is the agent true or column
+[43:22] can get both the tokens so this
+[43:24] basically means that the entire agent
+[43:26] row
+[43:27] no cell can get which means that this
+[43:30] agent can't be mapped to any other
+[43:31] resource which is what we wanted mainly
+[43:33] because its row token has been put out
+[43:35] of circulation no other row token can
+[43:37] come to it and furthermore the column
+[43:40] token has also been put out of
+[43:42] circulation so this resource cannot be
+[43:44] mapped to any other
+[43:47] so this means the matching that is
+[43:49] produced is at least correct which
+[43:50] basically means that a request is mapped
+[43:53] to at most a single resource and a
+[43:55] resource is mapped to at most a single
+[43:57] request
+[43:58] so at least this is visible from our
+[44:01] token logic which you can see
+[44:03] over here that because we remove them
+[44:06] out of circulation the row and column
+[44:08] are kind of get blocked and as a result
+[44:11] it is not possible for the same row
+[44:15] for any other cell in the same row to
+[44:18] actually get two tokens because the row
+[44:19] token is gone or any other cell in the
+[44:22] same column to get two tokens because
+[44:23] the column token is gone
+[44:26] so now let's look at some of the more
+[44:29] important
+[44:30] properties
+[44:32] so it produces maximal matching so there
+[44:34] is a proof in the book so the idea
+[44:36] basically is that if a matching is
+[44:38] possible then you know it's kind of
+[44:40] shows up
+[44:42] so there is clearly no matching that
+[44:44] could have been done but was missed
+[44:46] because the point is that every cell is
+[44:48] getting its chance
+[44:50] in a sense if you see
+[44:52] the wavefront is kind of propagating
+[44:54] through every cell even the every cell
+[44:56] may not have two tokens because they may
+[44:58] be put out of circulation
+[45:00] but the wavefront is traveling through
+[45:02] every cell so it is getting it's done
+[45:03] that's important
+[45:05] right as we said you know this mapping
+[45:07] and matching are two synonymous terms
+[45:10] that we will use interchangeably just
+[45:11] for the sake of this discussion I'm
+[45:13] being slightly loose here
+[45:15] but that
+[45:17] hopefully in a good way
+[45:19] so every cell gets the two tokens at
+[45:22] some point of time
+[45:24] if if
+[45:26] no cell in the same row or column has
+[45:28] already been allotted its request right
+[45:30] so if let's say in that lower column
+[45:35] no other resource or request has got in
+[45:38] it and every cell will get both the
+[45:41] tokens and that is when it will absorb
+[45:43] them and put them out of circulation
+[45:46] which means at that point of time the
+[45:48] cell can be allotted the request right
+[45:50] so there is no reason why that should
+[45:52] not be done if the cell is interested so
+[45:54] what you can see is unlike the previous
+[45:56] case in this case we do not miss a
+[45:58] mapping right so a mapping which can
+[46:00] legitimately be done which basically
+[46:03] means the tokens are swimming around
+[46:04] unabsorbed such mappings are not missed
+[46:07] so we don't miss a mapping
+[46:15] so now we have kind of finished the
+[46:18] wavefront allocator part so we are now
+[46:23] at kind of the cusp of our discussion
+[46:25] where we would like to look at
+[46:27] optimizations to the router pipeline how
+[46:30] can the router pipeline kind of be made
+[46:32] more efficient because five stages just
+[46:34] to Traverse a router appears to be too
+[46:37] much
+[46:39] so given the fact that we are not happy
+[46:42] a router itself taking five cycles and
+[46:47] why are we not happy well the main
+[46:48] reason is that you know the Hop to hop
+[46:50] distance
+[46:51] is let's say 10 hops or 20 hops then you
+[46:55] know it's 20 times 5 which is 100 Cycles
+[46:58] right so in you know that's huge right
+[47:01] uh given the fact that access to the
+[47:03] main memory itself is around 2-300
+[47:05] Cycles just moving from one point to the
+[47:08] other point on an NOC and that to it
+[47:10] taking 100 Cycles is too much
+[47:12] that is why
+[47:15] uh the router to router latency has to
+[47:17] be reduced and that will happen only
+[47:20] when these five Cycles actually come
+[47:22] down
+[47:24] so where do we stand so let's look at
+[47:27] where we stand we have five stages
+[47:28] buffer right route compute once I've
+[47:31] computed the route I allocate a virtual
+[47:34] Channel allocate a switch port and
+[47:35] Traverse the switch right so these are
+[47:37] the five stages we have seen
+[47:39] so let me draw a diagram like this where
+[47:41] the row basically means the stage so
+[47:44] this is slightly different from a
+[47:45] pipeline diagram we will see why because
+[47:48] you know in the same stage as we can see
+[47:51] you know different things can happen
+[47:52] right so basically the flits are F1 F2
+[47:56] and F3 in a packet
+[47:58] so initially what will happen is F1
+[48:01] which is the head plate will be there in
+[48:03] cycle number one it will enter the
+[48:05] router
+[48:06] now let's say in cycle 2
+[48:09] uh this most are out compute stage
+[48:12] because we don't expect an installing
+[48:13] here so flit F2 comes here and then
+[48:17] Fleet F1 the route is being computed
+[48:20] after that we go to the virtual Channel
+[48:23] allocate stage where some stalling could
+[48:26] happen in the sense
+[48:28] F1 is there in a virtual Channel
+[48:30] allocate stage F2 however will not move
+[48:33] to Route compute it will stay in the
+[48:35] buffer right in the sense that the
+[48:37] buffer of course has been written but
+[48:39] essentially the fluid is staying there
+[48:41] mainly because its head fleet has not
+[48:44] progressed
+[48:45] so at this point of time in the third
+[48:47] cycle we try to allocate a virtual
+[48:50] channel to Fleet F1 but at that point we
+[48:53] don't find a free virtual channel so
+[48:55] that's the reason we don't do anything
+[48:57] it's like a stall
+[48:58] next in the fourth cycle we can try to
+[49:01] allocate a virtual Channel and towards
+[49:03] the end we are successful
+[49:05] that is why in the fifth Channel F1 goes
+[49:08] to the switch allocate stage
+[49:10] and F2 Still Remains over here because
+[49:12] for F2 we do not have to compute a route
+[49:15] or we don't have to allocate a virtual
+[49:17] Channel because
+[49:19] these are mainly done or only done for
+[49:23] the head Fleet they are not done for
+[49:25] body fluids
+[49:26] so then what happens is that
+[49:29] in cycle 6 this we see that F1 is
+[49:32] allocated a switch so it reverses the
+[49:34] switch and basically at this point there
+[49:37] is no Stallings F1 is gone
+[49:39] F2 could now move to the switch allocate
+[49:43] stage directly because the virtual the
+[49:46] because at this point
+[49:50] F1 is gone and only after F1 F2 would be
+[49:55] allocated to switch and it is going to
+[49:56] go because once it's allocated is
+[49:58] switched it needs to Traverse and go
+[50:00] so F two goes to this stage and at this
+[50:04] point F 3 comes
+[50:06] from the previous router so it goes into
+[50:08] the buffer right stage
+[50:10] so then what we see is that in a seventh
+[50:12] cycle F2 is allocated as switch port and
+[50:15] then F2 goes away
+[50:17] and then uh you know goes away means it
+[50:20] is transmitted to the next router on the
+[50:22] way
+[50:23] and F3 goes to the switch allocate
+[50:26] Stitch where we see that we need to
+[50:28] stall for one cycle the reason being
+[50:31] that we are not able to find a switch so
+[50:34] basically what happens is that this goes
+[50:37] from here to here
+[50:42] so we wait for one additional cycle for
+[50:45] the switch allocation to happen and
+[50:47] finally F3 gets transmitted over here in
+[50:49] the ninth cycle so this somewhat of a
+[50:52] modified diagram in the sense as you can
+[50:55] see uh that you know at one point of
+[50:59] time
+[51:00] right we can have also multiple fleets
+[51:04] that are there in the same stage which
+[51:06] was not there earlier even though this
+[51:08] diagram doesn't show that but you get
+[51:11] the idea the idea basically is that we
+[51:14] have a strict sequential
+[51:15] sequentialization of fluids within a
+[51:17] packet and furthermore the head Fleet
+[51:20] needs to go through through two
+[51:22] additional stages which are RC and VA
+[51:25] but the switch allocation we are trying
+[51:27] to do for every flight separately for
+[51:30] this overhead so basically the overhead
+[51:32] is three cycles for body and tail fluids
+[51:34] and it is five cycles for the head fluid
+[51:38] for the head fluid determines the
+[51:39] critical path that is why reducing these
+[51:42] five Cycles is important
+[51:45] so let us look at one of the most common
+[51:49] optimization techniques called look
+[51:50] ahead routing
+[51:52] where essentially you compute the route
+[51:54] for the next stop so let us say that
+[51:56] this is the route that a path will take
+[51:58] ah one two three four five nodes one two
+[52:01] three four five
+[52:03] so what I do is that initially I see
+[52:06] where
+[52:07] am I supposed to go so Node 1 will tell
+[52:10] you that I'm supposed to go for go to
+[52:11] node 2.
+[52:13] so the idea here is that you maintain
+[52:15] some of the state that node 2 would
+[52:17] maintain which it can periodically also
+[52:19] transfer
+[52:21] at Node 1 you make a decision as to what
+[52:25] node 2 should compute in the sense where
+[52:27] should node 2 actually send the packet
+[52:30] right which way so Node 1 is essentially
+[52:33] Computing the decision that node 2 will
+[52:35] take even though you may argue that this
+[52:38] would be a bad idea because it doesn't
+[52:39] have all the information that is
+[52:41] available to node 2 like congestion
+[52:43] information and so on but again they are
+[52:46] kind of close by and node 2 can also
+[52:48] periodically relay information to node
+[52:50] one but we will see it serves an
+[52:52] important purpose
+[52:54] and similarly when the packet comes to
+[52:56] node 2 the node 2 nodes already kind of
+[52:59] a priority it knows that it needs to
+[53:00] send it to three so the route
+[53:02] computation as such is now of the
+[53:05] critical path
+[53:07] right its off the critical path
+[53:16] what node 2 would do is it would
+[53:18] basically compute the decision that node
+[53:20] 3 will take and pretty much when the
+[53:22] head plate comes it will basically tell
+[53:24] node 3 that look it has already been
+[53:25] pre-decided and I need to go to four so
+[53:28] what you need to do is that you need to
+[53:30] compute the decision that 4 will take so
+[53:32] on and so forth and the routing decision
+[53:35] is clearly sent along with the packet
+[53:37] the advantage is it moves the RC stage
+[53:40] out of the critical path and the
+[53:42] disadvantage is that
+[53:47] we are kind of dealing with reduced
+[53:49] information insufficient information
+[53:51] that is the disadvantage
+[53:58] if I look at this pipeline diagrams in
+[54:01] original head Fleet write the original
+[54:04] scheme in the head Fleet would actually
+[54:06] Traverse these five stages rcva sa and
+[54:09] St and the body fluid would this RC and
+[54:12] VA would not be there for the body fluid
+[54:13] so we will write it in the buffer
+[54:16] allocate a switch in Traverse once the
+[54:18] head filter is gone
+[54:19] in look ahead routing basically VA and
+[54:22] RC can be done in parallel RC is not in
+[54:25] the critical path anymore so 5 has been
+[54:28] reduced to 4.
+[54:31] and the for the body plate it remains
+[54:34] more or less the same because these two
+[54:36] stages will not be there it will be
+[54:38] buffer rights which are located and
+[54:39] switch traversal so we have made an
+[54:41] important reduction from five to four
+[54:47] now let's look at another optimization
+[54:50] known as bypassing so let us assume that
+[54:53] the queues of the router are empty which
+[54:57] could be the case because you know you
+[54:58] do not have a lot of traffic all the
+[55:03] so in that case the an attempt should be
+[55:06] made to directly Traverse the switch if
+[55:08] you have some idea the queues of a
+[55:10] router are empty but of course there
+[55:12] should be a way for detecting conflicts
+[55:14] where then we sort of fall back right
+[55:16] Resort basically in this case would be
+[55:18] we fall back
+[55:20] to the conventional method so in this
+[55:22] case what would happen is that of course
+[55:25] VA and RC this needs to be done but the
+[55:27] buffer right stage which used to be
+[55:29] there that is skipped
+[55:31] switch allocation stage which used to be
+[55:33] there that also is skipped because we
+[55:35] directly try to you know take one of the
+[55:37] freeze
+[55:38] input ports of the switches and directly
+[55:41] try to Traverse and of course we have a
+[55:43] collision detection circuit so pretty
+[55:46] much what we are doing is that in a varc
+[55:48] still has to be done because we are
+[55:50] still assuming uh look ahead routing
+[55:54] and so both these stages have to be done
+[55:57] and so in this case
+[56:00] uh that you know that is required
+[56:04] and maybe what would have been slightly
+[56:06] more accurate is Right VA over here and
+[56:08] light RC over here to indicate that it's
+[56:10] still not in the critical path but you
+[56:12] get the idea so in this case if the
+[56:14] queues are empty then R5 has pretty much
+[56:17] been reduced to two
+[56:20] so just traversing a router for the head
+[56:23] fluid has become
+[56:25] something which is very easy
+[56:27] which has pretty much been reduced from
+[56:30] five Cycles to two cycles for the head
+[56:32] plate which is what matters
+[56:34] but again what is the likelihood of
+[56:36] finding all the cues to be empty well
+[56:38] that needs to come out through
+[56:40] simulation studies which we will look at
+[56:44] another approach is speculative VC
+[56:47] allocation
+[56:48] very assume that you will find a free
+[56:51] virtual channel right whether that is
+[56:53] the case or not well this is something
+[56:54] that you are kind of speculating
+[56:56] guessing
+[56:57] but the idea is since you're assuming
+[56:59] that what you do is after finding a free
+[57:02] VC
+[57:03] you send this information along with the
+[57:05] head fluid so I'll just explain in a
+[57:07] second how this works if a cause
+[57:09] speculation is law is wrong you always
+[57:12] kind of fall back to the conventional
+[57:15] method which is your five stage pipeline
+[57:17] so the fallback option in the case of a
+[57:20] speculation or a prediction feeling that
+[57:22] option is always there that is always
+[57:25] available to you but in this case where
+[57:27] there is some amount of Slack
+[57:30] some amount of
+[57:33] emptiness in the queues let's say right
+[57:35] somehow on the slack you would like to
+[57:37] optimize so what you do is you still
+[57:39] have located routing so RC is off the
+[57:42] now what you do is you try to take
+[57:46] virtual Channel allocation out of the
+[57:49] critical path so you say that look
+[57:52] let me first write it into a buffer let
+[57:56] me try to allocate the switch
+[57:59] and this will take anyway one cycle to
+[58:02] find a switch
+[58:03] at that point of time I do look ahead
+[58:05] routing which was not on the critical
+[58:07] path anyway
+[58:08] I do virtual Channel allocation which
+[58:10] was not only which in this case is not
+[58:13] on the critical path all right
+[58:15] now the idea here is if I find a virtual
+[58:18] Channel then basically which is free
+[58:20] then I stamp the head flip with whatever
+[58:23] stand means I write the
+[58:26] virtual Channel that I just allocated to
+[58:28] the head filter to make it pass through
+[58:30] the switch
+[58:31] if I don't find a virtual Channel over
+[58:33] here then essentially I install this
+[58:36] process and then I go through the
+[58:38] traditional route
+[58:40] which is that I wait for a virtual
+[58:42] channel to be allocated and once a
+[58:44] virtual channel is allocated
+[58:46] right I do switch a location once again
+[58:49] and then I do switch traversal once
+[58:52] again
+[58:53] so the key point is that here we are
+[58:55] making an important guess and the guess
+[58:58] is that I will find a free virtual
+[59:00] Channel allocation hence I am saying
+[59:02] that look go ahead and allocate a switch
+[59:03] port
+[59:05] and in the meanwhile I will find a free
+[59:08] virtual Channel
+[59:09] which in in all likelihood I will be
+[59:11] able to find one or let us say with high
+[59:13] probability I will be able to find one
+[59:15] once I find one I'll take that
+[59:17] information and I'll stamp the packet
+[59:18] and you go through in case it doesn't go
+[59:21] through you fall back to what you are
+[59:23] doing so this as you can see also
+[59:25] reduces us from five to three Cycles it
+[59:28] is not as aggressive as bypassing in the
+[59:31] sense it still has the buffer right
+[59:32] stage it's somewhat less aggressive but
+[59:36] making a guess that you will find a free
+[59:38] VC is somewhat more reasonable than
+[59:41] assuming that the queues are empty so
+[59:43] this is somewhat more practical than you
+[59:45] know pure bypassing
+[59:48] another idea is late VC selection
+[59:52] where what we do is that the virtual
+[59:55] Channel allocation happens along with
+[59:57] switch traversal right
+[59:59] so we maintain a queue of free virtual
+[60:01] Channels with each outgoing link so the
+[60:03] moment you know you are let's say going
+[60:05] on a certain link you maintain a small
+[60:07] queue of free virtual Channel IDs
+[60:10] the moment the head plate is traversing
+[60:12] the switch at the same time we kind of
+[60:15] pick an element from the queue and
+[60:17] assign it a VC in the sense the moment
+[60:19] it will kind of emerges to another side
+[60:21] of the switch we write this information
+[60:22] and send it down the link
+[60:24] the main problem is what if a free VC is
+[60:27] not available and the queue is empty
+[60:29] well if the queue is empty we will know
+[60:30] that earlier also in the sense that you
+[60:33] know maybe two cycles before that if you
+[60:36] see that the queues are empty for a
+[60:37] certain outgoing link will not even try
+[60:40] to allocate a switch but of course race
+[60:42] conditions are possible
+[60:43] where another uh plate another head
+[60:46] plate kind of takes a vcn runs away
+[60:49] so in case that happens we have a small
+[60:51] circuit to detect this and we can always
+[60:53] restart the conventional five stage
+[60:55] process so that fallback option is
+[60:58] always there with us in case at this
+[61:00] point we find that you know we are not
+[61:03] able to allocate it allocate a v c we
+[61:06] just cancel the process of sending the
+[61:07] fluid and we go through the normal
+[61:10] conventional routine of five stages
+[61:12] right so that option is always there but
+[61:15] again this is a also a neat way
+[61:18] of removing V A from the critical path
+[61:21] because you are saying that look in all
+[61:23] likelihood I will find a free VC so why
+[61:25] not I
+[61:27] maintain
+[61:30] a Q and then finally plug an entry from
+[61:32] the queue and go
+[61:33] kind of in principle similar to
+[61:36] speculative VC allocation even though
+[61:37] the mechanism is quite different
+[61:41] so we have seen this picture before also
+[61:44] I will not spend a lot of time we had
+[61:46] seen it in a previous lecture so I will
+[61:49] maybe quickly go through it once again
+[61:53] uh so basically uh
+[61:57] we have
+[61:59] five incoming links from north south
+[62:02] east west and local assuming multiple
+[62:04] VCS per link
+[62:06] this is the buffer right stage and then
+[62:08] of course you write it to a buffer we
+[62:10] compute the route
+[62:11] so as I said this itself could be moved
+[62:15] off the critical path using local head
+[62:16] techniques then we do VC allocation
+[62:19] which itself can be moved off the
+[62:21] critical path assuming
+[62:23] either speculative VC allocation or late
+[62:26] VCR location
+[62:27] finally we allocate a switch port and we
+[62:30] Traverse the switch and of course a
+[62:32] large part of this also can be removed
+[62:34] with direct traversal right as we have
+[62:36] seen in the case of bypassing
+[62:39] that we can do these BARC computations
+[62:42] and just Traverse the switch and for the
+[62:45] rest of the packets ah sorry the fleets
+[62:49] in the packet we can directly do switch
+[62:51] traversal assuming that the router is
+[62:53] totally empty for them the router
+[62:55] latency is actually one cycle but again
+[62:57] as I said the likelihood of this
+[62:59] happening is well could be high could be
+[63:01] low it's very Benchmark dependent
+[63:05] so with this
+[63:07] ah this lecture finishes so we will have
+[63:09] a last lecture where we will discuss two
+[63:12] things primarily one is that how do I
+[63:15] co-design the cache architecture with
+[63:17] the NOC right NOC and cache and how do I
+[63:21] measure the performance of an NOC right
+[63:23] what is the standard way of measuring
+[63:26] how good or how bad an NOC performs
+[63:29] [Music]

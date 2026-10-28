@@ -1,0 +1,1017 @@
+[00:00] n
+[00:06] [Music]
+[00:34] all right so now we have taken a look at
+[00:37] Boolean algebra which is the
+[00:38] manipulation of
+[00:40] bits we have taken a look
+[00:43] at how positive integers are represented
+[00:46] in
+[00:47] binary how negative integers are
+[00:50] represented in binary so let me maybe
+[00:52] just
+[00:54] summarize uh at this point so we have
+[01:01] for a quick
+[01:02] recap Boolean algebra had to do with
+[01:05] Boolean variables where each variable
+[01:07] could take a number between uh sorry not
+[01:10] between a number which is either zero or
+[01:13] one and we defined basic operations on
+[01:17] Boolean variables such as the and
+[01:20] operation which means that the and
+[01:22] function is true only when both the
+[01:26] variables or all the variables involved
+[01:29] in and operation all of them are one and
+[01:32] all operation is correct only when is
+[01:35] true only when one of the variables is
+[01:38] one then we Define a not operation
+[01:41] that's a complement and we Define an XR
+[01:44] operation which is one when one is zero
+[01:47] and the other is
+[01:48] one then we Define the binary system to
+[01:51] represent positive integers with
+[01:54] different bases so the important point
+[01:57] to recapitulate you know for
+[02:00] uh at this point of the lecture is that
+[02:04] what is the relationship between
+[02:07] binary between
+[02:09] octal which is base 8 and between hex
+[02:12] which is hexa decimal which is base 16
+[02:16] and the important result that we had
+[02:18] proved is that the octal and heximal
+[02:21] notations can be thought as short forms
+[02:24] you know abbreviations or reduced
+[02:27] representations of a binary
+[02:29] representation
+[02:31] so what do we do for example in base 16
+[02:34] we just group blocks of four binary
+[02:37] numbers and uh represent them with one
+[02:40] base 16 number for example a number of
+[02:43] this
+[02:46] form right which it can be represented
+[02:49] as this becomes one and this is actually
+[02:52] 8 + 3 11 which is
+[02:56] B right so the instead of having eight
+[02:59] digits we only have two digits then we
+[03:02] represented negative integers we looked
+[03:04] at different methods of representation
+[03:07] one is a sign magnitude representation
+[03:10] which has a sign bit the problem there
+[03:13] was that performing arithmetic
+[03:15] operations was difficult and there were
+[03:18] two representations for zero the other
+[03:21] as one complement same problems two
+[03:24] representations the other was with a
+[03:26] bias so in with a bias we had a single
+[03:29] representation for every
+[03:31] number but even addition and uh
+[03:35] subtraction were relatively easier but
+[03:36] multiplication was hard so that's the
+[03:39] reason we introduced tw's
+[03:42] complement where uh essentially the
+[03:45] two's complement of a positive number is
+[03:47] a number itself and a two's complement
+[03:50] of a negative number is 2 ^ n minus
+[03:52] U the Fantastic thing about this number
+[03:56] system is yes it preserves a notion of
+[03:59] the sign bit
+[04:00] is easy to find if a number is positive
+[04:02] or negative just take a look at the MSP
+[04:05] there is one representation for zero and
+[04:07] all other
+[04:09] numbers and Performing addition
+[04:12] subtraction and multiplication is
+[04:15] simply as simple as take the unsigned
+[04:18] representations of the numbers and add
+[04:20] subtract and multiply them the last n
+[04:23] Bits of the
+[04:25] result are uh the representation of
+[04:33] uh the last n Bits of the
+[04:35] result uh are actually the
+[04:37] representation of what the actual result
+[04:41] should have been right and uh
+[04:45] similarly uh sorry uh so so then we
+[04:48] discussed some properties of this number
+[04:51] system which is uh when what are the
+[04:54] conditions for an overflow that's very
+[04:57] important and we also discussed
+[05:00] uh the issues of sign extension which is
+[05:03] that when you convert a number from one
+[05:06] uh you know from an nbit system to an
+[05:07] mbit system where m is greater than n
+[05:10] what do you need to
+[05:12] do now let's discuss floating Point
+[05:14] numbers which are numbers with the
+[05:16] decimal
+[05:17] point so what is the floating Point
+[05:19] number is any number with a decimal
+[05:21] point inside it like 2.35 6 or
+[05:24] 13 * uh 10^ -
+[05:28] 10 so now the question is the moment
+[05:31] we say that a number is a floating Point
+[05:34] number we need to answer the question
+[05:35] what is a fix Point
+[05:37] number so in a fixed Point number the
+[05:40] number of digits after the decimal point
+[05:42] is
+[05:44] fixed so it uh so one example of such a
+[05:47] number is 3.29 so any number
+[05:49] representing let's say currency is a
+[05:52] fixed Point number that the number of
+[05:54] digits after the decimal point is fixed
+[06:00] so what is the generic form of a number
+[06:03] in base 10 if we consider just positive
+[06:06] numbers uh if you just consider positive
+[06:09] numbers the generic form of a number in
+[06:11] base 10 is 3 * 10 ^ 0 which is 3 plus
+[06:17] you know 2 uh 2 which is 2 * 10 ^
+[06:22] -1 + 09 which is 9
+[06:27] * 10 ^ - 2
+[06:33] so any generic form is a form of this
+[06:36] type where we uh make a summation from a
+[06:39] minus n to a plus M or plus n where we
+[06:42] are essentially adding powers of 10 with
+[06:46] a coefficient so in this case the
+[06:48] coefficient is 2 and 9 and three and so
+[06:51] on so what would a generic form of a
+[06:54] number being base two all that we can do
+[06:57] is that we can take
+[07:00] 10 and replace it with
+[07:04] two so let's take some simple numbers
+[07:07] and expand them in this notation so
+[07:10] let's say
+[07:11] 375 is 2 ^ -2 + 2 to the^ - 3 a number
+[07:18] like 1.5 is 2 ^ 0 + 2 ^ -1 a number of
+[07:24] the form
+[07:26] 17.625 is this representation as shown
+[07:29] over here 2 ^ 4 + 2 ^ 0 + 2 ^ -1 + 2 ^
+[07:39] -3 so if we can use base 10 to represent
+[07:43] all floating Point numbers right all
+[07:46] decimal numbers like the value of pi and
+[07:48] E and you know even a number like 5.36 *
+[07:52] 10 ^ -
+[07:53] 17 Nothing Stops us
+[07:56] mathematically to replace base 10 by
+[08:01] base
+[08:02] 2 so what do we do we take the base 2
+[08:06] representation of a floating Point uh
+[08:09] number so what we have done here is that
+[08:12] we have replaced four I'm sorry replaced
+[08:15] base 10 by base 2 everywhere just one
+[08:18] small correction here this should have
+[08:19] actually been minus 3 so we have
+[08:22] replaced base 2 by base 10 everywhere
+[08:26] and uh so as I said if you go to a
+[08:28] planet where people have only two
+[08:31] fingers they would use base two they
+[08:33] would not use base 10 and pretty much
+[08:37] any base 10 number has an equivalent
+[08:40] base 2 expression which is an expression
+[08:43] of this form which is just a binary
+[08:47] representation of the number uh from
+[08:50] base 10 to base 2 and so if you consider
+[08:53] one
+[08:54] .11 in decimal this would be 2
+[08:58] + 1 is 2 ^ - 1 which is .5 +25 which is
+[09:04] 2 + 75 or
+[09:10] 2.75 so this gives us a very easy way to
+[09:14] at least represent positive numbers with
+[09:18] uh you know by just simply extending the
+[09:21] logic and instead of base 10 using base
+[09:24] 2 so let us now create a standard form
+[09:28] of all floating Point numbers
+[09:30] so in this case we'll use the S
+[09:32] magnitude representation because
+[09:33] otherwise it'll become too
+[09:35] complicated so any number a can be
+[09:39] represented as Min -1 to the^ S where s
+[09:42] is a s bit if s is zero then min-1 to ^
+[09:46] s is 1 and if s is + one which means the
+[09:50] number is negative -1 to ^ 1 is minus
+[09:53] one so number becomes
+[09:55] negative then we can Define p which is
+[09:58] the significant so the significant is
+[10:01] typically a number between 1 and two in
+[10:04] this case not typically it is a number
+[10:06] between 1 and
+[10:07] two uh so we can represent the
+[10:09] significant as a number as 1 + m where 0
+[10:13] is less than equal to M and M is less
+[10:16] than
+[10:17] 1 multiplied
+[10:20] by uh 2 ^ x where X is an integer right
+[10:27] so so X is an element of
+[10:29] Zed which is the set of
+[10:32] integers and it's a significant uh so so
+[10:35] let's just go over this terminology once
+[10:37] again it's very important so any
+[10:40] floating Point number we're representing
+[10:42] as minus1 to the^
+[10:44] S where s is the sign bit multiplied by
+[10:48] the
+[10:48] significant the significant is a number
+[10:51] of the form 1 + m where m is strictly
+[10:55] less than one and it's positive m is
+[10:58] called the mantisa
+[11:00] right so the m is given a name and the
+[11:03] name of the number the name of this term
+[11:06] is the
+[11:10] mantisa multiplied by 2 ^ x where X is
+[11:15] exponent and u x is an
+[11:19] integer so as we see any number can be
+[11:22] represented in this form there's
+[11:23] absolutely no problem like a number of
+[11:26] the form 2.6
+[11:29] can be represented as -1 to the^ 0
+[11:33] multiplied by
+[11:35] 1.3 multiplied by 2 ^ 1 where 1.3 is a
+[11:40] significant which is 1 +3 where3 is the
+[11:45] menesa so this is also called the normal
+[11:48] form or the normalized
+[11:50] form so let's see some examples at least
+[11:53] in decimal we'll go to Binary later so
+[11:56] 1. 387 * 10 ^ - 23 so the significant is
+[12:02] 1. 3827 mantisa is
+[12:05] 3827 since we consider in decimal
+[12:07] instead of base 2 it's base 10 so the
+[12:09] exponent is - 23 and the S bet is
+[12:13] 0o similarly 1.2 * 10 ^
+[12:18] 5 the significant is 1.2 mantisi is2 the
+[12:23] sign bit is 1 which means it's -1 to
+[12:26] the^ 1 at the leftmost point
+[12:29] and the exponent is +
+[12:32] 5 so let's now take a look at the it 754
+[12:36] format for representing floating Point
+[12:39] numbers and take a look at the general
+[12:42] principles so the significant should be
+[12:44] of the form 1 point
+[12:47] something so there see if you think
+[12:50] about it if we have 32bit so this is a
+[12:53] 32-bit number
+[12:56] system if we think about it if every
+[12:58] number significant is 1 point something
+[13:01] right there is no need to waste one bit
+[13:04] representing that one we can assume it
+[13:06] as the default that it's always there we
+[13:10] just need to save the mantisa bits right
+[13:13] for example if a number is 1.
+[13:16] 384 we just need to save
+[13:19] 384 right need a binary representation
+[13:22] for 384 we can automatically assume that
+[13:25] one is inside is in there
+[13:29] we also need to store the sign bit
+[13:33] s and the exponent
+[13:39] x so the it 754 format is something like
+[13:43] this it's a 32-bit format the MSP is for
+[13:47] the sign bit where we use one bit for
+[13:50] the sign
+[13:51] bit uh we use 8 Bits for the
+[13:54] exponent which means it can take 256
+[13:57] values and we use 20 three bits for the
+[14:09] mantisa so let's now take a look at the
+[14:11] representation of the exponent so the
+[14:14] exponent uses the biased
+[14:16] representation in the sense that if the
+[14:18] exponent is equal to X then we actually
+[14:22] save X plus the
+[14:24] bias uh so in this case it allows us to
+[14:27] represent negative exponents as well
+[14:29] so we can actually represent exponents
+[14:32] in the range of minus
+[14:34] 127 to +
+[14:40] 128 right so since the bias is
+[14:43] 127 what we actually save in this case
+[14:47] zero till 255 which is a total of 256
+[14:52] numbers so what was the need for having
+[14:55] a biased representation over here well
+[14:58] the need was that the exponent can be
+[15:00] positive or the exponent can be
+[15:03] negative hence we need to have some kind
+[15:07] of a representation Tool's complement
+[15:09] was found to be a bit too complicated
+[15:12] and it was also not required because
+[15:15] typically in floating Point numbers we
+[15:17] don't multiply the exponent by some
+[15:19] other number most of the time we only
+[15:21] add and subtract the
+[15:23] exponents in that case it was not
+[15:26] necessary to go for something as heavy
+[15:29] weight as two's complement the bias
+[15:31] representation was found to be nice and
+[15:34] simple so as I said uh so let's consider
+[15:37] some examples the exponent is zero we
+[15:41] actually save
+[15:42] 127 if the exponent is minus
+[15:45] 23 we save - 23 + 127 which is
+[15:50] 104 last example if the exponent is + 30
+[15:55] we save
+[15:56] 157 so what are the different fields
+[15:58] once again the one bit sign bit is there
+[16:02] after that we have eight
+[16:05] bits and the eight bits are for the
+[16:08] exponent but the exponent is actually X
+[16:11] its representation is e and what is the
+[16:14] relationship between e and X we are
+[16:17] saving e for e is equal to X plus the
+[16:20] bias so whatever is a real exponent we
+[16:23] add 127 to it and we save it in this
+[16:27] particular number system
+[16:31] now let's consider normal floating Point
+[16:33] numbers in the I 754 format so itle by
+[16:38] the way is the in is an association of
+[16:41] electrical and electronics Engineers so
+[16:44] they itle typically makes standards and
+[16:48] formats for representing a variety of
+[16:51] information in this case the 754
+[16:55] format has been made 754 standard
+[16:59] has been made to represent floating
+[17:01] Point numbers in
+[17:03] binary so normal binary numbers have an
+[17:07] exponent between -
+[17:10] 126 and +
+[17:13] 127 so the other exponents which can be
+[17:16] represented minus 127 and +
+[17:19] 128 are reserved for special purposes so
+[17:22] which we'll discuss
+[17:24] later so now the standard form or the
+[17:27] normal form of an floating Point number
+[17:29] in itly 754 format is exactly what we
+[17:33] had seen
+[17:34] before and with a little bit of
+[17:37] modification so we have the sign bit
+[17:39] minus1 to ^ s multiplied with the
+[17:43] significant for the significant is of
+[17:45] the form 1 + m m being the menesa
+[17:48] strictly less than 1 multiplied by 2 The
+[17:51] Power e minus
+[17:53] bias where e is the representation of
+[17:56] the uh exponent
+[17:59] uh so e is between 1 and
+[18:02] 254 right uh so the values of 0 and 255
+[18:07] are reserved for special
+[18:10] purposes so here is the food for thought
+[18:13] what is the largest positive normal
+[18:15] floating Point number what is the
+[18:17] smallest negative normal floating Point
+[18:19] number I'll not answer them but I've
+[18:23] kept them as exercises for the reader
+[18:25] and the answers are in the book
+[18:29] so let's now take a look at some of the
+[18:32] special values for the floating Point
+[18:35] numbers so uh in this case so uh if you
+[18:39] would recall the valid values of e are e
+[18:43] actually has to be in the range of 1 and
+[18:48] 254 right so the other the values that
+[18:51] we are excluding are 0 and
+[18:54] 255 which basically means that exponents
+[18:58] with a value of of -
+[19:00] 127 or + 128 are not
+[19:05] allowed so if they not allowed what does
+[19:07] it mean it means that we are using these
+[19:10] values for denoting something
+[19:13] special all right so what should it be
+[19:17] what it should be
+[19:19] is something like this that if e is
+[19:22] equal to 255 and the mantisa is
+[19:26] zero let this treat this number as
+[19:28] positive infinity plus infinity if the
+[19:30] sin bit is
+[19:32] 0 if e is 255 the Mantis is z and uh
+[19:38] let's treat and if the sign bit is one
+[19:40] let's treat this number as minus
+[19:42] infinity so let's give an example 1 / 0
+[19:46] is plus infinity and -1 / 0 is infinity
+[19:52] and infinity is represented with the
+[19:55] fact that e is 255 and M is0
+[19:59] now let's consider the case the third
+[20:03] case where e is
+[20:05] 255 and M is not equal to zero so there
+[20:10] can be many such values but we say that
+[20:12] all of these values represent a nan
+[20:15] where a nan is a not a number for
+[20:18] example what is 0 by
+[20:21] 0 0 by0 is undefined so we treat this
+[20:25] case as an
+[20:27] N or uh what is log of
+[20:32] minus1 log of minus1 is undefined so
+[20:36] let's again treat it as a n or a sin
+[20:37] inverse of five a sin inverse of 10 it
+[20:41] is undefined so we treat this as an Nan
+[20:44] any arithmetic expression that has a Nan
+[20:47] will always evaluate to Nan so n + n is
+[20:51] equal to n n - 9 is equal to 9 9 plus
+[20:55] any other number is equal to 9 so the
+[20:58] moment any part of an expression
+[21:00] evaluates to not a number the entire
+[21:03] expression will evaluate to not a
+[21:06] number so in this uh in the it format we
+[21:11] sadly have two representations for zero
+[21:14] which is not desirable but this is still
+[21:16] there so in this case if e is equal to
+[21:20] zero which is one of the special cases
+[21:22] that we had excluded if e is z and the
+[21:24] mantisa is
+[21:26] zero then the value is zero so of course
+[21:29] there are two representations the sign
+[21:31] bit can either be zero or the sign bit
+[21:33] can be one we thus have two
+[21:36] representations for zero in this
+[21:38] particular number system which is not
+[21:41] something that we can that which is not
+[21:43] much that we can do so the sign bit can
+[21:47] be Zer or one but then the E field has
+[21:51] to be all zeros to represent a zero and
+[21:53] the mantisa field also has to be all
+[21:56] zeros and a sign bit can either be zero
+[21:59] and one it doesn't matter it'll still be
+[22:02] you know both the variant will be
+[22:03] treated as a
+[22:04] zero the last sub class is very
+[22:07] interesting it's called a denormal
+[22:09] number so we'll discuss this in later
+[22:11] slides in this case e is equal to
+[22:15] 0 but m is not equal to zero so we will
+[22:19] discuss this case in the next few
+[22:23] slides so let's uh but before going to
+[22:26] denormal numbers I just wanted to give
+[22:28] an example of how we would represent a
+[22:32] floating Point number so let's maybe
+[22:34] consider a number of the form Min -
+[22:39] 1 uh let's consider number of the form
+[22:42] minus
+[22:43] 3 so minus 3 the first thing would be to
+[22:47] reduce it to standard
+[22:49] form right or a normal form which is -1
+[22:52] to the^
+[22:54] 1 multiplied with 1.5
+[23:00] multipied with 2 ^
+[23:03] 1 so this is equal to -1 to the^ 1
+[23:08] multiplied with 1
+[23:11] +. 5 where 0.5 is the mantisa multiplied
+[23:15] with 2 ^
+[23:18] 128 minus 127 where 127 is the bias so
+[23:23] now if I consider the representation of
+[23:25] this number in binary then the sign bit
+[23:28] will be equal to one because the number
+[23:32] negative the
+[23:35] exponent right the E field will actually
+[23:38] be equal to+
+[23:40] 128 because we are we have we are
+[23:43] subtracting the bias minus 127 to get 1
+[23:47] so this is e minus
+[23:49] bias right where 127 is the bias so e is
+[23:53] +
+[23:55] 128 so let us have the binary
+[23:58] representation of
+[24:00] 128 and the binary representation of
+[24:03] that would essentially be 1 and 7
+[24:08] zeros now let's come to the
+[24:16] mantisa so the mantisa part is
+[24:21] 05 so. five uh if you want to
+[24:26] represent uh the way that we would
+[24:28] represent so so essentially if 0.5 is
+[24:32] basically equal
+[24:33] to 1 * 2 ^
+[24:37] minus1 the mantisa contains 23
+[24:41] bits right so it's a 23 bit
+[24:47] mantisa the first bit corresponds to 2^
+[24:52] minus1 the last bit corresponds to 2 ^ -
+[24:56] 23 and the i8
+[24:59] bit corresponds to 2 the^ minus I so the
+[25:03] mantisa can be t as a
+[25:06] summation from I is equal to 1 to
+[25:10] 23 a coefficient x i multiplied by 2
+[25:14] the^ minus I since this is5 which is 2^
+[25:18] minus1 we'll have one over here which is
+[25:21] the MSP position and the rest all will
+[25:24] be
+[25:25] zeros so this is how we would represent
+[25:27] a number number of the type minus 3 in
+[25:32] the I 754
+[25:34] format all right and so it's actually
+[25:38] very easy the first we represent the
+[25:39] sign bit then we figure out the value of
+[25:42] the E field by adding the bias to the
+[25:44] exponent which is
+[25:46] 128 and then we figure out the mantisa
+[25:48] so the mantisa mind you is strictly
+[25:50] between strictly less than one and uh it
+[25:54] is greater than equal to zero and it's
+[25:56] essentially a summation
+[25:59] uh from uh you know 2 ^ -1 to 2^ -23
+[26:04] each term multiplied by a coefficient in
+[26:06] this case we just need to stop at 0.5 so
+[26:10] the MSB needs to be 1 because it's 2 ^
+[26:13] minus 1 and rest all the terms need to
+[26:16] be equal to zero right so this is the
+[26:18] representation of our floating Point
+[26:20] number in
+[26:23] binary given this let's take a look at
+[26:25] some of the queer aspects of floating
+[26:28] point math so the smallest normal
+[26:31] floating Point number that we can
+[26:33] have right the smallest normal positive
+[26:37] floating Point number that we can have
+[26:40] is let's work it out so basically since
+[26:43] it's positive the S bit is
+[26:44] zero and the smallest value of e that we
+[26:47] can have is actually one so basically
+[26:51] this is min - 126 this is the exponent
+[26:55] and the smallest Mana that we can have
+[26:57] in a positive setting is all
+[27:00] zeros so assume that f is one such
+[27:03] number which is the smallest normal
+[27:05] floating Point
+[27:06] number so we have a floating Point f is
+[27:10] 2 ^ -
+[27:12] 126 we take another number G which is f
+[27:15] /
+[27:16] 2 so this number is 2 ^ - 127 which is G
+[27:23] and G can clearly not be
+[27:26] represented in our system of normal
+[27:29] numbers because we don't have a
+[27:31] representation for
+[27:35] it now let's consider the next statement
+[27:38] if G is equal to zero so now the
+[27:40] question is that what is the value of G
+[27:44] if G is equal to zero let's print error
+[27:48] and should this code print error and do
+[27:50] you think this is the right Behavior
+[27:52] well intuitively no right so let me
+[27:55] maybe you know write a big no over here
+[27:58] intuitively know because f is a positive
+[28:01] number G is the same positive number
+[28:03] divided by two it is not equal to zero
+[28:07] so there is as such no reason of
+[28:09] concluding the G is equal to zero and
+[28:12] printing error but we also don't have a
+[28:15] representation for G so we somehow need
+[28:18] to solve this
+[28:20] situation so what we can do is that we
+[28:22] can define a set of denormal
+[28:25] numbers where the e field in the
+[28:29] representation is zero and the M field
+[28:32] is not equal to
+[28:33] zero and so this normal form of a
+[28:36] denormal number here we change the
+[28:39] significant instead of assuming that the
+[28:41] significant is of the form 1 + m we
+[28:45] assume it is 0 + m right 0 becomes the
+[28:47] default and mantisa Remains the Same
+[28:49] between 0 and 1 and we multi and the
+[28:53] exponent we assume is 2 ^ - 126
+[28:59] right so in this case e is equal to 0
+[29:02] and we assume that X is equal to -
+[29:05] 126 mind you it is not minus 127 this is
+[29:09] a common
+[29:10] mistake that students typically make it
+[29:13] is not - 127 it is -
+[29:17] 126 so the and a common question that
+[29:21] instructors typically ask is y - 126 so
+[29:25] let's try to understand what's happening
+[29:27] so let's consider the number line and
+[29:29] let's assume that these are all the
+[29:31] floating Point numbers that we can
+[29:33] represent so the smallest normal
+[29:35] floating Point number is 2 the^ minus
+[29:40] 126 right so basically we want to define
+[29:44] a very small region of numbers after
+[29:47] this such that so mind you the diagram
+[29:50] is not drawn to scale so this part is
+[29:52] normal right so we want to define a very
+[29:56] small region of numbers around here
+[29:57] called called dormal such that you know
+[30:00] we our programs make sense and this
+[30:04] particular program does not print
+[30:06] error to actually ensure that this is
+[30:09] the case we Define a normal form of this
+[30:12] type with a significant is assumed to be
+[30:16] zero so in this case let's find out what
+[30:19] is the value of the largest possible
+[30:22] mantisa the value of the largest
+[30:24] possible
+[30:26] mantisa is pretty much equal
+[30:29] to the mantisa are the significant so
+[30:31] they are actually the
+[30:33] same is equal to 2 The Power I for I is
+[30:38] pretty much or I would say minus I for I
+[30:41] is going from 1 to
+[30:44] 23 right which is equal to 2 ^ -1 + 2 ^
+[30:49] - 2 all the way till 2 ^ -
+[30:53] 23 so this is a simple uh geometric
+[30:57] series summation
+[30:59] and uh so when we look at you know any
+[31:02] kind of a geometric series
+[31:09] sumission uh so we can expand the
+[31:11] geometric series and we can do some
+[31:14] maths I'll write down the result
+[31:16] directly and the result is 1
+[31:21] minus 2 ^ - 23 so this is an important
+[31:25] result and this will come many times in
+[31:27] the book and in our discussion so users
+[31:30] might want to memorize this readers
+[31:32] might want to memorize this but the
+[31:34] important point over here if I want to
+[31:37] find the largest denormal number this is
+[31:41] essentially equal to 1 -
+[31:43] 2^ -
+[31:46] 23 multiplied
+[31:48] with -
+[31:51] 126 which is 2 ^ -
+[31:55] 126 - 2 ^ -
+[31:59] 149 right so this is the largest
+[32:01] denormal number so pretty much if we
+[32:05] take the number
+[32:06] line right and if this point is zero so
+[32:10] the largest denormal number is at this
+[32:17] point and the
+[32:19] smallest normal number is at this
+[32:24] point right
+[32:28] so uh as we see uh the difference
+[32:30] between them is really small 2 the^
+[32:33] 149 and uh so so some difference needs
+[32:37] to be there because this is after all a
+[32:38] discrete number system it's not a
+[32:40] continuous number system but the
+[32:42] important point to appreciate is that
+[32:44] this should not have been - 127 it it
+[32:48] should be - 126 because that is only
+[32:51] when we get this property over here that
+[32:54] we have a very very small distance
+[32:56] between the largest normal number and
+[32:58] the smallest positive normal
+[33:02] number and so what is the smallest so
+[33:04] what is the range of the denormal
+[33:06] numbers the range of the denormal
+[33:09] numbers the smallest positive denormal
+[33:12] number would pretty much have the
+[33:15] mantisa the last 23rd bit would be equal
+[33:18] to 1 so it will be Min - 2 ^ Min
+[33:22] -23 multiplied with 2 ^ -
+[33:25] 126 which is 2 ^ - 149 so the so just to
+[33:32] summarize what has happened is that we
+[33:34] have the set of all the normal numbers
+[33:37] we have just created a little bit more
+[33:41] room of dormal numbers such that a lot
+[33:44] of our maths and our programming
+[33:46] actually make sense and we don't come up
+[33:49] with very non-intuitive
+[33:50] answers so that's the reason the normal
+[33:53] numbers have been defined in this
+[33:55] particular fashion and uh so I would uh
+[33:58] request the readers to take a look at
+[34:01] the normal form for both normal you know
+[34:04] standard or normal form for both the
+[34:06] normal floating Point numbers as well as
+[34:10] the dormal floating Point numbers find
+[34:13] out what are the differences do some of
+[34:15] the math that I did just now and
+[34:18] convince themselves of the utility of
+[34:20] denormal numbers and how they can help
+[34:24] avoid non-intuitive results
+[34:29] so so we had pretty much the same thing
+[34:31] in the slides but I've overwritten them
+[34:33] so but here is
+[34:35] the in example the ranges of denormal
+[34:38] numbers which we just found out so the
+[34:41] positive denormal numbers start from 2
+[34:43] to the power
+[34:44] -49 to 2 ^ - 126 - 2 ^
+[34:49] -49 and the normal numbers then start
+[34:53] from 2 ^ -
+[34:55] 126 similarly for negative denormal
+[34:58] number the range is - 2^ - 149 to the
+[35:03] same thing I'll beat with a sign
+[35:11] reversal so as I said all that the
+[35:14] normal numbers do is they extend the
+[35:15] range of floating Point numbers a little
+[35:17] bit and mind you such diagrams are never
+[35:20] drawn to scale such that again uh our
+[35:23] maths makes
+[35:25] sense so what we saw saw is that the
+[35:28] range of floating Point numbers so let's
+[35:31] look at the range of the number
+[35:33] systems so for an integer with a 32bit
+[35:36] so typically an integer is 32 bits right
+[35:39] and uh that's what an in in C or in Java
+[35:44] would typically correspond to in a
+[35:46] 32-bit number system a to's complement
+[35:49] roughly the largest number that you can
+[35:51] represent is 2^ 31 right so maybe let me
+[35:55] write it down that for a four uh sorry
+[35:58] for a 32bit
+[36:01] integer you know these are just rough
+[36:03] figures the maximum that we can go to is
+[36:06] like plus minus 2^
+[36:08] 31 for a 32bit floating Point
+[36:14] number the maximum that we can go
+[36:18] to is uh roughly you know in the range
+[36:22] of plus minus
+[36:28] 2 to the power positive 127 but then of
+[36:31] course the mantisa can be higher so I
+[36:34] can make it
+[36:35] 128 that's maybe you know the largest uh
+[36:38] that we can go to a very approximate
+[36:41] figures and 2 to the power 128 is around
+[36:44] 10 ^ 40 right typical numbers the
+[36:48] approximate range of doubles is much
+[36:50] more a double Precision number because
+[36:53] this uses 64 bits and doesn't use 32
+[36:55] bits so in this case we have a 1 bit
+[36:58] sign bit we have 11 bits for the E field
+[37:02] mind you not 8 Bits but 11
+[37:04] bits uh so this means that uh so the
+[37:08] bias is also different instead of a bias
+[37:10] of 127 the bias is
+[37:13] 1023 right and we can
+[37:16] uh go we can cover a much larger range
+[37:19] of
+[37:20] numbers uh fromus 1023 till plus
+[37:25] 1023 and uh so the range is typically
+[37:29] plus or minus 10 ^
+[37:31] 308 which is a fairly large range and we
+[37:34] would typically not need more than this
+[37:37] for most of our calculations so this is
+[37:39] a lot right and we don't typically need
+[37:42] more than this so I can add a note over
+[37:46] here that for a
+[37:48] 64bit
+[37:50] double double Precision what we have
+[37:53] double in C we are roughly at plus or
+[37:56] minus 2 the power
+[37:59] 1,23
+[38:01] and this is roughly 10 ^ 300 right so
+[38:05] this is roughly 10 the^ 300 this is
+[38:08] roughly 10 the^ 37 or
+[38:12] 38 and uh this is much much smaller so 2
+[38:16] to the^ 30 is around a billion so this
+[38:20] is roughly 10 the power uh is actually 3
+[38:24] 4 billion uh something like that and uh
+[38:29] so this is roughly a 10 the^ 9 kind of
+[38:32] figure slightly more than that so so
+[38:34] it's several billion is the
+[38:37] limit around 4 billion is the limit and
+[38:40] uh uh if I can see it's it's uh around 2
+[38:44] billion to be precise plus
+[38:48] minus let us now take a look at some
+[38:51] basic floating Point math that we want
+[38:54] to add we have two numbers
+[38:57] uh A and B where a is 2 the^ 50 and B is
+[39:02] 2 ^ 10 we want to add A+
+[39:06] B and then we want to subtract a but a
+[39:09] plus b we want to be done first that's
+[39:11] the reason it's there inside a
+[39:13] bracket so if we add a a and b we are
+[39:17] essentially adding 2 to ^
+[39:19] 50
+[39:22] plus 2 the^
+[39:25] 10 if we do this the result would look
+[39:29] something like this that the S bit will
+[39:34] zero the exponent has to be the larger
+[39:37] one can't be the smaller one so 2^
+[39:42] 50 plus the
+[39:44] significant has to be something of the
+[39:47] form 1
+[39:49] + 2 ^ -
+[39:52] 40 right so that so this is the only way
+[39:55] that we'll be able to represent such a
+[39:58] number so the mantisa has to be 2 ^
+[40:03] 40 but the smallest value of the mantisa
+[40:06] that we can possibly represent in our
+[40:08] system is 2 ^ minus
+[40:11] 23 right so this is the smallest value
+[40:14] that we can represent as a result this
+[40:17] number cannot be represented in our
+[40:21] system so this is a problem so what most
+[40:25] Hardwares would do is that that they
+[40:27] will actually take 2 ^ 50 + 2 ^ 10 and
+[40:32] since the mantisa cannot be represented
+[40:34] they'll just produce 2 ^ 50 as a result
+[40:38] and then when we subtract 2 ^ 50 minus
+[40:41] 2^ 50 c will be computed to be zero so
+[40:46] this is a nonintuitive result
+[40:48] mathematically right so mathematically
+[40:51] we don't expect this result what do we
+[40:55] expect we expect a a and a to be
+[40:59] cancelled and the result to be B which
+[41:00] is 2 the^ 10 so what a lot of smart
+[41:04] compilers can possibly do is reorder the
+[41:06] operations to increase
+[41:09] precision and in this case actually
+[41:11] break down the bracket but this is again
+[41:14] not what the programmer wants so as a
+[41:17] result there is a big gray area over
+[41:20] here but the most important thing that
+[41:22] we need to understand is that floating
+[41:24] Point math is approximate it's not
+[41:27] you know exact the reason it is
+[41:30] approximate is because we have a limited
+[41:32] number of bits and with those limited
+[41:35] number of bits we can and also with a
+[41:38] lot of constraints we can only represent
+[41:41] a very limited set of numbers within our
+[41:44] constraints in this case we cannot
+[41:47] represent a number of the form 2 ra to
+[41:50] the^ 50 plus 2 to ^ 10 it's not it's
+[41:54] simply not possible for us to represent
+[41:57] a a number of this
+[41:58] kind as a result here we'll have a
+[42:01] nonintuitive uh result coming at the end
+[42:04] where c will be computed to be zero at
+[42:07] least most compilers would do that a lot
+[42:09] of compilers might want to reorder the
+[42:11] operations or locally resolve the
+[42:14] operations but it is very much
+[42:18] conceivable that this program on a lot
+[42:20] of uh programming languages and Hardware
+[42:23] would actually produce 2 ra the^ 10 uh
+[42:26] sorry would actually produce zero it
+[42:28] will not produce two to^ 10 which is a
+[42:31] non-intuitive result so programmers need
+[42:33] to keep these things in mind while
+[42:35] writing programs with floating Point
+[42:37] numbers and always keep in mind that is
+[42:40] an inexact approximate
+[42:44] representation now let's take a look at
+[42:46] the fifth part Fifth and last part of
+[42:49] this chapter which is representing
+[42:51] strings what is a string it's a piece of
+[42:54] text right and any uh piece of text any
+[42:57] the same way that these slides are there
+[43:00] where I written as is American Standard
+[43:02] code there a piece of text how should we
+[43:05] represent it so the most common way of
+[43:09] representing pieces of text was with the
+[43:12] aski
+[43:13] format and aski is American Standard
+[43:16] code for information interchange it has
+[43:19] 128 characters the first 32 characters
+[43:22] are actually non-printing characters
+[43:25] they for control operations like
+[43:27] character number eight is for backspace
+[43:30] to actually delete a character character
+[43:33] 10 is Line Feed which used to tell
+[43:35] printers to jump to the next
+[43:38] line uh 27 is the escape character it
+[43:41] corresponds to the Escape key on our
+[43:44] keyboards and then the remaining are uh
+[43:48] letters small letters capital letters
+[43:51] special characters like exclamation mark
+[43:53] and at and numbers of course
+[43:57] so since there are 128 characters each
+[43:59] character is encoded using seven
+[44:03] bits so the asky character set looks
+[44:06] like this that's so here is a TP quote
+[44:10] of some of the common characters from uh
+[44:13] small a to small
+[44:15] Zed uh the code uh goes from 97 till
+[44:21] 122 similarly from capital A to capital
+[44:25] zed the code goes from from 65 till
+[44:29] 90 right so basically uh then uh we have
+[44:33] our numbers from 0 to 9 where the codes
+[44:37] are assigned from 48 to 57 and there are
+[44:40] different kinds of code for different
+[44:42] kinds of special characters and
+[44:43] punctuation marks that we use like
+[44:46] exclamation hash dollar brackets comma
+[44:49] semicolon and so
+[44:51] on so the problem with the aski set is
+[44:54] first is only for English and English is
+[44:57] a very simple
+[44:59] language uh in English the number of
+[45:02] characters are few and uh we don't have
+[45:06] special marks and what is there in you
+[45:08] know other uh specialized characters
+[45:11] that come up in other languages with
+[45:13] also combinations and so on so for this
+[45:17] we have the uni code
+[45:19] format so it's the Universal Character
+[45:22] set transformation format is the UTF
+[45:24] format so the utf8 each standard enables
+[45:28] around encodes around a million
+[45:30] characters defined in this set and it
+[45:33] can use one to six bytes for this
+[45:36] purpose so what I have done over here is
+[45:39] that I have written a couple of
+[45:40] characters in different
+[45:42] languages uh some of these so this is
+[45:45] Hindi for example the D nagari script
+[45:48] this I believe is a is a Tamil
+[45:50] character uh this I don't recall it
+[45:53] might be a Korean character and uh this
+[45:57] is a uh I think a character from the
+[46:00] Canada language so with so many uh
+[46:04] characters it is necessary to encode
+[46:07] them so for this the UTF or the Unicode
+[46:10] format was designed which has become the
+[46:12] standard now so utf8 is compatible with
+[46:15] ASI in the sense that the first 128
+[46:19] characters in
+[46:20] utf8 correspond to the asky characters
+[46:24] so when you use aski characters UTF will
+[46:27] require just one
+[46:29] bite uh and it'll have a leading zero
+[46:31] which means the remaining seven bits
+[46:34] specify ASI
+[46:37] characters most of the other languages
+[46:40] that use variants of the Roman script
+[46:42] such as French German and Spanish
+[46:44] require two bytes per character in
+[46:47] utf8 Greek Russian Hebrew and Arabic
+[46:51] also require two
+[46:53] bytes so this has become a standard
+[46:55] across all browsers and operating
+[46:57] systems so nowadays it is very common
+[47:00] for users to read articles which have
+[47:02] been written in multiple languages or
+[47:04] maybe an ad is coming in some other
+[47:06] language so all of this happens ctsy uni
+[47:09] code so utf8 has been superseded by UTF
+[47:13] and
+[47:14] 32 so utf16 uses 2 byte or 4 by
+[47:18] encodings and Java and Windows support
+[47:21] utf16 so as of now at least utf16 is the
+[47:25] more popular character
+[47:28] set and UTF 32 uses four bytes for every
+[47:32] character and it's rarely used it's not
+[47:34] that commonly used but utf8 and utf16
+[47:38] are the encodings of choice where
+[47:40] basically every character is represented
+[47:43] with a certain sequence of bits and in
+[47:45] any document you just have character by
+[47:48] character which is essentially a
+[47:50] sequence of bits that encode each
+[47:52] character and uh so when the document
+[47:56] needs to be shown on the screen your
+[47:58] word processor program extracts all the
+[48:00] bytes out converts them into characters
+[48:03] for each character it draws a small
+[48:05] image that corresponds to the way the
+[48:07] character should look on the
+[48:10] screen all right so this brings us to
+[48:12] the end of chapter 2 so what have we
+[48:15] achieved in Chapter 2 let's go back to
+[48:17] the outline slide see in the outline
+[48:21] slide We have basically
+[48:23] shown what is possible
+[48:27] to do with a set of bits so we can work
+[48:31] on them we can define an algebra and we
+[48:33] can have basic
+[48:35] operations we can represent both
+[48:38] positive as well as negative integers
+[48:40] using a set of bits so they have their
+[48:43] constraints but again we overcame all of
+[48:47] those constraints and we came up with a
+[48:49] to's complement notation which is the
+[48:51] most effective notation as of now to
+[48:54] represent negative integers
+[48:57] after that we extended the results that
+[49:01] we had to represent floating Point
+[49:03] numbers so in that case we needed to go
+[49:05] for a slightly different
+[49:08] representation the reason being that we
+[49:11] actually needed to represent the
+[49:13] exponent as well and we also made a
+[49:16] trade-off for Simplicity this is one of
+[49:18] the vital learnings that you need to
+[49:21] have that in computer architecture
+[49:23] sometimes you need to walk a step back
+[49:27] and make things simple so in this case
+[49:30] instead of going for a two's complement
+[49:32] representation of the exponent we
+[49:34] actually used a bias based
+[49:36] representation and we also used an
+[49:38] explicit sign bit just to make our life
+[49:41] easy and also to leverage the pattern
+[49:45] that you typically don't multiply the
+[49:47] exponent you would only multiply it when
+[49:49] a number is being raised to the power of
+[49:52] some other number but that's a
+[49:53] relatively rare operation most of the
+[49:56] time only adding and multiplying
+[49:58] floating Point numbers in that case we
+[50:01] do not you know per se multiply the
+[50:04] exponent lastly we talked about strings
+[50:07] we talked about the basic simple asky
+[50:09] format for
+[50:10] English we also talked about the generic
+[50:13] Unicode formats or the UTF formats two
+[50:16] of them are very common utf8 and UTF 16
+[50:20] UTF 8 and 16 are used to represent
+[50:22] almost all the text today in uh all the
+[50:25] world's languages
+[50:27] and they have many additional characters
+[50:28] as well and many cartoon-like characters
+[50:31] that can be used to make really
+[50:33] expressive documents so now that we have
+[50:36] a certain hold on
+[50:40] uh uh bits and how they can be used we
+[50:44] need to design a language a simple
+[50:47] low-level language that can communicate
+[50:50] with the processor using these bits to
+[50:53] accomplish fairly complex tasks which is
+[50:57] uh which is the main goal of the next
+[50:59] chapter the chapter on Assembly Language
+[51:02] to achieve complicated tasks using
+[51:04] simple bits so see
+[51:07] you then uh with chapter 3 which is
+[51:11] going to be the next lecture

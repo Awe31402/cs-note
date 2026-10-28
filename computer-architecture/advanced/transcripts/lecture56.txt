@@ -1,0 +1,1555 @@
+[00:00] foreign
+[00:26] hardware for machine learning
+[00:29] so in the first part we discuss the
+[00:31] basics of deep learning as you can see
+[00:34] so we discussed
+[00:36] what a convolutional layer would look
+[00:38] like
+[00:39] because for us accelerating that is a
+[00:41] matter of priority the rest of the
+[00:43] layers are reasonably easy to
+[00:46] design and Hardware with a convolutional
+[00:48] layer in particular is difficult
+[00:51] so what we
+[00:52] had basically said is that a
+[00:55] convolutional layer as K functional
+[00:57] units very functional unit is nothing
+[01:00] but a convolver in a certain sense
+[01:03] right if there is such a word so it
+[01:06] takes as its input all capital c c for
+[01:09] Channel all capital c input feature Maps
+[01:11] if Maps
+[01:12] and then produces an output feature map
+[01:17] similarly uh the same thing is done
+[01:20] by all the K right capital K functional
+[01:24] units to produce Capital key output
+[01:26] feature Maps
+[01:28] so pretty much what happens is that a
+[01:31] convolution is computed between a kernel
+[01:34] and
+[01:35] a feature map in a given functional unit
+[01:38] so of course the kernel is a function of
+[01:40] the future map number and the output
+[01:42] number so there are CK filters or ck
+[01:45] kernels or a filter and a kernel these
+[01:48] terms will be used interchangeably
+[01:51] so for each if map of map here we have a
+[01:54] filter kernel pair
+[01:56] say convolutional layer will take as its
+[01:59] inputs Capital CIF maps and capital kof
+[02:02] Maps
+[02:03] and uh
+[02:05] and sorry it will take as input Capital
+[02:07] CIF maps capital CK filters and produce
+[02:11] kof Maps as output
+[02:15] so given the fact that we were there
+[02:17] let's move forward so let's look at a
+[02:20] convolutional operation mathematically
+[02:24] right
+[02:26] so the key operation was that we select
+[02:29] a region in the input feature map in
+[02:31] this case it's a three cross three
+[02:33] region over here as you can see
+[02:40] and we have a 3 cross 3 filter
+[02:46] so what we do is that we do a pairwise
+[02:48] multiplication right so we multiply this
+[02:51] element with this this with this
+[02:53] right so you can consider it like a DOT
+[02:56] product but it's more like a matrix dot
+[02:57] product
+[02:58] right it's a pairwise multiplication and
+[03:01] summation
+[03:03] so then we produce an output pixel which
+[03:06] is the so the output of map in this case
+[03:09] has exactly the same dimensions as input
+[03:12] feature map so again you know this may
+[03:14] not be the case but let's take the
+[03:17] simpler case generalizing it for other
+[03:19] cases is quite easy
+[03:21] so basically the output feature map
+[03:23] would have exactly the same dimensions
+[03:25] in the output feature map the value of
+[03:28] this pixel
+[03:29] which let's say is given by o h w y h w
+[03:33] because this is the HTH row and WF
+[03:35] column
+[03:37] right so basically uh the its
+[03:40] coordinates are h w so let's say we have
+[03:42] taken the row column format here instead
+[03:44] of the x axis Y axis format
+[03:46] we have taken the row column format
+[03:49] where we go with the H row and the WTH
+[03:53] so o h w
+[03:55] right which is nothing but the value of
+[03:58] the output pixel
+[03:59] is just a summation of the pairwise
+[04:02] products
+[04:03] so the summation over here as you can
+[04:06] see you know it's not a 1D sum but it's
+[04:08] a 2d sum so given the fact that it's a
+[04:11] 2d sum we'll have two of these
+[04:13] summations right there are two axes so
+[04:15] basically you have two summations
+[04:17] and the two iterators are R and S kind
+[04:19] of R for row and S for column
+[04:22] so what we do is that we essentially
+[04:24] walk through all the elements in this
+[04:27] region
+[04:28] and we find the corresponding elements
+[04:30] over here we multiply and we add
+[04:32] which is exactly what we are doing so we
+[04:35] I is the input feature map
+[04:39] we start at location HW and we walk
+[04:42] through all the elements so basically
+[04:43] the iterators are r and s
+[04:46] right in a row and column but you know
+[04:48] column would have been a different
+[04:49] letter so let's use R and S so
+[04:52] essentially we look at all values of RNs
+[04:54] so we start with HW so look at all
+[04:57] values of R we look at w then we started
+[05:00] all values of s so essentially we
+[05:02] Traverse the 2D space and for each point
+[05:06] we multiply it with the corresponding
+[05:11] value in the filter which can again be
+[05:14] replaced represented with an R cross s
+[05:17] pair
+[05:18] so then we multiply and then we add so
+[05:21] let me clear off the ink over here that
+[05:24] will make life somewhat easier
+[05:27] so basically the
+[05:29] you know these the key point is
+[05:32] understanding this equation if you are
+[05:34] able to understand this equation we are
+[05:36] good to go
+[05:37] so I would suggest people uh I would
+[05:40] suggest that people who are watching
+[05:41] this video not progress Beyond this
+[05:43] slide unless they are able to understand
+[05:47] this equation
+[05:48] and uh I would like to explain what is
+[05:51] over here so this says that coordinates
+[05:53] in the Three cross three filter which is
+[05:56] this one and the pink window
+[05:59] right uh so basically
+[06:02] the idea is that you are giving the
+[06:05] these are the coordinates in the pink
+[06:06] window
+[06:07] and these are the coordinates in the
+[06:09] filter so sorry this Arrow should have
+[06:11] been here
+[06:12] and the key point is that
+[06:16] we look at one thing we find this
+[06:19] corresponding coordinate over here of
+[06:21] course with the offset of H and W and we
+[06:24] find the pixel we multiply and we add
+[06:26] across all rows and all columns
+[06:30] so if this part is understood uh trust
+[06:33] me we are mostly done
+[06:36] so the basic equation that we have which
+[06:39] is exactly this right which is exactly
+[06:41] this I've just copy pasted it over here
+[06:44] where the value of an output pixel is
+[06:48] essentially this thing over here we know
+[06:51] how to interpret it now so h w is the
+[06:53] starting point and R and S are the
+[06:55] iterators that we multiply
+[06:58] so this is of course for a single input
+[07:01] map now let's consider multiple input
+[07:04] Maps where an if map is also called a
+[07:07] channel right an input Channel
+[07:10] so now if there are capital c channels
+[07:12] so the terminology that we will use or
+[07:16] the notation that we will use we will
+[07:17] have Capital C channels where small C is
+[07:20] the iterator right it's a small c will
+[07:23] essentially vary from 0 to Capital C
+[07:26] minus 1.
+[07:28] so the idea here is that for a single of
+[07:31] map
+[07:33] what we will do is ohw
+[07:36] we will have this equation along with
+[07:39] that
+[07:41] so what did we see what we saw over here
+[07:44] I'm sorry I just go back
+[07:46] is that we compute separate convolutions
+[07:49] for each input feature map with its
+[07:51] corresponding filter and we add all of
+[07:54] them to produce the final output map
+[07:58] so in a certain sense in this case of
+[08:01] course we are considering a single input
+[08:03] Channel if you have multiple input
+[08:05] channels
+[08:06] then this will remain more or less as it
+[08:09] is with a small change I will tell you
+[08:11] what but this additional summation will
+[08:13] come
+[08:14] which is basically saying that we are
+[08:16] adding it across all input channels
+[08:19] across all
+[08:21] Capital C input channels we are adding
+[08:23] them for small C is iterated
+[08:26] so the only addition that we have we
+[08:28] have two additions the first edition is
+[08:30] that we consider
+[08:33] the
+[08:36] input feature map for the CH channel
+[08:38] right so in this case we have multiple
+[08:40] input feature maps for each one of them
+[08:43] uh we consider so I C is nothing but the
+[08:46] cth input feature map then we do a
+[08:48] convolution
+[08:49] and in this case the filter is different
+[08:51] for different input feature Maps so that
+[08:53] is why this of course was a coordinate
+[08:56] within the filter
+[08:57] kernel same thing but FC basically means
+[09:01] that this is the filter that corresponds
+[09:02] to this input feature map so this is the
+[09:05] only addition that we did as compared to
+[09:08] this equation so if you see this
+[09:09] equation the new parts are this and this
+[09:11] which basically is saying that we are
+[09:14] specializing the convolution
+[09:16] for the cth input feature map and its
+[09:19] corresponding kernel so we do this for
+[09:21] all the input feature maps and we add
+[09:23] and we get the value of the output
+[09:25] feature map a single output feature map
+[09:29] now let's say we have multiple output
+[09:31] feature Maps or of maps you have Capital
+[09:33] key where again the iterated key small
+[09:36] key varies from 0 to capital K minus 1.
+[09:40] then in this case what will happen is
+[09:42] what are convolution operation will
+[09:43] produce
+[09:45] is that it will produce the hwf pixel of
+[09:48] the kth output feature map
+[09:51] again we don't make any change right so
+[09:54] we start from this equation so let me
+[09:57] get rid of
+[10:00] the writing here
+[10:02] so the key point is that
+[10:06] this remains as it is it is just that
+[10:09] now the filter
+[10:11] right so we will use the filter will
+[10:14] change in the sense for every input
+[10:16] output feature map pair because let's
+[10:18] again go back to this equation
+[10:20] so what we said is that look for the kth
+[10:23] output feature map we are again reading
+[10:26] all the filters
+[10:27] but again let's say that you know it's
+[10:29] the small kth output feature map over
+[10:32] here
+[10:33] for the cth input feature map
+[10:37] we will use the essentially the C comma
+[10:40] kth filter right so we have Capital CK
+[10:42] filters
+[10:44] so we'll use the filter which uniquely
+[10:46] corresponds to the input output feature
+[10:48] map pair
+[10:50] so this is exactly being encoded in this
+[10:53] in the sense that we are using a filter
+[10:55] which is a unique
+[10:57] which is uniquely determined determined
+[11:00] uh by the
+[11:02] input output feature map pair in the
+[11:05] sense if it's the cth input feature map
+[11:07] and kth output feature map
+[11:10] both will determine the filter because
+[11:12] it's now a 2d space and the rest of
+[11:15] course from here Remains the Same
+[11:18] so we have gradually complicated this so
+[11:20] I will only add one more complication
+[11:22] not more I promise
+[11:26] so now let's add look at it in full
+[11:29] glory in the sense let us also add the
+[11:32] effect of multiple images so what is
+[11:34] multiple images so the idea is that why
+[11:37] do you do convolution in the first place
+[11:39] right so you do it because you have an
+[11:40] input image which is nothing but a 2d
+[11:42] Matrix
+[11:44] and from that
+[11:47] you basically send it through a deep
+[11:50] neural network a DNN basically to figure
+[11:53] out
+[11:54] you know many things let us say does it
+[11:56] contain the image of an apple or not or
+[11:58] does it look like a car or not
+[12:00] right so the image is essentially the
+[12:03] original input then of course you create
+[12:06] in every layer you've taken a few inputs
+[12:10] you create a few outputs again those
+[12:12] outputs are an input to the next layer
+[12:14] again you create a few more outputs so
+[12:16] on and so forth but essentially this
+[12:19] entire thing is happening
+[12:21] primarily for an original image
+[12:23] so now what we do is if we consider
+[12:26] multiple images where the iterator for
+[12:28] the image is n
+[12:30] then pretty much we will have output
+[12:32] feature Maps which are now indexed by
+[12:34] the image number also the image is the
+[12:36] original input on which we are doing
+[12:39] so if that is the case the only
+[12:41] additional thing you know over and above
+[12:44] this equation over here the only change
+[12:46] will be an N getting added here for the
+[12:48] image number
+[12:50] and filters etcetera everything Remains
+[12:52] the Same but the input feature map would
+[12:54] now also have an N over here
+[12:56] corresponding to the image number so we
+[12:59] have this dirty looking equation over
+[13:02] but we have systematically derived it
+[13:05] in the sense we have made the number of
+[13:09] the image
+[13:11] basically
+[13:13] parameterize the input output feature
+[13:15] map number and the rest of course
+[13:17] Remains the Same so this should be
+[13:19] reasonably easy to understand
+[13:21] given the fact that you have gradually
+[13:23] built this equation up the only addition
+[13:25] we are doing in this stage is adding
+[13:27] these two terms what this basically
+[13:30] means is that we are doing the same
+[13:33] operation for different original images
+[13:37] this is why the input and output feature
+[13:40] maps are kind of Getting parameterized
+[13:42] By the images when you say it's for the
+[13:43] nth image you say that all this data is
+[13:46] for the nth image
+[13:48] and clearly the filters are not a
+[13:51] function of the image that's the reason
+[13:54] n does not appear here
+[13:56] so let's now summarize all our
+[13:58] terminology the main thing is that this
+[14:00] table unfortunately needs to be
+[14:02] memorized because we'll be using these
+[14:05] variables over and over and over again
+[14:08] and that's the reason you know it may be
+[14:10] a good idea to memorize this table right
+[14:13] so let the number of input images or 2D
+[14:16] matrices be Capital length so its
+[14:18] iterator is small n
+[14:20] the number of input channels for any
+[14:22] layer so this is again layer specific
+[14:25] is capital c right C for channel and
+[14:28] small it is iterator is small C
+[14:32] again for a given layer let the number
+[14:34] of of maps output feature maps that we
+[14:37] produce be capital K this iterator will
+[14:40] be small k
+[14:42] and the dimensions of each if map and of
+[14:44] map we have assumed to be the same even
+[14:46] though in practice it need not be the
+[14:49] same particularly if you do what is
+[14:51] called strided access in the sense that
+[14:53] in this case we look we compute an
+[14:55] output pixel for every HW pair
+[14:58] but it could be like every HW pair for H
+[15:01] and W are even right so in that case the
+[15:04] output feature map would be smaller
+[15:06] but in any case in output feature Map
+[15:08] size will always be smaller than input
+[15:10] feature Map size but in this case we
+[15:12] have assumed it to be seen the same and
+[15:15] that's
+[15:16] easy to explain but in case it's smaller
+[15:18] you can easily extend this equation
+[15:21] so the dimensions of the if maps and of
+[15:23] maps are h plus W height cross width
+[15:26] height is the number of rows width is
+[15:28] the number of columns and the iterators
+[15:30] for H and W Capital H and W are small H
+[15:33] and W respectively
+[15:35] and the dimensions of the filter are
+[15:37] capital r capital S which is smaller and
+[15:40] smaller as respectively
+[15:42] if you are considering a batch of
+[15:43] capital n images right original inputs
+[15:48] each inner layer each wave map is
+[15:50] produced from Capital CIF maps and there
+[15:53] is a separate filter for each if map of
+[15:55] map here making a total of these many
+[16:01] so what do we have so we basically take
+[16:04] this equation again a screen clearing is
+[16:07] due
+[16:09] so this equation initially could look
+[16:11] scary but we have essentially broken it
+[16:13] down we derived this gradually
+[16:16] so what you can see is that this can be
+[16:19] replaced with a piece of code
+[16:22] to exactly compute this right so in this
+[16:25] case what do you do you iterate all
+[16:27] values of hwrs and c and n and so on
+[16:31] so basically you would have this classic
+[16:34] 7 for Loop structure so just count there
+[16:37] are seven loops
+[16:39] so the outermost Loop here Loops through
+[16:41] the input images then we Loop through
+[16:43] the outputs K that is small k then the
+[16:46] input channels then h w r and s
+[16:50] in every case o n k h w which is nothing
+[16:54] but
+[16:55] this value over here
+[16:58] is essentially a summation that's the
+[17:00] reason f plus equal to and you assume
+[17:03] that you know this is initialized to
+[17:04] zero of course
+[17:05] is basically this value
+[17:08] which is nothing but this value over
+[17:12] of NCH plus r w plus s
+[17:15] multiplied with its corresponding filter
+[17:17] value which is also given here
+[17:20] so as you can see this 7 for loops
+[17:24] this is a direct representation of the
+[17:26] summation formula that we had in the
+[17:28] previous slide
+[17:30] and in this case what we are doing is
+[17:33] that we are simply you know looping
+[17:35] through all combinations we are just
+[17:36] multiplying and adding and of course you
+[17:39] know we are adding for different images
+[17:41] and different out and we are producing a
+[17:44] capital key output maps for all the
+[17:46] capital n images that's our final
+[17:50] so the first thing is that you need to
+[17:53] convince yourself that this 7 loop
+[17:55] structure over here which
+[18:00] sorry
+[18:04] the seven Loop structure n k c h w r s
+[18:08] right is nothing but this and as you can
+[18:11] see here all that we are doing is we are
+[18:13] multiplying and adding so initially we
+[18:16] are choosing the image then we are
+[18:19] choosing the output Channel then we are
+[18:21] iterating through all the input channels
+[18:23] then for each input Channel we are kind
+[18:26] of
+[18:27] iterating through all HW all all the
+[18:30] pixels and for each pixel we are again
+[18:33] iterating through all the
+[18:36] uh through all the elements of the
+[18:39] filter right so we are doing this of
+[18:41] course you know there is a small catch
+[18:43] in this in the sense there is a small
+[18:46] problem but I will not discuss it now
+[18:47] because it will just make things complex
+[18:50] but you know there's a small problem and
+[18:53] an easier fix and a very easy fix but
+[18:56] I'll come to that later but the key
+[18:58] point is that this is a classic seven
+[18:59] Loop structure that you are seeing over
+[19:02] and this is just a sum of products
+[19:05] and here is the fun part that each of
+[19:08] these partial products right can be
+[19:10] computed independently there is no
+[19:11] problem
+[19:12] so there is a lot of parallelism in this
+[19:15] computation in the sense you can reorder
+[19:17] the loops it will remain exactly the
+[19:19] same in fact you can reorder these Loops
+[19:21] any way that you want
+[19:23] this computation will remain exactly the
+[19:26] same
+[19:27] right and also you can do all of them in
+[19:30] parallel
+[19:31] and then add them it will remain the
+[19:33] same so you need to kind of convince
+[19:35] yourself of these things
+[19:38] it is easy for me to state that a loop
+[19:41] in any of these Loops can be reordered
+[19:43] and no change will happen
+[19:44] but to actually appreciate that would
+[19:46] take some amount of thinking and I'll
+[19:48] not
+[19:49] kind of take away the opportunity of
+[19:51] thinking from you you and people need to
+[19:54] think and genuinely convince yourselves
+[19:56] that this is indeed the case
+[19:59] so now let's look at broadly speaking
+[20:03] Where We Are right so we have the seven
+[20:06] Loop structure over here
+[20:09] and then we I claim that each of these
+[20:13] are independent computations so the
+[20:15] loops etcetera can be reordered with
+[20:17] without any problem
+[20:19] and our input for a given image is
+[20:23] essentially Capital CIF Maps each with
+[20:25] Dimension h w
+[20:27] then we have Capital CK filters with
+[20:30] Dimension RS and an output is scale of
+[20:34] maps with Dimensions HW
+[20:38] so now for a given input image you can
+[20:40] have of course hundreds of layers but
+[20:42] then you can have several convolutional
+[20:44] units in a layer as you can see
+[20:47] then we can we could also have the other
+[20:50] layers that we discussed like relu
+[20:52] layers pooling layers other
+[20:53] convolutional layers again relu and
+[20:56] finally we typically have a fully
+[20:58] connected layer at the end which
+[20:59] produces the final output
+[21:02] but again the fully connected layer is
+[21:04] too heavy that's the reason we maybe
+[21:06] would have just one or two
+[21:09] relu and pooling are also are very fast
+[21:12] right it's very easy to do that and also
+[21:15] Railway and pulling could be integrated
+[21:16] with convolution as we will see later on
+[21:20] but the key point is that
+[21:23] the convolutional layer is the most time
+[21:25] taking it accounts for 85 to 90 percent
+[21:27] of the overall time
+[21:29] so that is why most of our optimization
+[21:32] effort goes in the convolutional layer
+[21:36] so now if we take a look at the
+[21:39] reference architecture for a CNN
+[21:43] here is what we have so you know my I
+[21:47] have not fully motivated this neither do
+[21:50] I want to motivate all of it right now
+[21:52] right we should have something for the
+[21:55] you know the later parts of the lecture
+[21:57] but the key idea is that given the fact
+[22:01] that we have a lot of these parallel
+[22:03] computations
+[22:04] we could have an array of processing
+[22:07] elements that work more or less
+[22:08] independently as you can see they are
+[22:11] connected with an NOC so there are row
+[22:13] wise connections there are column wise
+[22:15] connections you could have flexible
+[22:16] connections also in the sense you could
+[22:18] have dedicated connections between these
+[22:20] two it doesn't matter
+[22:22] each processing element is nothing more
+[22:25] than a glorified ALU with a little bit
+[22:28] of local buffer space and then of course
+[22:30] the NOC is connected to a global buffer
+[22:33] think of this as the L1 cache and this
+[22:35] is the L2 cache
+[22:37] and then uh it is connected to main
+[22:40] memory on the memory side and there is
+[22:42] of course a brain of the neural network
+[22:45] pretty much if you would say
+[22:47] switch basically schedules all the
+[22:49] competitions as we shall see the brain
+[22:51] is you know quite important and this is
+[22:53] typically an out of order process
+[22:56] so again you know what I am describing
+[22:58] right now is something that I am doing
+[23:01] with insufficient background because we
+[23:03] have not fully motivated this design yet
+[23:05] but it is important to keep this
+[23:07] somewhere in the back of your thinking
+[23:09] before we actually go forward right that
+[23:13] you can have a sea of processing
+[23:14] elements
+[23:15] somehow connected
+[23:18] right via an NOC
+[23:20] we could have a global buffer for like
+[23:22] you know global storage of values and
+[23:24] local storage on each P
+[23:26] and an overall brain or an out of order
+[23:29] process to kind of
+[23:31] orchestrate the entire communication
+[23:35] now coming back to our seven Loop
+[23:38] structure we argued that Loops can be
+[23:40] reordered and the proof was essentially
+[23:44] left to the brilliant viewers of this
+[23:47] video
+[23:48] by seeing that you know you already
+[23:50] ordered them anyway it doesn't matter
+[23:52] and accesses are indeed parallel in the
+[23:55] sense that the computations are indeed
+[23:59] because there is no as you can see in
+[24:01] this Loop there are no dependencies
+[24:03] right in the sense that for this you
+[24:06] just have to fetch an input value fetch
+[24:09] an input value multiply them and add
+[24:11] them so of course this value is
+[24:13] dependent on all of the input values
+[24:15] that are you know that lead to it but
+[24:18] again those input values can just be
+[24:20] computed in any order and just add it
+[24:22] right so only synchronization is that
+[24:25] the addition needs to happen atomically
+[24:27] right and I think we have studied a lot
+[24:29] of that in chapter nine but assuming
+[24:32] that is taken care of these are
+[24:34] inhibited computations pretty much
+[24:37] but from a performance point of view
+[24:40] that ordering is important because it
+[24:42] determines the order of accesses and
+[24:43] consequently the memory locality and the
+[24:46] memory performance
+[24:48] right so it determines the cash NOC
+[24:50] memory Behavior that is why from a
+[24:53] performance point of view their ordering
+[24:55] is important
+[24:56] the next thing is that we have an
+[24:59] additional option of tiling the loops
+[25:01] I'll just show it with code
+[25:04] so if you go back to Loop tiling we had
+[25:07] discussed it in chapter 5 where what we
+[25:09] do is that if a loop has thousand
+[25:11] elements we actually uh kind of divide
+[25:14] it into two Loops wherein one loop loop
+[25:17] we kind of go in like blocks of plus
+[25:19] five plus five and then Within
+[25:21] the smaller sub Loop we go you kind of
+[25:24] iterate within the block so the key
+[25:27] Advantage is caching actually so if
+[25:28] these block sizes are well chosen
+[25:31] then we'll kind of read it into the
+[25:33] caches
+[25:34] do all our operations on them and write
+[25:36] it back so tiling is an important thing
+[25:38] and in case you don't know what is
+[25:42] styling
+[25:43] please go and look at the videos of
+[25:45] chapter 5 of this book so that is you
+[25:47] know tiling is explained in a reasonable
+[25:49] amount of depth and detail over there
+[25:53] so if I were to tile right my seven Loop
+[25:57] structure would actually become
+[26:02] a nine Loop structure
+[26:06] and uh everything Remains the Same the
+[26:09] only modified lines are these two
+[26:12] right uh so in this case what we do is
+[26:16] that in the previous case we were
+[26:18] increasing by plus one
+[26:19] but we Define two new iterators H1 and
+[26:22] W1 which go from 0 to Capital H and 0 to
+[26:26] W respectively but in this case the
+[26:29] increase in every iteration by the tile
+[26:31] size which is th and t w
+[26:33] so we will see we'll see that there are
+[26:35] some advantages of doing this classic
+[26:37] tiling
+[26:39] and then what we do is along with these
+[26:41] seven Loops we add two more Loops that's
+[26:43] why it's a nine Loop structure here we
+[26:46] again introduce two more iterators H2
+[26:48] and W2 respectively
+[26:50] to move within these Styles right so
+[26:53] there are advantages in the sense that
+[26:55] we are considering a tile and pretty
+[26:57] much for a tile we are finishing its
+[26:59] operations
+[27:01] so the tile fits within the cache then
+[27:03] we read it once do everything we need to
+[27:06] do with it and we are done
+[27:08] so we are kind of increasing the
+[27:09] locality of the computation
+[27:11] by considering tiles of size th Cross t
+[27:14] w and we essentially fetch the tile and
+[27:17] then for one tile as I said if I keep on
+[27:20] fetching the rows and Columns of the
+[27:22] filter and keep on doing our
+[27:23] convolutions and producing the output
+[27:25] power you know output pixels has been
+[27:28] partially output pixel values partially
+[27:31] right so this is the classic advantage
+[27:33] of tiling something that we had seen
+[27:35] extensively in chapter 5
+[27:38] so any of these Loops in principle can
+[27:41] be tiled not once but you can tile it
+[27:43] several times it will only consider two
+[27:45] level tiling in this chapter
+[27:47] so as you can see this is an example of
+[27:49] two level tiling where HW is kind of
+[27:52] being divided into H1 W one at the top
+[27:55] and then you know that is kind of
+[27:57] strides of th and t w
+[27:59] and we are iterating within the tile
+[28:02] which is
+[28:04] basically here we are increasing by one
+[28:08] right we are moving within the tile
+[28:13] so the idea is that we need a method for
+[28:17] formally represent the order of loops
+[28:21] because order of Loops is not important
+[28:22] from a correctness perspective but it's
+[28:25] important from a performance perspective
+[28:27] specify timing and also data locality
+[28:30] what to keep in these local buffers
+[28:32] local buffers are these you know L1
+[28:34] caches over
+[28:37] right so what to keep over here what is
+[28:39] cached in the local buffers and what is
+[28:43] so before I move to the formal notation
+[28:45] let me explain
+[28:47] what I was meaning by the small error in
+[28:50] the seven Loop code and why it's a very
+[28:53] small error and why you know fixing it
+[28:55] is no big deal
+[28:56] so the idea is that if this is you know
+[28:58] the input feature map we are kind of
+[29:00] moving this kernel we are kind of
+[29:02] sliding this kernel throughout
+[29:05] issues will come
+[29:07] at the right Edge or the bottom Edge for
+[29:10] example assume your kernel is like this
+[29:13] or your kernel is like this so let me
+[29:17] maybe you know zoom in this part
+[29:20] so if I zoom in this part your kernel
+[29:22] would be like this so these will be the
+[29:24] valid pixels these will be the invalid
+[29:26] pixels
+[29:27] so in this case what will happen is that
+[29:30] when we are trying to read
+[29:32] h plus R and W plus s
+[29:38] they will con correspond to Regions that
+[29:41] are not valid right because you know it
+[29:44] is beyond the boundaries of the input
+[29:46] feature map right and this would happen
+[29:48] only at the right Edge and only at the
+[29:51] bottom Edge
+[29:52] but taking
+[29:54] uh care of this is very easy either we
+[29:57] can tell our Hardware that look
+[29:59] kindly ignore all the accesses to these
+[30:02] regions and just return a zero
+[30:05] or we can explicitly zero path the input
+[30:07] feature map in the sense we can consider
+[30:09] a bigger input feature map
+[30:11] right and store zeros in all these
+[30:14] regions right so this is known as zero
+[30:16] padding
+[30:17] this can be done you know this is
+[30:19] something which can be done where it can
+[30:21] be done kind of in software
+[30:24] where you know if your size is h w
+[30:26] actually take a larger
+[30:30] input feature Maps where actually on one
+[30:33] side you add R minus 1
+[30:37] you know pixels and other side you add s
+[30:39] minus one pixels and then pixels are
+[30:42] essentially in a matrix elements and
+[30:45] then you just keep on adding zeros
+[30:47] so or you tell your Hardware that look
+[30:49] if you get accesses in this region
+[30:51] kindly ignore and return a zero so
+[30:53] doesn't matter you can match fix it in
+[30:56] either software or Hardware in either
+[30:58] case it is fine
+[31:03] so let us now look at the formal
+[31:05] notation
+[31:06] so in the formal notation we have these
+[31:09] seven
+[31:11] Loops right
+[31:12] so this code we have seen But if you
+[31:15] actually think about it
+[31:17] what is the information that we are
+[31:19] capturing over here we are essentially
+[31:21] the order of the loops is what is
+[31:24] important and as I have said earlier
+[31:27] reordering the loops makes no difference
+[31:29] at all with respect to correctness but
+[31:32] performance is a different matter
+[31:34] so this entire piece of code can be
+[31:37] represented like this
+[31:39] where we can say that this is just a
+[31:42] sequential ordering
+[31:44] of n k c h w r s y because that is the
+[31:49] order of the iterators n k c h w r s so
+[31:54] that is the order in which we are having
+[31:56] our loops and doing our computation so
+[31:58] at least for
+[31:59] a simple single threaded software
+[32:02] implementation this is good enough so
+[32:04] instead of having this entire piece of
+[32:06] code
+[32:09] over here we could just have
+[32:18] of these symbols where they all that
+[32:21] they do is that they capture the
+[32:23] iterators
+[32:24] and we could write them in this fashion
+[32:26] where this essentially indicates a
+[32:27] sequential operator which basically
+[32:30] means
+[32:31] that all of these Loops are nested
+[32:33] inside this Loop similarly all of these
+[32:35] Loops are nested inside this Loop so on
+[32:37] and so forth
+[32:39] so this captures the sequential ordering
+[32:41] of Loops in single threaded software
+[32:43] right that's the way
+[32:46] we can interpret this but this is a much
+[32:48] more compact notation Which is far
+[32:50] easier to analyze
+[32:54] so now let us
+[32:56] work on this definition
+[32:59] so this is kind of more like you know a
+[33:02] definition where
+[33:03] this basically tells you how to
+[33:06] interpret these Loops in the sense they
+[33:07] run sequentially and everything within
+[33:10] each sequential iteration is kind of
+[33:12] captured all of this is within one
+[33:14] sequential iteration of an image
+[33:19] so if I have an n and then a parallel
+[33:21] symbol right two bars after it this
+[33:24] basically says that we need to process
+[33:26] all the images in parallel
+[33:28] or in other words run a parallel for
+[33:31] Loop
+[33:32] which basically means that
+[33:35] pretty much if we look at software we
+[33:37] have not come to Hardware yet we will
+[33:39] map it to Hardware but not now not
+[33:41] immediately so in this case we look at
+[33:44] all of the n images capital n images in
+[33:47] parallel right this is what it says when
+[33:49] I parallelize the iterator
+[33:52] what I can then do is if I have two of
+[33:54] these parallel in the sense I look at
+[33:56] all H in parallel non W in parallel
+[33:59] pretty much both of these could be
+[34:01] interpreted as process all the HW pairs
+[34:04] in the sense all the pixels of the
+[34:06] Matrix that's what it's called the
+[34:08] elements are called pixels
+[34:10] in parallel by mapping them to different
+[34:12] you know in this case threads or peas it
+[34:16] doesn't matter but conceptually what you
+[34:18] are saying is that for every pixel pair
+[34:22] map all of them in parallel and for each
+[34:25] so sorry not pixel pair coordinate pair
+[34:28] or for every pixel
+[34:29] do the computations parallelly and
+[34:32] independently
+[34:33] this notation is interesting here the
+[34:36] only additional term that we have is
+[34:38] this operator
+[34:40] this basically says that first we
+[34:43] parallelize the loop with the iterator h
+[34:47] right so first what we do is that we
+[34:49] create groups
+[34:51] of computations
+[34:54] where these groups themselves run in
+[34:58] and then
+[35:00] each one of them has a different value
+[35:02] of the iterator h
+[35:04] within each group so so these groups
+[35:07] again you know so each one of them
+[35:10] is basically a separate group and they
+[35:13] run in parallel but within each group
+[35:15] we map each of these values again we
+[35:19] process these values
+[35:22] within each group we process the W
+[35:24] values in parallel right
+[35:27] so the difference between this and this
+[35:29] is that in this case The Ordering of
+[35:31] pixels can be absolutely random because
+[35:34] as I said all pixels are processed
+[35:36] parallely so let's see if there are 100
+[35:38] pixels and we have 10 units then we need
+[35:41] to pretty much pick uh you know 10
+[35:44] pixels 10 more 10 more 10 more and so so
+[35:47] on and so forth and that can be done you
+[35:50] know in absolutely any order but in this
+[35:52] case if it's a 10 cross 10 matrix then
+[35:54] what we would do is that we would create
+[35:56] groups of 10 pixels
+[35:58] we would process the groups parallely
+[36:01] and let's see if we just have 10 P's
+[36:04] then at one point of time we can process
+[36:05] only one group
+[36:07] in that group with the same H value
+[36:10] we'll process the pixels with the
+[36:12] different W values in parallel
+[36:14] so this in a sense provides the final
+[36:17] structure of the parallelism is not as
+[36:20] random as this and it says how exactly
+[36:23] we will do it by creating groups and
+[36:25] then
+[36:26] inside each group we could either
+[36:30] process sequentially or in parallel
+[36:33] H dash and H dash dash this basically
+[36:36] means that H dash is the size of the
+[36:40] tiles is incremented by the tile size th
+[36:44] and H dash dash is the iterator for
+[36:46] accessing values within a tile so if you
+[36:49] remember in the tile Loops which I'll
+[36:52] just take you back we had the iterators
+[36:54] H1 and H2 this is nothing but the same
+[36:58] so instead of H1 and H2 we have H dash
+[37:01] and H dash dash
+[37:04] so of course as I just showed we could
+[37:07] have execution folding which means that
+[37:09] let's say if we have
+[37:11] more iterations or let's say more pixels
+[37:14] the number of P's or threads then what
+[37:17] we can do is we can process a set of
+[37:19] iterations
+[37:20] right process basically a set of pixels
+[37:23] a set of computations
+[37:24] right so it's a computation in this case
+[37:26] is an iteration of a for Loop process
+[37:29] the next set so on and so forth
+[37:34] so now let us further complicate this
+[37:36] representation of ours
+[37:39] so if I look at the tiled execution so
+[37:41] let me again go back to the tiled
+[37:43] execution this is NKC this is H dash w
+[37:48] Dash RS then H dash dash W Dash Dash
+[37:54] I mean it's
+[37:56] it's not H dash but it is like H in an
+[37:59] apostrophe but let me call it an H dash
+[38:03] so in this case uh what we are actually
+[38:06] doing
+[38:09] is that this is capturing our order of
+[38:13] execution
+[38:15] okay so it's capturing our order of
+[38:18] execution so it is basically saying
+[38:23] that this is NKC H dash W Dash R S H
+[38:28] dash dash W dash dash which is basically
+[38:31] nothing but we have nine loops and
+[38:34] The Ordering of the loops has been
+[38:36] captured with this so we don't have to
+[38:38] write the code or the loops or anything
+[38:39] this notation is good enough
+[38:42] finally
+[38:44] uh if you look at the following mapping
+[38:47] so let's look at this mapping so these
+[38:50] are as I said you know all of these
+[38:52] seven terms have to be memorized
+[38:53] otherwise you will have a lot of
+[38:55] difficulty understanding this but I am
+[38:58] proceeding with the assumption that the
+[39:01] viewer of this video has memorized these
+[39:04] terms
+[39:05] so in this case we have NKC the usual
+[39:10] and basically what we have is that the
+[39:14] input if maps are processed in parallel
+[39:17] then we look at for each if map we look
+[39:20] at the pixels sequentially
+[39:22] and then we read in the filter
+[39:25] so the
+[39:26] new thing here is the Shaded box which
+[39:29] basically says that all the elements of
+[39:31] the filter right so RS is essentially
+[39:34] the kernel the filter
+[39:36] these come from the local buffer or the
+[39:39] L1 cache of the PE so this is the
+[39:42] material that is cached right it's
+[39:44] cached locally in the local buffer this
+[39:47] is cached
+[39:48] so the idea here is to reuse this as
+[39:51] much as possible
+[39:53] which basically means that I load in a
+[39:55] filter I use it use it use it keep using
+[39:59] it and then basically then I kind of
+[40:03] discard it
+[40:04] to reuse it much later or maybe you know
+[40:07] if you want to maximize filter caching
+[40:10] then you have a filter and then you
+[40:13] finish all the computations that would
+[40:15] need this filter and then you discard
+[40:17] the value
+[40:18] so that would of course depend upon you
+[40:21] know the structure of this notation so
+[40:23] we will you know go into the depth of it
+[40:25] but the fact is the Shaded box indicates
+[40:27] that you know as per the context uh the
+[40:32] values that the iterators are fetching
+[40:35] are coming from the local buffer the
+[40:37] local cache
+[40:40] so let us now
+[40:42] focus on this caching business right so
+[40:45] what exactly is cached
+[40:47] and uh how can we arrange our
+[40:50] computations with respect to this
+[40:52] caching because as I said the ordering
+[40:53] matters and the memory Behavior matters
+[40:56] right so it matters big time
+[40:59] so let us say that we have a weight
+[41:02] stationary architecture so we can have
+[41:04] different stationary architectures but
+[41:06] let's look at one of the simplest
+[41:08] the weight stationary architecture or
+[41:11] the Ws architecture the idea is to reuse
+[41:15] the filter weights
+[41:17] as much as possible right you can
+[41:20] parallelize the rest
+[41:22] and in this case we don't care about
+[41:24] Hardware parallelization or software
+[41:25] parallelization even though later on in
+[41:28] I'll map these things to Hardware so
+[41:29] you'll see how it is happening
+[41:31] but this is primarily from the point of
+[41:34] view of software but again as I said it
+[41:37] doesn't matter it's it's a conceptual
+[41:39] device right so you can map it to any
+[41:41] real substrate be It software running on
+[41:44] Hardware like threads or be it like a
+[41:46] neural network accelerator where as I
+[41:49] have shown we'll have those peas right
+[41:51] so it doesn't matter how we exactly do
+[41:54] it
+[41:55] see if let's take a look at this
+[41:57] notation over here
+[41:59] so let us say that the filter
+[42:03] if all the filter weights are cached
+[42:07] and let's say you want to maximize the
+[42:09] ReUse so if you want to maximize the
+[42:10] ReUse what will happen
+[42:12] that you want to load them once finish
+[42:15] all the computations that require them
+[42:17] and then kind of discard these fits
+[42:21] so basically the filter is dependent on
+[42:23] two parameters which is K and C the
+[42:26] output
+[42:27] feature map and input feature map
+[42:30] so what I could do is I could maximize
+[42:32] the distance between this and this
+[42:37] so I could say that look first I choose
+[42:39] a KC pair and finish all the
+[42:41] computations with respect to that
+[42:44] which basically means that the filter
+[42:46] which is uniquely dependent on them will
+[42:49] get completely reused and then we will
+[42:50] discard it if that is the case the
+[42:53] structure of this notation will become k
+[42:55] c
+[42:56] then let's say we look at our images
+[42:58] sequentially
+[43:00] then assume we have some degree of
+[43:01] tiling so we process the tiles in
+[43:04] parallel and within each tile
+[43:07] we basically
+[43:10] look at the pixels sequentially right so
+[43:14] let us assume that this is the way we
+[43:16] are interpreting it
+[43:18] then what we will see is that this is of
+[43:21] course a way of maximizing reuse but in
+[43:23] this case what would happen is that you
+[43:25] would have to reload these images in the
+[43:27] sense that for every image right for
+[43:30] every image over here
+[43:32] uh one
+[43:34] input output feature map has to be
+[43:36] processed then reload the next image
+[43:39] then next image right so that's the way
+[43:41] it will happen that's not
+[43:43] a very convenient way of doing things
+[43:46] because the point is that if this layer
+[43:48] is somewhere in the middle of the neural
+[43:50] network
+[43:51] and basically we are we need to
+[43:55] basically send data for multiple images
+[43:57] then again change the KC again send for
+[44:00] multiple images kind of complex
+[44:04] ideally speaking what you should do is
+[44:07] that for a single image
+[44:09] just send it through the neural network
+[44:11] let it get processed for the next image
+[44:13] send it through the neural network let
+[44:14] it get processed so on and so forth
+[44:16] don't mix images makes life tough
+[44:20] so we can always have
+[44:22] another kind of mapping and Order of
+[44:25] computation
+[44:26] where we parallelize on the basis of
+[44:28] input output channels and look at images
+[44:32] which is something that would probably
+[44:34] suit us more so in this case what we can
+[44:37] do is we look at images sequentially and
+[44:39] share the sequential operator here
+[44:42] then uh we basically parallelize our
+[44:46] computation based on KC pairs
+[44:49] so they are mapped to different
+[44:50] computational units within each we take
+[44:54] a look at the pixel sequentially and the
+[44:56] filter weights sequentially and the
+[44:58] filter weights are cached so of course
+[45:00] we don't have the kind of reuse that we
+[45:02] have here but this is somewhat a more
+[45:05] convenient way of doing the computation
+[45:08] where we process one image at a time
+[45:12] parallelize the input output feature map
+[45:14] space in the sense do all those
+[45:15] computations in parallel and once
+[45:19] you know you are a compute unit you know
+[45:21] your KC pair then you just sequentially
+[45:23] finish the 2D convolution
+[45:28] we could have other kinds of
+[45:30] architectures for instance
+[45:32] we could have an input stationary or an
+[45:35] is architecture
+[45:38] so in this case
+[45:43] what would really happen
+[45:46] is that
+[45:48] we could be processing images
+[45:50] sequentially one after the other
+[45:54] then we could be processing our tiles in
+[46:02] in this notation as you can see
+[46:05] we are
+[46:07] kind of fixing an output feature map
+[46:09] because the idea is we want to keep our
+[46:11] input data stationary right
+[46:14] so we fix an output feature map and
+[46:16] within that output feature map what we
+[46:19] do is that we slightly change the order
+[46:21] of iterations here and what we keep
+[46:23] cached is this quantity
+[46:25] which let me
+[46:28] kind of elaborate on this right that why
+[46:31] are we keeping this cached where are we
+[46:33] keeping it cached and why is the order
+[46:36] of computation this way
+[46:39] so in this case let's uh
+[46:43] look at this once again before we
+[46:45] discuss stationarity at the end
+[46:47] so you process one image at a time
+[46:50] we are clearly Distributing the tiles
+[46:52] across the piece as far as a PE is
+[46:55] concerned this part is what is
+[46:57] sequential
+[46:59] right so here
+[47:02] we are looking it at one
+[47:05] output Channel at a time and sending the
+[47:08] filter weights
+[47:10] so what is it that is we have cached so
+[47:13] we basically have the contents of the
+[47:15] input tile for all the channels
+[47:19] so SM essentially for all the input
+[47:24] where I use the for all symbol
+[47:27] these are the contents
+[47:29] of the tile
+[47:33] that is mapped to the given Processing
+[47:35] Unit which could be a software thread or
+[47:37] a hardware unit we don't care but for
+[47:40] all the channels we store their tiles
+[47:42] which is basically this is a tile for
+[47:44] all the channels you would store them
+[47:46] like this in the internal cache
+[47:50] basically we would send it
+[47:53] different filters corresponding to
+[47:57] the output Channel
+[47:59] and for all the output channels and the
+[48:01] corresponding filters once we have
+[48:03] computed the
+[48:05] convolutions
+[48:07] we would have the final output that
+[48:10] corresponds to this style because the
+[48:11] final output for a tile is what
+[48:14] you take into account all the if map of
+[48:17] map Pairs and their filters do the
+[48:21] right and then you
+[48:25] add them so you will get the final
+[48:27] output for all the feature Maps right or
+[48:30] let's say for for all the output feature
+[48:32] Maps or let's look at it in a different
+[48:34] way
+[48:36] for a given output feature map
+[48:38] if we cycle through
+[48:42] uh
+[48:43] the the filter so it's a if the filter
+[48:46] kind of moves
+[48:48] through the tile
+[48:50] all right and given the fact the tile is
+[48:53] cached so basically what we do
+[48:56] is that we take a few filter weights and
+[48:59] make them
+[49:00] make those you know weights kind of
+[49:02] cycle through the tile
+[49:05] cycle through basically means that you
+[49:07] you kind of
+[49:08] multiply each element with the filter
+[49:11] weight and again consider newer filter
+[49:13] weights and then multiplies on and so
+[49:15] forth and finally when you do the
+[49:18] addition
+[49:18] this much right this part
+[49:21] would compute
+[49:25] the would compute the value of the tile
+[49:29] this style this particular tile right
+[49:32] given by H dash and W Dash whatever it
+[49:35] is mapped
+[49:36] in the output feature map corresponding
+[49:38] to a given value of K
+[49:40] now when I look at many values of K
+[49:44] right or let's say all the values of K
+[49:46] all the output feature maps for this
+[49:48] particular tile given by H dash W Dash
+[49:50] would be computed
+[49:52] by the unit to which it is assigned to
+[49:56] all right so basically this is kind of
+[49:58] complex based on that complex if you
+[50:01] look at it several times
+[50:04] so the point is that
+[50:08] we consider our computation and image at
+[50:11] a time
+[50:12] we divide our input output feature maps
+[50:15] are feature map space basically into
+[50:17] tiles and we parallelize it on the basis
+[50:20] of tiles so this part is kind of
+[50:22] parallelized
+[50:23] then a given tile is mapped to
+[50:27] a computational unit let's call it a p
+[50:30] then what we do is that we cycle through
+[50:33] the output feature Maps
+[50:35] now for a given output feature map we
+[50:37] perform this computation over here
+[50:40] in this computation what happens is that
+[50:43] we keep
+[50:45] the values of so this is the tile right
+[50:49] so for this style for all the input
+[50:52] channels we keep those values cached
+[50:55] right so all of this material is cached
+[50:58] what we simply read are the filter
+[51:00] weights so we read a couple of filter
+[51:02] weights they are sent over here a
+[51:04] convolution is computed
+[51:07] the moment we have
+[51:09] gone through all our filter weights
+[51:12] and then we compute the convolutions and
+[51:14] perform the additions Etc so essentially
+[51:16] we finish the computations of the loops
+[51:19] what we get
+[51:21] is the H dash W Dash
+[51:24] tile of the output feature map that
+[51:27] corresponds to a given value of K
+[51:30] right why because for a given output
+[51:33] feature map you require to consider all
+[51:36] the input feature Maps write the
+[51:38] corresponding tiles
+[51:41] now for each of these input feature Maps
+[51:45] filter right we convolve it to the
+[51:47] corresponding filter and then an
+[51:49] addition is performed to arrive at
+[51:53] corresponding tile in the output feature
+[51:58] so basically this is not very hard and
+[52:00] of course I am not saying that this is
+[52:02] the most optimal way of doing it there
+[52:04] are other optimal other you know better
+[52:07] ways of doing it as we shall see when we
+[52:10] look at the section when this
+[52:13] computation is mapped to hardware
+[52:15] but again the key point is that we are
+[52:18] clearly keeping
+[52:20] part of the input tile cached in the B
+[52:23] and once the input tiles are cached what
+[52:27] is it that we have to send we have to
+[52:28] send the filter weights right so we have
+[52:31] to kind of bomb it with filtered weights
+[52:33] because you know the input is cached
+[52:35] and then uh
+[52:37] what is the output well the output is
+[52:40] the output map the of map tile the
+[52:44] corresponding of map time or basically
+[52:46] some part of it I mean at least
+[52:47] partially computed of map type
+[52:50] so of course in this case
+[52:55] there is some amount of complexity the
+[52:59] complexity with an input tile is like
+[53:01] this that if this is a tile right and
+[53:03] its size is th rows and t w
+[53:07] and we are doing a convolution so then
+[53:10] again we will have problems at the right
+[53:12] Edge and the bottom Edge because the
+[53:15] filter could be like this and these
+[53:16] pixels will not be there
+[53:18] so what we do is that we can
+[53:20] deliberately consider a bigger input map
+[53:22] tile where of course there will be
+[53:25] overlap across Computing units but that
+[53:27] is unavoidable
+[53:29] where we extend this by R minus 1 pixels
+[53:33] downwards and extend the columns by S
+[53:35] minus 1 pixels
+[53:37] so then a tile size actually increases
+[53:39] to th plus r minus 1 multiplied with t w
+[53:43] plus s minus 1 and this is needed such
+[53:45] that you know the worst case when your
+[53:47] window is over here uh right when your
+[53:50] filter is over here then all the pixels
+[53:54] underneath it
+[53:55] are there in the cache see otherwise
+[53:59] there would be a need to communicate
+[54:01] values across processing elements these
+[54:03] peas and that's hard so we don't want to
+[54:05] do that
+[54:07] so
+[54:09] these values that you know which you
+[54:12] would like to communicate
+[54:14] but in this case you are avoiding but
+[54:17] deliberately considering a larger tile
+[54:19] size these are known as Halo pixels
+[54:22] right so Halo is you know from the
+[54:24] English word where it is kind of like
+[54:27] you know this Halo of light that comes
+[54:30] when there is an occlusion so pretty
+[54:32] much is the same concept but in this
+[54:34] case these are known as hello pixels and
+[54:36] Halo pixels have to be taken care of
+[54:39] by in this case having a larger trial
+[54:42] size right so that is how we are
+[54:44] avoiding so to come back the sum total
+[54:46] or the summary of our discussion is that
+[54:50] if we are keeping a part of the input
+[54:52] data cache that is fine in this case the
+[54:54] filter weights are what are going to be
+[54:56] streamed through from memory
+[54:58] and the outputs will be partially
+[55:00] computed unless we store
+[55:03] the input tiles for all the channels in
+[55:06] a processing element right
+[55:08] in the local cache then we just bomb it
+[55:11] with Filter weights and then computer
+[55:13] part of the compute the output tile
+[55:15] actually and we are done
+[55:19] so on the on similar lines we could have
+[55:22] an output stationary architecture
+[55:24] so in this case we will do the same
+[55:26] thing we'll stream through our images we
+[55:28] may have tiling
+[55:30] even you know output stationary and
+[55:32] tiling are orthogonal Concepts you could
+[55:34] have a non-tiled output stationary
+[55:37] architecture as well so in this case
+[55:39] what would happen
+[55:42] we can parallelize the space based on
+[55:45] the tiles
+[55:46] then what we would do is that we would
+[55:49] consider the computation one input
+[55:51] Channel
+[55:53] in one input Channel then the next one
+[55:57] then the next one so on and so forth
+[55:59] so in this case the output data is being
+[56:03] kept cached right so within the local
+[56:05] buffer the output data is being kept
+[56:09] cash for a given type
+[56:10] so what we could do is for a given tile
+[56:12] so tile is what a tile is basically a
+[56:14] set of coordinates starting from H dash
+[56:18] W Dash right so basically it is th Rose
+[56:21] down and TW columns
+[56:23] so this information for an output of map
+[56:26] is kept cached so in this case what we
+[56:29] could do is that let us keep it cached
+[56:31] for all the of maps right this is what
+[56:34] this would indicate because the entire
+[56:36] all the output iterators and for that
+[56:38] tile everything is cached so in this
+[56:41] case what we need to do is that we
+[56:43] basically need to bomb this with inputs
+[56:54] so then basically they will mutually get
+[56:56] multiplied with each other and keep on
+[56:58] updating the values of the partially
+[57:00] computed output tile which is stored in
+[57:03] the local buffer and once we have sent
+[57:05] all possible input channels and their
+[57:07] corresponding filters
+[57:09] we would be done
+[57:11] again as I said there are more efficient
+[57:13] ways of doing this we will look at it
+[57:15] but this is nonetheless one of the ways
+[57:18] of doing this where we tile the
+[57:20] iteration space in the same way as we
+[57:22] did this an analogous way as we did for
+[57:25] input stationary in this case as you can
+[57:27] see just K and C have reversed their
+[57:29] positions
+[57:30] so instead of krsc it is crsk right krsc
+[57:35] this is crsk
+[57:37] they just reverse their positions the
+[57:39] logic is exactly the same we keep
+[57:43] kof maps not K of mass but k o f map
+[57:47] Tiles at the same position stationary
+[57:49] stationary means cached in the local
+[57:52] buffer
+[57:53] so we tile this iteration space in the
+[57:55] same manner each PE computes all the
+[57:58] wave maps for a given tile we stream in
+[58:01] the inputs and so on and again you know
+[58:03] this issue of hello pixels will be there
+[58:06] and that has to be taken care of by
+[58:08] deliberately having a
+[58:10] larger input tile that is sent
+[58:14] so let us now look at a very different
+[58:16] design we call it the row stationary
+[58:19] architecture
+[58:20] so let's uh look at the representing
+[58:24] equation first it's slightly different
+[58:26] and then I will talk about why it is
+[58:29] this way
+[58:33] so what we do is that we do the same we
+[58:37] consider the data image wise one image
+[58:39] then the next and the next and so on
+[58:43] then we first look at a KC pair
+[58:46] so this we look at sequentially so I'm
+[58:50] uh you know considering a simpler of
+[58:52] thought but when we will look at the
+[58:54] hardware version we'll look at we'll
+[58:56] also try to parallelize this space but
+[58:57] it doesn't matter it doesn't matter at
+[58:59] this stage but essentially we fix a KC
+[59:04] which pretty much fixes the filter
+[59:08] then what we do is this part is quite
+[59:11] interesting we actually make the
+[59:14] division by rows
+[59:16] so what we do is that we distribute a
+[59:18] row of the filter and a row of the input
+[59:22] so let's say a row of the filter
+[59:26] and basically a row of the if map
+[59:31] this is what is distributed to all the
+[59:34] computational units all the peas
+[59:36] and one p basically is in position of
+[59:40] rows so furthermore what we can do
+[59:42] either we can distribute a single row or
+[59:44] we can distribute tiles of rows several
+[59:47] contiguous rows
+[59:49] so I am looking at the more generic case
+[59:51] where we distribute tiles of rows
+[59:53] several contiguous rows
+[59:55] so pretty much to each PE it will have a
+[59:58] bunch of rows a bunch of these input
+[60:00] rows which are you know reasonably big
+[60:02] and a bunch of these filter rows which
+[60:05] are reasonably smaller
+[60:07] so these tiles are the ones that are
+[60:10] going to get distributed
+[60:15] so once that is done and this is kind of
+[60:18] this is being done in parallel
+[60:20] then what we will see is that each P
+[60:23] basically only needs to compute this
+[60:26] much
+[60:27] if it needs to compute this much let us
+[60:29] focus on that and what's a better way
+[60:32] than basically getting rid of all the
+[60:34] ink
+[60:35] so we do that and we focus on what a p
+[60:38] is supposed to do so in this case what
+[60:41] it does is that it picks a row from the
+[60:43] tile and if map row
+[60:48] here you go
+[60:51] and it picks and it picks
+[60:54] basically a row from the filter
+[61:03] and essentially uh so so it assumes that
+[61:07] so both of these are kept in the cache
+[61:09] since they are kept in the cash they are
+[61:11] corresponding iterators
+[61:12] write H dash and you know R dash dash
+[61:15] basically saying
+[61:22] that the entire if map brew and the
+[61:25] entire filter row are cached so that is
+[61:28] why we put both in a shaded box so mind
+[61:30] you if I am permitted a small digression
+[61:33] over here
+[61:34] inside the Shaded box
+[61:37] The Operators that are there you know
+[61:40] this operator doesn't matter what
+[61:42] matters is what are basically the terms
+[61:46] we are kind of you know grouping them
+[61:49] together we could have also had two
+[61:50] separate shaded boxes that would not
+[61:52] have looked that good but the idea of
+[61:55] kind of grouping them together and
+[61:56] putting them in a shaded box basically
+[61:58] says that simultaneously we are caching
+[62:03] a row of the if map and a row of the
+[62:06] filter so both of these quantities H
+[62:09] dash dash and R dash dash regardless of
+[62:11] the operator between them that doesn't
+[62:13] matter
+[62:14] both are there in the cache so pretty
+[62:16] much what the Shaded box indicates is
+[62:18] that it points the iterator and via the
+[62:21] iterator we go to the corresponding data
+[62:24] the ACT is actually cached so
+[62:26] essentially it's trying to point to data
+[62:28] but as I said or as I have argued
+[62:30] earlier if you are looking for you know
+[62:32] pinpoint accuracy this may not be the
+[62:35] best way because you have to achieve a
+[62:38] trade-off between accuracy and elegance
+[62:40] so here the idea basically is it's a row
+[62:43] of the input and a row of the filter
+[62:46] and here a certain amount of contextual
+[62:49] reasoning is important because you could
+[62:51] also argue
+[62:54] that it could be a row of the output
+[62:57] with the input streaming in
+[63:01] so this is where the additional context
+[63:03] is important where we say that no this
+[63:06] is an if map Pro and a filter rule so
+[63:09] once they are cached all that this part
+[63:11] is doing is that it is basically placing
+[63:15] filter row pretty much at different
+[63:17] starting points which is what w does and
+[63:19] once it is placed at a given starting
+[63:22] point
+[63:24] then the S iterator basically computes a
+[63:27] 1D convolution between this part of the
+[63:29] if map row
+[63:31] and essentially the filter row
+[63:33] so the key point of this part is that
+[63:36] this is basically a 1D convolution a one
+[63:38] dimensional convolution
+[63:41] and the reason that the row stationary
+[63:43] architecture is very popular because as
+[63:45] we shall see
+[63:47] the 1D convolution the hardware for it
+[63:49] is very fast
+[64:03] so we have Ultra fast hardware for only
+[64:06] convolution so pretty much what we do
+[64:08] is that we break all our 2D convolutions
+[64:11] into a large number of fast one day
+[64:13] convolutions and use fast Hardware
+[64:16] to
+[64:18] realize those
+[64:20] right so after the initial distribution
+[64:22] what we see is that each PE will cons
+[64:25] will basically compute the partial sums
+[64:28] for a set of rows right so that it is
+[64:30] doing and the way it is doing is that it
+[64:33] caches a single row of the input and a
+[64:35] single row of the filter computes a 1D
+[64:37] convolution and then moves to a
+[64:39] different row of the filter caches that
+[64:43] computer one day convolution so on and
+[64:46] so forth
+[64:47] so after doing that of course the
+[64:49] partial sums are stored and as we cycle
+[64:51] through all the input channels at the
+[64:54] end of this process
+[64:57] entire of map is computed and again we
+[65:01] move to another voice map
+[65:02] so these values partial sums of course
+[65:04] have to be communicated across the PS
+[65:07] and the final you know competition has
+[65:09] to be done but how that is to be done we
+[65:12] will look at it when we look at the
+[65:14] hardware implementation of these
+[65:16] algorithms
+[65:17] but at the moment we are only talking at
+[65:19] a high level
+[65:20] you know at a conceptual plane where
+[65:23] this can be implemented by both hardware
+[65:25] and software hence we have kept this
+[65:28] discussion more or less simple
+[65:31] we have not gone beyond it so this
+[65:34] lecture would end here in the next
+[65:36] lecture we will discuss hardware
+[65:38] architectures and how to realize you
+[65:41] know these representations or these
+[65:44] equations with some modifications of
+[65:46] course
+[65:46] very efficiently on Hardware where
+[65:49] Hardware is basically an array of peas
+[65:51] which read data from the local buffers
+[65:54] from the global buffer and also pass
+[65:57] data to each other right so there is a
+[66:00] lot of data passing between peas
+[66:03] so how that happens is a topic of the
+[66:06] next lecture so I so now we will end
+[66:11] [Music]

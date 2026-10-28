@@ -1,0 +1,1621 @@
+[00:00] [Music]
+[00:00] n
+[00:34] now it's time for us to look at some
+[00:37] advanced concepts namely functions and
+[00:39] stacks so what we have discussed up till
+[00:42] now will take us till a certain point
+[00:45] but it will not allow us to write fairly
+[00:48] difficult or complicated assembly
+[00:50] programs as a result it is necessary to
+[00:54] introduce a couple of slightly more
+[00:56] advanced and complicated Concepts and
+[00:59] the most important of that being
+[01:01] functions and to support functions we
+[01:04] need a software structure called a
+[01:08] stack uh so what is a function so so
+[01:11] let's consider a c program a function is
+[01:14] essentially a block of code that
+[01:17] achieves a certain specific task so we
+[01:21] give a function a set of arguments and
+[01:24] then uh for example if there's a
+[01:25] function to find if a number is a prime
+[01:28] number or not then the number is a is an
+[01:32] argument to this function and the result
+[01:35] a Boolean result of whether the number
+[01:38] is prime or not is what the function
+[01:41] returns so similarly we should be able
+[01:43] to write functions in Assembly Language
+[01:46] as well uh similar to a high level
+[01:48] programming
+[01:49] language so if you think about how
+[01:53] functions are uh will actually be
+[01:56] represented in
+[01:58] memory uh it is something like this as
+[02:00] shown here that it is a we take a region
+[02:04] of
+[02:05] memory put in all the instructions of
+[02:09] the function
+[02:11] here so I'll just write ins to be short
+[02:15] so all the instructions we put them in a
+[02:17] continuous region of memory and this
+[02:19] region of memory which starts at this
+[02:21] point the beginning the first bite uh so
+[02:25] this is the beginning of the function
+[02:27] and so any function so F traditionally
+[02:30] is the name of a function when we give
+[02:32] an
+[02:33] example uh so in this case this
+[02:35] continuous region of memory stores all
+[02:39] the instructions of the function the
+[02:41] data is stored somewhere else we'll come
+[02:42] to that and uh any function will be
+[02:46] identified by the address the starting
+[02:48] address of the first
+[02:51] instruction so to call a function what
+[02:53] do we need to do uh so let's just go
+[02:55] back to the previous slide if the
+[02:56] starting address is a we set the program
+[02:59] counter to a so this is equivalent to
+[03:03] Jumping to the first address of the
+[03:07] function so once we do that we can start
+[03:10] executing the function and after the
+[03:12] function completes we need to store the
+[03:16] location of the program counter at which
+[03:19] we need to return to if we consider a
+[03:21] traditional execution of a program we
+[03:23] keep on executing we go and execute some
+[03:26] function we execute the function and we
+[03:29] come back
+[03:31] and then we start at exactly the same
+[03:34] point so we need to store the location
+[03:36] of the point at which we return from the
+[03:39] function this is known as the return
+[03:43] address so this also needs to be stored
+[03:46] so essentially what do we need to store
+[03:47] we need to store two things we need we
+[03:50] need to know what is the starting
+[03:52] address of the function which is a in
+[03:54] this example and then we need to jump
+[03:57] back to a point which is the next
+[04:00] instruction after the function call and
+[04:03] this is known as the return
+[04:12] address so let's take a look at the
+[04:15] notion of the return address once more
+[04:18] so let's assume that we have a caller uh
+[04:20] so caller is the function that invokes
+[04:23] another function so the caller calls a
+[04:27] function and uh so we have a function
+[04:29] call
+[04:30] instruction and let the address of this
+[04:33] uh the call instruction be P so then we
+[04:37] call a function which basically means
+[04:39] that we jump to the beginning of the
+[04:42] function we execute all of its
+[04:45] instructions then we have the r
+[04:48] instruction which is the return
+[04:50] instruction where we again come
+[04:53] back and we come back to the instruction
+[04:56] which is just after the function call in
+[04:58] simple risk since we assume that each
+[05:01] instruction is 4 bytes we start at
+[05:04] address p and we return back to address
+[05:06] p+ 4 this is the PC the program counter
+[05:10] of the return
+[05:11] address and uh so let me just uh maybe
+[05:16] expand this example with uh some more
+[05:19] details so let's assume that the
+[05:21] starting address of this instruction is
+[05:24] a so the call function is pretty much
+[05:27] will change the value of the PC equal to
+[05:30] a we'll start executing this instruction
+[05:34] the return address is p+ 4 because that
+[05:37] is the address of the next instruction
+[05:39] so when I do the r instruction when I uh
+[05:42] invoke the r instruction it sets the
+[05:45] program counter the
+[05:46] PC equal to P
+[05:54] +4 so now that we know how a basic
+[05:56] function call Works let's look at a very
+[05:59] simple example and see how exactly we
+[06:02] pass arguments and return values to and
+[06:06] from a function so the example is like
+[06:09] this that we first uh so what we want to
+[06:11] do is we want to write a simple function
+[06:14] that takes two arguments so uh we can
+[06:18] think of an add
+[06:19] function so I'm writing this example in
+[06:22] C where we have an add function and it
+[06:25] takes two
+[06:28] arguments let's say int X and int
+[06:33] Y and it
+[06:45] returns it returns x +
+[06:48] y so to implement this simple function
+[06:52] in simple risk what we do is like this
+[06:55] so similar to C we assume that we have a
+[06:58] do main label
+[07:00] where the execution of the program
+[07:02] starts so it is customary to put a colon
+[07:05] after the
+[07:06] label after this let's set the value of
+[07:10] register so we set r0 to 3 and R1 to 5
+[07:14] then now we are introducing a new
+[07:16] instruction called the call
+[07:18] instruction the call instruction jumps
+[07:21] to uh a label uh in assembly uh what we
+[07:25] do is that we designate every function
+[07:27] with a label which is nothing nothing
+[07:29] but the starting address of the first
+[07:31] instruction so we call do Fu so it jumps
+[07:34] to this point so the way that we write a
+[07:38] function is actually very simple we
+[07:39] start with a label just have all the
+[07:42] instructions and then a r instruction at
+[07:45] the
+[07:45] end so what we are doing here is we have
+[07:48] set the values of registers r0 and
+[07:53] R1 then we call the function Fu which
+[07:56] essentially means we jump to the label
+[07:59] do
+[08:00] and uh at this label we add r0 and R1 we
+[08:05] save the result in R2 and then we return
+[08:08] back so when we return back what uh
+[08:12] simple risk is supposed to do is that it
+[08:15] is supposed to take us to the
+[08:18] instruction to the instruction after the
+[08:20] calling instruction which is this
+[08:22] instruction over
+[08:24] here so this is exactly what we do we
+[08:26] come back at this point the value inside
+[08:29] f is r0 + R1 which is
+[08:33] 8 then what we do is we add 8 and 10 and
+[08:37] finally we set R3 to
+[08:40] 18 so the important takeaway points over
+[08:45] here are that uh we are introducing two
+[08:50] new instructions a call instruction and
+[08:53] a r
+[08:55] instruction the call instruction is
+[08:58] designed in such a a way that we call uh
+[09:01] so the for semantics the format of the
+[09:03] call instruction is
+[09:05] call and
+[09:15] label so in this case we actually uh
+[09:19] jump to the first address of the first
+[09:23] instruction uh in the function we
+[09:26] execute the function then execute the r
+[09:29] instruction
+[09:30] which again brings us back to one
+[09:32] instruction after the calling
+[09:35] instruction so how are we passing
+[09:37] arguments so in the previous example we
+[09:40] passed arguments via registers we
+[09:42] populated some registers then the
+[09:44] function read the registers so here is
+[09:47] uh so this is one point where students
+[09:50] typically confus so one thing that they
+[09:53] need to know is that the set of
+[09:54] registers is the same for the entire
+[09:57] program it's not that different
+[09:59] functions have different sets of
+[10:01] registers so you can think of the
+[10:03] registers as being shared so if one
+[10:06] function writes to a register the other
+[10:07] function can read from the register so
+[10:10] they see the same view of the set of
+[10:13] registers also known as the register
+[10:16] file so there is a space problem uh the
+[10:20] issue is like this that we have a
+[10:22] limited number of registers so let's say
+[10:25] in our case we have 16 registers so so
+[10:29] we cannot pass more than 16 arguments
+[10:32] it's not possible for us to actually
+[10:35] pass more than 16 arguments to the
+[10:40] function so this is called a space
+[10:42] problem so one way that we can actually
+[10:44] solve this is if we if let's say the
+[10:48] call the caller
+[10:51] function puts in its arguments into a
+[10:54] region of
+[10:55] memory and then the qually function
+[10:58] reads the arguments from
+[11:01] there also there is an override problem
+[11:04] which is what if a function calls itself
+[11:06] like a recursive call in this case the
+[11:09] collie will overwrite the registers that
+[11:11] the caller may need and uh this is a
+[11:15] problem so we'll uh propose another
+[11:17] solution it's called register spilling
+[11:20] so we'll discuss both of these Solutions
+[11:22] in detail over the next few
+[11:26] slides so uh when I look at uh Reg
+[11:29] spilling the idea is like this that
+[11:31] let's say I have one function
+[11:34] Fu which is calling another
+[11:36] function let's call it
+[11:39] Fubar Fubar does something and comes
+[11:41] back so it is possible that Fubar overr
+[11:45] some of the registers that Fu may
+[11:47] require right so maybe Fu requires
+[11:49] register R1 and then you go to fuar then
+[11:52] it sets R1 equal to something which is
+[11:56] fine but the thing is maybe we are not
+[11:58] interested in that that value and again
+[12:00] when we use R1 we might get the
+[12:03] overwritten value and not this
+[12:06] value so for that what we can do is we
+[12:08] can use a technique called register
+[12:10] spilling the notion of spilling is like
+[12:13] this that the caller can save the set of
+[12:16] registers that it needs to use then it
+[12:19] can call the
+[12:22] function and then
+[12:26] uh then it can call the function
+[12:30] and subsequently restore the set of
+[12:33] registers after the function returns so
+[12:36] this is known as the caller saved scheme
+[12:38] so here essentially what you do is that
+[12:41] you save a set of registers that you
+[12:43] plan to use in the future using store
+[12:46] instructions then you call a
+[12:48] function the function does something and
+[12:52] again the function returns to the next
+[12:54] instruction subsequently we have a set
+[12:57] of load instructions that load the
+[12:58] values of these registers that were
+[13:01] stored to
+[13:02] memory back again so let's say in the
+[13:05] store we save the value of registers to
+[13:06] memory and in the load we read the
+[13:09] values of what we had stored back into
+[13:12] our
+[13:13] registers so this particular thing is
+[13:16] called a caller saved scheme in a Callie
+[13:19] saved scheme what happens is that the
+[13:21] function that is called which is called
+[13:23] the Callie that saves the registers that
+[13:26] it might potentially overwrite and later
+[13:28] on it restores their value when it is
+[13:31] about to
+[13:33] return so uh if I want to think about
+[13:36] this so conceptually in a caller saved
+[13:40] scheme the way it works is something
+[13:43] like this that we first save our
+[13:46] registers we store them to Memory as you
+[13:49] can see over here then we call the
+[13:52] collie
+[13:54] function and then we restore the
+[13:56] registers we restore the values of the
+[13:58] regist
+[14:01] in a call saved scheme the idea is that
+[14:04] the caller does not do anything so it's
+[14:06] absolutely so it assumes that all of its
+[14:09] registers unless of course you mutually
+[14:11] decide that a certain register is going
+[14:14] to contain a return value all of its
+[14:16] registers will maintain their
+[14:18] value the collie will first save the
+[14:22] registers subsequently do its work and
+[14:25] just before returning restore the value
+[14:28] of the register so there two schemes
+[14:30] they have their pluses and minuses so we
+[14:33] will uh you know discuss a little bit of
+[14:35] that and most of this is actually there
+[14:38] in the exercises at the back of the
+[14:40] chapter but you know student should
+[14:42] think when uh the caller saved scheme
+[14:45] makes sense and when the qualie saved
+[14:48] scheme makes
+[14:50] sense uh so what are we doing our
+[14:53] Solutions are like this that we are
+[14:56] essentially using memory and spilling
+[14:58] which also uses memory to solve both the
+[15:02] space
+[15:03] problem as well as the overwrite
+[15:08] problem however uh using this memory
+[15:11] based approach for both solving the
+[15:14] space problem and the override problem
+[15:17] has issues so let me just at this point
+[15:20] slightly recapitulate what these
+[15:22] problems are the space problem basically
+[15:25] says that we run out of registers while
+[15:26] passing arguments so for example let's
+[15:29] say a function takes 100 arguments you
+[15:32] know we don't typically write such
+[15:34] functions but uh you know we can
+[15:38] theoretically we can but it's very
+[15:39] common to write functions with maybe
+[15:41] eight nine or 10 arguments so if each of
+[15:44] them in is in a register we will run out
+[15:47] of registers to do other work that's the
+[15:50] reason we will have a serious space
+[15:54] problem while especially passing
+[15:56] arguments around and also you know
+[15:59] managing them inside a function the main
+[16:01] reason being that we need registers for
+[16:04] other work also like saving temporary
+[16:07] variables and so on temporary values and
+[16:09] temporary variables and so on so that's
+[16:12] why the space problem is important and
+[16:16] the override problem is definitely very
+[16:18] important the main reason being that we
+[16:20] only have 16 registers out of
+[16:24] that uh we will see that we are
+[16:26] typically not allowed to use more than
+[16:29] 14 for general purpose work so it is uh
+[16:33] now let's say one function calls another
+[16:35] copy of itself or other functions then
+[16:38] they will overwrite the registers that
+[16:40] they require because all of them see the
+[16:42] same view of the register space that's
+[16:46] the reason it is necessary to save uh
+[16:49] save or store registers in memory and
+[16:51] read them back again this is known as
+[16:54] the override problem and we saw two
+[16:56] methods of fixing it it's called
+[16:59] spilling so the two approaches for
+[17:01] spilling
+[17:03] were uh so they were callar saved and
+[17:06] colly
+[17:27] saved so however there needs to be a
+[17:30] very you know to have both of these
+[17:33] schemes running there has to be a strict
+[17:35] agreement between the caller and the
+[17:37] collie regarding the set of memory
+[17:38] locations that are being used so the
+[17:41] reason for this is that let's assume the
+[17:43] caller saves its registers in a certain
+[17:46] region in memory right so let's say it
+[17:48] is this region then the caller calls the
+[17:52] collie and the collie also start saving
+[17:55] its registers in this region then
+[17:57] clearly they will start interfering in
+[17:59] memory and this will not work out so the
+[18:02] regions of memory that are to be used by
+[18:04] different functions has to be known a
+[18:07] prior and this is a problem and then
+[18:10] once a function has finished its
+[18:12] execution it will not need the space
+[18:14] that it had used to store registers for
+[18:17] spilling this space has to be reclaimed
+[18:20] right so we have to sort of somehow mark
+[18:22] this space to be empty such that it can
+[18:24] be used by other uh parts of the program
+[18:28] so there's need to reclaim the space so
+[18:30] this makes things pretty complicated and
+[18:34] the root of all the problems is the
+[18:36] space problem and the overwrite
+[18:40] problem so to make our life
+[18:43] simple uh let's define an activation
+[18:48] block an activation block is a region of
+[18:51] memory that stores certain information
+[18:54] about an executing
+[18:56] function so let's assume a function f
+[18:59] that takes a single argument AR one it
+[19:02] has three internal variables a b and c a
+[19:04] is set to Three B to four C is A + B +
+[19:08] R1 and then we return
+[19:11] C so in the activation block there are a
+[19:14] couple of things that we need to
+[19:16] save uh the first is the argument the
+[19:21] argument will get saved in the argument
+[19:24] section inside the activation block
+[19:26] which is essentially a region of memory
+[19:29] and we are sort of dividing the region
+[19:31] into multiple sub regions so in one
+[19:33] region we save the arguments if required
+[19:37] in other case we save the local
+[19:40] variables which in this case are a b and
+[19:42] c the local variables are saved in this
+[19:46] region and uh then we save the return
+[19:49] address again if
+[19:52] required and we have a register spill
+[19:55] area where we spill registers if
+[19:57] required
+[20:00] so the activation
+[20:02] block is essentially the region in
+[20:04] memory that
+[20:06] is uh task to keep all
+[20:09] the uh values that are required for a
+[20:13] function to execute and as you see after
+[20:16] a function executes and after we return
+[20:18] C the activation block is not
+[20:22] required so how do we use the activation
+[20:25] blocks so let's say that we have caller
+[20:28] saved space
+[20:29] so before calling a function we spill
+[20:32] registers then we allocate the
+[20:34] activation block of the
+[20:36] Callie we write the arguments uh to the
+[20:39] acation block of the call you know if
+[20:41] they don't fit in registers if there are
+[20:44] one or two arguments they can always uh
+[20:46] be passed via
+[20:47] resistors but if there are more than one
+[20:50] or two
+[20:51] arguments then uh these arguments need
+[20:53] to be passed via memory and the way we
+[20:56] do that is we pass the uh we write write
+[20:58] the arguments inside the activation
+[21:01] block of the call and then we call the
+[21:03] function so just to illustrate how this
+[21:06] works uh let me draw a small
+[21:14] diagram so let's assume that we have the
+[21:17] quer function
+[21:18] executing so we execute one instruction
+[21:21] another another another and then we
+[21:24] decide that we need to call a
+[21:26] function so what the first thing this
+[21:28] since we assume colar saved spilling the
+[21:30] first thing that we do is that we spill
+[21:34] registers spill the registers basically
+[21:36] means write the values of the regist
+[21:39] that we are interested in into the
+[21:41] activation block of the caller
+[22:04] subsequently we call the call
+[22:06] instruction the call instruction
+[22:08] transfers control to the Callie
+[22:14] function we
+[22:17] start uh executing all the
+[22:22] instructions and before actually before
+[22:25] we uh before the caller calls the Calli
+[22:29] one more thing that it can addition so
+[22:30] this is one example where the values are
+[22:33] being the arguments are being passed via
+[22:36] resistors but we can alternatively also
+[22:39] pass them via the activation block so in
+[22:42] this case what will happen is that we
+[22:44] spill the
+[22:46] resistors then we allocate then what the
+[22:49] caller does it allocates an activation
+[22:51] block for the collie so I'm writing a
+[22:55] lock then it writes the arguments
+[22:58] function
+[23:00] arguments to the activation block of the
+[23:02] Callie
+[23:15] function and then we have the call
+[23:19] function we have the call instruction
+[23:22] where we call the
+[23:27] collie so in inside the called function
+[23:29] which is the call what we do is like
+[23:32] this that we first read the arguments
+[23:35] and transfer them to registers if
+[23:37] required uh we save the return address
+[23:40] if the called function can call other
+[23:43] functions we allocate space for local
+[23:45] variables and then we execute the
+[23:48] function once the function ends we
+[23:51] restore the value of the return address
+[23:53] register if required we write the return
+[23:57] values to registers
+[23:58] you know if required but if there are a
+[24:00] lot of values or if it's one large value
+[24:03] we can write it to memory also which is
+[24:04] the activation block of the caller and
+[24:07] then we destroy the activation block of
+[24:09] the collie so this is the broad sequence
+[24:13] of actions that that we do so I've
+[24:15] deliberately been vague at certain
+[24:18] points uh the the reason being that you
+[24:21] know there are many more details that
+[24:22] will sort of come in the next few slides
+[24:25] but the main idea is the main take-home
+[24:28] point here is that memory
+[24:30] is divided into many regions so one of
+[24:33] these regions stores the activation
+[24:35] blocks what is an activation block it's
+[24:38] a continuous region of memory that
+[24:41] stores the execution context of a
+[24:43] function and the execution context
+[24:46] contains the arguments of a function
+[24:49] space for saving its internal variables
+[24:52] space for saving the registers that it
+[24:54] spills and also the return address if
+[24:58] the function is calling other
+[25:01] functions and
+[25:04] uh uh so so so pretty much that's it and
+[25:07] once the function finishes execution uh
+[25:11] the activation block of the function is
+[25:16] destroyed so uh we are int we have
+[25:19] introduced two functions call and R so
+[25:22] we'll uh discuss them in slightly more
+[25:24] detail so uh the main idea of the r
+[25:27] instruction of the return instruction is
+[25:28] that once the function ends we call the
+[25:31] r instruction and return back to the
+[25:34] caller what does the caller do it
+[25:36] retrieves the return values from the
+[25:39] registers or from its activation block
+[25:42] or sometimes you know so it depends upon
+[25:43] the convention that if let's say there
+[25:46] is one large return value and many
+[25:47] return values where are they written uh
+[25:50] so they might be written uh so they are
+[25:53] typically written into registers or in
+[25:55] activation block of the caller function
+[25:58] then in this case since we assume caller
+[26:01] saved registers we restore the spilled
+[26:04] registers and we
+[26:06] continue so up till now we have
+[26:09] discussed the main idea of an activation
+[26:12] block we have not really discussed more
+[26:14] about the exact ways in which we want to
+[26:17] implement them but the basic idea is
+[26:20] clear that we have two instructions call
+[26:22] and red the call instruction what it
+[26:25] does are a couple of things let me
+[26:27] quickly write down so the call
+[26:30] instruction what it does is like this
+[26:34] that it transfers the
+[26:36] control to the beginning of the Callie
+[26:42] function that's one thing that the call
+[26:44] instruction does and additionally what
+[26:47] it does is that it saves the address of
+[26:50] the next
+[26:51] instruction as a return address so this
+[26:55] can be saved in many places so let's not
+[26:57] talk about where exactly it is saved but
+[27:00] let's just refer to this piece of
+[27:01] information as a return address and this
+[27:04] can optionally be saved in the
+[27:08] quie subsequently the qually does its
+[27:10] job it computes its result the return
+[27:13] value which is what is the result of the
+[27:16] function can come back either via
+[27:19] registers that is the first option the
+[27:23] second option is that it can come back
+[27:26] also via memory in this case
+[27:29] what the Callie does is it writes back
+[27:30] the result into the activation block of
+[27:34] caller so this is also
+[27:38] possible
+[27:40] now uh the idea is somewhat like this
+[27:44] that uh uh so after the qual function
+[27:48] finishes we invoke the r instruction the
+[27:51] return
+[27:52] instruction the return instruction comes
+[27:54] back to the return address which is just
+[27:57] one instruction after the call
+[27:59] instruction and prior to executing the
+[28:02] return instruction we have to destroy
+[28:04] the activation block of the
+[28:07] call so the question now is that all the
+[28:10] information of an execution of an
+[28:13] executing function that is stored in the
+[28:15] activation block has to be created
+[28:17] millions and millions of times during
+[28:19] the execution of a
+[28:20] program the reason being that a program
+[28:24] typically you know function calls are
+[28:26] very common instructions
+[28:28] and even in one second millions of times
+[28:30] functions are called so we need a way of
+[28:34] managing activation blocks ensuring
+[28:37] their very fast creation and
+[28:40] deletion and we need to look at a
+[28:42] certain pattern to make
+[28:44] this a very quick operation for all of
+[28:48] us let us now try to look for a pattern
+[28:51] of executing function calls and see if
+[28:54] there is something that can be done to
+[28:57] actually
+[28:58] present uh the this information better
+[29:01] and also create activation blocks very
+[29:03] very easily so let's consider a main
+[29:05] function which calls two other functions
+[29:08] test and
+[29:09] F so let main call test so the
+[29:12] activation block of test will be
+[29:14] created and let test call test two so
+[29:17] the activation block of test two will be
+[29:20] created once Test 2 is done it'll return
+[29:24] so the activation block of test two is
+[29:26] not required anymore so it can be
+[29:27] destroyed
+[29:28] right and once test is done test will
+[29:31] return so the activation block of test
+[29:33] is not required anymore so it'll be
+[29:36] destroyed subsequently main will call
+[29:39] function Fu so the activation block of
+[29:41] Fu will be created so let Fu call fuar
+[29:45] so the activation block of fuar will be
+[29:48] created and let fuar called fuar bar so
+[29:51] activation block of Fu barar will be
+[29:54] created similarly when we come back
+[29:56] these activation blocks will destroyed
+[29:58] in this sequence so this is shown in the
+[30:01] next slide so if we consider the
+[30:04] activation block of Fu then Fubar will
+[30:06] be created activation block of Fubar
+[30:08] will be created then the activation
+[30:11] block of fuar bar will be created and
+[30:13] then it'll be will be also be the first
+[30:15] to be destroyed then the application
+[30:17] activation block of Fubar will be
+[30:19] destroyed and then lastly the activation
+[30:21] block of Fu so what do we see the
+[30:24] behavior here is last in first out so Fu
+[30:27] bar bar
+[30:28] was the last you know was the latest
+[30:31] function to be
+[30:32] executed and it is also the latest
+[30:35] function whose activation block will be
+[30:37] destroyed so if whenever we hear the
+[30:40] term last in first out in computer
+[30:42] science it reminds us of a data
+[30:44] structure called a
+[30:47] stack for a stack is something as simple
+[30:50] as a stack of books right so we just
+[30:51] stack one over the other other other so
+[30:54] the last the book that we added the last
+[30:56] is also the first that comes up out so
+[30:59] similarly we can store activation blocks
+[31:01] as a stack where essentially we store Fu
+[31:05] then we store Fu bar below it we store
+[31:06] Fu bar bar below it and so these can be
+[31:10] treated as memory regions so
+[31:11] traditionally Stacks are downward
+[31:13] growing what is what this means is that
+[31:16] if we want to create a new uh activation
+[31:20] block we create it in a lower memory
+[31:23] address as compared to the previous
+[31:25] activation blocks for for example let's
+[31:29] consider an example make things easier
+[31:32] let's say that the stack begins at
+[31:34] location
+[31:36] th000 let's assume that the size of the
+[31:38] activation block of fu is 100 Fu bar is
+[31:41] 100 and Fu bar bar is
+[31:43] 100 so the first 100
+[31:46] bytes can be consumed by the activation
+[31:49] block of
+[31:50] Fu the next 100 by Fu bar
+[31:54] bar and the next 100 by Fu bar bar
+[32:00] subsequently we delete this so we store
+[32:05] only 200
+[32:09] bytes subsequently we again delete this
+[32:11] when full bar is
+[32:13] over and we store only bytes from the re
+[32:16] from the region 1,000 to a
+[32:19] 900 so this is where the notion of a
+[32:22] stack comes from that a stack is
+[32:24] actually a programming language concept
+[32:27] where it denotes how data is stored and
+[32:31] the last in first out obstruction holds
+[32:34] that a piece of information that is
+[32:37] inserted into a stack at the end is also
+[32:39] the first to come out so this is
+[32:42] actually very similar if you see the
+[32:43] pattern in which functions execute they
+[32:46] exactly execute like a stack so that's
+[32:48] the reason we can store their activation
+[32:50] blocks also as a stack so traditionally
+[32:53] what you do is that
+[32:55] Stacks uh are a region of memory and
+[32:58] they typically start at the highest
+[33:00] region uh which in this case is let's
+[33:03] assume the largest address we have is a
+[33:05] th000 and subsequently we start storing
+[33:08] their activation blocks in the manner
+[33:10] that I've have shown so maybe the first
+[33:12] one can be stored from 9001 to
+[33:15] 1,000 and the second from 8001 to
+[33:21] 900 and the third from the address is
+[33:24] 7001 to 800
+[33:30] so now working with the stack so we
+[33:33] allocate a part of the memory to save
+[33:35] the stack as I mentioned Stacks are
+[33:37] downward growing so we dedicate one
+[33:40] register in our set of 16 registers
+[33:42] particularly register 14
+[33:45] R14 uh we call it the stack pointer
+[33:48] register uh it is also called as SP it's
+[33:50] also referred to as SP so either SP or
+[33:55] as
+[33:55] R14 so this points to the beginning of
+[33:59] an activation
+[34:01] block and uh so so basically it also you
+[34:05] know sort of points to the top of the
+[34:06] stack right so for example if
+[34:11] uh the stack begins at this point and
+[34:15] then we have activation blocks this is
+[34:17] where it ends so this is where exactly
+[34:20] the stack pointer should
+[34:22] point so it's a basically the beginning
+[34:25] of the next activation block or where
+[34:26] the stack is ending
+[34:29] so allocating an activation block is
+[34:31] very simple all that we do is we
+[34:33] subtract the stack pointer by the size
+[34:36] of the activation block if it's 100 the
+[34:39] new stack pointer will point to this
+[34:42] location and this region in memory
+[34:44] becomes its activation block so
+[34:46] essentially we have booked it we later
+[34:48] on need to fill it with information
+[34:50] deallocating also requires a single
+[34:52] instruction where we essentially do sp
+[34:55] is equal to SP Plus the size of the
+[34:58] activation block in this case if it's
+[35:00] 100 then we sort of fold it back up
+[35:03] again so essentially allocating and
+[35:07] deallocating an activation block is very
+[35:09] simple to allocate an activation block
+[35:12] we subtract the stack pointer by the
+[35:14] size of the block which is a constant
+[35:16] and should be known
+[35:18] beforehand similarly to deallocate the
+[35:21] block we what we do is that we add uh
+[35:25] the size of the block which is a
+[35:27] constant and is known beforehand to the
+[35:30] stack pointer so it's very simple
+[35:32] allocating and deallocating is only a
+[35:33] single instructions which is also what
+[35:35] we an uh which is also what we wanted so
+[35:39] we are using the
+[35:41] property the last and first out property
+[35:44] which has made our life very
+[35:46] simple so what do the stack solve for
+[35:50] us it has definitely solved the space
+[35:53] problem so we can pass as many
+[35:56] parameters as required via this
+[35:58] activation block mechanism so you know
+[36:01] if the number of parameters are few the
+[36:03] number of arguments to a function are
+[36:05] few they can be passed via registers
+[36:08] otherwise they can be stored in regions
+[36:11] within an activation block and they can
+[36:13] be
+[36:14] passed uh the stack has also solved the
+[36:17] override
+[36:20] problem so now functions don't overwrite
+[36:23] each other's data they have their own
+[36:26] regions in memory where they write their
+[36:27] own temporary
+[36:29] variables managing the activation blocks
+[36:32] is much easier because they're saved in
+[36:34] a stack so creating new ones or getting
+[36:36] rid of old ones is very easy we just
+[36:39] need to manipulate the stack pointer
+[36:41] that's all using regular add and
+[36:43] subtract
+[36:44] instructions so the stack in most
+[36:48] instruction sets is actually a software
+[36:50] construct so there is a broad agreement
+[36:52] that a certain register needs to be
+[36:54] treated as the stack pointer but other
+[36:57] than that it is mostly managed in
+[36:59] software which basically means that when
+[37:02] you're writing assembly code you have to
+[37:03] explicitly manage the stack so we'll see
+[37:06] an example of that but essentially the
+[37:09] programmer or the compiler have to add
+[37:12] instructions to explicitly manage the
+[37:14] stack and sort of increment and
+[37:15] decrement the stack pointers and create
+[37:18] the activation blocks as in when
+[37:21] required let's now discuss the call and
+[37:23] R instructions so we have introduced the
+[37:28] notion of calling a function and
+[37:30] returning from a function but that was
+[37:32] more from a high level conceptual
+[37:34] theoretical angle it was not from a
+[37:38] practical point of view of How It's
+[37:40] implemented so before actually I
+[37:44] describe these
+[37:45] instructions it would be noteworthy to
+[37:48] first
+[37:50] introduce uh the return address register
+[37:52] which is actually a register in our
+[37:55] simple risk instruction set but the are
+[37:57] similar Concepts in arm and x86 as we
+[38:00] shall see in the next two chapters so
+[38:04] what we shall do is that let us
+[38:06] designate the 15th register
+[38:10] R15 as a return address register
+[38:32] so we'll also refer to this register as
+[38:34] ra or R15
+[38:36] interchangeably so what the call
+[38:38] instruction does is that the call
+[38:40] instruction computes the address of the
+[38:42] next instruction which is the current PC
+[38:44] plus4 and saves it in ra the return
+[38:47] address register and and then
+[38:51] subsequently it sets the program counter
+[38:54] to the address of the function that we
+[38:56] want to go to
+[38:58] so uh the Assembly Language semantics is
+[39:00] called label for label is uh essentially
+[39:04] pointing to the first instruction in the
+[39:08] function and uh the way that this gets
+[39:11] translated in Hardware is that we set
+[39:13] the return address and we set the PC the
+[39:16] program counter to the address of uh the
+[39:22] that corresponds to the fu
+[39:25] label uh note that we'll have the dot
+[39:27] marks before labels it's more of a
+[39:30] convention but simp the simple risk
+[39:32] interpreter does not require dots in
+[39:34] front of labels the return instruction
+[39:37] is very simple we read in the contents
+[39:39] of the return address register to the
+[39:41] program counter so this is essentially
+[39:44] like a
+[39:46] jump so uh in our register file that
+[39:49] contains 16 registers the last two
+[39:53] registers namely R14 and R15 are
+[39:57] reserved for special purposes R14 will
+[40:01] be the stack pointer and R15 is the
+[40:04] return address register so all the other
+[40:07] registers can be used uh by the program
+[40:11] so here again there is some amount of
+[40:13] semantics are different uh instruction
+[40:16] sets typically defined so it's not
+[40:19] specific to simple risk but typically r0
+[40:21] and R1 would be used to pass parameters
+[40:24] and the rest of the registers will be
+[40:25] used to process temp temporary
+[40:29] values so uh here again as it's written
+[40:32] uh for a call instruction you put pc+ 4
+[40:35] in aray and jump to the function and in
+[40:38] the return in the r instruction you put
+[40:41] the value of aray in the
+[40:44] PC so it's our uh so it's time that we
+[40:47] write our first program in simple risk
+[40:50] assembly that uses the stack as well as
+[40:53] the call and R
+[40:55] instructions so let us write write a
+[40:57] recursive uh variant of the factorial
+[41:00] function so in this case uh this is C
+[41:03] program we'll start from this line let's
+[41:06] compute the factorial of
+[41:08] 10 so inside the factorial function
+[41:11] we'll first have the base case so the
+[41:14] base
+[41:15] case says if num is less than equal to 1
+[41:20] one uh so this is uh where the recursion
+[41:24] will terminate otherwise we return
+[41:27] num * factorial num minus 1 so here we
+[41:31] compute 10 * 9 * 8 * 7 and so on so to
+[41:36] convert this into simple risk is
+[41:38] actually easy so let us start with the
+[41:41] main label where the main function will
+[41:44] start we move 10 into r0 because we'll
+[41:47] be Computing the factorial of 10 and
+[41:50] then we call the factorial function so
+[41:52] this takes us Way to the Top over here
+[41:58] so uh let's first test for the base case
+[42:02] that whether we should continue the
+[42:04] recursion or not so as we should see
+[42:08] here we compare the number that's coming
+[42:11] in the argument r0 with one so if there
+[42:15] is equality it basically means that r0
+[42:19] is equal to 1 so uh we can just return
+[42:24] and uh so we jump to
+[42:28] the return point which is over
+[42:32] here if r0 is greater than one then we
+[42:36] need to do the recursion so we jump to
+[42:40] continue otherwise the only case that is
+[42:42] remaining is r0 is less than one then
+[42:45] also we jump to the return label here in
+[42:48] the return label we set the result which
+[42:51] is the result of the factorial function
+[42:53] to one because factorial of 1 is 1 and
+[42:56] factorial of0 0 is 1 so we set the final
+[42:59] result R1 to be equal to 1 and we return
+[43:03] from the function so when we return we
+[43:07] come to the instru next instruction
+[43:09] after call factorial and this will find
+[43:12] the result in R1 so you can think of the
+[43:14] factorial function as taking its
+[43:17] argument in
+[43:18] r0 and uh then returning its result in
+[43:24] R1 so the main fun is in this part in
+[43:28] the continue part which is actually the
+[43:31] recursive part so the first thing is
+[43:34] that we create the activation block over
+[43:36] here so we create space on the stack so
+[43:39] we create the activation
+[43:49] block all right uh so uh if you want
+[43:54] space to save two variables so two
+[43:57] variables means two integers if one
+[43:59] integer is four bytes so for two
+[44:02] integers it would be 8 bytes so what we
+[44:04] do is that we create an activation block
+[44:07] here we subtract eight from the stack
+[44:10] pointer so essentially this instructions
+[44:12] has spal SP minus 8 so we create some
+[44:17] space so if the original stack pointer
+[44:19] was over here the new stack pointer will
+[44:23] be so four bytes another four bytes the
+[44:26] new ract pointer will Point
+[44:31] here now what we do is that uh so since
+[44:37] we are calling another version of the
+[44:38] factorial function itself it is
+[44:41] necessary to save some information on
+[44:43] the stack otherwise the called function
+[44:46] the Calli will overwrite those
+[44:50] values so what we
+[44:52] do is that uh at the stack point which
+[44:57] is essentially the if this is a new
+[44:59] location of the stack pointer the top
+[45:02] four bytes you know this location we
+[45:05] save r0 which is the argument which is
+[45:07] essentially what came from the function
+[45:11] that called this function so we save it
+[45:12] over here and in 4sp which is the next
+[45:16] location we save ra this instruction
+[45:20] over here we save the return address
+[45:22] because this also might get over it
+[45:25] subsequently we subtract one from r0
+[45:28] which is essentially num minus one and
+[45:31] we call factorial once again so
+[45:33] essentially we call one more copy of the
+[45:36] factorial function so that will again
+[45:39] call one more copy of the factorial
+[45:41] function and so on uh so the same way
+[45:44] that recursive functions execute so at
+[45:47] this point the assumption is that the
+[45:49] factorial of the factorial of
+[46:01] num minus one is stored in R1 so that is
+[46:07] Assumption
+[46:08] because
+[46:10] uh all factorial functions including the
+[46:13] base case are supposed to keep the
+[46:14] result in R1 and that's the way that we
+[46:16] have coded it so that's okay we will use
+[46:20] the value of R1 later let us just
+[46:22] restore our values because we had
+[46:24] spilled some registers let us restore
+[46:26] them so recall that our stack
+[46:30] pointer which is supposed to have remain
+[46:33] untouched so so we'll see how let us
+[46:36] load back the value of r0 which is
+[46:39] something that we had stored over here
+[46:42] let us load back the value of RA which
+[46:44] we had stored over here so basically the
+[46:47] values of RA and r0 are restored and
+[46:50] this particular scheme that we have
+[46:51] followed here is a caller saved scheme
+[46:54] because the caller is saving the Reg res
+[46:57] that it needs and later on uh restoring
+[47:01] them
+[47:02] subsequently uh we multiply r0 * R1 so
+[47:06] r0 is basically num and R1 is factorial
+[47:10] of num minus one so essentially we are
+[47:13] Computing factorial n is equal to n *
+[47:16] factorial n minus1 and the results are
+[47:19] being saved in R1 which we have always
+[47:22] wanted to do now since the result is in
+[47:25] R1 let let us get rid of our current
+[47:28] activation block so recall that we
+[47:31] started the activation block by
+[47:32] subtracting the stack pointer 8 from the
+[47:35] stack
+[47:36] pointer let us now delete the activation
+[47:40] block by
+[47:41] folding the stack pointer back so what
+[47:44] we do is we set the stack Pointer's
+[47:47] value back to its old value so this is
+[47:50] done by adding eight to the stack
+[47:52] pointer so think about this at the
+[47:54] beginning of the function the stack
+[47:55] pointer was here we needed to save two
+[47:59] local variables we need to spill two
+[48:01] registers actually so the new stack
+[48:04] pointer pointed here once the function
+[48:06] was over we restored the value of the
+[48:08] stack pointer to again point to where it
+[48:10] was originally
+[48:12] pointing after this since the value is
+[48:14] in R1 uh we return back so it is easy to
+[48:19] prove by any technique that uses
+[48:21] mathematical induction that this program
+[48:23] will always work in the sense every cop
+[48:26] of the factorial
+[48:29] function saves the result in
+[48:32] R1 uh so the base case at the do return
+[48:36] label saves the result in
+[48:38] R1 and uh even the recursive
+[48:42] case saves the result in
+[48:45] R1 the reason being that it calls many
+[48:48] many copies of itself each of them save
+[48:51] the result in R1 finally in this line
+[48:54] over here we multiply n * factorial n
+[48:57] minus one and save it in
+[48:59] R1 lastly it is very important to delete
+[49:02] the activation block which is being done
+[49:04] in this
+[49:07] line all right so here is a chance that
+[49:11] we get to introduce one instruction that
+[49:13] does nothing at all so it is a noop
+[49:16] instruction it does nothing at all why
+[49:18] on Earth would we require it this will
+[49:21] be common this will be explained to you
+[49:23] in chapter 9 uh when we discuss pipeline
+[49:28] processors that is when uh I'll explain
+[49:32] why uh we need this particular
+[49:35] instruction not
+[49:37] now all right so we have seen up till
+[49:41] now a basic overview of Assembly
+[49:44] Language the syntax of Assembly
+[49:46] Language uh simple instruction
+[49:49] set then we have looked at functions and
+[49:52] stacks which is an advanced feature in
+[49:55] programming languages
+[49:57] so it is also possible to implement
+[49:59] other kinds of features such as
+[50:01] objectoriented programming and so
+[50:03] on but these are all variants of this
+[50:06] and I didn't want to heavily complicate
+[50:08] it but uh users would realize that uh
+[50:12] using the basic instruction set provided
+[50:15] a lot of these uh high level features
+[50:18] can be
+[50:19] implemented
+[50:20] typically in most instruction sets we
+[50:23] only designate two kinds of registers a
+[50:27] special one is the stack pointer as we
+[50:30] have done and the other is the return
+[50:34] address AR arm and x86 of some other
+[50:38] special registers we'll talk about it
+[50:40] when we discuss those instruction sets
+[50:43] now let's look at an encoding of the
+[50:45] instruction set in binary bits so
+[50:49] basically if you have 32 bits we need to
+[50:51] be able to encode all the instructions
+[50:54] because after all the computer does not
+[50:56] understand understand assembly it only
+[50:57] understands zeros and ones so every
+[51:00] assembly instruction needs to be encoded
+[51:02] in simple zeros and
+[51:05] ones so we have 32
+[51:08] bits uh to encode the instructions
+[51:11] because it's a 32-bit instruction set
+[51:14] and we up till now have introduced 21
+[51:16] instructions so let's start out by uh
+[51:21] assigning an OP code an operation code
+[51:23] or an instruction code to every single
+[51:26] in instruction and the instruction code
+[51:28] has to be unique for example add there
+[51:31] are 21 instructions so we will need five
+[51:35] bits right why five bits because four
+[51:38] bits will not do we can only encode 16
+[51:40] instructions so we need five
+[51:44] bits so the add instruction gets a code
+[51:46] of zero then we first have all the
+[51:48] arithmetic
+[51:51] instructions then we have the load and
+[51:53] store instructions and lastly we have
+[51:55] the branch
+[51:57] instructions so why instructions have
+[52:00] been assigned you know this kind of
+[52:03] codes will actually be clear to you in
+[52:05] chapter 8 when we discuss
+[52:08] decoding so all that I can tell you
+[52:11] right
+[52:12] now is that it should be easy to find
+[52:14] out you know what is the type of an
+[52:16] instruction so for example the branch
+[52:19] instructions I can easily find that an
+[52:21] instruction is a branch but actually
+[52:24] taking a look at the most significant
+[52:27] bit which is one similarly other kinds
+[52:30] of Tricks have been put for other kinds
+[52:32] of instructions so we'll get a chance to
+[52:35] discuss all of this in the chapter on
+[52:39] decoding all right so up till now we
+[52:43] have our basic instruction format we
+[52:46] have a five bit op code and the rest of
+[52:48] the 27 bits is there to encode the rest
+[52:51] of the instruction and here is a quick
+[52:54] summary of the instruction set that you
+[52:56] you can actually you know Mark down for
+[52:58] your own use because this would be very
+[53:01] helpful in the chapters on processor
+[53:04] design so uh every instruction first has
+[53:07] the instruction name then uh Rd is the
+[53:11] destination register so let's say
+[53:15] Rd is the destination
+[53:20] register rs1 is the First Source operant
+[53:30] right uh rs2 is the second registered
+[53:33] Source
+[53:37] operant and IM is an immediate so as we
+[53:41] can see all arithmetic instructions are
+[53:43] of the same type you first specify the
+[53:45] destination then the First Source
+[53:47] register the second operant can either
+[53:50] be a register or an
+[53:52] immediate uh then we have the compare
+[53:54] instruction which does not have a
+[53:56] register
+[53:59] destination subsequently we have the
+[54:01] logical instructions which also have the
+[54:03] same
+[54:05] format uh and also the shift
+[54:07] instructions having the same format the
+[54:10] noop instruction does is essentially
+[54:12] zero address instruction uh it does not
+[54:15] take any operant at
+[54:17] all uh the load uh
+[54:22] instruction uh this should actually be a
+[54:24] comma so the load code
+[54:29] instruction uh essentially takes the
+[54:31] First Source register and an immediate
+[54:34] and saves it in the destination the
+[54:36] store instruction is somewhat special in
+[54:39] the sense that it does not actually have
+[54:41] a register destination but we shall see
+[54:44] later that uh you know a compromise
+[54:47] needs to be made and this is what the
+[54:49] format of the store instruction should
+[54:51] be because mainly because we'll not have
+[54:53] enough space but this is best described
+[54:56] later we have a slide for it
+[54:58] subsequently you have the branch
+[54:59] instructions so in Assembly Language all
+[55:02] of the five Branch instructions Branch
+[55:04] to a label but actually when we shall
+[55:07] encode it in
+[55:09] Hardware uh all of these four Branch
+[55:11] instructions I'm sorry not R but the
+[55:13] these four Branch instructions will
+[55:16] actually jump to an offset so
+[55:17] essentially it'll be PC Plus the offset
+[55:21] is what the branch instructions will be
+[55:24] jumping to right an offset relative to
+[55:27] the current PC there are some more
+[55:28] tricks we'll discuss that but
+[55:31] essentially it is an integer offset that
+[55:33] needs to be added to the current program
+[55:35] counter which will become the new
+[55:38] program counter so we'll essentially
+[55:40] come back to both of these issues one of
+[55:42] them is the format of the store
+[55:44] instruction and the other is the offset
+[55:48] in the branch instruction that we shall
+[55:49] use and the r instruction is simple it's
+[55:52] a simple zero address instruction so it
+[55:54] doesn't take any arguments
+[55:57] so let's first look at the low hanging
+[55:59] fruits which are the KN and red
+[56:02] instructions so since they don't take
+[56:04] any arguments they encoding is very
+[56:06] simple they will only have the 5 bit op
+[56:09] code and the remaining 27 bits are
+[56:12] useless so they need not be used and all
+[56:16] that we require is the 5bit op code
+[56:19] which is in the most significant
+[56:20] position these are our zero address
+[56:23] instructions
+[56:26] now let's look at our one address
+[56:28] instructions so we have four such
+[56:31] instructions they are called
+[56:34] unconditional Branch b Branch if equal
+[56:38] BQ Branch if greater than
+[56:41] bgt so they use what is called the
+[56:43] branch format which we'll Define right
+[56:46] now uh the top five bits remain the same
+[56:48] the five bit op code the remaining 27
+[56:52] bits specify an offset so it's PC
+[56:55] relative address so this is a number uh
+[56:58] it's a sign number which is added to the
+[57:01] PC so uh so it essentially we can add
+[57:04] something or subtract something so as I
+[57:06] said it's a 27 bit sign number which is
+[57:09] added to the
+[57:10] PC now here is a trick that should be
+[57:13] mentioned so the trick is some something
+[57:15] like this
+[57:18] that let's assume that the offset points
+[57:21] to a
+[57:22] byte so all our instructions are four
+[57:25] bytes each
+[57:26] right so if all our instructions are 4
+[57:29] bytes each and we assume that uh you
+[57:32] know all instructions start at an
+[57:35] address that is a multiple of four so
+[57:38] then we will have addresses of this type
+[57:41] thousand th4
+[57:44] 108 and so on right so all of these
+[57:48] numbers are multiples of four so any
+[57:51] number that is a multiple of four when
+[57:53] it is written in binary which is a
+[57:56] language that the computer understands
+[57:59] its last two bits will be 0 0
+[58:02] subsequently we'll have some
+[58:04] bits so then the obvious response would
+[58:09] be that let us not waste space in
+[58:12] specifying two bits whose value we
+[58:14] already know which are 0 and zero so
+[58:17] it's a much better idea to
+[58:21] instead you know uh to instead work with
+[58:24] a simple assumption the assumption is
+[58:27] that all instruction addresses so let me
+[58:30] just write it down for added emphasis
+[58:57] or a multiple of four if we make this
+[59:01] assumption then uh any offset if it
+[59:04] points to a bite the offset will also be
+[59:07] a multiple of four and its last two bits
+[59:09] will be zero and zero which is not
+[59:11] something that we want so instead of
+[59:13] making a making it a bite offset we make
+[59:16] it a word offset so what is a word a
+[59:20] memory word we have defined before but
+[59:22] let me just Define once again a word is
+[59:25] basically 4
+[59:29] bytes so a word
+[59:41] offset is basically the number of
+[59:44] additional memory words so so let's say
+[59:46] if the word offset is one this means
+[59:49] that the bite
+[59:50] offset will actually
+[59:55] be 1 * 4 which is 4 so the bite offset
+[59:58] is equal to the word offset Time 4 so uh
+[60:02] the actual address that we will compute
+[60:04] in this case will actually be PC Plus
+[60:08] offset Time 4 and the reason that we are
+[60:11] doing this is because the actual address
+[60:14] is a bite address right so this uh
+[60:17] precisely points to a bite but since we
+[60:19] are assuming
+[60:21] that all the addresses are a multiple of
+[60:24] four we need not waste to bits for
+[60:26] storing the offset because bits are very
+[60:28] valuable so we actually save the word
+[60:31] offset which is the number of memory
+[60:33] words that a certain
+[60:36] instruction uh you know number of memory
+[60:38] words between the current PC
+[60:41] and uh
+[60:45] the branch Target right the target of
+[60:49] branch so this offset can either be
+[60:51] positive or negative but in any case
+[60:54] it's a word offset so to get the bite
+[60:56] offset we multiply it by four and we add
+[60:59] it to the
+[61:01] PC let's now look at uh the three
+[61:03] address instructions that we
+[61:06] have so all our arithmetic instructions
+[61:08] are three address instructions all our
+[61:11] logical uh instructions are three
+[61:13] address instructions and also all our
+[61:16] shift instructions are also three
+[61:19] address instructions the standard format
+[61:22] of the three address instruction is the
+[61:24] op code the destination register the
+[61:27] First Source register then either a
+[61:30] Second Source register or an
+[61:33] immediate so the first uh Fork point the
+[61:36] decision point that we have is to
+[61:39] resolve whether we'll use the Second
+[61:40] Source register or an immediate so let
+[61:44] us use the I bit uh to specify if the
+[61:48] second operant is a register or an
+[61:51] immediate so if I is equal to zero let's
+[61:54] say that the second operant is a
+[61:56] and if I is equal to 1 let's say that
+[61:59] the second operant is in
+[62:01] immediate so uh basically this is one
+[62:04] extra bit that we need to accommodate in
+[62:06] our instruction format and its only role
+[62:09] is to say
+[62:12] whether uh the second operant is a
+[62:16] registered or an
+[62:17] immediate after that we need to encode
+[62:20] the value of the registers since we have
+[62:22] 16 registers we would need four bit to
+[62:26] specify a register so we'll see what the
+[62:28] format looks like in the next slide so
+[62:31] what we have done
+[62:33] here is that we have reserved space for
+[62:36] our 5bit op
+[62:37] code which is the first thing that we
+[62:40] need to
+[62:41] do after that we have the
+[62:43] ibit so uh so so we are discussing the
+[62:46] register format here where the
+[62:48] second operant is the is a source
+[62:52] register it's not an uh immediate value
+[62:55] so basic basically in this format the
+[62:57] first five bits will be the op code and
+[62:59] I bit will be zero because the second
+[63:01] operant is a registered but this will
+[63:02] nevertheless require one bit in our
+[63:05] format then we need to specify Rd which
+[63:08] is the destination register the First
+[63:11] Source register and the Second Source
+[63:14] register so each of these is four bits
+[63:18] because we have 16 registers it'll take
+[63:20] four bits to encode them uh so uh we'll
+[63:23] have four bits each so the total number
+[63:26] of bits is 5 + 1 6 + 4 10 14 and 18
+[63:31] which is fine so we were able to encode
+[63:33] such kind of instructions in 18 bits
+[63:36] Which is less than
+[63:38] 32 so we will refer to this particular
+[63:41] encoding format as the register
+[63:48] format now let's consider uh the case
+[63:52] where we have a three address
+[63:53] instruction and the second op op is an
+[63:56] immediate so we'll start the same way
+[63:59] we'll have a 5 bit op code we'll have
+[64:02] one bit for the
+[64:04] immediate so one bit over here and its
+[64:06] value needs to be one because the second
+[64:09] operant is an immediate then we'll have
+[64:12] a register destination four bits for
+[64:14] that the First Source registered four
+[64:16] bits for that so total number of bits we
+[64:19] have consumed up till now is 5 + 1 6 + 4
+[64:23] 10 + 4 14 you have 18 16 bits left which
+[64:27] is exactly what we need so we'll have a
+[64:30] 16bit immediate and we can put in our
+[64:33] two modify bits over
+[64:35] here uh recall that the modifier bits
+[64:38] have we defined three kinds of modifiers
+[64:41] 0 0 is a default
+[64:43] modifier 01 is a u modifier where uh we
+[64:48] place the two bytes at the MSP positions
+[64:51] no I'm sorry uh
+[64:53] 01 uh is the sign modifier where you
+[64:56] place the two bytes at the LSP
+[64:59] positions right so basically these are
+[65:01] the four bytes then uh with the unsign
+[65:05] the two bytes were placed over here and
+[65:08] one Z is the H modifier where they were
+[65:11] actually placed in the MSP positions so
+[65:15] we will since we have three modifiers
+[65:18] we'll require two bits to encode them so
+[65:21] these two bits can be stored over here
+[65:24] just after
+[65:26] uh
+[65:27] the First Source register the two bits
+[65:30] can be saved over here subsequently we
+[65:33] can store a 16bit immediate which is
+[65:36] assigned tools complement number so as
+[65:39] we can see this format is very tight in
+[65:41] the sense all the bits are being used uh
+[65:44] the total all the 32 bits every single
+[65:47] bit is being used
+[65:50] and uh every bit is associated with
+[65:53] storing some or other information
+[65:56] associated with the
+[65:59] instruction now let's take a look at two
+[66:01] address format instructions like compare
+[66:05] not and
+[66:08] move so we'll use a simple solution
+[66:11] which is used in many other areas of
+[66:12] computer architecture as well we'll use
+[66:15] the three address
+[66:17] format we can use either the immediate
+[66:19] or register formats but we'll not use
+[66:22] every single field so we'll keep some
+[66:25] feels un
+[66:27] unoccupied for example the compare
+[66:29] instruction it does not have a
+[66:31] destination so we'll do nothing with the
+[66:33] destination field but we can keep the
+[66:36] First Source
+[66:38] operant the First Source register and
+[66:40] the second operant which can either be a
+[66:43] register or an
+[66:45] immediate the move
+[66:47] instruction will not have the First
+[66:49] Source operant but will have a
+[66:51] destination
+[66:53] register and the second Source operant
+[66:56] can either be a register or an
+[67:00] immediate similarly the not instruction
+[67:03] will be similar to the move
+[67:05] instruction it will not have a source
+[67:08] register it will not have its first
+[67:11] register uh it will have a destination
+[67:13] register and we'll have the rs2
+[67:16] /m uh where we will have either a
+[67:18] register it have a single operant which
+[67:21] can either be a register or an immediate
+[67:23] so we'll use the rs2 field
+[67:26] so in this way we have essentially we
+[67:29] are ensuring that our decoding Hardware
+[67:32] which is the hardware needed to
+[67:34] understand an instruction we are
+[67:36] ensuring that that Hardware is
+[67:38] simple because we will have only a very
+[67:41] few number of predefined formats so up
+[67:44] till now we have only defined the branch
+[67:46] format the immediate format and the
+[67:48] register format all the instructions we
+[67:51] are trying to fit in those particular
+[67:54] formats
+[67:56] let's now discuss the load and store
+[67:58] instruction so load instruction has a
+[68:01] register destination so we are using the
+[68:04] first five bits for the op code the
+[68:06] immediate is one there is a register
+[68:09] destination uh the base register will
+[68:12] save in the rs1
+[68:13] field it has an immediate which is the
+[68:16] offset so the immediate can be stored in
+[68:18] the immediate
+[68:20] field so this is exactly the immediate
+[68:23] format that we are using using for the
+[68:26] load instruction as well so just to uh
+[68:30] repeat the load instruction has a
+[68:33] registered destination Rd which is saved
+[68:35] over here it has a base register which
+[68:38] is which we are using As the First
+[68:40] Source register rs1 it has an immediate
+[68:44] which we are considering to be the
+[68:45] second
+[68:47] operant let us now discuss the slightly
+[68:50] Strange Case of the store
+[68:52] instruction and uh so hopefully after
+[68:55] the end of this
+[68:56] slide uh readers will appreciate some of
+[68:59] the trade-offs that need to be done by
+[69:01] computer Architects to ensure that their
+[69:03] Hardware is simple and everything
+[69:05] remains elegant so the case of the store
+[69:08] instruction is somewhat like this that
+[69:09] in the store instruction we have
+[69:12] actually two sources one of them is a
+[69:15] register source which is act which
+[69:18] provides the data that needs to be
+[69:20] stored in a memory address in the memory
+[69:23] address reg 2 is the Base address and M
+[69:27] is the offset so essentially it has two
+[69:30] register sources reg one and reg two
+[69:32] from which we get data the destination
+[69:35] is memory so there is no register
+[69:38] destination and there is one
+[69:41] immediate so we cannot fit this in the
+[69:44] immediate format because the second
+[69:46] operant can either be a register or an
+[69:50] immediate uh not both and we have two
+[69:53] sources so what do we do should we
+[69:55] Define a new format for store
+[69:57] instructions answer is maybe not let's
+[70:00] try to use this reuse some existing
+[70:03] format so let us make an exception and
+[70:06] use the immediate format so let us use
+[70:09] the Rd field to save one of the source
+[70:11] register so let's say we
+[70:14] store uh Rd Rd means uh it contains the
+[70:19] register whose value is being stored in
+[70:21] memory uh we store this in memory the
+[70:25] Base address is in
+[70:27] rs1 and the offset is in Im so if we do
+[70:31] this trick uh readers will appreciate
+[70:33] that we are not defining a new format
+[70:36] what we are doing
+[70:37] is that we are first using the first
+[70:40] five bits to store the op code the
+[70:43] immediate bit over here which is one
+[70:46] more bit is one which means an immediate
+[70:49] exists the register whose value needs to
+[70:51] be stored is actually being stored in
+[70:54] the Rd field
+[70:56] which is fine it'll introduce some
+[70:57] complexities in the processor we'll take
+[70:59] care of
+[71:00] it uh the First Source register
+[71:03] rs1 uh which is also the base register
+[71:06] of memory is being stored over here and
+[71:09] finally the immediate which is the
+[71:11] offset because we are using
+[71:14] uh registered indirect addressing mode
+[71:18] uh that uh has a base and an index so in
+[71:22] this case the immediate is being stored
+[71:24] in the remaining 8 18 bits so this is a
+[71:26] tight format all 32 bits are being
+[71:31] used uh so in that sense uh we are not
+[71:37] you know wasting any bits but the
+[71:38] question is that uh if you think about
+[71:41] it still an exception is being made the
+[71:44] reason being that the store
+[71:48] instruction has a memory destination it
+[71:50] does not have a register
+[71:52] destination uh so we don't have any
+[71:54] other instruction in our instruction set
+[71:57] which has a memory destination so the
+[72:01] store instruction in that sense is
+[72:03] special but we don't want to define a
+[72:05] new
+[72:06] format because that will make the
+[72:08] hardware the decoding Hardware uh pretty
+[72:11] complex so we would rather use the same
+[72:14] format and use the fields in the format
+[72:17] slightly differently so that's the
+[72:19] reason the register whose value needs to
+[72:21] be stored is being saved in the
+[72:23] destination register field is exception
+[72:25] that is being
+[72:26] made and then the base register and the
+[72:30] immediate are being stored at the F at
+[72:32] the respective places for the First
+[72:35] Source register and the
+[72:39] offset so what is the summary of
+[72:41] instruction formats right now uh the
+[72:44] summary is something like this that uh
+[72:47] the op code is saved in the MSP bits of
+[72:50] 28 to 32 so so in the branch format the
+[72:54] the summary is in bits 28 to 32 the op
+[72:58] code is
+[72:59] saved the offset is saved in the
+[73:02] remaining 27
+[73:04] bits uh in the register format same
+[73:07] thing the top five bits always contain
+[73:10] the op code uh then we have one bit to
+[73:13] encode the fact that we have a
+[73:15] registered immediate or a
+[73:19] uh either a register operant or an
+[73:22] immediate so in this case we first say
+[73:25] save the register destination the First
+[73:27] Source operant and the Second Source
+[73:29] operant which in this case are all
+[73:32] registers in the immediate
+[73:34] format uh we also have an immediate bit
+[73:37] which is set to one which means that the
+[73:39] second operant is an
+[73:41] immediate uh we save
+[73:43] the register destination the First
+[73:47] Source register and the second operant
+[73:49] is an immediate it's an 18 bit immediate
+[73:52] so the 18 bit immediate is divided into
+[73:54] two parts
+[73:55] one part is a
+[73:57] 16bit
+[73:58] number uh which can be interpreted as uh
+[74:02] s tw's complement number uh if required
+[74:06] and the top two bits are the modifiers
+[74:09] so we support three kinds of modifiers
+[74:11] one is the default where the 16 bits are
+[74:14] interpreted as a to's complement sign
+[74:17] number then we have two mod modifiers U
+[74:19] and H U is unsigned for the top two uh
+[74:23] you know for the immediate is
+[74:25] interpreted as an unsigned number and H
+[74:29] is uh H basically says that the
+[74:32] immediate will be left shifted by 16
+[74:36] positions so this is where our uh
+[74:39] description of the simple risk
+[74:41] instruction set ends so mind you this
+[74:44] was a very simple instruction set this
+[74:46] is where the simple and simple risk
+[74:48] comes from Real World instruction sets
+[74:51] are much much more complicated
+[74:55] uh they have far more uh instruction
+[74:58] modes and kinds of instructions types of
+[75:01] instructions and uh they also take many
+[75:04] different kinds of operant there are
+[75:06] many special conditions and flags and so
+[75:09] on but it is important for a reader to
+[75:12] understand at least the nuances of
+[75:14] designing an assembly language from
+[75:16] scratch what are the problems that can
+[75:19] come for example in our case we had a
+[75:23] problem of with the store instruction so
+[75:25] we made an
+[75:26] exception uh for the store instruction
+[75:29] so this is a typical you know
+[75:31] engineering tradeoff that needs to be
+[75:35] done uh that uh some case in sometimes
+[75:38] for the sake of Simplicity and elegance
+[75:41] it is important to make some trade-offs
+[75:44] such that the hardware remains
+[75:46] simple uh then we designed a full
+[75:49] encoding format for our simple risk
+[75:52] instruction set where we showed how
+[75:56] using 32bits all the instructions can be
+[75:59] encoded into zeros and ones so now uh we
+[76:03] will look at Chapters four and five
+[76:05] where we'll discuss to real world
+[76:07] instruction sets arm and
+[76:09] x86 and readers can use
+[76:13] them uh to actually write actual
+[76:15] assembly code in you know big software
+[76:18] but it is important to understand the
+[76:20] concepts presented in this chapter
+[76:23] before going to those two chapters
+[76:26] so let us end at this point and see you
+[76:30] in the next lecture where we'll be
+[76:32] discussing the arm instruction set

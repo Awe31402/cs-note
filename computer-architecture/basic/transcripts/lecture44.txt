@@ -1,0 +1,1819 @@
+[00:09] [Music]
+[00:43] let us now take a look at the data link
+[00:46] layer which uh talks about sending a
+[00:49] group of bits from the sender to the
+[00:52] receiver so what we have achieved up
+[00:54] till now sorry uh what we have achieved
+[00:57] up till now is that from from a given
+[01:00] sender to a given
+[01:02] receiver we have formulated some methods
+[01:05] to transfer bits and of course for
+[01:09] us clock recovery synchronization the
+[01:12] number of transitions all of these
+[01:13] things have been important factors but
+[01:16] these concerns are only limited to the
+[01:18] physical layer in the data link layer we
+[01:21] are more concerned with setting sending
+[01:23] a big block of data from the sender to
+[01:26] the
+[01:27] receiver so this big block of data is
+[01:29] known as a
+[01:30] frame uh which is a set of logical bits
+[01:34] so it can have 4 bits 8 Bits 32 128 so
+[01:38] frames can come in different sizes so in
+[01:42] this layer we treat it as an atomic unit
+[01:44] of data or a data
+[01:46] packet which essentially contains a
+[01:48] sequence of bits so there are two ways
+[01:51] to detect frames the first way is by
+[01:54] demarcation which means that we transmit
+[01:57] a sequence of bits and then then we
+[02:00] pause for some time again transmit a
+[02:02] sequence of bits then pause for some
+[02:05] time and so on so uh one advant
+[02:08] advantage here is this is simple but
+[02:11] there are two main disadvantages with
+[02:13] this scheme one scheme is that it Wast
+[02:15] some amount of bandwidth in a sense in
+[02:17] this idle period nothing can be
+[02:20] transmitted that is point number one and
+[02:23] point number
+[02:25] two is that uh we need a method to
+[02:28] detect idleness
+[02:30] so if we have Turner signaling then this
+[02:33] approach will work and in fact it'll
+[02:34] work very well because the idle state in
+[02:37] tary signaling is perfect for uh this
+[02:41] idle phase otherwise with binary
+[02:44] signaling this is somewhat difficult the
+[02:47] other simple approach is called bit
+[02:49] count in which in this we count the
+[02:52] number of
+[02:53] bits and the moment uh we so let's say
+[02:56] the frame length is 32 bits and the
+[02:59] moment we have have transmitted 32 we
+[03:01] declare that the frame has ended the
+[03:04] main problem in this is assume so this
+[03:06] is like one continuous
+[03:08] transmission and then we basically count
+[03:11] the number of bits and say okay this is
+[03:13] frame one this is frame two and so
+[03:16] on now the problem is that just in case
+[03:18] we miss a bit then all the subsequent
+[03:21] frames will be read incorrectly in the
+[03:22] sense this boundary would shift over
+[03:24] here this boundary will shift over here
+[03:27] so we will incur massive mistakes
+[03:31] while reading the stream of bits so
+[03:34] instead of that inserting pauses is a
+[03:36] better idea but again this requires
+[03:38] stary signaling so what is done is
+[03:40] slightly
+[03:42] different what we do is uh called bit or
+[03:45] bite
+[03:46] stuffing which means that at the
+[03:48] beginning and end of a frame we add some
+[03:51] special symbols right in a bit or bite
+[03:54] stuffing right so which is one sequence
+[03:56] over here and one more sequence at the
+[03:59] end
+[04:00] such that once the hardware sees that
+[04:03] this sequence of bits is coming by it
+[04:06] knows that a frame has ended and once
+[04:08] when it sees these sequence of bits it
+[04:10] knows that the frame is beginning of
+[04:13] course it is possible to miss a bit but
+[04:15] the sequences have to be designed in
+[04:17] such a way that even if you miss a bit
+[04:20] you will still be able to detect that a
+[04:22] frame has begun and a frame has ended uh
+[04:25] with a fairly high enough
+[04:27] probability again how to do this this a
+[04:29] subject of advanced study so there is a
+[04:32] full discipline dedicated to uh exactly
+[04:35] this so this is coding Theory and
+[04:38] communication Theory so in such classes
+[04:41] people read a lot about uh reliably
+[04:44] finding the beginning and end of frames
+[04:46] so our main aim here is just to give the
+[04:49] basic idea so let's consider an example
+[04:53] let's consider this sequence 0x 0x is in
+[04:56] HEX dead B these are all hex character
+[04:59] directors and the B has an extra e
+[05:02] here so this can very well be the
+[05:05] starting and ending sequence of a large
+[05:07] frame so if frame has uh 1024 bits so
+[05:11] this 32bit sequence can be at its
+[05:14] beginning or can be at its beginning and
+[05:16] end so we can then the hardware has to
+[05:19] be designed in such a way that once it
+[05:21] finds this sequence it can inter infer
+[05:24] the beginning or end of a frame and
+[05:27] subsequently we'll have the bits of the
+[05:29] frame
+[05:30] now the issue is that this sequence can
+[05:33] also be inside the frame right maybe we
+[05:37] really want to send this message so this
+[05:39] thing can actually be you know within
+[05:42] the text of the frame the content of the
+[05:45] frame so the standard approach of uh
+[05:50] actually doing this well there are many
+[05:52] approaches of doing this one is that we
+[05:55] can maybe uh in
+[05:58] addition uh have uh some amount of a bit
+[06:02] counting
+[06:03] mechanism such that it'll find that no
+[06:05] no this is in the middle of the frame or
+[06:08] we can do something else which is done
+[06:09] in C++ and Java for example if you want
+[06:12] to print the character backslash on the
+[06:15] screen what we actually type is print F
+[06:20] in C that
+[06:23] is two backs slashes so uh once the
+[06:27] library sees two it actually first that
+[06:29] okay you want to print one back slash on
+[06:31] the screen so in this case if you want
+[06:34] to transmit dead B uh what we can do is
+[06:37] that we can repeat uh this symbol dead B
+[06:40] you know this
+[06:42] message two times right so we can have
+[06:44] dead B and dead B so then the hardware
+[06:48] will see that uh we'll see dead B
+[06:50] occurring twice so it'll infer this uh
+[06:54] to be that dead B is genuinely a part of
+[06:56] the message and it's not really ending
+[06:58] the frame
+[07:00] and
+[07:01] uh when we are also you know getting the
+[07:04] contents of the frame if we have dead B
+[07:06] twice we'll actually you know discard
+[07:08] one copy and keep one copy so there are
+[07:11] many many ways so this particular method
+[07:13] is one way uh the can be other ways as
+[07:16] well but it's important to note that
+[07:18] whenever we are doing bit or bite
+[07:20] stuffing it's possible that the
+[07:22] additional sequences that we add also
+[07:25] can show up in the middle of a frame and
+[07:27] they might be relevant data
+[07:29] so that's a rare case but again it's
+[07:32] possible so to take care of this some
+[07:34] additional information has to be sent to
+[07:37] ensure that you know we can
+[07:39] differentiate between a sequence meant
+[07:42] to begin and end of frame a special
+[07:44] sequence which is again discarded at a
+[07:46] higher layer or Genuine data which
+[07:49] happens to have the same set of bits
+[07:52] which happens to have the same content
+[07:54] as these special
+[07:56] sequences let us now look at methods to
+[07:59] to uh increase the reliability of signal
+[08:02] transmission so up till now we've been
+[08:04] looking at missing a bit so uh if the
+[08:08] sender is sending a
+[08:11] message to the receiver We have
+[08:14] basically been considering uh
+[08:15] synchronization issues we have been
+[08:18] looking at issues where we don't miss a
+[08:21] bit but that's not the most common
+[08:24] source of Errors uh the most common
+[08:27] source of Errors is that because of some
+[08:29] electromagnetic interference so it is
+[08:32] possible that a phone rings in the
+[08:33] background it's possible we start a
+[08:35] microwave OV so that would induce a
+[08:37] change in the electromagnetic field
+[08:41] which would induce a
+[08:43] voltage on these copper wires and the
+[08:46] voltage might be strong enough to
+[08:48] actually flip the bit from a zero to a
+[08:51] one or from a one to a zero so this
+[08:57] can uh cause a lot of problems
+[09:00] in addition you know there are other
+[09:01] sources of errors as well uh in which
+[09:04] bits can be flipped but that's a subject
+[09:06] of advanced study so the most common
+[09:09] source of errors in transmission you
+[09:11] know when we are transmitting a frame
+[09:13] can be that a bit can flip so let us
+[09:16] look at the simplest possible fault
+[09:19] model which is single error detection
+[09:22] which means that we need to detect if
+[09:25] there is a error or not and the maximum
+[09:28] that we can detect is a single bit flip
+[09:31] so the way to do it is actually very
+[09:33] simple so if you consider an 8bit
+[09:37] frame so these can be the data bits so
+[09:40] we have eight bits over here we can add
+[09:43] an additional bit called the parity bit
+[09:48] the parity bit is an XR an exclusive or
+[09:53] of the eight datab bits D1 to
+[09:56] d8 and uh so this is transmitted along
+[09:59] with the message so if you think about
+[10:02] it a frame instead of being 8 Bits is
+[10:06] now 9 bits so the logic for this is like
+[10:09] this so so let's consider the fact that
+[10:13] the parity bit gets flipped so what
+[10:16] we'll do on the side of the receiver is
+[10:18] recompute the parity once again and now
+[10:21] if the parity does not match you know
+[10:24] the computed parity does not match the
+[10:26] transmitted parity we can in that some
+[10:29] bit has been flipped either it can be in
+[10:32] the frame itself or the parity bit we
+[10:35] will not be able to know but that's
+[10:37] okay so in this case the receiver can
+[10:40] ask the sender to actually retransmit
+[10:43] the message and maybe during the time of
+[10:46] retransmission the original uh trigger
+[10:49] for the electromagnetic potential might
+[10:51] have gone away so the bit flip the bit
+[10:54] flip might not happen right will most
+[10:57] likely not happen so so this time there
+[10:59] is a higher likelihood of the message
+[11:01] being received correctly because many of
+[11:04] these signals that induce bit flips are
+[11:06] actually very very epimeral are very
+[11:08] very
+[11:10] short so let's look at the logic of uh
+[11:14] Computing a parity bit in this fashion
+[11:17] so what we have seen is that if the
+[11:19] parity bit gets flipped we'll be able to
+[11:21] detect the case because the computed
+[11:24] parity will not be same as the
+[11:26] transmitted parity let us now consider a
+[11:29] case where a data bit gets flipped and
+[11:31] let's see what
+[11:33] happens so for the sake of Simplicity
+[11:36] let's assume that a frame contains only
+[11:38] two bits right of course the same result
+[11:42] holds you know in a general case when a
+[11:45] frame uh contains n Bits but two is the
+[11:48] math will be
+[11:49] simpler so let the bits be X and Y so
+[11:53] what we have is that the parity bit is X
+[11:57] exclusive or Y
+[11:59] now let's assume that for some reason uh
+[12:02] the first bit of the frame X gets
+[12:05] flipped gets complemented right so we
+[12:08] will have this expression so the new
+[12:10] computed P
+[12:11] parity will be X exclusive x x
+[12:16] complement exclusive or Y X complement
+[12:20] can further be written as One exclusive
+[12:23] or of X the reason we can write it is
+[12:27] actually very simple so let's consider X
+[12:31] let's consider X complement and let's
+[12:33] consider One exclusive or X so let's
+[12:35] create a truth table if x is z x
+[12:37] complement is 1 One X or0 is 1 similarly
+[12:42] if x is 1 X complement is Z One X or 1
+[12:46] is zero so we can thus conclude that
+[12:49] these two expressions are
+[12:52] equivalent if we write it in this manner
+[12:56] what we see if we further simplify
+[13:10] so X exclusive or Y is the parity
+[13:13] original uh parity bit P which we are
+[13:17] transmitting so One exclusive or p is
+[13:20] again uh P complement so what we see is
+[13:24] that let this be the computed parity bit
+[13:27] at the side of the receiver so if one of
+[13:29] the bits has flipped uh the computed
+[13:32] parity bit will be equal to uh the value
+[13:36] of the transmitted parity which is p and
+[13:39] the the complement of that the
+[13:41] complement of the transmitted parity so
+[13:43] in this case uh you know p is definitely
+[13:47] not equal to P complement so we will
+[13:49] detect the fact that there is an
+[13:52] error so what has our math shown our
+[13:54] math has basically shown that if the
+[13:56] parity gets bit gets flipped we we'll be
+[13:59] able to detect that something wrong has
+[14:01] happened uh even though we'll not be
+[14:03] able to find out which bit has flipped
+[14:06] and we we will be able to find this out
+[14:08] basically by uh recomputing the parity
+[14:11] at the receiver side so we'll see that
+[14:14] the computed parity and the transmitted
+[14:15] parity are different similarly if a bit
+[14:18] within the frame gets flipped we can
+[14:20] just extend this math for an 8 bit
+[14:23] frame uh with this math which is simple
+[14:26] algebraic manipulations of the zor
+[14:29] function you find that for a single bit
+[14:32] flip the parity uh bit also gets flipped
+[14:36] right so the computed parity if let's
+[14:38] say I flip this bit the computed parity
+[14:41] will also flip so in this case also the
+[14:44] computed parity will not match uh the
+[14:47] computed parity will not match the
+[14:49] transmitted parity right so uh as a
+[14:52] result you know this is p complement and
+[14:54] the transmitted parity is p so they will
+[14:57] not match as a result we can infer that
+[15:00] a single bit has been
+[15:02] flipped so then of course the receiver
+[15:04] can ask the sender for a
+[15:06] retransmission so mind you you know in
+[15:09] this case we'll not be able to find out
+[15:10] which bit is flipped but we'll be able
+[15:13] to say that uh at least one bit has
+[15:15] flipped now if there are two bit flips
+[15:18] then uh of course we'll not be able to
+[15:20] detect this case because you know the
+[15:22] parity so if there are two bit flips
+[15:25] then the computed parity will actually
+[15:28] be
+[15:29] P compliments complement which is p so
+[15:32] you know we'll not be able to detect
+[15:34] this case uh so that's the reason
+[15:37] there's a single error detection but of
+[15:39] course there are more advanced schemes
+[15:41] for uh other kinds of fault
+[15:44] models for example we have schemes with
+[15:47] single bit error correction so what we
+[15:50] can do is given the
+[15:55] frame we can add additional in
+[15:58] information at the end called the error
+[16:01] correcting code you know which is far
+[16:03] more sophisticated than a simple parity
+[16:05] bit so we essentially need to have
+[16:08] multiple parity bits to achieve a single
+[16:10] bit error correction so this is taught
+[16:13] in classes on data communication and
+[16:15] coding Theory so we'll not be discussing
+[16:17] this this is outside our uh scope even
+[16:21] though in the book uh I do talk about a
+[16:24] method for correcting a single bit
+[16:26] error uh so this is not all we have
+[16:29] other schemes as well so the most one of
+[16:32] the most popular schemes for especially
+[16:34] ECC so what is ECC it's an error
+[16:36] correcting code which is added to the
+[16:39] end of every frame so this is
+[16:50] error it's an error correcting code so
+[16:53] we can have one EC scheme which is
+[16:56] called SE dead which means it's it's a
+[16:58] single error correct double error detect
+[17:01] what this basically means is that if
+[17:03] there are two bit
+[17:04] flips we'll be able to detect this case
+[17:07] but we'll not be able to correct it but
+[17:10] if there is a single bit flip we'll be
+[17:14] and we'll be able to correct it so in
+[17:16] this case we can recover from the error
+[17:19] and the receiver does not actually have
+[17:21] to ask the sender to retransmit the
+[17:25] message so the sected code is very
+[17:28] common
+[17:29] so so of course this is always done with
+[17:31] different assumptions about the
+[17:34] error so uh in some cases if you'll only
+[17:38] have a single bit error then a sing then
+[17:40] you know a single bit error correction
+[17:42] code suffices in some cases if there's a
+[17:45] possibility of two bits getting flipped
+[17:48] then of course using something like SE
+[17:50] dead is a good idea in some other cases
+[17:53] what we can have is that we can have a
+[17:55] burst of Errors what this basically
+[17:57] means is that if you're transmitting a
+[18:00] frame the nature of the offending signal
+[18:03] can be such that maybe you know a string
+[18:06] of five bits or 10 bits all of them get
+[18:08] flipped or get set to all zeros or all
+[18:12] ones so this is called a burst of Errors
+[18:15] where string of you know for 1 2 4 5 10
+[18:18] 15 20 bits you know in a sequence just
+[18:22] get uh you know reset to some values
+[18:25] right a sequence essentially get mangled
+[18:27] up
+[18:29] so in this case we use the CRC code
+[18:31] which also adds extra information at the
+[18:33] end of a frame it's called a cyclic
+[18:36] redundency
+[18:37] check so this kind of code is
+[18:39] particularly very useful if you if we
+[18:42] are looking at a burst of Errors so you
+[18:44] will see that a lot of protocols
+[18:46] actually use the CRC code between a
+[18:48] sender and the receiver and the fault
+[18:51] model here is that assume that there is
+[18:54] some amount of strong external
+[18:56] electromagnetic interference we are
+[18:58] assuming that it remains strong for some
+[19:01] for you know a fairly large period of
+[19:03] time which means that for a fairly large
+[19:07] period of time the bits will get
+[19:09] transmitted incorrectly they can get
+[19:11] flipped or maybe all of them will become
+[19:13] zeros all of them will become
+[19:15] ones and
+[19:17] uh so uh in this case uh what will
+[19:22] happen uh is that uh if we use the CRC
+[19:25] code we'll be able to at least detect a
+[19:29] long burst of errors and uh we'll be
+[19:33] then the receiver will always ask the
+[19:35] sender for a RR
+[19:37] transmission so recall that you know we
+[19:40] had discussed single bit error detection
+[19:43] in the previous slide and in this slide
+[19:45] we are talking about three more advanced
+[19:48] schemes which will be taught in you know
+[19:50] other
+[19:51] courses so they are all assuming
+[19:53] different fault models some assume that
+[19:57] you know you can have
+[19:58] only a very very few bits which will be
+[20:00] transmitted
+[20:02] incorrectly some are assuming that a
+[20:04] burst of bits will be trans uh
+[20:06] transmitted incorrectly a set of
+[20:08] contigous bits will be transmitted
+[20:11] incorrectly so depending upon the fault
+[20:13] model a code needs to be designed so if
+[20:16] we need more detection and more recovery
+[20:18] we need to add uh more information to
+[20:21] each frame and also at the receiver side
+[20:24] we need to do more work so that
+[20:26] trade-off definitely exists
+[20:29] so depending upon the fault model which
+[20:32] means what kind of uh external stimuli
+[20:36] are are there and what kind of Errors we
+[20:39] expect when the io system is operational
+[20:42] we choose one of the
+[20:43] codes uh clearly there is a trade-off
+[20:46] between power and reliability if we
+[20:48] choose a code like SE dead or CRC
+[20:51] will'll definitely get more reliability
+[20:53] but what we need to critically evaluate
+[20:55] is that is such kind of reliability
+[20:57] actually required
+[20:58] because it does induce a certain
+[21:00] performance and power
+[21:05] overhead so uh after we have discussed
+[21:09] secure reliable transmission well not
+[21:12] secure but reliable transmission between
+[21:14] a sender and a
+[21:16] receiver let us now look at another
+[21:20] aspect of the data link layer called
+[21:23] arbitration so uh let us consider a
+[21:27] typical bus where you have you know
+[21:29] multiple transmitters are connected to a
+[21:31] single bus it's called a multi- drop bus
+[21:34] what is a bus again it's a set of copper
+[21:35] wires what we have seen in chapter 11 in
+[21:38] the Snoopy protocol see are multiple
+[21:40] nodes connected to a bus so since
+[21:43] multiple nodes can send but uh you know
+[21:46] not all of them can send at the same
+[21:48] time only one node can send a message at
+[21:51] the same time it's a multi-d drop bus
+[21:53] but we require arbitration what does
+[21:56] arbitration mean arbitration means
+[22:00] that it gives access to one of the
+[22:03] senders to the bus right and so assume
+[22:06] that in a multiple nodes all the nodes
+[22:08] want to send a message an arbitration
+[22:11] mechanism will basically choose one node
+[22:13] first one more node later one more node
+[22:15] later and should uh possibly be fair
+[22:19] also such that all the nodes at least
+[22:22] get a
+[22:23] chance uh to transmit on the bus and uh
+[22:27] the process of arbitration ensures that
+[22:30] some degree of exclusive
+[22:32] control is given uh to each node that is
+[22:36] connected to the bus such that for a
+[22:38] certain period of time it'll be able to
+[22:40] transmit a message so it's sort of the
+[22:43] same thing like you know if a teacher is
+[22:45] teaching a class and multiple students
+[22:47] want to ask a question the teacher
+[22:50] chooses one student first one more
+[22:52] student later one more student after
+[22:54] that so this process is called
+[22:56] arbitration right when and there are
+[22:58] multiple requesters first one of them is
+[23:00] chosen then one more then one more and
+[23:02] so on so there are two broad methods for
+[23:05] doing arbitration between uh you know
+[23:08] different nodes one is centralized and
+[23:11] other is called a daisy
+[23:13] chain so how again does this fit into
+[23:15] our overall uh data link cayer concept
+[23:19] well uh the basic idea is the data link
+[23:22] layer assumes that messages can be sent
+[23:26] but of course they need to be a certain
+[23:28] framing has to be done in the sense
+[23:31] group of bits have to be you know we
+[23:33] need to create groups of bits that is
+[23:36] point number one point number two is
+[23:39] that uh there might be occasional bit
+[23:41] flips so uh frames need to be
+[23:44] protected and after that when we connect
+[23:47] a lot of IO nodes it is possible that
+[23:49] multiple nodes might be competing for
+[23:51] the same uh you know set of copper wires
+[23:54] to transmit a message so we have to
+[23:57] somehow arbit rate between them have
+[23:59] some method of choosing a
+[24:01] winner so centralized arbitration is
+[24:04] actually very simple so in this case
+[24:06] what happens is we are looking at four
+[24:08] IO
+[24:10] devices whenever an IO device wants to
+[24:13] access a shared resource like a bus it
+[24:15] sends a request signal to a centralized
+[24:18] node called an Arbiter so all the io
+[24:20] devices do that uh every cycle the io
+[24:24] device takes a look at the requests that
+[24:26] it has and uh whether the resource in
+[24:30] question is free or not once the
+[24:32] resource becomes free it chooses one of
+[24:34] the devices and gives it access to the
+[24:38] shared resource so let's say if device
+[24:40] one is chosen then the Orbiter will set
+[24:42] the grant signal to one right so
+[24:45] initially uh device one will set request
+[24:47] to one other devices might also set
+[24:50] their request to one if the Orbiter
+[24:53] decides you know with some combination
+[24:55] of heuristics that device one should get
+[24:57] the resource it sets Grant to
+[25:00] one once device one is done it releases
+[25:04] the resource so it sends this release
+[25:07] line the release wire to one so in that
+[25:12] sense the Orbiter actually gets to know
+[25:14] that device one is done and the next
+[25:17] requester can be considered so this
+[25:20] approach is simple is very simple to
+[25:24] implement the only problem with this
+[25:27] approach Ro is scalability in the sense
+[25:29] if there are let's say 16 nodes or 32
+[25:31] nodes all 32 will have to be connected
+[25:34] to the Arbiter that's a lot of number
+[25:37] one that's a lot of
+[25:38] wires uh number two the Arbiter will get
+[25:41] fairly complicated because it needs to
+[25:44] consider so many requests at the same
+[25:48] time so this is a good solution for a
+[25:50] small system but not for a large system
+[25:52] so this request Grant release
+[25:55] cycle is you know a good idea for if you
+[25:58] have two nodes or four nodes or six
+[26:01] nodes uh but it's possibly not a good
+[26:03] idea for larger
+[26:06] systems that's the reason we have a
+[26:08] daisy chain
+[26:10] arbitration where uh the devices are
+[26:12] connected to each other pretty much like
+[26:14] a link list so the Orbiter is connected
+[26:17] to device one device one to device two
+[26:19] then device two to device n and so on so
+[26:23] a device that is interested to transmit
+[26:26] will assert the bus Grant signal so
+[26:29] we'll have a bus Grant signal which is
+[26:32] the same copper wire is connected to all
+[26:34] say one of them sets it to one uh then
+[26:38] uh the Orbiter will immediately get the
+[26:40] message then what the Orbiter will do is
+[26:43] that it'll inject a token right a token
+[26:46] can just be a single wire will be set to
+[26:49] one but this logically it's being
+[26:51] represented as a token and the token
+[26:54] will physically pass from device to
+[26:56] device okay from here to to here to here
+[26:59] fine and uh let's say
+[27:04] that uh if it has if the orbitor has
+[27:06] already injected a token then it'll wait
+[27:09] for the token to actually come back so
+[27:11] the token will pass from device to
+[27:14] device what the last device will do is
+[27:17] that it will
+[27:18] set the release signal so whoever is the
+[27:21] last uh device on the uh path will set
+[27:26] the release signal which will dest Dy
+[27:27] the token after that also the other
+[27:30] thing is once a devic's request has been
+[27:34] serviced it will at least uh not assert
+[27:37] the bus Grant Line right it'll stop
+[27:40] asserting this bus Grant Line so uh
+[27:43] that's the way it works so let me
+[27:44] summarize once again uh the idea is that
+[27:48] we have an Arbiter and all the devices
+[27:50] are connected in a link list
+[27:53] configuration what we have gained by
+[27:56] connecting all the devices in a linkless
+[27:58] fashion is like this that first we have
+[28:01] scalability in the sense that all the
+[28:04] devices are not connected to a single
+[28:06] Orbiter rather uh they are connected uh
+[28:10] to each other and also you know we can
+[28:13] dynamically add more devices we can add
+[28:15] one more device at the end over here the
+[28:19] second thing is that if any of the
+[28:22] devices is interested it'll simply Set
+[28:26] uh the value of the bus GR signal so the
+[28:28] Arbiter will know that some device is
+[28:31] interested now if it does not have a
+[28:34] token that is already in the system
+[28:37] it'll create a new token and inject it
+[28:39] at device one so uh one of the implicit
+[28:43] assumptions here is that devices have a
+[28:45] priority in the sense that device one
+[28:48] gets if device one gets the token it'll
+[28:51] be able to access the shared resource
+[28:54] and device one's priority in that sense
+[28:56] is more than device 2 after device one
+[28:59] is done it'll give the token to device 2
+[29:02] device 2 will now use it if it needs it
+[29:05] otherwise it will just transmit it till
+[29:07] it reaches device
+[29:08] n once device n is done uh it will
+[29:12] release the token one way of doing it is
+[29:14] that of course device n can send it back
+[29:17] to the Arbiter right a token is
+[29:19] basically a simple message which
+[29:21] indicates that it is a token but the
+[29:25] reason that Dy chain bues don't have
+[29:28] this connection is basically because we
+[29:31] need to have the ability or the capacity
+[29:34] to add more devices if you want all of
+[29:37] these devices just need to be connected
+[29:39] to this bus release line and you just
+[29:42] set the release line to one whoever is
+[29:45] the device at the end and the Orbiter
+[29:48] will get the message that the token is
+[29:49] dead so next time if some other device
+[29:52] is interested device or devices are
+[29:54] interested a new token can be injected
+[29:58] so this does solve our scalability
+[30:01] problem but in a certain sense uh it is
+[30:05] slow the reason that I say that it is
+[30:08] slow is because assume there are 20
+[30:11] devices and the 10th
+[30:14] device wants the access to the resource
+[30:18] the rest don't so it will set the value
+[30:21] of bus Grant in a centralized
+[30:23] arbitration scheme it would have
+[30:25] immediately got the permission in this
+[30:27] case a new token will be created it will
+[30:29] pass through nine devices and then it'll
+[30:31] reach it so this is a slower process but
+[30:35] it is slow yet
+[30:38] scalable uh now let's look at what is a
+[30:41] transaction oriented pass so it is a
+[30:43] request from the sender to the
+[30:46] receiver uh with a certain semantics
+[30:49] right semantics means a meaning a higher
+[30:51] level meaning so transaction can be
+[30:54] between you know any pair of uh nodes so
+[30:58] basically let's call one a sender and a
+[31:00] receiver so it is possible that they
+[31:02] have a complicated sequence of messages
+[31:04] for the sender sends something the
+[31:06] receiver sends something back then
+[31:07] sender again sends something so this
+[31:09] kind of a transac so this kind of a
+[31:11] message to and for exchange is called a
+[31:15] transaction so a bus that allows both
+[31:18] sides right the sender and the receiver
+[31:20] to communicate at the same time is of
+[31:22] course called a full duplex bus so in
+[31:26] that you know having a transaction
+[31:27] oriented communication is somewhat easy
+[31:29] so we can represent a full duplex bus by
+[31:31] you know two arrows so I can uh send
+[31:35] something to the receiver and exactly
+[31:37] the same time the receiver can send
+[31:39] something to the sender right so this is
+[31:42] called Full duplex communication the
+[31:44] two-way traffic is
+[31:46] happening uh so in this case having a
+[31:49] transaction is well I won't say it is
+[31:51] easy it depends on the nature of the
+[31:54] transaction uh but definitely you know
+[31:58] uh this can be used for some transaction
+[32:01] related traffic in comparison we can
+[32:04] have a half tolex bus Which is also fine
+[32:08] if the nature of our information
+[32:11] exchange is such that only one of the
+[32:13] sides right sends data at any given
+[32:16] point of time so let's have two notes
+[32:18] well instead of calling them sender and
+[32:20] receiver let's call them notes S1 and S2
+[32:23] so in a full duplex bus of course S1 and
+[32:26] S2 both of them can communicate at the
+[32:28] same time but in a half duplex
+[32:33] bus uh what will happen is that either
+[32:35] S1 is sending to
+[32:37] S2
+[32:43] or S2 is sending to S1 right so both are
+[32:48] not active at the same time as I said
+[32:50] either S1 is sending to S2 or S2 is
+[32:52] sending to S1 so this is called a half
+[32:55] duplex bus so uh the the choice is
+[32:57] naturally full duplex is more
+[32:59] complicated and half duplex is slightly
+[33:02] less complicated but of course in half
+[33:04] duplex you need to find out who's going
+[33:05] to send but this might be determined by
+[33:08] a higher level transaction for example
+[33:11] if let's say this is CPU and this is
+[33:13] memory
+[33:16] right so if you consider full duplex
+[33:19] communication the CPU can keep on
+[33:21] sending data to the memory data means
+[33:24] data as well as addresses simultaneously
+[33:26] the memory can read information and send
+[33:29] it back so this will be full duplex and
+[33:32] the transaction is that I send an
+[33:33] address the memory reads and sends the
+[33:35] data back half duplex is also possible
+[33:39] where the CPU sends something to
+[33:43] memory right something being an address
+[33:45] so the CPU sends an address to
+[33:48] memory and then the memory takes its
+[33:51] time and the memory then sends the data
+[33:55] back to the CPU
+[33:57] so this will be a half duplex
+[33:59] communication but as I said uh between
+[34:01] two
+[34:02] nodes uh they can have different methods
+[34:05] Styles paradigms semantics of
+[34:08] communication but
+[34:10] uh we are sort of grouping a set of
+[34:14] messages into a transaction for example
+[34:16] reading something from memory which
+[34:18] actually requires multiple messages we
+[34:20] are calling that entire sequence of
+[34:22] messages a transaction and of course
+[34:24] depending upon the transaction we can
+[34:26] choose our bus technology which is
+[34:28] either full duplex or half
+[34:31] duplex so let us for example consider a
+[34:34] dam read
+[34:38] transaction so in the process of reading
+[34:41] a dam a memory module we basically
+[34:45] have the
+[34:48] CPU and we have the dam
+[34:54] memory so the CPU sends it an address
+[34:57] add and tries to read some data so it
+[34:59] sends it an address and it gets data
+[35:02] back and of course we are assuming that
+[35:04] is a synchronous system so there is a
+[35:06] clock and both the dam as well as the
+[35:09] CPU are synchronized to the clock and
+[35:12] the dam itself is a 2d array of memory
+[35:16] cells the first so so this is you know
+[35:19] one example of a transaction between the
+[35:21] CPU and the D where the bus is used to
+[35:25] affect a complicated op and each
+[35:27] transaction contains multiple messages
+[35:29] let's see
+[35:30] how uh so first thing that the first
+[35:33] message that is CPU actually sends is
+[35:37] the r or the row address strob so this
+[35:40] is sent to the DAT to basically enable a
+[35:43] given row all right in the 2D array in
+[35:47] the 2D array of dam
+[35:50] cells so then along with that along with
+[35:53] the row address strobe which asks it to
+[35:55] enable a row the address of the row is
+[35:58] simultaneously sent right so these two
+[36:01] are being sent by the CPU to the
+[36:04] dam write the memory controller unit of
+[36:08] the CPU to the dram asking it to enable
+[36:10] a certain
+[36:11] row once that has been done we assume it
+[36:14] takes some time you know several 1 2
+[36:16] three clock
+[36:17] Cycles subsequently we ask the dram once
+[36:21] again to enable a certain set of columns
+[36:24] within that large row because we might
+[36:26] only be interested Ed in this data so
+[36:28] this
+[36:30] would
+[36:31] again uh be sent by the CPU so we will
+[36:38] uh assert the column address strob
+[36:41] asking the dram module to enable a
+[36:43] certain set of columns but the set of
+[36:45] columns are again sent by the CPU right
+[36:49] to the
+[36:51] dam simultaneously the CPU also sends to
+[36:55] the dam account command you know
+[36:57] multiple commands can be sent but one of
+[36:59] the commands that is being sent is a
+[37:01] read command saying that look with the
+[37:03] row and the columns that we have sent
+[37:05] why don't you initiate a
+[37:08] read so these two signals are
+[37:12] now sent by uh the dam to the
+[37:17] CPU so the dam after getting the row the
+[37:20] column and the read signal initiates a
+[37:22] read so of course it takes some time
+[37:25] because it's a large array so uh parts
+[37:27] of the line the bit lines have to be
+[37:29] pre-charged and
+[37:30] activated so it asserts the data ready
+[37:33] signal to the
+[37:35] CPU uh if this tells the CPU that look
+[37:38] the data is ready you can pick it off
+[37:39] from the bus right so the data is
+[37:42] ready and the data is sent in three
+[37:45] consecutive Cycles all right and then
+[37:49] the Dam's operation stops mind you this
+[37:52] is a simple transaction but there is a
+[37:55] trick so let me me once again go back
+[37:58] and look at all the operations in the
+[38:00] transaction so we enable the row right
+[38:04] we enable the column initiate a read the
+[38:07] dram performs the read and sends the
+[38:09] data back while doing that it enables
+[38:12] the data ready signal telling the CPU
+[38:14] that look data is ready and it sends the
+[38:17] data back to the CPU right so all of
+[38:21] this is part of one
+[38:23] transaction but here is the trick
+[38:27] when we are reading the data the CPU
+[38:30] simultaneously
+[38:32] sends the information for the next
+[38:35] transaction okay to the dam the next
+[38:39] transaction will be one more row so this
+[38:41] is the sent by again enabling the row
+[38:43] address strob and the ID of the row and
+[38:46] also the column and the read Command
+[38:48] right so one when we are essentially
+[38:51] reading out one row the CPU sent sends a
+[38:56] request to the dam to simultaneously
+[39:00] start the process of enabling another
+[39:02] row within it such that the next data
+[39:04] transfer can begin from that row and in
+[39:07] the interest of performance and time the
+[39:10] row address strob and the row signal
+[39:13] you're
+[39:14] overlapping this part of the new
+[39:16] transaction with a part of the previous
+[39:18] transaction right when the dam is
+[39:22] sending data to the
+[39:23] CPU such that you know the to total time
+[39:27] that is required for a set of requests
+[39:29] gets minimized or we have a high
+[39:30] performance
+[39:31] implementation the important point to
+[39:33] note is that this communication is from
+[39:36] the CPU to Dam and this communication is
+[39:39] from Dam to CPU so this is actually a
+[39:42] full duplex
+[39:50] bus all right it's actually a full
+[39:52] duplex bus because information is
+[39:55] Flowing from both both sides from the
+[39:57] CPU to Dam and Dam to CPU
+[40:00] simultaneously and uh of course you know
+[40:04] this is the nature so as I said the
+[40:06] choice of the bus depends on the type of
+[40:08] the transactions that you want to
+[40:10] support and the nature of the protocols
+[40:12] in this case the protocol is such that
+[40:15] we are overlapping two transactions and
+[40:17] since we are doing this overlap it's
+[40:19] necessary to use a full duplex bus
+[40:22] between the CPU and the Dr
+[40:25] modules so let us now look at a
+[40:27] different kind of a bus called a split
+[40:29] transaction
+[40:30] bus so what we have seen is a
+[40:32] transaction is a sequence of
+[40:34] messages typically the messages are
+[40:37] between the CPU and a device so for
+[40:40] example if you know there's a bus kind
+[40:42] of
+[40:43] setting and let's sort of generalize the
+[40:46] problem so we have one we have multiple
+[40:48] devices connected to a
+[40:51] bus and let's say S1 is a CPU S2 is a
+[40:55] device so then s S1 will request S2 for
+[40:58] some data it'll send a request over the
+[41:02] bus and then S2 will do some will access
+[41:05] the physical device get the data and
+[41:08] send it back to S1 during this time a
+[41:11] regular transaction oriented system
+[41:13] would actually hold on to the bus it'll
+[41:15] lock the bus so it will not allow let's
+[41:17] say S3 and an S4 to communicate
+[41:21] basically because the S1 S2 transaction
+[41:23] is going
+[41:24] on it is very well possible that a
+[41:26] transaction of this kind might have a
+[41:29] long pause in the middle right a long
+[41:31] time a long interval of time when
+[41:34] actually no communication is happening
+[41:37] on the bus so this will lead to
+[41:38] inefficient
+[41:40] utilization so we can have a split
+[41:42] transaction bus which is conceptually
+[41:44] simpler even though you know not might
+[41:47] not be actually but we'll discuss this
+[41:50] so it typically consists of a request
+[41:52] subtransaction where S1 sends S2 a
+[41:54] request it releases raes the bus and a
+[41:57] response subtransaction where S2 sensor
+[42:00] sensor response back to
+[42:02] S1 so during this period so when S1
+[42:05] basically sends a message to S2 then it
+[42:08] releases the bus so during this period
+[42:11] other messages can be sent between uh
+[42:14] the request and the response right
+[42:16] between the request of S1 and the
+[42:18] response of S2 other messages can be
+[42:21] sent because the bus is released so S3
+[42:23] can send a message to S4 and S4 can send
+[42:26] a message to S3 or S1 any kind of
+[42:28] communication is possible so the
+[42:31] advantage here is that uh it is true a
+[42:34] transaction is a set of messages but we
+[42:37] need not hold on exclusively to Shared
+[42:39] resources till the transaction ends what
+[42:42] we can do is we can uh lock shared
+[42:45] resources uh resources for only as long
+[42:48] as they are
+[42:49] required so at the highest level it
+[42:52] looks like this protocol is more
+[42:54] flexible which it definitely is because
+[42:56] we can connect many many more devices to
+[42:58] a bus and performance should not be
+[43:01] hampered uh you know as long as of
+[43:04] course two paays don't want to
+[43:06] communicate at the same point of time it
+[43:09] definitely increases the bandwidth that
+[43:11] is available to us and the traffic that
+[43:13] we can send because we are minimizing
+[43:16] idling and conceptually speaking it is
+[43:18] simpler because we basically just send
+[43:21] messages but we also want to ensure that
+[43:24] a certain transaction Behavior
+[43:27] uh holds which means that either all the
+[43:29] messages in a transaction reach or none
+[43:32] of the messages reach so well this can
+[43:35] be done at a slightly higher level by uh
+[43:39] basically a specialized module in S1 and
+[43:42] S2 ensuring that you know it'll wait
+[43:46] it'll it'll wait for all the messages of
+[43:48] the transaction to reach S1 and all the
+[43:50] messages of a transaction to reach S2
+[43:53] only then it'll initiate further
+[43:54] processing but that again is a concern
+[43:57] best handled at the level of S1 and S2
+[44:00] the bus design and the design of the of
+[44:03] this particular
+[44:05] layer becomes somewhat simple because
+[44:08] every uh message is basically an
+[44:12] exchange where uh the shared resource if
+[44:14] there is any is locked only for the
+[44:17] duration of the message transfer so
+[44:19] split transaction bus is typically used
+[44:22] right uh in most systems unless of of
+[44:26] course there is a reason for having a
+[44:28] purely transaction oriented bus where we
+[44:30] will actually have long possibly long
+[44:33] idle periods and not allow any other
+[44:35] message transfer to happen in between so
+[44:39] as I said it is simple in one sense and
+[44:41] complex in one more it's simple in the
+[44:43] sense of the bus design is simple
+[44:45] however the nature of message transfers
+[44:47] and nature of
+[44:49] ensuring uh that in transaction actually
+[44:52] happens right which means that all the
+[44:54] messages in a transaction are actually
+[44:56] sent that of course uh will be handled
+[44:59] at a different level so that can be
+[45:01] slightly more complicated in the setup
+[45:04] but then nevertheless this is the more
+[45:06] popular and standard
+[45:10] implementation so now we have taken a
+[45:13] look at the data link layer so let's go
+[45:15] forward and take a look at the network
+[45:18] layer which is the next part of the iio
+[45:22] stack uh the network layer is uh
+[45:25] primarily
+[45:27] concerned uh with routing messages
+[45:31] between different IO devices and
+[45:33] ensuring that messages reach their
+[45:35] correct
+[45:37] destination so uh every device that is
+[45:40] there on the motherboard exposes what is
+[45:43] called a set of IO ports IO uh is input
+[45:46] output so an IO port in this case is a
+[45:50] software entity in the sense that uh we
+[45:55] have a soft sofware interface which
+[45:57] looks like this so we have a set of
+[46:00] registers and uh the set of registers so
+[46:04] this is this is the diagram of the
+[46:06] port right so the set of registers some
+[46:09] of them are input
+[46:10] registers and some of them are output
+[46:13] registers so the registers are the ones
+[46:16] in which we write to uh or read from if
+[46:20] we need to actually uh talk to the
+[46:23] device so uh there is uh what is called
+[46:27] a port controller so the port
+[46:28] controller's job is to take data to and
+[46:30] from these registers and you know
+[46:33] actually do the right data conversion
+[46:35] and put them in the right format and
+[46:38] then of course we have a port connector
+[46:40] which is a set of copper lead such that
+[46:42] an external connector can attach to the
+[46:45] port connector over here so the port in
+[46:49] this sense you can think of it number
+[46:51] one as a software entity and also you
+[46:53] know it does have a hardware connotation
+[46:56] so each software IO Port is a wrapper on
+[47:00] the actual Hardware IO Port the port is
+[47:02] defined essentially as an interface for
+[47:05] connecting to you know one or many IO
+[47:09] devices so in this case every port will
+[47:12] definitely have a copper you know a
+[47:13] metallic connector and some amount of
+[47:16] electronics to ensure that the signals
+[47:18] can be processed the physical layers and
+[47:20] so the port controllers over here pretty
+[47:23] much uh looks at the physical layer and
+[47:26] the data link layer right so it does all
+[47:28] the framing and error correction and all
+[47:30] of that so after processing the physical
+[47:33] and data link
+[47:35] layers
+[47:36] right it then uh sends the data to these
+[47:40] registers and in some cases it takes
+[47:42] data from the registers and sends it out
+[47:45] via uh the port connector so the it uh
+[47:50] so this entire structure is a hardware
+[47:51] Port because there is some physical
+[47:53] amount of Hardware here in terms of a
+[47:55] connector a controller and you know the
+[47:57] storage for these registers and also
+[48:00] there is a software notion of a
+[48:02] port which looks at a port from a
+[48:05] software's point of view which is only
+[48:07] this which is you know a set of
+[48:09] registers that you can use to
+[48:12] communicate with the external
+[48:15] device so each IOP Port uh so so I'm you
+[48:19] know talking of a reference IO Port
+[48:21] architecture right one that Intel uses
+[48:24] so each IO Port EXP poses a set of 8 to
+[48:28] 32bit uh registers to software right so
+[48:31] the registers internally can either
+[48:34] contain 8 Bits or 16 bits or 32 bits so
+[48:37] what software does is that it writes to
+[48:39] the registers so in using assembly
+[48:42] instructions we write to the
+[48:44] registers the port controller
+[48:46] automatically sends the information to
+[48:48] the io device so the assumption is that
+[48:50] the moment we write to the
+[48:52] registers the port controller will take
+[48:55] that information information right we
+[48:56] catch that do the right kind of voltage
+[49:00] conversions and send it to the actual
+[49:04] device right you know via the physical
+[49:08] and the data link layers similarly to
+[49:10] read data the processor reads the
+[49:13] registers of the port controller and uh
+[49:17] so basically they are supposed to have
+[49:18] the data that we are getting from the
+[49:21] device so the way that we look at is
+[49:23] that we have the CPU over
+[49:26] here everything is within the
+[49:27] motherboard you have this little
+[49:29] Hardware Port over
+[49:31] here right and uh so
+[49:35] then so the hardware Port is a physical
+[49:38] device right with a controller with a
+[49:40] with an interface right with a connector
+[49:42] a controller and some amount of
+[49:45] electronics so the hardware Port is then
+[49:48] connected to the actual device whatever
+[49:51] it may
+[49:52] be so the way that we actually so the
+[49:55] software running on the CPU essentially
+[49:57] sees this port as a software Port
+[50:00] software Port is basically an
+[50:02] abstraction for the hardware portc
+[50:04] device it essentially sees a set of
+[50:06] registers with different
+[50:08] sizes if it writes to the registers
+[50:10] automatically a message is sent to the
+[50:12] device if it needs to read something the
+[50:15] device will send data into the registers
+[50:18] and Via these registers data will come
+[50:21] software so for example Intel processors
+[50:25] def find 64k means 64,000 roughly 8bit
+[50:29] IO ports and each Port so 64k is 2 to
+[50:33] the actually it is
+[50:37] 65,536 which is 2 ra to the
+[50:41] power
+[50:42] 16 all right so 2 ^ 10 is 1024 and 2 ^ 6
+[50:48] is 64 so it's roughly uh this so each
+[50:51] Port has a 16bit port number and uh
+[50:56] each Port the size is 8 Bits or one
+[50:59] bite right so this is the interface that
+[51:02] we have so multiple
+[51:04] devices uh will basically have you know
+[51:07] multiple devices will expose their set
+[51:09] of registers and each register will be
+[51:12] assigned a unique number called a port
+[51:16] number so let us look at the io address
+[51:19] space that we have on a typical x86
+[51:22] Intel kind of machine so uh the io
+[51:25] address space is pretty much the set of
+[51:27] all IO
+[51:28] ports that are accessible to software
+[51:31] right which you know privilege software
+[51:34] assembly code or operating system code
+[51:36] can access so here also you see the
+[51:38] advantage of assembly
+[51:40] code that you can access uh ports which
+[51:44] are otherwise not
+[51:46] accessible had assembly instructions not
+[51:48] been there there would have been no way
+[51:51] to uh access uh IO ports and other kinds
+[51:54] of privilege
+[51:56] resources so we should be thankful to
+[51:58] the makers of Assembly Language for
+[52:00] giving us this uh unique facility so x86
+[52:04] processors have two instructions to
+[52:06] access IO ports two assembly
+[52:08] instructions in and out
+[52:10] right so in basically says so in uh so
+[52:15] R1 is the name of a register can be any
+[52:17] x86 register e cbx doesn't matter and
+[52:21] the io port number so what we
+[52:23] essentially do is that
+[52:29] uh uh sorry uh this thing should have
+[52:33] been this way so the contents of the IOP
+[52:36] Port right whatever is in the IOP Port
+[52:39] whatever the device is
+[52:40] sending that comes into the register so
+[52:43] in means read it into a
+[52:46] register and uh s similarly we have
+[52:49] another instruction called
+[52:51] out uh what out does is uh the that it
+[52:56] basically sets the contents of the IOP
+[52:58] Port which means the contents of the
+[53:00] device to what is there in the register
+[53:02] so in means essentially getting data
+[53:05] from the device where this is the
+[53:09] device so in basically says get data
+[53:12] from the
+[53:13] device and Out means send data to the
+[53:18] device so that is pretty
+[53:19] intuitive uh in the in the sense that
+[53:21] you know in is always input of data
+[53:24] reading data into the CPU into the
+[53:26] software and out is pushing data to the
+[53:30] device right which means whatever is
+[53:32] there in the register will get return to
+[53:34] the corresponding IO
+[53:37] Port all right so with uh just these two
+[53:41] simple instructions in and out it is
+[53:43] possible for the CPU you know the
+[53:45] writers of the operating system via the
+[53:47] CPU to control almost all the io
+[53:53] devices so this this particular approach
+[53:58] addressing all the io ports you know via
+[54:01] a certain port number or a port address
+[54:04] is called iio map IO so in this case
+[54:07] what happens so so I'll just show you
+[54:09] the broad
+[54:10] diagram we have the CPU and we have a
+[54:14] set of devices right we have a lot of
+[54:18] devices that are connected so what we
+[54:19] saw in the original diagram if you would
+[54:21] recall the CPU is connected to a North
+[54:24] Bridge which is again connected to a
+[54:26] South Bridge chip and South Bridge chip
+[54:29] is connected to many many devices each
+[54:32] device has a set of registers each of
+[54:35] these registers is given an IOP port
+[54:37] address and so then the CPU basically
+[54:40] sends a message with a port address so
+[54:42] the Southbridge chip knows that which
+[54:44] range of addresses are mapped to which
+[54:46] device so it sends a message accordingly
+[54:49] to the appropriate device so this is
+[54:51] exactly what oops sorry this is exactly
+[54:53] what uh is the there on the slide that a
+[54:56] request certain IO request can be in or
+[54:59] out contains an IO port address the
+[55:02] processor sends it to the North Bridge
+[55:05] chip the Northbridge chip forwards the
+[55:07] request to the Southbridge chip if
+[55:10] necessary the South Bridge chip further
+[55:12] forwards it to the destination and there
+[55:15] might be several more hops it doesn't
+[55:17] matter but it forwards it to the device
+[55:20] because it basically keeps a mapping of
+[55:23] which IOP port numbers are mapped to
+[55:24] which
+[55:25] device so each chip basically the North
+[55:28] Bridge and South Bridge chips maintain a
+[55:30] small routing table where the table is
+[55:34] basically you know multiple entries but
+[55:37] each entry is IO port
+[55:40] number and the device this is what is
+[55:44] contained in each entry so you can have
+[55:46] you know many many such entries in the
+[55:48] routing table inside each chip but
+[55:50] basically given the number it knows
+[55:52] which device to send the request to
+[55:55] similarly the response follows the
+[55:57] reverse path but since the most the
+[55:59] responses are actually directed towards
+[56:01] the CPU it's very easy for all the
+[56:04] entities along the way to know where to
+[56:06] send the message
+[56:08] to all right now let's look at a
+[56:11] different scheme called memory mapped IO
+[56:14] so what are the problems with IO mapped
+[56:16] IO and why do we need a different scheme
+[56:19] the first thing is that the programmer
+[56:21] who is writing the software needs to be
+[56:24] aware of the addresses of the different
+[56:26] IO ports right you have to know that
+[56:28] what are the addresses the same device
+[56:31] might have different port addresses
+[56:33] across different motherboards or you
+[56:36] know so so basically who assigns the
+[56:38] port addresses so typically when you
+[56:40] connect a device to a motherboard the
+[56:42] Southbridge chip does so if we consider
+[56:45] this as a Southbridge
+[56:46] chip and multiple devices are connected
+[56:49] to it what will happen is this and then
+[56:52] this device will say that look I have
+[56:54] 100 ports so I give me 100 addresses the
+[56:58] South Bridge chip will give give it 100
+[57:01] addresses but it is possible that you
+[57:03] know the same device for different
+[57:04] motherboards can actually have different
+[57:07] addresses so in this case what will
+[57:10] happen is that programs which are
+[57:12] written for one motherboard which assume
+[57:14] that let's say a given for example let's
+[57:17] say the
+[57:18] mouse has IOP ports 20 21 and 22 this
+[57:23] might be the case in only one mother
+[57:25] board with this South Bridge chip it
+[57:28] might not be the case in another
+[57:30] motherboard where you know with a
+[57:32] different kind of chip for the addresses
+[57:33] might be 50 51 and
+[57:37] 52 so in this case it'll be hard to
+[57:39] transfer a block of
+[57:42] data sorry uh uh I'm I'm still at this
+[57:45] point yeah so uh so in this case if the
+[57:48] addresses are different a program that
+[57:50] is written that assumes that uh the io
+[57:53] ports of the mouse are 2021 and 22 will
+[57:57] cease to work on a different system so
+[58:00] this is clearly not
+[58:02] portable right you can't take one
+[58:04] program and run it on a different kind
+[58:07] of uh on a machine with a different
+[58:09] motherboard different kind of a
+[58:11] motherboard because you know there can
+[58:12] be these
+[58:14] problems moreover uh another problem is
+[58:17] that to transfer a large block of data
+[58:20] we are essentially sending it bite by
+[58:23] bite right of so essentially that's also
+[58:26] instruction by instruction so we'll
+[58:28] essentially have out and out and out so
+[58:31] sort of in a for Loop we'll just have
+[58:34] instructions which will just send one
+[58:36] bite after the other and there is a
+[58:38] fairly slow method of dealing with such
+[58:41] devices right because essentially one
+[58:44] bite we're sending per instruction so to
+[58:48] send a kilobyte th000 instructions have
+[58:50] to be issued and that's going to be slow
+[58:53] that's the reason researchers
+[58:55] in both industry and Academia have
+[58:58] invented memory map Tio which solves
+[59:00] most of these problems right most of
+[59:02] these problems in this case are solved
+[59:05] by memory map
+[59:10] Tio so in this case what we do is that
+[59:13] we Define a virtual layer between IOP
+[59:16] ports and the application the
+[59:18] application here meaning
+[59:20] software so we make a virtual layer such
+[59:23] that the software need not be aware of
+[59:26] the particular addresses of the io ports
+[59:28] even though the operating system might
+[59:30] be what the operating system does it
+[59:33] uses the paging mechanism to map IOP
+[59:36] ports to memory addresses so essentially
+[59:38] it takes a range of IOP ports and Maps
+[59:41] it to a range of memory addresses so
+[59:44] what the CPU does is that it basically
+[59:46] writes to these memory addresses well it
+[59:49] thinks that it's writing to these memory
+[59:51] addresses in reality these messages
+[59:54] instead of of going to this virtual
+[59:56] space are actually sent to the io
+[59:59] devices for example whenever we write to
+[60:02] a memory address that is mapped to an IO
+[60:04] Port the tlb directs the request to the
+[60:07] io system similarly for reading data the
+[60:10] response comes from the iOS
+[60:14] system so uh let's look at the
+[60:17] advantages but before that let me just
+[60:19] make a quick you know detour to this
+[60:21] slide and let me show you what exactly
+[60:24] uh happens so if we have the CPU over
+[60:28] here consider the fact that addresses
+[60:32] from
+[60:34] uh let's say you know if you count from
+[60:37] zero from
+[60:39] 4,096 to
+[60:41] 8,191 which is a 4K address right 4 *
+[60:45] 1024 so addresses within this range are
+[60:49] mapped to let's say a certain IO
+[60:52] device so we write a program
+[60:55] program uh and so basically you know
+[60:57] let's say given in the operating system
+[60:59] in its tlb translation look aide buffer
+[61:03] for this range of addresses you know for
+[61:05] this page we basically maintain that
+[61:09] this is actually not in the memory
+[61:11] system but this is in the iOS system so
+[61:14] this page we have a tlb entry for it so
+[61:17] actually let me just uh maybe go out and
+[61:21] draw a bigger diagram
+[61:25] uh
+[61:26] sorry uh let me just draw a bigger
+[61:29] diagram to explain this
+[61:32] better so let us consider uh scheme so
+[61:36] so the way that things typically work is
+[61:38] that we have a
+[61:40] CPU the CPU sends the request the
+[61:44] virtual address to the
+[61:46] tlb right so this is the virtual address
+[61:49] then the physical address goes to the
+[61:52] memory system that's the typical way in
+[61:55] which what we have learned in the
+[61:57] chapter on memory systems but in this
+[62:00] case in each tlb entry we actually add
+[62:02] an additional bit if this bit is zero we
+[62:05] send it to the memory system otherwise
+[62:08] if this bit is
+[62:09] one then we basically well we can do
+[62:12] some conversion so we convert it to its
+[62:15] IO Port addresses right IO Port
+[62:20] addresses and uh we actually send it to
+[62:23] the IO
+[62:26] system so essentially the programmer the
+[62:28] software which is running on top of the
+[62:32] CPU that is simply not aware that it is
+[62:35] actually writing or reading writing to
+[62:37] an IO device or reading from an IO
+[62:39] device it's simply not aware the only
+[62:42] thing that it knows is that it is
+[62:44] running on the CPU and it is writing to
+[62:48] a piece of memory this piece of memory
+[62:50] of course you know has been declared to
+[62:52] be special uh with
+[62:55] the cooperation of the operating system
+[62:57] of course but the way it's implemented
+[62:59] is that in the tlb entry instead of a
+[63:01] virtual to physical mapping we have a
+[63:04] virtual to IOP Port mapping and let's
+[63:07] say Bit Zero tells you in the tlb that
+[63:09] you go to the memory system otherwise
+[63:12] bit one will tell you that you go to the
+[63:14] iOS system so each so basically if the
+[63:17] software writes to a given memory region
+[63:20] and that region is mapped to IOP ports
+[63:22] so then the request
+[63:26] uh let me change the color maybe if
+[63:29] that's
+[63:32] doable oh can't yeah I yeah I just don't
+[63:37] seem to be finding the color well okay
+[63:41] so then the request will basically go to
+[63:43] the io system do its job and similarly
+[63:47] if I want to read the process is the
+[63:49] same a request first goes to the iOS
+[63:51] system and then it follows a reverse
+[63:53] path and comes back back to the CPU so
+[63:56] the advantage here is that you know in
+[63:58] my program I'll only have load and store
+[64:01] instructions they will either be to
+[64:03] normal memory or they will be to IO so
+[64:06] what needs to be done before this work
+[64:09] is that a given page right has to
+[64:13] be sort of year marked for this purpose
+[64:17] we need the program needs to tell the
+[64:19] operating system that I have this page
+[64:22] and can you link this page with a
+[64:24] certain device let's say that device is
+[64:29] uh uh you know a USB controlled joystick
+[64:34] or let's say you know that let's keep it
+[64:35] simple let's say the device is a
+[64:37] keyboard all right so can you link this
+[64:40] particular memory page to the keyboard
+[64:43] so this request is sent from the
+[64:46] software to the OS or from One OS module
+[64:48] to another so the OS will then uh query
+[64:53] the North Bridge and the Southbridge
+[64:54] controllers find the port addresses of
+[64:56] the keyboard and create a mapping within
+[65:00] the tlb which will basically tell it so
+[65:03] if this is the tlb the mapping will
+[65:05] basically tell it that for this set of
+[65:08] virtual
+[65:09] addresses map them to the iOS subsystem
+[65:13] with these port numbers such that it
+[65:15] finally goes to the port of the keyboard
+[65:18] which is again connected to the physical
+[65:21] keyboard so we can use this to send a
+[65:23] message you know send me the next key or
+[65:26] what is the status of caps lock and also
+[65:29] the keyboard can use the same path to
+[65:32] actually uh write the values of the keys
+[65:35] pressed in its registers and also to
+[65:37] send interrupts and once we get an
+[65:39] interrup the CPU can send a message to
+[65:41] the keyboard and read the value of the
+[65:43] key that was
+[65:44] pressed so this approach is basically an
+[65:48] additional layer uh if you think about
+[65:52] it uh the advantage is that the mapping
+[65:55] that is created between the IOP ports
+[65:57] and the memory addresses functions as a
+[66:01] very very effective additional
+[66:03] layer the same program can run on can in
+[66:08] principle run on multiple
+[66:10] machines reading and writing to IO
+[66:12] devices is easy you set the mapping
+[66:14] first between the io port numbers and
+[66:18] addresses and then just use normal load
+[66:21] store instructions it is very easy easy
+[66:24] to write read and write a large block of
+[66:26] data using block load store operations
+[66:29] as we have seen in the chapter on
+[66:31] x86 right so basically we can either do
+[66:34] a loop or x86 as other instructions to
+[66:38] transfer a large block of data from one
+[66:40] memory address to other so in this case
+[66:42] we can do the same but you know
+[66:45] unbeknownst to these instructions at
+[66:47] least it'll the data will actually be
+[66:50] flowing between memory and IO
+[66:53] devices
+[66:55] so that was uh all about the network
+[66:57] layer so what is it that we learned well
+[67:00] we learned about mainly two technologies
+[67:03] one is IO map IO and other is memory map
+[67:06] IO so in one case we actually physically
+[67:09] use the values of the IOP ports to send
+[67:13] messages to IOP ports right that is uh
+[67:16] one case and uh the other cases where we
+[67:21] use memory map Dio to send
+[67:25] messages uh to devices but in this case
+[67:29] the software does not use the inner out
+[67:31] in and out instructions rather the
+[67:34] software users so the software which can
+[67:37] be you know some other software
+[67:39] Standalone model of the OS doesn't
+[67:41] matter so in this case it uses normal
+[67:44] load and store instructions which which
+[67:46] get in a s transformed into IO
+[67:49] instructions which are then sent to the
+[67:52] io device so this is in a sense nice
+[67:56] portable code which is easy to
+[67:59] write and uh which you know can migrate
+[68:02] across machines so all of those inherent
+[68:05] advantages are there now let's look at
+[68:08] the last layer of the iio stack which is
+[68:10] the protocol layer which is also the
+[68:12] highest layer so of course this layer
+[68:14] assumes that the the existence of the
+[68:17] bottom three layers in a sense it
+[68:19] assumes that messages can be sent from
+[68:22] any node to any other node seamlessly
+[68:25] the messages will be correct they'll be
+[68:26] reliable and they will always reach the
+[68:28] right
+[68:30] destination so let us know consider the
+[68:32] protocol layer it defines the
+[68:34] interaction between the host processor
+[68:36] the CPU and IO devices of course at the
+[68:39] highest level
+[68:42] right uh so it basically these are very
+[68:45] very high level commands that are sent
+[68:48] on top of the three layers and the three
+[68:51] protocol methods that that we have in
+[68:55] the protocol layer at
+[68:57] polling uh polling interrupts and a
+[69:01] mechanism called dma or direct memory
+[69:04] access so polling is like this that
+[69:07] let's assume that the application
+[69:09] running on the processor wants to print
+[69:11] a page right it's not a memory page in
+[69:13] virtual memory it's a it's a physical
+[69:15] page that we want to
+[69:16] print so it needs to First find if the
+[69:20] printer is free that's Point number one
+[69:23] before for sending it the contents of
+[69:26] page so it'll keep querying the printer
+[69:28] for its
+[69:30] status if the status of the printer is
+[69:33] busy the program waits for some time and
+[69:36] queries again so you keep on asking the
+[69:38] printer are you free are you free are
+[69:40] you free this method is known as pulling
+[69:43] and once uh the printer says so again
+[69:46] how do you ask of course you use a
+[69:48] network layer write something to
+[69:50] the uh registers of the printer right
+[69:53] the port that is connecting to the
+[69:55] printer uh the message goes to the
+[69:57] printer the printer says yes I'm free
+[70:00] again that is R via registers so the CPU
+[70:03] you know VI the three layers essentially
+[70:06] VI the physical data link and network
+[70:08] layers so this method of continuously
+[70:10] asking is known as Bing and once the
+[70:13] printer says that it is free we can then
+[70:17] uh send data which will send the
+[70:19] contents of the page and will'll get
+[70:20] printed so this method is of course
+[70:22] simple but it's not efficient there's a
+[70:24] lot of extra
+[70:25] traffic a lot of power is spent in
+[70:28] sending the messages and of course you
+[70:31] know when we are polling for the status
+[70:32] of the printer we're not doing anything
+[70:34] else so we also wasting computational
+[70:39] time in comparison we can always use the
+[70:43] interrupt based approach in this
+[70:46] approach the host CPU tells the device
+[70:50] to notify it to let it know if there is
+[70:53] a a change in its status so in this case
+[70:56] if the printer is busy then the host
+[70:58] lets the printer know that it is
+[71:00] interested in printing one more page and
+[71:02] then it doesn't do anything then it just
+[71:04] remains
+[71:05] quiet the printer sends it an sends it
+[71:08] an interrupt once it's once it is free
+[71:10] so basically once the printer is done
+[71:12] with whatever it was doing it sends an
+[71:14] interrupt back to the host
+[71:17] CPU and uh so again you know this
+[71:20] happens via the io messaging path but
+[71:22] instead of being delivered as a normal
+[71:25] message it is delivered as an
+[71:27] interrupt so then the host processes the
+[71:30] interrupt and the application
+[71:32] subsequently uh you know invokes the
+[71:34] operating system via all that we learned
+[71:37] in chapter 9 about processing and
+[71:39] interrupt you know exactly that process
+[71:42] and you sent a print job to the io
+[71:44] device which in this case is a
+[71:47] printer now let's look
+[71:50] at direct memory access or DME which is
+[71:53] different so polling is very simple it's
+[71:56] basically that you know if I've taken
+[71:57] money from somebody then I ask that keep
+[72:00] on asking that person you know every
+[72:02] alternate day you know when are you
+[72:04] going to return return the money return
+[72:06] the money return the money this is
+[72:08] polling interrupt would be when I uh
+[72:12] tell that person that when you have the
+[72:15] money you give me a phone call right I
+[72:18] just need to send one message to the
+[72:20] other person that when he has the money
+[72:22] then he gives me a phone call and
+[72:24] transfers the money to
+[72:26] me so dma is slightly different right in
+[72:30] dma the idea is that let's let me assume
+[72:33] that I've given him a lot of
+[72:35] money so isn't it so well to transfer
+[72:38] the money to me what does it mean if he
+[72:40] transfers the money to me by cash then
+[72:42] I'll have to count the cash and it's
+[72:44] going to be a lot of additional work
+[72:46] instead he can transfer it from his bank
+[72:49] account to my bank account so dma is
+[72:51] something very very similar
+[72:54] so what dma is to us is something like
+[73:00] this uh so let us assume that the
+[73:03] application is aware that the printer is
+[73:06] free because it read the status of the
+[73:08] printer and it says that uh the printer
+[73:11] is free now also let's assume that it
+[73:13] needs to transfer several sorry there is
+[73:16] space here megabytes of data to the
+[73:18] printer for printing
+[73:20] right so if it transfers the data byte
+[73:24] by
+[73:25] byte right so if the the processor will
+[73:27] be tied up for the entire duration right
+[73:30] so for the entire duration that the
+[73:32] transfer is actually happening it is
+[73:35] possible that the processor might be
+[73:37] tied up and uh you know it's a very
+[73:41] inefficient process if several megabytes
+[73:43] of data you know if a picture has to be
+[73:44] printed and it's 2 megabytes 2 million
+[73:47] bytes and essentially we transfer it
+[73:49] byte by by using instructions or you
+[73:52] know four bytes by four Byes bytes the
+[73:54] process is very very inefficient it'll
+[73:56] tie up the CPU and the CPU could do
+[73:59] something better even if we do memory
+[74:01] mapped IO the entire operation will
+[74:03] still require a large amount of time
+[74:05] it's like you know my friend returning
+[74:08] money to me in small bills so I'll have
+[74:10] to count the entire thing and my friend
+[74:12] also has to count the entire thing it's
+[74:14] much better if he does a bank transfer
+[74:17] that's exactly dma it's an Outsourcing
+[74:19] of this job to the bank of course in
+[74:21] this case to the dma engine
+[74:24] so uh the idea of dma is like this that
+[74:27] we assign the work of transferring data
+[74:30] between you know it's typically main
+[74:33] memory because main memory contains the
+[74:36] data right that's where the CPU would
+[74:38] anyway get the data from Main memory or
+[74:40] the caches but of course that's a
+[74:42] secondary issue and the so transfer
+[74:45] between the you know physical memory
+[74:47] system which is the main memory come
+[74:48] caches and the io
+[74:50] devices right so the process process of
+[74:53] transferring data between the main
+[74:55] memory and IO devices this
+[74:57] process right the work is given to the
+[75:01] dma engine which is a special chip that
+[75:05] is a part of the North Bridge chip right
+[75:08] so the part of the North Bridge chip the
+[75:10] dma engine does its special work so it
+[75:12] has access to main memory as well as to
+[75:15] the io devices so it can seamlessly
+[75:17] transfer data between them so what for
+[75:20] example the CPU can
+[75:22] do is that it can tell the dma engine
+[75:26] that
+[75:28] look can you please transfer 1 megab of
+[75:32] data from you know this memory address
+[75:34] of main memory to the
+[75:37] printer and then you know once done just
+[75:40] send an interrupt to the CPUs telling
+[75:42] the CPU that it's done so what the dma
+[75:45] would actually do is that it will
+[75:46] initiate transfers to the memory unit
+[75:48] readin data at you know 64 bytes at once
+[75:52] or 128 bytes at once and it will send
+[75:55] data to the printer at whatever rate it
+[75:57] can
+[75:58] absorve so the job of the processor is
+[76:01] to essentially program the dma
+[76:02] controller that is part of the overall
+[76:05] Northbridge
+[76:07] system uh with the addresses and memory
+[76:09] and the size of data we need from memory
+[76:12] and transfer it to the iio locations so
+[76:14] dma can work both so if you have memory
+[76:17] here and we have a device here so dma
+[76:22] can do both it can do B directional
+[76:24] transfer in the sense it can take data
+[76:27] from memory send it to the device get
+[76:30] data from the device and send it to
+[76:32] memory it can work in both ways so you
+[76:34] can think of it as a bank you know so in
+[76:36] this case if my friend needs to transfer
+[76:39] money to
+[76:41] me in a sense he need
+[76:44] not uh you know count bills and send the
+[76:49] bills uh individually right he just
+[76:51] tells the bank that transfer for this
+[76:53] much of money to me and well the bank
+[76:56] does something but I need not be
+[76:57] concerned the same idea the processor
+[77:00] tells so the CPU in this case tells the
+[77:05] dma engine sorry the dma engine what to
+[77:09] do and the dma engine initiates the
+[77:12] transfer between the memory and the
+[77:13] device so this is much faster because
+[77:17] you know CPU uh is not involved at all
+[77:20] and uh also you know the
+[77:24] uh dma to memory bus is pretty
+[77:26] wide so uh 8 bytes or 16 bytes at a time
+[77:30] can be transferred so so and also the
+[77:33] CPU is free to do other
+[77:36] things so there are two main modes of
+[77:39] DME uh so this is very common it's
+[77:41] called a mode of a DME so it's called a
+[77:44] burst mode and cycle stealing
+[77:47] mode so recall that our typical system
+[77:51] that we have been looking at
+[77:53] is we have a
+[77:55] CPU then we have a Northbridge chip well
+[77:59] you know all architectures need not have
+[78:01] this it's possible in modern
+[78:03] architectures where some parts of the
+[78:05] North Bridge have actually come inside
+[78:07] the CPU but let's just use this as a
+[78:10] reference so North Bridge connects to
+[78:12] South Bridge which again you know
+[78:14] connects to
+[78:15] devices so it is possible that when the
+[78:18] transfer is going
+[78:19] on let's say between the memory and the
+[78:24] devices this uh
+[78:28] entire path is blocked in a sense it is
+[78:32] blocked like it's a transaction oriented
+[78:34] bus so basically the CPU will ALS will
+[78:38] not be able to send any message to some
+[78:40] other device which is over here during
+[78:43] the dma transaction uh basically because
+[78:46] this path is blocked you know in some
+[78:48] cases uh we will block any output from
+[78:51] the CPU because North Bridge chip is
+[78:53] busy so this is the also called the
+[78:56] front side bus the connection between
+[78:58] the CPU and a North Bridge chip so
+[79:00] depending upon the particular
+[79:01] implementation different parts of the
+[79:04] motherboard can get blocked but pretty
+[79:07] much the idea is still the dma
+[79:09] transaction completes no transactions
+[79:11] this is called Burst Mode uh the other
+[79:14] approach is called cycle stealing mode
+[79:16] where we operate in a split transaction
+[79:18] mode so we transfer data in smaller
+[79:21] chunks so well the dma reads some data
+[79:24] and then it arbitrates for the bus and
+[79:26] then transfers data so depending upon
+[79:30] the nature of traffic this can be a good
+[79:32] idea or can be a bad idea but it's more
+[79:34] flexible in the sense it allows other
+[79:37] traffic to happen sort of
+[79:40] concurrently with the dma transfer so
+[79:44] that is uh in a sense
+[79:47] allowed that you know other traffic can
+[79:49] happen at the same time but of course uh
+[79:52] this will uh require a little bit of uh
+[79:57] additional uh you know effort on the
+[80:00] side of the designers to ensure that you
+[80:03] know dma priority is also maintained and
+[80:06] the other device priorities are
+[80:08] maintained so what happens is that in
+[80:10] most motherboards dma traffic typically
+[80:12] has a slightly lower priority than other
+[80:15] regular traffic because you know it's a
+[80:17] lot of data and other kind of traffic
+[80:20] especially you know uh very very
+[80:23] interactive traffic with Graphics
+[80:25] devices with the keyboard and mouse and
+[80:28] uh well keyboard and mouse well can
+[80:29] tolerate some amount of delay but you
+[80:32] know graphics and sound devices will not
+[80:34] be able to tolerate delay otherwise the
+[80:36] video and the sound will somewhat look
+[80:38] jittery so they will typically be given
+[80:41] higher priorities than dma traffic so so
+[80:45] that is up to the particular motherboard
+[80:46] to decide what is the best strategy but
+[80:49] the main idea is that cycle stealing
+[80:52] mode is based B on a split transaction
+[80:54] kind of idea whereas in the bus mode we
+[80:57] pretty much start locking down buses and
+[80:59] structures till the dma transaction is
+[81:03] over so what we have done till this
+[81:06] point is that we have completed all the
+[81:09] four layers of the io system the
+[81:12] physical data link Network and protocol
+[81:15] layers we have studied them so we'll
+[81:17] move on to study certain case studies so
+[81:20] there are five case studies of five
+[81:22] different very popular IO protocols in
+[81:25] the book but we'll not discuss all five
+[81:28] here we'll discuss only two to the major
+[81:31] ones PCI Express and
+[81:33] USB so uh we'll only discuss them and
+[81:35] that also in Fairly cursory detail
+[81:37] before we move to storage media

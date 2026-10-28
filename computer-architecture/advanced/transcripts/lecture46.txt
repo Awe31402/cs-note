@@ -1,0 +1,1174 @@
+[00:00] [Music]
+[00:12] welcome to chapter 11 this is a chapter
+[00:15] on Power and temperature
+[00:17] so power and temperature in our first
+[00:19] order concerns
+[00:21] in the design of Modern Hardware and
+[00:23] modern processors
+[00:25] that is basically because you know we
+[00:27] have finite battery life in fact as I
+[00:31] was recording it the battery of my
+[00:33] wireless microphone ran out and that's
+[00:35] the reason I'm using a different
+[00:37] microphone that tells you how important
+[00:39] power concerns are because even the
+[00:41] microphone has a small processor
+[00:45] so to understand and appreciate all our
+[00:47] power and temperature concerns we will
+[00:51] need some background other than out of
+[00:54] order pipelines and caches so we will
+[00:56] need a background a basic physics that's
+[00:59] not a lot of background but still
+[01:02] some amount of background is required I
+[01:05] would not say that it is absolutely
+[01:07] background Less in that sense
+[01:10] right so some understanding and this can
+[01:13] be picked up you can go back to your
+[01:15] basic physics and
+[01:18] ah fluid flow heat flow calculus ah
+[01:21] fundamentals
+[01:23] now the basic question is do computers
+[01:25] consume a lot of power well you bet they
+[01:28] do they consume a lot of power
+[01:31] a few decades ago it was limited to few
+[01:34] Watts now it is
+[01:36] the order of megawatts so if you
+[01:39] consider large data centers then they
+[01:42] actually consume a lot of power
+[01:44] and it is so much that it can kind of
+[01:47] you know bring a full City down
+[01:51] how hard do CPUs get well first my
+[01:53] gratitude to the person to the unknown
+[01:57] author who posted this image using a
+[02:00] Creative Commons license that's the
+[02:01] reason I'm able to use it
+[02:03] so
+[02:05] basically what he has done is he has
+[02:07] shown that in a regular processor it is
+[02:10] possible
+[02:11] to actually fry two eggs and create two
+[02:14] wonderful poaches for an English
+[02:15] breakfast with just the heat that the
+[02:18] process generates so it's like a stuff
+[02:20] and in a typical desktop it would be out
+[02:24] of 100 Watts if there is GPU more if
+[02:26] it's a laptop less but we are talking of
+[02:29] anything between 50 to 200 Watts which
+[02:32] is sizeable it is substantial
+[02:34] uh so a typical CFL bulb is around 8 to
+[02:38] 10 watts and we are talking of a lot of
+[02:42] power here right so it's enough for the
+[02:44] bulbs and fans of a full house
+[02:48] so that is what we are looking at and
+[02:50] that is just the power that a processor
+[02:52] can consume which is substantial
+[02:56] hence we cared right why do we care we
+[02:59] care because of the high energy bills
+[03:01] energy bills are high
+[03:03] also if you consider data centers the
+[03:05] cooling costs are very high
+[03:09] so you can think about it this way that
+[03:11] you spend a lot of money let's say 100
+[03:13] units of money in buying your data
+[03:16] center machines for your data center
+[03:19] and then again you keep on spending a
+[03:22] lot of money which would exceed 100
+[03:24] units of money easily over the long run
+[03:26] which is cooling it
+[03:28] in so far as mobile devices are
+[03:31] concerned you just heard about my
+[03:33] experience where my microphone ran out
+[03:36] right the battery in my microphone ran
+[03:38] out Wireless one
+[03:40] cooling costs are very high and high
+[03:43] power leads to high temperatures high
+[03:45] temperature is a problem so we all know
+[03:47] what a hot mobile phone screen
+[03:50] feels like
+[03:52] how disconcerting it is when you know
+[03:55] your fan starts rotating at a high speed
+[03:58] in your desktops and servers and higher
+[04:01] is the temperature lower is the
+[04:02] reliability in fact the reliability
+[04:05] decreases exponentially with an increase
+[04:08] in the temperature
+[04:11] so let's first look at a basic power
+[04:13] consumption model then we will look at a
+[04:15] temperature model
+[04:17] and then we will see how do you manage
+[04:19] power and temperature how do you keep
+[04:21] both
+[04:22] within limits
+[04:25] so power has primarily two
+[04:28] components a dynamic power
+[04:30] Dynamic power happens because of
+[04:32] activity in your processor leakage power
+[04:35] happens regardless of activity it is
+[04:37] dissipated regardless of activity mainly
+[04:40] because there are leaky interfaces why
+[04:42] of which ideally no current should flow
+[04:44] but it actually flows
+[04:47] coming to Dynamic part well we have all
+[04:50] seen this this is an inverter pair
+[04:54] so you have your nmos transistor over
+[04:57] here we have our pmos transistor over
+[05:00] here again an nmos P Moss pair so we
+[05:03] have an inverted pair of i1 and I2
+[05:07] so if the input maintains its value
+[05:10] then you will see that all the nodes in
+[05:12] the circuit will also maintain their
+[05:14] value there is no flowing of current
+[05:17] however if let's say the input changes
+[05:20] if the input is zero then it changes to
+[05:22] 1. then there will be a new flow of
+[05:25] current
+[05:27] right
+[05:28] so basically what will happen
+[05:31] is that you know unless current flows
+[05:34] then you know if let us say this was 0
+[05:37] to 1 then this will transition from 1 to
+[05:39] 0 if it transitions from one to zero
+[05:42] then the current which is kind of at the
+[05:44] gates over here the charge which is at
+[05:45] the gates has to get discharged via
+[05:48] these paths and here again you would go
+[05:52] from 0 to 1 which means that this point
+[05:55] has to get charged primarily via this
+[05:58] root so there has to be a flow of
+[06:00] current otherwise you know your voltage
+[06:03] your charging discharging will not
+[06:05] happen
+[06:06] and whenever there is a flow of current
+[06:07] is going to pass through something right
+[06:09] it is going to pass through some media
+[06:12] that media will have a degree of
+[06:14] resistance
+[06:15] that will cause I Square R heat loss and
+[06:18] this heat will directly get converted to
+[06:20] heat so we will convert sorry a degree
+[06:24] of power loss so we are essentially
+[06:26] converting
+[06:27] electric current into heat via this
+[06:30] mechanism where because of the flow of
+[06:32] current of course its interpreted I am
+[06:34] not saying that it is happening all the
+[06:36] time because these are Primos
+[06:37] transistors so once there is a state
+[06:39] change will be some current flow till
+[06:41] the new state and then there will be you
+[06:43] know no flow after that and under ideal
+[06:45] conditions
+[06:47] but
+[06:48] for the state change whatever current
+[06:50] flows will lead to I Square R power loss
+[06:53] which is a heat loss and this is the
+[06:56] dynamic power so Dynamic power happens
+[06:58] when you have a switching activity in
+[07:00] the circuit features you can see over
+[07:02] here switching is happening
+[07:07] the dynamic power dissipation will never
+[07:10] happen if inputs maintain their values
+[07:12] switching is needed the number of
+[07:14] voltage transitions or switches
+[07:16] determine the dynamic power and of
+[07:18] course you know different parts of the
+[07:20] Circuit look different right you have
+[07:21] small transistor large transistors
+[07:23] transistors will lot of fan out fan Out
+[07:26] means the output of one transistor is
+[07:27] going as an input to many more so all of
+[07:29] these have a
+[07:31] have a cost so power simulation tools
+[07:34] basically count all the Transitions and
+[07:37] for every transition they have a power
+[07:38] cost
+[07:39] so they know that how many you know
+[07:41] milliwatts or nanowatts it may be a
+[07:45] better thing to say millage rules and
+[07:46] Nano joules are spent for every
+[07:48] transition
+[07:49] and that transition uh essentially
+[07:52] determines
+[07:53] what is a total power usage which is the
+[07:55] energy usage per unit type
+[07:58] so you typically find out in one cycle
+[08:00] how much of energy you used and you
+[08:03] divide that by the cycle time
+[08:07] so the basic idea for doing all such
+[08:10] simulations is to convert an electronic
+[08:14] circuit into an RC network RC network is
+[08:17] a resistor capacitor Network so
+[08:19] converted to an equivalent circuit for
+[08:22] example for an nmos transistor you would
+[08:25] convert it to an equivalent circuit like
+[08:27] this with two voltage sources gate to
+[08:29] source source to body
+[08:31] a bunch of capacitors here so the gate
+[08:33] and Source have a capacitance because
+[08:35] you know there is a voltage across them
+[08:37] similarly gate and body gate and drain
+[08:39] and so on and you would replace them
+[08:41] with these current sources where the
+[08:44] current is a function of the gate source
+[08:46] and Body Source
+[08:47] voltage
+[08:50] so this is a you know this is
+[08:52] traditional transistor 101 that any
+[08:54] transistor is represented as an
+[08:57] equivalent circuit in this fashion
+[09:00] and the advantage of doing this is that
+[09:03] you can nicely compute the current flow
+[09:05] and the consequent
+[09:07] power distribution
+[09:10] so let us now look at a basic circuit
+[09:13] that has a capacitor
+[09:16] capacitor there in series we have a
+[09:18] voltage source
+[09:20] so in the charging mode the switch one
+[09:22] is connected switch 2 is disconnected so
+[09:25] the capacitor is charging
+[09:27] in the discharging mode what we have is
+[09:30] switch one is disconnected
+[09:32] and switch 2 is connected
+[09:35] so then the current discharges like this
+[09:38] so let's look at the equation for
+[09:40] charging
+[09:42] so in charging this is the classic
+[09:44] equation can be derived quite easily V
+[09:46] by R multiplied with e to the power
+[09:48] minus t by R C where RC is known as the
+[09:51] time constant so this is the classical
+[09:53] capacitor charging equation where you
+[09:55] know the voltage gets charged like that
+[09:58] so the total energy that is provided is
+[10:01] CV Square
+[10:03] the interesting thing is this
+[10:04] independent of the value of the
+[10:06] resistance R right that's very important
+[10:08] to note and that will be quite useful in
+[10:11] our subsequent discussion
+[10:14] out of this half of it is stored in the
+[10:16] capacitance and sadly half of it is
+[10:19] distributed as heat
+[10:21] wire the resisted over here the
+[10:23] important point is the value of the
+[10:25] resistance does not matter
+[10:28] so let's understand the capacitor
+[10:30] charging discharging slightly better
+[10:33] so the idea is that even when I am
+[10:35] discharging all the energy that is
+[10:38] stored across the capacitor half CV
+[10:40] square is dissipated as heat mainly
+[10:43] because the current flows it flows
+[10:45] through the resistor
+[10:47] and then there is an i square or loss
+[10:50] so of course if I add the half CV Square
+[10:53] which is lost while charging and the
+[10:56] half CV Square which is lost while
+[10:58] discharging
+[10:59] then clearly we are dissipating this
+[11:01] much of energy
+[11:03] and if I just look at the current draw
+[11:05] at the time of charging that's actually
+[11:07] CV Square half of it is stored half of
+[11:10] it is discharged immediately
+[11:12] so we can say that the dynamic power is
+[11:15] equal to CV Square
+[11:17] times the number of charge discharge
+[11:20] cycles per second if I take a maximum
+[11:22] number that will be proportional to the
+[11:23] frequency because this is the number of
+[11:26] cycles that we have every second
+[11:29] but the point is that every cycle we may
+[11:32] not have a charge discharge event the
+[11:34] reason being that our functional unit
+[11:36] may not be active every cycle
+[11:40] if it is not active every cycle let's
+[11:42] say it's every active active every
+[11:44] alternate cycle
+[11:46] so what we will need to do is we will
+[11:48] need to multiply this equation so let's
+[11:50] look at energy first so I have removed
+[11:51] the frequency term let's look at energy
+[11:54] first so this equation over here
+[11:57] e Dynamic energy Dynamic will get
+[12:00] multiplied with a factor called the
+[12:03] activity factor which will be a number
+[12:05] between 0 and 1 0 would indicate no
+[12:08] activity at all
+[12:10] and one would indicate full activity
+[12:12] which means that every cycle it is
+[12:14] active is either charging or discharge
+[12:18] so uh keeping this in mind let us move
+[12:21] to the next slide so this was
+[12:24] reasonably straightforward
+[12:28] so what do we know up till now so what
+[12:30] we know is that any circuit
+[12:33] comprising transistors can be
+[12:37] broken down or converted to an
+[12:39] equivalent circuit which is an RC
+[12:40] circuit with some voltage sources and
+[12:42] some current sources
+[12:45] broadly speaking the energy that is
+[12:47] spent in a charge discharge cycle is CV
+[12:49] Square
+[12:50] however this holds for a single simple
+[12:52] you know RC kind of network
+[12:55] what about for a larger circuit so in a
+[12:58] larger circuit will have many of these
+[13:00] RC networks so of course I am trying to
+[13:03] simplify it so we can
+[13:05] then say that the energy dissipated the
+[13:08] factor of beta is still there so of
+[13:09] course here the simplistic assumption
+[13:12] that we are making is that throughout
+[13:14] the circuit the activity factor is the
+[13:17] same the transistor the activity factor
+[13:20] is the same
+[13:21] furthermore
+[13:24] we are also assuming that let us say for
+[13:27] the if there are like n units and each
+[13:29] one's individual capacitance is C1 to c
+[13:32] n
+[13:33] so furthermore what's happening is that
+[13:36] pretty much their energies are getting
+[13:38] added so you can think of this as kind
+[13:40] of a lumped capacitance and replace it
+[13:42] with C Dot so C dot is C total or it's
+[13:45] kind of the capacitance of the larger
+[13:47] circuit so as you can see the formula
+[13:49] Remains the Same is still beta times CV
+[13:52] square right so the overall formula
+[13:54] Remains the Same subject to the
+[13:56] assumptions that we have made and again
+[13:58] when I compute the power at the level of
+[14:01] the functional unit that also remains
+[14:03] broadly the same which is beta times c v
+[14:05] Square multiplied with frequency
+[14:08] right for obvious reasons so that was
+[14:10] discussed in the last slide
+[14:14] so what's the relationship between the
+[14:16] voltage and the frequency right so it is
+[14:18] clear that as the frequency increases
+[14:22] the clocks the cycle time let's say t
+[14:24] third clock period is one by frequency
+[14:28] so let's see if it gets double this gets
+[14:30] halved which means the transistors have
+[14:33] to charge and discharge sooner so let's
+[14:35] say if something was getting charged
+[14:37] like that then now you know if you have
+[14:40] a lower frequency sorry a higher
+[14:41] frequency then it needs to get charged
+[14:43] like this
+[14:45] so the point is that if I want a higher
+[14:49] frequency I have to have a higher Supply
+[14:52] voltage such that I can draw in more
+[14:54] current and I can charge the capacitors
+[14:57] sooner or faster
+[15:00] so there is a classical Alpha power law
+[15:02] which has been in use in different forms
+[15:04] again this is approximate it's a rule of
+[15:06] thumb
+[15:07] but this has been in use for quite some
+[15:10] time
+[15:11] further frequency is proportional to V
+[15:13] minus the threshold voltage to the power
+[15:15] Alpha divided by V
+[15:17] so essentially the value of alpha kind
+[15:20] of single-handedly determines the
+[15:22] Contour of this relationship
+[15:26] so in the older processes which was late
+[15:28] 90s roughly 25 years from now
+[15:31] it was easy to kind of solve these
+[15:33] transistor equations so you could say
+[15:35] that look Alpha is roughly equal to 2.
+[15:38] so then if you would ignore the
+[15:41] threshold voltage the frequency would
+[15:43] roughly become proportional to the
+[15:46] so if the frequency is roughly
+[15:48] proportional to the voltage since power
+[15:49] is CV Square f
+[15:51] right proportional to that you can see
+[15:54] that powers is proportional to the
+[15:55] frequency Cube which basically means
+[15:58] that if you double the frequency then
+[15:59] the power becomes 8 times
+[16:02] this is still used as a rule of thumb
+[16:04] it's not the case that is not used
+[16:06] and but this is again you know kind of
+[16:09] indicative and suggestive it's not a
+[16:12] like a hard cut formula right
+[16:15] so of course the value of alpha has
+[16:18] changed quite a bit over the years
+[16:20] and also the difference between V and V
+[16:23] threshold has also reduced substantially
+[16:25] it's not like 10 times more it's only
+[16:27] two or three times vth and Alpha itself
+[16:30] has come down it is now a number that is
+[16:33] between 1.1 and 1.3 so then this has
+[16:37] completely skewed the relationship so
+[16:40] power is more like like f to the power 6
+[16:44] or even more and the reason is that you
+[16:48] know it's everything is governed by this
+[16:50] equation and this is again a function of
+[16:52] the process right so you have to see how
+[16:55] the transistor is made and how it reacts
+[16:57] two varying threshold voltage and
+[16:59] varying frequency
+[17:01] so in this case what has happened
+[17:04] is that
+[17:07] ah the power is proportional to some
+[17:12] higher part of the frequency which
+[17:14] basically means that increasing the
+[17:16] frequency is not an option that is
+[17:18] available to us if I increase it by 10
+[17:20] percent my power will jump like it will
+[17:22] be 50 more that is why I need to invest
+[17:25] in more architectural tricks to enhance
+[17:28] the IPC rather than increasing the
+[17:30] frequency that is why the frequency has
+[17:32] remained roughly static for a while now
+[17:38] so now let's answer another question
+[17:40] which is reasonably fundamental so let
+[17:44] us say that we have two designs A and B
+[17:47] and let's see as compared to design a b
+[17:49] is ten percent faster but consumes 20
+[17:52] percent more energy for the same
+[17:55] so which design is better or let's say
+[17:57] it consumes 30 more power which design
+[17:59] is better
+[18:00] so this is very hard to uh you know it's
+[18:05] it's very very hard to kind of argue it
+[18:08] out because clearly you know you're
+[18:10] spending more energy more power and you
+[18:12] are faster how do I even compare
+[18:15] so that's why uh you know an e d square
+[18:18] metric is used which is kind of like a
+[18:20] baseline a gold standard for comparison
+[18:24] so let me write it down it's a gold
+[18:26] standard I'll tell you in a second why
+[18:29] so let's uh for the sake of Simplicity
+[18:33] get away or get rid of
+[18:35] uh
+[18:37] you know a lot of rigor here we'll make
+[18:40] some simplistic assumptions
+[18:43] see Ed square if is essentially the
+[18:45] dynamic power
+[18:47] times delay Cube so energy is nothing
+[18:50] but Power into the
+[18:52] duration of the program right that it
+[18:55] executes
+[18:56] so let the duration be d d for duration
+[18:59] so e d square is p Cube P into D Cube
+[19:02] which is proportional so basically p is
+[19:05] proportional to V Square F right the
+[19:07] capacitance is anyway a constant
+[19:09] multiplied by T Cube
+[19:12] so now I assume that the voltage is
+[19:14] proportional to frequency which was the
+[19:16] old model let's go with that
+[19:18] then uh
+[19:20] I further assumed that the
+[19:24] duration of the program is proportional
+[19:28] to one by frequency which again is
+[19:30] approximate right I'm not saying it's
+[19:32] exact if you consider access to main
+[19:34] memory but let's make that approximation
+[19:36] that it is inversely proportional to the
+[19:40] frequency so if you double the frequency
+[19:41] the program executes in half the time
+[19:44] if I were to do that then D Cube would
+[19:46] become 1 by F Cube and they would kind
+[19:48] of cancel out and this would become a
+[19:50] constant so this essentially says that
+[19:53] okay subject to our simplistic
+[19:55] assumptions
+[19:56] e d square is a fundamental property of
+[19:59] the system and it's a constant and
+[20:02] essentially we should care about
+[20:03] reducing the e d square rather than e
+[20:05] and D separately
+[20:07] so this is how you can compare different
+[20:09] designs so it turns out the radius
+[20:12] square for B is 0.97
+[20:14] times the e d square of a and clearly in
+[20:16] e d square lower the better right so the
+[20:19] e d square is fundamentally used as a
+[20:22] metric to compare different settings
+[20:24] that have different voltages and
+[20:26] frequencies
+[20:28] primarily because you know you need to
+[20:31] kind of
+[20:31] reduce them to the same Baseline and e d
+[20:34] square is a good Baseline because it is
+[20:36] independent of these quantities
+[20:39] and it's a constant pretty much for a
+[20:41] given system subject again to our
+[20:43] approximation
+[20:47] so let us now look at another kind of
+[20:49] power dissipation so this is
+[20:52] traditionally also considered to be a
+[20:55] part of the dynamic power component but
+[20:57] many people
+[20:59] have been historically grouping this
+[21:02] into a separate subcategory so let's
+[21:04] anyway see what it is
+[21:06] this is the circuit diagram of an
+[21:08] inverter you can clearly see the nmos
+[21:10] transistor over here you can see the
+[21:12] pmos transistor over here
+[21:15] so there is a very brief period when
+[21:17] both the transistors are conducting when
+[21:19] they are switching from 0 to 1 or 1 to
+[21:21] 0.
+[21:22] so during this brief period when both
+[21:25] the transistors are conducting there is
+[21:27] a current that flows like this this is
+[21:29] known as a short circuit current
+[21:31] and essentially Whenever there is a flow
+[21:33] of current it is flowing through these
+[21:35] implicit resistances over here and then
+[21:38] there is a heat loss so this heat loss
+[21:40] is known as a short circuit power
+[21:42] this is quite different from the power
+[21:45] that is
+[21:48] that we have been considering so regular
+[21:50] Dynamic power would either include a
+[21:53] discharge path like this to the ground
+[21:54] or would have a Charged path like this
+[21:57] but you would not have a straight path
+[22:00] the straight path happens again for a
+[22:03] very short period of time when
+[22:04] essentially both the transistors are in
+[22:06] the linear region and you are having
+[22:09] some direct conduction this is limited
+[22:11] to 10 percent of the dynamic part but
+[22:13] many
+[22:15] like to see it as a different category
+[22:18] so that's the reason it's called the
+[22:20] short circuit current that leads to the
+[22:22] short circuit power
+[22:26] so let's discuss another component of
+[22:28] the overall power consumption known as
+[22:30] the leakage power it's also known as
+[22:32] static power
+[22:35] so essentially in the transistor right
+[22:37] if I consider any transistor let's say
+[22:40] these are the n wells and
+[22:42] you know the p-type substrate then you
+[22:46] know you have your silicon dioxide and
+[22:47] your gate here
+[22:49] if you assume that the current is only
+[22:51] flowing from drain to Source it is not
+[22:54] flowing in any other direction so the
+[22:56] current is for example not passing
+[22:58] between the gate and the body it is not
+[23:01] passing between the drain and the body
+[23:02] so on and so forth so you are assuming
+[23:05] that there are many
+[23:06] ideal interfaces via which there is no
+[23:09] current flow
+[23:11] but the fact is that there is nothing
+[23:14] ideal in practice it is a theoretical
+[23:17] concept anything which is assumed to be
+[23:19] ideal there is still a very teeny mini
+[23:22] amount of current that
+[23:24] is flowing through it and this small
+[23:27] amount of current is known as leakage
+[23:31] or the static current so the leakage
+[23:33] power slash static power
+[23:36] if you integrate that across the
+[23:38] billions of transistors in the circuit
+[23:40] then it's actually not that small
+[23:43] then it turns out to be anywhere between
+[23:46] 20 to 40 percent of the overall power
+[23:48] dissipation depending upon the
+[23:50] technology of course
+[23:51] but leakage then becomes substantial
+[23:56] so even if the transistor is an off
+[23:58] State you are not switching your Dynamic
+[24:00] power is zero but you are leaking all
+[24:01] the time and the fact is that all the
+[24:04] transistors that are not that are
+[24:05] connected to the supply are leaking all
+[24:07] the time integrate this this is a lot of
+[24:10] power and not something that can be
+[24:12] ignored it is much much more than the
+[24:14] short circuit power as I said it is 20
+[24:17] to 40 percent of the overall
+[24:21] there are six well-known leakage
+[24:23] mechanisms
+[24:25] let us discuss one after the other all
+[24:28] of them kind of break the ideality of an
+[24:31] interface
+[24:33] for instance
+[24:37] we have the PN Junction reverse bias
+[24:40] current which basically
+[24:42] ah flows from the n-type to the p-type
+[24:46] right which is not something that you
+[24:49] would normally expect
+[24:50] so this again flows because so we will
+[24:54] discuss what is the reasons many times
+[24:56] we have quantum mechanical reasons as
+[24:58] well
+[24:59] so this current flows like this you
+[25:01] don't expect current flow like this
+[25:03] incidentally
+[25:04] then we have sub threshold leakage
+[25:06] that's a very important source of
+[25:08] leakage where
+[25:10] even if the voltage is less than the
+[25:12] threshold voltage which means the
+[25:14] transistor is in the cutoff stage and
+[25:17] ideally you expect zero current flow you
+[25:20] still have some current flow
+[25:22] so this is known as sub threshold
+[25:24] leakage which is a significant issue
+[25:28] then
+[25:30] we have what is called a gate oxide
+[25:33] tunneling
+[25:35] so what happens is that there is this
+[25:37] timing silicon dioxide layer
+[25:41] which is assumed to be a perfect
+[25:44] insulator
+[25:45] so you assume that regardless of the
+[25:48] voltage of the gate there is no current
+[25:50] flow like this right nothing flows
+[25:52] across it but what happens that because
+[25:55] of you know quantum mechanical reasons
+[25:57] or because of the known ideality of the
+[25:59] interface there are two different
+[26:01] mechanisms known as gate oxide tunnel
+[26:03] tunneling and hot carrier injection via
+[26:06] which the current flows
+[26:08] then let's look at I5 I5 is again when
+[26:12] there is a current flow between the
+[26:14] drain directly to the body because the
+[26:16] body is often grounded or it can be
+[26:18] connected to a separate voltage source
+[26:20] so we look at both in any case because
+[26:23] of the voltage of the gate there is a
+[26:25] gate induced drain and drain leakage
+[26:27] which means there is a current flow like
+[26:29] this this is also known as gittle okay
+[26:33] so from its acronym
+[26:35] so again this is the
+[26:37] and then the other is that because of
+[26:40] the fact that the depletion regions kind
+[26:42] of interact we have the punch through
+[26:44] current from the drain to the source so
+[26:47] we have the current going like this
+[26:52] so let's now look at each of these
+[26:54] sources of leakage and talk about them
+[26:57] so let us look at the PN Junction
+[26:59] reverse bias currents in general in
+[27:01] Reverse pricing you don't expect a lot
+[27:04] of current flow so that's the reason we
+[27:06] have a tiny amount of current flow which
+[27:08] is a leakage current
+[27:10] so the P side which is the substrate in
+[27:12] this case is connected to a low voltage
+[27:14] source which could be ground
+[27:16] and the N side which is the drain
+[27:18] needless to say is connected to the
+[27:20] supply which is the high voltage source
+[27:23] so this is typically the case in an nmos
+[27:25] transistor and this would be in a
+[27:27] reverse biased situation because the N
+[27:30] site is at a higher voltage this is at
+[27:33] lower voltage
+[27:35] so what happens is that we have
+[27:37] something called a Bantu band tunneling
+[27:38] mechanism via which current passes like
+[27:41] this
+[27:45] so before you ask me what is band to
+[27:47] band tunneling let me explain
+[27:50] so if you look at the energy levels of
+[27:52] electrons right so then there is
+[27:55] something very interesting that goes on
+[27:57] so this is basic device physics uh well
+[28:01] this is interesting even for people who
+[28:03] don't have the background
+[28:04] this still is an interesting concept
+[28:06] because it kind of tells you that what
+[28:09] exactly is the huge difference between a
+[28:11] metal and a semiconductor right and an
+[28:16] so essentially we have two bands so we
+[28:19] have the conduction band
+[28:20] which is the level which are energy
+[28:23] levels where
+[28:26] you can carry current so metals have a
+[28:28] lot of electrons in that band
+[28:31] and essentially not all the places in
+[28:34] this band are occupied so this is also
+[28:36] heavily quantized
+[28:38] so there are a fixed set of energy
+[28:39] levels that you can occupy in the
+[28:41] conduction band
+[28:42] so you kind of you are here you can
+[28:44] conduct you can flow you can conduct
+[28:48] and if you're in the balance band you
+[28:50] kind of stay where you are and you don't
+[28:51] conduct correct
+[28:53] so what happens is that in the metals of
+[28:56] course there is an overlap which is why
+[28:57] they are excellent conductors
+[28:59] but in the case of semiconductors ah
+[29:02] there are distinct energy levels and
+[29:05] they are kind of non-overlapping and in
+[29:07] between them their midpoint actually is
+[29:09] known as the Fermi level
+[29:11] so for an electron to actually conduct
+[29:13] current it has to jump from the balance
+[29:15] Bank to the conduction band and here
+[29:18] again in a quantum mechanical principle
+[29:19] supply of you know there is a limit on
+[29:22] how many electrons can be in which
+[29:23] energy level and so on but the key point
+[29:26] is that the distance between them is not
+[29:29] much because it is not much
+[29:31] with a slight potential or a small push
+[29:35] the
+[29:37] in a doped semiconductor electrons can
+[29:40] jump across the Fermi level and the
+[29:42] semiconductor can temporarily act as a
+[29:46] conductor
+[29:49] so then the fact is that if I have a
+[29:52] high elect large electric field
+[29:55] then essentially you can pull electrons
+[29:57] from the valence band of the p-type
+[29:59] region where is the p-type region it's
+[30:01] over here
+[30:03] and you can kind of pull them up into
+[30:05] the conduction band of the n-type region
+[30:08] which means that you can kind of extract
+[30:11] the electrons electrons flowing this way
+[30:13] means current flowing this way so
+[30:15] electrons can be kind of pulled up
+[30:17] to occupy positions in the conduction
+[30:20] band of
+[30:22] the n-type region and then they can
+[30:25] conduct current and then conducting
+[30:27] current basically means current flow and
+[30:29] the actual current flow is the reverse
+[30:31] of the electron flow so that is the
+[30:34] reason you saw the direction that it you
+[30:37] know you saw this direction over here
+[30:39] right of the current flow in this
+[30:41] direction because the electron flow is
+[30:43] in the reverse Direction
+[30:45] and then we have an insulator it's an
+[30:48] insulator of course whatever you do
+[30:50] regardless of the electric field or
+[30:52] potential that you apply the conduction
+[30:55] and Valence bands are separated
+[30:59] so the greatness of a dope uh
+[31:01] semiconductor is that they are very
+[31:03] close and all that you have to do is you
+[31:06] will have to apply a little bit of an
+[31:08] incentive for electrons to jump to the
+[31:10] conduction band which anyway is done but
+[31:12] this is you know
+[31:15] you can look at it in a desirable
+[31:16] fashion or in an undesirable fashion the
+[31:19] desirable fashion is that this is why
+[31:21] transistors work in an undesirable
+[31:24] fashion is it cause causes band to band
+[31:28] and because of this tunneling effect
+[31:30] there is electron flow even across
+[31:32] interfaces where you do not expect
+[31:34] electron flow this leads to leakage
+[31:39] let's look at sub threshold leakage so
+[31:41] this used to be very very popular it
+[31:44] still is and this one has a nice formula
+[31:47] which is complicated but at least there
+[31:49] is a good looking formula which is which
+[31:52] starts from here ends here quite scary
+[31:55] so the idea is that the gate voltage
+[31:58] needs to be lower than the threshold
+[32:00] voltage for this kind of leakage to come
+[32:02] in which means the transistor needs to
+[32:04] be in the cutoff state
+[32:06] in spite of being in a cut-off State a
+[32:08] tiny amount of current will flow from
+[32:10] the drain to Source known as the sub
+[32:12] threshold below the threshold leakage
+[32:16] we have a huge formula over here which I
+[32:18] am not getting into
+[32:20] but if you kind of look at all of these
+[32:23] things so so let me tell you broadly
+[32:25] speaking
+[32:26] we have terms of electron Mobility gate
+[32:29] voltage drain to Source voltage so VDS
+[32:32] applies in a big way over here so VDS
+[32:35] comes here
+[32:36] and then the threshold voltage comes in
+[32:39] and the temperature of course
+[32:41] so the leakage is a function of
+[32:45] temperature this is one thing that comes
+[32:47] out previously it used to be an
+[32:48] exponential function but now it's not
+[32:51] exponential somewhere between linear and
+[32:53] quadratic mostly piecewis linear
+[32:55] so the leakage current is undoubtedly a
+[32:57] function of the temperature as you
+[32:59] increase the temperature the leakage
+[33:00] current increases this is the first
+[33:02] takeaway point which is a major point
+[33:05] that as you increase the temperature the
+[33:07] leakage current increases this comes out
+[33:09] from this equation needless to say if
+[33:11] you increase the supply voltage the
+[33:14] leakage current would
+[33:16] also increase y because this increases
+[33:19] the negative decreases then this
+[33:21] increases
+[33:23] right and then this decreases
+[33:28] okay let me say that again this was
+[33:30] confusing VDS increases minus VDS
+[33:33] decreases e raised to the power
+[33:34] decreases but minus of that increases
+[33:37] the entire thing increases
+[33:39] okay I at least got it cut it this time
+[33:42] so basically if you increase the voltage
+[33:44] the leakage increases so let's say I
+[33:47] increase the voltage leakage increases I
+[33:50] increase the temperature
+[33:52] leakage increases right
+[33:56] and so the key point is and in fact if I
+[33:59] reduce the threshold voltage
+[34:02] the leakage also increases
+[34:04] so as I said anytime I try to
+[34:06] miniaturize any try my temperature
+[34:08] increases the leakage current increases
+[34:11] so here again there is an interesting
+[34:12] leakage temperature feedback loop
+[34:14] because as the leakage increases
+[34:18] the power increases which means the
+[34:20] temperature increases which means
+[34:23] leakage increases so if there is a
+[34:25] converging series it's fine but if the
+[34:27] series is Divergent then it's a fatal
+[34:30] case right for the processor it's known
+[34:33] as thermal runaway so we will discuss
+[34:35] this later in a subsequent slide but
+[34:37] broadly speaking this is where we are
+[34:42] so more about sub threshold leakage so
+[34:44] we'll just discuss what we discussed
+[34:46] right now
+[34:48] that leakage current and temperature are
+[34:51] related mainly via this term known as
+[34:53] the thermal voltage which is this here a
+[34:56] boseman's constant into T divided by q q
+[34:59] is over here
+[35:02] in any case it's theoretically
+[35:03] exponential but as I said in the typical
+[35:05] operation range of 40 to 80 degrees C is
+[35:09] between linear piecewise linear most of
+[35:11] the time some have approximated it as
+[35:13] mildly quadratic that's also fine
+[35:17] then uh there are interesting things
+[35:20] that happen in short Channel devices
+[35:22] incidentally all our transistors which
+[35:25] are small are essentially short Channel
+[35:29] so what happens is that in the modern
+[35:31] transistor the source and drain are
+[35:33] quite close to each other right because
+[35:35] the overall dimensions have shrunks if I
+[35:38] consider this to be the source and the
+[35:40] drain they are quite close
+[35:42] so because of the effect of the drain to
+[35:44] Source voltage the vth the threshold
+[35:46] voltage changes it was assumed to be a
+[35:49] constant earlier
+[35:50] it's not a constant anymore so as the
+[35:54] radius changes the VTS changes
+[35:57] so you would expect
+[35:59] the worst all the time so that is
+[36:02] Murphy's Law so it's just a philosophy
+[36:04] of life that anything that can go wrong
+[36:07] often does go wrong and this is one
+[36:10] example of that
+[36:11] so as VDS increases
+[36:14] that would increase the leakage anyway
+[36:15] but it would also reduce the threshold
+[36:18] voltage right so how bad can life get
+[36:20] so VDS increases as it is is fine you
+[36:24] know
+[36:25] various increasing means that you have
+[36:27] raised the supply voltage primarily
+[36:29] because to sustain a higher frequency
+[36:32] so that would increase leakage but that
+[36:34] would also reduce the threshold voltage
+[36:35] would also increase leakage
+[36:38] and it would increase the sub threshold
+[36:40] leakage current as well
+[36:42] okay that's kind of a double whammy for
+[36:44] us but in any case the message is that
+[36:47] do not increase the supply voltage try
+[36:49] out other architectural tricks so this
+[36:51] is known as a short Channel effect
+[36:55] so then let's come to the third
+[36:57] mechanism which is gate oxide tunneling
+[37:00] so the main idea here is that if you
+[37:02] consider the Gate of a transistor we
+[37:04] have a silicon dioxide layer then a
+[37:08] polysilicon layer on top of it
+[37:09] polysilicon is a conductor for all
+[37:12] practical purposes and then a metallic
+[37:14] conductor to which the gate is connected
+[37:16] and then of course you have the
+[37:18] substrate over here
+[37:20] I need a drinking and source and so on
+[37:23] so the idea is that you are assuming
+[37:25] that this interface is a perfect
+[37:27] insulator there is no current flow
+[37:29] across it that
+[37:31] is sadly not true
+[37:33] the gate oxide as of today is quite thin
+[37:36] less than two nanometers
+[37:39] the electric field across it is thus
+[37:42] quite High because electric field is
+[37:44] pretty much the potential difference
+[37:46] divided by the distance the distance is
+[37:48] very small the electric field is high
+[37:51] because of the high electric field what
+[37:54] happens is owing to quantum mechanical
+[37:57] reasons
+[37:58] current can flow through this this is
+[38:02] known as a tunneling mechanism which is
+[38:03] which as I said is a quantum mechanical
+[38:05] reason there are two kinds of tunneling
+[38:08] again
+[38:09] follow the nordheim tunneling and direct
+[38:13] in this case electrons move into the
+[38:16] conduction band of this oxide layer
+[38:19] let's call it the sio2 silicon dioxide
+[38:22] layer also the oxide layer it's called
+[38:24] because an external electric field so
+[38:27] essentially they move into the
+[38:28] conduction band of this which basically
+[38:30] means that even though this is an
+[38:32] insulator and the valence and conduction
+[38:34] bands are far away in spite of that some
+[38:37] electrons end up in the conduction band
+[38:40] of the sio2 layer and are not correct
+[38:44] the other is that again because of
+[38:47] purely Quantum reasons
+[38:50] electrons directly kind of jump from the
+[38:53] surface of the Silicon to the gate via
+[38:56] these two nanometers
+[39:00] and that has to do with the quantum
+[39:01] nature of the electrons the wave nature
+[39:04] right and that you know their position
+[39:06] is uncertain and then uh basically if
+[39:09] you
+[39:10] follow the quantum mechanical equations
+[39:12] you can see that one solution for them
+[39:14] is that they directly jump from here to
+[39:16] here and that results in a current flow
+[39:19] that is known as direct tunneling where
+[39:20] you do not have to go via the oxide
+[39:22] layer fetch the first FN tunneling
+[39:25] actually is
+[39:27] regardless of their Mutual contributions
+[39:30] both of them add up
+[39:33] and they
+[39:35] lead to current flow across the ketoxide
+[39:39] layer which till now we thought is kind
+[39:41] of impenetrable
+[39:44] hot carrier injection well uh so let me
+[39:48] again redraw that diagram so this is the
+[39:50] Silicon right
+[39:51] this is the silicon dioxide layer
+[39:55] the so-called insulator this is a poly
+[39:57] silicon layer of the gate this does
+[39:59] conduct current and then the metallic
+[40:01] contact
+[40:02] so basically
+[40:05] in the hot carrier injection mechanism
+[40:07] from the sisio to interface
+[40:11] electrons simply Escape so there are a
+[40:13] lot of these carriers and these carriers
+[40:15] are momentum right
+[40:17] and the moment they have momentum you
+[40:19] know they are they kind of push through
+[40:22] is so if the gate especially is
+[40:25] positively charged so what will happen
+[40:27] is that electrons will kind of there'll
+[40:30] be so much of an electric field they
+[40:31] will simply push through and go here
+[40:33] if they push through and go here
+[40:35] effectively current is in the reverse
+[40:37] Direction so it is coming down
+[40:40] so this is how they would move from the
+[40:43] substrate to the gate so this is not
+[40:45] quantum mechanical tunneling it is just
+[40:47] plain old kinetic energy it's like a
+[40:49] long jump right it's a long jump across
+[40:52] the canyon
+[40:53] so essentially what you are doing even
+[40:55] if there is a canyon over here and you
+[40:58] are running you as a person you are
+[40:59] running very fast right so you run run
+[41:02] run run right I'm not a great drawer so
+[41:05] as you can see but still this is meant
+[41:07] to be a runner okay and so then you run
+[41:10] run run and you just jump and this is
+[41:13] plain old kinetic energy no quantum
+[41:15] mechanics here and this running and
+[41:18] jumping that you can do if you have
+[41:19] sufficiently strong velocity which
+[41:22] electrons have because of the
+[41:24] because of the you know the voltage the
+[41:27] gate voltage and the very small
+[41:30] very thin oxide layer so this Canyon is
+[41:33] actually
+[41:34] very narrow
+[41:37] let's come to griddle we have talked
+[41:39] about gittle earlier so this again is
+[41:42] the diagram of an nmos transistor here
+[41:45] as you can see holes and electrons
+[41:48] etcetera are accumulating
+[41:50] so the condition is that if the gate to
+[41:53] drain voltage is less than zero which
+[41:55] means let's say the gate voltage is 0.1
+[41:58] volts
+[41:59] okay and the drain voltage is let us say
+[42:02] one volt
+[42:04] so the gate to drain voltage over here
+[42:07] is less than zero which means the drain
+[42:09] is positive
+[42:11] then holes will migrate towards the gate
+[42:13] oxide layer because essentially there is
+[42:16] a net electric field which is going this
+[42:19] way so they will so so basically all the
+[42:22] positively charged holes are going to
+[42:24] move up up up
+[42:26] right it's going to push them up
+[42:29] right push it away from the high voltage
+[42:31] part
+[42:32] so then what will happen
+[42:35] that they will accumulate over here
+[42:38] and the holes will pretty much then kind
+[42:40] of migrate into so there will be this
+[42:42] accumulation right migration into the
+[42:44] surface
+[42:45] so essentially what is happening is that
+[42:48] because this is pushing holes out
+[42:51] there will effectively be a current flow
+[42:54] and this
+[42:57] manifests itself or this is
+[42:59] mathematically modeled as a perturbation
+[43:02] to the threshold voltage as we have
+[43:04] discussed earlier but the basic idea is
+[43:07] that because of the positive charge of
+[43:09] the drain it is pushing out holes and
+[43:13] basically Whenever there is a migration
+[43:15] of holes which are assumed to be
+[43:17] positively charged that is leading or
+[43:21] resulting in a current flow
+[43:25] finally punch through current punch
+[43:27] through current as the name suggests is
+[43:30] kind of a
+[43:31] forceful current right so the word punch
+[43:34] that's what it suggests
+[43:36] you consider the transistors to be short
+[43:39] channels right so this anyway the gate
+[43:41] this should have been slightly wider but
+[43:43] still uh cut some slack for me please
+[43:47] so you consider transistors as short
+[43:49] channels what will happen
+[43:51] is that you know these regions will be
+[43:53] much larger
+[43:54] so the drain substrate and the source
+[43:57] straight regions will be reverse biased
+[43:59] in a sense what will happen is this is
+[44:01] of course a positive voltage
+[44:03] but what could happen is that this also
+[44:05] you know could be slightly positive
+[44:07] because there could be other elements
+[44:09] connected after it
+[44:11] see both of them are reverse biased then
+[44:14] essentially the depletion region of the
+[44:16] transistors would extend
+[44:18] and by extending they could kind of
+[44:20] merge they could become the same right
+[44:23] so then there would kind of be a
+[44:24] connection of a depletion region between
+[44:26] the drain and the source
+[44:28] and if the gate is not controlling the
+[44:31] substrate very well this would lead to a
+[44:34] new kind of a conduction path because in
+[44:37] a certain sense the once the depletion
+[44:40] regions join
+[44:42] in a certain
+[44:44] philosophical sense it becomes the same
+[44:46] device
+[44:47] so pretty much
+[44:49] highly charged electrons can move this
+[44:51] way from the source to drain or you can
+[44:53] say that there is a positive flow of
+[44:55] current from here to here mainly because
+[44:57] you know these have kind of merged and
+[44:59] become the same device
+[45:01] so what I mean by a poorly controlled
+[45:03] gate is that the gate is not stopping
+[45:06] ideally what should happen is that if
+[45:08] the gate potential is very strong it
+[45:11] should kind of push out all holes this
+[45:12] way and pull up all electrons this way
+[45:14] to ensure that such kind of a flow
+[45:16] doesn't happen but typically gate
+[45:18] voltages are also reducing to sustain
+[45:21] higher frequencies so that is why you
+[45:24] can have a straight punch through
+[45:25] current from the drain to the source
+[45:29] so let's look at some ballpark figures
+[45:31] so the dynamic power is a major
+[45:34] component 50 to 70 percent the short
+[45:36] circuit power as we have discussed is
+[45:38] much much smaller and most of the time
+[45:41] Dynamic and short circuit is kind of
+[45:43] bracketed
+[45:44] in the same bucket if they are put in
+[45:47] the same bucket
+[45:48] leakage power or static power on the
+[45:52] other hand
+[45:54] is actually
+[45:56] not insignificant it is somewhere
+[45:59] between 20 to 30 percent sometimes even
+[46:02] more but of course with a lot of modern
+[46:04] leakage control mechanisms it is managed
+[46:06] to remain there
+[46:08] that said and done leakage slash static
+[46:12] power cannot be ignored this is
+[46:14] substantial
+[46:17] so now that we have discussed the power
+[46:20] consumption model let us now discuss the
+[46:27] given that the temperature model is
+[46:31] reasonably long and this is the most
+[46:33] physics heavy part actually there is
+[46:36] some in the reliability lecture but this
+[46:39] is quite physics heavy so I would
+[46:41] suggest that readers should first at
+[46:45] least look at some of their physics and
+[46:46] differential equations and linear
+[46:48] algebra fundamentals before they get
+[46:51] into that lecture so that will be the
+[46:52] next one we'll end this lecture right
+[46:55] here so we will discuss the temperature
+[46:57] model after the two models are over
+[47:00] we'll get into power management which is
+[47:02] power reduction all kinds of Power
+[47:05] reduction static power reduction Dynamic
+[47:07] power reduction
+[47:09] automatically reducing power reduces
+[47:11] temperature but again there are
+[47:13] specialized strategies that are
+[47:15] explicitly tailored towards temperature
+[47:18] we will discuss that at the end and
+[47:20] finally conclude that's the plan so this
+[47:23] lecture ends over here the next lecture
+[47:25] we will start with the temperature model
+[47:37] thank you

@@ -1,0 +1,946 @@
+[00:00] [Music]
+[00:12] thank you welcome to the fourth video in
+[00:15] this lecture Series so we will discuss
+[00:17] optimizations and the memory system
+[00:22] so modern cnns are huge right so if you
+[00:25] look at chat gpt4 it has
+[00:28] apparently 100 or 175 billion weights so
+[00:32] clearly even the small ones are millions
+[00:34] of weights and the large ones also have
+[00:36] a lot
+[00:38] so the inference times are not even
+[00:40] talking about training so training takes
+[00:42] weeks or months anyway but I'm talking
+[00:44] about the inference so the inference
+[00:47] times can be significant hence there is
+[00:49] a need to substantially speed up this
+[00:51] process
+[00:53] which basically means identify
+[00:55] operations that don't lead that are
+[00:57] ineffectual in the sense you can happily
+[01:00] discard them without affecting the final
+[01:02] outcome what kind of operations would
+[01:04] they be
+[01:05] well uh you know any convolution any
+[01:08] multiplication with a zero the output is
+[01:11] zero so you don't actually have to
+[01:12] multiply it right
+[01:14] similarly if you know that the outputs
+[01:16] of a certain region are going to be
+[01:17] negative and then there's a real layer
+[01:19] after that
+[01:20] then
+[01:22] basically you can directly set them to
+[01:24] zero because that's exactly what relu
+[01:26] does which is that if part of it is
+[01:29] negative all of it is converted to zero
+[01:34] along with that we can also look at
+[01:36] reducing the memory bandwidth and the
+[01:38] memory footprint
+[01:39] because
+[01:41] if we have so much of data then all of
+[01:45] this data needs to come in
+[01:47] it needs to be processed and it needs to
+[01:50] be written back
+[01:52] so of course you know the data the data
+[01:54] type etcetera is also very important in
+[01:57] the case of a neural network
+[01:59] see typically avoid using any kind of a
+[02:01] floating point or double Precision or
+[02:03] things that you typically avoid
+[02:06] right and even if you do that you you
+[02:09] know try to kind of tweak the number of
+[02:12] mantissa and floating Point bits such
+[02:14] that you know you kind of store data in
+[02:17] as compact representation as possible in
+[02:21] general for neural networks fixed point
+[02:23] is preferred write something of the form
+[02:25] 44.20 and so on because you can store
+[02:28] this as an integer and then you can do
+[02:31] fixed Point arithmetic on top of it
+[02:33] right so so this is kind of preferred
+[02:35] fixed point and binary is typically what
+[02:38] is preferred right so you and
+[02:40] furthermore
+[02:42] you know what you can do is that
+[02:45] so fixed point is kind of similar to
+[02:47] quantization
+[02:49] and then again uh
+[02:51] depending upon which values are more
+[02:53] sensitive and which ones are less
+[02:55] sensitive
+[02:56] what can be done is that the Precision
+[03:00] of the point can be varied even within
+[03:03] the same if M map or of map so of course
+[03:05] all of that is there along with
+[03:07] ineffectual operation so the net result
+[03:09] is that the memory footprint which means
+[03:12] the amount of memory that your model is
+[03:14] occupying and the bandwidth which is the
+[03:17] total amount of memory that is
+[03:18] transferred between the
+[03:20] the caches and the CPU that also has to
+[03:23] reduce
+[03:24] so the weights as I said can be
+[03:26] compressed I gave one idea where you use
+[03:29] fixed point
+[03:31] you can leverage redundancy in the sense
+[03:33] if let's say the similar data repeats so
+[03:35] then you need not compute the
+[03:37] convolution twice and you need not even
+[03:39] store it twice
+[03:42] there's no need to store zero values and
+[03:44] of course you are reducing the Precision
+[03:46] of operands which we just discussed so
+[03:49] the main aim is that unless there is
+[03:51] some degree of compression in terms of
+[03:53] storage we will actually need a lot of
+[03:55] space and we may not have that much of
+[03:58] space available
+[04:01] so let us look at some of the ways in
+[04:03] which
+[04:04] a neural network computation is
+[04:06] optimized so one of it is common
+[04:08] sub-expression elimination which is also
+[04:11] a standard compiler technique so let's
+[04:14] assume that you know a part of the
+[04:16] convolution operation this is how it
+[04:18] looks right
+[04:21] so if we take a look at that what we
+[04:24] basically see or what we basically get
+[04:26] to see
+[04:27] is that we can reduce the number of
+[04:31] additions and multiplications because a
+[04:34] naive approach would give us seven
+[04:37] multiplications and six additions
+[04:41] but I can optimize this expression
+[04:44] so what I can do is that I can have
+[04:47] a single multiplication here and I can
+[04:51] kind of combine these W Times X1 plus X2
+[04:54] plus W dash times X3 plus x 4 plus W
+[04:58] dash dash dash times X5 plus X6 plus X7
+[05:02] so as you can see that with this
+[05:03] intelligent combining I am reducing the
+[05:06] number of multiplications from 7 to 3
+[05:08] and keeping the number of additions the
+[05:10] same and reducing multiplications is
+[05:13] great because it reduces the time as
+[05:15] well as reduces the power
+[05:17] so such optimizations can be done either
+[05:20] via the compiler or via the hardware the
+[05:23] hardware can find these and do some on
+[05:25] its own
+[05:28] zero and negative values as I have said
+[05:30] are very interesting
+[05:32] so if we look at zero valued weights and
+[05:34] inputs they of course can be you know
+[05:37] removed from the multiplication process
+[05:39] because there is no need to perform a
+[05:42] multi multiplication so what we can do
+[05:45] is that for given a filter or given an
+[05:48] if map we can store a bit vector or a
+[05:51] bit Matrix which essentially stores for
+[05:54] each cell is the value 0 or 1 right 0 or
+[05:58] non-zero right so there is something
+[05:59] called a binary CNN also which I would
+[06:02] like to discuss towards the end of this
+[06:03] slide right
+[06:06] but let's say that you can store a zero
+[06:08] one value where 0 means it's 0 1 means
+[06:11] it's non-zero
+[06:12] so then what we can do is that if
+[06:16] you know both the values are one in the
+[06:18] sense it's both of them are non-zero we
+[06:20] multiply otherwise we skip it so this
+[06:23] reduces time and Power
+[06:24] and having the zero valued weights or
+[06:27] filters is common because the relu
+[06:30] process produces them so what happens is
+[06:32] that the moment you have these negative
+[06:34] outputs negative valued outputs in an OS
+[06:37] map
+[06:38] right so the moment you have anything
+[06:40] that is negative right you know Less
+[06:42] Than Zero
+[06:43] this becomes equal to 0 by the relu
+[06:47] so that is why we have a fair amount of
+[06:49] sparsity in the
+[06:52] maps and Os Maps
+[06:54] so given the fact that we can have so
+[06:58] given the fact that you know if my
+[06:59] values can be negative filter values can
+[07:02] be negative we will produce negative
+[07:04] values
+[07:05] and that is exactly what relu cuts out
+[07:08] right and creates the sparsity because
+[07:11] you know if you look at the value
+[07:13] function its like this and like this so
+[07:14] this is the origin
+[07:17] so if we
+[07:20] can somehow get a good estimate of what
+[07:24] the final product the final convolution
+[07:26] will be like right
+[07:28] which is nothing but you know you're
+[07:30] taking a DOT product of two matrices
+[07:32] like a element wise multiplication
+[07:35] then if we have some idea that you know
+[07:38] the element wise multiplication and the
+[07:40] sum is going to be negative we can kind
+[07:43] of stop the process Midway terminate it
+[07:45] Midway and
+[07:48] declare the result to be 0 if a relu
+[07:50] layer is succeeding it
+[07:52] spot some other approaches do is that
+[07:55] they don't do the full multiplication in
+[07:57] one group
+[07:58] they instead look at the most more
+[08:01] significant bits which are which will
+[08:04] give you a course idea of what the
+[08:06] output is so you multiply the more
+[08:08] significant bits with each other that
+[08:10] will give you some kind of an estimate
+[08:11] whether you are going towards the
+[08:13] positive side or negative side
+[08:15] if you are going towards the negative
+[08:16] side you may get guess in any case
+[08:18] neural networks are approximate
+[08:20] computation so you make a guess there is
+[08:22] going to be a negative and you set the
+[08:25] value to zero so these are you know all
+[08:27] interesting techniques of reducing your
+[08:30] computation power and time
+[08:32] by
+[08:34] leveraging sparsity or leveraging the
+[08:36] fact that you think the result will be
+[08:38] negative which the relu layer is going
+[08:40] to get rid of ultimately
+[08:42] so if you would recall I had promised to
+[08:46] explain what a binary CNN is
+[08:50] so the main idea is that look uh
+[08:53] what we are doing is that we are we have
+[08:56] anyway decided not to use floating point
+[08:58] or double Precision in if maps and
+[09:01] filters
+[09:02] so basically let's say that if a certain
+[09:05] value can go from 2 to 5 what we do is
+[09:08] we essentially quantize the needs so we
+[09:10] say that look we will only consider 2.1
+[09:12] 2.2 like that a fixed point right so of
+[09:16] course in this is a decimal but the same
+[09:18] thing happens in binary
+[09:21] but what you could also do is you could
+[09:22] take it to an extreme and see that look
+[09:24] all my input values will be binary
+[09:28] 0 1 0 1 0 1 and all my filter weights
+[09:31] will be either
+[09:33] and my convolution operations the
+[09:35] multiplication is nothing but and an
+[09:37] addition is nothing but or
+[09:39] so I can kind of make a binary CNN or a
+[09:42] B CNN and these will be extremely fast
+[09:44] right they'll be extremely storage
+[09:46] efficient mainly because we're dealing
+[09:49] with zero one values
+[09:50] can be compressed quite easily and they
+[09:53] will be quite fast
+[09:54] so many problems particularly in you
+[09:57] know Edge detection and image processing
+[09:59] are solved very efficiently using binary
+[10:02] cnns where as I said the if map values
+[10:06] are binary the weights are binary and
+[10:09] the multiplication operation is replaced
+[10:12] with the logical and operation
+[10:14] I mean
+[10:16] so in this case logical and bitwise is
+[10:18] the same but maybe bitwise is more
+[10:20] correct
+[10:21] and basically the addition operation is
+[10:24] replaced with the or operation
+[10:29] so what are the problems with such
+[10:31] architectures well the problems are that
+[10:34] they are not very amenable to
+[10:37] systolic arrays because systolic arrays
+[10:39] is a very rigid architecture so it wants
+[10:42] you know all your inputs to be of a
+[10:44] certain size and certain type and so on
+[10:46] so of course you put quantize and do
+[10:48] fixed Point arithmetic on this historic
+[10:50] array that's not an issue but uh taking
+[10:52] care of sparsity is an issue with a
+[10:54] regular
+[10:56] approach like a systolically
+[10:58] furthermore if you are considering
+[11:00] larger variable tile sizes and you want
+[11:02] to do a lot in terms of removing these
+[11:05] ineffectual
+[11:07] computations
+[11:09] then you would rather go for the row
+[11:11] stationary idea which is basically you
+[11:14] know
+[11:15] consider data row wise and then maybe
+[11:17] look at the sparsity and then
+[11:21] of course have a way of encoding all of
+[11:24] this data taking sparsity into account
+[11:26] and use a row stationary architecture
+[11:28] modify the architecture to also take
+[11:30] compression into account so row
+[11:32] stationary kind of fits in well with
+[11:34] optimizations as opposed to other ideas
+[11:37] and here again you could use a
+[11:39] traditional systolic array or maybe with
+[11:42] modifications where you have a systolic
+[11:45] array only for the dense part non-spot
+[11:47] or you use regular linear algebra and
+[11:51] you operate on sparse matrices
+[11:53] right so you use the sparse Matrix
+[11:57] algorithms are very well developed it's
+[11:59] a very established field
+[12:03] so you operate on them with regular if
+[12:05] you go back to the idea of the W block
+[12:07] Circle and Matrix
+[12:09] it'll basically tell you
+[12:13] how
+[12:15] a CNN problem can be converted to a
+[12:18] linear algebra problem
+[12:20] so in this case we will operate on
+[12:22] sparse matrices again using a
+[12:25] combination of software and Hardware
+[12:26] approaches so this also incorporates
+[12:29] optimizations quite well
+[12:35] so let's now look at methods to reduce
+[12:37] the memory access time
+[12:40] so what happens is that many approaches
+[12:42] that reduce the memory access time also
+[12:44] end up reducing the memory X memory
+[12:46] footprint right
+[12:49] so uh
+[12:51] kind of similar schemes so let's look at
+[12:53] a very basic compression scheme called
+[12:55] base Delta compression
+[12:58] so consider four values hundred hundred
+[13:00] one hundred three and hundred four
+[13:02] so let's say take the mean value or the
+[13:04] base to be 102
+[13:06] so all I need to do is I need to store
+[13:08] 102 that's all
+[13:10] and then like for every value I can
+[13:12] store the delta or the difference with
+[13:14] respect to the base
+[13:16] which is minus 2 for 100 minus 1 for 101
+[13:19] one for one or three and two for one
+[13:21] zero four so the total amount of storage
+[13:24] space that I would use for basically
+[13:26] storing them is very little
+[13:28] and when I'm accessing memory all I need
+[13:31] to do is read this and then read these
+[13:34] small values very quickly so this is
+[13:36] fast so when space gets reduced
+[13:38] drastically access time gets reduced
+[13:40] drastically at the cost of computation
+[13:43] power which is to use these and kind of
+[13:46] recreate these values this also may not
+[13:49] be required because you can use a
+[13:51] distributive property of
+[13:54] multiplication and basically uh this
+[13:58] will basically be equal to base plus
+[14:01] Delta
+[14:03] times the weight
+[14:06] so base into weight is common only thing
+[14:08] that we will have to compute is Delta
+[14:10] times weight so even the convolution
+[14:12] operation can also be
+[14:15] optimized using uh you know optimized
+[14:18] with this compression method in mind
+[14:22] furthermore what we can do is along with
+[14:24] this compression we can dynamically
+[14:25] detect if there are zero valued weights
+[14:27] or inputs needless to say we will not do
+[14:30] any multiplications and will not even
+[14:32] store the zero values but we will have
+[14:34] some sort of a bit Vector bitmap bit
+[14:37] Matrix to indicate which locations are
+[14:40] zero such that they are not even fetched
+[14:45] the Precision can be reduced so we have
+[14:47] been discussing this quite a bit
+[14:50] switches that don't use single Precision
+[14:52] don't use double Precision Instead try
+[14:55] to create a new number format which is
+[14:58] kind of an extension of existing fixed
+[15:01] Point approaches
+[15:04] I am unable to processing in neural
+[15:06] networks where a limit of the spectrum
+[15:09] is essentially a binary CNN
+[15:12] needless to say different layers would
+[15:14] need different levels of precision
+[15:15] because maybe the starting layers
+[15:17] perhaps may need more and ending layers
+[15:20] perhaps may need less so that has to be
+[15:22] taken into account
+[15:27] different filters depending upon what is
+[15:29] their role would require different
+[15:32] levels of precision so there's a need to
+[15:34] dynamically study the behavior of a CNN
+[15:37] and adjust the Precision
+[15:39] so in this case in the case of this
+[15:42] sparsity I would like to introduce
+[15:44] something which is quite popular
+[15:46] known as bit serial arithmetic which
+[15:49] kind of
+[15:51] is one way of taking care of
+[15:54] you know the number format issues and we
+[15:57] will see how that works next
+[16:01] so consider regular
+[16:03] like grade school binary multiplications
+[16:06] you have a number a number B
+[16:09] so what do you do the top one is the
+[16:11] multiplicand this is the multiplier you
+[16:14] look at one you just reproduce this
+[16:16] number here then you look at one you
+[16:19] reproduce this number here zero all
+[16:21] zeros one
+[16:23] so what you do is that if I look at any
+[16:26] column what am I doing I'm just adding
+[16:28] right
+[16:29] so what am I adding so let us see these
+[16:32] numbers are A1 A2 A3 A4 the bits uh they
+[16:36] are numbered A1 A2 A3 A4 so on and so
+[16:39] forth
+[16:41] so what is happening is
+[16:46] the first number here this guy is
+[16:50] basically A4 multiplied with B1
+[16:55] the second number here
+[16:57] is A3 multiplied with B2
+[17:02] so so what is happening is that P2 is
+[17:04] here A3 multiplied with B2 this is A2
+[17:07] multiplied with B3 and A1 multiplied
+[17:09] with B4
+[17:11] so this does look like a contribution
+[17:14] convolution I am sorry because it's 4
+[17:16] plus 1 is 5 3 plus 2 is 5 2 plus 3 is 5
+[17:19] and 1 plus 4 is 5. so this basically is
+[17:23] a convolution in a certain sense what we
+[17:26] are doing is that this looks like a 1D
+[17:28] convolution because it actually is a 1D
+[17:30] convolution so what we are basically
+[17:32] doing this particular thing
+[17:35] is that we are convolving
+[17:39] the input and the output such that the
+[17:42] sum is 5. so let's now maybe look at
+[17:46] this guy over here
+[17:49] so how is this actually produced this is
+[17:52] basically B2 times
+[17:58] A4
+[18:00] then the one below it
+[18:03] is B3
+[18:05] all right times A3
+[18:09] and the one below it
+[18:11] is B4
+[18:12] times E2
+[18:14] see here again the sum is 6 yeah the sum
+[18:17] would be 7 8 and then 5 4
+[18:20] 3 3. so the key idea the key key most
+[18:24] important idea
+[18:26] is basically like this
+[18:30] that uh what we are doing
+[18:34] is that we are Computing a convolution
+[18:36] of these two numbers and that is giving
+[18:39] us the multiplication in a certain sense
+[18:41] you can see in which sense it's
+[18:42] happening but the key point is that all
+[18:45] that we are doing for each column we are
+[18:47] just Computing a convolution and of
+[18:50] course after doing that your carry is
+[18:51] propagating so that part is not being
+[18:53] captured here but pretty much every
+[18:56] column the addition in every column is a
+[18:58] 1D convolution that's the most important
+[19:01] takeaway point that needs to be
+[19:03] understood over here
+[19:07] so given that every column represents a
+[19:10] convolution
+[19:12] then you will see that in every column
+[19:14] is a convolution
+[19:16] so given to bit vectors A and B which
+[19:19] are nothing but the values that need to
+[19:21] be multiplied we are treating them as
+[19:22] bit vectors now
+[19:25] essentially we are doing a 1D
+[19:26] convolution the only exception that I
+[19:29] said are the only difference from like
+[19:31] quintessential 1D convolution is the
+[19:34] fact that we are not taking this carry
+[19:36] values into account so carries are not
+[19:39] being taken into account
+[19:40] so that is why it's not a clear addition
+[19:44] but if you allow the carries to Ripple
+[19:46] through then the product is correct so
+[19:47] do the convolutions first and then you
+[19:49] collect the carries allow them to Ripple
+[19:51] through
+[19:53] so what we can do is that we can create
+[19:56] a systolic architecture
+[19:58] where basically the influ inputs would
+[20:01] flow into the circuit bit by bit and you
+[20:03] would compute these convolutions and
+[20:06] then of course take care of the carries
+[20:07] later but what this suggests is that a
+[20:10] systolic array to process these bit
+[20:13] sequences
+[20:14] can definitely be created because it is
+[20:16] a 1D convolution and then the next stage
+[20:20] would be to let the carries Ripple
+[20:22] through but most of the hardware could
+[20:24] have been done by the systolic Aries
+[20:27] for the only convolution part
+[20:31] so you can of course have a bunch of bit
+[20:33] serial architectures but this was the
+[20:35] main idea that we are using our 1D
+[20:37] convolution Hardware
+[20:39] for multiplication which is a core
+[20:41] operation right it's a core operation is
+[20:43] actually called a multiply and
+[20:45] accumulate because we are always kind of
+[20:48] accumulating
+[20:51] you know into the you know one thing
+[20:53] multiplied with one more thing we are
+[20:55] kind of adding and accumulating but
+[20:57] multiplication is a slower operation as
+[21:00] compared to addition
+[21:02] so the idea is that we
+[21:08] for multiplying a by B you read in B bit
+[21:11] by bit
+[21:12] and a simple design would be that if
+[21:15] let's say the bit is one you add a to
+[21:16] the partial product otherwise you don't
+[21:19] and then of course as I said another
+[21:21] method basically would be that I have a
+[21:23] bunch of these 1D convolution units
+[21:26] I will take the multiplier B and divide
+[21:28] it into chunks of let's say m bits
+[21:32] if all of them are 0 then I can kind of
+[21:34] discard this entire chunk
+[21:37] otherwise if let's say one of these bits
+[21:39] is one I can compute
+[21:41] like a
+[21:42] partial multiplication in the sense I
+[21:45] can comp I can multiply this with a
+[21:47] using my only convolution method the
+[21:50] same Hardware architecture and I can do
+[21:53] as many multiplications as required and
+[21:55] add the results add the partial products
+[21:58] to compute the final product so let me
+[22:01] explain with an example let us say this
+[22:03] is a and this is B so what I do is that
+[22:06] I divide B into chunks of M bits
+[22:13] if let's say one of these chunks is all
+[22:15] zero which it can be I can ignore this
+[22:17] chunk if this chunk is all zeros I can
+[22:20] ignore it and for the rest what I can do
+[22:23] is that I can
+[22:25] multiply them with a
+[22:27] and then I can use a regular bit serial
+[22:30] architecture using a systolic array that
+[22:33] computes a 1D convolution to get the
+[22:36] result but in this case I will take
+[22:38] sparse it into account I'll only compute
+[22:40] that many 1D convolutions that will give
+[22:43] me non-zero results so I multiply this
+[22:46] with a
+[22:47] and then I multiply that with a and a
+[22:49] also can be divided into chunks but
+[22:52] after the multiplication I just add the
+[22:54] results the partial products to get the
+[22:56] final
+[22:57] value of the convolution
+[22:59] so this does takes parsit in account
+[23:01] because of this chunking
+[23:05] so we have discussed optimization so let
+[23:08] us now move to what a memory system
+[23:11] would look like for a CNN so there is a
+[23:13] lot of work in this area but we are not
+[23:16] you know delving a lot because our main
+[23:20] aim was to explain the notations the
+[23:22] maths behind the CNN to look at the main
+[23:25] ways that you can construct these
+[23:28] stationary architectures look at the
+[23:30] hardware the re-timing Lemma and how we
+[23:34] actually realize such circuits in
+[23:36] Hardware so our our main goal is
+[23:40] achieved but still some key ideas of the
+[23:42] memory system will be discussed here
+[23:44] so consider a 16 Cross 16 p e array
+[23:49] so what you need is you need 16 streams
+[23:51] for the rows 16 for columns 32 memory
+[23:54] streams which basically means that you
+[23:57] need a very high bandwidth Global buffer
+[24:01] right a global buffer is like an L2
+[24:03] cache but you need a very high bandwidth
+[24:06] Global buffer in a very high bandwidth
+[24:07] main memory as well
+[24:09] so there are two approaches a pull based
+[24:12] on a push-based mechanism or two
+[24:13] paradigms
+[24:15] which is that whenever there is a mess
+[24:17] you pull data
+[24:19] the same way you have in processors but
+[24:21] again for cnns this is Impractical
+[24:23] because it can delay our computation
+[24:26] furthermore the competition in cnns is
+[24:29] deterministic you know the memory access
+[24:30] patterns even if you have sparsity you
+[24:33] still know the memory access patterns to
+[24:35] a large extent so you don't have to use
+[24:38] this instead you can use a push based
+[24:41] mechanism where your compiler and a
+[24:43] smart dispatcher which is nothing but a
+[24:46] programming running on the brain of the
+[24:49] accelerator which is an out of order
+[24:50] processor
+[24:51] it needs to kind of coordinate the
+[24:54] competition
+[24:55] and it can basically prefetch data in a
+[24:59] sense it can keep data warm in the
+[25:01] caches
+[25:03] such that it can be used right so you
+[25:05] can kind of bring in data predict it
+[25:08] prefetch it keep it in the caches
+[25:11] and use it
+[25:13] so this is a push-based mechanism which
+[25:16] is which is based on prediction and
+[25:19] prefetching which in this case is far
+[25:21] more practical because cnns have known
+[25:23] access patterns by enlarge the only
+[25:26] non-determinism is the sparsity
+[25:33] so here is an example with prefetching
+[25:35] where the code for the prefetching is
+[25:37] not shown but is there in comments
+[25:39] so if the assumption is that we will
+[25:42] have a smart DNN compiler there are many
+[25:44] such compilers in the market
+[25:47] and what they will basically do
+[25:50] is that they will add this code to
+[25:53] prefetch data from the lower level
+[25:55] so if you are going image wise we can
+[25:57] load the nth image in the dram
+[26:00] and then if you are going you know in
+[26:02] the tile wires
+[26:04] say load the output tile in each local
+[26:08] buffer
+[26:09] and then uh since for each output trial
+[26:12] we are iterating through the input
+[26:14] channels
+[26:16] in the global buffer we load both the
+[26:19] filters as well as the
+[26:22] if map so this is an output stationary
+[26:24] architecture that we are looking at
+[26:26] so once the filters and if maps are done
+[26:29] all that we do is that we stream the
+[26:31] data as we have seen earlier in our
+[26:33] Hardware architecture section we stream
+[26:36] the data and we basically stream the
+[26:38] filter weights we stream the inputs they
+[26:40] Collide at exactly the right points and
+[26:43] then the output
+[26:45] of map tiles values are computed so what
+[26:49] you can see is that the compiler has a
+[26:51] very important role to play over here
+[26:58] it its job is to insert this prefet
+[27:01] statements at exactly the right points
+[27:03] such that data is brought in just before
+[27:06] it is meant to be used such that you are
+[27:08] not displacing good data
+[27:10] but you are still bringing in data that
+[27:13] you will use in the future at exactly
+[27:15] the right points of time and then they
+[27:17] will be used and then they will be
+[27:18] discarded so that is where stationarity
+[27:20] is also coming into play
+[27:24] so now that we have appreciated the
+[27:27] compiler aspects of running a DNN in the
+[27:31] sense good compilers are needed
+[27:32] precisely for generating such kind of
+[27:35] prefetch code and also for Distributing
+[27:37] them across the compute units
+[27:39] let us look at other kinds of
+[27:42] unconventional Hardware
+[27:45] for realizing CNN competition mostly
+[27:48] interference most of the work in cnns is
+[27:51] about interference because the training
+[27:53] can you know can be done in software and
+[27:55] can be done on a large high performance
+[27:57] cluster but the interference is exactly
+[28:00] what happens on the device
+[28:03] so instead of using digital circuits we
+[28:06] can use analog circuits
+[28:08] where we will use the electrical
+[28:10] parameters of the devices to actually
+[28:13] realize a multiply and accumulate
+[28:15] operation what's the main operation
+[28:17] the main operation is that you have a
+[28:19] bunch of filter weights a vector
+[28:22] basically whether I'm converting you
+[28:24] know even if it's 2D or 3D I am
+[28:26] converting it into a vector right in a
+[28:28] kind of like going this way
+[28:30] and then you have a bunch of input
+[28:32] pixels you have to do a pairwise
+[28:35] multiplication like a DOT product and
+[28:37] then you will have to add up all of
+[28:40] these partial products to get the final
+[28:44] so the main aim is given two vectors a
+[28:47] vector of weights and a vector of inputs
+[28:49] so it could be 2D 3D 4D convolution
+[28:52] doesn't matter but finally you are
+[28:54] taking two 1D vectors doing a pairwise
+[28:57] multiplication and adding that's the
+[28:58] basic primitive
+[29:00] so we need to design an analog circuit
+[29:03] to do precisely this
+[29:05] there are two approaches called charge
+[29:07] sharing and current summing which will
+[29:10] basically realize the same thing which
+[29:12] is a series of multiplications and then
+[29:15] an addition that's all that we need to
+[29:16] do
+[29:18] so charge sharing the idea is that you
+[29:22] have these multipliers
+[29:23] and then you add them
+[29:26] so then how are we going to do that
+[29:30] so how we are going to do that is like
+[29:33] this
+[29:36] so what we will do is we'll construct an
+[29:39] analog multiplier there are many ways of
+[29:41] constructing an analog multiplier to
+[29:43] multiply this x i and w y
+[29:45] one such approach is that we can use the
+[29:48] equation for capacitance which is the
+[29:50] charge this is a multiplication of the
+[29:53] voltage and the capacitance in this case
+[29:55] one of these values could be
+[29:58] encoded as the voltage one of these
+[30:00] values could be encoded as a fixed
+[30:02] capacitance
+[30:03] and then at run time you don't expect
+[30:07] the filters to change but you expect the
+[30:09] inputs to change hence the filter could
+[30:11] be encoded as a capacitance and the
+[30:13] input as the voltage where of course you
+[30:16] know as the input changes the voltage
+[30:17] would change
+[30:19] so this is where you know quantizing it
+[30:21] to a few levels or using a binary CNN
+[30:23] will
+[30:24] turn out to be helpful
+[30:26] in any case
+[30:28] once uh you know this charge is
+[30:31] generated
+[30:32] right and it is kind of stored over here
+[30:35] right on these capacitors which are
+[30:38] essentially in parallel so capacitors in
+[30:41] parallel the capacitance basically adds
+[30:43] up right so that is the equation
+[30:46] so what we are doing is that we are
+[30:47] doing charge sharing in the sense this
+[30:49] will deposit some charge here some
+[30:51] charge here some charge here
+[30:53] so charge is going to get shared right
+[30:56] and
+[30:57] it is going to raise the voltage of this
+[31:00] common line over here
+[31:02] right let us refer to this as the bit
+[31:04] line same as memory it will raise the
+[31:07] voltage of the common line over here
+[31:09] based on the total amount of charge
+[31:12] so there is a summation operation over
+[31:14] here which is basically a sum of
+[31:16] products this is a product this is a sum
+[31:18] of products
+[31:19] so then it will raise the voltage of
+[31:23] and you can say it is roughly
+[31:24] proportional to the to the additive sum
+[31:27] over here
+[31:30] and uh
+[31:35] so the total charge can be made you know
+[31:38] the total charge and the voltage over
+[31:40] here of course that will depend on the
+[31:42] parameters of this circuit but it can be
+[31:44] in a circuit can be kind of massage too
+[31:47] make it a simple relationship by
+[31:50] changing the parameters but the Crux of
+[31:53] the idea is that this voltage can be
+[31:55] measured with an ADC so with an ADC we
+[31:58] can do that
+[31:59] which is nothing but an analog to
+[32:01] digital converter
+[32:02] so that given the total charge it will
+[32:06] basically raise the voltage of this that
+[32:08] you can measure and you can convert that
+[32:10] to a digital value
+[32:12] which is nothing but
+[32:14] kind of an approximation of the sum of
+[32:17] products or the convolution in other
+[32:20] words so in this case what we are doing
+[32:22] instead of using a heavy multiplier that
+[32:25] is slow
+[32:26] what we are doing is that we have many
+[32:28] of these light multipliers we are using
+[32:30] the analog nature of the circuit which
+[32:32] could of course bring in errors and
+[32:34] inaccuracies are not discounting that
+[32:36] but uh if you are willing to absorb some
+[32:39] of it because
+[32:41] cnns are approximate circuits to begin
+[32:43] with then basically this is a very quick
+[32:47] method of letting of doing a
+[32:49] multiplication letting the charges
+[32:51] accumulate get shared right and you know
+[32:54] the values of these capacitances are the
+[32:56] same
+[32:58] then of course the voltage is the same
+[32:59] so finally the charge across them will
+[33:01] also be the same so the charge will get
+[33:03] distributed so you can work out the math
+[33:05] but essentially a total charge will
+[33:07] determine the voltage over here
+[33:09] and the voltage over here we will get
+[33:12] converted to a digital value which is
+[33:14] representative of the final output of
+[33:16] the convolution
+[33:18] now this is an extremely power efficient
+[33:20] and performance efficient way of doing a
+[33:23] realizing a DOT product of course the
+[33:26] flip side is that the values of the
+[33:27] capacitances have to be changed if you
+[33:30] are changing the weights but if let's
+[33:32] say the CNN is fixed this is not a very
+[33:34] impractical idea so this is a
+[33:36] neuromorphic circuit because
+[33:38] it is realizing a neural network
+[33:42] what we would also do is we could rely
+[33:44] instead of the capacitance equation on
+[33:46] Ohm's law
+[33:48] so in this case v times 1 by r v times 1
+[33:52] by r or the conductance is equal to the
+[33:57] so basically in this case the voltage
+[34:00] could be one value
+[34:02] and 1 by R which is the resistance could
+[34:04] be one more value in the center voltage
+[34:06] could be the input 1 by R could be the
+[34:12] could be the weight
+[34:13] so then what you do is we set the
+[34:16] voltages and then 1 by R is the weight
+[34:18] so they are getting multiplied so that
+[34:20] is the current
+[34:21] and then in series the current will get
+[34:24] summed so we are doing current summing
+[34:26] we are not sharing the current
+[34:28] unlike charge but we are summing up the
+[34:30] current
+[34:31] and why is that happening because we are
+[34:33] setting the voltage and this is V into 1
+[34:35] by R so that is kind of the current over
+[34:37] here because mind you this entire line
+[34:39] is set to the ground potential
+[34:41] so that is why we are generating current
+[34:44] which is going down
+[34:45] the current is getting summed which is
+[34:47] nothing but the sum of products right
+[34:49] the sum of the current and each current
+[34:51] is a product so the sum of products this
+[34:54] is effectively a DOT product so then
+[34:55] what I do is that I measure the voltage
+[34:58] across the test resistance
+[35:00] and this voltage is again converted to a
+[35:02] digital value which is representative of
+[35:05] the final convolution output this is
+[35:08] again it has the same advantages of
+[35:10] power efficiency and
+[35:12] performance efficiency
+[35:16] implementation technique either use
+[35:18] regular CMOS transistors
+[35:20] where you know
+[35:24] you are running it in the linear regions
+[35:27] a linear region will allow you to do
+[35:29] this multiplication
+[35:30] or as we have shown use resistances and
+[35:34] use capacitances
+[35:36] one more important thing that we saw in
+[35:38] the chapter on memories especially
+[35:41] non-volatile memories was relamps or
+[35:43] resistive Rams
+[35:45] where the resistance itself can be
+[35:47] varied so one problem was that you know
+[35:49] you want to realize the different weight
+[35:51] you have to vary the resistance right
+[35:54] so what we had seen there is that the
+[35:57] resistance of the cell can be varied by
+[35:59] essentially changing the voltage across
+[36:01] it so the resistance is a historical
+[36:03] function or or is a function of the
+[36:06] historical values of the voltages
+[36:08] so this can be varied so we can use such
+[36:11] cells to kind of make it a programmable
+[36:13] neural network and then we can use in a
+[36:16] charge sharing current summing Etc to
+[36:19] realize such kind of neuromorphic
+[36:21] circuits
+[36:23] this is always the happiest slide so we
+[36:26] are we have reached the last slide of
+[36:28] this chapter
+[36:30] and also the last slide of version one
+[36:32] of the book
+[36:34] which is that CNN based neural networks
+[36:37] are becoming extremely popular extremely
+[36:39] popular ml techniques
+[36:42] what we have seen is that even though
+[36:44] the fully
+[36:45] connected layer the FC layer is the most
+[36:48] performance hungry but because we have
+[36:50] only one or two of such layers it
+[36:52] actually doesn't make a big difference
+[36:54] and a pulling array and radio layers are
+[36:57] fast anyway so the convolutional layer
+[36:59] is the one that is the slowest and the
+[37:01] one that determines the performance
+[37:03] hence we've put in all our focus on this
+[37:06] layer
+[37:07] we can have different kinds of
+[37:09] stationarity we developed a notation for
+[37:11] the seven Loops input stationary output
+[37:14] stationary weight stationary row
+[37:15] stationary
+[37:18] we brought in concepts of tiling of
+[37:20] caching of parallelism all of that came
+[37:23] in through our notation
+[37:25] how to realize it on Hardware well we
+[37:27] said
+[37:28] either you go for the direct product
+[37:30] method which uses a w block Circle and
+[37:33] Matrix or you use
+[37:35] arrays so arrays can again be of two
+[37:37] types systolic and semi-systolic
+[37:40] semi-systolic ones are good
+[37:42] when you start to design because they
+[37:45] are kind of intuitive but they rely on
+[37:46] broadcast connections or tree of adders
+[37:49] or something like that
+[37:50] which is not something to our liking so
+[37:53] we can use the re-timing Lemma to
+[37:54] convert it into systolic but a problem
+[37:57] with the re-timing Lemma is that
+[38:02] these arrays can become slow in the
+[38:04] sense you can slow it down by 2x or 3x
+[38:07] but that's fine multiple convolutions
+[38:09] can be computed at the same time so the
+[38:11] throughput will increase
+[38:13] then again neuromorphic circuits can be
+[38:16] made right
+[38:17] so you do all your optimizations that
+[38:20] you want to do on the model Pro net
+[38:22] quantize it Etc
+[38:23] and neuromorphic circuits can be made
+[38:26] can be constructed
+[38:29] right using either re-rams or resistors
+[38:33] capacitors transistors and you use
+[38:36] charge sharing and current summing
+[38:40] that's it folks

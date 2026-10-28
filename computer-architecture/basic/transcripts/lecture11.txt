@@ -1,0 +1,1561 @@
+[00:00] [Music]
+[00:00] n
+[00:34] welcome to the chapter on x86 assembly
+[00:37] languages so as we shall see x86 is just
+[00:40] not one Assembly Language it's a family
+[00:42] of assembly languages they're used by
+[00:45] the Intel and AMD processors which at
+[00:48] least as of
+[00:49] 2016 dominate the laptop the desktop and
+[00:53] the server procor markets so these
+[00:55] slides are for chapter five in the book
+[00:58] computer organization
+[01:00] architecture published by mcrill in
+[01:03] 2015 uh the book uh should be available
+[01:06] in almost all geographies around the
+[01:08] world you can always let the author or
+[01:11] the publisher know if a book is not
+[01:14] available in a certain
+[01:16] geography so let's come to this very
+[01:19] interesting family of
+[01:20] ISS so the first point is that it's
+[01:24] actually not one
+[01:26] Isa it is a family of isas but all of
+[01:29] them end with
+[01:30] 86 so that's the region x86 where X can
+[01:33] mean a lot of things so the great
+[01:36] grandfather in the family is the 8bit
+[01:39] 8080 microprocessor used in the mid 70s
+[01:43] and so the 808 microprocessor used to
+[01:46] have an assembly language of its own it
+[01:48] was a 8bit
+[01:50] processor the grandfather is the 16bit
+[01:54] 8086
+[01:55] microprocessor
+[01:57] which uh was released in 19 78 and for
+[02:01] those days it was a fairly revolutionary
+[02:03] microprocessor because 16bit was also
+[02:05] rare in those days and uh the
+[02:09] microprocessor pretty much started the
+[02:12] era of microprocessors and gradually
+[02:15] large server computers started being
+[02:17] built of much smaller
+[02:21] microprocessors so the parents in this
+[02:23] generation are the 32-bit processors
+[02:26] namely 80386 80486
+[02:30] Pentium 1 till Pentium
+[02:32] 4 so all of these the processors used to
+[02:36] dominate in the 90s and early 2000 so so
+[02:40] pretty much for 20 years these
+[02:42] processors
+[02:43] dominated finally uh Intel and AMD uh so
+[02:48] so they moved to 64bit
+[02:50] processors uh so again 32 bits or 64
+[02:53] bits basically means that the smallest
+[02:57] unit unit of storage inside the
+[02:59] processor is is either 32 bits or 64
+[03:02] bits alternatively this means that the
+[03:05] size of a register is 32 bits in a 32bit
+[03:09] processor and is 64 bits in a 64-bit
+[03:14] processor and even you know the size of
+[03:16] memory addresses that can be issued by
+[03:18] the processor and so on uh in one case
+[03:21] is 32 bits in other case is 64
+[03:24] bits so uh examples of 64-bit uh Intel
+[03:28] processors would be Intel Core i I 3 i5
+[03:30] and i7 so latest Intel processors that
+[03:33] we use and similarly examples of AMD
+[03:37] machines would be AMD opteron and AMD
+[03:39] bulldozer uh which are the latest uh AMD
+[03:42] processors that are
+[03:43] used so the main features so again why
+[03:47] is the name of this architecture
+[03:50] x86 because as you can see from the
+[03:52] previous slide there are a lot of
+[03:55] microprocessors with the suffix 86 8086
+[03:59] 0 386 486 pentiums Intel core I3 I5 i7
+[04:05] so all of them pretty much use the same
+[04:07] kind of Assembly Language and the nice
+[04:10] thing is that Assembly Language for I5
+[04:13] is also uh a super set of the Assembly
+[04:17] Language of the earlier
+[04:20] microprocessors so so which is great and
+[04:23] uh so since 86 is at the end of every uh
+[04:27] Assembly Language or processor line at
+[04:29] least till 486 the name of the ISA per
+[04:34] se is
+[04:35] x86 so x86 is a CIS IC unlike arm and
+[04:40] simple risk so it has 300 plus
+[04:43] instructions and uh so so that is the
+[04:46] basic Isa at least the one that we are
+[04:48] concerned with but if you consider all
+[04:51] extensions and so on then out then as of
+[04:54] 2016 the number of instructions are
+[04:57] roughly a
+[04:58] th000 so instructions can have a source
+[05:02] or a destination memory operant so it's
+[05:04] a cisk instruction set so the operant
+[05:07] themselves can be far more
+[05:09] complicated and uh instead of so the
+[05:12] number of registers are actually few and
+[05:15] another major difference as compared to
+[05:17] simple risk is that it uses the stack
+[05:20] for passing arguments at return
+[05:23] addresses unlike registers so in other
+[05:26] uh risk isas where are a lot of
+[05:28] registers so we were using the registers
+[05:31] for passing arguments and return return
+[05:33] addresses and uh uh similar kinds of
+[05:37] information but this does not happen
+[05:38] over here and it uses a different memory
+[05:41] model called segmented memory so we
+[05:43] shall look at all of these points in
+[05:45] detail uh over the next few slides but
+[05:49] an important point that I want to make
+[05:51] at this stage is that the x86 Isa is per
+[05:55] se an advanced Isa see if you are
+[05:58] reading this chapter or listening to
+[06:01] this video without a basic understanding
+[06:04] of assembly languages you will find it
+[06:06] somewhat difficult because as I've been
+[06:08] stressing all through walking and
+[06:10] chewing gum at the same time or trying
+[06:13] to understand a certain Assembly
+[06:16] Language as well as the fundamentals of
+[06:19] assembly languages both are not possible
+[06:21] at the same time so it is possible to do
+[06:24] only one but not the other so what my
+[06:27] suggestion would be is is that readers
+[06:30] can go to chapter 3 get a broad idea of
+[06:35] what assembly languages are they need
+[06:38] not read chapter 4 which is about arm
+[06:40] assembly languages so that's not
+[06:42] required but at least my uh assumption
+[06:45] at this stage would be that for all the
+[06:48] readers or listeners who want to move
+[06:51] forward uh they have a basic idea of
+[06:53] what assembly languages are so this will
+[06:56] really help them otherwise they'll find
+[06:58] this chapter fairly difficult to
+[07:00] understand because the fundamentals
+[07:02] would pretty much not be there
+[07:04] yet all right so the way that the
+[07:06] chapter will proceed is that first we'll
+[07:08] discuss the Machine model then we
+[07:11] discuss simple integer and Branch
+[07:13] instructions x86 has fantastic memory
+[07:16] instructions Advanced memory
+[07:18] instructions so we'll discuss that we'll
+[07:21] discuss floating Point instructions
+[07:22] because floating Point instructions are
+[07:25] fairly complicated in the x86 ISC and
+[07:29] lastly as we did for arm and simple risk
+[07:31] we'll discuss methods to encode the x86
+[07:38] Isa so let's take a look at the view of
+[07:42] registers modern Intel machines are Isa
+[07:46] compatible with even the oldest 886
+[07:50] processor so what this essentially means
+[07:53] that any kind of program which was meant
+[07:56] for the 086 processor can still run done
+[07:59] on a modern processor so this is mainly
+[08:02] done due to Market
+[08:04] requirements so the market requirements
+[08:07] suggest that a 64-bit processor has to
+[08:09] be Isa compatible what means by Isa
+[08:12] compatible is that programs written for
+[08:15] earlier processors older processors
+[08:17] which had 32bit and 16bit ISS should
+[08:21] still be able to run with a 64-bit
+[08:24] processor and the market requirement is
+[08:26] as follows let's assume
+[08:32] that uh certain company has a lot of
+[08:35] programs written for 32-bit processors
+[08:38] and because they need some additional
+[08:40] performance they buy a newer processor
+[08:43] from Intel and this newer processor has
+[08:46] a 64bit
+[08:47] Isa it would be a very bad idea for the
+[08:52] company to discard all of its code and
+[08:54] essentially rewrite or recompile the
+[08:57] code for the newer processor uh there
+[09:00] are several reasons for this first is
+[09:02] that the original developers might be
+[09:04] there not there the source code might
+[09:06] not be available it might be a lot of
+[09:08] work there are issues with robustness
+[09:10] and reliability of the code so because
+[09:13] of so many issues most companies most
+[09:16] customers of Intel and AMD would want
+[09:19] that whatever code they had that should
+[09:21] still run with the advanced processor
+[09:23] advanced process can add more features
+[09:26] but they should not break something
+[09:28] which was already running
+[09:30] so keeping this requirement in
+[09:32] mind both Intel as well as AMD ensure
+[09:36] that the latest process can still run
+[09:38] code which was written can still run
+[09:41] let's say a binary which was written 30
+[09:43] years ago so the question is what do we
+[09:46] do with our set of
+[09:47] registers do we have a separate set of
+[09:50] 16bit registers a separate set of 32 and
+[09:53] a separate set of 64bit registers is
+[09:56] this a good idea it's probably not a
+[09:58] good idea because we don't have that
+[10:00] much of space inside the processor and
+[10:03] because of performance constraints it's
+[10:05] not what we should be
+[10:06] doing so we should definitely not Define
+[10:09] a new set of registers for each kind of
+[10:12] Isa and that's a bad idea so we have to
+[10:15] look for a better
+[10:17] idea so let us consider the 16bit x86
+[10:21] IC if the 16bit ISA had eight registers
+[10:25] they were called ax BX CX and DX SP P BP
+[10:29] SI and Di so actually the idea of these
+[10:33] registers had actually come from the
+[10:35] 8bit processor whose registers were the
+[10:38] form a b c and
+[10:40] d but in any case when they made a
+[10:42] 16-bit processor they named the
+[10:45] registers uh so which was way back in
+[10:48] 1978 ax
+[10:50] BX CX DX SP BP SI and Di so SP is the
+[10:57] stack pointer so recall from chapter 3
+[11:00] that the idea of the stack pointer was
+[11:05] introduced stack
+[11:07] pointer BP is actually the base pointer
+[11:10] so we'll discuss what it is so
+[11:12] essentially when we enter a function uh
+[11:15] we save the initial value of the stack
+[11:17] pointer in the base
+[11:19] pointer uh
+[11:21] so we we'll discuss this when we come to
+[11:24] how functions are implemented in
+[11:27] x86 uh then we have the registers SI and
+[11:30] Di so SI actually stands for source and
+[11:33] D for Destination so this will be
+[11:36] clearer when we discuss instructions
+[11:38] that use the SI and Di registers with uh
+[11:43] you know in a special form so for the
+[11:45] time being it is sufficient to just
+[11:47] simply remember that s stands for source
+[11:51] and D for
+[11:53] Destination so in the 16bit processor we
+[11:56] had only these eight
+[11:58] registers and and so if you would recall
+[12:00] both arm and simple risk had more
+[12:02] registers they had 16 but x86 in that
+[12:05] sense is fairly conservative in terms of
+[12:08] the number of registers in eight we have
+[12:11] four you know general purpose registers
+[12:14] ax BX CX and DX SP has a special meaning
+[12:18] it's a stack pointer BP also has a
+[12:21] special meaning it's called the frame
+[12:23] pointer or base pointer depending upon
+[12:25] how it's
+[12:26] implemented and Si and Di
+[12:29] can be used for regular computation but
+[12:31] they have a special meaning uh s stands
+[12:34] for source and D for Destination so some
+[12:38] instructions assume that SI is a default
+[12:40] source and some other instructions
+[12:43] assume that di is a default destination
+[12:45] so we shall look at these instructions
+[12:47] later in this
+[12:49] lecture so the question is should we
+[12:51] keep the old registers and create a new
+[12:53] set of registers in a 32-bit processor
+[12:56] we already realize that that is a bad
+[12:59] idea that's not what we should be doing
+[13:02] the main thing being that the area in
+[13:04] which the registers are there it's
+[13:05] fairly cramped so in if you consider
+[13:08] that area of the processor you have
+[13:10] registers you'll have functional units
+[13:12] like adders and multipliers and you'll
+[13:15] have many other kinds of structures
+[13:17] right so you can consider it as think of
+[13:19] it as like a downtown of the processor
+[13:22] so this particular area is very very
+[13:24] cramped and so it's not a good idea to
+[13:26] sort of increase the set of registers so
+[13:29] this is definitely a bad
+[13:31] idea so what we can do is that we can
+[13:34] widen the set of 16bit registers to 32
+[13:37] bits so we shall see in the next few
+[13:39] slides how this is done so the processor
+[13:43] is running a 16bit program then it can
+[13:46] sort of think that every register is 16
+[13:49] bits wide and how will it think it'll
+[13:52] use the lower 16 bits of every 32-bit
+[13:56] register to essentially save its value
+[14:01] so let's take a look at this at this
+[14:03] particular figure so this figure is very
+[14:06] important uh we'll be keep on referring
+[14:09] to this figure so it's very important
+[14:11] that readers get a very very good idea
+[14:14] of this figure before
+[14:18] proceeding so let's first cons consider
+[14:20] the first eight
+[14:22] registers which are there in uh the 64
+[14:25] 32 and 16bit variants so in these
+[14:29] registor let's assume that the processor
+[14:31] is running a 16bit program so the
+[14:34] resistors that it sees are ax BX CX DX
+[14:38] SP BP SI and
+[14:41] Di so ax is actually the lower 16 bits
+[14:46] of the E ax register so consider e as
+[14:49] extended
+[14:50] ax so this the E ax register is a 32-bit
+[14:55] register which is seen by a program when
+[14:58] it is running in 32 2 bit
+[14:59] mode so essentially it has we can divide
+[15:03] a 32bit field into two bit field 16 bits
+[15:07] wide each so the ax part is the lower 16
+[15:11] bits of the eex register similarly DX is
+[15:16] the lower 16 bits of the edx register
+[15:19] and
+[15:20] likewise so we just extend this idea to
+[15:24] 64 bits as well so instead of e ax we
+[15:27] Define Rax which is 64 bits white it the
+[15:32] upper 32 bits are uh essentially part of
+[15:35] the 64-bit mode but the lower 32 bits
+[15:38] store
+[15:39] eax and out of this again the lower 16
+[15:42] bits store
+[15:44] ax so if you consider this so this is
+[15:46] the same picture for all the 64bit
+[15:50] resistors Rax RBX rcx RDX RSP RBP RSI
+[15:56] and RDI so what is exactly happening
+[15:59] till this point what is happening is
+[16:03] that a 64-bit
+[16:06] processor will have these eight
+[16:08] registers which are 64 bits wide uh from
+[16:12] Rax till RDI so it'll have some more so
+[16:15] we'll discuss them but let's focus on
+[16:17] the top eight
+[16:19] first so the top eight registers will
+[16:23] will be 64 bits wide and it'll have only
+[16:26] these top eight uh for uh you know with
+[16:30] with these
+[16:31] names now if we have an instruction that
+[16:34] accesses exx EX in this case would
+[16:37] basically mean the lower 32 bits of
+[16:41] RX so what the processor will do is that
+[16:44] it will read the Rax register discard
+[16:48] the upper 32 bits and take the lower 32
+[16:51] bits and return the value the same is
+[16:53] true for a
+[16:55] right so the question so let's assume
+[16:58] that you 64-bit processor we try to uh
+[17:02] access SI so we try to access SI what
+[17:05] the processor would do is it will first
+[17:08] and let's see we trying to read SI so
+[17:10] it'll first write read the RSI register
+[17:14] so out of the 64 bits it will only
+[17:16] consider the bottom 16 bits this is what
+[17:19] SI corresponds to similarly if you want
+[17:23] to write to
+[17:24] SI then uh what the processor will do is
+[17:28] it will write to the lower 16 bits least
+[17:31] significant 16 bits of the RSI register
+[17:35] so essentially it all depends on how we
+[17:37] view this set of
+[17:39] registers if we view the set of
+[17:42] registers as 16bit quantities then we
+[17:46] access the lower 16 bits of every
+[17:49] register and so so let's consider one
+[17:52] more example let's assume that we have a
+[17:55] 32-bit processor in a 32-bit processor
+[17:59] clearly the resistance Rax RBX will not
+[18:02] be there so what basic what this
+[18:04] basically means is that if I write a
+[18:06] program with let's say
+[18:09] Rax in a 32bit processor this will
+[18:13] clearly be an error but if I write ax it
+[18:16] is it is fine so it is essentially the
+[18:19] first register and I can always write ax
+[18:22] so ax will be the lower 16 bits of the
+[18:25] first
+[18:26] register so what we are doing doing you
+[18:29] know in a nutshell to summarize is that
+[18:32] every
+[18:33] register uh is being viewed in multiple
+[18:36] ways the storage area is the same but
+[18:39] it's just that our view is
+[18:41] changing so we can when we say that
+[18:44] let's say the name of a register is sp
+[18:46] what we mean is the lower 16 bits of
+[18:49] pretty much the 1 2 third fourth fifth
+[18:52] register so the lower 16 bits are the
+[18:55] fifth register similarly when we say ESP
+[18:59] it's the lower 32 bits of the fifth
+[19:01] register and when we say RSP it is
+[19:05] essentially this fifth register whose
+[19:08] length is 64
+[19:10] bits so it is possible for any processor
+[19:13] that implements the x86 instruction set
+[19:16] to Define these set of registers and it
+[19:20] all depends on how many bits is the
+[19:22] processor you know how wide is the
+[19:25] processor if it's a 64-bit processor it
+[19:28] needs to Define find RSP ESP and
+[19:30] SP if it's a 32-bit processor clearly
+[19:35] every register is 32 bits so it is
+[19:38] meaningless to define something like RS
+[19:41] Rax or RBX or RSP because 64 bits cannot
+[19:45] be supported but at least we can say
+[19:47] that the full 32 bits will let's say be
+[19:50] referred with the E
+[19:52] suffix and for the 16bit register we
+[19:56] consider the lower 16 bits so the
+[19:59] advantage here is that we are not
+[20:01] wasting any
+[20:03] space uh the code is pretty much
+[20:08] compatible uh so so the code of let's
+[20:10] say
+[20:12] a 16bit Intel processor can easily run
+[20:15] on a 64bit Intel processor because the
+[20:19] set of registers are all there and we
+[20:22] have not created an extra space for them
+[20:24] all we are seeing is given a you know
+[20:27] let's assume that an assembly code for a
+[20:29] 16bit processor at
+[20:31] CX what we will do is that we'll
+[20:33] generate code which will tell the
+[20:35] processor to access rcx and then
+[20:39] consider the lowest 16
+[20:41] bits so in this case it is just a
+[20:44] question you know this is actually a
+[20:45] very neat
+[20:47] way uh of Designing the set of registers
+[20:52] it keeps the clients happy it keeps the
+[20:54] customers happy well it does not keep
+[20:57] the designers very happy happy because
+[21:00] it introduces makes their life slightly
+[21:03] difficult but actually not that
+[21:06] difficult as we shall see in chapters 6
+[21:08] 7 and 8 and uh but but the most
+[21:11] important thing is that the
+[21:12] compatibility of code is there so
+[21:15] tomorrow if intel releases a new
+[21:18] processor then we'll be sure
+[21:21] that all the code that we have right all
+[21:24] the binaries that we have will actually
+[21:27] run in addition the 64bit ISA defines
+[21:31] eight extra resistors R8 to R15 and mind
+[21:36] you R8 to R15 do not have any of the sub
+[21:38] Fields because the 16 and 32bit is's the
+[21:47] 16bit and 32bit intel
+[21:52] ises only defined eight registers so for
+[21:55] these eight registers they are
+[21:57] appropriately mapped to different fields
+[21:59] inside large 64-bit
+[22:02] resistors but R8 to R15 are eight extra
+[22:05] resistors which do not have any sub
+[22:07] fields and they can be used by 64-bit
+[22:10] Intel processors and Intel binaries but
+[22:14] mind you any binary generated for a
+[22:16] 64-bit processor will not run on a
+[22:18] 32-bit processor but neither should it
+[22:21] be right so you always want whatever
+[22:24] programs you write to be compatible with
+[22:26] future processors you don't want any
+[22:29] program that you write today to be
+[22:33] compatible with processors of the past
+[22:35] right so this is sort of a general rule
+[22:37] that most companies follow and that's
+[22:39] the reason this particular design
+[22:41] decision has been made so before I leave
+[22:44] this slide I would again like to
+[22:47] underscore the importance of this
+[22:49] particular slide it's very very
+[22:51] important that readers and listeners
+[22:54] understand this
+[22:55] slide and basically the important
+[22:58] takeaway point is
+[23:01] that the register is the same given a
+[23:06] program if you're uh the registor will
+[23:10] will just be interpreted in different
+[23:11] ways so if you write ax we'll only
+[23:15] interpret the bottom 16 bits if we write
+[23:18] ex we'll only interpret the bottom 32
+[23:22] Bits And if we write
+[23:24] RX we'll
+[23:26] interpret essentially all 64 bits in a
+[23:30] 64-bit
+[23:35] processor so x86 can actually takes the
+[23:39] argument slightly further so it can even
+[23:42] support 8bit resistors so the ax BX CX
+[23:46] and DX fields are further subdivided
+[23:49] into two 8bit
+[23:52] Fields so this is to ensure that we are
+[23:57] compatible with some of the early EST
+[23:58] 8bit
+[24:00] processors uh so in this case also you
+[24:02] know it helps us write slightly more
+[24:04] efficient code if you need to access uh
+[24:06] values at a bite level so for uh because
+[24:11] you know compatibility with 8080 which
+[24:14] was 8bit processor is not really that
+[24:17] important but this allows us to access
+[24:20] information at a bite level which is
+[24:22] much more important today at least so
+[24:26] here the lower 8 Bits or the lower one
+[24:28] by
+[24:31] is represented by Al BL CL and DL L for
+[24:36] lower similarly the upper eight bits or
+[24:39] bite is represented by ah BH CH and
+[24:45] DH uh so so in this case so the idea is
+[24:48] the same it is exactly similar as this
+[24:51] particular
+[24:52] figure where we take a registor and
+[24:55] divide it into several sub fields and
+[24:57] interpret the field
+[24:59] based on our
+[25:01] instruction so in this case we further
+[25:03] divide the top four 16bit registers into
+[25:07] two sub Fields each AHL bhbl chcl and
+[25:13] dhdl all right so along with the general
+[25:17] purpose registers which can be used for
+[25:21] uh all assembly
+[25:22] programs uh and they can be used to do
+[25:25] regular arithmetic computation and
+[25:27] everything so these these are pretty
+[25:29] much you know multi-purpose general
+[25:30] purpose
+[25:32] registers x86 defines two more registers
+[25:37] the first but these
+[25:39] registers uh cannot be used by the
+[25:42] assembly programmer and cannot be
+[25:43] manipulated by the assembly programmer
+[25:46] so it can be read but it cannot be
+[25:48] manipulated so these registers are
+[25:50] manipulated by the
+[25:52] system so first we have the r Flags
+[25:56] register so similar to our terminology
+[25:58] in the previous two slides the r Flags
+[26:01] register is 64 bits its lower 32 bits
+[26:05] can be interpreted as the E Flags
+[26:08] register and the lower 16 bits can be
+[26:11] interpreted as the flags register so
+[26:14] Flags e flags and R Flags same way as ax
+[26:18] e ax and
+[26:20] RX so the flags register is exactly
+[26:24] similar to the simple risk Flags
+[26:26] register or the arm cpsr
+[26:29] register so what it does is that it
+[26:32] contains the results of the latest
+[26:36] comparison so comparison so there are
+[26:38] many bits any many sub fields in this
+[26:41] Flags register so one of them is
+[26:44] Overflow
+[26:45] o so this is set If the previous
+[26:49] operation can be in compare and there
+[26:51] are some other operations which can set
+[26:52] the flags so readers who are interested
+[26:56] can take a look at the x86 manual and
+[26:59] they'll find out all the flags that any
+[27:02] instruction can set uh so the Overflow
+[27:06] flag is set on an
+[27:08] overflow and uh so this can be read from
+[27:11] the flags
+[27:12] register similarly we have a CF for a
+[27:15] carry flag which is set on a carry or
+[27:18] borrow so let's assume I'm doing a doing
+[27:21] an addition or a
+[27:23] subtraction so the carry flag CF is set
+[27:26] if the addition results in a carry or
+[27:30] the subtraction results in a
+[27:33] borrow then we have the zero flag
+[27:36] ZF which is set when the result of a
+[27:39] comparison or result of any other
+[27:41] instruction which can set a flag has led
+[27:45] to an equality so let's say we're
+[27:47] comparing a and b or let's say you know
+[27:50] in terms of Assembly Language we are
+[27:52] comparing resistors eex and evx right so
+[27:57] let's say the values if
+[27:59] ax is you know equal to I'm writing
+[28:03] equal to equal to in C style if ax and
+[28:06] ebx are the same value the zero flag
+[28:08] will be
+[28:10] set and then we have SF for the sign
+[28:13] flag which is the S bit of the result so
+[28:17] the S bit of the result will essentially
+[28:19] indicate if the result is negative
+[28:23] or non- negative non- negative means
+[28:26] positive or zero so the these four bits
+[28:29] can be set in the flags register so
+[28:31] there are other bits as well uh readers
+[28:34] can take a look at Intel's manual for
+[28:36] the other bits but these are the four
+[28:38] main
+[28:39] bits so the idea over here is that this
+[28:43] Flags register or E Flags or R Flags
+[28:47] depending upon uh the processor and the
+[28:49] Assembly
+[28:50] Language stores the flags in exactly the
+[28:53] same way as the simple risk Flags
+[28:55] register used to or the arms uh or arm
+[28:58] cpsr register used to so the idea here
+[29:01] is that any instruction like a compare
+[29:05] which can set the flags we'll
+[29:07] essentially set the flags based on its
+[29:09] result and then the flags can be used by
+[29:12] a later instruction such as a branch to
+[29:15] base its decision on what exactly this
+[29:17] register contains so this also has 16 32
+[29:21] and 64 bit
+[29:22] variance similarly we the PC the program
+[29:25] counter is known as IP or the
+[29:28] instruction pointer in x86 you know this
+[29:30] is exactly what the PC is so this is
+[29:34] this cannot be set by a user uh but uh
+[29:38] user means the programmer or the program
+[29:40] but the program can read its
+[29:43] value and uh so so there are
+[29:46] instructions actually to read its value
+[29:48] it can't be read or accessed
+[29:51] directly uh but using instructions you
+[29:54] know there are methods to read the value
+[29:56] of the program counter so the program
+[29:59] counter is called the IP register in 16
+[30:02] bits EIP register in 32
+[30:05] bits and the rip register extended
+[30:09] instruction pointer register for 64 bits
+[30:12] uh it's called Rip so the idea is the
+[30:14] same that the same register is divided
+[30:17] into multiple Fields And depending upon
+[30:20] the nature of the instruction the
+[30:22] instruction set and the processor we uh
+[30:25] choose which field should be returned as
+[30:27] the answer
+[30:30] so now let's take a look at the floating
+[30:32] Point
+[30:33] registers so arm so we didn't discuss
+[30:36] the floating Point registers in x86 and
+[30:39] arm uh mainly because arm has added
+[30:42] floating Point support somewhat late and
+[30:45] so it was not a good idea to have it as
+[30:48] a part of a basic course but floating
+[30:51] Point support has been there in
+[30:53] x86 for a long time now
+[30:58] so the floating Point Unit was so sort
+[31:00] of going back to history in the 386
+[31:03] processor right 0 386 the 386 processor
+[31:07] which was like released in the mid 80s
+[31:10] it did not have floating Point
+[31:12] support so it was only possible to have
+[31:15] integers so an additional qu processor
+[31:18] was used called the 387 chip to give it
+[31:22] floating Point support but finally when
+[31:24] the 486 processor came it had floating
+[31:27] point
+[31:29] support so you know those days
+[31:33] because not a lot of transistors were
+[31:35] available in
+[31:36] Hardware uh the architectures were
+[31:39] somewhat more complicated they were not
+[31:41] very simple and pretty much x86 has not
+[31:44] been able to change that for the
+[31:46] floating Point uh for the set of
+[31:48] floating Point registers so they are
+[31:50] fairly
+[31:51] complicated uh so so but I I hope that
+[31:54] after explaining how it works after this
+[31:57] slide which slide number 11 it will not
+[31:59] look that
+[32:00] complicated so the complexity arises
+[32:03] from the following fact it arises from
+[32:07] this fact that the set of registers can
+[32:11] be addressed
+[32:13] independently so they can be addressed
+[32:15] so so there are eight floating Point
+[32:17] registers so they can be addressed as
+[32:20] st0 ST1 or till S7 so they can be
+[32:25] addressed in that way and the other is
+[32:27] that they can also be addressed as
+[32:31] registers that are part of a stack a
+[32:34] separate stack called a floating Point
+[32:35] register
+[32:37] stack so the way that we uh can think of
+[32:40] this is that inside the
+[32:43] processor what we actually have is we
+[32:47] have eight
+[32:49] locations arranged as a stack a stack is
+[32:52] any data structure which is a last in
+[32:54] first out
+[32:55] semantics uh something exactly similar
+[32:57] to a stack in programming languages so
+[33:00] consider a stack of books so the book
+[33:02] that we add at the end is on the top now
+[33:05] if you need to remove any book we start
+[33:07] removing books from the top so pretty
+[33:10] much any book which was added the last
+[33:12] will also be the first to be taken out
+[33:15] so the same for register values as well
+[33:18] so in this case let's assume that we
+[33:23] have a stack of uh
+[33:26] eight floating Point values so this is
+[33:29] called the floating Point stack or the
+[33:31] FP
+[33:36] stack now
+[33:39] the another interesting part is that
+[33:42] these floating Point registers each
+[33:44] floating Point number actually has more
+[33:47] Precision than a double Precision number
+[33:49] so instead of 64 bits each of these
+[33:52] resistors is actually 80 bits which a
+[33:55] huge mtis Source it gives in processors
+[33:58] a lot of
+[33:59] precision so we refer to the stack top
+[34:02] as register
+[34:04] st0 and we refer to the bottom of the
+[34:07] stack as register
+[34:10] st7 so there are instructions to push a
+[34:14] value on the floating Point stack so
+[34:16] once this is done so so let's assume
+[34:19] that the numbers were initially of this
+[34:22] form 3 4.5 6 we just had three numbers
+[34:27] now let let's say we push two on the
+[34:29] floating Point stack so the new state of
+[34:32] the stack would be three would come
+[34:35] here 4.5 would come here six would come
+[34:40] down and two will get pushed on the top
+[34:44] so now if you print the value of st0 it
+[34:46] will actually print two ST1 will print
+[34:49] three st2 will print 4.5 and st3 will
+[34:53] print
+[34:54] six so so this is where the complexity I
+[34:58] that we can look at the set of floating
+[35:00] Point registers in two
+[35:02] ways we can either look at them as a set
+[35:04] of registers or or as a stack it is
+[35:07] better to look at them as a stack where
+[35:11] essentially the register gives you the
+[35:13] position on the stack so let me repeat
+[35:16] the floating Point register actually
+[35:19] gives you the position on the floating
+[35:21] Point stack so a floating Point stack is
+[35:24] essentially a stack of eight values I'm
+[35:26] just drawing it once again
+[35:28] this is a very important concept and
+[35:30] students typically don't get it so I'm
+[35:32] trying my best to explain it in many as
+[35:35] many ways possible so consider a
+[35:37] floating Point stack as a stack of eight
+[35:40] values eight floating Point values so
+[35:42] let me draw eight
+[35:49] rectangles okay let me draw one more at
+[35:51] the top to make it
+[35:56] eight all right so we have we have eight
+[35:58] rectangles so what st0 basically means
+[36:01] is that it's a
+[36:03] resistor and it and its value is
+[36:06] whatever is at the top of the floating
+[36:07] Point stack similarly st7 can also be
+[36:11] treated as a resistor and it value is
+[36:15] what is the last element in the floating
+[36:17] Point stack so if I push or pop the
+[36:20] stack then essentially
+[36:22] the elements move so the value of these
+[36:25] resistors will also change right so so
+[36:28] essentially it's not a register in a
+[36:29] registered sense it's only something
+[36:32] which tells you that for this so let's
+[36:35] say for
+[36:36] st3 it tells you that for let's say the
+[36:40] third position from the top of the stack
+[36:42] or the fourth position in the stack what
+[36:45] is the
+[36:46] value so uh it is essentially you can
+[36:50] think of it as a numbered stack uh where
+[36:52] it is possible to access the elements of
+[36:54] the stack given its position from the
+[36:57] top
+[36:58] so there are historical reasons why this
+[37:00] has been done so this is sort of
+[37:02] reminiscent if you still recall what was
+[37:04] taught in chapter
+[37:06] one uh that there are stack based
+[37:08] machines so those days programming and
+[37:11] writing code for stack based machines
+[37:14] was somewhat easy so that's the reason
+[37:17] this is uh This was done you know 20 or
+[37:20] 30 years ago but because of reasons of
+[37:23] maintaining
+[37:25] compatibility uh it has become
+[37:28] uh very very
+[37:29] essential uh to sort of keep the models
+[37:33] the programming models that used to be
+[37:35] there uh still uh you know there's a
+[37:38] need to keep them alive otherwise your
+[37:41] programs that were written for let's say
+[37:43] the 486 processors will not work on i7
+[37:47] processors and unnecessarily companies
+[37:49] that make x86 processors will lose
+[37:52] business so if let's say the set of if
+[37:55] let's say floating Point registers were
+[37:57] written as a stack it's a good idea to
+[38:00] maintain
+[38:01] it all right so the view of memory is
+[38:05] also not very easy so arm and simple
+[38:08] risk viewed memory as an infinite array
+[38:10] of bytes right so basically the uh
+[38:14] memory first location was at location
+[38:16] zero next at location one and so
+[38:19] on so the x86 memory model is slightly
+[38:23] different so it is a one num model no
+[38:26] doubt so the instruction and data are
+[38:28] saved in the same memory but it is what
+[38:31] is called a segmented memory model so
+[38:34] the idea is that each address in
+[38:36] x86 is actually an offset from the start
+[38:40] of a segment so what we do is that if we
+[38:43] consider this is memory
+[38:46] right so any kind of a memory
+[38:50] address
+[38:52] uh so the way actually we think is that
+[38:55] we sort of divide this into multiple seg
+[38:57] segments right so this is one segment
+[39:00] this is one more segment so it is an
+[39:03] extension of a one Newman model so it's
+[39:06] more like a Harvard model in that sense
+[39:09] a logical Hardware model but Harvard
+[39:13] model I'm sorry but the idea is
+[39:15] that given a large array we are
+[39:19] interested only in parts of the areay
+[39:21] called segments right so maybe you know
+[39:24] this part and this part
+[39:28] so the way that this works is like this
+[39:29] so let's consider the code segment which
+[39:32] contains the
+[39:34] instructions so the starting address of
+[39:36] the code segment is contained in the
+[39:38] code segment register so when we have
+[39:40] the address of an instruction so maybe
+[39:43] let's say the starting of the code
+[39:44] segment registered points over here in
+[39:47] memory so when we have an address what
+[39:50] we do is that every address is specified
+[39:53] as an offset from its corresponding
+[39:56] segment register
+[39:57] so in this case we take the value of the
+[39:59] segment register we take the value of
+[40:02] the address and we add them and then the
+[40:05] result points to the memory address in
+[40:08] which we'll find the
+[40:09] data so this can be extended as follows
+[40:13] this x86 supports six different segment
+[40:16] registers so each register is 16 bits
+[40:21] wide so uh so so so so we are
+[40:23] essentially starting from the earliest
+[40:25] days when segmentation was start part
+[40:28] was introduced so we'll have a code
+[40:30] segment so what the code segment
+[40:32] basically means is like this so let's
+[40:35] consider a conceptual view of memory
+[40:36] where we treat it as a large you know
+[40:40] almost semi infinite array of bytes so
+[40:43] where I'm drawing a conceptual view of
+[40:45] memory where each box is a bite so the
+[40:48] code segment register might let's say
+[40:50] start over here so every instruction in
+[40:53] a program is specified as an offset from
+[40:56] theode segment register so maybe let's
+[40:59] say there is an
+[41:01] instruction whose address is four so
+[41:05] we'll start from the code segment
+[41:06] register and count 1 2 3 4 so this
+[41:11] instruction would begin from
+[41:13] here similarly we can have a data
+[41:16] segment that contains all our data so
+[41:19] maybe this can start from here so the
+[41:21] data segment would be this white let's
+[41:23] call it the data segment DS and
+[41:25] similarly this might be the code
+[41:28] segment we can then have a stack segment
+[41:31] to say to store the stack of a function
+[41:34] so mind you this is different from the
+[41:35] floating Point stack the floating Point
+[41:38] FP stack is stored in Hardware but the
+[41:41] stack is a programming language concept
+[41:43] which was you know elaborately
+[41:45] introduced in the second half of chapter
+[41:47] 3 so the readers should definitely go
+[41:50] back to that those set of lectures or
+[41:53] those videos and understand what a stack
+[41:55] is all about so the stack essentially
+[41:59] stores the activation block of a
+[42:01] function what is an activation block it
+[42:03] stores all the arguments the return
+[42:06] address all the temporary variables of
+[42:09] the functions this called the stack so
+[42:11] the stack segment also has its segment
+[42:14] register and along with that we have
+[42:16] three extra segment registers es fs and
+[42:20] GS which
+[42:22] are not used but they can be defined if
+[42:25] need be
+[42:28] so arm simple risk and so on have a
+[42:30] linear memory model where the address
+[42:33] that is specified in the instruction is
+[42:35] sent to the memory system so
+[42:36] segmentation is not required right so
+[42:38] there are no segment
+[42:42] registers however x86 does not have a
+[42:45] linear memory model it has a segmented
+[42:47] memory model where let's say we Define
+[42:50] divide our addresses into three types
+[42:53] code which is regular program
+[42:56] instruction
+[42:58] data which is all the data that we would
+[43:00] use and then the
+[43:02] stack so data is pretty much Global
+[43:05] variables and you can think of Stack as
+[43:07] local variables so given our conceptual
+[43:10] view of memory we map these segments to
+[43:13] different locations and the segments and
+[43:16] every single address is specified as an
+[43:19] offset from its segment
+[43:23] register uh
+[43:25] so uh we we'll see this kind of a model
+[43:28] has some advantages we'll not be able to
+[43:30] discuss a lot at this point of time
+[43:33] we'll actually discuss more uh of this
+[43:36] in chapter 10 uh the chapter on memory
+[43:39] system but the idea basically is that
+[43:42] this gives us some amount of
+[43:44] security because what a computer virus
+[43:46] typically does is that the computer
+[43:49] virus tries to change the code of a
+[43:51] program such that instead of doing its
+[43:53] normal job it does what the virus asks
+[43:55] it to do with a segmented memory model
+[43:59] this is somewhat difficult but we'll
+[44:02] appreciate all of this in chapter 10 but
+[44:05] what can be understood at this point of
+[44:08] time is that it will give us some
+[44:11] advantages in terms of security there
+[44:13] were other advantages as well uh for
+[44:16] example in early processor that were
+[44:18] really memory constrained it was
+[44:21] possible to uh use this mechanism to
+[44:25] actually work with a smaller amount of
+[44:28] memory and keep on moving data between
+[44:30] the hard disk and memory to support uh
+[44:33] larger programs those reasons are not
+[44:35] very relevant today but still there are
+[44:37] issues of security that this model hand
+[44:40] handles very well uh so so we look at
+[44:42] them in chapter 10 where we'll show that
+[44:46] uh for most viruses it is not possible
+[44:49] to modify you know instructions in the
+[44:51] text section of the program that is
+[44:53] because any stores are by default
+[44:55] supposed to use the data SE segment and
+[44:58] the instructions are in the code segment
+[45:00] so this gives us some amount of
+[45:02] Separation so uh between the code and
+[45:05] the data segment so actually you know I
+[45:08] was not very accurate when I said this
+[45:10] follows the one Newman model because
+[45:13] physically yes physically it's the same
+[45:14] memory but logically it it is more like
+[45:18] a Harvard architecture where we are
+[45:21] thinking of the code part of the memory
+[45:22] and the data part of the memory is
+[45:24] actually
+[45:25] separate right so the code
+[45:27] part and the data part we're thinking of
+[45:30] them as actually separate so it is very
+[45:34] difficult for instruction such as the
+[45:36] store which modifies data to actually go
+[45:38] and modify the code and this actually
+[45:42] makes it much much harder to implement a
+[45:46] malware such as a
+[45:48] virus so how does segmentation work so
+[45:53] in the 16bit version uh it had six
+[45:56] segment
+[45:57] res but nowadays with
+[46:00] 64-bit uh you know with 64-bit systems
+[46:05] uh the segment registers will not be
+[46:07] able to hold a 64-bit memory address so
+[46:11] what they actually do nowadays is that
+[46:13] they contain an offset into a large
+[46:16] segment descriptor table and this is
+[46:19] again because 16 bits are not sufficient
+[46:21] to store a memory address so again you
+[46:23] know just to show an example so let's
+[46:26] say the C s register which contains the
+[46:28] code segment instead of pointing to a
+[46:31] memory address actually points to a
+[46:34] location in a large
+[46:36] systemwide
+[46:38] table uh you can think call it a segment
+[46:41] descriptor
+[46:42] table uh so in this case uh so since
+[46:46] it's a 16bit quantity this table can
+[46:49] have at the most to ra to^ 16 entries so
+[46:53] this entry will actually point to a
+[46:56] memory address
+[46:57] and think of this that this
+[47:00] entry will actually be a memory
+[47:04] address so this is how modern processors
+[47:08] work that we we still have six segment
+[47:11] registers which can be modified by the
+[47:13] operating system what is an operating
+[47:15] system it's a special program whose job
+[47:17] is to take care of the rest of the
+[47:19] programs so we'll again discuss what an
+[47:21] operating system is in slightly more
+[47:23] detail in chapter 10 and uh chapter 10
+[47:26] 11 10 and 12 not 11 but chapter 10 and
+[47:29] 12 mainly but at the moment uh we can
+[47:33] think of uh each segment register uh
+[47:37] still containing 16 bits but in this
+[47:40] case the 16 bits refer to an uh an entry
+[47:44] in a large table called the segment
+[47:46] descriptor table so Intel processors
+[47:49] have two kinds of segment descriptor
+[47:52] tables there is something called an ldt
+[47:55] segment descriptor table and a gdt a
+[47:58] global descriptor
+[48:00] table so the ldt is actually meant to be
+[48:04] one per process what is a process a
+[48:07] process is a running instance of a
+[48:08] program so this is typically not used
+[48:11] nowadays if it's not used we will not
+[48:13] discuss it uh the gdt is a global
+[48:16] descriptor table so the gdt is what we
+[48:21] will discuss and uh so pretty much this
+[48:24] does not have 2 the^ 16 entries because
+[48:26] we will typically not need that many
+[48:28] segments this is this is slightly
+[48:30] smaller it contains 81 91 entries so
+[48:35] 8,192 is actually a very special number
+[48:39] it
+[48:41] is
+[48:42] uh some time to guess it is
+[48:48] 1024 *
+[48:51] 8 which is nothing but 2^ 13 so we'll
+[48:55] actually use 13 bit from the contents of
+[48:58] the register to access this particular
+[49:00] gdt table to read the starting memory
+[49:03] address of the segment and what are the
+[49:05] three segments that we are interested in
+[49:08] the code segment which contains all the
+[49:11] instructions the data segment which
+[49:14] contains all the global variables and
+[49:17] the
+[49:18] constants and the stack segment which
+[49:20] contains all the local variables and uh
+[49:23] function arguments and return return
+[49:25] addresses and so on so these are the
+[49:27] primarily the three segments that we are
+[49:30] interested in and so the starting
+[49:32] address of these three segments will be
+[49:34] different for different programs in the
+[49:36] system because they Shar the memory the
+[49:38] large memory is being shared and where
+[49:40] these segments actually begin will uh
+[49:44] definitely be different for all the
+[49:46] programs in the system uh but in any
+[49:49] case we don't care about this at the
+[49:52] moment all that we are concerned is that
+[49:55] we will have a single large table it
+[49:58] will be shared by all the running
+[50:00] programs in the system and pretty much
+[50:03] every program can access this to find
+[50:05] out where its segments begin and each
+[50:08] entry in these tables in the gdt table
+[50:11] in the per se will contain the starting
+[50:14] address of the
+[50:17] segment so now the question is for every
+[50:20] memory access what do we need to do for
+[50:23] every memory access let let it be a
+[50:25] store or a
+[50:28] load so we will pretty much generate an
+[50:31] address right so we'll have a base
+[50:32] register depending upon the addressing
+[50:35] mode uh we can use base offset or base
+[50:38] index or doesn't matter whatever is
+[50:40] addressing mode we'll generate a memory
+[50:43] address in a 64-bit processor the memory
+[50:46] address will be a 64-bit number in a
+[50:49] 32-bit processor the memory address will
+[50:50] be a 32bit number so it doesn't matter
+[50:53] so with this memory address
+[50:56] what we need to do is we need to do
+[50:59] something else so let's say that we need
+[51:02] to access
+[51:05] the segment
+[51:09] right we need to find the entry in the
+[51:14] gdt which uh
+[51:17] for corresponding to the values stored
+[51:19] in the segment register we need to read
+[51:23] that entry add it to the memory address
+[51:26] comp compute the new memory
+[51:28] address and pretty and send it to so
+[51:32] compute the new memory address and send
+[51:35] it to the memory
+[51:36] system right so I'm just writing memis
+[51:39] over
+[51:42] here so so this is uh so this this is
+[51:45] pretty much
+[51:46] the main idea that if for any store or a
+[51:50] load instruction which will have a
+[51:52] memory address that the processor will
+[51:54] compute we need to add it with the
+[51:57] contains of the
+[51:58] relevant segment uh so we need to add it
+[52:01] with a number which is obtained as
+[52:03] follows we read the relevant segment
+[52:06] register we access the gdt from the gdt
+[52:09] we get the starting address of the
+[52:12] segment in memory we add both to get the
+[52:15] final memory address and this is sent to
+[52:18] the memory
+[52:19] system so does it mean that for every
+[52:21] memory access we need to access the gdt
+[52:24] or ldt that would make things very slow
+[52:28] so let us instead have a have the same
+[52:31] mechanism but try to speed it
+[52:33] up so let's use a segment descriptor
+[52:36] cache and SDC at each processor that
+[52:40] stores a copy of the relevant entries in
+[52:43] gdt which is in my opinion our opinion
+[52:46] everybody's opinion a much faster route
+[52:49] so what we do is that we Define a
+[52:52] shortcut what we do over here is that we
+[52:57] Define a segment descriptor cache we
+[53:00] access we access that first with a very
+[53:02] very small and fast Hardware structure
+[53:05] so this will keep the memory addresses
+[53:08] of the segments that we are interested
+[53:10] in so we are typically interested in
+[53:12] three segments code data and stack and
+[53:15] given the fact that a processor at any
+[53:17] point of time executes only one program
+[53:20] it can't do more uh so we just need to
+[53:24] access a small Hardware structure which
+[53:25] is process are specific access the value
+[53:28] and add it to the memory address if you
+[53:31] don't find it or if the value is still
+[53:33] then we'll have to go through this
+[53:34] longer
+[53:35] route so I'll sort of you know cut this
+[53:39] and say that this is this going by the
+[53:41] segment descriptor cache is a default
+[53:45] method just in case we don't find an
+[53:48] entry we need to take the much slower
+[53:50] method which is this method so let me
+[53:52] call this the slow method right so
+[53:56] actually you know ultimately they
+[53:57] produce the same information so I can
+[53:59] put it over here and cut it right here
+[54:03] so this is the slower method and this is
+[54:04] the faster
+[54:07] method so what is the idea we look up
+[54:09] the SDC first if an entry is not there
+[54:12] then only we get it from the
+[54:14] gdt and we populate stdc otherwise we
+[54:17] take the value from the stdc so this
+[54:19] method is very quick fast and efficient
+[54:22] and almost uh hides the fact that we are
+[54:27] adding an additional level of work to
+[54:30] every uh memory access right so so this
+[54:34] fact gets hidden with Modern Hardware
+[54:37] and we'll discuss how in chapter 9 but
+[54:39] the important point to uh note that is
+[54:42] that uh with a segment descriptor cache
+[54:45] Things become really fast you don't have
+[54:47] to access the gdt for every single
+[54:50] access for every single memory
+[54:53] access all right so x86 addressing modes
+[54:56] given the fact that it's a cisk
+[54:58] instruction set are
+[55:01] also somewhat
+[55:03] complicated so it is very important for
+[55:06] us to get a general idea of what the
+[55:09] addressing mode looks
+[55:13] like before actually we move forward so
+[55:16] up till now uh listeners must have
+[55:20] gotten a feel of the fact that x86 is
+[55:23] definitely more complicated than than uh
+[55:27] most other instruction
+[55:29] sets and uh well so no that's where the
+[55:32] C in the cisk comes from right complex
+[55:36] but it's not that complex there is some
+[55:37] amount of there's a there's a large
+[55:39] amount of Elegance to it so it's not
+[55:42] that difficult so let's take a look at
+[55:45] this particular figure so any memory
+[55:47] address this is the way that we actually
+[55:49] specify it in Assembly Language and this
+[55:52] specification is translated into machine
+[55:55] code as well so we Define a base
+[55:58] register that's the first thing that we
+[56:03] do so in the base register we specify
+[56:07] the segment but mind you this is
+[56:09] optional this field so actually all of
+[56:11] these fields individually are optional
+[56:14] so uh so this field is definitely
+[56:17] optional uh so so let me write optional
+[56:20] over here so typically you will not find
+[56:22] this being done unless it's a special
+[56:24] case so in any case all of these fields
+[56:27] are actually optional so so we will
+[56:29] discuss that part
+[56:31] later uh so the then we have a base
+[56:35] register which can be any of
+[56:37] the any of the eight general purpose
+[56:40] registers and in 64 bit mode it can be
+[56:44] additional uh registers as well right
+[56:48] there's no problem in that but we we
+[56:51] will not uh discuss that for the time
+[56:53] being so let's proceed with the rest of
+[56:56] the the lecture uh assuming that uh we
+[57:00] are talking about the 32-bit instruction
+[57:02] set right so there are different variant
+[57:04] of x86 so let us assume that we are
+[57:07] talking about the 32-bit instruction set
+[57:10] and with that assumption let us uh
+[57:12] proceed but clearly if you know how to
+[57:15] write assembly code for a 32bit Isa you
+[57:19] can always write assembly code for a
+[57:21] 64bit Isa all that you need to do is
+[57:24] convert every resist from Ax to
+[57:29] RX right so you'll move from 32 to 64
+[57:32] that's pretty much all that you need to
+[57:33] do and there are some other instructions
+[57:36] which will also change but we'll you
+[57:38] know discuss them when the time comes
+[57:41] similarly to move from let's say 16 to 6
+[57:46] 64 ax will become RX so this is a very
+[57:50] simple transformation that we need to
+[57:52] apply similarly going from 64 to let's
+[57:54] say 32 what we need to do is that all
+[57:58] resistors of the form let's say Rax or
+[58:02] RBX doesn't matter will become
+[58:05] ax so that's the reason it's not
+[58:07] necessary to discuss every variant of
+[58:10] the x86 instruction set separately for
+[58:13] example 16 32 and 64 so we sort of take
+[58:17] the middle path and we discuss the
+[58:20] 32-bit instruction set and then the
+[58:23] readers can do this simple
+[58:24] transformation which is just change the
+[58:26] register name through out the E and put
+[58:28] in the r and it will become 64-bit
+[58:31] compliant as simple as that it's not uh
+[58:34] it's not harder than that at
+[58:36] all so coming back to our present
+[58:40] discussion here we have a base register
+[58:43] for the base register can be any of the
+[58:46] first eight
+[58:48] registers uh plus we can we can so this
+[58:51] is a scaled indexed uh addressing mode
+[58:54] that we can have but again the scale is
+[58:58] optional so in this case the index can
+[59:00] be any of the first eight registers
+[59:04] other than ESP so the ESP the stack
+[59:07] pointer cannot be used as an index so
+[59:10] let me write
+[59:11] that other than ESP or the stack
+[59:15] pointer right all the other seven
+[59:18] resistors can be used in index and
+[59:21] optionally they can be scaled by a
+[59:23] factor of one or two or four or eight
+[59:26] and then we can add a
+[59:28] displacement so displacement is an
+[59:30] offset it's a constant so we can add any
+[59:34] displacement that we want and in 32-bit
+[59:37] instruction set the displacement the
+[59:40] displacements maximum size is limited to
+[59:43] 32 bits so what does x86 do it supports
+[59:47] a base a scaled index and an offset and
+[59:51] the offset is known as the displacement
+[59:53] and mind you each of these fields is
+[59:55] optional
+[59:56] all right this is something which has to
+[59:58] be kept in
+[60:02] mind all right so let me now give an
+[60:05] example of uh addressing modes so let us
+[60:10] consider uh the memory operant as it is
+[60:13] specified in the x86 Assembly Language
+[60:16] the value of the address in register
+[60:18] transfer notation uh so for this uh go
+[60:22] back to uh chapter 3 so it'll tell you
+[60:26] uh what it is uh so this is basically we
+[60:30] are just mathematically trying to
+[60:31] represent what the address is like and
+[60:34] then the addressing
+[60:36] mode so X8 X8 supports many kinds of
+[60:40] addressing modes so one of the basic
+[60:42] modes is a register indirect addressing
+[60:44] mode for the value of the memory address
+[60:47] is stored in ex so we represent it as ex
+[60:51] with a square brackets on both sides
+[60:55] then we can have have a base and scaled
+[60:57] index addressing mode where it can be
+[61:00] the address can be represented as eax
+[61:02] plus ECX multiplied by two so the value
+[61:06] of the address address is e x + 2 * ECX
+[61:11] so this is base scaled
+[61:13] index similarly we have a base scaled
+[61:16] index offset mode where the address can
+[61:19] be of the type e plus ECX into 2 plus a
+[61:24] displacement which in this case this is
+[61:26] -
+[61:28] 32 similarly we can have base offset
+[61:31] just edx -2 we can just have scaled
+[61:35] index uh which is just edx into two and
+[61:39] we can just have a displacement which
+[61:41] becomes memory direct so we can directly
+[61:43] specify the memory address so this is
+[61:46] also allowed in this
+[61:48] form so let us just go back to the
+[61:50] previous slide and look at this once
+[61:52] again now that we have seen examples see
+[61:55] you will be able to appreciate uh how
+[61:58] and why this happens so in this uh
+[62:01] particular case as you see the base the
+[62:05] index the scaled index rather and the
+[62:08] offset all of these fields are optional
+[62:11] so the memory address can be any
+[62:13] combination of these fields as we see in
+[62:15] this particular table over here that we
+[62:18] can have all kinds of combinations of
+[62:21] memory addresses and this makes the ENT
+[62:26] are thing very interesting and slightly
+[62:28] complicated but if you understand the
+[62:31] main idea again I'm going back to this
+[62:35] figure where we have a base register and
+[62:38] another index register which can be
+[62:40] scaled by a factor from 1 to 8 1 2 4 or
+[62:43] 8 plus a fixed offset or a displacement
+[62:47] which is a
+[62:48] constant uh so so basically if this is
+[62:50] the general format we can start fitting
+[62:54] any kind of an address in in this format
+[62:57] where uh one or more of the fields are
+[62:59] optional and sort of not present for
+[63:02] example in this case only the
+[63:04] displacement is present but the base and
+[63:07] the index are not
+[63:09] present all right so after taking a look
+[63:11] at the Machine model which was by no
+[63:13] means simple we have done most of the
+[63:16] hard and difficult and dirty work so now
+[63:20] we can
+[63:21] appreciate uh the greatness of the x86
+[63:24] instruction set slightly
+[63:27] better so uh so again you know as I have
+[63:30] been pointing out over and over it's uh
+[63:35] reading the book listening to a video is
+[63:38] great but unless students actually sit
+[63:41] down and practice and physically write
+[63:43] assembly code they will actually not
+[63:45] learn or be effective
+[63:47] programmers so what I would suggest is
+[63:50] that they can write assembly code so an
+[63:52] assembler and a runtime are there
+[63:56] not a runtime but an assembler uh you
+[63:58] can find on the book's website so you
+[64:01] can just go to the website of the book
+[64:03] and and type my name go to the homepage
+[64:06] of the author and go to uh the website
+[64:09] of the book so you'll find uh link to an
+[64:12] assembler called nasum
+[64:15] nasm and this can be used there are many
+[64:18] other assemblers x86 assemblers as well
+[64:21] such as stasm or
+[64:24] masm and say any assembler is fine right
+[64:27] there is no problem uh but we will be
+[64:30] using the nasm assembler uh format at
+[64:34] least the format of the nasm assembler
+[64:36] in this lecture but other assemblers
+[64:39] have similar format so the format per se
+[64:41] is not that
+[64:45] important so the uh URL of the nasm
+[64:48] assembler is WW nm.
+[64:52] us and uh so this is a very fairly easy
+[64:54] assembler to use
+[64:56] and some uh uh so you'll find a lot of
+[64:59] examples on the website of this
+[65:01] assembler and at least on the L on the
+[65:04] Linux system and on a Mac system this
+[65:06] assembler seems to be work seems to work
+[65:08] just
+[65:10] fine so the generic structure of an
+[65:12] assembly statement is very similar to
+[65:14] the generic structure of an assembly
+[65:16] statement in both simple risk as well as
+[65:19] arm uh any assembly statement can have
+[65:22] an optional label followed with a colon
+[65:25] then the assembly
+[65:27] instruction and comments here start in
+[65:30] Nasim comments start with a semicolon
+[65:33] not with an act uh as has been the case
+[65:37] earlier so x86 assembly instructions
+[65:40] typically have two formats one is the
+[65:42] AT&amp;T
+[65:44] format and the other is the Intel
+[65:48] format right and the
+[65:52] other is the Intel format
+[66:04] so in this book we shall actually be
+[66:06] using the Intel format so the formats
+[66:09] are more or less the same but in the
+[66:11] AT&amp;T format the the destination comes at
+[66:14] the end which is not what we are used to
+[66:17] we are used to the destination operant
+[66:18] coming at the beginning uh so we'll use
+[66:21] the Intel format so this is something
+[66:23] important to keep in mind because uh you
+[66:26] know readers listeners should know that
+[66:29] both of these formats are out there but
+[66:31] you have to verify that the Intel format
+[66:33] is being
+[66:37] used so typically most x86 instructions
+[66:42] use a one and two address format and
+[66:46] uh uh so so basically can have one
+[66:49] operant or two operant so in the two
+[66:52] address format which is of this type
+[66:54] instruction operant one and oper 2 if
+[66:56] you're using the Intel style operant one
+[67:00] is typically both the source as well as
+[67:02] the destination so essentially we will
+[67:05] perform an operation on operant one and
+[67:08] operant
+[67:09] 2
+[67:11] subsequently uh we will save the result
+[67:15] in operant one so operant one will get
+[67:17] overwritten so this is standard format
+[67:20] of x86
+[67:22] instructions for the uninitiated this
+[67:24] can look as something new but once you
+[67:27] get used to it I think it's fine so in
+[67:30] general you know people get scared of
+[67:32] the fact that uh uh you know the Intel
+[67:36] uh x86 assembly is very complicated
+[67:39] that's not the case so there is a lot of
+[67:42] Elegance in the instruction set and it's
+[67:44] actually very easy to learn once sort of
+[67:46] the basics are in place so what are the
+[67:49] basics let me just repeat so I'll just
+[67:52] keep on repeating it several times
+[67:54] during the slides that readers don't
+[67:57] forget the first basic is the way that
+[67:59] we Define registers so essentially ax
+[68:03] eax and Rax are the same resistors but
+[68:06] we are just using you know is the same
+[68:08] registor but we are using different
+[68:10] parts of it right in a 64-bit system
+[68:14] that's Point number one Intel has a
+[68:16] segmented memory model so let me just
+[68:18] write it so in a 64bit system
+[68:23] RX EX
+[68:27] and you know ax are
+[68:29] actually the same location in Hardware
+[68:32] is there different parts of it is being
+[68:35] used the next is a segmented memory
+[68:37] model this is something that we all need
+[68:40] to get used to what are the
+[68:43] main uh components of the segmented
+[68:45] memory model well the main
+[68:48] components are the segment resistors
+[68:52] which give the start of the segment and
+[68:56] and the gdt
+[68:59] table uh so so well the segment
+[69:02] registers previously used to give the
+[69:03] start of the segment now they point to
+[69:05] an entry in the gdt table which gives us
+[69:08] the start of the segment to make this
+[69:10] process faster we have a segment
+[69:12] descriptor cache which is a small piece
+[69:14] of Hardware which stores uh some of the
+[69:17] mappings that this particular processor
+[69:20] would be interested in so I the table
+[69:22] need not be accessed all the time
+[69:25] and we have the floating Point stack
+[69:28] which is slightly difficult to
+[69:31] understand but hopefully we have
+[69:32] understood it by now where the idea
+[69:34] basically is that all the floating Point
+[69:36] values are saved in an eight entry stack
+[69:39] and a register just gives the
+[69:42] position of so a register let's say STI
+[69:46] refers to the ith entry of the stack so
+[69:49] once these three ideas are clear we can
+[69:53] proceed with the with the rest of the
+[69:55] lecture very
+[69:59] easily so let us now look at some of the
+[70:02] basic rules for operant uh for most x86
+[70:07] instructions so both the operant can be
+[70:11] registers so which is fine this is also
+[70:14] this rule was also there uh in our
+[70:17] earlier instruction sets arm in uh
+[70:22] simple risk so at most so here is so
+[70:25] here are some additional uh points so at
+[70:29] most one of them can be an immediate so
+[70:31] both cannot be an immediate or a
+[70:33] constant right that is meaningless so
+[70:36] one of them has to be a variable which
+[70:37] means stored in a register or memory but
+[70:40] at most one of them one of them can be
+[70:43] but not two at most one of them can be
+[70:46] an
+[70:47] immediate uh what most at most one of
+[70:49] them uh sorry this should be M over here
+[70:54] at me at most one of them can be a
+[70:56] memory location so which means that you
+[70:59] cannot have two memory locations as
+[71:01] operant and a memory operant is
+[71:03] encapsulated in square brackets which we
+[71:05] have already
+[71:07] seen so what are the rules for
+[71:10] immediates the size of an immediate is
+[71:12] equal to the size of the memory address
+[71:15] for example in a 32-bit machine the
+[71:18] maximum size of an immediate is 32
+[71:22] bits so what are some of the other rules
+[71:25] so we shall use the 32-bit flavor of x86
+[71:29] in this book in this lecture so the
+[71:31] readers can seamlessly write as I have
+[71:33] said 16bit x86 programs no difficulty at
+[71:36] all simply use the registers ax BX CX DX
+[71:41] SBP SI and Di so all the programs that
+[71:44] we write can easily be converted into uh
+[71:49] 16bit programs Sometimes some additional
+[71:53] uh suffixes need need need to be changed
+[71:56] in the instructions but when that arises
+[72:00] uh essentially I'll I'll tell you uh
+[72:02] what needs to be done to write the 16bit
+[72:04] or the 64-bit variants of those
+[72:07] instructions but in general uh
+[72:09] converting a program between any of the
+[72:12] three flavors and the three flavors
+[72:15] being
+[72:17] 16bit 32 bit and uh 64 bit is easy only
+[72:25] the register names have to be changed so
+[72:27] the readers can also write 64-bit
+[72:29] programs by using the same set of
+[72:31] registers right the r series RX RBX rcx
+[72:35] RDX and the eight new registers that are
+[72:38] provided
+[72:41] by uh
+[72:43] the uh which are essentially provided by
+[72:47] the uh
+[72:51] 64bit uh system and these resistors
+[72:55] are actually should be sorry uh R8 to
+[72:59] R15 right not R9 to R15 but R8 to R15 so
+[73:04] next we will discuss uh what the
+[73:07] individual instructions are like and uh
+[73:10] so so this particular part of the
+[73:11] lecture will end here and the next part
+[73:13] will begin with the move instruction and
+[73:16] what uh it is like

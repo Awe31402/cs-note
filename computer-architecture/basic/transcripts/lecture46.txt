@@ -1,0 +1,927 @@
+[00:00] n
+[00:06] [Music]
+[00:35] now let us discuss Optical drives which
+[00:37] are CD DVDs and Blu-ray drives Blu-ray
+[00:40] discs I'm
+[00:41] sorry so uh
+[00:44] the main issue with a hard disk is that
+[00:48] uh well a hard disk number one is not
+[00:50] portable in the sense that at least you
+[00:52] the most hard are not
+[00:54] portable so they are
+[00:57] attached uh to the desktop or the laptop
+[01:01] even though you know there are a lot of
+[01:03] portable hard dis nowadays as well which
+[01:05] attach to the USB but nevertheless in
+[01:08] general hard dis are bulky
+[01:10] devices second they have mechanical
+[01:14] Parts you know it's very very high
+[01:18] sophisticated uh engineering design that
+[01:20] has gone into
+[01:22] there also you know you drop a hard disk
+[01:24] you can damage the motors you can damage
+[01:27] the heads so there a lot of possibility
+[01:29] of damage
+[01:30] so we want one also you know it's
+[01:33] expensive that's the reason we need one
+[01:36] inexpensive storage media especially for
+[01:39] things like movies and songs and so on
+[01:42] so that's where we use Optical
+[01:44] media uh which come in a variety of
+[01:47] flavors so we can have a CD drive a DVD
+[01:49] drive a Blu-ray disc and so
+[01:52] on so the structure of an optical disc
+[01:55] is like this that it's actually a four
+[01:57] layer structure
+[01:59] so uh let's consider the bottom so we
+[02:02] have a laser that shines uh laser light
+[02:05] on the dis you know as it rotates so the
+[02:08] physics here is also the same that this
+[02:10] is a rotating disk and we have a
+[02:13] polycarbonate layer so the polycarbonate
+[02:15] layer essentially protects one side of
+[02:18] the recording surface so light passes
+[02:21] through the polycarbonate layer so it is
+[02:24] pretty much transparent to
+[02:25] light and after that we have what is
+[02:29] called reflective layer so reflective
+[02:32] layer if you would notice has you know
+[02:34] these structures so these are called
+[02:37] lands and pits so pits are basically
+[02:40] these holes and lands are uh you know
+[02:44] places where holes are not there so this
+[02:46] is a land this is a land and this is a
+[02:49] pit right a pit you know from the
+[02:52] English word what is the connotation the
+[02:54] connotation is that it's a hole and uh
+[02:57] you know so it's the same thing over
+[02:58] here that we have a structure of lands
+[03:00] and pits and uh all the logical
+[03:05] bits zeros and ones are recorded in
+[03:08] these lands and pits so lands typically
+[03:11] have a much higher reflectivity so they
+[03:13] will reflect the signal back and a
+[03:17] receiver can you know figure out that
+[03:18] it's a land pits in contrast have a
+[03:22] lower reflectivity and also they induce
+[03:24] a phase change so basically from the
+[03:27] pattern of the reflected light a
+[03:29] receiver can see whether it's getting
+[03:31] reflected from a land or a pit after
+[03:34] that we have what's called a lacquer
+[03:37] layer so the lacquer layer is between
+[03:39] the polycarbonate layer and uh so sorry
+[03:43] the reflective surface is between the
+[03:45] polycarbonate layer and the lacquer
+[03:48] layer so the lacquer layer in in a sense
+[03:52] uh gives support to the Lan and pits and
+[03:55] finally on top
+[03:57] of the lacer layer we have a plastic
+[04:00] layer called the surface layer so this
+[04:03] is a sheet of plastic which covers the
+[04:05] CD or DVD so here you know we can stick
+[04:08] a piece of paper with the name of the
+[04:10] movie or the name of the software so
+[04:12] this can be done so the piece of paper
+[04:15] with the name of the movie or the
+[04:17] software goes over
+[04:20] here all right so so this is the
+[04:24] structure so uh this is very similar the
+[04:27] you know the encoding is basically
+[04:29] basically via these lands and pits which
+[04:31] are essentially aberations on the
+[04:33] surface of this uh lacquer lay right so
+[04:37] this boundary between the lacquer and
+[04:38] the polycarbonate layer has aberration
+[04:41] and these aberration encode The Logical
+[04:45] bits so let's look at the physical bits
+[04:47] the land uh lands represent the physical
+[04:50] bit one pits represent the Lo uh the
+[04:53] physical Bit Zero and uh similar to
+[04:56] almost all uh IO devices similar to hard
+[05:00] dis similar to USB uh we use the NR zi
+[05:04] encryption
+[05:05] scheme uh and also you know there are
+[05:08] methods for uh clock recovery and so on
+[05:11] I mean data recovery so all of that is
+[05:14] there and there are very elaborate error
+[05:16] protection codes read Solomon codes
+[05:19] because you know what can happen is if
+[05:20] there is a scratch on the surface of the
+[05:23] CD then uh the reflection of light might
+[05:26] become Irregular at these places that's
+[05:28] the reason there are extreme you know
+[05:30] High performing and you know elaborate
+[05:32] error protection codes for uh correcting
+[05:36] the data but the encryption scheme we
+[05:38] have been seeing this for a long time
+[05:40] now NR zi is the encryption scheme of
+[05:45] choice so let us look at the operation
+[05:48] of an optical drive where the operation
+[05:51] is more or less the same uh for all the
+[05:54] optical drives uh CDs DVDs and Blu-rays
+[05:57] so it has a very similar operation
+[06:00] so we have a spindle over here so the CD
+[06:03] basically the CD over here pretty much
+[06:06] sits on the spindle so You' have seen
+[06:08] the small hole in the center so that is
+[06:10] for it to sit on the spindle and the
+[06:13] spindle has a spindle motor so the CD
+[06:17] rotates all
+[06:19] right and uh
+[06:22] furthermore we have a linear head uh so
+[06:26] this has a laser as well as a recording
+[06:28] head which moves along these
+[06:31] two uh these two rails right so let me
+[06:34] maybe erase the ink on the
+[06:37] slide so it moves along these two uh
+[06:48] rails all right so so this uh recording
+[06:52] head moves along the rails and uh so why
+[06:55] does it move along the rails so
+[06:57] basically if this is the under surface
+[07:00] of a CD so the movement is pretty much
+[07:03] radial so recall that in the case of the
+[07:06] hard disk the movement was angular in
+[07:08] the sense the movement was pretty much
+[07:09] something like this but in this case the
+[07:12] movement of the head is radial so we can
+[07:14] radially position ourselves at any point
+[07:17] and then uh you know so this has a
+[07:20] corresponding notion of sectors and
+[07:21] tracks so we can read the appropriate
+[07:24] sector and track even though the
+[07:25] recording is different uh sectors and
+[07:28] tracks are organized in a different
+[07:30] manner so you'll find the details in the
+[07:32] book but the basic idea is the same and
+[07:36] so after deciphering the bits it is sent
+[07:40] via this electrical Channel Through the
+[07:43] electronics of the
+[07:44] drive and uh it takes the bits does the
+[07:48] framing puts it into packets and sends
+[07:50] it over the bus to the CPU CPU or memory
+[07:54] but essentially out of the optical
+[07:56] drive so this is a very simple this opt
+[07:59] iCal Drive is also a mechanical
+[08:01] component but recall that uh in a hard
+[08:04] disk this was a part of the hard disk
+[08:09] but in the case of an optical system the
+[08:12] optical drive part is actually a part of
+[08:14] the host system the laptop or the
+[08:17] desktop but the CD itself is a separate
+[08:20] entity which just has a sequence of
+[08:22] lands and pits that's all so that's the
+[08:24] reason you know CDs and DVDs are very
+[08:27] cheap they can be burnt once so the term
+[08:29] is burning writing a CD or dvd the term
+[08:32] is burning so they can be burnt
+[08:35] once and then you know they can be
+[08:38] distributed so they can be shipped all
+[08:39] over the world everything can be done
+[08:41] with them and you just need a CD or dvd
+[08:44] reader to basically read them so the
+[08:47] idea is put it on the spindle spin the
+[08:51] spindle and
+[08:53] uh after that uh basically have the
+[08:57] laser assembly here read the data data
+[08:59] out and to move it well uh this is very
+[09:03] simple this is essentially uh moving uh
+[09:06] so there are like screws built in here
+[09:09] and you know this thing looks like a
+[09:11] screw so basically if you rotate this in
+[09:13] One Direction then the laser assembly
+[09:16] move in this direction if it is rotated
+[09:18] in another Direction then the laser
+[09:20] assembly will move in this
+[09:24] direction so uh the
+[09:27] main difference between the hard disk
+[09:30] and the optical drive is like this that
+[09:33] the hard disk always rotates at a
+[09:35] constant angular velocity and the
+[09:38] angular velocity uh well modern hard dis
+[09:41] come in two uh angular velocities 5,400
+[09:47] RPM and
+[09:49] uh
+[09:51] 7,200
+[09:55] RPM all
+[09:58] right so so uh this sort of keeps things
+[10:02] simple also note that hard technology is
+[10:05] fairly old so it has been around for at
+[10:08] least the last 30 years so in those days
+[10:11] having a fixed RPM Motor was a fairly
+[10:14] big thing and also you know a motor that
+[10:16] reliably runs at 5,400 RPM constructing
+[10:20] that and making it economical was a
+[10:23] massive challenge so IBM and you know
+[10:25] pioneers and IBM and Cate were
+[10:28] essentially able to build one such
+[10:30] device however CDs and DVDs came much
+[10:34] later so the motor technology by that
+[10:36] time had really become very Advanced so
+[10:39] here what we have is we have constant
+[10:41] linear velocity let's see what this is
+[10:44] so if you would recall your first year
+[10:46] mechanics you will find that V is equal
+[10:49] to Omega R which basically means that
+[10:52] let's say if there's a rotating disc and
+[10:54] at any point with radius R its linear
+[10:58] velocity V
+[11:00] is related like this that V is equal to
+[11:02] the angular
+[11:04] velocity right uh times the
+[11:11] radius so what we did in the case of a
+[11:14] hard disk is that we set the angular
+[11:16] velocity to a constant so in that case
+[11:20] the linear
+[11:21] velocity was not a constant because
+[11:24] basically depending upon where the point
+[11:26] is from the center uh the linear
+[11:28] velocity was higher if the linear
+[11:31] velocity is higher it means that bits
+[11:33] passed more quickly under the head uh as
+[11:38] we moved out right because as R
+[11:41] increased V increased so more quickly
+[11:44] you know bits passed under the head
+[11:47] however uh if we consider points that
+[11:49] are closer to the center there the
+[11:50] linear velocity was lower as a result
+[11:54] sensing changes in the magnetic field
+[11:56] and so on have to be done at different
+[11:57] speeds for both of these points this
+[12:00] point and this
+[12:03] point in compare so this introduced some
+[12:06] complexities so there was a scheme
+[12:08] called Z zoning to take care of it it is
+[12:10] still being used I have not discussed
+[12:14] zoning uh in the lecture fearing that
+[12:17] will become too complicated but zoning
+[12:19] is there in the book so uh you know for
+[12:22] those interested take a look at it in
+[12:24] the book but in the case of a CD it is
+[12:27] much easier well the complexity lies
+[12:30] somewhere else so we keep V constant to
+[12:33] to keep V constant as we increase the
+[12:36] radius means as we go outwards the
+[12:38] angular velocity has to decrease and as
+[12:41] we come inwards the angular velocity
+[12:43] increases so this will basically make
+[12:46] the spindle motor very sophisticated
+[12:49] that now it has to rotate in a you know
+[12:51] huge spectrum of speeds to essentially
+[12:54] ensure that the linear velocity as
+[12:57] perceived by the head is constant so
+[13:00] this motor will be extremely
+[13:03] sophisticated but once we able to get
+[13:06] this kind of sophistication in the
+[13:08] motor uh so where the motor will change
+[13:11] its speed or RPM depending on the
+[13:12] position of the
+[13:14] head the linear velocity or the rate of
+[13:17] bits passing under the head will be the
+[13:19] same so the head can actually be very
+[13:22] simple as compared to the hard disk head
+[13:25] uh the head in this case can actually be
+[13:28] very very simple
+[13:30] and uh that will be to our advantage
+[13:34] mainly because the head has other things
+[13:36] as well it has a laser and it has
+[13:39] circuitry to analyze the reflected light
+[13:42] right and also it has to figure out the
+[13:44] sequence of bits and nrz I scheme so
+[13:47] keeping all of these things in mind
+[13:49] having a simpler head is definitely a
+[13:51] great idea and we also don't have to
+[13:53] implement techniques such as zoning
+[13:56] because at any at any radius we we are
+[13:59] sure that the rate of bits passing under
+[14:01] the head is the same so there will as
+[14:03] such be no timing
+[14:06] issues so let us look at the different
+[14:08] technology Generations so the physics of
+[14:11] the optical drive has remained the same
+[14:13] uh over the last few Generations so the
+[14:16] physics per se has not changed it is
+[14:19] just that uh now you know we have the
+[14:22] technology to have a far more compact uh
+[14:26] encoding of the bits or lands and pits
+[14:28] are smaller
+[14:29] so we can fit in
+[14:31] data in a more compact fashion so we can
+[14:34] fit in more data per Optical dis so the
+[14:38] first generation of optical discs were
+[14:40] CD drives so they were mainly meant for
+[14:43] audio users you know you can have a lot
+[14:45] of songs on a CD so you can also have a
+[14:47] movie but a part of it and that also not
+[14:50] HD quality so 700 megabytes was its
+[14:52] storage and it used a 780 nanom
+[14:55] wavelength
+[14:57] laser and uh
+[15:00] so recall that visible light is between
+[15:01] 300 to 700 nanom so it was kind of an
+[15:05] off- red kind of spectrum and the raw
+[15:07] transfer rate which is called a 1x
+[15:09] transfer rate this basically means the
+[15:12] transfer rate when the CD is first
+[15:14] released but in a lot of CDs you'll see
+[15:17] 8X 10x 50x 52x this means that later on
+[15:21] there have been subsequent improvements
+[15:23] and the transfer rate has increased but
+[15:25] the raw transfer rate when it was first
+[15:27] released was roughly 15 23 KOB a second
+[15:30] which is pretty slow it's good for audio
+[15:32] but not for video the second generation
+[15:36] uh was a DVD drive which is 4.7 GB in
+[15:40] size so it uses s that it could uh be
+[15:44] used for videos an entire movie could
+[15:46] fit on a DVD even though you know not
+[15:49] necessarily HD quality but a full movie
+[15:51] could
+[15:53] fit uh this was achieved so the laser
+[15:56] wavelength uh became slightly smaller
+[15:59] mainly because we have to detect smaller
+[16:01] features so smaller wavelength is
+[16:03] required and the raw transfer rate
+[16:06] increased significantly to 1.39 mbes per
+[16:10] second which is good enough for video
+[16:13] the third generation which you know has
+[16:15] been there for five or 6 years but it
+[16:18] has not really had a lot of traction uh
+[16:21] these are Blu-ray discs uh 25 GB in size
+[16:24] so they offer us a significant amount of
+[16:27] capacity so a lot of video videos you
+[16:29] know a lot of videos 3D videos and uh
+[16:32] and the like are actually released on
+[16:34] Blu-ray discs and uh HD quality code
+[16:37] videos so the laser wavelength that is
+[16:40] there on Blu-ray drives the Blu-ray
+[16:42] drives are different from CD or DVD
+[16:45] drives that uses a 405 nanom laser
+[16:49] wavelength and the raw transfer rate is
+[16:53] 4.5 megabytes per
+[16:56] second which is uh you know much much
+[16:58] High higher than uh the previous
+[17:00] Technologies so that's the reason
+[17:02] Blu-ray should be the technology of
+[17:04] choice especially when we're dealing
+[17:07] with very very high definition you know
+[17:09] Videos HD quality or 4K quality right so
+[17:12] that's when Blu-ray should be used but
+[17:14] Blu-ray for some reason has not been a
+[17:17] very popular technology but that's you
+[17:19] know that has nothing to do with the
+[17:20] technology it's more about licensing and
+[17:23] standardization and so
+[17:25] on now let's look at the third category
+[17:28] of drives called solid state drives so
+[17:30] solid state drives or flash drives are
+[17:34] used in all our pen drives and USB
+[17:36] sticks so which are very very common
+[17:38] nowadays almost everybody has a pen
+[17:40] drive or a USB stick and we transfer a
+[17:43] lot of our data with pen drives we
+[17:45] should know how it
+[17:47] works so the Crux of all of
+[17:50] this uh you know Technologies is a new
+[17:54] kind of a logic gate called a floating
+[17:56] gate transistor
+[17:59] so a floating gate transistor looks very
+[18:01] similar to a regular nmos or a pmos
+[18:03] transistor with some differences so it
+[18:06] has two gates it has a control gate and
+[18:08] a floating gate so this part so let me
+[18:11] actually draw
+[18:17] it so we have a source terminal and a
+[18:21] drain terminal and of course we uh we
+[18:24] have space for a channel so similar to
+[18:27] traditional transist there is an sio2
+[18:30] layer and the gate is there on top of it
+[18:33] right so you know which is poly silic so
+[18:36] in a typical uh Enos transistor is poly
+[18:39] silicon this is not the case
+[18:42] here uh so then uh what we have is so
+[18:46] after this there's a metallic pad which
+[18:48] connects the source the drain and the
+[18:50] gate however in this case uh things are
+[18:53] slightly different they are different in
+[18:56] the sense that we have two gates so this
+[18:58] gate over
+[18:59] here is a floating gate and then we have
+[19:03] another sio2 layer and we have one more
+[19:06] gate on top of it which is called a
+[19:09] control
+[19:10] gate so uh the symbol for this is
+[19:13] actually you know it's a regular
+[19:15] transistor but we have an additional
+[19:18] horizontal line here basically for the
+[19:20] floating gate so that's the reason it's
+[19:23] called a floating gate
+[19:25] transistor so the physics is like this
+[19:28] that we when we apply a very high
+[19:29] voltage to the control gate electrons
+[19:32] get deposited in the floating gate so
+[19:34] let's say if I apply a very very strong
+[19:36] positive charge electrons will sort of
+[19:39] flow from the channel inwards and get
+[19:41] deposited in the floating
+[19:43] gate and uh as a result this will
+[19:46] increase the threshold voltage of the
+[19:48] transistor so the floating gate
+[19:50] transistor is set to be programmed so
+[19:53] the value that this is
+[19:55] holding uh let's say that when a
+[19:57] transistor is programmed the value it's
+[19:59] holding is zero and when it's not
+[20:01] programmed the value is one so when it's
+[20:03] not programmed there are no electrons in
+[20:06] the floating gate but when it is
+[20:08] programmed there are electrons in the
+[20:10] floating gate and the value is zero so
+[20:13] initially we start with one then we make
+[20:15] a transition to zero when it is
+[20:18] programmed how is it programmed apply a
+[20:21] positive very high
+[20:22] voltage between the gate and the
+[20:25] substrate electrons will migrate and
+[20:27] deposit themselves in the floating gate
+[20:30] this will increase the threshold voltage
+[20:32] of the transistor significantly so we
+[20:34] say that the gate is
+[20:39] programmed uh so so that is the only
+[20:42] thing that you need to learn I need to
+[20:44] make one correction now I said something
+[20:46] which is incorrect so the correction
+[20:49] that I'm going to make is that I said
+[20:53] that the materials of the floating in
+[20:55] the control gate uh are not necessarily
+[20:57] polyic
+[20:59] but I should you know add a correction
+[21:01] so as of now the materials are both
+[21:07] the uh floating
+[21:18] gate and the control
+[21:27] gate you know for both of them at least
+[21:29] as of now you know as of 2017's
+[21:32] technology is polysilicon even though in
+[21:35] the future it can change but at least as
+[21:36] of now it is poly silicon so so this is
+[21:39] one correction I would like to make that
+[21:42] uh you know I just sort of want to you
+[21:44] know give people an idea what the
+[21:45] current technology is but of course you
+[21:47] know these things keep on changing so
+[21:49] maybe tomorrow the material can change
+[21:51] but not you know as of now it's still uh
+[21:54] the traditional materials which is
+[21:55] polysilicon at the gates and doped
+[21:59] silicon at the substrate and the drain
+[22:01] and the
+[22:03] source so now uh how do we read the
+[22:06] value in a floating gate
+[22:09] transistor well so the way we read the
+[22:11] value is like this that since uh
+[22:14] depositing electrons increases the
+[22:16] threshold voltage we have two threshold
+[22:18] voltages now we have a normal threshold
+[22:20] voltage which corresponds to an
+[22:23] unprogrammed State and we have an
+[22:25] increased threshold voltage which
+[22:27] corresponds to a programmed state state
+[22:29] so VT and VT plus where VT plus is
+[22:32] greater than VT so now when the cell
+[22:35] contains a logical one the threshold
+[22:36] voltage is VT when the cell contains a
+[22:39] logical zero the threshold voltage is VT
+[22:42] plus so we set the gate voltage to a
+[22:45] value between VT and VT plus so in this
+[22:49] case if the cell has a logical one it
+[22:51] will conduct right any
+[22:53] transistor uh if we any nmos
+[22:57] transistor if if it has a voltage
+[23:00] between VT and VT plus uh and you know
+[23:03] it is not programmed it will conduct
+[23:06] however if it is programmed and it's a
+[23:08] logical zero then the threshold voltage
+[23:10] is VT plus so it will not conduct so
+[23:13] that is exactly how you know we
+[23:16] evaluate uh a floating gate transistor
+[23:21] by setting its gate voltage uh to a
+[23:24] value between VT and VT plus so
+[23:27] depending upon whether it's conducting
+[23:29] or not conducting we can reduce what it
+[23:31] is programmed with zero or
+[23:34] one so there are two ways of organizing
+[23:37] floating gate transistors to actually
+[23:39] form a
+[23:40] memory one is called nor Flash and the
+[23:43] other is Nan flash so n flash is not
+[23:46] considered to be very efficient so it is
+[23:48] not used in comparison Nan flash is
+[23:52] used so in nor Flash the idea is like
+[23:55] this that we sort of connect them as a
+[23:57] Norgate configuration in the sense you
+[23:59] connect them in
+[24:01] parallel and
+[24:03] uh not not in parallel but the way we
+[24:06] connect transistors when you're building
+[24:08] a Norgate seos Norgate so let's say I
+[24:11] take two floating gate transistors
+[24:15] connect them to separate word lines one
+[24:17] of their terminals is connected to
+[24:19] ground and the other is connected to a
+[24:22] bit line so if any of these floating
+[24:24] gate transistors you know if let's say
+[24:26] wl2 is set
+[24:28] is enabled which means that the
+[24:30] threshold voltage is set to somewhere
+[24:33] between VT and VT
+[24:37] plus and you know the other transistor
+[24:39] is not enabled right it's meant to be
+[24:41] off then if the voltage on the bitline
+[24:45] approaches zero we will know that this
+[24:48] transistor is programmed so it has a
+[24:51] logical one so sorry we'll know it is
+[24:54] not programmed so it'll uh we'll infer a
+[24:57] logical one however if this does not
+[24:59] approach zero this will mean that the
+[25:02] threshold voltage is higher and uh it is
+[25:07] programmed so it contains a logical
+[25:09] zero so this kind of a configuration per
+[25:12] se is rarely
+[25:14] used uh because you know the density is
+[25:17] low the bandwidth is low even though it
+[25:19] is faster so we'll see why it is faster
+[25:21] than N9 flash on the next slide but
+[25:24] recall that the main philosophy is that
+[25:26] we want to share bit lines between
+[25:27] transist s otherwise we can't dedicate a
+[25:30] separate bit line for each transistor
+[25:32] there will be too many bit lines so
+[25:34] managing them will not be possible here
+[25:37] also we can uh use the same logic as an
+[25:39] SRAM and Dam you can see chapter six
+[25:43] where we pre-charge the bit line to a
+[25:44] certain value and depending upon the way
+[25:47] that the voltage is going either towards
+[25:50] ground or towards VCC we can use a sense
+[25:53] amplifier and figure out what is the
+[25:56] direction and The Logical bit so I'm not
+[25:58] you know going into the details because
+[26:00] already we have discussed this add
+[26:02] infinum in chapter 6 so basically the
+[26:05] term that you should be Googling for is
+[26:07] pre-charging and send amplifier so then
+[26:11] that will give you the additional
+[26:12] background but I'm not discussing it
+[26:14] right now right so these are the two
+[26:15] terms pre-charging and sense
+[26:18] amplifiers so what is what is used is
+[26:23] called nand flash which is a different
+[26:26] and more efficient method
+[26:28] of actually storing data on a uh flash
+[26:32] drive right of creating a flash drive so
+[26:35] what we do is that instead of having
+[26:37] them in parallel like we had it in the
+[26:40] previous uh slide we have in this case
+[26:45] eight floating gate transistors with of
+[26:47] course their separate wordline enable
+[26:50] signals uh connected in series then we
+[26:54] have a bit line select and a ground
+[26:56] select normal transistors which
+[26:58] essentially enables uh all of these
+[27:01] transistors you know at least one of
+[27:03] these transistors so they are mainly you
+[27:06] know enabling switches right so this is
+[27:08] like a switch this is like one more
+[27:11] switch but these are enabling switches
+[27:13] otherwise we connect them in series and
+[27:16] they are all connected to one bit line
+[27:19] so to read a certain transistor what we
+[27:21] do is we enable the rest of the
+[27:23] transistors so all the rest of the
+[27:25] transistors are enabled so the voltage
+[27:27] is basically higher than VT plus which
+[27:31] ensures that irrespective of their level
+[27:33] of programming all of them will conduct
+[27:37] we enable ground select and bit line
+[27:39] select and after that for let's say if
+[27:42] you want to read the value of transister
+[27:44] wl6 we set a voltage between VT and VT
+[27:48] plus and we see if it conducts or not if
+[27:51] it conducts then it means that it has
+[27:53] not been programmed so we have a logical
+[27:55] one otherwise we infer a logical zero
+[27:58] so one advantage here is that we are
+[28:00] able to pack more transistors reduce the
+[28:03] number of bit lines right and so this
+[28:06] allows us more density so the density is
+[28:09] much more than nor flash so recall that
+[28:12] uh we had seen SRAM and Dam devices
+[28:16] which was different in the sense that
+[28:18] every bit was connected to bit lines but
+[28:20] here we are being far being far more
+[28:23] economical with bit lines the most
+[28:26] important thing you need to realize is
+[28:27] that that any flash device is not a
+[28:30] memory device so let me write there is a
+[28:32] very very important thing that all
+[28:34] students need to know that any kind of a
+[28:37] flash drive or a solid state drive is
+[28:40] not a memory device no it's a storage
+[28:45] device sorry
+[28:48] this it's a storage
+[28:51] device so the difference between a
+[28:54] memory device and a storage device is
+[28:56] like this that a memory device is
+[28:58] supposed to be used very frequently
+[28:59] within the normal operation of a
+[29:01] program and it you know very strongly
+[29:05] determines the performance of a
+[29:08] program however a storage device does
+[29:11] not determine the performance of a
+[29:13] program a storage device is mainly meant
+[29:15] for archival that you know I have a
+[29:18] homework I put it on a flash drive take
+[29:20] it somewhere else I have a song I put it
+[29:23] on a flash drive take it somewhere else
+[29:26] so storage devices are more about you
+[29:28] know number one reliability you don't
+[29:29] want the data to get
+[29:32] erased number two is that you're looking
+[29:34] at you know storage space you know so
+[29:37] you want more space and you know more
+[29:40] compact storage so storage devices have
+[29:43] you know very
+[29:44] different requirements as compared to
+[29:47] memory devices that's the reason we can
+[29:49] afford to have these things to be very
+[29:51] slow and uh we can be very economical
+[29:55] with a number of bit lines so for for
+[29:58] example let's say we want to read these
+[29:59] 8 Bits the only way would be to enable
+[30:02] the rest seven read one then enable the
+[30:04] rest 7 read two that is slow but in a
+[30:08] storage device we can afford that the
+[30:10] reason
+[30:12] being uh that uh we are not really
+[30:15] looking for performance here we're
+[30:17] looking for compactness we're looking
+[30:19] for additional storage and we are
+[30:22] looking for
+[30:24] reliability so let's now consider uh the
+[30:27] ter ter blocks and pages so typically uh
+[30:31] on a flash drive uh again an artifact of
+[30:34] it being a storage device aspect of that
+[30:39] we say that a page contains somewhere
+[30:41] between 512 to 496 or 4kb of data so
+[30:46] most n flash devices read or write data
+[30:49] only at the granularity of pages so they
+[30:52] don't provide by level access or they
+[30:55] don't provide access at a level of 8
+[30:56] bytes or 16 bytes
+[30:59] rather uh these devices will only read
+[31:01] and write big massive chunks of data so
+[31:04] they are meant for bulk transfers like
+[31:06] transferring a song a video right you
+[31:09] know huge bulk transfers they're not
+[31:11] meant for small transfers and for small
+[31:14] transfers we use you know memory devices
+[31:17] like srams and dams also there are many
+[31:20] many additional bits for error
+[31:21] correction and the quote that is used is
+[31:24] CRC recall that CRC is very effective
+[31:27] when it comes to burst kind of Errors a
+[31:29] bursty nature of
+[31:32] Errors so uh after defining a page which
+[31:35] is somewhere between half KB and 4 KB we
+[31:40] Define a block so a block contains
+[31:43] somewhere between 32 to 128 pages so the
+[31:47] size is somewhere between 16 to 512
+[31:50] KB so we can erase data at the level of
+[31:55] blocks okay sorry it should be off
+[31:58] so we can erase data at the level of
+[32:01] blocks so so what do we do for Reading
+[32:03] Writing we do it at the level of much
+[32:06] smaller uh level things called pages but
+[32:09] erasing basically means uh that well uh
+[32:13] we need to provide a strong you know
+[32:15] reverse voltage so the electrons move
+[32:17] out of the floating gate and this uh you
+[32:21] know there is one big circuit to do it
+[32:23] but it's fairly inefficient to do it at
+[32:25] the level of single transistors or even
+[32:28] at the level of pages so we do it at the
+[32:30] level of blocks which are actually a lot
+[32:32] of pages a block contains a lot of pages
+[32:35] all of them are erased in one go which
+[32:38] means that they are deprogrammed set
+[32:40] back to logical one so uh as a result
+[32:45] what we follow is a program erase cycle
+[32:48] where basically we write a page then we
+[32:50] go and write one more page we go and
+[32:52] write one more
+[32:54] page and let's say we don't need the
+[32:56] data anymore then the entire block is
+[32:59] erased we again start rewriting the
+[33:02] pages so rewriting a page you know
+[33:05] unlike a memory device it is not
+[33:07] possible that once a page has been
+[33:09] written we can rewrite it because you
+[33:12] know converting a one to a zero is
+[33:15] somewhat easy because this is called
+[33:18] programming and but this Al also done at
+[33:20] the granularity of pages so once
+[33:23] something has become a zero it cannot be
+[33:25] converted to a one unless we erase and
+[33:28] erasing is a very expensive operation so
+[33:31] that's the reason we keep on creating
+[33:32] more and more pages and finally we erase
+[33:35] you know a blocks of pages right 32 to
+[33:37] 128 Pages we erase in one go so
+[33:41] converting these zeros back to one so de
+[33:44] programming is slow and has to be done
+[33:46] at large granularities so that's the
+[33:48] reason every page follows a program eras
+[33:51] cycle where first it is programmed then
+[33:54] of course it's accessed many many times
+[33:57] then when when the time comes it is
+[34:00] erased again reprogrammed again erased
+[34:03] and so
+[34:06] on so let's now take a look at some of
+[34:08] the reliability problems and some issues
+[34:11] that can happen uh in flash drives so
+[34:15] flash memory can only tolerate a certain
+[34:18] number typically 100,000 nowadays it's
+[34:21] more though of program erase Cycles or
+[34:24] PE Cycles so
+[34:26] recall if you take a look at the
+[34:28] previous slide that we write data in
+[34:32] pages and we erase data in blocks but
+[34:34] pretty much once you have written to a
+[34:36] page there's no way to rewrite it we can
+[34:38] only erase it and rewrite it so that's
+[34:41] the reason we have a cycle of a program
+[34:43] erase program arrays and so on so what
+[34:46] happens after repeated P Cycles is that
+[34:50] the sio2 layer the cicon dioxide layer
+[34:53] breaks down and does not remain an
+[34:56] insulator anymore
+[34:58] hence the device cannot hold charge
+[35:00] anymore right so the sio2 layer via
+[35:03] which you know electrons kind of migrate
+[35:05] and Lodge themselves in the floating
+[35:07] gate that does not remain an insulator
+[35:09] during normal oper operation of the
+[35:12] transistor so basically the transistor
+[35:15] breaks down so what is the solution well
+[35:18] the solution is that we keep counters
+[35:21] for each
+[35:22] block uh for each block we have
+[35:26] counters so they we increment the
+[35:28] counter for each P Cycle so for each P
+[35:31] Cycle we say that in the first P Cycle
+[35:34] second third fourth and so
+[35:35] on and uh we try to balance the number
+[35:39] of P Cycles across the blocks that's the
+[35:42] aim so in that sense the entire flash
+[35:45] drive will degrade gradually otherwise
+[35:47] what will happen is that there will be
+[35:49] too much of traffic for one block and
+[35:51] we'll not have enough traffic for other
+[35:54] blocks so that issue will be there
+[35:59] so uh let us look at two things we
+[36:01] leveling and read disturbance so we
+[36:03] leveling basically says that once you
+[36:06] know a counter reaches a high value at
+[36:08] least as compared to the other blocks we
+[36:11] swap the contents of a frequently access
+[36:13] block with a less frequently accessed
+[36:16] block the way that we do this is that we
+[36:19] actually have a mapping table similar to
+[36:21] what we had on a hard disk so basically
+[36:24] for every flash drive
+[36:28] uh basically software thinks of it as a
+[36:32] array of bytes which we always do we
+[36:35] send it a logical block number a logical
+[36:37] address from which we find The Logical
+[36:39] block
+[36:40] number it Maps this to a physical block
+[36:43] number within its storage area right a
+[36:46] physical block once the P count of this
+[36:50] becomes very high and we find another
+[36:52] block which has you know a
+[36:54] relatively lower PE count we essentially
+[36:58] swap the
+[36:59] contents how do we swap the contents
+[37:02] well that is very interesting so we
+[37:03] always we locate one more block which is
+[37:05] empty we'll always have some such blocks
+[37:08] which are empty we'll ensure that there
+[37:09] are always some such blocks that are
+[37:11] empty so then what we do is that we uh
+[37:14] transfer the contents of this block to
+[37:16] this block the empty one right uh we
+[37:20] erase this block then we transfer the
+[37:23] contents of this to this then again we
+[37:25] erase this block and transfer the
+[37:28] contents from the temporary block to
+[37:29] this block and all of this is happening
+[37:33] unbeknownst to the
+[37:34] user then we change the mapping from
+[37:38] this block to this block so in this uh
+[37:42] fashion what happens is is just by doing
+[37:46] these swaps and changes and mapping
+[37:48] we're able to ensure that the PE counts
+[37:51] the P program eras cycle counts of each
+[37:54] and every block roughly Remains the Same
+[37:57] uh across uh the entire storage drive so
+[38:01] this ensures that you know no block uh
+[38:03] degrades faster than others and the
+[38:06] entire storage Drive in a sense degrades
+[38:08] uniformly and after a certain time of
+[38:11] course you know faults will start to
+[38:13] come because you know the PE counts will
+[38:15] actually be very high but that'll be
+[38:17] after several years and in any case pen
+[38:20] drives don't have that long a life but
+[38:22] till its active life we we are
+[38:24] essentially trying to maximize its life
+[38:26] maximize its active life
+[38:28] by doing this and this is called we
+[38:30] leveling because we are trying to level
+[38:31] the we and tier and the we and tier here
+[38:34] is defined as a PE cycle across uh all
+[38:38] the physical blocks and the way this is
+[38:40] achieved is very similar we always have
+[38:43] uh such mechanisms in computer
+[38:45] architecture we had a page table we had
+[38:48] a tlb we have had all kinds of mapping
+[38:50] tables where essentially we send the
+[38:53] logical address the address perceived by
+[38:57] the the program and the
+[38:59] programmer and what the table does is
+[39:01] that the table gives us a physical
+[39:07] address and the physical address can be
+[39:09] changed depending upon the constraints
+[39:11] of the device there are some other
+[39:14] reliability mechanisms as well so it is
+[39:17] called read
+[39:18] disturbance so it is possible that uh by
+[39:22] repeatedly reading a transistor the
+[39:24] contents of the other transistors change
+[39:26] for example n flash you know when all
+[39:28] the gates are connected uh in this
+[39:32] fashion by repeatedly reading this what
+[39:34] are we doing we are essentially enabling
+[39:36] the rest of the
+[39:37] transistors to allow us to read the
+[39:40] value here so what will happen is that
+[39:43] this will cause the contents of the
+[39:45] other transistors to change in the sense
+[39:47] that their floating Gates might lose
+[39:49] some of their
+[39:50] charge and this will essentially cause
+[39:53] it to either uh cause it to get uh
+[39:55] deprogrammed right or in some cases it
+[39:58] can also cause it to get
+[40:00] programmed so uh to avoid this we can
+[40:04] have a counter same approach have a
+[40:07] counter with uh uh you know each block
+[40:10] to find out the number of reads or each
+[40:12] page or each block to find out the
+[40:14] number of reads that have
+[40:16] happened once the number of
+[40:19] reads uh exceeds a threshold we can
+[40:22] always swap the
+[40:24] blocks uh you know take it from one
+[40:26] point to the other uh or what we can do
+[40:30] similar to a dam refresh we can uh read
+[40:33] the contents of the block and write it
+[40:35] back again so then you know this problem
+[40:38] will uh go away so we need to do
+[40:41] something of that type right uh so we
+[40:43] just cannot remain quiet because
+[40:45] otherwise you know errors will crop up
+[40:47] in the data that's the reason we also
+[40:50] need to maintain the counts of the
+[40:51] number of reads along with the number of
+[40:53] PE cycles and ensure that uh we our
+[40:57] number of reads never crosses a
+[40:59] threshold if it does then of course we
+[41:02] need to either swap blocks or we need to
+[41:05] read the same block and write it back
+[41:07] again something like that has to be
+[41:10] done so now thankfully finally
+[41:14] ultimately we have reached the end of
+[41:17] our 12 chapters and at least in this
+[41:20] edition of the book which is the first
+[41:23] edition we have completed all the 12
+[41:25] chapters and lectures of all of them
+[41:27] around 45 50 hours so hopefully you got
+[41:31] a very very good idea of the basics of
+[41:34] computer
+[41:35] architecture uh by now so this is
+[41:38] definitely not the end uh I'm writing
+[41:41] another book on Advanced computer
+[41:43] architecture which will be in the market
+[41:45] in maybe a year or so and uh we will
+[41:50] pretty much start from this point

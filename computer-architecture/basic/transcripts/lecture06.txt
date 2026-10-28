@@ -1,0 +1,942 @@
+[00:00] [Music]
+[00:00] n
+[00:34] welcome to chapter 3 in this chapter
+[00:37] we'll cover Assembly Language which is a
+[00:40] vital link between the hardware and
+[00:44] software uh just to reiterate uh this is
+[00:48] chapter three of the book computer
+[00:49] organization and
+[00:52] architecture and the slides are meant to
+[00:54] be used along with the book otherwise
+[00:56] the learning will remain incomplete
+[01:00] so let's first discuss an overview of
+[01:02] Assembly Language subsequently we'll
+[01:04] discuss the syntax of Assembly Language
+[01:07] we'll design a simple Assembly Language
+[01:09] of our own called the simple risk
+[01:11] Assembly Language along with uh its
+[01:13] instructions and instruction set
+[01:16] architecture subsequently we'll move on
+[01:19] to functions and stacks an advanced
+[01:22] Concept in Assembly Language and we'll
+[01:25] discuss the encoding
+[01:33] so let's first Define what is an
+[01:34] Assembly Language so an assembly
+[01:37] language is a low-level programming
+[01:39] language uh so we'll discuss what is
+[01:41] high level and what is
+[01:43] lowlevel so uh a low-level programming
+[01:48] language uses very very simple
+[01:50] statements where typically one statement
+[01:53] corresponds to a single machine
+[01:55] instruction so these languages are
+[01:58] specific to the instruction set
+[02:00] architecture and so for example C or
+[02:03] Java can be uh can run on any kind of a
+[02:08] processor however uh an assembly
+[02:12] language is specific to only a
+[02:13] particular processor or a particular
+[02:15] family of processors for example it is
+[02:18] possible to run C uh let's move to
+[02:25] a different media for example it is
+[02:30] possible to run a c
+[02:33] program on both an Intel
+[02:37] machine and an arm
+[02:41] machine however Intel has its separate
+[02:45] Assembly Language syntax and arm me it
+[02:48] separate Assembly Language syntax so so
+[02:50] we'll we'll discuss what it is so C is a
+[02:53] high level
+[02:54] language because the concepts are at a
+[02:57] very very high and Abstract level
+[03:00] and also if this is a c
+[03:03] program a single statement in the C
+[03:06] program can actually be many machine
+[03:09] instructions not one but actually
+[03:11] multiple machine
+[03:13] instructions a sequence of zeros and
+[03:16] ones multiple
+[03:20] instructions whereas in an assembly
+[03:23] language program
+[03:37] a single
+[03:38] statement typically in the most often
+[03:49] instruction so this is the vital and the
+[03:52] most important difference between a high
+[03:55] level language and a lowlevel language
+[03:58] so this C would be an example example of
+[04:00] a high level language and an assembly
+[04:03] would be an example of a lowlevel
+[04:17] language so uh so actually an assembly
+[04:19] language is not a single language it
+[04:22] rather refers to a family of low-level
+[04:24] programming languages for each
+[04:27] instruction set architecture has its own
+[04:29] Assembly Language for example an Intel
+[04:34] machine uh like the one that's running
+[04:36] on the desktop right now has its own
+[04:39] Assembly Language you can call it Intel
+[04:43] assembly similarly an arm machine an arm
+[04:49] processor which has a separate Isa a
+[04:52] separate instruction set
+[04:55] architecture has its own Assembly
+[04:57] Language
+[05:06] right you can call it arm assembly
+[05:08] language so maybe so has its own
+[05:11] separate arm assembly language so
+[05:13] different processors different family of
+[05:15] processes have their own assembly
+[05:17] languages and each assembly statement
+[05:20] corresponds to typically a single
+[05:22] machine
+[05:23] instruction uh so we can think of think
+[05:25] of it as a language that is very very
+[05:28] close to the hardware
+[05:30] so typical assembly statement typic has
+[05:33] two
+[05:34] parts it has an instruction code which
+[05:37] is which represents a basic machine
+[05:41] instruction something like add or
+[05:43] subtract or multiply and it has a list
+[05:46] of
+[05:47] operant let us now take a look at the
+[05:50] popularity of the of assembly so I have
+[05:54] a browser window open which shows the
+[05:57] popularity of the most
+[05:59] common uh programming languages as of
+[06:02] July
+[06:03] 2016 so the first three are Usual
+[06:06] Suspects Java CN
+[06:08] C++ but let's scroll down to the 10th
+[06:11] entry the 10th entry is actually
+[06:14] Assembly Language again Assembly
+[06:15] Language is not a single language it's a
+[06:17] family of languages where each processor
+[06:21] family has its own Assembly Language but
+[06:24] we see that from July 2015 till July
+[06:27] 2016
+[06:29] languages together are the 10th most
+[06:32] popular language among all programming
+[06:36] languages so this means that it is a
+[06:39] very very important language for
+[06:41] students to learn and they should be
+[06:44] familiar with at least one flavor of
+[06:46] assembly languages such that they can uh
+[06:50] program Hardware much better and also
+[06:52] understand how compilers and assemblers
+[06:54] really
+[06:55] work so that's why it makes the case for
+[06:58] at least learning these
+[07:00] languages one reason for the popularity
+[07:03] of assembly languages is that we have
+[07:05] many small devices today uh for example
+[07:09] there are small
+[07:11] controllers uh in um almost everything
+[07:14] that we use so noway there are smart
+[07:16] lights that since if a user is in the
+[07:19] room they turn the light on otherwise
+[07:22] they turn it off so this is actually an
+[07:25] advantage
+[07:27] of uh you know very small Hardware Ware
+[07:29] and these small pieces of Hardware are
+[07:32] not programmed using high level
+[07:34] languages rather they are programmed
+[07:36] using assembly languages for the reasons
+[07:39] efficiency so let's introduce a term now
+[07:41] called assemblers so assemblers are
+[07:44] programs that convert Assembly Language
+[07:48] programs written in lowlevel languages
+[07:51] to machine code a sequence of zeros and
+[07:53] ones essentially convert an assembly
+[07:55] language program to a
+[07:57] binary so examples of these would be uh
+[08:01] for
+[08:03] exit nasum uh tum and Mum are three very
+[08:09] popular assemblers for x86 isas there
+[08:12] are similar uh popular assemblers for
+[08:14] arm as well uh the readers are requested
+[08:17] to take a look at the website of the
+[08:19] book to uh get an idea of assemblers for
+[08:23] different assembly
+[08:25] languages so on a on a Linux system it
+[08:28] is possible to generate an assembly file
+[08:30] it's very easy so uh we need to run this
+[08:34] command GCC minus capital S and the name
+[08:37] of the C file or the name of the C++
+[08:40] file so uh so the name of the C file is
+[08:43] fil name. C uh its assembly file name uh
+[08:47] will be file name. s that is its
+[08:50] assembly representation so what GCC
+[08:52] minus s does is that it converts a C
+[08:55] file it compiles it to produce an
+[08:58] assembly file
+[08:59] and once an assembly file is generated
+[09:03] uh you can open it in a text editor and
+[09:05] see uh the details of the assembly code
+[09:08] that has been
+[09:10] generated then to generate a binary we
+[09:13] can run the same GCC command once again
+[09:16] and run it uh and run the command GCC
+[09:19] fil name.
+[09:22] s uh which will generate a binary called
+[09:25] a.out and then running the binary is
+[09:27] very very easy uh what we need to
+[09:33] do uh is that so running the binary is
+[09:37] very easy uh so in theux it is just as
+[09:40] simple
+[09:41] as/
+[09:47] a.out so in this case what we see is
+[09:50] that if we have a c program with the
+[09:51] name fil name.
+[09:56] C A
+[09:58] compiler converts it uh to uh so the uh
+[10:03] compiler command is GCC minus capital s
+[10:07] that converts the C file into an
+[10:09] assembly file uh that's file name.
+[10:15] s and the file name. s can be further
+[10:18] converted to a binary which the
+[10:20] processor can understand a sequence of
+[10:23] zeros and once via using the command GCC
+[10:26] so this holds in a Linux system it'll
+[10:29] also Al hold on a system with Mac OS X
+[10:32] uh with code blocks installed on Windows
+[10:34] there are different commands I'll not
+[10:36] get into
+[10:38] that so let's now take a look at the
+[10:40] importance of Assembly Language from a
+[10:42] hardware designer's
+[10:44] perspective so learning the Assembly
+[10:46] Language is the same as learning the
+[10:48] intricacies of the instruction set
+[10:50] because every Assembly Language
+[10:52] statement corresponds to a single
+[10:54] instruction so once the hardware
+[10:56] designer knows the form of Assembly
+[11:00] Language he pretty much knows what is to
+[11:02] be built uh so so what is the interface
+[11:05] between software and Hardware which
+[11:08] makes it easy to design Hardware as
+[11:10] well so now let's start with the
+[11:12] integrities of Assembly Language but
+[11:14] let's go back to chapter
+[11:16] 1 where we had discussed the structure
+[11:19] of a one Newman machine so V Newman
+[11:22] machine had the CPU at the center so the
+[11:25] CPU was at the
+[11:27] center uh it was connected to memory the
+[11:30] memory contains data as well as data as
+[11:33] well as
+[11:34] instructions and it the CPU is also
+[11:37] connected to iio devices inside the CPU
+[11:41] we have a control unit and arithmetic
+[11:43] logic unit and a set of
+[11:46] registers so the registers are named
+[11:49] storage locations in arm assembly they
+[11:51] are called r0 R1 till
+[11:54] R15 in x86 assembly where uh the Intel
+[11:58] family Intel an AMD family of processors
+[12:00] use x86 assembly the registers are
+[12:04] typically referred to as eax ebx ECX edx
+[12:07] ESI and EDI so these are general purpose
+[12:11] registers additionally there are machine
+[12:14] specific registers which allow you very
+[12:17] fine grained and you know internal
+[12:19] access to changing things such as the
+[12:22] speed of fans the power temperature
+[12:24] controls settings so these are called
+[12:27] machine specific registers which are you
+[12:29] know specific to the processor not
+[12:32] necessarily specific to the processor
+[12:35] family then there are registers with
+[12:37] some special functions so one of them is
+[12:40] a stack pointer that we shall discuss
+[12:43] later then we have the program counter
+[12:45] we all know what the program counter
+[12:47] stands for chapter one it essentially
+[12:50] points to the address of the currently
+[12:52] executing instruction then there is also
+[12:55] a return address register that we'll
+[12:57] come to later
+[13:00] so now let's take a look at memory so
+[13:03] memory all Assembly Language programs or
+[13:06] all programs for that matter look at
+[13:08] memory as one large array of bytes one
+[13:11] huge huge very large array of bytes each
+[13:16] bite or each location has an address so
+[13:19] the address of the first memory location
+[13:22] the first bite so we start counting from
+[13:25] zero in computer science so the address
+[13:27] of the first bite is zero the address of
+[13:30] the second bite is one similarly the
+[13:33] address of the nth bite is n minus
+[13:37] one so the program is stored in a
+[13:39] certain part of memory so we can assume
+[13:42] that the program is stored over here and
+[13:45] the data is stored in some other part of
+[13:46] memory so we can assume that it's stored
+[13:48] somewhere over here so every binary
+[13:52] assumes that the entire memory belongs
+[13:54] to itself and so we are up till now not
+[13:58] discussing what happens if you're
+[13:59] running multiple programs at the same
+[14:02] time we will come to that slightly later
+[14:06] at the moment we are only talking about
+[14:09] how an assembly program or a binary
+[14:12] program would actually view
+[14:15] Memory and the program counter contains
+[14:18] the address which is essentially uh you
+[14:21] know the address of the location of the
+[14:24] current instructions and the current
+[14:26] instruction starts from here so this
+[14:28] address
+[14:29] is contained inside the program
+[14:34] counter so now let's take a look at how
+[14:37] data is stored in memory before we
+[14:39] actually discuss more about assembly
+[14:43] languages so there are four uh mainly
+[14:45] you know there different kind of data
+[14:48] but the typical data types that we use
+[14:50] in C are of this type we have a car or a
+[14:53] character which is one
+[14:56] byte uh we have a short integer which is
+[14:59] 2 bytes a regular integer which is
+[15:02] typically 4 bytes and a long integer
+[15:05] typically 8 bytes so both c as well as
+[15:08] Java follow this
+[15:10] convention so the question that we need
+[15:12] to answer is that in memory how exactly
+[15:15] is data stored so how is a 4 byte
+[15:18] integer stored so what we do is that we
+[15:21] save the four bytes in consecutive
+[15:23] locations in memory starting so let's
+[15:26] say first location is I and and the last
+[15:29] location is I +
+[15:34] 3 so there are two ways in which we can
+[15:37] store data uh so one is called a little
+[15:39] Indian
+[15:41] representation this is used in the arm
+[15:43] and x86 family of processors here the
+[15:47] least significant bite is stored in the
+[15:49] lowest location so we shall uh you know
+[15:52] see a visual depiction of this on the
+[15:55] next slide then we have the big Indian
+[15:58] representation used by sunpark and IBM
+[16:01] power PC here the most significant bite
+[16:04] is stored in the lowest location so
+[16:06] let's take a look at examples of this so
+[16:10] let's consider an integer of this form
+[16:14] that actually contains four bytes it's
+[16:16] in a hex notation so one digit is four
+[16:20] bits so as a result two digits is one B
+[16:23] so this is the first bite second bite
+[16:26] third and fourth
+[16:29] so in the big Indian notation the way
+[16:32] that we actually store it is that the
+[16:34] most significant bite the MSP is
+[16:37] actually stored in the lowest or the
+[16:41] smallest memory location so first we
+[16:44] store 8 87 then we store 65 then 43 and
+[16:49] then
+[16:50] 21 in a little Indian location we store
+[16:54] the least significant bite first so we
+[16:57] store 2 one over here
+[16:59] then 43 then 65 and then 87 so what is
+[17:03] different is the order of the storage of
+[17:06] bites and so this is a matter of
+[17:09] convention one you know we can't argue
+[17:11] that little Indian is better than big
+[17:13] Indian or vice versa it's just a matter
+[17:15] of Convention of how data is stored so
+[17:19] arm and x86 designers have gone for
+[17:21] little
+[17:24] whereas uh IBM and uh Sun design ERS
+[17:29] have gone for the big Indian
+[17:31] scheme so different conventions are
+[17:33] there and the hardware as well as the
+[17:35] Assembly Language writer the assembler
+[17:38] and compiler writers need to be aware of
+[17:40] the particular uh mechanism or scheme
+[17:43] that's being
+[17:45] used so now that we know of how uh
+[17:49] individual integers are
+[17:51] stored we should also take a look at how
+[17:54] arrays are stored so an array of
+[17:56] integers is basically a set of n
+[18:00] integers so let us consider an array of
+[18:03] integers
+[18:05] a00 so way it is stored is actually very
+[18:08] simple we store the
+[18:10] first uh we store the first element of
+[18:13] the array a z then in a consecutive
+[18:16] location we store A1 and A2 and A3 and
+[18:18] so on see one integer is four bytes the
+[18:22] entire array would take 400 bytes and we
+[18:25] save the integers in consecutive memory
+[18:27] locations right
+[18:30] and each integer is stored in either a
+[18:32] little Indian or a big Indian format
+[18:34] depending upon the convention followed
+[18:37] by the
+[18:38] processor now there are an interesting
+[18:41] question arises that how do we store a
+[18:44] two dimensional array you know an array
+[18:47] that has an array that has both rows and
+[18:50] columns how do we store it so there are
+[18:52] two methods row major and column measure
+[18:56] so row measor scheme is used in high
+[18:59] level languages such as C and
+[19:01] python so here what we do is that we
+[19:03] store the first row as an 1D array then
+[19:07] we store the second row and so on so let
+[19:09] me just uh show you with an example so
+[19:13] let's assume that this is a 2d array
+[19:15] with rows and
+[19:17] columns so a 2d array is a
+[19:21] matrix so what we do in a row major
+[19:24] scheme is that we first store the first
+[19:27] row then we store the integers belonging
+[19:30] to the second row then we store the data
+[19:33] belonging to the third
+[19:36] row the other scheme called column major
+[19:39] which is followed by programming
+[19:41] languages such as Fortran and mat
+[19:44] lab they actually store the First Column
+[19:49] the second column and so on so there are
+[19:52] trade-offs between row major and column
+[19:55] major but we are not in a position to
+[19:57] appreciate this right now
+[19:59] we'll discuss more of it in chapter
+[20:02] 10 so what exactly is column measor in
+[20:05] column measure the first colum is
+[20:08] stored then the second column is
+[20:12] stored and then the third column is
+[20:16] stored right in uh in
+[20:19] memory so both of these approaches are
+[20:24] uh sort
+[20:26] of opposites of each other in one case
+[20:29] we traversee the array rowwise in other
+[20:31] case we Traverse the array column wise
+[20:34] so there are tradeoffs in this uh so it
+[20:36] depends upon the way that we write
+[20:38] programs so we'll discuss more about
+[20:41] this in chapter 10 but what is important
+[20:43] to know so the main take-home Point here
+[20:47] is that all programs including assembly
+[20:51] languages uh and processors
+[20:54] fundamentally
+[20:55] assume that
+[20:58] the memory is one large array of bytes
+[21:01] to save an integer we uh which is 4 byte
+[21:05] integer we take four consecutive
+[21:07] locations in memory and save the integer
+[21:10] in either a big endian or a little
+[21:12] Indian format to save an array of
+[21:15] integers we can save it in any form that
+[21:18] we want row major or column major so
+[21:20] let's assume we want to save the array
+[21:23] a00 if one integer is 4 bytes we need to
+[21:27] take up a space in memory which is 400
+[21:30] bytes and save the 100 integers and each
+[21:34] integer can be saved in either the big
+[21:36] Indian or the little Indian
+[21:40] format now let us take a look at the
+[21:42] syntax of Assembly
+[21:44] Language uh so syntax basically refers
+[21:47] to the way that Assembly Language is
+[21:49] written so a typical assembly file uh
+[21:53] looks as shown over
+[21:55] here so there are many kinds of Assembly
+[21:58] Language for many kinds of architectures
+[22:00] many kinds of isas so clearly all of
+[22:03] them have different formats sometimes
+[22:06] very different formats uh we will
+[22:08] discuss the assembly structure of the
+[22:11] gnu
+[22:12] assembler uh which is uh very common in
+[22:15] Linux and Mac OS even other assembly
+[22:19] files in uh diverse operating systems
+[22:22] such as Windows have a roughly similar
+[22:26] structure even though there are
+[22:27] differences but we only want to discuss
+[22:30] the generic Parts in this lecture so if
+[22:34] I consider a certain assembly file uh
+[22:37] the first part of the assembly file
+[22:39] contains some meta information like the
+[22:41] name of the uh original program that uh
+[22:46] you know that this assembly file
+[22:47] corresponds
+[22:49] to the dot text section corresponds to
+[22:53] all the
+[22:54] instructions and the data section
+[22:56] corresponds to all the data that is
+[22:58] accessed by the program all the
+[23:00] constants particularly that are accessed
+[23:03] by the program so the important point to
+[23:06] note over here is that an assembly file
+[23:08] is divided into different
+[23:11] sections and each such
+[23:15] section uh
+[23:17] is demarcated with identifiers in the
+[23:22] gnu assembly case these identifiers are
+[23:26] file do text and data
+[23:30] so as mentioned in the previous uh
+[23:33] previous
+[23:34] slide file refers to the name of the
+[23:36] source file do text section the text
+[23:40] section contains a list of
+[23:44] contains uh the values of readon
+[23:47] variables and
+[23:50] constants so the structure of an
+[23:52] assembly statement is typically like
+[23:54] this that we have an
+[23:56] instruction and then we have a list of
+[23:58] of operant which are the arguments of
+[24:01] the
+[24:02] instruction each instruction as
+[24:05] described
+[24:07] before corresponds to typically one
+[24:11] instruction and the operant can be of
+[24:13] different types for example they can be
+[24:15] a constant so a constant is also known
+[24:18] as an immediate a constant examples of a
+[24:20] constant are 3 4 five you know numeric
+[24:24] constants character constants string
+[24:27] constants
+[24:29] so in Assembly Language parland they are
+[24:32] typically referred to as
+[24:34] immediates the operant can also be
+[24:37] registers and the operant can also be
+[24:40] Memory locations so we'll look at more
+[24:42] of how to specify different kinds of
+[24:46] operant so let's take a look at examples
+[24:51] instructions so the first one is a sub
+[24:53] instruction a subtract
+[24:56] instruction uh what this achieves is
+[24:59] that uh it subtracts the contents of R2
+[25:03] from R1 and saves the
+[25:06] result uh in
+[25:08] R3 so if we want to write we can write
+[25:12] this in this form so this is similar to
+[25:31] similarly the next assembly instruction
+[25:34] is similar to R3 is equal to
+[25:39] R1 multiplied by
+[25:45] R2 so in this sense this is like a high
+[25:49] level programming language albeat the
+[25:51] syntax is slightly
+[25:53] different so the destination always
+[25:55] comes first so the first operant is
+[25:57] typical the
+[25:59] destination and the next two operant are
+[26:02] the source
+[26:03] operant uh so the source operant in this
+[26:06] case are specified using registers but
+[26:08] that need not be the case so we'll take
+[26:10] a look at that uh in the next few
+[26:15] slides so the generic but this is one
+[26:18] kind of the previous uh these two
+[26:21] assembly statements are only one kind of
+[26:24] assembly statements there can be many
+[26:26] other kinds as well
+[26:30] uh let's take a look at some so we can
+[26:34] have a generic assembly
+[26:36] instruction uh followed by a comment so
+[26:39] there are two ways of commenting that we
+[26:41] will look at uh uh in this
+[26:44] chapter uh the first comment starts with
+[26:47] an at so anything after an at is a
+[26:49] comment or we can have generic C style
+[26:52] comments with a slash star and then a
+[26:55] trailing star slash so the comments can
+[26:58] always come at the end of a statement or
+[27:01] you can have an entire line with the
+[27:02] comment the assembly statement itself
+[27:06] can be an assembly instruction or we can
+[27:09] define a constant or we can have an
+[27:11] assembly directive which is essentially
+[27:14] an instruction to the assembler to do
+[27:16] something special so we'll discuss that
+[27:19] later and the entire assembly statement
+[27:22] inclusive of the comment can be preceded
+[27:25] by a label so label can be thought of
+[27:30] as so it's similar to a label that is
+[27:32] used in a go-to statement in C it
+[27:36] uniquely uh points to the assembly
+[27:39] statement that is after it so we can
+[27:41] have a label and then a colon and then
+[27:44] specify the assembly instruction later
+[27:47] on if you want to come back to this
+[27:48] label we just need to have something to
+[27:51] the effect go to label and the control
+[27:54] will jump back to this particular label
+[27:57] so label is an optional argument it's
+[27:59] not required all the time but whenever
+[28:02] we want to jump to this particular
+[28:05] statement from anywhere else in the
+[28:07] program we can use the label to indicate
+[28:11] uh this particular
+[28:12] line so a label is essentially the
+[28:15] identifier of a statement and as uh I
+[28:20] told you before a directive tells the
+[28:22] assembler to do something you know maybe
+[28:25] let's say declare a function or declare
+[28:27] the fact that a new section is starting
+[28:30] in the file so there are many kinds of
+[28:32] directives we'll discuss that
+[28:36] gradually so in the generic statement
+[28:39] structure uh we have already looked at
+[28:41] the assembly instruction part and the
+[28:43] comment
+[28:44] part so we can have many kinds of
+[28:48] instructions so primarily four kinds so
+[28:51] we can have data processing instructions
+[28:54] so these instructions are typically
+[28:57] arithmetic and logical
+[28:58] uh
+[29:00] instructions uh they can be used to add
+[29:02] subtract multiply divide numbers perform
+[29:06] arithmetic operations on them also they
+[29:09] can be used to compare two numbers and
+[29:11] store the result somewhere else we we'll
+[29:14] discuss where that somewhere else
+[29:16] is uh also uh do Boolean operations
+[29:21] between the value store in
+[29:23] registers uh namely a logical or a
+[29:26] logical and or logical not so these are
+[29:28] all Boolean operations that can be
+[29:31] done uh by this family of instructions
+[29:34] called data processing
+[29:37] instructions similarly we can have data
+[29:40] transfer
+[29:41] instructions these instructions transfer
+[29:44] values between registers and memory
+[29:47] locations so these are also very useful
+[29:49] to bring in data from memory to
+[29:52] registers and also to move data between
+[29:56] registers as well as move data from
+[29:58] registers to memory locations
+[30:00] back then we of course need Branch
+[30:03] instructions to implement for Loops
+[30:05] while Loops if
+[30:06] statements so Branch instruction is
+[30:09] typically like this that we Branch to a
+[30:11] given label where the label is what we
+[30:14] looked at in the previous slide it
+[30:16] uniquely identifies an instruction an
+[30:18] assembly
+[30:20] statement along with data processing
+[30:22] data transfer and Branch
+[30:25] instructions we can have special
+[30:27] instruction
+[30:28] to interact with peripheral
+[30:31] devices and uh other programs or set
+[30:35] machine specific parameters or
+[30:38] essentially
+[30:39] access uh special parts of the computer
+[30:43] system that are otherwise not accessible
+[30:45] to high level program so these are
+[30:47] special
+[30:49] instructions let us now discuss the
+[30:51] nature of operan so let's begin by
+[30:54] classifying instructions and defining
+[30:56] some basic terms
+[30:58] so if an instruction takes n operant as
+[31:01] input then uh we say that it's in the N
+[31:04] address format for example this
+[31:07] instruction over here the add
+[31:10] instruction takes
+[31:13] three operan as input so we say that
+[31:16] it's in the three address format so
+[31:18] similarly we can have
+[31:21] instructions in the one address two
+[31:23] address and we can even have four
+[31:24] address format
+[31:26] instructions so an address format
+[31:29] basically refers to the number of
+[31:31] operant that an instruction
+[31:33] takes let's then look at addressing mode
+[31:37] so the method of specifying and
+[31:39] accessing an operant in an assembly
+[31:41] statement is known as the addressing
+[31:42] mode so we'll see there are many kinds
+[31:44] of addressing modes for example in this
+[31:48] assembly statement over here each
+[31:51] operant is a register uh based operant
+[31:54] so the addressing mode is a register
+[31:56] based addressing mode
+[32:00] so let now let's introduce the register
+[32:02] transfer notation we'll actually require
+[32:04] it uh to uh specify the semantics the
+[32:08] way that our assembly instructions
+[32:11] work so the in the register transfer
+[32:14] notation let's take a look at the most
+[32:16] basic uh notation over here R1 the
+[32:20] contents of R2 being assigned to R1 so
+[32:24] this basically so this Arrow
+[32:26] indicates that the direction of data
+[32:29] transfer is from R2 to
+[32:31] R1 so this says that transfer the
+[32:34] contents of register R2 to register
+[32:39] R1 so we can have a slightly more
+[32:43] complicated representation as well so
+[32:46] this uh representation says that add
+[32:50] four to the contents of register R2
+[32:53] essentially add an immediate to the
+[32:55] contents of register R2 and then
+[32:58] transfer the contents to register
+[33:02] R1 the last
+[33:06] uh expression is slightly different so
+[33:11] what this says is that we first access
+[33:14] the contents of register
+[33:17] R2 and then so assume that uh the
+[33:20] contents of register R2 or let's say
+[33:23] eight we access the integer the 4 byte
+[33:27] integer
+[33:28] whose starting address is 8 and then we
+[33:33] subsequently
+[33:35] read subsequently we read four bytes
+[33:39] starting at location 8 so essentially we
+[33:41] read the bytes at location 8 9 10 and 11
+[33:47] so these four bytes uh make one
+[33:50] integer this integer is transferred to
+[33:53] register
+[33:55] R1 so in this case we are actually
+[33:57] accessing a location in
+[33:59] memory the address of the location is
+[34:02] specified in register
+[34:04] R2 so if you read the definition uh
+[34:07] that's mentioned over here it says we
+[34:10] access the memory location that matches
+[34:13] the contents of R2 so in this case in
+[34:15] the example the contents of R2 are 8 so
+[34:19] we start from memory location 8 and read
+[34:22] four bytes starting at 8 9 10 and 11 so
+[34:26] four bytes make one integer and then the
+[34:29] integer is stored so in this case the
+[34:32] integer is the data that is coming from
+[34:35] memory this is stored in register R1 so
+[34:38] this is a memory load operation so this
+[34:41] is this operation is called a memory
+[34:43] load because we are loading data from
+[34:51] memory so let's take a look at some of
+[34:53] the very basic addressing modes
+[34:57] so uh let uh V be the value of an
+[35:00] operant and let R1 and R2 specify
+[35:03] resistors so the convention is always
+[35:06] that R1 you know any variable starting
+[35:09] with r always specifies a
+[35:12] resistor so let's take a look at the
+[35:14] immediate addressing mode in the
+[35:16] immediate addressing mode the constant
+[35:19] itself is the value for example uh
+[35:23] 48 or a hexadecimal constant over here
+[35:28] uh which is
+[35:29] 0x13 it's 19 in decimal or even a
+[35:32] negative number can be anything can be
+[35:33] any kind of a
+[35:35] constant uh this uh so when a constant
+[35:38] is directly used as is for example if I
+[35:41] have an instruction of this form add R1
+[35:46] R2 and
+[35:48] 4 this particular operant is using the
+[35:51] immediate addressing mode because the
+[35:54] constant is specified as is similarly we
+[35:57] can use the register direct addressing
+[36:00] mode where the value of stored in the
+[36:03] register is what is being used so in
+[36:06] this case
+[36:07] R1 is using the register direct
+[36:10] addressing
+[36:12] mode similarly we can use the register
+[36:15] indirect addressing mode something that
+[36:17] we had seen in the previous slide uh in
+[36:20] this particular point for example uh we
+[36:24] can in some variants in some
+[36:28] languages we can write a function of
+[36:30] this type add R2 R2 R3 and R1 in this
+[36:37] case R1 actually contains a memory
+[36:41] address this will be used
+[36:44] to access
+[36:46] memory we will read four bytes from
+[36:49] there the size of an integer and this
+[36:52] will be added to the contents of R3 and
+[36:56] finally be saved in r to so this is
+[36:59] called the register indirect addressing
+[37:01] mode because what the register contains
+[37:04] is actually a memory address the address
+[37:07] is sent to the memory we get contents
+[37:09] from the memory and then use it in an
+[37:13] instruction similarly we can use we can
+[37:17] slightly extend this to create the base
+[37:20] offset addressing mode so in this case
+[37:25] uh the actual value
+[37:28] that is uh being uh used by the program
+[37:33] is actually R1 so so in this case let's
+[37:36] consider an example and then explain the
+[37:38] theory part of it so let's consider this
+[37:41] operand over here which is using the
+[37:44] base offset addressing mode so what this
+[37:47] basically says is that we take the
+[37:48] contents of R1 so let's let this be the
+[37:52] contents of
+[37:53] R1 and then we add it
+[37:57] with the constant here
+[37:59] 20 so assume that the contents of R1
+[38:02] were 8 so we add 8 and 20 and we get
+[38:08] 28 we use
+[38:13] 28 to access the 28th location of
+[38:17] memory and then we read four bytes from
+[38:20] the 28 to the 31st
+[38:22] location and these four bytes are then
+[38:25] used by the program
+[38:29] so this is a base offset addressing mode
+[38:32] because in this case R1 contains the
+[38:34] Base address and the offset is 20 so we
+[38:38] add both of them we get a final address
+[38:42] that's called the effective address
+[38:44] which is used to access memory and then
+[38:48] we get the
+[38:50] contents of an integer from memory we we
+[38:52] read an integer from memory and this is
+[38:57] so the same thing is shown over here
+[39:00] that we take the value of R1 we add it
+[39:02] to the offset the square brackets
+[39:06] indicate that the address is sent to
+[39:08] memory and we read the contents from
+[39:10] memory and this is the final value that
+[39:13] we
+[39:15] use so let's show the register indirect
+[39:18] mode once again using a set of better
+[39:21] pictures so as uh mentioned over here we
+[39:25] take the value of R1
+[39:28] and whatever is the value of R1 we use
+[39:30] it uh we first read it from the register
+[39:33] file and then we use the value to access
+[39:36] memory so let's assume that for example
+[39:40] R1 contained
+[39:41] 32 so we access the 302 location in
+[39:44] memory and read four bytes so for
+[39:47] Simplicity we have not shown four
+[39:48] entries and we finally read the value
+[39:52] out now let's discuss the base offset
+[39:54] addressing mode so this mode will be
+[39:57] very useful for implementing arrays so
+[40:00] the main idea over here is to actually
+[40:03] use a register called the base register
+[40:06] in this case in this example it is R1 so
+[40:11] R1 is used to access the register file
+[40:15] from the register file we read the
+[40:17] contents of R1 and we add it to the
+[40:21] offset so we get an address as the
+[40:24] output and this is called the effective
+[40:26] address but let me let me just call it
+[40:28] as the address for the time being the
+[40:31] address is used to access memory and
+[40:33] finally we read uh four bytes from the
+[40:36] memory so the four bytes are part of the
+[40:39] Single Cell uh this is drawn to enhance
+[40:43] readability so the four bytes are the
+[40:45] value of this particular
+[40:49] operant so what exactly is the base
+[40:52] offset addressing mode again we have a
+[40:54] register and an offset we read the
+[40:57] contents of the register added to the
+[41:00] offset this gives us an address we use
+[41:04] this address to access memory so for
+[41:07] example let's say the address is 28 so
+[41:10] we access the 28 location in memory and
+[41:12] read for bytes and these four bytes are
+[41:16] the final value of the
+[41:18] instruction so let's discuss some more
+[41:21] addressing modes which are not very
+[41:22] frequently used but nevertheless they
+[41:25] are common enough that we should you
+[41:27] know discuss them and especially when we
+[41:30] take a look at the x86 instruction set
+[41:33] we would find these addressing modes to
+[41:35] be extremely
+[41:36] useful so one of them is the base index
+[41:43] we instead of one register we have two
+[41:46] registers so we have a base register
+[41:49] which in this case is
+[41:50] R1 we have an index register which is R2
+[41:55] in this example and we have an offset
+[41:57] which is an immediate so we add the
+[42:00] contents of the two registers and the
+[42:03] offset we get an
+[42:17] address this address is used to access
+[42:25] memory and we read the value
+[42:30] out so this is the value of the operant
+[42:34] so one example would be 100 R1 R2 here
+[42:37] R1 is the base register R2 is the
+[42:40] index and 100 is the
+[42:43] offset so note that this sign of braces
+[42:46] the square braces are used to indicate
+[42:49] that the contents within the braces
+[42:51] refer to an address and once we add the
+[42:54] braces we are supposed to access memory
+[42:56] with the
+[42:57] address and treat the locations in
+[43:02] memory as containing a value as
+[43:05] containing the value of the
+[43:07] operate so we can again have a memory
+[43:10] direct addressing mode which is not
+[43:12] there in most isas but it's there in
+[43:15] x86 in this case if we know the address
+[43:18] of the memory location we can directly
+[43:20] specify it we don't need to add it in a
+[43:23] register instead we can directly specify
+[43:26] it so in this case if this is the
+[43:28] address of the memory we directly
+[43:30] specify it and enclose it in curly I'm
+[43:33] sorry in square brackets or in
+[43:35] braces and this indicates that we access
+[43:38] memory with this address and the
+[43:41] subsequent four bytes
+[43:43] contain the data of the
+[43:47] operate lastly let's take a look at a
+[43:49] certain variant of a register indirect
+[43:52] addressing mode which is actually very
+[43:55] useful it's called the PC related
+[43:58] mode where instead of using a general
+[44:01] purpose data register we use the program
+[44:04] counter we treat the program counter as
+[44:06] a register so in this case we take the
+[44:09] contents of the program counter add an
+[44:11] offset to it to get an address and we
+[44:15] use the sum of both to actually access
+[44:22] memory so let this be the memory in
+[44:25] specific the instruction
+[44:28] memory so then the next four
+[44:32] bytes uh are actually the contents of
+[44:38] the operant so the next four bytes are
+[44:40] typically an instruction in a 32-bit
+[44:43] system uh which we assume to be the
+[44:45] default in at least in this book uh this
+[44:48] is uh so these four bytes from the PC
+[44:51] will typically point to an instruction
+[44:54] so we will find this addressing mode
+[44:57] very very useful this addressing mode
+[45:00] will be found to be useful especially
+[45:03] while implementing the concept of if
+[45:06] statements for loops and while Loops in
+[45:08] assembly that we'll be able to change
+[45:11] the PC the program
+[45:14] counter to uh essentially we'll be able
+[45:18] to change its value and jump to
+[45:20] different points within the program
+[45:22] which is exactly what an if statement or
+[45:25] a for Loop or a while loop do
+[45:27] uh so so let's keep it let's keep this
+[45:29] discussion at this point and when we
+[45:32] discuss when we go into the nties of
+[45:34] Assembly Language we'll come back and
+[45:36] revisit this
+[45:38] point so let's take a look at the base
+[45:40] index offset addressing mode once again
+[45:43] with a better diagram in this case we
+[45:46] have two registers we have R1 and we
+[45:48] have
+[45:50] R2 so both the registers are used to
+[45:53] access the register file we add their
+[45:55] contents plus the offset
+[45:57] then we access memory and we use the
+[45:59] value

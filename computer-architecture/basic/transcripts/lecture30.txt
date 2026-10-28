@@ -1,0 +1,1503 @@
+[00:00] the
+[00:06] [Music]
+[00:34] welcome to chapter 9 in this chapter
+[00:37] we'll discuss the principles of
+[00:39] pipelining so pipelining is by far the
+[00:42] most important technique for uh
+[00:45] improving the performance of processors
+[00:47] and speeding them up so there's no other
+[00:50] technique that is uh you know much more
+[00:53] that that is more important than
+[00:55] pipelining so so let's discuss this
+[00:58] technique in a fair amount of detail in
+[01:00] this chapter this chapter is fairly long
+[01:02] uh we have 125 slides so this the
+[01:05] discussion will be spread across several
+[01:08] lectures uh again this is a chapter of
+[01:11] uh the book computer organization and
+[01:15] architecture uh written by myself Dr
+[01:18] sarangi from I Delhi it has been
+[01:21] published by mrail uh in 2015 and should
+[01:24] be available in almost all locations
+[01:26] worldwide
+[01:30] uh so uh the way we divide this chapter
+[01:32] is as
+[01:34] follows uh we'll discuss we'll uh have
+[01:37] an overview of pipelining first then we
+[01:40] shall discuss a pipeline data path where
+[01:42] we change the data path of the processor
+[01:45] to incorporate pipelining then we'll
+[01:47] discuss several problems with pipelining
+[01:50] called pipeline hazards and uh methods
+[01:53] that we uh apply to fix those problems
+[01:57] pipelining with interlocks and
+[01:58] forwarding
+[02:00] we then look at performance metrics for
+[02:03] processors and finally end
+[02:05] with uh a quick discussion on interrupts
+[02:08] and
+[02:11] exceptions so up till
+[02:14] now uh we have discuss the design of a
+[02:17] simple processor to execute the simple
+[02:19] risk instruction set we have looked at
+[02:22] two kinds of styles we have looked at a
+[02:24] processor with a hardwired control unit
+[02:26] which is faster and we have also looked
+[02:29] at a very
+[02:31] flexible uh processor uh that uh in
+[02:35] which you know even the implementation
+[02:37] of instructions can be changed so it's
+[02:39] called a processor with a
+[02:41] microprogrammed control unit so we have
+[02:43] taken a look at a microprogram data path
+[02:46] micro Assembly Language and micro
+[02:48] instructions so we'll in this chapter
+[02:51] only be working with uh processors with
+[02:55] a hardware control unit which is
+[02:57] processors of the first type which are
+[02:59] by are the most common so we'll only
+[03:01] work with this and try to increase the
+[03:04] performance of such
+[03:07] processors so let's look at how to uh
+[03:10] design efficient processes so we'll only
+[03:12] look at hardwire processes here so what
+[03:16] we claim is that there is a lot of waste
+[03:18] in the sense uh there is a lot of idling
+[03:21] inside the processor most of the time a
+[03:24] lot of stages inside the processor are
+[03:26] doing nothing for example what is the if
+[03:29] stage doing when the ma stage is active
+[03:32] well the answer is it is doing nothing
+[03:34] it's just
+[03:35] idling right uh so it's absolutely
+[03:38] idling and uh it's doing nothing at
+[03:41] all and similarly what is maybe the ex
+[03:44] stage doing when Ma stage is
+[03:47] active so then also answer is that it is
+[03:50] idling and it is doing uh nothing at all
+[03:53] so this tells us that if there are five
+[03:57] stages only one of the stages is active
+[03:59] at any uh instant of time you know if
+[04:02] these are the five stages right and only
+[04:05] one of these stages is active at any
+[04:07] point of time and let's say if this is
+[04:10] active the rest of the stages are not
+[04:11] doing anything and this to US represents
+[04:15] a source of
+[04:16] inefficiency which if removed can
+[04:19] possibly give us more
+[04:21] performance so let's look at the notion
+[04:23] of pipelining so let's go back to our
+[04:26] basic example which is a car assembly
+[04:28] line so the question is is the engine
+[04:31] shop idle when the paint shop is
+[04:33] painting a car well the answer is no so
+[04:37] when we are painting one car the people
+[04:40] at the engine shop are essentially
+[04:42] building the engine of another
+[04:44] car so when this engine goes to the body
+[04:48] shop uh what does the engine shop do it
+[04:50] builds the engineer the engine of yet
+[04:52] another car and so on so the Insight is
+[04:56] that multiple cars are being built at
+[04:58] the same time right so and pretty much a
+[05:01] half-built car proceeds from one stage
+[05:04] to the next so let's maybe draw a
+[05:06] diagram so let's assume there's a part
+[05:08] of the factory a part of a car factory
+[05:11] that's working on the
+[05:12] engine and
+[05:17] then uh this part of the car factory
+[05:20] let's say works on the body and this
+[05:23] part of the car factory works on the
+[05:25] paint so once an engine moves from the
+[05:28] engine shop to the body shop shop well
+[05:31] the engine shop does not
+[05:32] idle the workers start building the
+[05:35] engine of another car similarly the
+[05:37] moment the body of a car has been made
+[05:40] the body shop is not idle instead we
+[05:43] build the body of another
+[05:45] car
+[05:46] so uh can we use the same logic in a
+[05:50] processor we shall
+[05:51] see so let us consider
+[05:54] a example of a pipeline processor so
+[05:58] let's look at our five stages
+[06:00] uh instruction fetch operant fetch if o
+[06:04] execute stage ex memory access Ma and
+[06:07] register right
+[06:10] RW uh so these are the five stages if ID
+[06:13] ex Ma and RW and the
+[06:16] stages process five instructions
+[06:19] simultaneously let's assume that this is
+[06:21] the case so this so this will be similar
+[06:25] uh to a car factory where a car factory
+[06:27] also has multiple shops and a half-built
+[06:30] car moves from one shop to the
+[06:33] next but no shop is ever idle so one
+[06:36] shop is building the body for one car
+[06:39] another shop is building the engine for
+[06:42] yet another car so if we straightforward
+[06:45] bring the analogy over here this is what
+[06:47] we get to
+[06:48] see uh
+[06:51] that uh if we divide uh our processor
+[06:55] into the five stages we can have one
+[06:58] instruction in the RW stage one
+[07:00] instruction in the memory access ma
+[07:02] stage one in the ex stage one more in
+[07:05] the O and if stages respectively one
+[07:07] more in the O and more in the if so we
+[07:09] can have five instructions so the
+[07:12] earliest instruction would be in the
+[07:15] later stages so this would be the
+[07:17] earliest and this instruction would be
+[07:21] latest and as an instructions fetch is
+[07:25] over it will move to the uh as if is
+[07:28] over it will move to to the O stage and
+[07:31] as operant fetches over it will move to
+[07:33] the ex or execute stage so on and so
+[07:37] forth so this process is known as
+[07:40] pipelining it might sound simple but
+[07:42] it's incredibly
+[07:43] complicated so so let's first take a
+[07:46] look at what is the advantage of
+[07:48] pipelining so the advantage of
+[07:50] pipelining
+[07:51] is that we are keeping all the parts all
+[07:55] the parts of the data path busy all the
+[07:57] time right so in this case if I again go
+[08:00] back what we get to see is that if the
+[08:03] in the data path we have five
+[08:05] stages the five stages are busy all the
+[08:09] time right so basically similar to a car
+[08:11] factory no part of a car factory is
+[08:14] actually idle and same is the case here
+[08:18] that all the stages are busy all the
+[08:21] time and one instruction process
+[08:23] finishes its execution in one stage
+[08:26] moves to the next stage finishes
+[08:28] execution here moves here
+[08:30] so if you have five stages we'll have
+[08:31] five instructions being processed
+[08:34] simultaneously and then at the end of
+[08:37] the processing one of the instructions
+[08:38] will move out the second instruction
+[08:41] will come here the third will come here
+[08:43] and a new instruction will enter the
+[08:45] fetch
+[08:46] stage so the idea sounds simple but the
+[08:49] question is where is the advantage so
+[08:51] let's see so we'll have a much
+[08:54] deeper uh discussion on the advantages
+[08:56] of pipelining towards the end of the
+[08:59] chapter
+[08:59] but let's at least get an initial
+[09:01] preliminary idea so let us assume so
+[09:05] this is a simplistic assumption it's
+[09:07] regularly made that all the five stages
+[09:09] do the same amount of
+[09:11] work all right if you make this
+[09:13] assumption without
+[09:15] pipelining uh so let's assume the same
+[09:18] amount of work means T seconds of work
+[09:20] so without pipelining every T seconds an
+[09:23] instruction will complete its execution
+[09:26] right so which means that if an
+[09:28] instruction enters the process here at t
+[09:30] equal to0 after capital T seconds the
+[09:34] instruction will get out which get out
+[09:36] means it will have finishes execution uh
+[09:39] so means that uh it will uh uh if it's a
+[09:43] Memory instruction it will finish the
+[09:45] memory access and uh if a register needs
+[09:48] to be return return to it'll write to
+[09:49] the register so it'll essentially
+[09:52] complete the work of all the five
+[09:54] stages so with pipelining what is
+[09:57] happening that uh instead what we have
+[10:00] done is that we have broken down this uh
+[10:03] circuit into five parts part
+[10:06] one part two uh part three part four and
+[10:10] part five
+[10:12] right so in 1 2 3 4
+[10:15] 5 what we see is that in every TX 5
+[10:22] Seconds right in every T by 5 Seconds
+[10:25] because now remember that since we have
+[10:29] broken down the data path uh into five
+[10:33] parts so basically every part will take
+[10:39] uh instead of T seconds it will take T
+[10:41] by 5 Seconds which basically means that
+[10:46] uh you know for an instruction to move
+[10:48] from here to here it'll take T by5 to
+[10:50] move from here to here it'll take T by5
+[10:53] and so on and so forth right so
+[10:55] basically which means that if for
+[10:57] somebody who's standing over here so
+[11:00] consider an observer who's standing over
+[11:02] here and looking at what's happening The
+[11:05] Observer will
+[11:06] see that
+[11:09] uh every T by 5 Seconds a new
+[11:12] instruction is coming
+[11:13] out right but if uh you know the
+[11:18] instruction the processor was not
+[11:20] pipelined and the Observer is
+[11:23] standing over here and the Observer is
+[11:26] looking what the Observer will see that
+[11:29] one instruction enters at t equal to 0
+[11:32] at T
+[11:33] seconds it finishes in a sense it comes
+[11:36] out then again one more instruction
+[11:39] comes in so every T seconds one
+[11:41] instruction comes out and in this case
+[11:43] every T by 5 Seconds one instruction
+[11:45] comes out which means that let's
+[11:48] say after n seconds the number of
+[11:52] instructions that uh would have
+[11:54] successfully executed in a pipeline
+[11:56] processor is n / by T by by 5 which is 5
+[12:01] n BYT but here after n seconds the
+[12:04] number of instructions that would have
+[12:05] completed is n BYT so a pipeline
+[12:08] processor in this case in its most
+[12:11] simplest form can
+[12:14] process uh five times more instructions
+[12:18] than a non-pipeline
+[12:21] processor all right uh so so that's the
+[12:23] basic idea that you know that that is
+[12:25] where the expected speed up will come
+[12:27] from that it can process more
+[12:29] instructions at the same time and also
+[12:32] if we are looking uh for an observer
+[12:35] who's looking at a pipeline processor
+[12:37] from outside every tx5 seconds a new
+[12:40] instruction is coming out uh so I'll
+[12:43] just uh go back to the diagram every TX
+[12:46] 5 Seconds a new instruction is coming
+[12:47] out so the instruction the rate of
+[12:50] instructions coming out is five times
+[12:52] more as compared to a non-pipeline
+[12:54] processor as a result if a program has
+[12:57] any instructions
+[12:59] then uh you know it will uh execute five
+[13:04] times
+[13:08] faster all
+[13:10] right now let's take a look at the
+[13:13] design of a pipeline so the first thing
+[13:15] that we need to do is that we need to
+[13:17] split the data path among the five
+[13:19] stages you know in a nice and clean way
+[13:22] so we need to divide it into five parts
+[13:24] such that each part can contain a
+[13:27] separate instruction
+[13:30] so regarding the timing what we need to
+[13:32] do is that we need to insert latches
+[13:34] well they are not latches they're
+[13:35] actually flipflops because they are
+[13:37] contained by uh because they're
+[13:39] controlled by a clock so we'll also call
+[13:41] them pipeline pipeline registers or just
+[13:44] registers well but just registers will
+[13:47] confuse us with register and the
+[13:48] register file so let's call them
+[13:50] pipeline
+[13:51] registers so they will also call be
+[13:54] latches but by latches here we mean that
+[13:56] they're also connected to a clock so
+[13:57] there's a little bit of an abuse
+[14:00] of uh the symbols here the the little
+[14:03] bit abuse of the naming here uh but you
+[14:07] know it should be cleared from the
+[14:08] context so these pipeline registers or
+[14:10] pipeline latches let us add them between
+[14:13] consecutive stages so we will add four
+[14:16] latches what we'll do is we'll have if
+[14:19] then if stage will write its result to
+[14:23] uh set of uh you know flip flops that
+[14:26] are controlled by a clock uh set of
+[14:29] peline uh a set of pipeline registers
+[14:33] then we'll have the O stage again a set
+[14:36] of pipeline registers or pipeline
+[14:38] latches then again the ex stage the same
+[14:43] thing M
+[14:47] stage and the registered right stage
+[14:51] RW so what we shall see over here is
+[14:55] that we are adding four pipeline latches
+[14:59] so uh let's call this the ifof latch
+[15:01] because it's between the if and O
+[15:04] stages similarly We'll add an oex latch
+[15:07] an ex ma latch and an M RW
+[15:13] latch so these latches are actually
+[15:15] controlled by a clock see if this is the
+[15:17] clock you know so the clock goes to all
+[15:21] the four latches here
+[15:24] here here and here so it goes to all the
+[15:29] four latches so uh what we the way we
+[15:32] design it is that at the negative edge
+[15:34] of a clock one instruction which is in
+[15:37] one stage will move to the next stage
+[15:39] right so every negative edge of the
+[15:41] clock instructions move from one stage
+[15:45] to the other one stage to the other one
+[15:47] to the other and at the end they go out
+[15:50] of the pipeline means that they finish
+[15:52] their
+[15:53] execution so this is what our new
+[15:55] diagram looks like that we have these
+[15:57] pipeline latches so mind you again a
+[16:00] latch here is actually a flip-flop it's
+[16:02] controlled by the negative edge of a
+[16:04] clock so we add four latches between the
+[16:08] stages and every Negative Edge the
+[16:12] instruction that is over being processed
+[16:14] in this stage moves to this stage every
+[16:17] Negative Edge instruction here moves
+[16:19] here so we add a latch between
+[16:22] subsequent stages and the latch is
+[16:24] triggered by the negative
+[16:27] clocked so what what is it that travels
+[16:29] between the stages we have already
+[16:31] answered this in the previous slide that
+[16:33] the instruction packet travels so what
+[16:36] exactly is the instruction packet well
+[16:38] instruction travels it's an instruction
+[16:40] packet but what exactly is in
+[16:43] there uh so we have the contents of the
+[16:46] instruction which means the instruction
+[16:48] itself right it's 32
+[16:50] bit uh
+[16:52] contents then the program counter that
+[16:55] is associated with uh the particular
+[16:58] instruction
+[16:59] all the intermediate results that we
+[17:02] compute uh and the all the intermediate
+[17:05] results we
+[17:06] compute uh and the results that are
+[17:09] required in the subsequent stages they
+[17:11] also move along with the packet and all
+[17:14] the control signals that we require to
+[17:16] control the multiplexers in the
+[17:18] subsequent
+[17:19] stages so basically every instruction
+[17:22] will move with its entire State such
+[17:25] that there is no interference between
+[17:26] instructions so previously
+[17:29] uh what was happening is that the
+[17:31] control unit so you know previously what
+[17:33] was happening is that the control unit
+[17:36] which was there in
+[17:42] the O stage was sending the control
+[17:46] signals to well it was actually dotted
+[17:49] lines uh let's see let me remove this
+[17:52] line
+[18:02] uh the control unit was sending control
+[18:05] signals to all the stages right ex and
+[18:08] so on but in this case this is not
+[18:12] possible the reason it is not possible
+[18:15] is basically because we have five
+[18:17] instructions so the control unit
+[18:19] generates the control signals for which
+[18:21] instruction so either we need to have
+[18:23] five control units which is not a
+[18:25] reasonable idea so what we do is that
+[18:28] when an instruction passes from the if
+[18:30] to the O
+[18:32] Stage IT collects all the control
+[18:35] signals that are required in the
+[18:36] subsequence stages that is a part of the
+[18:39] overall instruction packet right uh
+[18:42] let's call it inst packet and inst
+[18:44] packet moves from stage to Stage right
+[18:47] so in some stages some information is
+[18:49] removed in some stages some information
+[18:52] is added but broadly the instruction
+[18:54] packet moves and what does it contain it
+[18:57] contains the contents of the instruction
+[18:59] right the
+[19:00] 32bit uh representation of the
+[19:03] instruction it contains the program
+[19:05] counter the
+[19:06] PC uh it contains all the intermediate
+[19:09] results that would be required in the
+[19:11] subsequent stages and it contains all
+[19:14] the control signals that are required to
+[19:16] control multiplexes in the subsequent
+[19:18] stages so this is the entire state of
+[19:21] the instruction that moves across
+[19:24] stages so let's look at the design of a
+[19:27] pipeline data
+[19:31] path so almost everything Remains the
+[19:34] Same I would suggest that the readers
+[19:36] take a look at the if circuit that we
+[19:41] had designed uh in
+[19:45] uh uh in the uh in chapter 8 so they
+[19:49] will find that the circuit is the same
+[19:53] so there is absolutely no change it is
+[19:55] just that we have this extra Green Box
+[19:58] the ifof register between the if stage
+[20:01] and the O
+[20:03] stage so it's the pipeline latch of the
+[20:05] pipeline register we'll use the terms
+[20:08] interchangeably so what we store here uh
+[20:11] we store the program counter because we
+[20:14] want this to so this is a part of the
+[20:15] instruction packet we store the program
+[20:18] counter and the contents of the
+[20:19] instruction so this is pretty much what
+[20:21] we store over here and this is what
+[20:25] moves to the next stage
+[20:29] let us now consider the O stage so let's
+[20:33] the O stage begins from the ifo register
+[20:37] so uh what did we get from the previous
+[20:40] stage we got the program counter the PC
+[20:46] from the previous
+[20:49] stage right so this is what we got and
+[20:52] we got the instruction packet from the
+[20:54] previous stage so this is uh one more
+[20:57] thing that we got
+[20:59] uh from uh the if stage so after this uh
+[21:04] the rest of the circuit between the two
+[21:07] green boxes between the two pipeline
+[21:10] registers is exactly the same as uh what
+[21:13] was there in the non-pipeline processor
+[21:16] so it is just uh that was drawn
+[21:18] vertically this is being drawn
+[21:20] horizontally that's the only difference
+[21:22] but otherwise the entire circuit is the
+[21:24] same but let me nevertheless re
+[21:26] explain uh so first is that the
+[21:29] instruction goes to the control unit and
+[21:31] the control unit generates all the
+[21:34] control signals uh the control signals
+[21:37] are a part of the instruction packet uh
+[21:40] so they flow along with the instruction
+[21:43] so this is stored directly in the next
+[21:45] register which is the O EF register
+[21:48] because it's the O stage and this the ex
+[21:50] stage so the O ex pipeline register
+[21:53] pipeline or pipeline
+[21:55] latch saves the control signals
+[21:59] simultaneously control unit quickly
+[22:01] generates the two control signals is
+[22:03] store and is R uh if you would recall
+[22:06] what had been done in chapter 8 so my
+[22:09] advice is that before taking a look at
+[22:11] this chapter please take a look at
+[22:15] chapter 8 the processor design part uh
+[22:18] so you can either read the book or take
+[22:20] a look at the video and then come back
+[22:23] so what we had designed in chapter 8 is
+[22:27] that for the the res file had two read
+[22:29] ports two interfaces the first read
+[22:33] Port uh read the First Source register
+[22:37] or the return address depending upon the
+[22:39] is red signal and the second read Port
+[22:43] uh based on the is store signal either
+[22:46] took in the contents of the Rd register
+[22:48] or the Second Source register which is
+[22:52] rs2 then the register file we have two
+[22:55] outputs we have uh op1
+[22:59] uh is one output and op2 is the other
+[23:01] output so op1 we directly save in the
+[23:05] pipeline large and we call it
+[23:08] a simultaneously we
+[23:13] uh uh save op2 so op2 we also save it uh
+[23:17] in the pipeline large we call it op2
+[23:20] only
+[23:22] also uh we choose uh so depending upon
+[23:25] the value of the a immediate control
+[23:27] signal uh whether it has an immediate or
+[23:30] not for the second operant we choose
+[23:33] between IMX which is the extended
+[23:35] immediate and uh the Second Source so
+[23:40] basically depending upon the is
+[23:42] immediate flag we choose one of them and
+[23:44] we refer to this as
+[23:46] B all right so what's the why are we
+[23:49] doing this because if the is immediate
+[23:52] flag is one it means that the second
+[23:54] operant is an immediate so so we should
+[23:57] uh take the the input from
+[24:00] here and if is immediate is zero it
+[24:03] means that the second oponent is a
+[24:05] registor so we should take the input
+[24:07] from here so in any case this is saved
+[24:10] as uh saved in the field B and the First
+[24:13] Source is saved in the field
+[24:15] a We additionally save op2 as well the
+[24:19] reason we save op2 is that uh we will
+[24:23] require this and we will require this
+[24:26] because this is the store operant and so
+[24:28] there's a special case being made for
+[24:30] store so let's see why is the special
+[24:32] case being made so in the case of a
+[24:37] store uh
+[24:39] the idea is that we
+[24:44] will uh
+[24:47] have uh so so so let's take a look at a
+[24:50] store instruction once again so so let's
+[24:52] see we will have in this case uh two
+[24:55] registers two Source registers
+[24:58] and also uh we will
+[25:01] have
+[25:03] uh uh one offset so basically we will
+[25:06] store into register Rd so mind you for a
+[25:09] store the path is like this that we
+[25:11] store Rd we read the result of Rd and
+[25:16] the result of Rd is basically the value
+[25:18] that needs to be stored which comes in
+[25:20] over here but also mind you the
+[25:23] immediate flag is one for a store
+[25:26] because the immediate stores the offset
+[25:29] and uh which we add to the base register
+[25:32] which is
+[25:34] rs1 so basically the immediate also
+[25:37] needs to be stored since the immediate
+[25:39] flag is one so this will not get stored
+[25:42] the immediate will come in so that's the
+[25:44] reason the store we will require both
+[25:46] op2 which is the contents of uh which is
+[25:51] the contents of Rd so let me maybe use a
+[25:54] laser
+[25:55] pointer so we will need op2 which is the
+[25:58] contents of register Rd so that needs to
+[26:02] be stored right so that will flow via
+[26:05] this route because if is store is one
+[26:08] then we will uh access the register file
+[26:11] with the contents of Rd which is the
+[26:14] destination register so recall the
+[26:16] special case that we are making for the
+[26:18] store
+[26:19] instruction uh then we read that and we
+[26:21] store op2 in the op2
+[26:24] field and then we store the First Source
+[26:27] register which is coming via this
+[26:31] route uh so we will store that in the
+[26:33] field a in the instruction
+[26:35] packet and also in the case of a store
+[26:38] the is immediate flag is actually true
+[26:41] since the is immediate flag is true uh
+[26:45] we will choose the immediate as the
+[26:47] output of this multiplexer the extended
+[26:50] immediate and that will be stored in
+[26:52] field
+[26:53] B so now the question that can arise is
+[26:56] why do we store op2 and B sep separately
+[26:59] well the answer is because for a store
+[27:01] op2 will not be chosen by this
+[27:03] multiplexer but we still need the value
+[27:05] of op2 so since we need the value of op2
+[27:09] we better store it separately for the
+[27:11] store instruction for others this
+[27:13] problem does not arise so recall that we
+[27:16] made a special exception for a store
+[27:18] instruction because we didn't want to
+[27:20] add an extra instruction format so
+[27:23] that's the reason we store the immediate
+[27:24] in B we store The Source registered in a
+[27:27] for a store and we stored the register
+[27:31] Rd which actually contains the data that
+[27:34] needs to be stored in
+[27:37] op2 right so the contents that need to
+[27:40] be stored are stored in op2 and the rest
+[27:43] contain the immediate and the base
+[27:44] register
+[27:46] respectively uh for other instructions
+[27:48] this problem is not there so basically a
+[27:51] contains the First Source and B contains
+[27:54] the SEC Second Source the Second Source
+[27:57] can either be the the contents of a
+[27:59] register or can be the
+[28:02] immediate so we again pass the
+[28:06] itself uh from one uh from this latch to
+[28:10] this
+[28:11] latch uh we compute the branch Target in
+[28:13] the branch uh unit over here in the of
+[28:16] stat the branch Target is also part of
+[28:19] the instruction packet and the PC is
+[28:21] also part of the instruction packet so
+[28:23] this is pretty much all the information
+[28:25] that is going to the next stage uh which
+[28:28] is the ex stage so we don't need
+[28:30] anything else from the O stage at this
+[28:33] particular point of
+[28:34] time so those uh who have uh you know
+[28:39] those who would recall in chapter 8 uh
+[28:42] we had designed the processor exactly in
+[28:44] the same way you know no difference at
+[28:47] all uh but we didn't the only difference
+[28:49] is we didn't have these green
+[28:51] boxes uh we did not have the pipeline
+[28:54] latches so we were not storing
+[28:56] intermediate values in this case what
+[28:58] are the intermediate values that we are
+[29:00] trying to store in the pipeline
+[29:02] registers well the intermediate values
+[29:04] that we're trying to store are ba a and
+[29:07] op2 these are values which have either
+[29:09] come from the register file or from the
+[29:12] immediate unit so let me again erase
+[29:15] everything and show you once again so
+[29:17] the intermediate values that we are
+[29:20] storing which are ba and op2 have
+[29:24] essentially come from the register file
+[29:26] or from the immediate unit
+[29:29] so that's the reason they are being
+[29:30] stored in this register along with that
+[29:33] we are storing control signals the
+[29:35] contents of the instruction and also the
+[29:37] branch Target is another intermediate
+[29:39] value so that's also what we are storing
+[29:42] and the PC also passes uh along with
+[29:45] everything else uh it passes to the next
+[29:48] stage which is the ex
+[29:52] stage so in the ex stage these are all
+[29:55] the fields that we get from the previous
+[29:57] stage which is is
+[29:58] O so we get the first uh Al operant
+[30:04] which is a we get the second Al operant
+[30:06] which is B and in the case of a store
+[30:09] the data that needs to be stored is in
+[30:12] op2 and the rest is all normal stuff uh
+[30:16] instruction uh the control for the
+[30:18] instruction the branch Target and the
+[30:21] PC so some of the control signals we out
+[30:24] to the ALU the ALU does its job and ALU
+[30:27] stores the result in the ALU result
+[30:29] field of the ex M uh pipeline register
+[30:33] so ex stands over here ma stands over
+[30:38] here so the results of the ALU are
+[30:41] stored in the field ALU result and the
+[30:44] op2 we just move to the next
+[30:46] register and then the AL also updates
+[30:49] its flags and this is processed by the
+[30:51] branch unit the branch unit gets control
+[30:54] signals from the control
+[30:56] unit is B Q is bgt and U is U Branch so
+[31:00] just go back to the relevant part of
+[31:03] 8 so what the branch unit produces is
+[31:07] that it produces the control signal is
+[31:09] Branch taken which needs to go to the
+[31:11] fetch unit and also we have a
+[31:15] multiplexer that chooses between the
+[31:17] branch Target that comes from the
+[31:18] previous
+[31:19] stage and uh the contents of register a
+[31:23] which is which will contain the return
+[31:26] address in the case of a return instr
+[31:28] instruction right so in the case of a
+[31:30] return
+[31:31] instruction uh the contents of uh you
+[31:34] know the field a will contain the return
+[31:38] address otherwise it will be the branch
+[31:40] Target so using the ISR control signal
+[31:43] we choose between them uh to compute the
+[31:45] branch PC so these are then sent to the
+[31:49] if stage to the fetch unit to the if
+[31:51] stage right so this is one case where
+[31:54] something is actually
+[31:55] flowing uh between stages without going
+[31:58] via register so so we shall see this is
+[32:01] an you know this is an
+[32:04] exception so in this case the is Branch
+[32:06] taken signal and the branch PC both are
+[32:08] going to the if stage but all the rest
+[32:11] of the intermediate results are being
+[32:14] written to the pipeline register at the
+[32:17] end so that includes um sorry yeah that
+[32:20] includes the control signal contents of
+[32:23] instruction uh the data that needs to be
+[32:25] saved which is in op2 and the ALU result
+[32:30] now we go to the next stage which is the
+[32:32] ma stage the memory access
+[32:35] stage so the memory access stage is
+[32:37] simple uh nothing uh no rocket signs
+[32:41] here so it stands between the ex stage
+[32:46] and the RW
+[32:49] stage so the ALU result contains the
+[32:52] address so this goes into the memory
+[32:54] address register op2 contains the data
+[32:58] that needs to be stored so it goes into
+[33:00] MDR memory data
+[33:01] register then the memory unit works it
+[33:04] interacts with data memory it's
+[33:06] controlled by two control signals is
+[33:08] load and is
+[33:09] store and the result of the memory unit
+[33:13] is stored in the case of a load it is
+[33:16] stored in the field called load result
+[33:18] in the MW
+[33:21] register uh so load result contains
+[33:23] whatever we loaded from memory and the
+[33:25] rest of the fields just continues the
+[33:28] program counter continues the ALU result
+[33:31] that we had computed the same thing is
+[33:33] written in this register the instruction
+[33:36] and relevant control
+[33:40] signals now let's move to the last stage
+[33:42] called the RW
+[33:44] stage so the last stage is exactly the
+[33:47] same as what we had in chapter 8 in fact
+[33:50] all the stages are exactly the same as
+[33:52] as we had in chapter 8 uh no difference
+[33:55] at all and
+[33:58] so here uh it's just that we have drawn
+[34:01] it differently so it looks slightly
+[34:03] different it is the same so you recall
+[34:06] we had a three-input multiplexer that
+[34:08] first read pc+
+[34:10] 4 pc+ 4 was is essentially the return
+[34:15] address which the call instruction will
+[34:19] use then we have the load result and ALU
+[34:22] result and it was being controlled by
+[34:24] two control signals coming from the
+[34:26] control unit
+[34:28] uh is load and is
+[34:30] call so then
+[34:33] the uh one of the three inputs becomes
+[34:36] the data that needs to be written to the
+[34:38] register file so this directly goes to
+[34:40] the register file the register file can
+[34:43] be located either in the RW stage or in
+[34:46] the O stage but the O stage is a better
+[34:48] place so essentially it goes to the
+[34:50] register file in the O
+[34:54] stage now we had one more multiplexer
+[34:57] that chose
+[34:58] uh between the Rd
+[35:01] field and uh the ra field the ra field
+[35:05] for the call
+[35:06] instruction so so basically the is call
+[35:10] control signal chooses between uh these
+[35:13] two values whether whether we write it
+[35:16] to a register destination or whether we
+[35:19] write it to the return address register
+[35:21] depends upon whether the instruction is
+[35:23] a call or not because a call instruction
+[35:26] wres the address of the next instruction
+[35:30] to the ra register so we make this
+[35:33] choice and pass it to the address field
+[35:35] of the register file which tells it
+[35:38] which register to write
+[35:39] to and we use the is Right Back Control
+[35:42] signal to enable a right so we had we
+[35:46] have seen all of this all of this we
+[35:48] have seen in chapter 8 the only addition
+[35:50] is the green box uh so all our control
+[35:53] signals come from the green box
+[35:55] previously they used to come from the OS
+[35:57] stage and uh here also all our values
+[36:01] come from this pipeline large over here
+[36:04] uh and not from other stages right
+[36:07] that's the only difference so if I just
+[36:09] summarize uh this is a diagram of the
+[36:12] entire
+[36:15] processor so uh there is no uh yeah so
+[36:20] there is there should be no ambiguity
+[36:21] because this is exactly what we have
+[36:23] seen earlier the only difference
+[36:27] s are these green boxes where we store
+[36:32] the temporary uh values and these flow
+[36:35] from latch to latch to
+[36:38] latch
+[36:40] and uh at at every stage we do some
+[36:43] procing so the idea is that every stage
+[36:45] we read the inputs from this
+[36:48] register and
+[36:50] then what we do is that we do some
+[36:53] processing and write the outputs to the
+[36:55] next register similarly in here also we
+[36:58] read the inputs and write the outputs to
+[37:00] the next register so on and so forth
+[37:03] there are only two instances so so that
+[37:05] is this is a normal flow of action so
+[37:08] the flow of action is that we have this
+[37:09] one green box which is a pipeline latch
+[37:12] at the beginning of a clock cycle which
+[37:14] means at a Negative Edge we get data
+[37:17] from the pipeline latch we have a cloud
+[37:20] of logic which uh essentially processes
+[37:24] all the data and we can uh access memor
+[37:28] elements as well then all the results of
+[37:31] this activity are return to another
+[37:32] latch and we then finish there are only
+[37:36] two instances where data is directly
+[37:39] sent between stages so one is the case
+[37:42] of a branch in a a taken Branch where
+[37:46] the fact that the branch is taken and
+[37:48] the new Target are sent from the ex
+[37:50] stage to the if stage right using these
+[37:55] wires and the other instance is when we
+[37:58] write to
+[37:59] something uh in the RW in the register
+[38:03] right stage so that is when all the
+[38:05] values if you see essentially this is
+[38:08] like a wormhole in Star Treck so we I
+[38:11] didn't want to draw a long wire so
+[38:12] pretty much in a values enter here and
+[38:14] they come out here which is same as you
+[38:17] know taking a wire and going all the way
+[38:19] here and uh it's just that I didn't want
+[38:21] to draw that many long wires so I use
+[38:24] this convenient trick but essentially
+[38:26] when we are doing a
+[38:28] when we are doing a register
+[38:30] right uh the ID of the register the data
+[38:33] and the fact that we are writing these
+[38:35] pieces of information need to go from
+[38:38] the RW stage to the OS stage so these
+[38:41] are the only two instances in our data
+[38:43] path where something flows some kind of
+[38:47] data flows between stages with without
+[38:51] going via pipeline registers or pipeline
+[38:54] latches so these are the only two
+[38:55] examples and need they need to be kept
+[38:57] in mind the rest of the circuit is the
+[39:03] same the previous diagram was pretty
+[39:06] complicated so we shall not be using
+[39:08] that in most of our discussion we shall
+[39:10] rather be using this
+[39:12] diagram which we call an aage
+[39:15] diagram so the aage diagram is fairly
+[39:23] easy uh we have the fetch unit over here
+[39:27] uh and the instruction memory so uh
+[39:29] basically we just use one Arrow to show
+[39:31] all the contents that are transferred to
+[39:34] the ifof
+[39:36] register uh the O stage uh we have three
+[39:39] units the control unit the immediate
+[39:41] Branch unit and the register
+[39:43] file so we have a single multiplexer
+[39:46] over here to choose between the register
+[39:48] operant and the immediate operant and
+[39:51] also for the special case of the store
+[39:53] we store op2 separately in the
+[39:55] instruction packet
+[39:57] in the ex stage we have some information
+[40:00] that flows back to the if stage so uh as
+[40:03] we had mentioned in the last few slides
+[40:06] there are only two instances when uh
+[40:08] information flows between
+[40:11] stages uh without uh you know without
+[40:14] going through pipeline latches so one so
+[40:18] both these examples are shown in
+[40:21] Red so the first case is when Branch
+[40:24] information taken Branch information
+[40:27] flows from the ex stage to the if
+[40:32] stage uh so the E sorry the ex stage
+[40:36] additionally has the ALU unit the flags
+[40:40] and uh the ALU result is written to the
+[40:43] exma
+[40:44] register there is one connection between
+[40:47] the inputs to the AL unit and the branch
+[40:50] unit this is for the return
+[40:53] address then we have the exma uh
+[40:56] pipeline register and the ma memory
+[40:58] access stage the memory access stage
+[41:01] simply communicates with data memory and
+[41:04] writes the result of load instructions
+[41:07] to the MW pipeline
+[41:10] register and finally we have the
+[41:12] register right unit so this is the
+[41:15] second instance when information flows
+[41:18] between stages so basically from the RW
+[41:22] stage we have a connection to the OS
+[41:24] stage for register right values flow to
+[41:27] the register file so we shall mainly be
+[41:30] using this diagram because this diagram
+[41:33] is way simpler than the previous diagram
+[41:35] Which is far more complicated so we
+[41:38] shall mainly be using this diagram and
+[41:40] be and we shall keep on making small
+[41:43] modifications to
+[41:46] this all right so now that we have seen
+[41:49] the basic organization of a pipeline so
+[41:52] let's take a look at some of the
+[41:53] problems that can happen so these are
+[41:55] called pipeline hazards
+[41:57] so let's take a deeper look at pipeline
+[42:00] hazards and uh then we shall look at
+[42:03] different methods of uh fixing them or
+[42:06] taking care of
+[42:08] them all right so let us consider the
+[42:11] correctness and to uh of executing
+[42:14] program so to let us introduce a new
+[42:17] tool called a pipeline diagram so a
+[42:20] pipeline diagram is an analytical tool
+[42:22] for us so it'll be shown uh in this
+[42:26] fashion
+[42:27] so essentially The Columns in the
+[42:29] diagram represent clock Cycles the clock
+[42:31] cycle 1 2 3 4 to
+[42:34] 9 and the rows represent the pipeline
+[42:37] stages so if o f ex Ma and
+[42:42] RW so what this indicates so basically
+[42:45] if you see there are these cells the
+[42:48] there are the square shaped
+[42:50] cells so what we are essentially saying
+[42:52] is that instruction one which can be of
+[42:55] the form add R1 R2 R3
+[42:58] enters the if stage in Cycle
+[43:01] One subsequently it enters the O stage
+[43:04] in cycle number two it enters the ex
+[43:08] stage in cycle 3 the ma stage in cycle 4
+[43:11] and finally the RW the register right
+[43:15] stage in cycle number five and then it
+[43:18] exits the pipeline so it finishes this
+[43:21] execution and it
+[43:23] completes similarly we have uh
+[43:28] in instruction two so this
+[43:32] instruction enters the pipeline in the
+[43:35] next cycle so it enters the pipeline in
+[43:37] cycle number two subsequently it
+[43:41] proceeds uh so it proceeds to the third
+[43:44] cycle uh which is the O
+[43:48] stage to the fourth cycle uh which is
+[43:51] the ex
+[43:54] stage uh the fifth cycle which is the ma
+[43:58] stage and then in the six cycle it
+[44:01] reaches the RW stage and the same is
+[44:04] true for the third instruction as well
+[44:07] so we can see that in this pipeline
+[44:10] diagram all the instructions proceed
+[44:13] diagonally towards the bottom
+[44:20] right all right so this is the main tool
+[44:23] that we shall be using in uh for
+[44:27] discussion of correctness of programs
+[44:29] inside pipelines and a pipeline diagram
+[44:32] is pretty much a matrix but we don't
+[44:34] show all the cells of the Matrix because
+[44:35] they are not required uh so what we'll
+[44:38] show is uh some of the cells of the
+[44:41] Matrix and pretty much an instruction
+[44:44] enters uh the pipeline diagram at the if
+[44:48] stage and at every subsequent cycle it
+[44:50] moves to the next row right so we shall
+[44:53] see there are some conditions on when an
+[44:56] instruction can move and when an
+[44:57] instruction cannot move but this is the
+[44:59] basic
+[45:01] idea so what are the rules for
+[45:03] constructing a pipeline diagram again
+[45:05] explained uh textually so it has five
+[45:08] rows one per each stage the rows are
+[45:10] named by the stage each column
+[45:13] represents a clock cycle and each cell
+[45:17] represents the execution of an
+[45:19] instruction in a stage so it is
+[45:22] annotated with the name or the label of
+[45:24] the instruction and instructions proceed
+[45:27] from one stage to the other across
+[45:29] subsequent clock Cycles consecutive
+[45:31] clock
+[45:34] Cycles so let us take a look at one more
+[45:38] example so uh which is uh the so this is
+[45:43] ADD R1 R2 R3 then a subtract instruction
+[45:46] and a multiply instruction so let's take
+[45:48] a look at this example in a different
+[45:50] way
+[45:51] now so there are no dependencies across
+[45:54] the instructions in a sense that there
+[45:56] is no dependency between the first the
+[45:58] second and the third instructions so
+[46:01] pretty much the instructions can operate
+[46:03] independently of each other but since
+[46:05] our pipeline can read in one instruction
+[46:08] every cycle so in the first Cycle One
+[46:11] instruction will get into the pipeline
+[46:13] in the second cycle one more instruction
+[46:15] third cycle one more instruction so the
+[46:18] crucial thing is that in each cell only
+[46:21] one instruction can be there you cannot
+[46:23] have two instructions in one cell that
+[46:25] will be tantamount to saying
+[46:28] that in the same stage there are two
+[46:29] instructions which is not
+[46:34] possible all right so now let's take a
+[46:37] look at some of the problems that can
+[46:39] happen the some of the problems that can
+[46:42] happen uh will be shown explained like
+[46:44] this so let's consider a
+[46:46] sequence of two instructions instruction
+[46:49] one and instruction
+[46:51] two uh so let uh the instruction one be
+[46:54] add R1 R2 R3 where we add the contents
+[46:57] of R2 and R3 and we transfer it to
+[47:01] R1 then uh let the next instruction
+[47:05] subtract R3 R1 R4 take the results of
+[47:09] instruction one and use that as an
+[47:11] operant so here essentially instruction
+[47:14] one is writing to R1 and instruction two
+[47:18] is reading from R1 so we call it a read
+[47:21] after WR dependency or a raw dependency
+[47:25] so R uh R dependency is a read after
+[47:29] right
+[47:37] dependency which is also called a true
+[47:40] dependence because we first write and
+[47:42] then we are reading it so let's consider
+[47:45] the pipeline diagram so in the pipeline
+[47:48] diagram instruction number one enters
+[47:50] the pipeline in the first
+[47:52] cycle and subsequently it keeps on
+[47:55] moving to the next stages in every
+[47:58] consecutive
+[47:59] cycle so let's consider instruction two
+[48:02] it enters the pipeline the if stage in
+[48:05] cycle number
+[48:07] two so in cycle number three instruction
+[48:10] two enters the oper and fetch stage that
+[48:13] is when it needs the value of R1 right
+[48:16] so the value of R1 is needed in the uh
+[48:19] in cycle number
+[48:21] three but the problem is that when will
+[48:24] instruction one produce the value of R1
+[48:28] instruction one uh well uh it will
+[48:31] produce the value of R1 in the sense it
+[48:33] will write R1 to the register file in
+[48:39] five right so Bas we need the value of
+[48:44] R1 in cycle 3 but it will be written to
+[48:48] the register file in cycle
+[48:50] 5 so basically we have an arrow a big uh
+[48:54] red arrow that is running backwards in
+[48:56] time
+[48:58] so so this is a problem over here right
+[49:00] so instruction two will read incorrect
+[49:02] values because in cycle 3 the value of
+[49:04] R1 has not been produced yet so it will
+[49:08] read a value which is not right which is
+[49:10] not correct and that will lead to wrong
+[49:13] or incorrect execution so this is
+[49:15] something that should be avoided and
+[49:17] that should be
+[49:18] fixed and what this translates to in a
+[49:21] pipeline diagram is that the dependency
+[49:25] between when uh between one and two
+[49:28] particularly between the cells in which
+[49:30] one writes the data and when and in
+[49:33] which two needs to read the data if you
+[49:36] draw a line uh between these cells then
+[49:40] the line will flow backwards in time
+[49:43] right it is Flowing from cycle 5 to 3
+[49:46] and this is uh something which is not
+[49:48] possible something which is not feasible
+[49:51] as a result we will read incorrect
+[49:53] values if we follow this scheme
+[49:57] all right so let's define some
+[49:59] terminology uh let's define the term a
+[50:02] data Hazard so a hazard is defined as
+[50:06] the possibility of erroneous execution
+[50:08] of an instruction in a
+[50:10] pipeline so in specific a data Hazard
+[50:14] represents the possibility of erroneous
+[50:16] execution because of the unavailability
+[50:19] of data or the availability of incorrect
+[50:23] data so in this
+[50:25] case uh it is uh what is happening is
+[50:29] that in cycle number three if we go and
+[50:32] try to read R1 from the register
+[50:34] file we will simply not get the right
+[50:38] data so we'll get incorrect data because
+[50:41] the right data has not been written to
+[50:43] the registered file yet so that will
+[50:46] cause a problem and that's called a data
+[50:48] Hazard right there's a possibility of an
+[50:50] error in specific this is raw we read
+[50:53] after WR data Hazard because we have two
+[50:56] two instructions so the first
+[50:58] instruction is writing and the second
+[51:00] instruction is
+[51:02] reading so the earliest we can dispatch
+[51:06] uh you know instruction two is actually
+[51:08] cycle
+[51:09] 5 and uh you know here there is a
+[51:12] problem so basically uh if
+[51:15] we let's say have instruction two over
+[51:19] here if let's say instruction to enters
+[51:21] the pipeline in cycle 5 in cycle 6 it
+[51:25] will be over here and it can happily
+[51:27] read the data from the register file all
+[51:31] right so the question is that for these
+[51:34] three Cycles we will not be able to push
+[51:37] in any instruction into the
+[51:39] pipeline which will ensure that the
+[51:42] pipeline is Idle this is a bad thing so
+[51:45] precisely we did
+[51:47] pipelining to fix the problem of
+[51:49] idleness but as we see you know for this
+[51:52] specific
+[51:53] pattern which is very common
+[51:57] we uh will have issues so basically for
+[52:00] three Cycles we'll not be able to put in
+[52:03] uh instruction two into the pipeline and
+[52:06] that's something which is very
+[52:08] problematic so we'll need to fix
+[52:11] it so there are other types of data
+[52:14] hazards so uh but these data hazards
+[52:19] will actually not show up in our simple
+[52:21] pipeline so our pipeline is an in order
+[52:24] pipeline so I'll discuss what that is
+[52:28] in an inorder pipeline such as
+[52:31] ours A preceding instruction is always
+[52:35] ahead of a succeeding instruction in the
+[52:37] pipeline so let me explain what that
+[52:40] means so what this means is so if I
+[52:43] consider maybe let me see a cleaner yeah
+[52:45] a cleaner version of the pipeline
+[52:47] diagram so in this case one is the
+[52:50] earlier instruction it is the preceding
+[52:53] instruction and three is a succeeding or
+[52:55] it's a later
+[52:57] instruction so what we see in our
+[52:59] pipeline diagram is that at all points
+[53:02] of time so let's say you know let's
+[53:04] consider cycle 5 at all points of time
+[53:08] the earlier instruction is at a later
+[53:11] stage it's ahead in the pipeline right
+[53:14] and a later
+[53:16] instruction such as instruction three
+[53:18] will always be behind instruction one
+[53:20] and two uh in the pipeline it is never
+[53:23] allowed to
+[53:24] overtake so this property is called an
+[53:27] in order pipeline so modern processors
+[53:29] however do not use in order
+[53:31] pipelines they use out of order
+[53:34] pipelines that break this rule so it is
+[53:36] possible for later instructions to
+[53:38] execute before earlier instructions so
+[53:41] this causes many kinds of
+[53:44] complexities and uh uh so so uh you know
+[53:48] discussing out of order pipelines is
+[53:50] clearly not within the scope of this
+[53:52] course but it will be a part of an
+[53:55] advanced course course but in this
+[53:57] course we'll only look at in order
+[53:59] pipelines and a lot of processors also
+[54:01] do use in order pipelines it's not that
+[54:03] they're not used but nowadays they are
+[54:05] mainly used for smaller processors
+[54:07] embedded processors and so
+[54:10] on uh which you you know where high
+[54:14] performance is not really the key we are
+[54:16] more looking for power
+[54:17] efficiency so in all such processors
+[54:20] which have in order pipelines and a
+[54:23] preceding instruction an earlier
+[54:25] instruction is is always ahead of a
+[54:28] succeeding or later instruction in the
+[54:30] pipeline so in such pipelines we'll only
+[54:33] have read after WR hazards but out of
+[54:36] order pipelines can have other kinds of
+[54:38] Hazards like a write after read or a WR
+[54:41] after WR Hazard so let us discuss what
+[54:44] these two types of Hazards are write
+[54:46] after write and write after read so let
+[54:49] us consider a sequence of two
+[54:52] instructions so where one is the earlier
+[54:54] one and two is the later one
+[54:57] uh so both these instructions are
+[54:59] writing to register
+[55:03] R1 so instruction number two cannot
+[55:06] write the value of R1 before instruction
+[55:10] one writes to
+[55:12] it otherwise what will happen is that
+[55:15] the final uh value inside R1 will become
+[55:19] wrong so we want instruction one to ex
+[55:22] to write the value of R1
+[55:24] first and then we want want instruction
+[55:27] two to write the value of
+[55:32] R1 so this is the sequence of actions
+[55:36] this is the flow of action that needs to
+[55:38] happen this will always happen in our
+[55:40] case because we do not allow
+[55:41] instructions to overtake each other but
+[55:44] in a pipeline which allows instructions
+[55:47] to overtake each other this problem can
+[55:49] happen but we need not be concerned
+[55:51] about that but nevertheless what readers
+[55:55] listeners should know is that we can
+[55:59] have a hazard of this type which is a
+[56:01] right after right Hazard where if we
+[56:04] allow instructions to overtake each
+[56:05] other then erroneous execution is
+[56:08] possible in this
+[56:10] case similarly we can have a right after
+[56:13] read Hazard so let us consider uh this
+[56:17] example so instruction one is reading
+[56:20] the value of
+[56:22] R2 and then a later instruction
+[56:25] instruction two is writing to
+[56:28] R2 so he doing some computation adding
+[56:31] R5 and R6 and it is writing to
+[56:33] R2 so in our case we will never have
+[56:37] incorrect execution because we do not
+[56:40] allow instructions to you know overtake
+[56:42] each other so instruction one will
+[56:45] always be ahead so if this is the
+[56:47] pipeline instruction one will always be
+[56:49] ahead of instruction 2 so that is the
+[56:52] reason instruction one will always read
+[56:54] the correct value of R2 and instruction
+[56:57] two will then write to R2 at the
+[57:00] end
+[57:02] however uh you know say our case
+[57:04] instruction two cannot write the value
+[57:06] of R2 before instruction one reads it in
+[57:10] an out of order pipeline it is possible
+[57:13] and this condition is a right after read
+[57:16] Hazard so we have a read first and then
+[57:17] a write so this is called a right after
+[57:19] read Hazard again it's not a problem for
+[57:22] us but if we allow instruction two to
+[57:25] overtake instruction one one then it
+[57:27] becomes a
+[57:30] problem all right so what have we seen
+[57:32] up till now we have seen uh data
+[57:42] hazards so we have seen a right after
+[57:44] read Hazard which can definitely happen
+[57:46] in our system and uh so we showed a
+[57:50] simple example and we showed a problem
+[57:52] that can happen that after instruction
+[57:55] one if you immediately put instruction
+[57:58] two in the pipeline it'll get a wrong
+[58:00] result so we need to uh you know wait
+[58:03] for three cycles and then put
+[58:06] instruction to in the
+[58:08] pipeline then we looked at w and W aw
+[58:12] haszards which can happen in more
+[58:13] advanced pipelines not in our case and R
+[58:17] has situation is not uh Hazard because
+[58:21] you know you have one read and one more
+[58:24] uh read after that to the same register
+[58:27] in an advanced pipeline also they can
+[58:29] overtake each other there's no problem
+[58:31] as long as a right is not involved there
+[58:32] is no problem so these are the kinds of
+[58:35] data hazards so we can have another kind
+[58:38] of Hazard called a control Hazard which
+[58:40] we shall see
+[58:42] now so let us consider an instruction of
+[58:45] the form Branch if equal so if the
+[58:49] equality condition is
+[58:51] true we shall Branch to the label fu
+[58:57] after that we have several instructions
+[59:00] and then a long time later we have the
+[59:01] label do Fu and instructions after
+[59:04] it now if the branch is taken so let's
+[59:08] assume that the branch in this case is
+[59:11] taken we will show that instructions 2
+[59:14] and three might get fetched incorrectly
+[59:16] so so what will happen if the branch is
+[59:18] taken if the branch is taken then the
+[59:20] control should immediately jump to this
+[59:23] point and these two instructions should
+[59:25] not not be fetched or
+[59:28] executed but what we see in this
+[59:31] diagram uh so this is the pipeline
+[59:33] diagram of a control Hazard let's take a
+[59:36] look at this in some
+[59:39] detail all right so uh what we get to
+[59:42] see over
+[59:44] here uh is that uh we have three
+[59:47] instructions the first instruction is a
+[59:50] conditional
+[59:51] branch and after that we have two more
+[59:55] instructions so the curse first
+[59:57] instructions condition is true then we
+[60:00] will
+[60:02] jump to the fu
+[60:07] label and uh if the first instructions
+[60:11] uh condition is uh not true then we will
+[60:15] execute instructions 2 and
+[60:18] three so now uh when I draw the pipeline
+[60:22] diagram uh what we see is that in the
+[60:25] first cycle in cycle number one
+[60:28] instruction one enters the if stage and
+[60:30] it will
+[60:34] continue so the instruction one uh so
+[60:38] the instruction uh one essentially does
+[60:41] not stop so every subsequent uh cycle it
+[60:45] moves from one stage to the other but
+[60:47] the important point is in cycle number
+[60:50] three so in cycle number three what
+[60:53] happens is that uh a decision is made
+[60:57] whether the branch is taken or not
+[60:59] because in cycle 3 instruction one is in
+[61:02] stage so in the ex stage the branch
+[61:06] unit takes a look at the flags uh in
+[61:09] particular it's a beq instruction so it
+[61:12] takes a look at the EQ uh the equality
+[61:16] flag of the flags. E actually uh Flags I
+[61:21] should write it flag sty so it takes a
+[61:25] look at flag
+[61:26] e and if flag. e is one then the branch
+[61:30] is deemed to be
+[61:32] taken right so the problem that happens
+[61:36] is that at this point if the branch is
+[61:38] taken then uh instructions two and three
+[61:42] were fetched incorrectly this is what it
+[61:45] means because in the second cycle when
+[61:48] uh instruction one was in the OS stage
+[61:52] instruction two got fetched so it
+[61:54] entered the if stage
+[61:56] then in the third cycle when we are
+[61:58] making a decision about whether the
+[62:01] branch is a taken Branch or
+[62:03] not at that point the processor was busy
+[62:06] in fetching instruction number three
+[62:08] into the if
+[62:10] stage so
+[62:13] uh the problem that arises now is maybe
+[62:17] towards the middle of the cycle or
+[62:19] towards the end of the third cycle we
+[62:21] get to know that this is actually a
+[62:23] taken Branch but by that time we we have
+[62:26] fetched two instructions instructions 2
+[62:28] and three we have fetched them from
+[62:30] memory and they are in our
+[62:32] pipeline so if you do not do anything
+[62:35] then instructions 2 and three will
+[62:37] simply continue down the pipeline and
+[62:40] they will execute and they will write
+[62:42] four to R1 and then they'll add R R3 and
+[62:46] R4 and write to R2 and clearly you know
+[62:49] these two instruction should not be
+[62:50] executing if they execute the execution
+[62:52] will be
+[62:54] incorrect so uh this problem is a
+[62:57] control hazard in the sense that there
+[62:58] is a possibility of erroneous
+[63:00] execution uh and the possibility arises
+[63:03] because the two instructions fetched
+[63:06] immediately after a branch instruction
+[63:08] might have been fetched incorrectly and
+[63:10] are definitely fetched incorrectly if
+[63:12] the branch is a taken Branch so that's
+[63:15] the reason if the branch is taken there
+[63:17] is a there has to be a method of
+[63:19] cancelling these instructions killing
+[63:21] them such that they don't they do not
+[63:24] proceed down the the
+[63:26] pipeline right if they do and if they
+[63:29] are allowed to modify uh memory or to
+[63:33] modify a register in the register file
+[63:36] then essentially our state will get
+[63:37] corrupted and the program will be deemed
+[63:39] to have executed incorrectly and this is
+[63:42] a situation that cannot be allowed so
+[63:44] this situation is referred to as a
+[63:46] control
+[63:50] Hazard let me now explain once more uh
+[63:53] what a control Hazard is textually
+[63:56] so the two instructions fetched
+[63:58] immediately after a branch
+[64:00] instruction might have been fetched
+[64:02] incorrectly if the branch is a taken
+[64:04] Branch so these instructions are said to
+[64:07] be on the wrong path right so basically
+[64:09] these instructions uh if they need to be
+[64:12] cancelled later then these instructions
+[64:13] are known to be on the wrong
+[64:16] path so a control Hazard essentially a
+[64:19] control Hazard represents the
+[64:22] possibility of erroneous execution in a
+[64:25] because instructions that are in the
+[64:28] wrong path of a branch can possibly get
+[64:30] executed and save their results in
+[64:32] memory or in the register
+[64:35] file so it is our job to ensure that
+[64:38] instructions which are on the wrong path
+[64:40] for example these two instructions
+[64:42] instructions 2 and three uh they do not
+[64:45] get executed if Branch uh at instruction
+[64:49] one is
+[64:52] taken so now there are let's come to a
+[64:54] third kind of Hazard so we have
+[64:56] discussed data hazards we have discussed
+[64:58] control hazards so let's come to a third
+[65:00] kind of Hazards called structural
+[65:02] hazards a structural Hazard may occur
+[65:05] when two instructions have a conflict on
+[65:08] the same set of resources in a single
+[65:10] cycle so this will not happen in our
+[65:13] simple pipeline it's not a concern for
+[65:15] us but it can happen in other pipelines
+[65:18] so it's good to know the concept in
+[65:21] general so assume that we have an ad
+[65:23] instruction that can read uh one operant
+[65:26] from memory right if we have such kind
+[65:28] of an
+[65:29] instruction uh then uh so in such kind
+[65:32] of an instruction we'll have one of the
+[65:34] operant which is coming from
+[65:38] memory now let's take a look at an
+[65:41] example in which a structural Hazard can
+[65:43] happen so let's consider these three
+[65:45] instructions instructions 1 2 and three
+[65:48] in the first instruction we do a store
+[65:50] to the location uh
+[65:52] 20 uh plus the address in R5
+[65:56] then we have a subtract and then we have
+[65:58] the special kind of add instruction that
+[66:00] we are talking about in the last slide
+[66:02] so here one of the operant is a memory
+[66:04] operant and that's uh that's going to be
+[66:07] the Second Source operant so reason that
+[66:10] this code will have a structural Hazard
+[66:12] is as follows that in cycle number
+[66:16] four uh instruction three will be in its
+[66:19] o stage so it will try to read the
+[66:22] operant 10 R3 from memory so it will
+[66:24] access the memory ACC unit and similarly
+[66:30] four uh the store instruction will also
+[66:33] be in its ma stage right it will also be
+[66:35] in its ma stage it will try to access
+[66:38] the ma unit in cycle 4 and in the ma
+[66:41] unit can process only one instruction
+[66:43] per cycle then clearly there is a
+[66:45] conflict between instructions one and
+[66:47] three and this is called a structural
+[66:49] Hazard so structural Hazard is basically
+[66:51] a
+[66:52] situation uh in which two instructions
+[66:55] to access the same resource or defined
+[66:59] in a more generic way if a resource can
+[67:03] uh satisfy M simultaneous requests but
+[67:06] there are n requests that are coming
+[67:09] into it where n is greater than M then
+[67:13] we'll have a structural Hazard because
+[67:15] we simply do not have enough resources
+[67:17] to satisfy all the requests so in this
+[67:20] case uh the memory access unit can
+[67:23] satisfy only one request at a time but
+[67:25] but if two requests come then one of
+[67:27] them has to wait and this is called a
+[67:29] structural Hazard this will not happen
+[67:31] in our pipeline uh the reason being that
+[67:34] we have designed it in such a way that
+[67:35] we never have resource conflicts across
+[67:38] stages but it can happen in many other
+[67:40] kinds of pipelines so it's a good
+[67:42] concept to keep in mind so to summarize
+[67:45] the three kinds of Hazards are once
+[67:47] again
+[67:48] data hazards data hazards again there
+[67:51] are three kinds read after write
+[67:56] right after
+[67:59] read and right after right so in our
+[68:03] pipeline only the read after right
+[68:04] Hazard will happen the rest two will not
+[68:06] happen then we have control hazards so
+[68:09] and control hazards can definitely
+[68:10] happen in our Pipeline and we have
+[68:13] structural hazards which will not happen
+[68:15] in our
+[68:16] pipeline so given the fact that we have
+[68:19] you know an idea of what the hazards are
+[68:22] let's try to look for solutions to uh
+[68:25] take care of raw and control hazards so
+[68:29] this will be part of the next lecture so
+[68:30] the current lecture will end at this
+[68:32] point

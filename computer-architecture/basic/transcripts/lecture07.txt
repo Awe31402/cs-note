@@ -1,0 +1,1715 @@
+[00:00] [Music]
+[00:00] n
+[00:35] let us now discuss the simple risk Isa
+[00:39] so simple risk is an assembly language
+[00:41] that we shall create you and me shall
+[00:44] create from
+[00:45] scratch uh so this is supposed to be a
+[00:48] very very simple risk like
+[00:51] language that has a very few uh that
+[00:55] that has few instructions and the
+[00:58] instructions have a very regular
+[01:00] structure so as we go through the next
+[01:03] few slides we'll see what it takes to
+[01:06] actually build and design an assembly
+[01:09] language and we shall look at the nties
+[01:11] of Designing one such
+[01:14] language so let's take a look at simple
+[01:17] risk so simple risk is a very simple uh
+[01:20] you know as the name suggests it is a
+[01:22] very very simple Assembly Language one
+[01:24] of the easiest to learn so my thinking
+[01:27] is that it's better to learn a very
+[01:30] simple Assembly Language and get an idea
+[01:32] first before moving on to real world
+[01:35] Assembly languages such as R and x86
+[01:38] because they have a lot of other uh
+[01:42] details which might overwhelm the reader
+[01:45] at this point of
+[01:47] time so we'll design an assembly
+[01:49] language called Simple risk and then
+[01:52] we'll design a simple binary encoding
+[01:54] for it which means to convert uh
+[01:57] instructions into a sequence of zeros
+[01:59] and ones
+[02:00] and then in the processor chapter we'll
+[02:03] create a processor to actually implement
+[02:06] the simple risk instruction
+[02:09] set so let's have a brief survey of uh
+[02:12] instruction sets so uh almost every
+[02:17] processor
+[02:18] vendor uh has created its own uh
+[02:21] instruction
+[02:23] set so uh let's go back to way back to
+[02:26] 1977 when the wax instruction set was
+[02:29] created
+[02:30] it was a very complex CIS instruction
+[02:33] set with a lot of
+[02:34] instructions uh it had 16
+[02:38] registers and it used a little Indian
+[02:45] format uh then uh we uh one of the more
+[02:50] popular instruction sets was a sunspark
+[02:52] instruction set uh so there were
+[02:54] actually two variants of spark the
+[02:56] 32-bit variant was introduced in 1986
+[03:00] and the 64-bit variant was introduced in
+[03:04] 1993 so what 32 bits means that one
+[03:07] instruction was 32 bits in spark the
+[03:09] size of a registor was 32 bits so that's
+[03:12] what it means to be a 32-bit instruction
+[03:15] set and what it means to be a 64bit
+[03:18] instruction set is also the same that
+[03:20] the size of a register is 64 bits uh or
+[03:25] the size of an instruction in the case
+[03:26] of a risk architecture is 64 bits so the
+[03:30] 64-bit instruction set was actually by
+[03:32] Indian means it could be configured to
+[03:35] be either little Indian or big Indian
+[03:38] and we have 32
+[03:40] registers then we come to the power PC
+[03:43] instruction set which was mostly used by
+[03:45] IBM and later uh and later apple and
+[03:49] Motorola used it uh so powerpc showed a
+[03:53] similar
+[03:54] Revolution uh they had a 32-bit
+[03:57] instruction set in 1992
+[04:00] and then migrated to a 64-bit
+[04:02] instruction set later on and both of
+[04:04] them were by Indian with
+[04:06] 32bit uh with 32
+[04:08] registers similarly HP had its own
+[04:11] instruction set P risk that's still used
+[04:14] in highend HP servers and Motorola had
+[04:18] its m68k or m68000 instruction
+[04:22] set that is still uh well that was being
+[04:26] used in Motorola processes so now of
+[04:29] course they they are not in the
+[04:30] processor business
+[04:32] anymore another very popular instruction
+[04:35] set is a mips instruction set which is
+[04:37] also a risk instruction set mips has 32
+[04:41] registers uh so now myips is used in uh
+[04:45] some small embedded processors but most
+[04:47] of the embedded processors have actually
+[04:49] migrated to uh Intel and
+[04:51] arm here is one more instruction set
+[04:54] which is my personal favorite the reason
+[04:56] being that this is the first instruction
+[04:58] set that I had learned is the deck Alpha
+[05:02] instruction set introduced Circa
+[05:06] 1992 uh so it's started out as a
+[05:09] 64-bit uh instruction set uh with 32
+[05:14] registers then we come
+[05:17] of to the x86 instruction set which is
+[05:20] actually a family of instruction sets
+[05:23] it's not just one instruction set but
+[05:25] many so Intel started its Journey uh in
+[05:30] 1978 with a 16bit instruction set uh
+[05:34] that had eight
+[05:35] registers uh so this x86 instruction set
+[05:38] is now an open standard uh so it is used
+[05:41] by AMD it's actually used by many other
+[05:43] vendors as well uh because so even since
+[05:49] the standard is open uh readers can
+[05:51] Implement their own processors with the
+[05:53] x86 instruction
+[05:55] set so around 1985 Intel transition to a
+[05:59] 32-bit instruction set with again with
+[06:02] eight
+[06:02] registers and then as recently as
+[06:07] 2003 uh both Intel and AMD together uh
+[06:11] migrated to an x86 64 uh instruction set
+[06:15] actually AMD was the first to migrate
+[06:18] and Intel then migrated so AMD came up
+[06:21] with the opteron processor that had a
+[06:23] 64-bit instruction set called x86 64 so
+[06:28] all uh Intel instruction sets have been
+[06:31] little
+[06:32] Indian and the 64-bit instruction set of
+[06:36] Intel which uh we shall also take a look
+[06:39] at in the fifth chapter of this book has
+[06:42] 16
+[06:44] registers uh lastly the latest entrant
+[06:47] in the world of processors and
+[06:48] instruction sets is arm so uh arm is a
+[06:53] very interesting company in the sense
+[06:55] that arm does not make its own chips
+[06:57] rather arm makes the design of a
+[06:59] processor and sells the design to other
+[07:02] companies like Texas Instruments or
+[07:04] Qualcomm or Samsung and then they make a
+[07:07] chip and embed some additional elements
+[07:10] if required and then they make and
+[07:12] fabricate a chip out of it so arm is not
+[07:16] that new in fact arm used to exist way
+[07:19] back in 1985 when they came up with a
+[07:21] 32-bit instruction set but off
+[07:25] late arm processors are gaining in
+[07:28] prominence and a big reason for that is
+[07:32] that uh arm processors are used in
+[07:35] Mobile phones and mobile phones have uh
+[07:39] spread uh
+[07:42] exponentially so in 2011 um also came up
+[07:45] with a 64-bit instruction set for larger
+[07:49] Computing devices such as tablets and
+[07:51] you know possibly servers and so the
+[07:54] 64-bit instruction sets are always
+[07:56] targeted for larger devices
+[08:00] so we'll see why so we we'll have a lot
+[08:02] of opportunities to discuss uh what's
+[08:06] the advantage of a 64bit instruction set
+[08:09] but this is not the right point for it
+[08:11] so arm is also by Indian little Indian
+[08:14] is the default uh but it can be
+[08:17] configured to be big Indian so big
+[08:19] Indian or little Indian is just a matter
+[08:21] of convention let us now discuss the
+[08:24] basics of the simple risk instruction
+[08:26] set so let simple risk have 16 risk
+[08:29] registers and as is the convention let
+[08:33] us number the registers from r0 till
+[08:38] R15 so the 14th and the 15th register
+[08:41] R14 and
+[08:43] R15 let me refer to them uh with special
+[08:47] names so let us refer to R14 as the
+[08:51] stack pointer or the
+[08:53] RSP similarly let us refer to R15 as the
+[08:57] return address register or ra
+[09:00] so the meaning of the term stack pointer
+[09:03] and the return address
+[09:04] register will be uh you know is uh they
+[09:09] actually correspond to pretty complex
+[09:11] Concepts so we'll discuss what they are
+[09:14] in the future slides but let's just
+[09:16] remember for the time being that the
+[09:19] stack pointer SP is R14 and R15 is uh
+[09:24] will also be referred to as the return
+[09:26] address register so they have some
+[09:27] special meanings
+[09:30] so coming to the view of memory let's
+[09:32] assume a volum
+[09:34] model where we assume that the memory is
+[09:37] one large array of bytes it contains
+[09:41] data as well as uh the program and a
+[09:45] program assumes that the entire memory
+[09:47] is for its own personal consumption and
+[09:50] there are no other programs so let's
+[09:52] live with some very very simplistic
+[09:54] assumptions for the time
+[09:56] being so let's also have a special Flags
+[10:00] register which contains the result of
+[10:02] the last comparison so let me give an
+[10:05] example so this register is not visible
+[10:07] to the assembly
+[10:09] programmer however it will be visible to
+[10:12] the hardware
+[10:13] designer and that's very
+[10:17] important so let's uh do Let Me Show an
+[10:21] example here uh so the example is let's
+[10:25] have a
+[10:26] compare in simple risk assembly where we
+[10:30] compare the contents of register R1 and
+[10:33] R2 if the contents are equal what the
+[10:37] hardware would do is that it would set
+[10:40] the E bit inside the flags register so
+[10:43] if let's say you know is R1 is equal to
+[10:46] let me put a c style equal to if this is
+[10:50] the case then you
+[10:53] set the hardware sets flags. e
+[10:59] equal to
+[11:01] 1 if R1 is greater than
+[11:05] R2 well then flags. e so the default
+[11:08] value of e and GT is zero so I'm not
+[11:11] mentioning that the E field in this case
+[11:14] is clearly zero so we set flags.
+[11:18] GT greater
+[11:23] than as
+[11:25] one if R1 is less than R2 to so clearly
+[11:28] the equal flag flags. e0 and flags.
+[11:33] gt0 so we can thus make out what is the
+[11:37] result of the last comparison by taking
+[11:40] a look at these two flags flags. e and
+[11:43] flags. GT so this is a broad idea but
+[11:46] we'll get a chance to discuss uh the
+[11:48] meaning of these two flags in great
+[11:50] detail when we look at the compare
+[11:53] instruction now it's time to take a look
+[11:56] at our First Assembly instruction
+[11:59] so let's uh introduce our first basic
+[12:02] assembly instruction it's called the
+[12:05] move
+[12:06] instruction uh the job of the move
+[12:08] instruction is very simple so it comes
+[12:11] in two
+[12:12] flavors uh so in one flavor we transfer
+[12:16] the contents of a register into one more
+[12:18] register and in the second flavor we
+[12:21] transfer an immediate a
+[12:23] constant to a register right so these
+[12:28] are the only two uh variance of the move
+[12:30] instruction that are possible and the
+[12:32] way that we actually write an assembly
+[12:35] statement is like this that we first
+[12:40] uh so in simple risk what we do is that
+[12:43] we first write the name of the assembly
+[12:45] op code which in this case is
+[12:49] move then we write the
+[12:55] destination and then we give a comma and
+[12:58] then we write the name of the source so
+[13:01] for example if we write move
+[13:05] R1 comma 3 which essentially means set
+[13:10] R1 equal to 3 that's what it
+[13:15] means right let me also put the commment
+[13:17] sign to indicate that uh you know this
+[13:20] is not a valid assembly statement so
+[13:23] what we are doing here is that we are
+[13:25] taking the value three and setting it to
+[13:28] register R1 so you can think of this as
+[13:32] similar to any statement in C or Java
+[13:36] where we write something of the form xal
+[13:38] 3 so in this case X is a
+[13:42] variable and we are setting the value of
+[13:44] the
+[13:45] variable to three or four or five or any
+[13:49] uh immediate uh value also we can have a
+[13:53] statement xals y so in this case this is
+[13:57] same as move R1 R2 with the contents of
+[14:00] R2 are moved to
+[14:06] R1 so the value of the
+[14:08] immediate in this case is actually
+[14:11] embedded inside the instruction so
+[14:14] simple risk support 16bit
+[14:16] immediates and the range of an immediate
+[14:19] is so this is a two's complement number
+[14:22] and the range of an immediate is from -
+[14:25] 2 ra to ^ 15 to 2 to ^ 15 - 1 so this is
+[14:31] the standard tools complement range for
+[14:33] a 16bit
+[14:35] number so now let's look at another
+[14:38] family of instructions since the entire
+[14:41] family is very
+[14:42] similar I've listed all six together in
+[14:45] the same place so simple risk has six
+[14:49] arithmetic
+[14:50] instructions and as the name suggests
+[14:53] their
+[14:54] addition uh let me just change the
+[14:56] pointer addition
+[14:59] subtraction add sub Mal for
+[15:03] multiplication div for division mod for
+[15:06] getting the remainder right so this is
+[15:09] basically getting the modulo uh or the
+[15:12] remainder and CMP is for compare so the
+[15:15] compare instruction is slightly special
+[15:18] but the rest are very
+[15:20] straightforward so let's take a look at
+[15:22] the add instruction
+[15:24] first so the add instruction is actually
+[15:27] a three address format instu
+[15:30] instruction what this essentially means
+[15:34] is that it takes three
+[15:37] arguments so the destination always has
+[15:40] to be a register the second argument has
+[15:43] to be a
+[15:44] register and so basically if you want me
+[15:47] to write this slightly formally so the
+[15:50] destination which comes first has to be
+[15:52] a
+[15:53] register the second uh operant which is
+[15:57] actually the First Source operant has to
+[16:00] be a
+[16:03] register the third operant can either be
+[16:08] register or an
+[16:14] immediate so that is a constraint on the
+[16:17] third operant which can either be a
+[16:18] register or an immediate so here uh as
+[16:22] if we
+[16:23] write add R1 R2 R3 essentially what we
+[16:28] are instruct ing the machine to do is
+[16:31] take the contents of R2 take the
+[16:33] contents of R3 add them and save the
+[16:36] result in R1 similarly if I say R2 and
+[16:39] 10 I can say R2 +
+[16:42] 10 so this is the simple add instruction
+[16:45] which has a nice analog with traditional
+[16:48] programming languages where if you write
+[16:51] you know uh C function of the form x
+[16:54] = y + z we can directly trans ated to an
+[17:00] assembly instruction of this
+[17:02] form fine uh so after the addition
+[17:05] instruction the rest three uh rest four
+[17:08] instructions sub mul div and mod have
+[17:11] exactly the same format so I've not
+[17:13] shown the immediate values over here but
+[17:17] I'll explain with examples so these four
+[17:19] instructions over here as the name
+[17:23] suggests the subtract instruction
+[17:25] subtracts the contents of R3 from R2 so
+[17:29] it sets R1 = to R2 -
+[17:32] R3 so in this case it is possible to
+[17:35] write the the subtract instruction with
+[17:37] the third operant being an immediate as
+[17:40] well but mind you only the third operant
+[17:44] can be an immediate not the other
+[17:46] ones so I can write very well R1 R2 and
+[17:51] 10 so what this will essentially do is
+[17:54] that it will set R1 to R2 the contents
+[17:58] of r R to minus
+[18:01] 10 so I've not shown this case for lack
+[18:04] of space but the third operant can
+[18:08] either be a
+[18:09] register or it can be an immediate any
+[18:12] registor or it can be an
+[18:14] immediate same is the case for
+[18:16] multiplication exactly the same
+[18:24] format so let me write a multiplication
+[18:27] instruction with with the third operant
+[18:30] as an immediate so we shall see that the
+[18:33] uh way of specifying the format is the
+[18:35] same so I can very well write
+[18:39] Mal
+[18:41] R1
+[18:44] R2 and 10 so this would set R1 equal
+[18:49] to R2 multiplied with
+[18:53] 10 so Division and mod have also the
+[18:57] same format where we divide R2 by R3 to
+[19:01] get the quotient and we take R2 mod R3
+[19:04] to get the
+[19:06] remainder so these are the five add sub
+[19:09] M div and mod are the five arithmetic
+[19:12] operator operating instructions and as
+[19:15] we can see they are very similar to
+[19:17] their high level programming
+[19:20] equivalents so it is just that they
+[19:22] written slightly differently so one
+[19:24] thing that is common is that even in a
+[19:26] high level language uh such as because
+[19:28] you know this statement over here the
+[19:31] destination comes first subsequently the
+[19:34] arguments come later this is the same
+[19:37] case in assembly as well where the
+[19:40] destination comes first and the operant
+[19:42] or arguments come
+[19:44] later so this is one
+[19:47] similarity uh the uh the other
+[19:50] similarities are that we also you know
+[19:53] we clearly mention what is the operation
+[19:55] that we want to perform so either it's
+[19:58] an ad subtract or multiplication
+[20:00] division whatever is the operation that
+[20:02] is uh you know that is placed at a
+[20:05] different point so plus is over here but
+[20:07] in assembly we first mention what is the
+[20:09] operation but uh you know other than
+[20:12] this small difference this statements
+[20:15] like add R1 R2 r10 is pretty similar to
+[20:18] what we would actually write in a high
+[20:21] level programming language assuming R1
+[20:23] and R2 are variables we would write R1
+[20:25] equal R2 + 10
+[20:30] so now let's to a take a look at the
+[20:32] compare instruction which is actually
+[20:35] very interesting because it is different
+[20:38] so we typically
+[20:40] don't uh write compare instructions of
+[20:43] this type in a high level language so in
+[20:46] this case what we do is that we pretty
+[20:48] much subtract R1 minus
+[20:52] R2 if the result is equal to
+[20:55] zero then we can infer an equality so we
+[20:59] set flags do e which is the equality
+[21:05] flag to
+[21:07] 1 if R1 - R2 is greater than
+[21:12] zero then we can
+[21:18] set flags. GT equal to 1 which basically
+[21:23] means that uh R1 is greater than R2 it
+[21:27] indicates the fact that the greater than
+[21:29] flag is one similarly if R1 minus R2 is
+[21:32] less than zero then both the equality
+[21:35] flag and the greater than flag both will
+[21:38] be set to zero so we can infer a less
+[21:40] than condition so it is important to
+[21:43] note that in simple risk the only
+[21:46] instruction that sets the flags is the
+[21:49] compare instruction and the flags remain
+[21:52] in their state till the next compare
+[21:55] instruction so let me explain with an
+[21:57] example assume you have a compare
+[22:00] instruction so the compare instruction
+[22:02] will essentially go and set the flags
+[22:05] after that we can have many many other
+[22:07] instructions but till the next compare
+[22:10] instructions the flags maintain their
+[22:13] value and they can be used by other
+[22:15] instructions as we shall see
+[22:17] later now let's take a look at uh a very
+[22:21] simple program and let's try to convert
+[22:23] it into Assembly Language so let's
+[22:26] outline a generic method so assume that
+[22:29] we have this code snippet here in a high
+[22:31] level
+[22:32] language the question is how do we
+[22:34] convert it to an Assembly Language so
+[22:37] the first thing that we do is that we
+[22:39] assign the variables here to registers
+[22:42] that's the first thing that's always
+[22:43] what we do that's the first thing that
+[22:46] we assign the variables to registers so
+[22:48] let us assume that variable a is
+[22:51] assigned to r0 B to R1 C to R2 and D2 R3
+[22:57] right so this is the assignment
+[22:58] variables to
+[23:00] registers so now what we do is that AAL
+[23:03] 3 just becomes move 3 to
+[23:05] r0 B = 5 becomes move 5 to
+[23:10] R1 C = A + B this essentially means add
+[23:15] r0 and R1 and let's assign it to R2
+[23:19] because R2 and C are you know R2 and C R
+[23:23] R2 is supposed to contain the value of
+[23:26] C then to subtract C - 5 we again take
+[23:30] R2 subtract five from it and save the
+[23:33] result in R3 which is essentially ma to
+[23:37] D so here we have four highlevel
+[23:40] statements and four assembly statements
+[23:42] because it's a simple program but in
+[23:45] general the number of assembly
+[23:46] statements will typically be more
+[23:48] sometimes much more but the important
+[23:51] thing to note that it is fairly simple
+[23:54] to map a high level program to assembly
+[23:58] for what essentially needs to be done is
+[24:01] that the F so there are two steps first
+[24:03] is assign the variables to registers
+[24:06] that is step one step two is that after
+[24:12] the assignment each and every high level
+[24:15] statement gets converted to assembly so
+[24:18] the important point that all of you need
+[24:19] to note that writing
+[24:21] assembly programs is pretty much similar
+[24:24] to writing high level programs and
+[24:27] irrespective of how many books you read
+[24:29] or how many online courses you take such
+[24:31] as this one the only way that a student
+[24:34] will actually get the ability to write
+[24:38] high quality assembly
+[24:39] code is
+[24:41] to you know physically go and write as
+[24:44] many assembly programs as possible
+[24:46] practice makes
+[24:48] perfect so only by writing more and more
+[24:51] and more assembly programs would a
+[24:54] student actually get some expertise
+[24:58] of how to write assembly programs and
+[25:01] would get the confidence of writing
+[25:02] assembly programs so the course and
+[25:05] books and other material is fine to at
+[25:08] least introduce the concepts but the
+[25:10] real knowledge will be gained only by
+[25:12] writing and by
+[25:13] practice so if you go to the website of
+[25:16] this book you will find simple disk
+[25:19] emulators which allow you to write
+[25:21] assembly programs and subsequently the
+[25:24] emulator will run the assembly program
+[25:26] instruction by instruction and find
+[25:28] finally print the
+[25:29] result so let's now take a look at one
+[25:32] more example a = 3 B = 5 multiply a and
+[25:37] b and compute C Mod 5 so again the first
+[25:42] stage is assign the variables to
+[25:44] registers so a you know r0 is mapped to
+[25:49] a R1 is mapped to B R2 to C and R3 to D
+[25:54] so the first two statements are the same
+[25:57] as what the were in the previous
+[26:00] example then we multiply r0 and R1 and
+[26:04] we save the result in
+[26:06] R2 so R2 is C and then again we do R2
+[26:10] mod 5 so I'm putting the percentage
+[26:12] because that's what it is in C and we do
+[26:15] R2 mod 5 and save the result in
+[26:21] R3 now let's take a look at the compare
+[26:24] instruction the compare instruction is
+[26:27] different it's a different concept it's
+[26:29] not there in high level languages so
+[26:32] let's say we want to compare three and
+[26:34] five and then uh you know the idea
+[26:38] compare three and five and then we want
+[26:39] to print the value of the flags not in
+[26:41] assembly but at least as a part of the
+[26:44] answer so it should actually be write
+[26:46] the value of the
+[26:48] flags so assume a is three and B is
+[26:51] five so we first do a register
+[26:54] assignment we move 3 to r0 5 to R1 and
+[26:58] we compare r0 and R1 since 3 is less
+[27:01] than five we'll have the less than
+[27:04] condition right so what we have is that
+[27:07] 3 is less than 5 so there is no
+[27:10] equality and there is no greater than so
+[27:14] the equal flag will be zero and the
+[27:16] greater than flag will be
+[27:19] zero now let's compare five and three so
+[27:22] in this case they get reversed so we can
+[27:24] clear clearly see that five
+[27:28] is greater than
+[27:30] three so in this case the flag for
+[27:33] equality is zero but the flag for
+[27:36] greater than flags. GT is equal to
+[27:39] 1 so this essentially
+[27:42] means that the comparision yielded a
+[27:47] result and the result was that the first
+[27:50] operant is greater than the second
+[27:53] opponent so that's the reason the GT
+[27:55] flag flags. GT is equal to
+[28:00] 1 lastly let's compare two numbers with
+[28:03] the same value five and five a is five
+[28:07] and B is five and let's compare A and
+[28:10] B so we move five to r0 we move 5 to R1
+[28:14] We compare r0 and
+[28:16] R1 so flags. e in this case is equal to
+[28:20] 1 and flags. GT is equal to
+[28:23] Z the flags. E is equal to 1 because
+[28:27] there is an equality we clearly see that
+[28:29] five so I'm writing the equal to the
+[28:32] same way that is written in c equal to
+[28:34] equal to so we clearly see that 5 is
+[28:36] equal to equal to 5 so there is equality
+[28:40] there is no greater than so the greater
+[28:42] than flag is zero but the equality flag
+[28:45] is
+[28:48] one now let's show some more examples so
+[28:51] let's say write assembly code in simple
+[28:53] risk to compute 31 / 29 - 50 and save
+[28:59] the result in
+[29:00] R4 no problem so mind you this is
+[29:03] integer division so 31 divided by 29 the
+[29:06] answer will be one so let's map them
+[29:09] let's map map 31 to R1 let's put 29 and
+[29:14] R2 as can be seen in these two
+[29:17] statements then let's divide R1 divided
+[29:22] by
+[29:24] R2 and the result will get saved in r
+[29:28] 3 and from R3 we subtract 50 so we
+[29:32] compute R3 - 50 is equal to R4 and R4
+[29:38] contains the final result as mentioned
+[29:42] in the
+[29:44] question so this is how we write
+[29:47] assembly programs but these are very
+[29:48] simple examples of assembly programs so
+[29:52] my advice to the student or the reader
+[29:54] would be to actually go and write as
+[29:57] many assembly programs as possible and I
+[30:01] would say that by the end of this course
+[30:04] the student should have written at least
+[30:06] 3,000 lines of assembly programs
+[30:08] thousand each in simple risk arm and
+[30:11] x86 that would at least give the student
+[30:14] a basic understanding of how assembly
+[30:17] programs are to be
+[30:18] written now let's move ahead in our
+[30:21] journey of introducing instructions and
+[30:23] introduce three more so these are
+[30:26] logical instructions which compute a
+[30:28] bitwise and or an or or an not so let's
+[30:32] look
+[30:34] at uh some of these so the and and or
+[30:37] operations are exactly in the same vein
+[30:40] in the three address format as the add
+[30:42] subtract multiply operations so in this
+[30:46] case the first two operant have to be
+[30:49] registers and the third operant has to
+[30:52] be either a register or an
+[30:55] immediate so the and operant computes R1
+[30:59] is equal to R2 and R3 where this is a
+[31:02] bitwise and so let me give an example of
+[31:05] a bitwise and just in case people have
+[31:08] forgotten so let's say 1 1 0 0 you know
+[31:12] bitwise ended with 0 1 0 1 so 1 and 0 is
+[31:20] 0 0 and 0 is zero 1 and 1 is 1 0 and 1
+[31:25] is 0er
+[31:28] similarly we have bitwise R which can do
+[31:31] R2 or
+[31:33] R3 and uh so we have a bitwise or over
+[31:36] here which is exactly the same but we
+[31:39] replace the and sign by an or
+[31:43] sign then we have the not operant which
+[31:46] is actually a two address format operant
+[31:48] so we have only one
+[31:50] source uh we only have one source
+[31:52] operant which can be either a register
+[31:54] or an
+[31:56] immediate so in this case what we do is
+[32:03] that uh
+[32:05] sorry so in this case so if there is a
+[32:08] single Source operant you know so so
+[32:11] what we can see as a general rule that
+[32:14] only one source operant is allowed to be
+[32:16] an
+[32:17] immediate but both the source operant
+[32:19] are not allowed to be immediates so when
+[32:22] we say not R1
+[32:25] R2 what this essentially means
+[32:28] is that let's say the value of R2 is 0 0
+[32:31] 1
+[32:31] 0 we take a not of
+[32:34] it once we take a not of it this becomes
+[32:38] 1 1 0
+[32:41] 1 so the second argument in this case
+[32:44] can either be a register or an immediate
+[32:46] the Second Source
+[32:49] argument so now let's compute A or B so
+[32:53] so now let's consider an example so in
+[32:55] this example we compute A or B so assume
+[32:58] that a is stored in r0 and B is stored
+[33:01] in R1 let's store the result in R2 so
+[33:03] it's very simple we do it the same way
+[33:07] as our add subtract multiply
+[33:09] instructions we compute R R2 which is
+[33:13] essentially equal to r0 or R1 so this is
+[33:20] to r0 or R1
+[33:27] so let's move ahead and introduce some
+[33:30] more instructions that are required so
+[33:33] let's discuss the shift
+[33:36] operations so shift operations are
+[33:38] something like this that let's first
+[33:40] discuss the left shift operation so
+[33:43] consider the number 0 0 1
+[33:48] 0 so if we left shift it by two which
+[33:52] means that every bit moves two positions
+[33:55] to the left so in this case if 0 0 1 0
+[33:59] is being left shifted by two positions
+[34:02] so what will we have what will
+[34:05] essentially have is that the one will
+[34:07] come over
+[34:08] here zero will come over here and then
+[34:12] two new positions will be created in
+[34:15] this case we just add two more zeros so
+[34:17] 0 0 1 0 left shifted by two is equal to
+[34:20] 1 0 0 so we can clearly see that this
+[34:25] number is equal to 2
+[34:28] and this number is equal to 8 in decimal
+[34:31] so left shifting by n positions
+[34:33] basically means that it is the same as
+[34:36] multiplying a number by 2 ^
+[34:40] n uh so why is this the case so we shall
+[34:44] see in some time so let me just give one
+[34:47] more example of left shifting let's
+[34:48] assume that the number is 1 0 1 0 and we
+[34:52] left shift it by uh let's say one
+[34:55] position right so we left shift the
+[34:57] number by shifted to the left by one
+[35:02] position so in this case Zero will come
+[35:06] over here one will come over
+[35:11] here and a new position will be created
+[35:14] we put a zero over
+[35:16] here assuming the number is remaining
+[35:19] within four
+[35:20] bits so the reason that this is
+[35:24] equivalent to multiplying it by 2 ^ n
+[35:28] is can be found out there are many
+[35:30] arguments so maybe let's start with a
+[35:32] couple of examples let's take a look at
+[35:34] this example this number is two in
+[35:37] decimal and this number is 8 in decimal
+[35:40] so what we are essentially doing is that
+[35:43] we have left left shifted it by two
+[35:45] positions which is equivalent to
+[35:47] multiplying this number by 2
+[35:52] square so the multiplication argument is
+[35:55] actually interesting and the reason that
+[35:57] uh you know this holds is that any
+[35:59] number in a binary expansion can be
+[36:03] thought of
+[36:06] as well so let's start counting from one
+[36:10] because we in general we have done that
+[36:13] in other places as
+[36:16] well so assume I goes from 1 to n any
+[36:19] binary number can be expressed in this
+[36:22] form now if we let's say left shift the
+[36:25] number
+[36:27] by you know K
+[36:31] positions so what this number
+[36:33] essentially
+[36:34] becomes right uh you know that's the
+[36:37] most important thing is that this number
+[36:39] essentially becomes
+[37:18] right so basically the number Remains
+[37:20] the Same and it is left shifted by K
+[37:24] positions uh so so uh what it
+[37:27] essentially becomes is that it is pretty
+[37:30] much the same number but each of these
+[37:32] coefficients the coefficients remain
+[37:34] exactly the same the the set of
+[37:37] coefficients right because it's getting
+[37:38] shifted to the left but these exponents
+[37:42] over here pretty much
+[37:46] get um multiplied get offset by a factor
+[37:51] so actually what I can do over here is
+[37:53] that I can you know replace this again
+[37:56] as as it was for
+[38:30] so uh for those who have followed the
+[38:32] math over here what we have done is that
+[38:34] we have taken a number and we have left
+[38:36] shifted it by K positions but we have
+[38:38] not not gotten rid of any digits so that
+[38:41] is important that we have not gotten rid
+[38:42] of any digits per
+[38:44] se then what we have done is this is
+[38:47] exactly the same as instead of uh so the
+[38:50] first G positions of zeros so we don't
+[38:52] count them then from k + 1 till n + K
+[38:57] from K k + 1 till k + n pretty much we
+[39:00] had the same set of coefficients which
+[39:02] we had
+[39:03] earlier and uh but the thing is that the
+[39:06] powers of two pretty much get shifted or
+[39:08] get multiplied by 2 ^ K so what we do is
+[39:12] that we sort of do a little bit of
+[39:15] algebra and uh so we separate the 2 ^ K
+[39:18] from the equations and so what we are
+[39:21] left with this that this be becomes the
+[39:23] original number n multiplied by 2 the^ K
+[39:27] so what we see is that this is a nice
+[39:29] way you know unless there are overflows
+[39:31] right we are exceeding the range of the
+[39:33] number system then it's a separate issue
+[39:36] but if that's not happening this is a
+[39:38] nice way of actually multiplying a
+[39:41] number by any power of two right uh
+[39:44] multiplying a number by 2 to the^ K so
+[39:47] let me maybe consider let's say one more
+[39:49] example consider 0 0 1
+[39:51] 1 we then left shifted by one position
+[39:55] so this becomes 0 1 1 0
+[39:57] in decimal this number is three and this
+[40:00] number is six so this is equivalent to
+[40:03] multiplying three with I'm sorry
+[40:06] multiplying 3 with 2 ^ 1 so we get
+[40:10] six all right so uh given that left
+[40:14] shifting actually
+[40:17] works let us see if left shifting holds
+[40:19] for you know negative two complement
+[40:22] numbers here again we assume that there
+[40:23] are no
+[40:24] overflows uh so so let's uh so instead
+[40:28] of cluttering up this uh PowerPoint
+[40:30] slide let me actually move to another
+[40:46] software so now let's see that whether
+[40:49] left shifting actually holds for
+[40:51] negative numbers so in this case let's
+[40:54] consider a negative number minus 2 in a
+[40:57] 4bit uh system so - 2 is 1 1 1
+[41:02] 0 fine so let us take this number and
+[41:05] let us left shift it
+[41:08] by one position so then this becomes 1 1
+[41:14] 0 0 so 1 1 0 0 what is it it is min
+[41:18] -4 so we see that it holds let's
+[41:21] consider one more example minus 3 so
+[41:24] minus 3 is representation in the two's
+[41:26] complement
+[41:27] notation is
+[41:30] actually uh + 13 so which is 1 1 0 1 no
+[41:37] problem now let's left shift it by one
+[41:39] position so then what do we get 1 0 1 0
+[41:44] so what is this so this is 8 + 2 is 10
+[41:47] so in decimal this is 10 - 16 - 6 so
+[41:51] what we see is that left shifting holds
+[41:54] for even positive numbers as well as
+[41:57] negative tw's complement
+[41:59] numbers so now that we have discussed
+[42:02] left shifting let us discuss what is
+[42:05] Right shifting so let's go back to the
+[42:07] slides and discuss uh what is Right
+[42:11] shifting so in right shifting what we do
+[42:13] is there are two kinds of right
+[42:16] shifting uh there is uh arithmetic right
+[42:20] shifting and logical right
+[42:22] shifting so in arithmetic right shifting
+[42:25] which is represented by another oper if
+[42:27] we right shift this number by one
+[42:31] position what we do is that all the bits
+[42:34] move one position to the right but the
+[42:37] important point is the sign bit so the
+[42:39] sign bit in this case is replicated so
+[42:42] if the sign bit was originally zero we
+[42:45] just replicate the sign bit and have one
+[42:46] more zero and if the sign bit was
+[42:49] originally one we just replicate the
+[42:51] sign bit and have uh a
+[42:55] one so what my is that right shifting is
+[42:59] similar to dividing a signed number by 2
+[43:02] the^ N and the proof will exactly be the
+[43:05] same as the way we proved for a left
+[43:08] shift and it's just that instead of 2
+[43:11] the^ + K it will become 2 the^ minus K
+[43:16] but let's consider examples that will be
+[43:19] a lot of fun so let's again consider a
+[43:21] 4bit system and let's consider 0 1 0 0
+[43:25] so this is equal to 4 four now let's
+[43:28] right shifted it by two
+[43:30] positions we'll get 0 0 0 1 so this
+[43:35] number was four and this number is one
+[43:38] so we see that division holds now let's
+[43:41] consider negative numbers so let's say
+[43:43] you consider Min - 6 which is 1 0 1
+[43:47] 0 so let's right shift it by one
+[43:51] position in this case if we right shift
+[43:54] it by one position this is how all the
+[43:56] bits will actually move so no problem
+[44:00] let's write 1 0 1 and we replicate the
+[44:03] sign bit so this number is 8 + 4 12 + 1
+[44:09] 13 so in two's complement this is 13 -
+[44:13] 16 or this number is min
+[44:15] -3 so we clearly see that right shifting
+[44:18] a number by n
+[44:21] positions can be a positive number or
+[44:24] can be a two's complement negative
+[44:25] number is same as
+[44:27] dividing a sign number by 2 the^ N so a
+[44:32] logical left shift and an arithmetic
+[44:34] right
+[44:36] shift essentially are very useful
+[44:39] operations and they help us in
+[44:41] multiplying or dividing numbers by 2^ n
+[44:45] by any power of
+[44:47] two all right so uh now let's consider a
+[44:51] logical shift right which is actually
+[44:54] represented by the three greater than op
+[44:57] operators right this the terminology has
+[44:59] come from java so in this case the sign
+[45:02] bit is always set to zero so this is the
+[45:05] same as dividing the unsigned
+[45:07] representation by 2 the^ N right that is
+[45:10] its connotation uh so in this case we
+[45:13] just move all bits two steps I mean nend
+[45:16] steps to the right and the msbs are
+[45:18] filled with
+[45:20] zeros so the Food For Thought question
+[45:23] over here is that why don't we have an
+[45:25] arithmetic shift left
+[45:27] well the reason is that the sign bit
+[45:29] always gets overwritten by numbers from
+[45:31] the left so there is no meaning of an
+[45:34] arithmetic shift left you only have one
+[45:36] shift left but two shift
+[45:39] rights so we have a couple of simple
+[45:42] risk
+[45:43] instructions which will uh you know
+[45:46] three to be precise and the format is
+[45:49] exactly exactly the same as the add sub
+[45:52] multiply
+[45:54] instructions so The Logical shift left
+[45:57] instruction the destination comes first
+[45:59] which is a
+[46:00] register the First Source operant is a
+[46:03] register and the Second Source operant
+[46:09] reg
+[46:10] slm right either a register or an
+[46:14] immediate and the name of the
+[46:15] instruction is LSL logical shift
+[46:19] left similarly we have a logical shift
+[46:22] right operator which is called LSR
+[46:26] exactly same
+[46:28] uh notation and we have an ASR an
+[46:31] arithmetic shift right operator which is
+[46:34] called ASR so what are the three new
+[46:36] instructions that we are introducing the
+[46:39] three new instructions are
+[46:42] LSL
+[46:44] LSR and
+[46:48] ASR logical shift Rift logical shift
+[46:51] right and arithmetic shift
+[46:54] right so let's give some you know meet
+[46:57] examples with shift based
+[47:00] instructions let's assume we want to
+[47:02] compute 1001 101 multiply it with six
+[47:05] with just shift based
+[47:08] operators so the first task is register
+[47:11] assignment so we move 101 to register
+[47:15] r0 so we
+[47:18] shift r0 by one position which is
+[47:22] essentially equal to R1 is equal to 101
+[47:27] multiply it with two because we shifting
+[47:30] it by one
+[47:31] position and in this case not then again
+[47:35] we compute R2 which is Shifting 101 by
+[47:40] two positions and multiplying it by
+[47:42] four then we add R1 + R2 and set the
+[47:46] result equal to R3 so essentially R3
+[47:49] becomes
+[47:53] 101 multiplied by 6
+[47:57] so uh you know a skeptic would ask that
+[48:02] why did we do this we should have simply
+[48:04] loaded 101 into r0 and you know written
+[48:08] an instruction of this
+[48:16] form as simple as this we should have
+[48:19] taken r0 multiplied it with six and save
+[48:23] the result in r0 or R3 or any other
+[48:25] register right why did we have to have
+[48:27] two
+[48:28] shifts here is the answer so typically
+[48:31] in Hardware multiplication and division
+[48:34] right multiplication and div division
+[48:38] are very very expensive operations
+[48:41] expensive in the sense that they take a
+[48:43] lot of time right so I can say you know
+[48:46] Plus+ in terms of time right they take a
+[48:49] lot of time so a lot of compilers
+[48:53] actually you know a lot of compilers and
+[48:55] good programmers
+[48:57] encourage the user not to use very
+[49:00] expensive multiplication division
+[49:02] instructions and use shifts instead
+[49:05] which are very fast right so shift
+[49:07] instructions are Ultra
+[49:21] fast so the shift instructions are Ultra
+[49:24] Ultra fast and they are extremely fast
+[49:27] so uh that's the reason it is a good
+[49:29] idea to use shift instructions in the
+[49:32] place of expensive multiplication and
+[49:34] division instructions wherever it is
+[49:36] possible so let's consider one more
+[49:38] example which is not that difficult once
+[49:42] you know the answer so let's compute 102
+[49:45] * 7.5 with the help of shift
+[49:49] operators so what we can do the first
+[49:52] thing is assign 1002 to a register r0
+[49:57] so then we shift it to the left by three
+[50:00] positions which means R1 is equal to 102
+[50:04] MTI by 2 ^ 3 which is
+[50:07] 8 and then we shift it to the right
+[50:12] right so since 102 is positive logical
+[50:15] and arithmetic shift right are the same
+[50:17] so we shift it to the right by one
+[50:20] position which means multiply 1002 with
+[50:24] .5
+[50:26] well then it is very straightforward we
+[50:28] subtract R1 minus R2 so R3 becomes equal
+[50:44] to well this is exactly what we wanted
+[50:46] to do so you see this is very easy and
+[50:50] instead of we have avoided the costly
+[50:53] expensive time consuming division
+[50:55] instruction and and in the place of that
+[50:58] what we have done is that we have a very
+[51:02] very Nimble and efficient solution with
+[51:04] shift
+[51:06] instructions okay now let's introduce
+[51:10] some of the real instructions that help
+[51:12] us write big and scalable
+[51:14] programs so let's int introduce load
+[51:17] store
+[51:18] instruction so load store instructions
+[51:21] job so essentially a load instructions
+[51:23] job is to take a value from memory
+[51:28] and bring it into a register so this is
+[51:31] a load instruction and a store
+[51:33] instructions job is to take a value from
+[51:36] a register and put it in memory right so
+[51:40] what does a load instruction do it takes
+[51:43] a piece of data from memory and puts it
+[51:45] in a
+[51:46] register and similarly a store
+[51:49] instruction takes data from a register
+[51:51] and puts it in
+[51:53] memory so let's take a look at the
+[51:55] format of a load instruction so in a
+[51:57] load
+[51:58] instruction the register which needs to
+[52:01] be loaded or is a destination right so
+[52:04] this is the
+[52:07] destination right in this two address
+[52:10] format the first is the destination and
+[52:12] the other uses base index uh I'm sorry
+[52:15] not base index it is base uh offset
+[52:20] addressing yeah it should be base
+[52:23] offset uh base offset uh addressing
+[52:27] uh so in this case what we do is that
+[52:30] the Base address is specified in
+[52:33] register R2 so we take register R2 we
+[52:37] add 10 to it we get a new memory address
+[52:41] we access the memory using this address
+[52:43] read the contents and put it in
+[52:46] R1 uh so in this two address format
+[52:50] instruction the second operant is
+[52:53] always uh points to a certain memory
+[52:57] location a value in a memory location
+[52:59] the Hardware's job is to read this value
+[53:03] that is there in the memory location to
+[53:06] read this value and put it in a
+[53:08] register so store instruction is exactly
+[53:11] the same format right but the store
+[53:14] instruction if you think about it does
+[53:16] not actually have a destination the
+[53:18] destination is memory it does not have a
+[53:21] register
+[53:22] destination so what the store
+[53:24] instruction does is that the resistor
+[53:26] that needs to be read right the resistor
+[53:29] that is actually read is specified first
+[53:33] and then the memory location is
+[53:35] specified after this using exactly the
+[53:38] same addressing mode a base offset
+[53:40] addressing
+[53:43] mode so let's show this thing
+[53:46] graphically so graphically what we do is
+[53:49] that uh in the case of uh
+[53:53] load uh we take the value of R2
+[53:58] uh one
+[53:59] second we take the value in of R2 from
+[54:02] the register file we add 10 we get the
+[54:05] address this address is used to access
+[54:08] memory in a 32-bit system we read four
+[54:11] bytes from memory which is the data the
+[54:14] data comes back and it is fed into the
+[54:18] registered
+[54:19] R1 so instead of 4 bytes it can be in a
+[54:23] 64bit system it can be 8 bytes that
+[54:25] doesn't matter
+[54:27] so in this case in a 32-bit system we
+[54:29] read four bytes from memory and put it
+[54:34] register so store actually does the
+[54:36] reverse so in this case also we compute
+[54:39] the address but instead of the flow of
+[54:41] data being from memory to a register the
+[54:45] flow of data is actually reverse it is
+[54:47] from a register to
+[54:52] memory so let's give an example of a
+[54:55] load store based uh so let's consider an
+[54:58] example with
+[55:00] arrays uh so let's assume that uh an
+[55:04] array's Base address is stored in r0 so
+[55:07] the way that an array would actually
+[55:09] look like in memory is something like
+[55:11] this that an array with 10 integers
+[55:14] where one integer is 4 bytes is a
+[55:17] contiguous region of 40
+[55:23] bytes so in this case let's assume that
+[55:26] the Base address of the array is
+[55:28] r0 which means the first integer is
+[55:31] stored in the locations that r0 so let's
+[55:34] assume that the contents of r0 are V so
+[55:38] the first integer is
+[55:40] stored in the locations V2 V +
+[55:45] 3 the second integer is stored in the
+[55:51] location V +
+[55:54] 4 to V + 7
+[55:57] and so on so we can say that maybe the
+[56:00] starting address of the array in this
+[56:03] case array Zero's starting
+[56:06] address is actually V the starting
+[56:09] address of the first entry is V + 4 and
+[56:15] so on so similarly the starting address
+[56:17] of the ninth
+[56:19] entry the ninth and the last entry in
+[56:21] the array where we start counting from
+[56:23] zero is essentially v+
+[56:29] 36 so given this simple argument which
+[56:32] I'm uh which I'm sure most of you would
+[56:34] have learned in your basic C or C++ or
+[56:37] Java programming class let's try to
+[56:40] implement this small program in Assembly
+[56:44] Language so we have an array of 10
+[56:47] integers where we assume the base of the
+[56:49] array is saved in register
+[56:51] r0 we set the third element to five uh
+[56:55] array three
+[56:57] right the element at index 3 to five the
+[57:00] element at index 4 to 8 and we set a R5
+[57:05] is equal to R4 +
+[57:09] R3 all right so now let's uh do some
+[57:12] amount of register assignments so let's
+[57:15] move the constant 5 to
+[57:19] R1 and let's save the value
+[57:23] R1 in actually the location array 3 so
+[57:28] what is the starting address of array 3
+[57:30] well the starting address of array 3 is
+[57:33] pretty
+[57:34] much
+[57:37] r0 +
+[57:39] 12 the reason being uh let's go back to
+[57:43] this discussion over here uh so the
+[57:45] starting address of array Z is the
+[57:47] contents of r0 starting address of R1 is
+[57:52] contents of r0 + 4 similarly the
+[57:55] starting address of array n is r0 + 4 *
+[58:01] n-1 uh sorry r0 + 4 * n so in this case
+[58:05] is r0 + 12 so we write it
+[58:09] as 12
+[58:13] r0 so this is a very very important
+[58:15] point to understand and I want to ensure
+[58:18] that all of you have uh more or less
+[58:21] understood it so uh the idea is that
+[58:24] what what is the content of r0 r0 pretty
+[58:27] much points to a memory address in
+[58:30] memory that contains 40 continuous bytes
+[58:34] so the first four bytes are
+[58:37] r0 the next four bytes are
+[58:41] r one and so
+[58:44] on so what is the starting address of r0
+[58:47] it
+[58:48] is uh of array zero so starting address
+[58:52] of array
+[58:53] zero is
+[58:56] r0 right let's say the starting address
+[59:00] let's the starting address of array
+[59:04] one R1 is r0
+[59:08] + 4 four bytes because size of one
+[59:11] integer is 4 bytes similarly the
+[59:13] starting address of
+[59:15] RN
+[59:18] is r0
+[59:20] +
+[59:22] 4N so that's the reason the starting
+[59:24] address of R3 is
+[59:26] 12 or
+[59:29] zero so we save the value so we do the
+[59:31] same so we do what we have done here we
+[59:34] do the same for R4 where we save 8 in R2
+[59:38] and then we store the value of
+[59:41] R2 in 16 r0 which is essentially the
+[59:45] same as setting
+[59:47] R4 array 4 is equal to
+[59:53] 8 finally
+[59:56] we add R1 +
+[59:58] R2 uh because they contain the values
+[60:01] that were stored and we save it in R3
+[60:05] and the value of R3 is again saved in
+[60:08] 20 uh 20 is the offset and r0 is the
+[60:11] base so this is essentially equal to the
+[60:14] fifth memory address of The Fifth
+[60:17] Element so here we save R3 which is R1 +
+[60:20] R2 or in a sense the same as
+[60:31] so by this time the advantage of using a
+[60:34] base offset addressing mode should be
+[60:36] clear that it allows us to implement
+[60:39] arrays so what we can do is that we can
+[60:42] save the Base address in an
+[60:45] array and then we can use the offset to
+[60:49] actually access different elements of
+[60:51] the array right so we always need to be
+[60:54] mindful of the size of an element so in
+[60:56] this case the element is an integer and
+[60:59] the size of each element is four bytes
+[61:01] that's the reason to go to the nth
+[61:04] element where we start counting from
+[61:05] zero is the starting address plus
+[61:08] 4N so once that is clear we can write
+[61:12] programs of this type to Lad and store
+[61:14] values from memory from you know
+[61:17] different data structures in memory the
+[61:18] array being one to read them into
+[61:21] registers work on them and write them
+[61:24] back
+[61:27] now it's time to actually get to the
+[61:29] real fun part of assembly instructions
+[61:32] and so what have we covered up till now
+[61:34] we have covered arithmetic logical
+[61:36] instructions and we have
+[61:40] covered
+[61:42] uh load store instructions right so it
+[61:45] is now uh you know the APT time to
+[61:48] actually get into the real fun part of
+[61:51] assembly programming which is to add
+[61:54] branching when we add branch ing will be
+[61:56] able to implement high level Concepts
+[61:58] such as if statements for Loops while
+[62:01] loops and so
+[62:03] on so as I had mentioned in some of the
+[62:06] early slides that an assembly statement
+[62:09] can be associated with a
+[62:11] label and this
+[62:14] label uh can be used to uniquely
+[62:17] indicate a assembly
+[62:19] statement what we can later on do is
+[62:22] that we can have this statement b. fu
+[62:26] for the branch
+[62:32] statement uh where the branch statement
+[62:35] would essentially transfer the control
+[62:37] of the program from this particular line
+[62:40] over here to this line here so the
+[62:43] program counter would initially be
+[62:45] pointing to this line and subsequently
+[62:48] it will start pointing to this line and
+[62:50] this statement will get executed so the
+[62:54] branch statement in assem L is very
+[62:56] simple we just do B and then the name of
+[62:59] the label so the format in this case is
+[63:02] B and the name of the
+[63:15] label so there are some conditional
+[63:17] Branch instructions as well where we'll
+[63:20] actually see the power of having the
+[63:23] flags uh register right so let's have a
+[63:27] BQ instruction Branch if equal so what
+[63:31] this means is that look we first
+[63:33] introduce we first have a compare
+[63:36] instruction we have many more
+[63:38] instructions that are not Compares and
+[63:40] then we have a BQ
+[63:43] instruction so this instruction first
+[63:45] takes a look at flags.
+[63:47] e if flag. e is equal to 1 means that
+[63:52] this compare over here had resulted in
+[63:54] an equality it will go jump to Fu pretty
+[63:57] much Branch to
+[63:59] Fu the same is true with the bgt
+[64:02] instruction which takes a look at flags.
+[64:05] GT and if flags. GT had been set to one
+[64:09] by the last compare
+[64:11] instruction the bgt instruction would
+[64:14] jump or Branch to Fu essentially the
+[64:17] statement which is there at the fu
+[64:20] label and these flags mind you are only
+[64:22] set by compare
+[64:24] instructions and who who are they meant
+[64:26] for they are meant for later Branch
+[64:28] instructions like beq and bgt to take a
+[64:31] look at them and
+[64:34] jump all right so now it is time to
+[64:38] write slightly difficult programs and
+[64:40] realize the power of Assembly Language
+[64:44] so let's try to write this program if R1
+[64:47] R2 then let's save 4 in R3 else we say
+[64:51] five in
+[64:52] R3 so well that's easy the first thing
+[64:56] that we do is that we compare R1 and
+[65:00] R2 so if R1 is greater than
+[65:04] R2 then uh so we always come one
+[65:06] statement down if it's greater than R2
+[65:09] the flags. GT uh bit would be set to one
+[65:14] so if it is greater than we jump to GT
+[65:16] label which is over
+[65:19] here and we save four in
+[65:23] R3 otherwise
+[65:26] we don't jump and by default we come to
+[65:29] the next statement where we save five in
+[65:34] R3 so this is a simple program which
+[65:37] shows us the power of the bgt
+[65:39] instruction that if the relevant
+[65:42] condition is true in the flags register
+[65:46] then we jump to the Target in this case
+[65:48] the target is do GT
+[65:50] label otherwise we just go to the next
+[65:55] or the subsequent instruction now let's
+[65:58] move on to a more complicated example
+[66:02] and this is a genuine assembly program
+[66:04] in the sense it has most of its
+[66:06] features so let's compute the factorial
+[66:10] of a variable called num right uh so
+[66:14] which is as specified in the C program
+[66:16] over here so to write a program in
+[66:21] Assembly Language let us maybe add a
+[66:25] Step Zero if the program is
+[66:28] complicated it might actually make a lot
+[66:30] of sense to First write it in a high
+[66:32] level language such as C or
+[66:34] Java the reason for that
+[66:37] is that it will help us you know
+[66:40] visualize all the parts and it'll become
+[66:43] fairly easy for us to actually code
+[66:45] it so uh we'll follow this approach over
+[66:50] here so to compute a factorial first we
+[66:53] Define the product variable which is in
+[66:55] ini iiz to one then we Define an index
+[66:58] that starts at num and we assume you
+[67:01] know for all practical purposes num is a
+[67:04] large enough number so we don't have to
+[67:07] check for special cases so here if idx
+[67:11] is equal to we start the index a for
+[67:13] Loop equal to num and we keep going till
+[67:17] num reaches one and one the moment
+[67:20] reaches one we jump out of the loop and
+[67:23] we subtract the index I'm sorry we keep
+[67:25] going going till idx reaches
+[67:27] one and we subtract the index by one in
+[67:30] each step and this is the multiplicative
+[67:33] step prod equals prod multiplied by idx
+[67:36] so this code is enough to compute the
+[67:39] factorial of a number so recall that the
+[67:41] factorial of a number n factorial is 1 *
+[67:45] 2 all the way
+[67:48] till
+[67:50] n right so let us now to convert let us
+[67:54] now try to convert this program to
+[67:56] simple risk so in this case the first
+[67:59] thing that we do Step One is register
+[68:03] assignment so R1 is assigned to
+[68:10] prod and uh so we set prod equal to
+[68:13] one and uh we set uh so this is
+[68:18] idx so R2 is assigned to
+[68:21] idx and we initialize it with num so as
+[68:26] the Assumption here is that num is
+[68:28] assigned to r0 so r0 contains num so
+[68:32] that is the Assumption that's the
+[68:33] assumption that we begin with so
+[68:36] sometimes if the assumption is not
+[68:38] specified in the question users can make
+[68:40] their assumption as we have done over
+[68:42] here that uh the num variable whose
+[68:45] factorial needs to be computed is there
+[68:48] in
+[68:49] r0 and uh so what we do is that uh the
+[68:53] variable idx in the C program we assign
+[68:56] it to R2 and we initialize we set R2
+[68:59] equal to r0 where r0 contains num so
+[69:03] essentially the starting value of idx is
+[69:07] num subsequently we add the dot Loop
+[69:10] label over here to signify the fact that
+[69:13] later on we might want to jump to this
+[69:16] point then what we do is that we
+[69:19] multiply R1 with
+[69:22] R2 recall that R1 is mapped to
+[69:27] Broad R2 is mapped to
+[69:30] idx so we set R1 equal to R1 * R2 which
+[69:35] is equivalent to Brad equals the product
+[69:38] is equal to product time idx so this is
+[69:41] the multiplicative
+[69:42] step then what we do is that we subtract
+[69:46] index we subtract one from the index
+[69:49] which is essentially this step over here
+[69:53] we subtract one from the index idx equal
+[69:56] idx - 1 so when do we actually Stop the
+[70:01] Loop we stop the loop when the index
+[70:04] becomes equal to one because there is no
+[70:05] point multiplying a number by one so we
+[70:09] compare R2 with
+[70:11] 1 all right so we compare R2 with one in
+[70:14] this step and we see if R2 contains idx
+[70:18] if idx is greater than one or not if idx
+[70:22] is greater than 1 then the Flags St GT
+[70:26] bit would have been saved so in this
+[70:28] case the bgt condition would evaluate to
+[70:31] true and we would jump to Loop which is
+[70:35] essentially we will jump back like
+[70:37] this so what we have done we have
+[70:40] actually these six lines I would advise
+[70:43] the reader or the student The Listener
+[70:47] of this video to take a look at this
+[70:49] example five times 10 times 100 times if
+[70:52] required and understand each and every
+[70:55] line of this program because the program
+[70:58] might be six lines but it is 10 the^ six
+[71:01] times difficult it's difficult basically
+[71:06] because you are looking at an assembly
+[71:07] program for the first time and an
+[71:10] assembly program which is fairly
+[71:11] complicated for the first time so let me
+[71:14] look at the three steps that we uh had
+[71:17] in this
+[71:19] exercise the first step is we realize
+[71:22] that the problem is difficult so we
+[71:24] wrote a small program in C that's the
+[71:26] first thing that we did in the program
+[71:29] in C we had a product variable and an
+[71:33] index that goes down from the number
+[71:36] till one and at each point we multiplied
+[71:39] so we doing exactly the same in assembly
+[71:41] nothing
+[71:42] different so the first is that we do a
+[71:45] register assignment so n is assigned to
+[71:47] r0 prod to R1 idx to
+[71:49] R2 we start the iteration the same way
+[71:52] as it's in the for loop with idx equal
+[71:55] to num in pretty much this statement
+[71:58] over
+[71:59] here so then we do the multiplicative
+[72:02] step we multiply and as I said I'm
+[72:04] making some simplistic assumptions over
+[72:06] here that uh num is actually large
+[72:09] enough so I'm not doing some
+[72:11] checks uh so then uh the next step is
+[72:16] once you do the multiply let's reduce
+[72:18] the index by 1 so let's have idx = idx -
+[72:23] 1 with a subtract instruction ction and
+[72:25] then we compare so if you have reached
+[72:28] the exit condition which is if R2 is
+[72:33] 1 then we can exit the loop so we don't
+[72:36] have to do anything the bgt instruction
+[72:39] over here will evaluate to false so
+[72:41] we'll just simply fall down and evaluate
+[72:43] the next
+[72:45] instruction otherwise if the index is
+[72:47] still not equal to one we need to do
+[72:48] another iteration of the loop so we will
+[72:51] jump to do
+[72:53] Loop so similarly the loop will continue
+[72:56] for Num minus one times till the
+[72:58] factorial computation is over so I would
+[73:02] request once again the reader to to take
+[73:05] a look at this several times maybe work
+[73:07] it out with a paper and pencil and only
+[73:10] when when the reader is convinced we
+[73:12] actually move to slide number
+[73:14] 54 so here is a food for thought burger
+[73:17] question write a simple risk assembly
+[73:21] program to actually find the ramanam
+[73:24] numbers this is difficult difficult but
+[73:26] can be
+[73:27] done uh it's it's a fair amount of work
+[73:29] but with the emulators that are there on
+[73:31] the website can be done so the ramanujam
+[73:34] number is a very interesting number and
+[73:37] uh so basically the story goes like this
+[73:41] that once shinas ramanujan was very sick
+[73:45] and his guide pressor Harvey had come to
+[73:48] meet him so the number 1729 was written
+[73:51] on his taxi so he asked ramanujan do you
+[73:55] know what is the significance of this
+[73:58] number right can you find something
+[74:00] special with this number ramanam
+[74:03] brilliant as he was said yes so 1729 is
+[74:07] actually the smallest number that is a
+[74:10] sum of two cubes in two different ways
+[74:12] it is 10 Cube
+[74:17] plus 9
+[74:19] Cube it is
+[74:23] also 12 cub
+[74:28] plus 1
+[74:30] CU so it is a sum of two cubes in two
+[74:34] different ways so the question is can
+[74:37] you write an assembly program to
+[74:40] actually
+[74:42] compute the raan nojam number well the
+[74:45] answer is very simple first write the
+[74:50] program in
+[74:51] C after writing the program in C
+[74:54] gradually convert it to assembly so the
+[74:56] approach would be that we take all the
+[74:59] numbers starting from let's say 2 till
+[75:01] you know Infinity right and we stop at
+[75:04] the ranam number for two you essentially
+[75:08] find out is it possible to write it as a
+[75:10] sum of cubes well yes 1 Cube + 1
+[75:14] Cube but any other combination of Cubes
+[75:17] no so you go to the next go to the next
+[75:20] keep going going going you have multiple
+[75:22] for Loops but the trick is first write
+[75:25] in C then do a register assignment and
+[75:30] then write it in assembly that's the
+[75:32] trick if you are able to do this our
+[75:36] objectives are
+[75:38] satisfied now let's discuss our last
+[75:41] important Concept in this subsection of
+[75:44] the lecture called
+[75:46] modifiers so if you would recall we had
+[75:49] discussed that simple risk supports
+[75:52] 16bit uh immediates
+[75:56] so it does not support larger uh
+[75:58] immediates so the question is that let's
+[76:01] say I have an instruction of the
+[76:03] form
+[76:09] r0 and minus
+[76:12] 3 so what is it uh that would happen so
+[76:15] if we consider so what is minus 3 in a
+[76:18] 4bit system -3 in a 4bit system is + 13
+[76:22] or
+[76:23] 1101 what is minus 3 in a 16bit system
+[76:26] nothing just perform sign extension it
+[76:30] Remains the
+[76:31] Same so now the question is that when
+[76:33] this is being moved to r0 which is
+[76:36] actually a 32-bit
+[76:39] resistor uh what should be the default
+[76:42] Behavior if I do this what should be the
+[76:45] default behavior is
+[76:47] that we have the contents of the
+[76:50] immediate move to the lower 16 bits and
+[76:54] the upper 16 16 bits is just a simple
+[76:56] sign extension so it preserves the sign
+[76:59] of the immediate so this is the default
+[77:02] Behavior which all of us expect should
+[77:06] be happening that a sign extension will
+[77:08] happen so essentially we are treating
+[77:10] the 16bit immediate as a sign number and
+[77:13] there is automatic sign extension
+[77:15] happening so this ensures that if we
+[77:18] have represented minus 3 in the in
+[77:21] assembly minus 3 is also what gets
+[77:23] stored in the registor r0 but of course
+[77:27] since r0 is 32 bits relevant sign
+[77:29] extension is being
+[77:31] done now let us
+[77:33] Define two variants of this same
+[77:37] instruction and these variants hold for
+[77:39] other instructions as well but let's
+[77:41] only discuss this
+[77:44] instruction so let us Define the move U
+[77:49] instruction so in the move you
+[77:51] instruction we treat the 16bit immediate
+[77:54] is an unsigned number so essentially
+[77:57] what happens is that in the 32bit
+[78:01] field uh the first 16 bits is when the
+[78:05] is where the immediate comes in and the
+[78:08] remaining 16 bits are all
+[78:10] zeros so we treat it as an unsigned
+[78:13] number and in move H what is done uh
+[78:18] actually I have uh one graph over one
+[78:22] diagram over here but let me the
+[78:25] nevertheless explain it over here so in
+[78:28] H what is typically done is that again
+[78:31] if we consider a 32bit
+[78:34] registor with two 16bit parts so what
+[78:38] happens is that the
+[78:41] immediate actually gets loaded to the
+[78:44] upper 16 bits the most significant 16
+[78:46] bits and the lower 16 bits are set to
+[78:49] all zeros so you can think of left
+[78:51] Shifting the immediate and then loading
+[78:53] it to the upper 16 for the lower 16 are
+[78:56] all zeros so the U and H are generic
+[78:59] modifiers so the default is always to
+[79:02] treat the immediate as a signed number
+[79:04] but or uh we can uh use the U and H
+[79:08] modified the U treats it as an unsigned
+[79:10] number and the H actually left shifts
+[79:14] the immediate by 16
+[79:17] positions so what is a mechanism the
+[79:19] mechanism is that when an immediate is
+[79:21] specified in an assembly instruction the
+[79:24] processor will take the immediate and
+[79:27] put it in an internal register which is
+[79:29] not visible and convert it into a 32-bit
+[79:32] number right so essentially the
+[79:35] immediate is part of the assembly
+[79:36] instruction somewhere it's somewhere
+[79:38] inside this immediate is taken by the
+[79:42] CPU and it is converted to a 32-bit
+[79:46] immediate right and this 32-bit
+[79:48] immediate is used in the
+[79:51] computations so for all arithmetic
+[79:53] logical comput ation this 32-bit
+[79:55] immediate would be
+[79:57] used so we can control the generation of
+[80:00] this 32-bit number internally so the
+[80:03] default is sign extension but we can
+[80:06] treat the 16bit number as unsigned with
+[80:09] the U suffix or load it in the upper two
+[80:12] bytes right the most significant two
+[80:14] bytes with the H
+[80:16] suffix so let's take a look at some
+[80:20] examples uh so let's first take a look
+[80:23] at the default behavior of a B12 where
+[80:25] the MSB is equal to
+[80:27] 1 so in this case we load ab12 in the
+[80:31] lower two bytes and the upper bytes
+[80:34] upper two bytes consist of the sign bit
+[80:37] right so this is the sign bit here is
+[80:39] one so all these two 16 bits are
+[80:43] one if you consider an unsigned so then
+[80:46] again the bite AB is loaded into this uh
+[80:50] bite and uh so AP and one two are loaded
+[80:53] into lower two bytes
+[80:55] but the upper two bytes are set to zeros
+[80:58] right eight zeros and8 eight zeros 16
+[81:01] zeros if you consider uh the same thing
+[81:05] move H R1 0x ab12 so ab12 are actually
+[81:09] moved to the two MSB by positions upper
+[81:13] by positions and the lower positions are
+[81:16] set to
+[81:20] zero so let's take a look at some
+[81:22] examples so the main advantage of having
+[81:25] modifiers right why have them the main
+[81:28] advantage of having modifiers is that it
+[81:31] is possible to load all kinds of
+[81:33] constants into registers well load
+[81:36] meaning not from memory but you know
+[81:38] sort of store immediates in registers
+[81:40] all kinds of immediates and registers
+[81:43] with a minimal number of instructions
+[81:45] for example if you want to save FF FF
+[81:49] a32b in r0 all that we do is that we
+[81:52] actually move in a32 B into r0 so it'll
+[81:58] load a32b in the lower positions and
+[82:01] upper positions will replicate the sign
+[82:02] bit since the sign bit is one the upper
+[82:06] two bytes will become FF and
+[82:09] FF if we want to have set the upper two
+[82:12] bytes as all zeros right in this case
+[82:16] all that we need to do is we need to
+[82:18] have the
+[82:19] U modifier which will ensure that the
+[82:22] most significant two bytes are zero
+[82:25] likewise if you want A3 and 2B to be in
+[82:29] the two upper positions more significant
+[82:32] positions then uh what we do is that
+[82:35] we'll use the H modifier to move them to
+[82:38] the most significant positions and set
+[82:40] the rest of the bits or bytes as
+[82:46] zero so now let's look at a simple
+[82:49] example let's assume that this
+[82:50] complicated constant over here uh needs
+[82:54] to
+[82:56] be uh loaded sorry I mean saved into r0
+[83:01] so this if it didn't have the modifiers
+[83:03] it will actually take us a lot of
+[83:05] instructions it is
+[83:06] complicated so let us break down this
+[83:09] problem into two simple problems and
+[83:11] solve the problems in parts so the first
+[83:15] problem is that we need to take one to a
+[83:18] and load them in the two upper bytes
+[83:20] that's very easy so we consider 0x1 2 a
+[83:24] right in the hex form we use the H
+[83:27] modifier to actually move this the two
+[83:30] upper byes then we need to move A9 2D to
+[83:35] the lower
+[83:37] bytes so this is also easy so basically
+[83:41] what do we have what is the status of
+[83:43] the registor at this moment just before
+[83:45] the second instruction we have one two
+[83:47] and a and then we have 0 0 and 0 0 in
+[83:51] the two lower bytes so what we we can do
+[83:54] is that we can add this
+[84:00] with 0
+[84:02] 0 A9 and
+[84:05] 2D so this will give us the final result
+[84:08] which is this result so that's the
+[84:11] reason we have an add instruction we
+[84:13] have r0 and we have A9 2D but here is
+[84:16] the catch when A9 2D goes into the
+[84:19] machine it'll be expanded into a 32-bit
+[84:22] value and in the 32bit value the lower
+[84:25] two will be A9 2D the lower two bytes
+[84:28] but the upper bytes will just replicate
+[84:30] the sign of a which is FF FF which is
+[84:33] not something we want to do so that's
+[84:35] the reason we specify the U modifier
+[84:38] with the instruction so essentially the
+[84:41] modifiers can be used with any
+[84:44] arithmetic logical instructions and the
+[84:47] move instruction right so let me say
+[84:50] this again the U and H modifiers can be
+[84:54] used with any instruction that uses
+[84:56] immediates namely the arithmetic logical
+[84:59] instructions and the move instruction so
+[85:02] in this case in the second instruction
+[85:05] this is instruction one and this is
+[85:07] instruction two so in the second
+[85:09] instruction we use the U
+[85:11] modifier to actually expand A9 2D
+[85:16] internally into A9 2D and the upper two
+[85:19] bytes are 0 0 and 0 0 which is exactly
+[85:22] what we want right had we not given the
+[85:25] modifier we would have gotten the wrong
+[85:28] answer to get the right
+[85:31] answer uh we add the U modifier to
+[85:35] ensure that these two upper bytes are Z
+[85:37] and zero and then we do the addition so
+[85:40] we get 1 2
+[85:42] a A9 and 2D which is exactly the answer
+[85:47] that we wanted so one thing that this
+[85:50] example shows so what is the take-home
+[85:52] point of this example the take-home
+[85:55] point of this example is that to load a
+[85:58] constant I'm sorry I use the word load
+[86:00] but the word should be taken in the
+[86:04] context in the connotation that you want
+[86:05] to save an immediate into a
+[86:08] register so it would have otherwise been
+[86:10] difficult had the modifiers not been
+[86:12] there to actually put a constant into a
+[86:15] register given our Isa but with the
+[86:18] modifiers it has actually become easy so
+[86:21] we use the H and U modifiers and with
+[86:23] just two inst instructions we are able
+[86:25] to put in 32 bits into a registor which
+[86:28] is great

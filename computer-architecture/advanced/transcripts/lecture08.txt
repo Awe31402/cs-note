@@ -1,0 +1,2000 @@
+[00:22] Let us now look at the most important
+[00:24] aspect of branch prediction.
+[00:26] Where arguably the maximum amount of
+[00:29] research work has gone in.
+[00:31] Uh which is predicting the outcome of
+[00:33] the branch. So this is the most
+[00:35] difficult problem.
+[00:37] The rest of the problems are relatively
+[00:39] easier to deal with, easier to manage
+[00:41] and handle.
+[00:42] Right? We already have created an IST
+[00:45] for predicting the instruction type.
+[00:47] What we are further promised is that we
+[00:49] will somehow merge the IST with
+[00:52] the structure for predicting the branch
+[00:54] target. But let's go sequentially step
+[00:56] by step.
+[00:57] So once we know that an instruction is a
+[00:59] branch,
+[01:01] next we need to figure out whether it's
+[01:03] taken or not taken.
+[01:06] So here also we assume a black box. Uh
+[01:09] the black box the program counter comes
+[01:11] in.
+[01:12] And what comes out is
+[01:16] whether it's taken or not taken.
+[01:18] Say the branch is unconditional,
+[01:20] uh then
+[01:23] it is always taken. So there is nothing
+[01:24] to predict.
+[01:26] If a branch is a call or return, it is
+[01:29] also taken all the time. So here also
+[01:31] there is nothing to predict.
+[01:34] The fun comes in conditional branches.
+[01:37] Like branch if equal, branch if not
+[01:39] equal, which are essentially dependent
+[01:41] on
+[01:42] the outcome of the last compare
+[01:44] instruction
+[01:46] in the program.
+[01:48] So the compare instruction essentially
+[01:49] what it does
+[01:52] is that it sets a set of flags.
+[01:57] These flags
+[02:00] record the outcome of the compare
+[02:02] instruction whether it led to an
+[02:03] equality, inequality, greater than, less
+[02:06] than, etc.
+[02:08] And uh
+[02:10] these flags are subsequently used by
+[02:13] later branch instructions like uh branch
+[02:16] if equal or
+[02:18] uh branch if greater than and so on. So
+[02:21] they see what the comparison resulted
+[02:23] in. And based on that, they are either
+[02:25] they go in one direction or the other.
+[02:28] So not taken is of course the sequential
+[02:29] direction, PC PC plus four and so on.
+[02:32] That is not taken.
+[02:34] Or they can go in another direction
+[02:35] which is taken where we jump to the
+[02:38] branch target.
+[02:42] So let us consider a piece of example
+[02:44] code. We'll show the C uh code and we'll
+[02:46] show the simple RISC assembly code.
+[02:49] So the simple RISC assembly the simple
+[02:50] RISC language assembly language
+[02:53] is uh appendix A of the book.
+[02:56] And uh it has also been uh discussed in
+[02:59] previous slide sets.
+[03:01] And uh it is definitely there in the
+[03:03] videos of the previous book. Um
+[03:07] So there's a two-part book. In the first
+[03:08] part of the book, the simple RISC
+[03:10] assembly language has been described in
+[03:12] great detail.
+[03:14] So let us look at the for loop which
+[03:17] goes from zero to five.
+[03:20] So what we do is that we treat R0 as the
+[03:23] loop variable.
+[03:26] We initialize it to zero.
+[03:29] So then we compare it with five. If it
+[03:31] is
+[03:33] equal to five, then of course we exit
+[03:36] the loop. This is our termination
+[03:37] condition.
+[03:39] Otherwise, in every iteration of the
+[03:40] loop, we increment the loop variable by
+[03:42] one, which we are doing over here.
+[03:45] And again we loop back.
+[03:50] So this is the loop.
+[03:52] All right? So the So the jump is
+[03:54] essentially a backward jump. So this is
+[03:57] the loop. And as you can see uh we are
+[03:59] implementing the for loop
+[04:01] uh almost identically in assembly.
+[04:05] Here we initialize, we check the exit
+[04:07] condition, and we increment.
+[04:10] So normally whenever we implement a for
+[04:12] loop, we follow these three steps
+[04:15] of initializing the loop variable,
+[04:17] checking for termination,
+[04:19] and
+[04:20] incrementing.
+[04:24] So we see that we have one conditional
+[04:26] branch which is BEQ.
+[04:29] And uh this needs to be predicted.
+[04:33] So the branch, if we look at it, it has
+[04:35] roughly similar behavior most of the
+[04:37] time. So most of the time
+[04:39] it is not taken because the condition
+[04:42] that makes it
+[04:43] uh taken
+[04:45] uh does not happen. So that is only when
+[04:47] R0 will be equal to five.
+[04:50] And that will happen very rarely towards
+[04:51] the end of the
+[04:53] at the end at the end of the for loop.
+[04:56] So note that we are assuming a dot exit
+[04:58] label which is the end of the program.
+[05:00] So this is not shown.
+[05:04] So now given that we have seen this
+[05:06] pattern that this branch by and large
+[05:09] is not taken. It's only taken
+[05:13] uh in the last iteration. Can we use
+[05:15] this pattern? Well, yes.
+[05:18] So what we do is we create a predictor
+[05:20] that is extremely similar to the IST
+[05:23] that we had designed
+[05:25] in the previous lecture where we
+[05:27] predicted the type of the instruction.
+[05:30] So here what we do
+[05:32] is we take the N
+[05:34] least significant bits over here.
+[05:37] All right?
+[05:39] And
+[05:40] uh the N least significant bits that we
+[05:43] have,
+[05:44] we use it to index address
+[05:48] a two to the power N entry table.
+[05:51] All right? This is We were doing the
+[05:52] same in IST. This is exactly the same
+[05:55] same logic.
+[05:57] So what we do is akin to the IST, we
+[06:00] remember the last outcome.
+[06:02] So we can say that not taken
+[06:08] is represented with bit zero.
+[06:11] Taken
+[06:14] is represented with bit one.
+[06:17] So we simply store one bit over here
+[06:19] where we remember the last outcome.
+[06:21] And the outcome of the branch,
+[06:23] so whatever was the last outcome, we say
+[06:25] that look, the current predicted outcome
+[06:27] is also the same.
+[06:29] Say the last outcome was not taken, we
+[06:30] say that look, this time also we predict
+[06:32] that the branch is not taken.
+[06:35] likewise is the case for taken.
+[06:39] This is a very very simple predictor.
+[06:41] So let's evaluate and let's see if it
+[06:43] works or not.
+[06:46] So what we see is that the BEQ
+[06:49] instruction is evaluated six times. So
+[06:52] let us go back.
+[06:54] So here if you see this iteration, it
+[06:57] actually runs five times and the sixth
+[06:59] time
+[07:00] we actually find out that we have
+[07:02] reached the end of the for loop.
+[07:04] So this uh
+[07:05] statement is evaluated six times, five
+[07:09] times for a genuine iteration,
+[07:12] and the sixth time to exit the for loop.
+[07:15] Uh out of these six times,
+[07:19] the first five times we correctly
+[07:21] predict not taken if we assume that we
+[07:23] start from the not taken state.
+[07:26] But the sixth and the last time, we also
+[07:28] predict not taken, which is wrong.
+[07:31] Because in this case, the branch is
+[07:33] taken.
+[07:34] So this is what we should have predicted
+[07:35] it to be.
+[07:39] So now let us assume that the function
+[07:41] foo
+[07:42] contained
+[07:44] this loop.
+[07:49] So if it contained this loop, what will
+[07:51] happen if we keep on calling the
+[07:53] function foo?
+[07:55] Is that So let's say we call it the
+[07:56] first time. So the predictions will be
+[07:58] not taken, not taken five times. So
+[08:00] let's write that.
+[08:05] The last time the branch is taken, so
+[08:06] we'll make a mistake.
+[08:08] The next time we come to function foo,
+[08:12] uh we will still predict that the branch
+[08:14] is taken. Right? So the next time that
+[08:16] we come, let me write it over here.
+[08:18] We will predict that the branch is
+[08:21] Why? Because the last time we
+[08:23] encountered the branch,
+[08:25] the branch was taken, so we will make
+[08:27] the same prediction.
+[08:28] This will be a mistake.
+[08:31] We will realize it was not taken. So
+[08:32] next time we'll predict it's not taken.
+[08:35] We'll keep on doing it for the next
+[08:37] four times.
+[08:39] Again we will predict not taken, which
+[08:41] is the last iteration of the for loop.
+[08:44] This is again a mistake.
+[08:47] So this is the function foo.
+[08:49] If we call function foo once again, we
+[08:51] will repeat the same pattern.
+[08:54] So what we will actually see is that our
+[08:56] misprediction rate is as high as 2 by 6
+[08:59] or 1 by 3.
+[09:01] So recall our discussion in chapter two
+[09:03] where we discussed that
+[09:06] the accuracy of
+[09:08] a branch predictor should be very high.
+[09:11] 96, 97, 98% at least.
+[09:14] But here we see that the accuracy is
+[09:15] very low. In fact, the accuracy over
+[09:17] here is only 66.66%
+[09:20] which is way way lower than what we
+[09:22] actually need.
+[09:24] But that's fine. This is the first
+[09:26] predictor that we are seeing.
+[09:28] And this predictor, as we can see, has a
+[09:30] built-in flaw.
+[09:32] And the built-in flaw is that it always
+[09:34] predicts
+[09:36] whatever was the outcome the last time,
+[09:39] which in this case appears to be a bad
+[09:41] idea.
+[09:42] So we make two mistakes.
+[09:44] One while entering the loop and one
+[09:45] while exiting the loop.
+[09:48] So let us see where is the problem.
+[09:51] The problem is that the BEQ branch if
+[09:53] equal instruction
+[09:55] is uh fundamentally biased towards
+[09:59] the not taken direction.
+[10:02] There is one exception at the end of the
+[10:04] for loop.
+[10:08] Right? So, uh
+[10:11] But, the point is that the single
+[10:12] exception at the end of the for loop
+[10:14] cannot change, should not change its
+[10:17] inherent behavior, right? So, what is
+[10:19] the inherent behavior of the branch? The
+[10:21] inherent behavior is that the branch is
+[10:24] predominantly not taken.
+[10:26] It is just in the last iteration of the
+[10:28] for loop in which the branch is taken.
+[10:32] However,
+[10:34] uh this should not uh
+[10:37] you know, one exception should not
+[10:40] change the way we perceive the branch.
+[10:43] So, we need to add some degree of prior
+[10:45] history or some degree of hysteresis to
+[10:47] the branch.
+[10:49] So, instead of having a single bit in
+[10:51] each entry, let us have a two-bit
+[10:53] counter
+[10:54] which to a certain extent can have this
+[10:57] history
+[10:58] or some degree of hysteresis
+[11:00] such that the inherent behavior of the
+[11:03] branch will
+[11:05] get recorded, right? It will not change,
+[11:07] it will get recorded.
+[11:10] So, let us add what is called a
+[11:11] saturating counter.
+[11:13] So, a saturating counter is a two-bit
+[11:17] where if a branch is taken, we keep on
+[11:20] incrementing it.
+[11:22] The reason it is called saturating is
+[11:23] because when it reaches its maximum
+[11:25] value, which is 1 1,
+[11:28] at that point of time, it does not
+[11:30] increase anymore. It is not
+[11:32] incremented anymore.
+[11:35] And uh the value uh remains over there.
+[11:39] Similarly, when the branch is not taken,
+[11:41] we decrement the value of the counter.
+[11:44] When it reaches 0 0,
+[11:49] uh it is not decremented further.
+[11:53] Uh it
+[11:54] remains at 0 0.
+[11:56] Right? So, its value is not decremented
+[11:58] further.
+[12:00] So, uh this is why the counter is set to
+[12:02] saturate at both the
+[12:05] maximum value
+[12:09] and the
+[12:12] minimum value.
+[12:17] So, this is where the counter is set to
+[12:20] saturate.
+[12:21] Uh at both the maximum as well as the
+[12:26] minimum values.
+[12:27] And uh whenever, as I said, when we
+[12:29] increment, we go in this direction. And
+[12:33] when we decrement, we go in this
+[12:35] direction.
+[12:39] Uh so, uh how and when and why are
+[12:41] saturating counters useful? Well, when
+[12:44] the state is 0 0 and 0 1,
+[12:46] this is when we predict not taken.
+[12:50] And if you can see, uh whenever a branch
+[12:52] is not taken, we keep decrementing the
+[12:54] counters. That is why when the state
+[12:56] reaches 0 0 and 0 1,
+[12:59] which is close to
+[13:01] uh so, which
+[13:02] uh you will reach when
+[13:04] uh you have been decrementing the
+[13:06] counter, so you predict not taken.
+[13:09] And similarly, for the uh two upper
+[13:11] states, 1 0 and 1 1, we predict taken.
+[13:15] So, what is the algorithm again? Well,
+[13:16] if the branch is taken, we increment it.
+[13:19] So, ultimately, if the inherent behavior
+[13:20] of a branch is such that it is taken all
+[13:23] the time, it will saturate at this stage
+[13:25] and we'll predict taken.
+[13:27] Just in case you make a single mistake
+[13:29] once in a while, we'll still move to
+[13:31] this state.
+[13:32] So, uh it allows a single
+[13:36] anomaly. So, in this case, uh we will
+[13:39] still continue to predict taken. The
+[13:41] same is the case with not taken as well.
+[13:44] Where if a branch is predominantly not
+[13:46] taken, most of the time the state will
+[13:48] remain at 0 0.
+[13:50] Let's assume that there is one odd
+[13:51] anomaly such that
+[13:53] such as the one at the end of the for
+[13:56] loop.
+[13:57] So, in this case, the state will be 0 1.
+[14:00] However, we'll still predict not taken.
+[14:03] The main reason being that we need to
+[14:05] make two such
+[14:07] uh mistakes. I mean I mean two such
+[14:09] taken branches and that too
+[14:11] consecutively are required
+[14:13] to pretty much change the behavior of
+[14:17] So, given that we have seen this
+[14:19] pattern,
+[14:20] uh let us give uh the names to the
+[14:23] states.
+[14:24] So, let 0 0 be strongly not taken.
+[14:28] Uh which is this state.
+[14:30] 0 1, let it be weakly not taken, which
+[14:33] basically means
+[14:35] uh that
+[14:38] um
+[14:40] if, let's say, the branch is taken once,
+[14:42] it will move to stage 1 0.
+[14:45] And then, we'll start predicting taken
+[14:47] from that point onwards.
+[14:49] Let 1 0 be called weakly taken.
+[14:52] Which for
+[14:53] us which is named
+[14:55] in a similar manner to weakly not taken.
+[14:58] And finally, let the state 1 1 be
+[15:00] strongly taken.
+[15:02] Which has the same connotation as
+[15:03] strongly not taken.
+[15:05] And once a state is at strongly taken,
+[15:09] if, let's say, it's not taken just once,
+[15:11] it'll still come to this stage, which is
+[15:13] fine. We'll still predict taken.
+[15:16] So, a saturating counter is very good.
+[15:18] It works very well
+[15:20] when a
+[15:21] branch is biased in the sense when a
+[15:24] branch
+[15:25] predominantly takes one direction with
+[15:27] one odd anomaly sometimes.
+[15:31] So, let us now add create a branch
+[15:34] predictor with saturating counters.
+[15:37] So, we shall take a regular bimodal
+[15:39] predictor. Everything remains the same.
+[15:42] We use the bottom N bits to index a 2 to
+[15:46] the power N entry
+[15:48] array.
+[15:49] So, in this case, instead of having a
+[15:50] single bit in each entry, it has a
+[15:52] two-bit saturating counter.
+[15:58] Right? So, instead of having a single
+[16:00] bit or one bit in each entry, it has a
+[16:03] two-bit saturating counter over here.
+[16:08] So, uh then uh if, let's say, we want to
+[16:11] predict, we read the value of the
+[16:13] saturating counter and we
+[16:15] uh pass it through a logic block.
+[16:18] What this does is that it basically
+[16:19] looks at the MSB of the saturating
+[16:22] counter.
+[16:23] If it is 0, we predict not taken.
+[16:26] If it is 1,
+[16:28] we predict taken.
+[16:31] Uh so, this is the predictor table uh as
+[16:34] you can see over here, which
+[16:36] broadly remains the same.
+[16:39] When we find the outcome of a branch, we
+[16:42] again access this entry.
+[16:44] And if it is taken, of course, we
+[16:45] increment.
+[16:47] If it is not taken, we decrement.
+[16:49] But, the logic is the same for the
+[16:51] saturating counter in the sense
+[16:53] if the state is already 1 1, we don't
+[16:56] increment it further. It remains there.
+[17:02] So, the saturating counter is very
+[17:04] useful. Let's see why.
+[17:07] So, let us take a look at the same piece
+[17:09] of code again.
+[17:11] So, in this case, the first five times
+[17:14] we predict correctly, which is not
+[17:17] The sixth time, of course, we make a
+[17:19] mistake.
+[17:20] So, we predict taken.
+[17:22] But, uh the state after this
+[17:26] is actually weakly not taken.
+[17:38] And uh so, we will So, the next time
+[17:41] that we enter the first branch, we will
+[17:42] still predict not taken.
+[17:45] Primarily because the state is at weakly
+[17:47] not taken, which means that
+[17:50] uh from the saturating counter logic,
+[17:52] even if we make one mistake,
+[17:55] the inherent behavior doesn't change.
+[17:57] So, in this case, the inherent behavior
+[17:58] still remains not taken.
+[18:01] And that is why uh we don't make the
+[18:04] mistake over here that we were making
+[18:06] with the regular bimodal predictor. So,
+[18:09] this mistake does not happen.
+[18:11] That is why uh the mistake rate here is
+[18:15] 1 over 6.
+[18:17] Which, if we compare it with 2 over 6,
+[18:20] it is
+[18:22] it's roughly half. It's 50% better.
+[18:25] So, as you can see, we have been able to
+[18:27] bring down the mistake rate
+[18:29] substantially. And now, it is only 1/6,
+[18:33] which is roughly 16%.
+[18:35] What was the
+[18:37] key trick, the key innovation that we
+[18:39] used? Well, the key innovation that we
+[18:42] used is that the mistake that we were
+[18:43] making over here
+[18:45] primarily because
+[18:49] uh we were uh
+[18:51] the the last the exit
+[18:54] iteration was taken
+[18:56] and we continue to predict the same with
+[18:58] the bimodal predictor. In this case, we
+[19:00] don't do that.
+[19:01] Mainly because we created an additional
+[19:04] state called weakly not taken.
+[19:07] And this records
+[19:09] the steady state behavior of the long
+[19:11] term long term behavior
+[19:13] or inherent behavior of the branch.
+[19:17] All right. So, uh so, as you can see, uh
+[19:21] we remain at 0 0 in this case because
+[19:24] the state is taken, we move to 0 1.
+[19:27] The next time we start with 0 1, we move
+[19:29] to 0 0.
+[19:30] So, even if you were to execute uh these
+[19:33] six
+[19:35] uh these five iterations with six
+[19:38] branches
+[19:40] uh over and over and over again, we will
+[19:42] still see that our error will
+[19:46] saturate and stabilize at 1/6.
+[19:51] So, the misprediction rate,
+[19:53] let me erase the ink on this slide.
+[19:57] So the miss prediction rate has gone
+[19:59] down from 2 by 6 to 1 by 6.
+[20:01] Which
+[20:02] in a certain sense represents a
+[20:05] substantial improvement.
+[20:08] Now why do saturating counters work?
+[20:10] Well, as we have discussed they
+[20:12] introduce a degree of hysteresis.
+[20:15] They introduce a degree of
+[20:19] Uh in in in a sense they
+[20:22] incorporate
+[20:24] the inherent behaviors of the branches.
+[20:28] Uh so in this case the BQ exit
+[20:30] instruction moves between the strongly
+[20:32] not taken and weakly not taken states.
+[20:36] So when does this work? Well, when a
+[20:38] branch is strongly biased towards one
+[20:39] direction
+[20:40] but once in a while changes its
+[20:43] That is when we use saturating counters.
+[20:46] They capture stable behavior with
+[20:48] occasional anomalies.
+[20:50] So of course a bimodal predictor
+[20:53] captures stable behavior
+[20:55] but if I were to include occasional
+[20:57] anomalies
+[20:58] I would have a saturating counter based
+[21:00] predictor.
+[21:11] Can we do better? Well, let us consider
+[21:13] a slightly more
+[21:15] complicated piece of code
+[21:17] and let us look at
+[21:19] uh if we can do better or not.
+[21:22] So let us take a look at this piece of
+[21:24] code which has five iterations.
+[21:27] So in the last uh iteration which is if
+[21:30] I is equal to four
+[21:32] uh then we here we call some other
+[21:34] function which is
+[21:35] foobar.
+[21:36] Right? So this function is called.
+[21:41] Let us look at the assembly code
+[21:44] over here.
+[21:45] So in this case what we do is where the
+[21:47] first few lines are the same.
+[21:49] Uh we move zero to R0. We compare R0
+[21:53] with five.
+[21:54] If the comparison results in an equality
+[21:57] we exit. We go out of the loop.
+[22:00] Otherwise we uh execute this comparison
+[22:03] if I is equal to four. We compare R0
+[22:06] with four.
+[22:09] If the comparison is not successful
+[22:12] which will happen most of the time, we
+[22:14] jump over here.
+[22:16] We increment R0 by one
+[22:20] and we loop back.
+[22:23] The interesting case happens in the
+[22:26] last iteration
+[22:28] when we compare R0 with four.
+[22:31] And the comparison results in an
+[22:34] equality which means that we call the
+[22:36] function foobar.
+[22:38] And then after calling the function
+[22:39] again we return and we increment the
+[22:41] loop index which is R0 and go back to
+[22:44] the loop.
+[22:46] So in this case we still confine our
+[22:48] attention to this branch.
+[22:51] And we try to reduce the error
+[22:54] to 0%. How do we do that? Well, we have
+[22:57] a a solution.
+[23:00] So let us introduce a new structure
+[23:02] called a global history register or a
+[23:04] GHR.
+[23:07] So let this be a shift register
+[23:10] that records the history of
+[23:14] the last n branches
+[23:16] encountered by the processor.
+[23:19] So in the dynamic instruction sequence
+[23:23] if this is the current point
+[23:25] I look back at the last n branches
+[23:27] regardless of the program counter.
+[23:30] And for the last n branches
+[23:33] I store their status
+[23:35] and the sorry I store their outcome and
+[23:37] the outcome can either be taken or not
+[23:39] taken. Taken or not taken.
+[23:47] Right?
+[23:48] So if I have a single bit for each
+[23:54] So if I have a single bit for each uh
+[23:58] uh
+[23:59] I represent taken with one and I
+[24:01] represent not taken with zero
+[24:04] then at any point I'll have a n-bit bit
+[24:07] vector
+[24:08] where it will record the history of the
+[24:10] last n branches in the dynamic
+[24:12] instruction sequence.
+[24:14] So if I consider a two-bit shift
+[24:16] register
+[24:17] and call it the global history register
+[24:20] then uh
+[24:24] So this So the shift register So shift
+[24:26] register is also known as the GHR.
+[24:29] So the GHR in this case contains two
+[24:31] bits in our example which means it
+[24:33] records the history of the last two
+[24:35] branches.
+[24:37] So recall that we have two conditional
+[24:39] branches in the running example. So of
+[24:41] course we can modify the GHR logic to
+[24:44] only record the behavior of conditional
+[24:48] So that will give us more accuracy as we
+[24:50] shall see. So let us assume we do that.
+[24:53] So we have two conditional branches in
+[24:55] our running example
+[24:57] and uh at every point of time we
+[25:00] maintain the status of
+[25:03] the last two branch instructions
+[25:04] regardless of their program counter. So
+[25:06] let us call this the GHR.
+[25:10] So what is the status of the GHR? So at
+[25:12] the beginning of the second iteration
+[25:16] the last branch over here would have
+[25:18] been taken.
+[25:20] And the one before that would have been
+[25:22] not taken. So the status that we would
+[25:25] record
+[25:26] is zero and one zero one.
+[25:29] Even at the beginning of the fourth
+[25:31] iteration it would be zero one.
+[25:34] Even at the beginning of the fifth and
+[25:36] last iteration also it would be zero
+[25:38] one.
+[25:39] However, at the beginning of the sixth
+[25:41] iteration the status will be different.
+[25:43] Why?
+[25:44] Because let us see what happens in the
+[25:46] fifth iteration. This branch is not
+[25:49] There is an equality over here hence
+[25:51] this branch is also not taken.
+[25:55] As a result
+[25:56] when I reach the beginning of the sixth
+[25:58] iteration which is this point and I take
+[26:00] a look at my GHR for the status of the
+[26:02] last two branches
+[26:04] which would essentially be this branch
+[26:07] and this branch in the previous
+[26:08] iteration
+[26:10] the status would be zero zero.
+[26:13] Right? Uh so in this case we can think
+[26:15] of the GHR as somehow
+[26:20] uh encoding the context
+[26:23] of a branch in terms of the outcomes of
+[26:26] the n previous branches
+[26:29] in the dynamic instruction sequence. So
+[26:31] in this case as we see uh at any point
+[26:34] we can of course inspect the GHR.
+[26:36] So the beginning of the iterations
+[26:38] second to fifth
+[26:40] the GHRs are all zero one zero one zero
+[26:42] one zero one
+[26:43] but at the beginning of the sixth
+[26:46] if we take a look at the outcomes of the
+[26:51] which would be basically the outcomes of
+[26:53] the branches in the fifth iteration
+[26:55] their status is zero and zero.
+[26:59] So the GHR would contain zero zero.
+[27:02] So since it contains zero zero recall
+[27:04] that the GHR values at other points was
+[27:07] different.
+[27:08] Right? It was zero one zero one.
+[27:11] So in this case it is zero zero. Can we
+[27:13] use this information
+[27:15] to predict
+[27:17] the BQ.exit branch better?
+[27:19] Well, yes we can
+[27:21] and we will see how. So you can clearly
+[27:24] see a difference. You can see that in
+[27:25] the other iterations
+[27:27] the state of the GHR was zero one
+[27:30] but in the crucial sixth iteration when
+[27:33] we exit the loop
+[27:34] the state of the GHR is zero zero
+[27:37] and this information is different. It is
+[27:39] unique and it can be used.
+[27:43] So what do we do? Well, uh we make a gap
+[27:46] predictor. So we'll
+[27:48] mention why it is called a gap predictor
+[27:51] in some time
+[27:52] but essentially what we do
+[27:55] what our idea is
+[27:57] is that we take n bits from the PC
+[28:00] and we take and we consider a k-bit GHR.
+[28:03] So in this case of course in our example
+[28:06] k is equal to two.
+[28:08] So what we do is we concatenate n and
+[28:10] two. So in this case we create a n plus
+[28:13] two-bit field.
+[28:15] This is used
+[28:17] to address
+[28:18] a table of
+[28:21] uh two raised to the power
+[28:24] uh n plus k entries.
+[28:26] So now this table does not have two
+[28:28] raised to the power n entries but it has
+[28:29] two raised to the power n plus k
+[28:31] entries.
+[28:33] So in this case what are we doing? We
+[28:35] are essentially combining the
+[28:37] information of the GHR and the PC which
+[28:40] means that for a single PC
+[28:42] of course not considering any as a
+[28:45] for different GHR values we'll have
+[28:47] different saturating counters. Even with
+[28:48] a two-bit GHR value
+[28:50] we'll actually have four saturating
+[28:52] counters instead of one
+[28:54] associated with the PC.
+[28:57] And for a given GHR value of course the
+[28:59] saturating counter will record
+[29:02] the
+[29:03] behavior of the branch, the steady state
+[29:05] behavior of the branch.
+[29:07] Right? Uh not not the steady state but
+[29:09] in a saturating counter sense it will
+[29:12] record the behavior of the branch.
+[29:15] So what are the two uh values that we
+[29:17] see most common? Uh zero one and zero
+[29:19] zero.
+[29:20] So most of the time it will be zero one.
+[29:22] With zero one we can store not taken.
+[29:25] So in any case in the process of
+[29:26] training this is what the saturator
+[29:28] saturating counters will get trained to.
+[29:32] But if we consider zero zero
+[29:34] what we see over here
+[29:36] is that in no other iteration is the
+[29:38] value at this point for BQ equal to zero
+[29:43] And furthermore when the GHR is zero
+[29:45] zero the branch is always taken.
+[29:48] Hence, what we can record over here
+[29:51] which automatically the saturating
+[29:53] counters will get trained to
+[29:55] is actually 00, and at that this point
+[29:57] the branch is taken.
+[29:59] So, what we see from this is there is a
+[30:01] nice way to differentiate the cases the
+[30:03] previous cases when the branch is not
+[30:05] taken
+[30:06] versus the case in which the branch is
+[30:10] Sorry, versus the case in which the
+[30:12] branch is taken.
+[30:13] And this can be used for better
+[30:15] prediction as we see right here.
+[30:18] So, what did we do? Well, uh we created
+[30:21] two to the power K times more entries in
+[30:23] the predictor table.
+[30:26] We had to do that because we considered
+[30:28] a GHR, we captured the global branch
+[30:30] history.
+[30:32] We use both the global history as well
+[30:35] as the local per PC history to make the
+[30:38] prediction.
+[30:40] Right? Uh so, we actually use both both
+[30:42] the global history as well as the local
+[30:44] history. So, how do we do that? Well,
+[30:47] uh because we are combining both pieces
+[30:48] of information, we are taking N bits
+[30:50] from the program counter
+[30:52] and we are taking K bits
+[30:55] from the global history. So, this is a
+[30:58] total of
+[31:00] uh two to the power uh N plus K entries.
+[31:03] So, which basically means that per PC
+[31:05] we have
+[31:07] two to the power K
+[31:12] per PC we have two raised to the power K
+[31:14] saturating counters. So, each one of
+[31:16] them is
+[31:18] determining the behavior of the PC with
+[31:20] respect to a given context.
+[31:23] So, the accuracy in this case is
+[31:24] expected to increase. And as we can see
+[31:27] in this case the branch in the last
+[31:30] will be predicted correctly.
+[31:32] So, in general we can create different
+[31:34] combinations of the PC bits in the GHR's
+[31:37] branch history.
+[31:39] So, it's important for me to look at
+[31:41] this issue once again. So, as you can
+[31:44] see
+[31:44] in the last iteration, the branch over
+[31:47] here uh is different, the GHR is
+[31:49] different. It is going to be hence
+[31:52] uh and uh
+[31:54] in no other iteration do we see such a
+[31:56] pattern.
+[31:57] Hence, the branch will be predicted
+[31:59] correctly.
+[32:02] There is one point that we need to
+[32:04] mention which we have not written over
+[32:06] here, but let me complete this.
+[32:08] This is the beginning of the
+[32:16] first iteration.
+[32:18] So, in the beginning of the first
+[32:19] iteration, essentially we are entering
+[32:21] this function.
+[32:22] So, wherever we are entering this
+[32:23] function from
+[32:27] essentially the context of the last two
+[32:29] branches will come from there.
+[32:32] So, uh
+[32:33] if it is 00, of course we'll predict
+[32:36] taken which is a mistake, but the odds
+[32:38] are
+[32:40] that it'll not be 00.
+[32:42] Right? I mean, if we assume it varies
+[32:44] uniformly.
+[32:45] Right? Even if it doesn't uh
+[32:49] it'll not be 00 all the time. I mean,
+[32:52] statistically
+[32:55] uh well, uh we need to take our chances.
+[32:58] So,
+[32:59] uh if it is any other value 01 10 and 11
+[33:04] so, in these cases, of course the
+[33:05] context is different. If it is 01, we'll
+[33:07] predict not taken.
+[33:09] If it is 10 and 11
+[33:11] then the saturating counter will
+[33:13] automatically train itself to predict
+[33:15] not taken.
+[33:16] The only difficult scenario can arise
+[33:21] uh if let's say when we enter the
+[33:24] function foo, the existing context is
+[33:26] 00.
+[33:27] Then automatically we have already
+[33:29] trained ourselves to predict taken over
+[33:31] here, so we'll predict taken
+[33:33] and we will make a mistake here. But as
+[33:36] I said, there are four states, so the
+[33:37] odds are more likely that we would have
+[33:39] 10
+[33:40] 11 10 or 01 as the starting state of the
+[33:45] So, in this case uh we can
+[33:51] will automatically be trained to predict
+[33:57] So, but we will revisit this issue
+[34:01] later
+[34:02] because the point is that the
+[34:05] so, if
+[34:07] the first iteration the state is one of
+[34:09] these, then it is clear that we are not
+[34:12] making any mistake for BEQ.exit.
+[34:15] So, the error rate is 0% right? So,
+[34:18] effectively we have 100% accurate branch
+[34:21] But but but but in the beginning of the
+[34:25] first iteration, if the context the
+[34:27] state of the GHR is 00
+[34:29] then of course there is a problem
+[34:31] because for the same PC and GHR
+[34:33] combination
+[34:35] uh sometimes we'll predict taken which
+[34:37] is this case
+[34:39] but when we enter the loop, we want to
+[34:43] So, how do we exactly capture this
+[34:45] context?
+[34:47] Right? And how do we exactly address
+[34:49] this issue?
+[34:51] This will be discussed
+[34:53] uh a few slides later, but it's
+[34:55] important to keep this thing in mind.
+[34:59] So, let us proceed. So, what we have
+[35:01] seen
+[35:02] is that we have created a new kind of
+[35:04] predictor. And the predictor is not just
+[35:07] limited to predicting the sixth
+[35:08] iteration correctly which we just did
+[35:11] but let us assume we have a branch that
+[35:13] has an alternating pattern.
+[35:15] Taken not taken taken
+[35:21] So, it is clear that a saturating
+[35:23] counter will not capture this pattern.
+[35:27] Uh because you know, saturating counters
+[35:29] are designed to capture steady state
+[35:31] behavior.
+[35:32] But
+[35:34] uh this behavior
+[35:38] needs to be captured.
+[35:40] So, the question is will a GAP predictor
+[35:42] capture this pattern?
+[35:44] Well, the answer has to be seen by
+[35:48] looking at the design of the GAP
+[35:50] predictor. So, the GAP predictor is
+[35:51] essentially combining N bits of PC
+[35:53] information
+[35:55] and it is concatenating this with K bits
+[35:58] of the GHR.
+[36:00] So, the GHR is kind of unique, it has a
+[36:03] unique signature for taken, it has a
+[36:05] unique signature for non-taken.
+[36:07] Then of course, a GAP predictor will
+[36:09] capture the pattern.
+[36:11] But this need not be the case
+[36:14] uh all the time.
+[36:16] Right? So, there need not be a very
+[36:18] unique signature for this because after
+[36:19] all the GHR is not
+[36:22] taking the PCs into account, right?
+[36:25] So, essentially it is the last K
+[36:27] branches in the dynamic instruction
+[36:29] sequence which can be any set of program
+[36:32] counters.
+[36:33] So, in this case
+[36:35] having a unique signature for taken and
+[36:37] not taken might not
+[36:39] be possible all the time.
+[36:41] So, we need to design some other
+[36:43] predictor that can capture such
+[36:45] alternating patterns
+[36:47] and also solve the problem that we
+[36:49] discussed regarding the first iteration
+[36:51] of the loop.
+[36:53] Right? So, both of these have to be
+[36:54] captured somehow. So, we need a better
+[36:57] way of capturing them.
+[37:00] So, to design a better way of capturing
+[37:03] such patterns so, what are the two
+[37:06] patterns you know, that we have still
+[37:08] not been able to capture?
+[37:10] Well, the first is an alternating
+[37:11] pattern which is taken not taken.
+[37:15] Right? So, this can happen particularly
+[37:18] if you have random numbers in the code,
+[37:19] this can happen.
+[37:21] The other is the first iteration of our
+[37:23] running example.
+[37:25] So, then of course the context is coming
+[37:28] from instructions that are outside the
+[37:30] function.
+[37:32] And we pretty much don't know and the
+[37:34] context is not under our control.
+[37:38] So
+[37:39] basically in that case also
+[37:42] if the context as we have discussed if
+[37:46] not taken taken
+[37:49] then of course it's possible to predict
+[37:52] the branch with 100% accuracy.
+[37:54] But if the context is taken and taken,
+[37:56] then there is a difficulty.
+[37:59] So, if I were to look at both of these
+[38:02] problems
+[38:03] I would need a
+[38:05] branch predictor which is
+[38:07] more complicated than GAP.
+[38:10] So, what I do is I start with creating a
+[38:14] design space of predictors.
+[38:17] Where uh I call them GAG, GAP, PAG and
+[38:20] PAP.
+[38:21] And we will see that they have an
+[38:24] you know, they have they capture
+[38:25] different patterns
+[38:27] in the code.
+[38:28] And these patterns
+[38:32] uh are commonly visible patterns in the
+[38:34] code and only if they are captured will
+[38:36] we get a high accuracy.
+[38:38] So, at this point it is important to
+[38:40] mention what is G and what is P.
+[38:43] Well, what is G? If I were to come back
+[38:46] to this slide
+[38:47] so, G is the global global history
+[38:49] register. So, G is the global
+[38:51] information of the behavior of the last
+[38:54] K branches in the dynamic instruction
+[38:56] sequence. This is the G.
+[38:59] And essentially the pattern is something
+[39:02] that takes PC bits.
+[39:04] So, it takes these PC bits. So, in this
+[39:06] case, the reason we call it GAP is
+[39:08] because we have the global
+[39:11] history of course, and then we take
+[39:13] these PC bits and concatenate them.
+[39:15] And we address a table. So, this table
+[39:17] is also known as a PHT or the pattern
+[39:20] history table.
+[39:21] And from this table we get a set of we
+[39:24] get a single saturating counter as
+[39:26] output.
+[39:28] And with this we can determine the
+[39:30] outcome of the branch.
+[39:32] Furthermore, to reduce aliasing as we
+[39:34] have discussed we can store a part of
+[39:37] the tag within each entry. But that is
+[39:39] independent to this discussion.
+[39:41] But the reason as you can see, it is GAp
+[39:43] is because this is the G part.
+[39:45] And the PC, this is the P part.
+[39:49] So, similarly, we can have a hierarchy
+[39:52] a design space of other kinds of
+[39:53] predictors.
+[39:55] Which hopefully will capture these two
+[39:57] patterns, the alternating pattern.
+[40:01] predicting the first iteration of our
+[40:03] running example with a
+[40:05] greater accuracy.
+[40:08] So, let us consider the most simple GAg
+[40:10] predictor, which of course is
+[40:13] not practical, it is not used.
+[40:15] But it is a bonafide member of our
+[40:17] branch predictor design space.
+[40:20] So, in this case, we don't use PC bits
+[40:22] at all. So, there is no P, as you can
+[40:23] see.
+[40:25] So, we have a single K-bit GHR.
+[40:29] We only use the global history
+[40:31] uh to access a table with 2 to the power
+[40:33] K entries, where each entry contains a
+[40:37] And this determines the outcome of the
+[40:39] branch.
+[40:40] So, this, of course, is not a good idea.
+[40:43] Because we are not using the PC
+[40:44] information at all.
+[40:46] So, there is no per branch information
+[40:48] that is stored.
+[40:50] Which, of course, is not the right thing
+[40:52] to do.
+[40:53] To solve many of our problems, we will
+[40:56] use the PAg predictor, PAg predictor.
+[40:59] So, this predictor uh
+[41:03] is designed differently.
+[41:06] So, it is meant to solve both the
+[41:08] problems that we have been discussing.
+[41:11] So, instead of one GHR, we have multiple
+[41:13] K-bit GHRs. So, what we do is we extract
+[41:16] N1 bits
+[41:18] from the PC address. So, I've
+[41:19] deliberately offset N1.
+[41:22] I've not kept them as the LSB bits.
+[41:25] But they have kept but I have kept them
+[41:26] somewhere in the middle.
+[41:28] So, what you need to do
+[41:31] is that if N1 is three,
+[41:33] we will have four uh sorry, 2 to the
+[41:36] power three
+[41:37] eight of these GHRs.
+[41:40] Each GHR will store K bits.
+[41:43] So, what we do is that we use these
+[41:46] three bits of the PC
+[41:48] address the corresponding GHR.
+[41:50] Extract K bits from it.
+[41:53] Furthermore, these K bits are used
+[41:57] to
+[41:58] uh index an entry uh the PHT
+[42:02] of uh 2 to the power K entries, the
+[42:05] history table with 2 to the 2 raised to
+[42:07] the power K entries.
+[42:08] And each of these entries contains a
+[42:23] So, what is the advantage of having
+[42:25] multiple GHRs as opposed to a single
+[42:28] GHR?
+[42:29] Well, the advantage of having multiple
+[42:31] GHRs is like this.
+[42:34] That uh consider a very large program.
+[42:38] So, typically, what happens is that we
+[42:40] operate in the vicinity of
+[42:43] one set of functions. So, maybe let's
+[42:46] say we are initializing the program. So,
+[42:48] this would be one piece of code.
+[42:50] Then let's say that we are executing
+[42:52] some logic, it will be another piece of
+[42:54] code.
+[42:56] So, consider this PowerPoint
+[42:58] presentation.
+[42:59] So, when I started PowerPoint, the
+[43:02] initialization code was there.
+[43:04] Then I was making the presentations, so
+[43:06] another piece of code was being used.
+[43:08] And then I'm giving the presentations,
+[43:10] another piece of code is being used.
+[43:13] So, all of these pieces of code are, in
+[43:15] a sense, co-located in terms of
+[43:18] addresses.
+[43:19] Right? They are located in similar
+[43:24] So, we should ideally have separate GHRs
+[43:27] for these, because we don't want
+[43:30] the GHRs of
+[43:32] we don't want a single GHR, it does not
+[43:34] capture the context very well.
+[43:36] But for each code region, we would like
+[43:38] to have a separate GHR.
+[43:40] Such as the context in that code region,
+[43:43] which is more relevant, is captured.
+[43:47] So, what we do is that's the reason we
+[43:49] don't use LSB bits, but we also don't
+[43:52] use MSB bits, because they might remain
+[43:53] constant. But we extract N1 bits from
+[43:56] somewhere of the in the middle of the
+[43:59] PC.
+[44:00] So, this, of course, where and which
+[44:02] bits we extract,
+[44:03] uh this is dependent on many simulation
+[44:07] studies, so it is hard to predict.
+[44:09] But uh ideally, uh it should not be the
+[44:13] least significant bits.
+[44:15] Because this is defeating the purpose of
+[44:16] having multiple GHRs.
+[44:18] So, we typically have multiple GHRs when
+[44:22] uh we
+[44:25] want each GHR to capture the behavior of
+[44:28] a certain region of the code.
+[44:31] All right? Uh so, so that is typically
+[44:32] the reason
+[44:34] uh why we we have
+[44:37] uh multiple GHRs.
+[44:42] So, we need to bear in mind uh that if
+[44:46] uh N1
+[44:47] uh if let's say we extract N1 bits
+[44:51] as the least significant bits of the PC.
+[44:54] And let's assume that N1 is, let's say,
+[44:57] eight.
+[44:59] So, what will actually happen is that
+[45:02] uh we will pretty much be tracking 256
+[45:05] contiguous locations.
+[45:07] And each GHR
+[45:08] will capture the context of the
+[45:11] instructions
+[45:12] whose uh lowest eight bits match.
+[45:16] So, in general, there is no meaning for
+[45:18] the context of instructions whose lowest
+[45:20] eight bits match.
+[45:22] Because there is no relationship between
+[45:23] them typically.
+[45:25] But if let's say the program is kind of
+[45:28] constrained within these 256
+[45:29] instructions,
+[45:31] then the GHR can pretty much
+[45:34] provide the context of the single
+[45:37] instruction of of, let's say, one
+[45:40] instruction. It can kind of provide its
+[45:42] past history.
+[45:43] But this anyway we don't require,
+[45:45] because we have
+[45:47] uh other ways of recording, as we have
+[45:49] seen, histories of a single instruction.
+[45:53] So, GHR pretty much captures the
+[45:55] behavior of other related branches,
+[45:57] right? So, the philosophy of having a
+[46:00] GHR
+[46:01] is to capture the behavior of
+[46:08] related branches.
+[46:10] So, what makes a branch related? Well,
+[46:14] one way that we can actually define it
+[46:18] uh is that we can say that, look, all
+[46:21] the branches that are within a certain
+[46:24] address range
+[46:25] are kind of related to each other,
+[46:27] because they are pretty much maybe part
+[46:29] of the same function or part of the same
+[46:32] super function that calls the the sub
+[46:34] functions, right?
+[46:36] So, in that case, it does make sense to
+[46:38] offset N1 a little bit, such that if
+[46:41] let's say N1 is offset by
+[46:43] uh four bits,
+[46:45] so then pretty much we are capturing a
+[46:47] region of
+[46:48] 16 bytes.
+[46:50] And any instruction within that region,
+[46:52] it will they are pretty much sharing the
+[46:54] GHR entry.
+[46:57] Uh so, there are numerous trade-offs in
+[46:59] designing this, but pretty much the idea
+[47:01] of a GHR is to capture the context
+[47:05] of the current branch and
+[47:07] co-located branch and other branches
+[47:09] that are in the same address region.
+[47:12] Once we have done that, the context is
+[47:14] used to uh address the table of
+[47:17] saturating counters.
+[47:19] So, as we see, this is not
+[47:23] I mean, all that beneficial. Well, the
+[47:25] reason being that we are only capturing
+[47:27] global history, albeit global history of
+[47:29] a given range.
+[47:31] But we are not using the PC bits
+[47:33] directly.
+[47:35] So, the PAg predictor pretty much
+[47:37] combines everything that we have seen up
+[47:39] till now.
+[47:41] So, it uses N PC bits directly. In
+[47:44] addition, it has 2 raised to the power
+[47:46] N1
+[47:48] GHRs.
+[47:49] Where essentially we capture the
+[47:51] behavior of other branches,
+[47:54] right? In the region.
+[47:57] And we also take in the take into
+[47:59] account the last N bits of the PC.
+[48:02] So, what we do is we concatenate them.
+[48:05] So, concatenating them basically means
+[48:08] that for a given PC,
+[48:09] we have 2 raised to the power K entries
+[48:11] in the pattern history table.
+[48:14] Right? And so, then we can pretty much
+[48:18] capture the
+[48:20] capture different kinds of
+[48:23] global history patterns. For different
+[48:24] kinds of global history patterns, we can
+[48:27] store different saturating counters.
+[48:30] So, the PAg predictor is clearly the
+[48:32] largest of all four.
+[48:34] And it is also the most expressive
+[48:37] uh predictor.
+[48:41] There is another way of combining the
+[48:43] information. So, as you can see in the
+[48:45] PAg predictor, we have 2 raised to the
+[48:47] power N plus K entries.
+[48:50] There is another way of combining this
+[48:52] information. What we can do
+[48:54] is that we can take a K-bit GHR. Of
+[48:58] course, it's a single GHR.
+[49:00] And we can take N bits of the PC. And we
+[49:03] can XOR them. So, XORing them is
+[49:05] basically one way of kind of mangling
+[49:08] the bits.
+[49:09] So, in that, what happens is this
+[49:11] somehow mixes So, this is actually
+[49:13] uh an extension of the GAp idea of the
+[49:16] GAp predictor.
+[49:18] Where we
+[49:19] uh the GAp predictor would do the same,
+[49:20] but it would concatenate.
+[49:22] In a Gshare predictor, what we do is
+[49:24] instead of concatenating, we compute an
+[49:27] XOR, exclusive OR of the bits.
+[49:29] Which uh
+[49:31] whose conceptual aim is to pretty much
+[49:33] achieve the same of combining the PC and
+[49:36] GHR information, albeit using much less
+[49:39] space.
+[49:40] So, that is the reason the number of
+[49:41] entries that we have here is 2 raised to
+[49:43] the power max n, m, k entries.
+[49:47] As a total number of entries that we
+[49:49] have here.
+[49:50] And each of these entries has a
+[49:54] Which of course we have seen a lot of
+[49:56] saturating counters by now. All of them
+[49:58] operate in the same
+[50:00] fashion.
+[50:02] So, uh let us go back uh to the PAP
+[50:05] predictor over here and clean and first
+[50:07] clean the ink
+[50:09] uh on the slide.
+[50:11] So, let us see if it solves our problems
+[50:13] or not.
+[50:14] So, let us first consider the first
+[50:16] issue that we had highlighted.
+[50:19] Which was to take care of iteration one.
+[50:23] So, in iteration one, our line of
+[50:25] argument was that look the foo function
+[50:27] starts.
+[50:28] We have some instructions and then we
+[50:30] have BEQ.exit.
+[50:33] So, we do not know the context of the
+[50:35] foo function in the sense what were the
+[50:36] branches before we entered the foo
+[50:39] function because they determine the
+[50:41] global history. All right?
+[50:44] And since they determine the global
+[50:46] history, we were not sure because you
+[50:47] know there are different functions that
+[50:49] could be calling foo.
+[50:51] And given the fact that different
+[50:53] functions are calling it, uh they could
+[50:55] have different behaviors. So, for
+[50:57] example, it is possible
+[50:59] that one function uh
+[51:03] foobar
+[51:04] would be calling foo. That would have a
+[51:07] different context.
+[51:09] And another function who
+[51:14] would be calling foo.
+[51:17] That would have a different context.
+[51:19] So, capturing the context uh in this
+[51:22] sense
+[51:23] uh is uh important is in a sense
+[51:26] important.
+[51:27] And also the other thing is that maybe
+[51:31] you see if they have different contexts,
+[51:33] then it's fine. That will get get
+[51:35] captured by a single GHR.
+[51:37] But it is possible
+[51:38] that uh
+[51:40] they would have the same GHR patterns.
+[51:44] Uh right? And then there would be uh
+[51:46] some degree of
+[51:50] aliasing. In the sense what we have seen
+[51:52] is that if let's say uh the last two
+[51:56] branches are
+[51:59] not taken and not taken, essentially 0
+[52:02] 0. We could predict the sixth iteration
+[52:06] Now, it is possible that the context
+[52:09] from which
+[52:11] the foo function was being called, we
+[52:13] are having a similar GHR with 0 and 0.
+[52:20] we we know that the first BEQ.exit
+[52:25] is not taken, but we see in a similar
+[52:28] context, it is actually taken.
+[52:31] So, to solve such kind of issues it is
+[52:34] important to actually have multiple
+[52:38] Which is exactly what a PAP predictor
+[52:40] has. It has multiple GHRs. So, in this
+[52:43] case if foobar is calling foo, we would
+[52:46] use one GHR.
+[52:54] We would use one GHR for all the
+[52:56] branches that are within the foobar
+[52:58] function. But once it enters the foo
+[53:00] function, we would use so we would enter
+[53:03] a different region. And this region
+[53:05] would have a separate GHR of its own.
+[53:08] So, this separate GHR of its own
+[53:11] uh would
+[53:14] capture the context of
+[53:16] all the branches that are only within
+[53:18] the foo function. And
+[53:21] uh adjoining addresses. Right? So, what
+[53:24] we are saying is that if we have
+[53:25] multiple GHRs
+[53:27] then all the branches within the foobar
+[53:30] function, which will be in the same
+[53:31] region will have one GHR for it.
+[53:35] Which will be a separate GHR.
+[53:37] All the
+[53:38] branches in the foobarbar function
+[53:41] given that they will be co-located will
+[53:43] have a separate GHR for them.
+[53:45] And all the branches within the foo
+[53:47] function which are all co-located in
+[53:49] terms of addresses
+[53:51] will have a separate GHR.
+[53:54] For predicting the first branch, the
+[53:56] branch that we are interested in BEQ
+[53:58] BEQ.exit
+[54:00] we will essentially use GHR3.
+[54:04] Which is the GHR of the foo function.
+[54:06] And this would kind of be unaffected by
+[54:10] the behavior in other regions of the
+[54:11] code. So, what would this be populated
+[54:14] with? This would be populated with the
+[54:17] information of the branches the last
+[54:19] time the foo function ran.
+[54:22] And managing this is
+[54:25] far easier. So, the last time that foo
+[54:27] function ran
+[54:29] uh we deterministically know what were
+[54:31] the values of the branches, the outcomes
+[54:34] of the values of the outcomes of the
+[54:37] And that would accurately, uniquely,
+[54:39] precisely determine the context. And
+[54:42] this context can be used to predict. So,
+[54:45] let us give an example. Let us go back
+[54:47] to our loop
+[54:48] example where we essentially had
+[54:50] two branch instructions, BEQ.exit.
+[54:54] So, I'll I'll I'll take you there uh for
+[54:57] reminding you. So, we had
+[54:59] two branch instructions, BEQ.exit and
+[55:02] BNE.inc.
+[55:04] So, what happened is that in the first
+[55:07] in this branch of the sixth iteration,
+[55:09] we exited.
+[55:10] So, what were the two branches before
+[55:12] it? Well, so this was one.
+[55:14] So, this one was taken.
+[55:16] And the one before it
+[55:19] which which which was BNE.inc,
+[55:21] so this one was not taken.
+[55:24] So, given the
+[55:28] right? So, so so basically given the
+[55:31] specific
+[55:34] convention that we are following
+[55:37] what the GHR would uh
+[55:40] contain in this case would be the
+[55:43] contents of this instruction first. Uh
+[55:46] sorry, the contents of this one first,
+[55:48] which is 0. And the contents of this
+[55:50] one, which is 0 1.
+[55:52] So, which means that if I'm able to
+[55:55] dedicate a GHR for the foo function the
+[55:58] next time that we come
+[56:00] to this branch
+[56:03] we are going to see the value of the GHR
+[56:05] as 0 1. And given the fact that 0 1
+[56:09] always corresponds to not taken, we will
+[56:11] predict correctly.
+[56:12] So, what have we effectively done with
+[56:15] uh the PAP predictor? What we have done
+[56:17] is that for every region of code, we
+[56:20] have broadly associated a GHR with it.
+[56:23] This ensures that this GHR is not
+[56:26] polluted
+[56:28] with the GHRs by the behavior of
+[56:32] branches in other regions.
+[56:34] And this further means that let's say we
+[56:36] exit function foo, go to other
+[56:37] functions, do whatever we want. The
+[56:39] moment we come back in
+[56:42] we will pretty much use the GHR
+[56:43] associated with this region.
+[56:45] Which will capture the behavior of what
+[56:47] happened last time.
+[56:49] And so this, at least in this case, is a
+[56:52] more accurate predictor
+[56:54] of
+[56:56] the branches.
+[56:57] So, let us now consider
+[57:00] the second pattern, which was an
+[57:02] alternating pattern.
+[57:08] So, the alternating pattern, let's say
+[57:10] for a given branch. So, let's say the
+[57:12] pattern is taken, not taken, taken, not
+[57:16] And in between
+[57:18] an arbitrary amount of code can be
+[57:20] executed.
+[57:26] So, what we really want in this case is
+[57:28] we want to in this case we are
+[57:30] interested in the last outcome of
+[57:34] the current branch.
+[57:37] And based on the last outcome of the
+[57:39] current branch we make a prediction.
+[57:42] Right? So, if the last outcome was one,
+[57:44] we say it was zero. If the last outcome
+[57:46] was zero, we say it it is one.
+[57:49] So, this is ideally not possible in a
+[57:51] saturating counter based
+[57:53] system. The reason being that the
+[57:56] saturating counter
+[57:58] uh will always predict
+[58:01] uh So, the saturating counter is more
+[58:03] for a very biased branch. But in this
+[58:05] case it is an absolutely 50/50, you
+[58:07] know, alternating unbiased branch.
+[58:10] So, a saturating counter will not really
+[58:11] work because the moment it sees zero, it
+[58:14] will try to predict zero, but you are
+[58:15] trying to do the reverse.
+[58:17] So, you would need a global history in
+[58:20] this case.
+[58:21] And the global history should be
+[58:22] confined to this PC. It should not be
+[58:25] polluted with other global histories.
+[58:27] That is why we need multiple GHR
+[58:29] registers.
+[58:30] Now, if you want to predict it, well,
+[58:32] all that we will do is we'll take n bits
+[58:35] from the PC.
+[58:37] And let us consider a single bit GHR,
+[58:40] which is the last outcome.
+[58:42] So, we will essentially have two
+[58:44] entries, n 0.
+[58:47] And n 1.
+[58:49] So, n 0, e- even if you have a
+[58:51] saturating counter, it doesn't matter. n
+[58:53] 0 is always 1.
+[58:55] As of course 0 is not taken, 1 is taken.
+[58:57] And n 1 is always 0.
+[58:59] So, these two values will ultimately
+[59:02] saturate. And the PAP predictor will be
+[59:06] able to learn this alternating pattern
+[59:08] perfectly.
+[59:10] So, what we see is that some of the
+[59:13] major issues that we had
+[59:15] uh with a traditional bimodal saturating
+[59:18] counter or GAP predictor the PAP
+[59:21] predictor is able to fix mo- most of
+[59:23] them rather well.
+[59:25] And one reason for this is that it is
+[59:27] able to capture certain patterns rather
+[59:30] very well. Which other predictors could
+[59:33] not.
+[59:34] One of them is this alternating pattern.
+[59:36] The other one is the first iteration of
+[59:39] the full function,
+[59:41] which
+[59:42] should ideally depend upon
+[59:45] What is it? It should ideally depend
+[59:48] upon only the context of the full
+[59:49] function and nothing else.
+[59:51] So, having multiple GHRs helps us avoid
+[59:56] destructive interference.
+[59:59] Now, given that we have seen
+[60:01] so many predictors,
+[60:03] what we have seen is that for a biased
+[60:05] branch, for a highly biased branch,
+[60:08] we would need a predictor based on
+[60:13] For something that is heavily dependent
+[60:15] on the context,
+[60:17] like an alternating pattern,
+[60:20] we would need
+[60:22] a P-AP predictor, a P-AP-like predictor,
+[60:25] that has multiple GHRs and, you know,
+[60:27] there is a lot of context.
+[60:32] Right? So, so here I actually stand
+[60:34] corrected. Uh for an alternating
+[60:36] pattern, actually a G-AP uh instead of a
+[60:39] G-AP, a P-AP predictor uh works very
+[60:41] well.
+[60:42] So, the question is that for a given
+[60:43] piece of code, how do we know which
+[60:45] predictor to use? Because
+[60:47] for
+[60:49] a highly biased region,
+[60:52] we should ideally use a saturating
+[60:54] counter-based prediction because it will
+[60:55] work best.
+[60:57] Because we can always use a P-AP
+[60:59] predictor, but larger is the predictor,
+[61:01] the longer it will take to train, and uh
+[61:04] more are the resources, more are the
+[61:06] overheads.
+[61:07] So, in this case,
+[61:09] what we should ideally do is that
+[61:12] for different regions of the code,
+[61:14] depending upon their behavior, we should
+[61:16] use different predictors. So, maybe for
+[61:18] one region of the code,
+[61:19] the G-AP predictor is the best.
+[61:22] For another region of the code, it's
+[61:23] possible that the P-AP predictor is the
+[61:25] best.
+[61:26] Maybe for another region of the code,
+[61:28] the G-share predictor is the best.
+[61:30] Right? Because they have different
+[61:32] behaviors, and for these different
+[61:34] behaviors, different kinds of predictors
+[61:37] actually work well.
+[61:39] So, what we need is that for a given
+[61:41] code region, which means for a given PC,
+[61:44] we need to choose which predictor to
+[61:46] use. Right? So, we'll have multiple
+[61:48] predictors and choose one of them.
+[61:51] So, what we do is that we define a
+[61:53] tournament predictor, which given the
+[61:55] PC, we extract N bits.
+[61:58] Uh sorry. Uh we we have a choice array.
+[62:04] So, in the choice array, again, we have
+[62:06] a saturating counter.
+[62:08] So, the saturating counter essentially
+[62:10] tells us which predictor to use. If it
+[62:12] is zero, we use this predictor. If it's
+[62:14] one, we use this predictor.
+[62:16] And based on the predictor to use, we
+[62:18] use its prediction, and that's the final
+[62:24] this The advantage of this is that for
+[62:26] different program counters,
+[62:29] we get to know what is the best
+[62:31] predictor that we can use or for what
+[62:32] works best. And this also gets trained
+[62:35] in exactly the same way as a regular
+[62:38] branch predictor.
+[62:39] And this also captures the
+[62:41] history information to a large extent of
+[62:44] given a the range of code, what to use.
+[62:49] So, the operation of a tournament
+[62:50] predictor is as follows.
+[62:55] We find the entry in the pattern table
+[62:57] first.
+[62:58] Then we choose the predictor based on
+[63:00] the value of the saturating counter.
+[63:04] what do we have? Uh
+[63:09] Uh I'm I'm sorry. Let's not call it the
+[63:11] pattern table. Let's call it the choice
+[63:17] Right? The pattern table is for an intra
+[63:19] predictor table.
+[63:21] So, let's call it the choice array.
+[63:23] So, what happens is that if we have the
+[63:25] program counter,
+[63:27] we extract N bits out of it and choose
+[63:29] an entry in the choice array.
+[63:32] So, here we'll find a saturating counter
+[63:34] C.
+[63:35] And there are two
+[63:37] sub predictors, spread one
+[63:40] and spread
+[63:42] So, if spread two is correct,
+[63:44] what we do is
+[63:46] we increment
+[63:48] And of course, this is incremented in a
+[63:49] saturating counter fashion.
+[63:52] Similarly, if spread one is correct,
+[63:54] what we do is we decrement it.
+[63:58] So, ultimately, what will happen is that
+[63:59] for a given program counter, one of the
+[64:02] predictors
+[64:03] will most likely be found to be
+[64:04] suitable.
+[64:06] So, the saturating counter will go and
+[64:07] saturate over there, and we'll use it.
+[64:10] Of course, later on if the behavior
+[64:11] changes,
+[64:13] then the saturating counter will also
+[64:16] embody that fact.
+[64:18] So, based on the value of this counter,
+[64:20] we choose the predictor.
+[64:22] Then the predictor, we give it the PC
+[64:24] and all information that it needs.
+[64:26] It provides a prediction, and that is
+[64:28] the final prediction of the tournament
+[64:31] predictor. Right?
+[64:34] So, for training, what do we do? Well,
+[64:36] for training, we train both the
+[64:37] predictors with the PC and the ideal
+[64:40] outcome.
+[64:41] We train the entry in the choice array
+[64:43] if we choose the wrong predictor. So,
+[64:45] let's say that,
+[64:47] you know, we chose spread one, but
+[64:48] actually spread two was correct, then of
+[64:50] course, we train the entry in the choice
+[64:54] If both the predictions are the same,
+[64:55] then of course, nothing needs to be
+[64:57] done.
+[64:58] If they differ,
+[65:00] what we do is if predictor one was
+[65:01] correct,
+[65:04] then
+[65:05] we change the saturating counter. So,
+[65:07] let's say we increment the counter.
+[65:09] And if it was incorrect, we decrement
+[65:11] the counter.
+[65:12] Right? So, see, it doesn't matter. You
+[65:14] know, as long as we stick with one
+[65:15] convention, that let's say if predictor
+[65:17] one is correct, we keep on incrementing.
+[65:19] Predictor two is correct, and predictor
+[65:21] one is wrong, we keep on decrementing.
+[65:23] Or vice versa, it doesn't matter.
+[65:27] As long as, you know, the same
+[65:28] convention is followed.
+[65:30] So, what we see over here is that for
+[65:33] different code regions, different
+[65:36] are known to work well.
+[65:40] the tournament predictor essentially has
+[65:42] all of these predictors as sub
+[65:45] And for a given code region, it just
+[65:47] historically based on historical
+[65:50] knowledge,
+[65:51] it chooses the most accurate predictor.
+[65:57] What are some other methods of
+[65:58] prediction? Well, uh to reduce aliasing,
+[66:01] we can incorporate a few tag bits.
+[66:05] For different kinds of branches, subsets
+[66:07] of branches, we can have multiple
+[66:10] This can either be decided dynamically,
+[66:12] as in the tournament predictor,
+[66:14] or it can be decided statically, which
+[66:17] means the compiler can
+[66:19] say that, "Look, for this region, use
+[66:21] this predictor. For this region, use
+[66:23] this predictor."
+[66:25] We can include a bias bit with every
+[66:28] which maybe the compiler can find out
+[66:32] which is its most likely direction, and
+[66:34] just predict if we agree with the bias
+[66:36] bit or not.
+[66:38] What many other modern branch predictors
+[66:40] do
+[66:41] uh is that they separate branches into
+[66:43] high confidence and low confidence.
+[66:46] So, we use different bits for different
+[66:48] kinds of predictors.
+[66:50] So, for high confidence branches, we use
+[66:52] predictors with few bits.
+[66:55] But with low confidence branches, for
+[66:57] low confidence branches,
+[66:59] we use predictors with more bits.
+[67:01] Because of course, the bit budget is
+[67:03] important, right? We have a finite
+[67:05] amount of area on the chip, and we don't
+[67:07] want to increase it substantially.
+[67:10] The examples of few more predictors are
+[67:12] bi-mode, agree, skew, YAGS, stage. So,
+[67:15] stage, of course, is known to be a very
+[67:17] accurate predictor.
+[67:18] And nowadays, many uh
+[67:21] predictors are kind of inspired by very
+[67:23] early stage neural networks like
+[67:25] perceptrons.
+[67:26] So, you can also look at
+[67:27] perceptron-based predictors.
+[67:30] So, these predictors are known to have a
+[67:33] extremely high accuracy.
+[67:35] And the way that they work is that they
+[67:36] divide branches into different
+[67:39] subsets,
+[67:41] and they use different methods to handle
+[67:44] each subset.
+[67:47] So, one of the famous predictors is
+[67:48] skewed branch predictor, where it takes
+[67:50] all the information, address bits,
+[67:52] global history.
+[67:54] And it has different functions to kind
+[67:56] of mangle the bits.
+[67:58] And me means compute different
+[68:00] combinations of the bits.
+[68:03] And uh for uh
+[68:05] each of these combinations, we use one
+[68:09] Right? So, this kind of an uh conceptual
+[68:11] extension of G-share.
+[68:13] And let's say if we use three
+[68:15] predictors, we use the majority
+[68:16] decision. If two say not taken, one says
+[68:19] taken,
+[68:20] we use taken as the prediction, the
+[68:22] majority decision.
+[68:26] Is there a theoretical analysis of
+[68:29] branch prediction? Well, yes.
+[68:31] So, uh if you take an information theory
+[68:34] course,
+[68:47] what you will find
+[68:49] is that
+[68:52] prediction and compression and
+[68:54] compressibility of the sequence,
+[68:56] they are very related. So, let us do one
+[68:59] thing. Let's consider a sequence of PC
+[69:01] and outcome pairs.
+[69:03] Let us compress this sequence using a
+[69:05] standard program such as zip or RAR.
+[69:09] So, let's say the size of the original
+[69:11] file, which just had the PC and outcome
+[69:13] pairs, was 100 KB.
+[69:15] And after
+[69:17] compression, it becomes 20 KB.
+[69:20] So, the compression ratio is five.
+[69:22] Is the prediction accuracy related to
+[69:24] this ratio?
+[69:26] Well, yes. How?
+[69:28] Uh there is something called the Fano's
+[69:30] inequality that relates both.
+[69:32] So, what the Fano's inequality basically
+[69:34] says is that for a given
+[69:39] trace of branches,
+[69:40] which means for a given program that has
+[69:43] a certain behavior,
+[69:45] and the behavior can basically be
+[69:48] in a in a sense quantified with just
+[69:50] creating a trace of the PC and branch
+[69:53] outcome pairs,
+[69:55] if we have this,
+[69:56] there is a theoretically maximum
+[69:59] prediction accuracy, right? So, there is
+[70:01] a maximum theoretical
+[70:04] prediction accuracy
+[70:06] that is related to the compressibility
+[70:08] of the sequence.
+[70:11] And the
+[70:13] mathematical result that
+[70:18] stands for this relation is the Fano's
+[70:20] inequality.
+[70:21] So, this is the maximum theoretical
+[70:27] prediction accuracy.
+[70:30] This can be given by the Fano's
+[70:34] So, information theory has a concept
+[70:35] called entropy, which is very closely
+[70:38] closely related to the compressibility
+[70:40] of a sequence.
+[70:41] And the Fano's inequality uses that to
+[70:43] put a bound on the maximum
+[70:46] prediction accuracy, which means that
+[70:47] regardless of whatever you do,
+[70:49] we simply do not have enough information
+[70:51] in the sequence
+[70:53] to have a higher prediction accuracy.
+[70:58] All right, so we have uh looked at
+[71:02] predicting the branch outcome,
+[71:04] which is arguably the
+[71:07] most complex part of this design.
+[71:10] The next is prediction of the branch
+[71:12] target.
+[71:14] This is easy.
+[71:15] So, we have the PC of the taken branch,
+[71:17] we need to find the target.
+[71:19] Well,
+[71:20] all that we do
+[71:22] is that we augment the IST,
+[71:24] which is something that we had promised
+[71:27] in the last video that we are going to
+[71:28] do.
+[71:29] So, we augment the IST.
+[71:32] Recall that the IST was a single two to
+[71:34] the power n entry table,
+[71:36] where uh we use the last n bits of the
+[71:39] PC, and it gives us the type of the
+[71:41] instruction.
+[71:42] In this case, we store the target over
+[71:44] there.
+[71:46] So, we store the type of the instruction
+[71:48] and the target.
+[71:49] And for additional, we can also store a
+[71:51] tag for anti for
+[71:55] taking care of aliasing related issues.
+[71:58] And of course,
+[72:00] we can also store the target.
+[72:04] So, uh the BTB,
+[72:07] which is essentially extending the IST,
+[72:10] solves two purposes, which is it solves
+[72:12] problem one.
+[72:14] Problem one was the type of the branch.
+[72:22] And it solves problem two.
+[72:25] Sorry, it solves problem three,
+[72:28] which was finding the target.
+[72:30] So, along with the type of the branch,
+[72:31] we also stored its target.
+[72:34] And anytime we see a branch, we record
+[72:37] its target over here.
+[72:40] So, such that we access the BTB and we
+[72:42] get both the type of the instruction, if
+[72:45] it's a branch, what kind of branch,
+[72:47] and also its target, because for
+[72:49] unconditional branches,
+[72:52] the outcome need not be predicted, but
+[72:54] the target has to be predicted.
+[72:56] So, the BTB in that sense is a very
+[72:58] important structure.
+[73:00] And uh modern
+[73:02] uh processors have actually have a
+[73:03] two-level BTB, they have a level one
+[73:05] BTB,
+[73:06] which stores the most frequent
+[73:09] program counters,
+[73:11] and then it has a level two BTB, which
+[73:13] stores
+[73:14] slightly in infrequently observed
+[73:16] program counters.
+[73:18] So, together, so the L1 structure is
+[73:20] small and fast, and the L2 structure is
+[73:22] slow.
+[73:25] So, given that now we have solved all
+[73:27] three of our problems, which is finding
+[73:29] the type of the branch, predicting the
+[73:31] outcome, taken or not taken,
+[73:34] and finding the target,
+[73:36] let us look at the other branch types.
+[73:40] So, unconditional branches, of course,
+[73:42] uh nothing much needs to be done.
+[73:45] We just need to find the target, and
+[73:46] that's it.
+[73:48] But calls and returns are interesting.
+[73:50] So, consider a function foo.
+[73:54] So, the function foo calls foo bar.
+[73:57] So, this is the return address.
+[74:00] Uh foo bar calls foo bar bar. This is
+[74:02] the return address.
+[74:06] And foo bar bar calls foo bar bar bar.
+[74:11] So, then again we return, so then once
+[74:13] we return, we return to this return
+[74:15] address once again,
+[74:17] once again.
+[74:20] So, how do we predict these return
+[74:23] addresses? Well, we can use a regular
+[74:25] BTB mechanism.
+[74:27] That can be done. Because after all, to
+[74:29] predict, so call is also an
+[74:30] unconditional branch.
+[74:32] And to predict the starting address of
+[74:34] this function, which is essentially the
+[74:36] branch target of the call,
+[74:38] we will use a BTB.
+[74:40] Right? So, why not you do it for ret?
+[74:42] Well, we have something we have a far
+[74:43] more accurate solution.
+[74:46] So, just take a look at this pattern.
+[74:49] See, if you look at this pattern,
+[74:51] it is a last in, first out kind of
+[74:55] in the sense that foo bar bar bar was
+[74:57] last in, but it was first out.
+[75:00] This was second last in and second last
+[75:02] out.
+[75:03] So, anytime we see a last in, first out
+[75:05] pattern, we use the stack data
+[75:06] structure.
+[75:08] The stack data structure is nothing but
+[75:10] just like a stack of books. We stack the
+[75:12] functions. So, first we stack foo,
+[75:15] then we stack foo bar.
+[75:19] Then we stack foo bar bar.
+[75:22] Then we stack foo bar bar bar.
+[75:25] Whenever we return, all that we need to
+[75:27] do is we need to pop out.
+[75:29] So, we stack meanings means what? We
+[75:31] stack the return address.
+[75:34] So, whenever we return from let's say
+[75:36] foo bar bar,
+[75:37] we just pop out the function.
+[75:45] we we basically that is the return
+[75:46] address,
+[75:48] and the return address is supplied to
+[75:49] the pipeline.
+[75:51] So, how would the stack look like? Well,
+[75:53] we have a description uh in the next
+[75:55] slide.
+[75:57] So, let us say that foo calls foo bar,
+[76:00] and the return address address is 0x
+[76:03] FC0.
+[76:04] So, FC0 is put in the stack.
+[76:09] Right? Uh
+[76:11] Sorry, this is a horizontal stack,
+[76:13] sorry.
+[76:22] Now, let's say foo foo bar calls foo bar
+[76:24] bar.
+[76:26] So, in this case, 0x FF4
+[76:29] will be put in the stack, which is the
+[76:31] return address for the foo bar bar
+[76:35] Then again, let's say there's one more
+[76:36] function call.
+[76:38] So, then the return address is again put
+[76:40] in the stack.
+[76:42] Now, once we return, what we do,
+[76:45] right? So, take a look at that again.
+[76:48] Once we return, all that we need to do
+[76:50] is we need to pop the stack.
+[76:52] The top entry of the stack corresponds
+[76:55] to where we need to return to.
+[76:57] It is essentially this address.
+[76:59] You pop it.
+[77:01] Let's say we want to return again, then
+[77:03] we pop it once again.
+[77:05] And now let's say from here we call some
+[77:07] other function, well, no problem.
+[77:09] We push in the return address
+[77:15] And that's not an issue.
+[77:17] But let's say that this function returns
+[77:18] again,
+[77:20] then essentially the last return address
+[77:22] is popped,
+[77:24] and now our
+[77:26] return address stack is empty.
+[77:34] So, uh so in this way,
+[77:37] instead of using a BTB, which is kind of
+[77:39] inaccurate,
+[77:41] we have a far more accurate solution
+[77:44] of actually operating
+[77:47] uh the function calls and returns. All
+[77:48] that we need to do is we need to have a
+[77:50] small stack in hardware
+[77:52] that simply simply just stacks the
+[77:54] return addresses, as we just saw. So,
+[77:55] let me replay the animation for you.
+[78:04] So, foo calls foo bar.
+[78:06] We store the return address
+[78:08] once again,
+[78:12] And whenever we return, we just pop the
+[78:14] stack, and the top entry of the stack is
+[78:16] where we need to return to.
+[78:17] Once again,
+[78:20] All right, so this is as simple as
+[78:22] maintaining a stack in hardware.
+[78:27] So, now let us summarize the entire
+[78:29] branch prediction system.
+[78:32] So, the branch prediction system, the
+[78:33] BTB, is a key structure in the entire
+[78:36] system. It has an
+[78:38] It has a rather It has an extremely
+[78:40] important role to play.
+[78:43] So, what the BTB does
+[78:48] uh for every PC,
+[78:50] for certain bits of the PC, it stores
+[78:52] the type of the instruction.
+[78:54] If it's a branch, what kind of branch,
+[78:55] and so on.
+[78:57] Additionally, it also stores the branch
+[78:59] target. So, the type and target are
+[79:01] given.
+[79:03] So, the BTB is also used by
+[79:06] unconditional instructions, like call
+[79:08] instructions.
+[79:09] Then we have a return address stack,
+[79:12] which is used by ret instructions.
+[79:15] So, the moment we uh
+[79:17] call a function,
+[79:19] so if let's say A calls a function A
+[79:20] calls function B, and B calls C and so
+[79:23] on,
+[79:24] their addresses are put into a stack.
+[79:27] When we return, since we will be
+[79:30] traversing the reverse route, we keep on
+[79:32] popping entries from the stack.
+[79:38] Dealing with conditional branches is the
+[79:40] most difficult. So, that is the reason
+[79:42] why
+[79:43] our second problem was to find the
+[79:47] direction of a branch or rather the
+[79:48] outcome of a branch.
+[79:50] So, predicting taken or not taken is
+[79:52] hard, but we looked at
+[79:55] a lot of designs
+[79:57] and we were able to capture many
+[79:59] patterns with our designs.
+[80:02] So, the basic fetch logic would consider
+[80:05] consist of these three modules
+[80:07] and they will help us choose the next
+[80:09] program counter.
+[80:11] Of course, now there are augmentations
+[80:14] to this to perform many branch
+[80:16] predictions in parallel
+[80:18] such that we can choose the next PC the
+[80:20] next two PCs, the next three PCs, the
+[80:22] next four PCs.
+[80:25] Now, we'll come to the last part of this
+[80:27] lecture, which is describing
+[80:30] the decode state. So, this will be a
+[80:32] rather short lecture.

@@ -1,0 +1,1227 @@
+[00:00] [Music]
+[00:37] Welcome back to the previous lecture. We talked
+[00:40] about the different types of hardware. So in
+[00:43] this lecture, we'll look at solutions both in
+[00:46] software as well as in hardware. So, let's
+[00:49] first consider an example. So, let's
+[00:52] look at these two instructions. I'm sorry, over here.
+[00:57] So, in this instruction, as you see, the
+[01:02] first instruction writes to register r1
+[01:05] and the second instruction reads from
+[01:08] register r1. So there is an additional
+[01:12] dependency. Which is a problem in our
+[01:14] pipeline. The reason it's a problem is because
+[01:18] no instruction needs the data for
+[01:21] register r1. The instruction would not have
+[01:24] written it. So, as we've seen in the past few
+[01:28] slides, it is necessary to have three
+[01:31] instructions between instruction one and two, so
+[01:34] that the information
+[01:36] flows. So, how do we write three instructions? Well, this is where
+[01:39] the next instruction comes in handy.
+[01:43] So, recall.  That is, we had introduced the no o
+[01:45] and the no operation instruction a way back in
+[01:49] chapter i. So this was
+[01:50] one instruction and does absolutely nothing, but now we see that it has some
+[01:54] role to
+[01:57] play in the sense that it says that code in a
+[02:01] pipeline executes correctly. So let's see how. So when
+[02:04] the second instruction is
+[02:10] in stage two, the no o
+[02:14] instruction that is right before it is in the
+[02:18] a
+[02:19] stage, the one that is before that is in the m
+[02:28] stage,
+[02:33] and the first instruction is done. So what means is that when
+[02:36] the subinstruction tries
+[02:39] to read the value of register r1, it will
+[02:43] get the value of register r1 from the
+[02:45] register file. This is exactly what we
+[02:48] wanted. And one way of adding this is by
+[02:51] adding three instructions between the d
+[02:55] instruction and the subinstruction. In this
+[02:58] case, the three instructions are the no o and the no
+[03:01] operation instructions.
+[03:02] So this  Ensures that our pipeline works
+[03:05] correctly, but this is a bad solution. The
+[03:08] reason it's a bad solution is because we're
+[03:11] essentially wasting three cycles and
+[03:13] we're not doing anything.
+[03:17] So, a better way would be that if we consider a
+[03:20] larger piece of code, we can reorder the code so that
+[03:23] the same constraints are met. That is, the same
+[03:27] technique can be applied,
+[03:30] but we can minimize the number of no-op
+[03:32] instructions that are added. So, let's consider
+[03:34] this piece of code: So, we write to register r1
+[03:39] and at the same
+[03:40] time, we read from register
+[03:44] r1. Similarly, over here, we write to register
+[03:48] r8 and we read from register r8. So, we add a
+[03:52] dependency. And then we again write to
+[03:57] register r10 and we read from register r11.
+[04:03] So, the r10 is dependent.
+[04:08] There, and in a normal pipeline, unless something is done,
+[04:11] this code will not be able to.
+[04:14] Execute correctly as a result what we do is we
+[04:17] reorder the code we can do that so so
+[04:21] basically who orders the code in principle the
+[04:24] compiler can do that
+[04:30] so the compiler can reorder the code so that there are
+[04:33] three instructions
+[04:35] between every producer and every
+[04:37] consumer instruction so this can
+[04:41] definitely be done and let's see the programmer
+[04:44] can also do that if let's say the code on the
+[04:47] left hand side has been written by the
+[04:51] programmer then the programmer can take a look
+[04:53] at the code and modify it
+[04:56] appropriately it's a good idea to put the owner of
+[05:00] correctness not the
+[05:02] programmer so kind of transformation should be done
+[05:04] at an automated level at the
+[05:07] level of the
+[05:08] compiler so what we do is that the first
+[05:13] instruction is still the d instruction we
+[05:16] write to r1 but what we see is the third
+[05:20] instruction can be brought over here and we  We are not letting
+[05:23] any dependencies because this
+[05:27] instruction separates us from a different set of
+[05:29] rents and this instruction has a different
+[05:33] set of rents so we can happily bring this
+[05:36] instruction over here
+[05:38] similarly we can bring this
+[05:41] instruction with rights to r10 over here no
+[05:44] dependencies are let after that we can
+[05:46] bring the consuming
+[05:51] instruction a which consumes a value
+[05:54] r1 over here but we still need to do one no-op
+[05:58] instruction to answer that there are three
+[06:01] instructions between the producer of r1
+[06:04] and the consumer of
+[06:06] r1 now let's consider the next
+[06:10] instruction which is the producer of r8 we then have this
+[06:12] instruction over here which
+[06:15] is the consumer of r8 so we see that there are also
+[06:18] three instructions between them
+[06:20] r1 and r3 so essentially this
+[06:24] instruction will get the write value of r8
+[06:27] from the register file
+[06:30] after this we have one more instruction a r13
+[06:33] r10 and r2 so here again it will get the write
+[06:37] value of r10 because there are three
+[06:40] instructions between the producer and the
+[06:42] consumer so what we see is we can have an
+[06:46] algorithm that can be implemented and
+[06:49] executed by the
+[06:52] compiler so the compiler can reorder the code
+[06:56] without affecting the correctness of the
+[06:58] program a we have done here and it is still it might be possible
+[07:01] to insert a
+[07:05] few noops b we have to minimize the number of
+[07:08] no because no means nothing is being done in that
+[07:12] particular
+[07:13] stage
+[07:16] so we should try
+[07:18] to minimize it and hence all of the
+[07:21] algorithms in the literature try to order
+[07:24] code by minimizing the number of noops that are
+[07:27] required to be inserted
+[07:32] alright so we  Have some solution to take care of
+[07:35] data loss? Let's now try to take a look
+[07:39] at control loss.
+[07:40] So the trial solution in this case would be to add two
+[07:44] noop instructions after every
+[07:47] branch. So what we have seen is that the
+[07:50] control loss is resolved in the first stage. So there still might be
+[07:54] two instructions in the
+[07:56] previous two stages that were fetched incorrectly.
+[08:00] So one idea would be that after every
+[08:02] branch, we just send two noop
+[08:04] instructions and then send the right
+[08:07] instruction, which is the instruction at the
+[08:09] branch target and the instruction just
+[08:12] after the branch
+[08:13] instruction. But there is a better solution. So let's say that
+[08:16] the two instructions fetched
+[08:18] after a branch are absolutely valid
+[08:20] instructions.
+[08:22] So these instructions are said to be in the
+[08:25] delay slots of a branch. So the delay
+[08:27] slots, and essentially in our case in a
+[08:30] pipeline, be the two  cycles after the
+[08:34] branch so let's try to do something let's assume the
+[08:38] branch instruction is late in the
+[08:41] program at this point let's try to bring to
+[08:43] instructions before it and
+[08:46] insert them after the
+[08:50] branch in the delay
+[08:53] slot so in this case we are not actually suffering a
+[08:57] performance penalty the reason being that we are still
+[09:01] executing two valid
+[09:02] instructions
+[09:03] which are independent of the branch they would have already
+[09:07] executed before the branch so we are just bringing them
+[09:10] after the
+[09:12] branch if we do that what happens is that we don't have to
+[09:16] cancel any instruction and
+[09:19] insert any else so we will not waste any
+[09:22] time so this kind of a branch is called a
+[09:25] delayed branch so let's discuss the idea
+[09:28] of ​​delayed branches in some more
+[09:31] detail so let's consider an code spot of this kind
+[09:35] so here we have a branch to the
+[09:39] dot foo label and we have to instruction
+[09:42] before  It does r1 r2 r3 and r4 r5 r6 so
+[09:47] SVC gives the to instruction. The to
+[09:50] instruction is independent of the
+[09:54] branch right so they don't determine the target
+[09:57] of the branch or the branch so what we can do is to execute it after the
+[10:09] branch and then the
+[10:12] processor treats the branch like a normal
+[10:15] instruction and treats the instruction
+[10:16] after the branch as a normal instruction so a
+[10:19] smart and smart compiler will move the
+[10:23] instruction from the branch to buffer the branch
+[10:27] to inks that are
+[10:29] after the branch as they will be in the delay
+[10:31] slots because no instruction would be in the
+[10:36] I&amp;O stages we would not know the
+[10:39] direction and outcome of this
+[10:42] branch so they will still execute and
+[10:45] execute correctly so the compiler needs to move the
+[10:48] instruction from the branch to buffer the branch to
+[10:51] delay slots if it can't find two
+[10:55] valid inks then it needs to execute
+[10:59] so hopefully the idea  is clear so the
+[11:01] idea here is that we are not wasting any
+[11:04] time after the branch and instead of this this can be done it does not matter let's say it is done it does not matter because anyway if the
+[11:16] branch is taken then if the branch is not taken then there is
+[11:18] no problem if the branch is taken then two
+[11:22] instructions would have executed anyway and they are still executing because they are
+[11:28] late in the last slots so we realize the
+[11:32] direction of the branch only in one stage
+[11:35] by that time then two instructions are there
+[11:37] in the pipeline so they can be allowed to continue so each
+[11:40] kind of processor
+[11:42] supports delayed
+[11:46] branches or they are there in the last slots
+[11:50] and this process supports any term process
+[11:54] that supports delayed branches and the slots
+[11:57] after a branch in which you can fetch any kind of
+[12:00] instruction are called in the last slots
+[12:05] so right now we have taken a
+[12:09] brief  Look at pipelining we have discussed
+[12:13] pipeline data path we have looked at
+[12:15] pipeline hard let me go back one more slide one
+[12:20] more slide we also discuss
+[12:23] software methods of fixing problems
+[12:26] with pipeline one of which was reordering code and
+[12:30] adding no instructions so that what is the
+[12:34] constraint between a producer
+[12:40] instruction and the consumer
+[12:47] instruction there are at least three
+[12:50] instructions so we need to answer that and that has been done
+[12:53] in the other case we have seen the
+[12:57] existence of a delayed branching
+[13:01] scheme so in this case what happens is that one the
+[13:05] branch is delayed in the first stage right let's let it be
+[13:09] any branch instruction we have
+[13:11] already fetched the other the subsequence two
+[13:14] instructions into the second
+[13:18] stage so now if the branch is taken the
+[13:21] instructions would have been deemed to have
+[13:23] fetched incorrectly so they would be neither  The color path is
+[13:27] essentially so instead of touching them what we
+[13:29] can do is we can get two independent
+[13:31] instructions before the branch and put them
+[13:34] in these delay slots which is essentially
+[13:37] this slot
+[13:38] and this slot right so we can put them in these
+[13:41] delay slots so since they would have a hit anyway they will still
+[13:44] execute and they will
+[13:46] execute correctly
+[13:49] and after the branch branch's direction has been
+[13:52] resolved we can fetch the right
+[13:55] instruction either from the branch target and the
+[13:59] instruction ch is just after the branch ch is in this
+[14:01] instruction so this instruction in
+[14:04] this case will be f
+[14:06] so there is no problem correctness can be harmed so these are two very
+[14:09] common menim
+[14:13] the code ordering and adding no as well as
+[14:17] lead branches are a very common menim of
+[14:21] solving issues with pipelines
+[14:24] so we shall now look at a solution i.e. hardware i.e. i. i.
+[14:29] widening so  If the
+[14:34] water is flowing like a software, it is good but the
+[14:40] problem is the color of the board, it is harder to do this because it doesn't
+[14:44] love it but it gets for
+[14:49] every new kind of pipeline that we have to compile and then one
+[15:00] kind of code changes on one processor, it will not
+[15:03] run on another
+[15:04] processor, so to speak, there are some problems, let's say
+[15:09] the software does not do anything at all,
+[15:11] and everything is taken care of in the
+[15:16] hardware, so let's look at Interlace as one
+[15:19] hardware component for this purpose, so let's just say we
+[15:24] can't trust the
+[15:26] compiler to do a very good job and insert no
+[15:28] instructions correctly, also come in this, if you are
+[15:31] going for software solutions you are always
+[15:34] tying the compiler with hardware, which
+[15:36] is not the best idea, but also
+[15:39] exposing details of the hardware, which
+[15:41] the hardware manufacturers might not be very
+[15:43] keen to do.  The reason we need a mechanism
+[15:48] is called an
+[15:52] interlock. So there are two types of interlocks.
+[15:55] One is a data lock and the other is a branch lock.
+[15:58] A data lock basically says that it does not allow a
+[16:01] consumer instruction to move
+[16:04] past the fetch stage until it has read the correct
+[16:07] values. So basically, you stop an
+[16:10] instruction in the operand fetch stage until it gets all
+[16:13] the correct values. The
+[16:17] implication of this is that essentially, you
+[16:19] stall the first and second
+[16:22] stages. In a branch lock condition, we will never
+[16:25] execute instructions which are on
+[16:27] the wrong path. If instructions are on the
+[16:30] wrong path, they will be there in the wrong path
+[16:33] because the branch is resolved in one stage
+[16:36] and in the second and third stages, we will be fetching the two
+[16:39] instructions immediately after the branch and
+[16:42] these instructions might have been executed
+[16:45] incorrectly.  Because the
+[16:47] branch might be taken, so we will have to
+[16:50] answer that such kind of instruction are never
+[16:54] completely acute. So the hardware needs to
+[16:57] ensure the branch lock is held and this constraint, the data
+[17:01] lock and the branch lock condition are together called
+[17:13] interlocks. So let's compare the software
+[17:16] and hardware approaches. So in terms of
+[17:18] portability, software is limited to a
+[17:21] specific
+[17:23] processor. In the hardware approach, any
+[17:28] program can run on any processor,
+[17:29] regardless of the pipeline, it is
+[17:32] definitely a
+[17:35] plus. In the case of branches, it is possible to have
+[17:38] no performance penalty by simply
+[17:41] using a slot. In the case of hardware, we have to use
+[17:45] some of the pipeline in a simple
+[17:49] basic design. So, in this case, it is
+[17:53] one positive point and a negative
+[17:56] point. In scheduling, it is possible to
+[18:00] eliminate all hard drives. In our case, we need to
+[18:02] stall the pipeline. So, it is a bad idea in terms
+[18:06] of  Performance well software
+[18:08] approaches are highly dependent on the nature of the
+[18:11] program and in terms of hardware with
+[18:14] interlocks as we have said you know a very
+[18:17] basic version it is expected to be slower than
+[18:19] software but we will improve it and try to make it faster than
+[18:24] software but let's at least look at the basic
+[18:26] idea behind
+[18:29] harder interlocks
+[18:30] so let's take a couple of lines at the
+[18:34] pipeline with interlocks so let's add an
+[18:39] instruction take just two instructions
+[18:42] with a read after write dependency between them
+[18:45] so the first instruction writes to
+[18:48] register r1
+[18:53] register r1 so there is a read after write dependency
+[18:58] and has so what we are saying is that we
+[19:01] need to stall instruction number two at
+[19:05] the 0 stage for three cycles
+[19:07] until it gets the write value of r1 which
+[19:11] instruction one will
+[19:12] write so how do we achieve that well we  So what we need to do is we need to keep
+[19:20] sending noop
+[19:23] instructions to the a stage during the
+[19:27] for the next cycle so let's
+[19:36] add an apple so let's add the same two inks to r1 and read from r1 so
+[19:45] in this case let's see so the first
+[19:50] instruction enters the pipeline in cycle
+[19:53] number one and then it just proceeds in the pipeline
+[19:57] line without slinging so cycle number two it enters
+[20:00] the o stage cycle number
+[20:04] three it enters the a stage cycle four enters the
+[20:07] a stage and cycle five it finishes its
+[20:09] job and exits the pipeline so in the
+[20:13] pipeline diagram we see that instruction
+[20:15] two enters the i stage in cycle number three it enters the
+[20:20] o stage in cycle number three so at this point an
+[20:24] important decision is taken it is found
+[20:27] out that instruction two needs  Register
+[20:31] r1 and register r1 value it's not going to get
+[20:34] from the register file because
+[20:37] instruction one is not done yet so in
+[20:39] this case what we do is that for the
+[20:44] next three cycles it waits right so it
+[20:48] waits in the 1st stage but in
+[20:55] cycle 2 to progress to the 1st stage we keep it at
+[20:59] its current stage
+[21:01] right so in the 1st stage we essentially
+[21:04] send a noop instruction which is called a
+[21:06] bubble a bubble means a noop right so it's nothing it's the
+[21:10] same as a bubble in water so it
+[21:13] essentially means a noop so we send a bubble
+[21:16] to the 1st stage and the bubble travels along the
+[21:18] pipeline does absolutely nothing but it
+[21:22] travels along the pipeline and it finally
+[21:24] exits the pipeline in cycle number six
+[21:27] similarly in cycle five we insert a
+[21:30] bubble in the 1st stage and that also travels
+[21:33] in the
+[21:34] pipeline in cycle six
+[21:38] we also insert a bubble in the 1st stage
+[21:42] Stage i travels in the pipeline but there is something
+[21:45] interesting that happens in cycle
+[21:47] number six so in cycle number six we write the
+[21:50] value of register r1 to the register file
+[21:54] so in cycle number six the value of r1 can be read
+[21:59] by instruction to from the register
+[22:02] file so now it is the value of av so in cycle
+[22:05] number six the instruction to proceed
+[22:06] to
+[22:10] the a stage then it subsequently proceeds
+[22:15] a stage and finally in cycle number nine it
+[22:20] finishes a question in the a stage so what happens is it one
+[22:25] three bbus three bbus three
+[22:31] no inks in the pipeline in the a
+[22:36] stages 4 f and 6 so ccl 4 f r
+[22:42] ccl 4 f and 6 one to enter
+[22:47] bbus and bbus all across the pipeline and so they no inks absolutely nothing but all in
+[23:27] the a stage finally when there is you know this
+[23:33] in this cycle it still stuck  Finally when there
+[23:36] is some movement and instruction one
+[23:38] moves to the a stage instruction three
+[23:41] will move to the o stage and a new
+[23:44] instruction will be fetched in the if stage
+[23:48] so bubble basically stalls a part of the
+[23:51] pipeline does not allow any new activity
+[23:54] to happen in this part of the pipeline so in
+[23:57] this case in the i and o stage we have not allowed any
+[24:00] new activity to happen until the
+[24:04] instruction in the o stage reads the write
+[24:06] value and it is able to proceed so such kind of an
+[24:10] approach this is data lock interlock
+[24:14] and we have essentially introduced noops
+[24:18] in the pipeline dynamic and noop in
+[24:21] pipeline is also called
+[24:26] bubble so let's look at a pipeline bubble in some time tell
+[24:30] a pipeline bubble is prior much a no o
+[24:35] instruction and to insert a bubble what
+[24:38] needs to be done is that we need to create a
+[24:41] new instruction packet as was discussed in
+[24:45] the last chapter chapter number a so we
+[24:48] create a new no  The instruction packet which
+[24:52] basically tells the pipeline what to do
+[24:56] and we can also keep a netted bit to
+[24:59] see this as a bubble and mark a netted
+[25:03] bit in the
+[25:27] branch
+[25:29] and the branches are not there right now so
+[25:32] the work is done so let's say we have to
+[25:38] cancel the branch instruction by then the
+[25:43] action is correct then branch to the
+[25:46] instruction by then so we have to execute the
+[25:48] instruction after the
+[25:55] so what happens is that once we fetch the
+[26:00] first instruction we reach the branch it
+[26:03] follows the stage we are really not sure about the
+[26:06] direction of a branch once it follows the
+[26:10] stage we have already fetched the instruction 0 and
+[26:13] 3 by this
+[26:14] time so let's say the branch is a taken
+[26:17] branch and delayed branches are not there so in
+[26:21] this case what we have to do is to
+[26:25] first realize the 0 and 3 are on the right path they should not have
+[26:29] So, nominally, an instruction
+[26:34] is converted to a bubble and an instruction
+[26:37] is converted to a bubble which basically means that we either
+[26:41] mark the bubble bit to be one and convert them
+[26:44] to zero and they are cancelled in the pipeline so
+[26:48] in i and o stages they have to be written to
+[26:52] the register file in memory so it is possible to
+[26:55] cancel them if
+[27:21] in 4th c a
+[27:28] pipeline had instruction one which has not been
+[27:31] taken a branch then we know there was no
+[27:35] necessity of doing it because instruction
+[27:38] two and three would have been on the right path and they would have been
+[27:41] on the correct path and they would have
+[27:44] continued their execution and proceed down the
+[27:49] pipeline so let's talk about control
+[27:52] edges and bubbles so we now know that an
+[27:54] instruction is a branch in the i stage so it
+[27:58] returns the i stage and the branch is
+[28:01] taken we convert instruction in i and
+[28:04] o stages to bubbles we have to do  That this will
+[28:08] answer the branch lock condition which was
+[28:11] basically that we do not allow any
+[28:14] instruction in the range path to execute
+[28:17] and move down the
+[28:20] pipeline and to ensure the data lock
+[28:23] condition is not met an instruction reaches the o stage
+[28:27] we check if it is a read after write kind of
+[28:31] conflict with any of the instructions in the
+[28:34] a and o stages if there is no
+[28:37] conflict so conflict in this case means
+[28:39] read after write dependency nothing needs to be done otherwise we
+[28:41] stall the pipeline if any of the
+[28:45] stages only till the correct data
+[28:49] is available in the o stage and we can proceed now let's present
+[28:52] an algorithm to
+[28:55] detect conflict between two
+[28:57] instructions so conflict is defined as read after write kind
+[29:00] of dependency so
+[29:03] let's consider instruction a and b then
+[29:06] instruction b is the instruction which comes
+[29:11] first and  Instruction a comes later so let's go here
+[29:16] instruction b comes first
+[29:19] instruction a comes later so the result is if a conflict exists if there is a right kind
+[29:24] of dependency then we return true
+[29:27] otherwise we return
+[29:29] false so so let's
+[29:32] start if a is our code means if a is our code then
+[29:37] the first line all just correct it
+[29:40] in the slide should be indented
+[29:42] here so if a is our code is a nope a branch a
+[29:47] b k a bgt and a call so this essentially
+[29:51] means that it does not read from any
+[29:54] register right so it does not since it does not read
+[29:56] from any
+[29:58] register there cannot be a read after right
+[30:01] conflict
+[30:04] so we can have return false so false means
+[30:08] the there is no
+[30:10] conflict similarly b zp code is element
+[30:13] of is in this set a no compare a store
+[30:17] branch b k bgt and
+[30:20] rate this means that it does not write to any
+[30:24] register right  So no register is being
+[30:27] written to so as a result again a read after write
+[30:31] conflict can not happen so we return
+[30:36] false if that is not the case in theory a
+[30:40] read after write conflict can happen so we
+[30:42] need to take a look at the source registers and
+[30:45] the destination registers so let's take a
+[30:48] term rs1 as the first source
+[30:53] rs1 add rs1 and let rs1 as the source second source rs2 in rs3 and let rs3 as the destination second
+[30:57] source rs4 in rs5 and let rs4 as the destination second source rs5 in rs6 and let rs6 as the
+[31:09] destination second source rs7 in rs8 and let rs7 as the destination second source rs8 in rs9 and let rs8 as the destination second source rs9 in rs1 and let rs9 as
+[31:30] the destination second source rs1 in rs2 and let rs1 as the destination second source rs2 in rs3 and let rs1 as the destination second source rs3 in rs4 and let rs1 as the destination second source rs4 in rs5 and let rs1 as the destination second source rs4 in rs5 and let rs1 as the destination second source rs4 in rs5 and let rs1 as the destination second source rs4 in rs5 and let rs1 as the destination second source rs5 in rs6 and let rs1 as the destination second source rs4 ...
+[31:57] The readers can realize how
+[32:00] important it is to have a simple
+[32:02] instruction set never less you know sometimes
+[32:05] special cases do happen so they need to be taken care
+[32:08] of like in the case of store var
+[32:11] one of the sources comes from the rd
+[32:14] register and in the case of the rate and the
+[32:17] return
+[32:18] instruction var one of the sources comes
+[32:21] from the aa
+[32:25] register now let's see if so it's
+[32:32] possible that not all instructions will
+[32:35] actually have both the sources so let's
+[32:39] by default set the variable is source one
+[32:43] equal to true
+[32:45] so
+[32:47] if the instruction a is a not and move so
+[32:51] recall that in that
+[32:56] case we don't
+[33:00] store the source  s in source one so it is
+[33:04] actually stored in
+[33:06] rs2 so the region we set hassource one to
+[33:09] false so basically for this readers need to go
+[33:13] to chapter number three to find out why this is
+[33:18] the case but that was just a format so now we
+[33:21] design the instruction we design them in such a way the the
+[33:24] not and move in
+[33:27] the register source and the immediate stores was actually in
+[33:30] r at it was not in r ever since we
+[33:32] set the hassourceone flag to false
+[33:37] because it does not have the first source in rs
+[33:41] and there is nothing now let's
+[33:43] look at the
+[33:46] destination so in the destination field it
+[33:49] is by default the r register i the
+[33:53] destination however there is also one special case need to be
+[33:56] considered as the if instruction is a
+[33:59] call instruction then the call instruction
+[34:03] writes to the r the return address register
+[34:05] the r register so the r  Register is said in that this
+[34:10] is
+[34:12] one special case and then we need to see after
+[34:18] taking a look at the destination we need to see
+[34:20] second operator is register and not for a so
+[34:23] set again has to be
+[34:29] true the only special case that will come here so so what
+[34:33] is the order first look at source one then we
+[34:35] look at destination then we are
+[34:39] looking at source to in source to the special
+[34:42] case we need to consider the case of the
+[34:44] store
+[34:46] instruction so in the case of store
+[34:51] instruction so so well I'm sorry for the special
+[34:55] case we need to consider when the second source
+[34:57] is an immediate
+[34:59] so since the store instruction was special
+[35:02] in the sense it has an immediate as well as as a
+[35:05] second register source we first eliminate this from our condition
+[35:08] subsequently if the
+[35:11] instruction has an immediate then it does not have
+[35:14] a second source for example if we
+[35:17] Consider
+[35:19] r1, r2, and
+[35:22] r3, I'm sorry, not r3, but should be an
+[35:26] immediate
+[35:38] or let's give it a second immediate operand. Let's add r1,
+[35:42] r2, and let's say so in this
+[35:46] case, we have a single register source f is
+[35:51] a2, and this is stored in field r,
+[35:54] and we do not have anything stored in feed
+[35:58] r, a2, and we have a single register
+[36:00] destination f is in a1,
+[36:02] so this is at most what this part of the
+[36:05] logic is trying to capture, what this part of
+[36:08] the logic is trying to set the instruction
+[36:10] not to store f is special, and if add r1, r2, r3 means
+[36:15] it has an immediate operand, then it does not have a
+[36:19] second register source, which is set to
+[36:23] false, so what have we achieved up till now, so up now we have
+[36:26] set the values ​​of src, which
+[36:30] is the first registered source, src,
+[36:33] and the value of d  which is the ID of
+[36:37] the destination
+[36:38] register we also have set the values ​​of the
+[36:41] boolean flags has er
+[36:43] sv so a lot of instructions might not have the
+[36:46] first source then has sv so particular
+[36:50] instructions with an immediate operand will not have
+[36:53] a valid second source register so
+[36:56] these three fields are pretty much
+[37:00] 16 bits each four bit fields because each
+[37:05] register requires four bits for
+[37:06] encoding and two boolean fields which basically say if
+[37:11] the source one exists if source two
+[37:14] exists now detecting conflicts is very easy if a certain
+[37:17] instruction has its
+[37:21] first source has a
+[37:23] valid first source register and er sv is
+[37:27] equal to er so this basically means that er is a
+[37:31] read after er is the write and er sv
+[37:34] is the read so there is a read after write
+[37:36] dependency then we return true  Right so
+[37:39] then a dependency exists else if judge assert
+[37:43] satu is equal to true which means that the second
+[37:46] source exists and assert satu is equal to
+[37:49] test which means again there is a read after write
+[37:52] dependency then also we return true which
+[37:55] indicates that between r b and a there is a read after write
+[37:58] dependency so let's summarize
+[38:01] our discussion in the last two slides i.e. this
+[38:04] slide slide number 48 and slide number
+[38:08] 49 so what we are essentially looking for is an
+[38:11] algorithm to find dependency between two instructions
+[38:16] between instruction b and a if a comes
+[38:18] after b and a this algorithm
+[38:22] needs to be implemented in hardware
+[38:24] not in
+[38:25] software so we need to do a lot of checks
+[38:28] and hardware circuits needs to be written to
+[38:31] implement this algorithm what complicates our
+[38:33] life is the existence of many
+[38:35] special cases which we are realizing now that
+[38:38] Special cases in a sense are a
+[38:42] bad thing, but sometimes they're unavoidable.
+[38:44] For example, if we had made a special case for
+[38:47] storing the second source in the array,
+[38:51] then this requires introducing an
+[38:53] additional if statement over here. We have made a
+[38:57] return special case where it writes to the return
+[39:00] address
+[39:02] register. So that introduces some
+[39:04] complications. As well, similarly, we had to take
+[39:09] care of the call instruction,
+[39:11] also because it writes to the return address
+[39:15] register, and we needed to take care of the
+[39:18] immediate format. As well, if we would have had
+[39:20] more formats, this logic would have become far more
+[39:24] complicated, but thankfully, it's only limited
+[39:26] to two slides, then detecting conflict is easy. If we have a
+[39:28] first source,
+[39:31] we check if the destination of the array is the same as the
+[39:35] first source, and if we have a second
+[39:39] source, we check  If the destination of a is the same as
+[39:42] the first source of a, the second
+[39:44] source of
+[39:47] a, so after this logic once we have found out that
+[39:51] the conflict exists, how do we stall a
+[39:54] pipeline? So what we do is we disable the
+[39:57] write
+[39:58] functionality and the program counter (PC).
+[40:02] So this ensures that it is not overwritten with
+[40:05] new
+[40:06] data. Write, so that helps us establish the
+[40:10] pipeline and to insert a bubble, we write a
+[40:13] bubble and a noop instruction into the
+[40:17] register. So basically, if this is a register
+[40:22] on one side, and on the other
+[40:35] side, this is a register.
+[40:42] So if we do this, then it
+[40:45] ensures that this value will
+[40:47] propagate along the pipeline.
+[40:52] So what we need to do is that we need to write a
+[40:54] noop instruction
+[40:58] into this
+[40:59] register. In the next cycle, it will
+[41:03] propagate along the
+[41:05] pipeline.
+[41:08] In the next register, which is an A
+[41:13] register, it will reach that register in the
+[41:16] next cycle. So this is the way bubbles
+[41:19] propagate in the same way as normal instructions.
+[41:21] Propagates this bubble. Doesn't have any
+[41:25] effect
+[41:27] on it? Let's now slowly update the
+[41:30] diagram. The
+[41:34] diagram was
+[41:36] introduced in the last lecture with all the
+[41:40] core parts of the
+[41:41] pipeline. So we have now augmented it with a
+[41:46] path with interlocks. So what we do over the
+[41:50] first thing we do is
+[41:55] send the contents of the pipeline registers because they contain the instruction.
+[41:58] So the A register contains the contents.
+[42:02] The instruction that is there in the
+[42:04] stage, similar to the A register contains the contents. Instruction is in the next
+[42:08] stage. So,
+[42:11] the A register contains the contents. The data lock unit finds a conflict. If it detects a
+[42:17] conflict, then it
+[42:19] sends a stall signal to  The fetch
+[42:25] unit is equal
+[42:29] the IO register so the stall signal so the
+[42:34] stall signal basically stops the register
+[42:37] from accepting any new data by
+[42:39] overwriting its value and an easy way
+[42:42] of implementing the stall signal is to
+[42:45] basically have an AND
+[42:47] gate so you know the AND gate will have the clock
+[42:50] entering on one
+[42:52] side
+[42:54] and the zero of the stall signal ringing on the other side
+[42:58] so the stall signal is zero the
+[43:02] output is the clock the stall signal is one then
+[43:05] the output is zero this can be the clck input
+[43:08] for the fetch yet as well as an IO yet so for both of the
+[43:13] units they will stall and no new
+[43:16] instruction will be able to enter into them so
+[43:19] basically we have an additional set of lines
+[43:25] that go from the data lock unit to the IO
+[43:28] register so they introduce the bubble so
+[43:31] when we want to introduce the bubble the
+[43:33] value in the IO register is written over written
+[43:38] with an  instruction packet that
+[43:40] corresponds to a bubble and a noop
+[43:42] instruction so this is a line assert that
+[43:46] and subselect the bubble propagates through the
+[43:49] pipeline so as we see most of the pipeline
+[43:51] remains the same so the risk of cluttering the
+[43:54] diagram let me draw a big
+[43:56] circle so this was the previous the older
+[44:00] pipeline and to have a data lock unit we just
+[44:03] take inputs from all the stages and
+[44:06] we stall the first two stages and in one
+[44:10] stage we can introduce the
+[44:12] bubble so let's now take a look at the branch
+[44:15] lock condition
+[44:16] so let's consider the solution the
+[44:20] software only solution was to use delay
+[44:23] slots so while using delay slots
+[44:26] interlocks are not
+[44:27] required so pretty much in every pipeline after
+[44:31] a branch
+[44:33] instruction we have a couple of slots in
+[44:36] whichever is a possibility our path inks
+[44:39] being fee so the region what we do is that we
+[44:43] pick  Instructions that are buffered the branch and
+[44:46] move them to the slots so that we don't bother executing
+[44:50] a possibly range path
+[44:53] instructions we execute correct
+[44:56] so these slots are very simple they don't
+[44:58] require a hardware solution so let's look at the
+[45:01] second option so the second option is we
+[45:05] convert instructions in the i and o stages
+[45:07] to bubbles once the branch instruction reaches
+[45:11] a stage so the region is in the a stage
+[45:15] and make termination that
+[45:19] the branch whether it's taken or not taken so what we do is we just
+[45:23] cancel the instruction
+[45:26] converting them to bubbles the instruction in the
+[45:29] i and o stages are cancelled and they are
+[45:32] converted to
+[45:34] bubbles then we start fetching from the next
+[45:36] PC in the case
+[45:39] of in the case the branch is not taken the next
+[45:43] PC would be the branch instruction plus the
+[45:46] bit and the branch is taken then we start
+[45:50] fetching from the branch
+[45:53] target so option to not really  Best
+[45:56] option is we should see so option three is a better
+[46:01] option so option three is as follows let's assume at
+[46:04] the branch instruction stage is taken then only
+[46:08] we invalidate the instruction in the i
+[46:11] and o stages and we start fetching
+[46:13] from the branch
+[46:15] target so this is basically set instead of
+[46:18] invalidating and you are not converting
+[46:20] instruction into bubbles so the time is a bad
+[46:24] idea it's a waste of your work so at
+[46:27] the stage the branch is taken then only the
+[46:31] instruction in the i and o stages are not
+[46:34] valid so then they can be converted to
+[46:36] bubbles and made to flow through the
+[46:39] pipeline whenever the instruction stage is
+[46:42] not taken then the instruction in the i and o
+[46:46] stages are correct they should have been
+[46:48] correctly fetched and they are so no special action
+[46:53] needs to be taken so do not convert it to so
+[46:57] in this method we are predicting that the
+[47:00] branch is not
+[47:01] taken and we are optimizing for this case
+[47:05] So we are just if
+[47:08] the bit of the branch p is taken and then we are following the
+[47:12] instruction a p p 4 and following the
+[47:15] instruction a p p 8 if the branch is not
+[47:18] taken then there is no problem with the wrong instruction. However, if the
+[47:23] taken instruction is not taken then it could just run and then it must
+[47:30] flow across the
+[47:35] pipeline. Let's not take a path through the
+[47:39] interface. So we have a block unit here in
+[47:43] place. So the addition in this diagram shows how much
+[47:47] the branch link unit is. The bit is too
+[47:54] much. It takes its inputs from the
+[47:57] branch unit. Which says it just gives a one
+[48:01] bit input whether the branch is taken or not and
+[48:04] since we have chosen option three, which means that one
+[48:07] a branch is taken then only we stop at a point then only
+[48:13] we insert bubbles right
+[48:16] convert instructions in the end of
+[48:18] stages to
+[48:19] bubbles. What happens
+[48:23] is if  If we decide that a
+[48:26] branch is taken then we send a bubble
+[48:29] signal to the IO
+[48:33] register so this converts the instruction
+[48:37] going from the
+[48:40] IO stage to the IO stage this converts the
+[48:44] instruction to a
+[48:45] bubble and finally we also
+[48:49] send a bubble signal to the IO register so in one
+[48:54] cycle the instruction that goes from the IO
+[48:59] stage to the IO stage also gets converted
+[49:02] to a bubble and we have our gate over here because the
+[49:07] bubble signal can come from the data lock unit as well
+[49:09] and the bubble signal can come from the branch
+[49:12] lock unit so mind you the notation for this is
+[49:16] slightly different in the sense the data lock
+[49:20] unit introduces an extra bubble into
+[49:23] the
+[49:24] pipeline for the branch lock
+[49:27] unit but it does it basically just in the instance of the
+[49:33] IO register so it does not exactly
+[49:37] change the instruction b for the next cycle
+[49:41] the instruction from the IO stage will follow
+[49:43] to stage instead of sending the regional
+[49:47] instruction is now  Similarly, for the int
+[49:52] soju of the asto is instead of sending
+[49:57] the original instruction and send a note the
+[49:59] only difference is no other difference and the rest
+[50:02] of the circuit remains the same so that we see it we have this
+[50:07] extra two interlocks, the
+[50:09] branch lock and the data lock units whose job is
+[50:13] to ensure all data judges and control judges are taken care of
+[50:17] correctly in our
+[50:21] pipeline now we have seen interlocks look for
+[50:25] more efficient mechanisms so it's not
+[50:28] necessary to stall the pipeline so what was
+[50:30] the main idea of ​​interlocks the main idea of
+[50:33] interlocks was pretty much bubble and
+[50:38] stall so it is not necessary to stall the
+[50:41] pipeline all the time we can get a lot of
+[50:44] performance massive amount of
+[50:46] performance by actually forwarding data
+[50:51] between stages so we can avoid a lot of
+[50:53] bubbles in this process right so forwarding
+[50:56] is a good thing in a sense it avoid  Bubbles
+[50:59] right, so we can
+[51:02] avoid bubbles here. So in terms of performance,
+[51:05] it's a fantastic idea. So let's look at this. So let's
+[51:08] consider this code snippet. It's once again, and we have
+[51:12] two instructions: the
+[51:15] first instruction generates a value in
+[51:18] register, and the second instruction reads that
+[51:21] value. So in this case, the first
+[51:24] instruction generates a value for
+[51:26] r1, and the second
+[51:48] [music] introduces
+[51:55] three additional cycles and introduces three
+[51:58] bubbles in the pipeline that will flow through the pipeline.
+[52:01] So, pretty much this
+[52:04] amount of this enter region covered by
+[52:08] bubbles is wasted work. So, this is the work that
+[52:11] we're losing. Right, the efficiency that we're
+[52:13] losing because we have bubbles in the
+[52:16] pipeline. So, what might be a better idea is to have no
+[52:19] bubbles at all, but in this case, it will
+[52:22] lead to bad
+[52:24] results. So, let's take a crucial insight
+[52:27] from Figure 3 in the previous slide. Go
+[52:30] back to it. So, we'd introduce three instructions to  If in this case the
+[52:38] instruction to enter the stage i in cycle 3 does not actually use the value right so we will be reading it in cycle 4 so to be technically and factually correct we need the value of r1. So the instruction needs
+[53:21] the value of r1 in
+[53:24] cycle 4 so one instruction will produce
+[53:32] value of r1 up till now we have been
+[53:43] maintaining the
+[53:47] instruction to produce the value of r1
+[53:50] in cycle
+[53:52] 5 which is  It's the last
+[53:56] stage, so cycle 1 is when we produce the
+[53:59] value of r1 and write it to the register
+[54:01] file. B that is also not correct, so the
+[54:04] correct answer is at the end of cycle 3, when it
+[54:09] finishes execution, at least the
+[54:12] value of r1 is there, even the register r1 has
+[54:16] not been returned to yet, so maybe we can
+[54:20] use this particular pattern and do
+[54:23] something, so what we should do is
+[54:25] take all the
+[54:29] diagrams and write it to the
+[54:36] values
+[54:40] r1, r2, and r3 and then add them to the output, becoming r1 and r3.
+[54:55] So since the value of r1 is present with an
+[54:59] instruction which is currently in a stage,
+[55:03] and an instruction to check which is currently in one
+[55:05] stage needs the value of
+[55:08] r1, we can always connect the producer with
+[55:11] the consumer because this value is already there
+[55:14] in another stage, we can take it from the other
+[55:18] stage, so  Up till now we have not been
+[55:21] opening or not been discussing this
+[55:24] but our only method of information flow
+[55:28] across instructions was
+[55:30] through the register file so one
+[55:33] instruction wrote something to a register and
+[55:36] another instruction read the contents of the
+[55:39] register b in this case what we see in this
+[55:43] cycle for specifically the value of r1 is
+[55:47] present with instruction v in the a stage
+[55:51] and at the beginning of cycle 4 instruction
+[55:53] to needs the value of r1 because it needs
+[55:56] to add r2 with it so this is what is needed is there as well as
+[56:00] the value is there all that we need to do is we
+[56:04] need to connect the a and b
+[56:06] stages with a wire and forward the value of
+[56:10] r1 from the a stage r instruction one is
+[56:14] later to the a stage r instruction to is
+[56:17] later and it needs the value of r1 so this method is
+[56:20] called forwarding this will work it will not cause any
+[56:23] Kark pri iip a it vide sd
+[56:32] ra so the
+[56:38] bubbles are propor in terms of the fact
+[56:43] any producer [ __ ] per we had to either f
+[56:46] three or exact put between them and we'd put
+[56:50] no more bubbles using hardware technical b
+[56:54] in the case none of that is required because we
+[56:57] can directly forward the
+[56:58] value of r1 from the a stage to the stage
+[57:02] as shown in this example this is called
+[57:04] forwarding let's
+[57:06] look at one more
+[57:10] example well in the same example it just we have
+[57:14] changed the title if you see this is
+[57:16] forwarding in general but there are many ways
+[57:18] of forwarding so let's look at forwarding
+[57:21] from a to the stage which is again this
+[57:24] example
+[57:25] so we are finding the value of r1 from
+[57:28] instruction 1 to and as I said doing it
+[57:31] is very easy we just need to add a wire
+[57:35] from the a stage  to the a stage so the
+[57:38] value will go from instruction 1
+[57:41] to the cycle number
+[57:43] for we can have many more forwarding paths,
+[57:47] right a multitude of forwarding paths can be there,
+[57:49] but let's look at certain rules for
+[57:52] creating a forwarding path, so one path will
+[57:54] already know that is from a
+[57:55] to b, but let's look at some more
+[57:59] forwarding
+[58:01] paths, so what we shall do is that we shall add a
+[58:04] forwarding path from a later stage to an
+[58:08] earlier stage, like from a to b, right so we always know how to
+[58:11] flow forward in time, so it's always an
+[58:15] earlier instruction, forward data to
+[58:17] a later
+[58:19] instruction, we try to add a forwarding
+[58:22] path as late as possible, which means that we will not have
+[58:25] a forwarding path of the form
+[58:28] to write, that is not
+[58:30] required instead we will have a forwarding
+[58:33] path between a to x f in this case reason is that
+[58:39] no instruction actually needs the
+[58:42] value in the a stage  In the if stage, we read
+[58:45] the value, but we don't actually use it. The reason instead
+[58:48] of forwarding
+[58:51] from a to a is better. The better idea is to forward something from a to b because something so we want to forward as close as possible, so we want to forward in other words as close as possible
+[59:03] to the
+[59:05] actual use. So in this case, we see that
+[59:09] forwarding any instruction and any value
+[59:13] a to the if stage is not the right idea. The reason being that we wouldn't actually use anything.
+[59:20] In the if stage, so we would allow
+[59:24] the instruction to proceed through the pipeline to
+[59:27] use and forward at a later point in
+[59:29] time. The if stage is not a part of any
+[59:33] forwarding path. The
+[59:36] next thing because you know, we don't have to
+[59:41] follow it
+[59:43] from the second point to no instruction will use
+[59:46] any data. In the i and o
+[59:49] stage, so it's not required, and also the
+[59:52] other thing is we  I don't have to do this for a
+[59:54] very simple reason. The instruction in the
+[59:58] i stage,
+[60:00] right, we can either use a forwarding path
+[60:04] and we'll get the data. The instruction
+[60:06] in the i stage, right, we can write to the register
+[60:09] anyway, and we'll be able to read
+[60:11] the value. The instruction in the i stage
+[60:15] moves to the o'
+[60:18] stage. So let's look at some forwarding
+[60:21] paths. So let's first look at a three-stage
+[60:24] forwarding path. If you know it's across three
+[60:28] stages, that would be from o' to o'. So,
+[60:34] recall that we don't have to do a
+[60:37] forwarding path from a to i. It's not
+[60:41] required. We just allow both to progress
+[60:43] by one stage, and we'll do o' to o.
+[60:48] So this will. This basically means that one
+[60:51] instruction is writing to a register and simply
+[60:54] another instruction is reading
+[60:57] from the register instead of getting the
+[61:00] data from the register. File: o' get  It's
+[61:02] from the forwarding path. So let's
+[61:05] write down the stages. It will become easier to
+[61:17] visualize. We're using one path from A to
+[61:22] O and A to A is not required because if you allow
+[61:26] both instructions to proceed
+[61:28] by one stage, we can use this path. So it's a
+[61:31] three-stage path because you can see the A
+[61:35] stage is three stages ahead of O.
+[61:37] Now let's take a look at a two-stage path.
+[61:42] So one is A to O, the
+[61:47] other can be from A to
+[61:51] O, but A to O is not required because in A, what we get is we would
+[61:56] ideally don't want to get it. So of A, the
+[62:00] second asim over here, we
+[62:04] want to forward as is possible.
+[62:07] So A2 is not required. We can also
+[62:11] use the R/W to forwarding path because we would
+[62:16] proceed in one cycle to R/W and O and
+[62:19] proceed to E and so we don't  Need this path
+[62:22] so the reason it is not required
+[62:25] so an intelligent reader can always ask why do you need this
+[62:27] path from ar to o well
+[62:31] the answer is simple because we don't have any
+[62:35] stage after ar so when we reach the ar
+[62:39] stage the producer instruction is out
+[62:41] of the pipeline so it will not be in a
+[62:43] position to forward it so the reason we use the
+[62:47] rw2 forwarding path here but we need not have a
+[62:50] path but a to o because we can just as well both
+[62:53] progress by one stage and use the r
+[63:00] path similarly we can have one single one stage
+[63:04] path but a to d
+[63:10] example of
+[63:12] this is not required but in o stage or don't need any
+[63:16] value can as well the instruction
+[63:19] progress by one stage and use the ma2
+[63:22] forwarding path id
+[63:25] so to speak so we might not be in a
+[63:27] Position to appreciate this things completely
+[63:30] as of now but gradually over time we will
+[63:33] appreciate forwarding much much much much
+[63:37] better so we will have only four forwarding
+[63:41] paths in our design we will have one path from od
+[63:45] to o one from od to a one from od to a
+[63:51] and one from a to so let's take a look at a
+[63:54] color
+[63:56] w is m m m
+[63:59] e s let's have a l the od a forwarding path w
+[64:05] so let's use it in no particular order let's
+[64:08] start taking a look at the forwarding
+[64:13] path so the od a forwarding path let's give an
+[64:18] example of two
+[64:21] instructions so let's say w is an
+[64:27] instruction the load instruction reads
+[64:30] from this address r2 and it writes to the
+[64:35] register
+[64:36] r1 and then assum that we have instruction
+[64:40] number
+[64:41] to w is a store instruction which reads the
+[64:44] value of register r1 and writes to memory
+[64:47] address s give a clear d after r pendency
+[64:51] over here  So the load instruction is doing a
+[64:55] and the store instruction is doing a read
+[64:58] so it is reading the value of the register and
+[65:00] writing it to
+[65:02] memory  So in this
+[65:05] case what we see is that in cycle number 1 the
+[65:09] load instruction would have already gotten the
+[65:12] value from memory so the value of r1 would be there with
+[65:14] it at the beginning of the
+[65:17] cycle also in cycle number 1 the store
+[65:21] instruction would be there in the a stage the
+[65:23] memory access stage and in the beginning of
+[65:26] cycle number 1 it would actually need the
+[65:28] value of register r1 so that is an
+[65:31] ideal opportunity for us to
+[65:33] forward so we forward the
+[65:36] value from the a stage to the a stage
+[65:40] basically from instruction one to
+[65:43] instruction two and this helps us avoid
+[65:47] stalls and it also helps us
+[65:50] execute a load and a store back to back back to back
+[65:53] means in back to back
+[65:55] cycles and in consecutive cycles
+[65:59] alright let's take a look at the next
+[66:02] forwarding path which is r w to so a d to a we have
+[66:06] seen let's see r w to
+[66:08] e so let's  We have a load instruction which
+[66:12] again reads the value into register
+[66:16] r1. Then let's add a store
+[66:19] instruction which is absolutely
+[66:23] independent, so it accesses a different set
+[66:26] of registers.
+[66:27] And then we have a store
+[66:30] instruction that has odd
+[66:34] dependencies with the load instruction. So it
+[66:37] reads register
+[66:41] r1. Let's again perform concurrency cycle number 5. The
+[66:46] load instruction would have completed its
+[66:48] load, so the value of r1 would be there with it.
+[66:53] And so we don't care about the
+[66:56] intervening store instruction because it doesn't have any
+[66:58] dependencies. The store instruction would be there
+[67:02] in the stage, and that is exactly
+[67:06] not the case. It would require the value of
+[67:09] r1. Again, this is the ideal case of forwarding
+[67:13] because the value of r1 is already there in a
+[67:16] later stage. It is there in stage
+[67:20] number 5. Which is odd stage. So from r w  So we can just
+[67:25] connect a set of wires and
+[67:27] forward the
+[67:28] value between ints 1 and 3 and then avoid
+[67:35] stalls. Now let's look at the forwarding
+[67:38] we already saw. This example shows that all that needs to be done is that we need to
+[67:45] connect a set of wires between the two stages. This
+[67:50] is quite
+[67:52] useful for forwarding values ​​between the two
+[68:23] instructions. Mostly used at
+[68:27] path. Now let's take a long forwarding
+[68:32] cycle from the two stages. But this three stage path from the three stage path from the two stages is called the path.
+[68:37] So in this case, we load the value
+[68:42] into register
+[68:45] r1 and then we have a load
+[68:49] instruction. We have two more intervening
+[68:52] instructions. If r1 is open, then we have nother about r1 and then we have
+[68:56] a sub-issue
+[69:01] r1 which is the destination of the load as one of
+[69:05] its sources. So let's add cycle number f.
+[69:09] So in cycle number f.
+[69:13] The load instruction is done by adding the value
+[69:18] of r1 with
+[69:20] its input instruction and the output instruction is in the middle of the
+[69:24] pipeline and the output instruction
+[69:27] is in the output
+[69:30] stage so
+[69:32] my claim is that at this point we strictly
+[69:38] require the value of r1
+[69:41] unless we forward it will never be able to
+[69:44] forward it and use the write value. The region
+[69:46] is at this point of time. If instruction 4
+[69:49] tries to read the register
+[69:51] file, it will not be able to get the value of
+[69:55] r1 because r1 is between then and then so we never want to have that kind of sequence so if the same
+[70:04] register is false then we
+[70:08] can use a forwarding path from r1
+[70:12] to the output stage to get the value r1. If we do not
+[70:17] forward the output of the pipeline then it will never be able to forward it and use the write value. The region is at this point of time.
+[70:29] In cycle 6, instruction f needs the
+[70:34] value of our rar urgently. So nobody to
+[70:38] forward too much because forwarding is right, in a
+[70:42] sense, it breaks one of the rules, but we have no
+[70:45] choice. So we forward in cycle number f between the
+[70:49] odd stage f is the value and the odd stage c.
+[70:55] In this case, also, we have successfully helped
+[70:59] avoid
+[71:01] stalls. So, let's look at some hards with
+[71:04] forwarding. So, forwarding has eliminated a lot of
+[71:07] hards, right a lot, but
+[71:10] unfortunately not all. So, we are left with one
+[71:13] special case. So, there is one case where
+[71:16] forwarding cannot take care of this, which is
+[71:19] called the load hard, and this is sometimes hard, and it will not be
+[71:23] useful, so for now, we still have to
+[71:25] stall and insert a bubble in the
+[71:30] pipeline. So, in this case, the
+[71:33] instruction immediately after a load
+[71:36] instruction has an r dependency, an r
+[71:39] dependency with
+[71:41] it.  So let's consider the load
+[71:45] instruction whose destination register is r1
+[71:50] as we have been doing and let's consider the source register
+[71:56] is r1 after it has been cleared and we are starting here so let's
+[72:07] look at the cycle number if
+[72:11] the value r1 would be available just
+[72:16] with the instruction
+[72:20] and then add the instruction number to each column and
+[72:26] the binding value f
+[72:30] is one we need to forward the value r1 and if we can add the forwarding value r1
+[72:41] in the same column in the same cycle so the added part i in the binding value f is one we need to forward the value r1 and if we can add the forwarding value r1 in the same column in the same cycle so the added part i in
+[72:50] the binding value f is one we need to forward the data so we ca
+[72:55] n't actually forward the value from
+[72:58] cycle f to cycle f because that would be too much going
+[73:01] backwards in time which is
+[73:03] not  It is
+[73:04] possible so that is forwarding in the case
+[73:07] of load usage which means that there is a
+[73:10] load
+[73:11] instruction which writes to a destination
+[73:16] register and the immediate connect instruction
+[73:20] reads from it. This load usage problem
+[73:23] cannot be taken care of in forwarding because
+[73:26] when the data is available in the
+[73:28] beginning of the first
+[73:30] stage that is to late we should have had
+[73:35] the data ready otherwise it cannot be done. This is not
+[73:39] possible so as a result the only solution is that we
+[73:42] need to add a
+[73:43] bubble in this case and then use a forwarding
+[73:48] path otherwise it is not
+[73:52] possible
+[73:54] so we will see that at every stage there is a
+[73:56] choice of inputs for each functional unit and
+[73:58] we need to design our pipeline in such a way that we can
+[74:02] choose between the default
+[74:04] inputs and the forward inputs so certain
+[74:07] complexities will be introduced into
+[74:09] Our small and simple and basic pipeline so we'll
+[74:12] discuss this in the next lecture so
+[74:14] in the next lecture we'll talk about how to
+[74:16] make a processor with
+[74:19] forwarding and then possibly to

@@ -1,0 +1,2137 @@
+[00:00] [Music]
+[00:21] welcome to the ninth lecture in this
+[00:23] chapter
+[00:24] in this lecture we will discuss
+[00:26] transactional memory so lock and unlock
+[00:31] functions the way that we have described
+[00:33] have a problem
+[00:34] so let us first understand what we have
+[00:37] described and what is the problem
+[00:39] so let's take a look at this function
+[00:41] update balance
+[00:43] so what we do is that if this is the
+[00:45] bank account
+[00:48] of class account and we want to let's
+[00:50] say add a certain amount which is
+[00:52] amount so then we acquire a lock
+[00:56] and let's assume that we have a single
+[00:58] lock so we just acquire a lock
+[01:01] and then we read in the account balance
+[01:03] so the port has been
+[01:04] written in such a manner that one line
+[01:06] of c code
+[01:07] translates to one line of assembly code
+[01:10] so what we do is we first read in the
+[01:12] balance which is a memory read operation
+[01:15] then we
+[01:19] add the amount to it and finally
+[01:24] the updated amount is returned back to
+[01:26] the account balance so this requires a
+[01:28] load instruction
+[01:29] this requires an ad instruction and the
+[01:31] last
+[01:32] instruction requires the last statement
+[01:35] requires the store instruction
+[01:37] and finally we relinquish the lock we
+[01:39] get
+[01:40] rid of the lock so the we do it by an
+[01:43] unlocked ball
+[01:44] so so these are the two calls lock here
+[01:46] and unlock here we enter the critical
+[01:47] section which is this
+[01:49] in this
+[01:53] we uh update the account
+[01:56] see if you have one log then there is no
+[01:59] parallelism in the system because let's
+[02:01] say that this is for a huge bank
+[02:03] and there are 10 000 customers so then
+[02:06] they cannot operate their accounts in
+[02:08] parallel
+[02:08] even though their accounts may not have
+[02:10] any dependencies between them
+[02:12] but still the accounts cannot be updated
+[02:15] in parallel and that is an issue
+[02:18] so we need to have much more parallel
+[02:21] parallelism
+[02:22] the only constraint is that we should
+[02:24] not have two parallel accesses to the
+[02:26] same account
+[02:27] or let's say that in a more complex
+[02:30] scenario of two accounts are linked
+[02:32] then it may be necessary to lock all the
+[02:34] accounts before a single transaction is
+[02:36] allowed
+[02:37] but most often this is not the case
+[02:40] that's the reason when two accounts are
+[02:42] disjoint which means
+[02:43] that there is no relationship between
+[02:46] them
+[02:47] we should be able to update the accounts
+[02:49] in parallel
+[02:50] this is known as the disjoint access
+[02:54] so disjoint access parallelism will give
+[02:56] us the parallelism that we seek
+[02:59] in this case it is just that with a
+[03:01] single lock and unlock function we are
+[03:03] not getting it
+[03:08] so now let me show a piece of code which
+[03:10] is far more scalable
+[03:11] in the sense that
+[03:15] this joint access parallelism is allowed
+[03:18] this is the same code
+[03:19] but instead of having one global lock
+[03:22] address we have a lock address
+[03:23] associated with each account
+[03:26] so we lock that then we proceed to do
+[03:29] the account update
+[03:34] and then we unlock
+[03:41] all right so we go lock
+[03:45] we proceed with account update and then
+[03:47] we unlock
+[03:49] and furthermore we have account specific
+[03:52] lock so this does increase the
+[03:54] memory footprint right so the storage
+[03:57] area of the program
+[03:59] the memory footprint increases the
+[04:01] reason being
+[04:02] that previously we had one lock and now
+[04:04] if you have 10 000 accounts we have 10
+[04:06] 000 locks
+[04:08] nonetheless this is a very scalable
+[04:10] solution in fact this is something that
+[04:11] is used
+[04:13] but again there are problems so the
+[04:15] problem is that assume that there are
+[04:17] linked accounts right so let's say that
+[04:19] in different banking systems we have
+[04:21] these in a joint accounts
+[04:23] and sometimes it is necessary to check
+[04:25] one account before
+[04:28] actually uh updating it so i'll give a
+[04:31] simple example let's say that there are
+[04:32] two accounts a and b
+[04:35] and we want to withdraw some amount from
+[04:37] here
+[04:38] let's say we want to withdraw 100 rupees
+[04:41] from here
+[04:43] and we want to transfer it over here
+[04:47] so one thing we need to check is that
+[04:48] whether
+[04:50] the first account has 100 rupees or not
+[04:53] in its balance
+[04:54] and second we need to check if account b
+[04:56] is frozen or not so many times what
+[04:58] happens is because of different law and
+[05:00] order reasons
+[05:01] account b may be frozen if it's frozen
+[05:03] we can't transfer any money to it
+[05:05] so what we would need to do is we would
+[05:07] need to lock both accounts a and b
+[05:10] and this is where we can have a
+[05:11] potential deadlock situation
+[05:16] so the key idea is that whenever we are
+[05:18] dealing with multiple locks
+[05:20] we may be looking at a potential
+[05:22] deadlock situation
+[05:24] in such a deadlock situation i mean such
+[05:27] deadlock situations are difficult to
+[05:28] handle but i'll provide a solution
+[05:30] so the deadlock is mentioned is shown in
+[05:33] the next slide
+[05:35] so let's assume that there are two
+[05:37] threads a and b
+[05:40] so then thread a will acquire lock a
+[05:44] and thread a will wait for thread b to
+[05:47] relinquish log b
+[05:49] right and thread b will acquire log b it
+[05:52] will wait on thread a to relinquish lock
+[05:54] a
+[05:55] so as you can see we have a circular
+[05:57] weight here with no thread making any
+[05:59] progress
+[06:00] and then what will happen is that
+[06:05] we have a deadlock situation so one
+[06:09] easy way of actually solving this is
+[06:11] known as two-phase locking
+[06:13] so what we do is that we impose an order
+[06:16] on the locks
+[06:17] so we say that look you will first
+[06:19] acquire let's say lock one and then lock
+[06:21] two or first you will acquire lock a and
+[06:23] then lock b
+[06:24] so then what will happen is that
+[06:28] the moment you impose an order on the
+[06:29] locks then the deadlock is not possible
+[06:32] right because if you see a cyclic weight
+[06:35] is not possible
+[06:37] the reason being that we can always draw
+[06:40] kind of a dependencies right then i'm
+[06:42] holding on to let's say one lock one
+[06:45] and i i'm interested in log two another
+[06:48] thread is holding on to lock 2 it is
+[06:49] interested in log 3.
+[06:52] so let's assume that the lock numbers
+[06:53] also correspond to the order in which
+[06:56] they are locked so you will finally see
+[06:59] that if i try to acquire the locks
+[07:02] in a certain order which in this case is
+[07:04] one two three four
+[07:05] four can never wait on lock one which
+[07:08] basically means that after acquiring log
+[07:10] four
+[07:11] i will never wait to acquire lock one
+[07:13] the reason being
+[07:14] that i am acquiring locks in order given
+[07:17] the fact that a circular weight is not
+[07:18] possible a deadlock is not possible
+[07:21] otherwise it is so of course two-phase
+[07:24] locking can be used to solve this issue
+[07:27] but here again the assumption is that
+[07:28] before a program starts to execute
+[07:31] i am aware of all the locks that it will
+[07:33] acquire which in many cases many times i
+[07:36] am not
+[07:39] so this is where the modern paradigm of
+[07:41] transactional memory comes into
+[07:44] play it's not really that modern it was
+[07:47] introduced
+[07:48] roughly in the 2010 time frame after
+[07:50] that there has been a lot of work
+[07:53] but fortunately now we have a lot of
+[07:55] sophisticated
+[07:56] hardware and software solutions that
+[07:59] implement
+[08:00] transactional memory so the two great
+[08:03] plus points of transactional memory
+[08:05] are that they provide disjoint access
+[08:07] panelism
+[08:09] they automatically manage the issue of
+[08:11] locks and deadlocks and everything so
+[08:13] this entire
+[08:14] lock and synchronization business is
+[08:16] managed by transactional memory
+[08:19] so if i were to implement the same code
+[08:22] using transactional memory
+[08:24] so the signature of the function would
+[08:26] remain the same
+[08:28] the basic code would remain the same but
+[08:30] here is where the magic happens
+[08:33] i will just enclose the critical section
+[08:36] within an atomic block
+[08:38] and the transactional memory subsystem
+[08:40] would magically
+[08:41] automatically and magically auto
+[08:43] magically do the rest
+[08:46] right so what would it do it would
+[08:47] automatically ensure that this piece of
+[08:49] code executes in an atomic fashion
+[08:53] whatever locks need to be acquired are
+[08:55] required
+[08:56] the programmer need not bother and there
+[08:59] will be no deadlocks
+[09:02] so all of this is being achieved by just
+[09:04] wrapping this piece of code within an
+[09:06] atomic
+[09:07] block as you can see starting with the
+[09:10] curly brackets here and ending with the
+[09:12] curly brackets
+[09:13] so the atomic block implements a
+[09:15] transaction
+[09:19] so in this lecture we will talk about
+[09:21] different kinds of transactional memory
+[09:24] memories they can be implemented either
+[09:27] in software
+[09:28] or in hardware
+[09:32] let us now look at the properties of a
+[09:36] so these are the same properties that
+[09:38] are used in the world of databases
+[09:40] albeit they have been slightly modified
+[09:42] to suit our requirements of
+[09:44] transactional memory
+[09:45] so these are the famous acid properties
+[09:48] right which are extremely
+[09:50] uh commonly used they're extremely
+[09:51] popular in the world of databases
+[09:56] so we have looked at atomicity earlier
+[09:58] also so in this case of course in the
+[10:00] context of transactions it varies
+[10:01] slightly
+[10:03] so in the context of transactions it
+[10:05] basically means that either the
+[10:07] entire transaction completes or fails
+[10:10] right
+[10:10] so which means that either it completes
+[10:12] or aborts
+[10:13] right so failing a transaction basically
+[10:15] means support which means that the rest
+[10:17] of the world
+[10:18] either perceives that a set of
+[10:20] instructions are either executed
+[10:21] completely
+[10:23] or they have not started at all so it's
+[10:26] kind of the same thing as
+[10:30] what atomicity is in the case of leads
+[10:33] and rights
+[10:34] uh so basically uh we can kind of
+[10:38] merge both by saying that the entire
+[10:41] appears to complete at some instance of
+[10:43] time
+[10:44] right so at some instant of time it
+[10:47] appears to complete instantaneously
+[10:50] or it appears to have not started at all
+[10:54] consistency so this is slightly
+[10:57] different
+[10:59] from a memory consistent memory
+[11:01] consistency model
+[11:03] but let's go through it so a consistent
+[11:05] state as we have
+[11:07] described before is a valid state that
+[11:10] is as per a given set of specifications
+[11:12] all right so this is known as the
+[11:16] where we say that a consistent state is
+[11:18] a state
+[11:19] which follows a certain set of
+[11:21] specifications whatever it may be
+[11:23] it was the same case in memory
+[11:24] consistency as well
+[11:27] the property of consistency in this case
+[11:30] says
+[11:31] that if the full system was consistent
+[11:33] before a transaction started
+[11:35] it will also remain consistent after it
+[11:37] ended which basically means that let's
+[11:39] say
+[11:39] if the configuration of the entire
+[11:41] system satisfied some property before a
+[11:43] certain transaction started
+[11:46] when the transaction ends
+[11:49] it will still continue to satisfy the
+[11:52] same property
+[11:53] okay so that is what consistency means
+[11:56] in this case
+[11:57] whereas in the case of memory
+[11:58] consistency it meant that at all points
+[12:01] of time
+[12:01] the state is as per specifications but
+[12:04] in this case it says that look the state
+[12:06] is as per specifications
+[12:08] no doubt and if we start at the
+[12:10] beginning of a transaction
+[12:12] it needs to be consistent and at the end
+[12:15] also it needs to appear
+[12:17] to be consistent isolation this
+[12:20] basically means that
+[12:23] why the transaction is executing
+[12:27] it appears that regular instructions or
+[12:29] other transactions are not executed
+[12:30] which means that
+[12:32] if a transaction is executing it appears
+[12:34] that the transaction is
+[12:36] executing isolated so it is not
+[12:40] at all its execution is not at all being
+[12:42] affected
+[12:44] by other instructions or other
+[12:45] transactions and it is also not
+[12:47] affecting
+[12:48] other instructions and other
+[12:49] transactions
+[12:51] so one direct side effect of isolation
+[12:54] is that let's say no other transaction
+[12:57] or memory access can see an intermediate
+[12:59] right of a transaction
+[13:01] so let's say the transaction is
+[13:02] continuing and in the middle you write
+[13:04] something
+[13:05] but you have still not committed the
+[13:06] transaction what does committing mean
+[13:08] committing means you have not finished
+[13:10] it all right so we will discuss more of
+[13:12] this
+[13:12] but the key idea is that the group of
+[13:14] instructions
+[13:15] the entire group as a whole is not
+[13:17] finished right so when it finishes
+[13:19] successfully you say that it has
+[13:21] committed
+[13:23] so isolation basically means that in the
+[13:25] middle of a transaction
+[13:26] nobody else can see any intermediate
+[13:28] values right
+[13:31] and finally we come to durability
+[13:33] durability says one such transaction is
+[13:35] finished
+[13:36] its results are returned to stable
+[13:38] storage
+[13:39] this basically means that once a
+[13:41] transaction has finished
+[13:44] its results cannot be erased they are
+[13:46] written into stable storage and they
+[13:48] remain there
+[13:53] so a memory system that provides support
+[13:55] for transactions
+[13:56] is known as a transactional memory and
+[13:59] there are two types of transaction
+[14:00] memory hardware transaction memory and
+[14:02] software transaction
+[14:04] memory as we have discussed so hardware
+[14:06] transaction memory provides
+[14:08] transactional support in hardware and a
+[14:11] software transactional memory provides
+[14:13] transactional support in
+[14:15] software so let us now look at the
+[14:18] basics of
+[14:20] transaction web so we have a read set
+[14:23] and a right set for a
+[14:24] for a transaction or a set of
+[14:27] transactional statements the read set
+[14:30] basically says that the set of variables
+[14:32] that are read
+[14:34] by the transaction that is the read set
+[14:38] similarly the right set is the set of
+[14:40] variables that are written by the random
+[14:42] that is the right set all right
+[14:45] so now let us introduce some terminology
+[14:49] so let the term ri mean the rate set of
+[14:52] transaction i
+[14:52] w i mean the right set of transaction i
+[14:56] likewise is the case for transaction j
+[14:59] which is
+[14:59] the read set and right sets are rt and
+[15:01] wg respected
+[15:05] when do two transactions conflict right
+[15:08] so go back to our definition of disjoint
+[15:11] access parallelism
+[15:13] and then try to come back so they
+[15:15] conflict only when there is an
+[15:16] overlap in their memory footprints right
+[15:20] if i were to formalize that here is what
+[15:23] it would mean
+[15:25] either the right sets overlap in the
+[15:27] sense they're right to the same variable
+[15:30] if they write to the same variable the
+[15:31] intersection of the right sets will be
+[15:33] non-null
+[15:34] then of course there is a conflict
+[15:38] okay so there is a conflict no doubt
+[15:41] between them
+[15:42] because it's like a sorry it's like
+[15:45] right after right or ever
+[15:47] has it if there is a conflict between
+[15:50] the read and right sets which can happen
+[15:52] in two ways
+[15:53] either wi intersection rj is non-null or
+[15:56] ri intersection wj is non-null
+[15:59] in this case what will happen is
+[16:04] that the read and write sets will have a
+[16:06] non-null intersection
+[16:08] and because they will have a non-null
+[16:10] intersection there is a conflict
+[16:12] mainly because
+[16:16] what will happen is that we can have a
+[16:18] right after read or a read after write
+[16:20] problem
+[16:23] right so this characterization is very
+[16:25] similar to data races
+[16:26] so in data races we had said that two
+[16:28] accesses are conflicting
+[16:30] if at least one of them is a right which
+[16:32] means that there has to be an
+[16:34] ordering between them so we can extend
+[16:37] the same idea to transactions
+[16:39] but instead of single accesses we'll be
+[16:41] looking at sets
+[16:42] right so we'll be looking at read sets
+[16:44] and right sets as you can see over here
+[16:47] right the read sets and right sides
+[16:49] should not have an intersection
+[16:51] of course we are not considering one
+[16:54] case which is basically the
+[16:56] intersection of the read sets of both
+[16:58] the transactions
+[17:00] there is no problem as such if they
+[17:02] intersect
+[17:04] the reason is that even in the case of
+[17:07] data races we did not have an issue
+[17:09] because if let's say two transactions
+[17:11] read the same set of variables
+[17:14] then their ordering doesn't matter
+[17:15] there's no reason why the leads have to
+[17:17] have an ordering
+[17:18] happens before ordering between them
+[17:20] right so we
+[17:22] the notion of conflicts between
+[17:23] transactions directly extends
+[17:26] what we have studied from databases
+[17:30] now and explain two more basic ideas
+[17:32] about and commit
+[17:34] they were referred to in our earlier
+[17:35] discussion and be notified formally
+[17:39] a commit is when a transaction completes
+[17:41] without any conflicts
+[17:43] conflicts means conflicting accesses as
+[17:46] described in the previous slide
+[17:48] which means it nicely completes and
+[17:51] there are
+[17:52] no right write overlap problems or read
+[17:56] write overlap problems with other
+[17:58] transactions so then we say that this
+[18:02] commits
+[18:03] other transactions with other
+[18:04] transactions which will ultimately come
+[18:06] in
+[18:06] all right so if there are no problems of
+[18:09] this nature
+[18:11] then this happily commits if there is a
+[18:15] which means a transaction could not
+[18:16] complete due to conflicts
+[18:19] right uh so what can happen well what
+[18:21] can happen is that if let's say you
+[18:23] consider the same bank account example
+[18:27] where what we basically do is we first
+[18:30] read in the value of
+[18:31] the account into a temporary
+[18:38] we augment the temporary with
+[18:41] the amount that is passed let's say that
+[18:43] is in t2
+[18:45] and then we set the accounts value
+[18:49] to t1 if two transactions two copies of
+[18:53] this are running an account
+[18:55] is the same basically what can happen is
+[18:58] that we will have two updates to
+[18:59] account.val and there'll be no total
+[19:02] ordering between them so this will be a
+[19:03] database no doubt
+[19:05] and also in terms of transactions there
+[19:07] will be a conflict because the right
+[19:08] sets with overlap
+[19:10] so both the transactions clearly cannot
+[19:12] commit in the sense they cannot write
+[19:14] the results to main memory or to the
+[19:16] architectural state so one of them has
+[19:19] to kind of die
+[19:20] and one of them has to be aborted
+[19:22] aborted basically means that none of its
+[19:24] rights or none of its changes will be
+[19:26] visible
+[19:27] it will look as if this the other
+[19:28] transaction the conflicting transaction
+[19:31] of course if there are two transactions
+[19:32] t1 and t2 that are conflicting
+[19:35] then it is hard to say which one is
+[19:37] conflicting but let's say both are
+[19:38] mutually conflicting
+[19:40] one of these has to be kind of scrapped
+[19:42] it is aborted
+[19:44] so if t2 is aborted it will appear as if
+[19:47] t1 was the only transaction which was
+[19:49] executing in isolation
+[19:51] and d2 never began never executed and of
+[19:54] course never completed so there'll be no
+[19:55] record of t2
+[19:56] or no record of any changes made by
+[19:59] instructions within
+[20:00] it so that is what abort means it means
+[20:04] successful completion
+[20:05] about means it will appear to the rest
+[20:07] of the world that you never started and
+[20:09] you never did anything even though you
+[20:11] actually might have done something which
+[20:12] led to a conflict
+[20:14] but all of that all of that state will
+[20:16] get erased
+[20:18] what happens after an abort well the
+[20:20] transaction needs to restart and
+[20:22] re-execute
+[20:23] is possible that it may abort again
+[20:26] so one good idea is that you might want
+[20:29] to wait for a random duration of time
+[20:31] to minimize future comp and then retract
+[20:36] so this is automatically handled by the
+[20:38] transactional memory system so what we
+[20:40] can have is a do while loop where we
+[20:43] will continue to retry transactions
+[20:45] until the transaction commits so tx dot
+[20:48] com so typically we use tx
+[20:50] to represent a transaction in the
+[20:52] transactional memory literature
+[20:54] so until the transaction commits
+[20:58] we continue to loop
+[21:01] okay and uh so we just continue to just
+[21:05] look look loop loop and until it commits
+[21:08] so of course
+[21:09] to reduce the probabilities of a
+[21:12] conflict we can do a random back off
+[21:15] random back off means that we
+[21:16] deliberately insert a sleep statement
+[21:18] let's say over here
+[21:20] where we just wait for a random amount
+[21:22] of time and then again retry
+[21:27] now let's look at the basics of
+[21:29] concurrency control
+[21:31] concurrency control basically refers to
+[21:34] the subsystem that manages these
+[21:36] transactions and takes care of
+[21:38] you know detects and takes care of
+[21:40] conflicts if there is a need
+[21:44] say conflict occurs when the read-write
+[21:46] sets overlap this we have seen
+[21:48] a conflict needs to be detected by the
+[21:50] tm system
+[21:52] and a conflict is dissolved with a tm
+[21:54] system either
+[21:55] it can do two things we have seen the
+[21:59] second option which is aborting a
+[22:00] transaction the other one could be
+[22:03] that if let's say you know there is a
+[22:04] right right conflict right i'm writing
+[22:06] to some
+[22:09] address let's say x and then t2 is
+[22:12] writing to some other
+[22:14] which is so sorry to the same address x
+[22:16] but the values are different
+[22:18] so what we can do is that if there's a
+[22:21] conflict over here
+[22:23] we can let's say del deliberately stall
+[22:25] t2 and delay this instruction over here
+[22:28] and just allow t1 to complete
+[22:31] after t1 completes we can restart
+[22:34] transaction t2 from this point
+[22:36] right i should rather add tx1 and tx2 so
+[22:39] i should rather
+[22:41] use this terminology so what we can do
+[22:43] is we can stall transaction 2 dx2 at
+[22:46] this point
+[22:47] not allow the write to happen to
+[22:48] essentially stall the right
+[22:50] once tx1 completes we can release the
+[22:53] right and then we can continue the
+[22:55] in this case at least there will be no
+[22:57] conflicts because of this right
+[22:59] so even delaying a transaction to avoid
+[23:02] conflicts which means to avoid
+[23:04] deliberately avoid overlaps in the read
+[23:07] write
+[23:08] sets is also a valid technique we can
+[23:10] visualize this technique in a different
+[23:12] manner
+[23:13] assume that just before fetching the
+[23:16] right instruction
+[23:19] because of some reason the transaction
+[23:21] got stalled so let's say the processor
+[23:23] just went to sleep
+[23:24] then the transaction memory would have
+[23:26] never detected a conflict
+[23:28] right and then the tm system the actual
+[23:31] memory system
+[23:32] would have happily allowed tx1 to
+[23:34] complete
+[23:36] and later on if tx2 would have woken up
+[23:38] it would have executed wx2
+[23:41] no conflict would have been detected and
+[23:43] then tx2 would have gone forward
+[23:46] so the delay mechanism is pretty much
+[23:49] doing that
+[23:50] whenever it sees a conflicting access it
+[23:52] just stalls a transaction
+[23:54] until other conflicting transactions
+[23:57] complete and it restarts from there
+[23:59] so if you think about it both the
+[24:00] arguments are the same
+[24:02] and correctness is not hampered
+[24:06] so there are three aspects in
+[24:10] any transactional memory system
+[24:13] which deserve our attention
+[24:16] these are the occurrence of conflicts so
+[24:18] of course this is an artifact of a
+[24:20] program
+[24:21] detection of a conflict so there are
+[24:24] many ways to detect conflicts both in
+[24:26] software as well as in hardware
+[24:30] and resolution of a conflict
+[24:34] okay so there have to be
+[24:37] there has to be a means to
+[24:40] resolve a conflict all right
+[24:43] so that is the key idea
+[24:47] that we see a conflict happening we need
+[24:49] to detect and resolve
+[24:52] so there are two paradigms the first is
+[24:54] pessimistic concurrency control
+[24:57] so in pessimistic concurrency control as
+[24:59] soon as the conflict happens
+[25:02] we detect it and we try to resolve it
+[25:04] resolve it could be either delaying the
+[25:06] transaction or
+[25:07] aborting the transaction these are the
+[25:09] two options that are
+[25:10] available to us but the in pessimistic
+[25:13] approaches
+[25:15] the moment that a conflict happens we
+[25:17] detect and resolve
+[25:21] in optimistic concurrency control
+[25:24] the moment a conflict occurs
+[25:28] okay we don't do anything at that point
+[25:34] we wait till a later point of time
+[25:37] and at the later point of time we detect
+[25:40] and resolve
+[25:42] so this basically allows the system to
+[25:44] continue despite the fact that a
+[25:46] conflict has happened
+[25:47] we just safely allow the system to keep
+[25:50] on executing energy we just allow the
+[25:51] system to continue
+[25:53] and at a later point of time we detect
+[25:55] the conflict and resolve
+[25:57] right so both have their own pluses and
+[25:59] minuses the pessimistic
+[26:01] protocols are more overheads because we
+[26:04] need to
+[26:04] keep on detecting conflicts at every
+[26:07] point of time which adds to our
+[26:08] overheads and in optimistic concurrency
+[26:11] control we typically detect the conflict
+[26:13] at the end
+[26:15] which is when we want to decide whether
+[26:17] we'll commit or abort
+[26:18] the full transaction
+[26:22] now let's come to version management so
+[26:24] even in version management
+[26:25] we will discuss a lot more about version
+[26:27] management but here also broadly
+[26:30] speaking there are two approaches
+[26:31] optimistic and pessimistic approaches
+[26:36] so we can either have eager version
+[26:38] management or we can have lazy version
+[26:40] management
+[26:43] so in eager version management what
+[26:45] happens
+[26:47] that we write directly to memory
+[26:50] right so any transaction which is
+[26:52] executing
+[26:53] he just writes directly to me
+[26:58] nothing else and then we maintain an
+[27:00] undo log
+[27:01] which means that just in case the
+[27:03] transaction gets aborted whatever it
+[27:06] wrote it writes its right set
+[27:09] we just buffer the values that were
+[27:11] overwritten for the first time
+[27:14] so that those are kept in an undo log
+[27:18] and once the transaction aborts we take
+[27:20] values from the undo log
+[27:22] and repair the state so what is it that
+[27:25] we do
+[27:26] if we commit if we commit the
+[27:28] transaction then of course since all the
+[27:30] rights have been written to memory
+[27:31] nothing needs to be done
+[27:33] we just flush the logo but if we abort
+[27:36] so in this case in the case of eager
+[27:38] version management with an
+[27:40] undo log commits are fast
+[27:44] but if we abort for any reason
+[27:48] then there is a need to read in the undo
+[27:50] log once again
+[27:51] and write back the undo log to repair
+[27:53] the state
+[27:55] so whatever may be written since you
+[27:56] want that none of the rights are visible
+[27:58] there is a need for state repair
+[28:01] lazy version management so for lazy
+[28:04] version management we write to a buffer
+[28:06] which is a redo log
+[28:08] in a sense whenever we do our writes we
+[28:09] don't write it directly to
+[28:11] memory but so we don't directly write it
+[28:13] to the memory system
+[28:15] but we write it to a separate region
+[28:17] which is known as a d2 log
+[28:20] and once there is a commit we transfer
+[28:23] the contents of the redo log to the
+[28:26] actual memory system
+[28:34] so the moment that there is a commit we
+[28:36] write back the request
+[28:39] okay so far so good
+[28:44] that the moment that
+[28:48] we we commit a transaction the redo log
+[28:50] is written back
+[28:52] to the memory system however in this
+[28:54] case our boats are fast
+[28:55] so in the case of lazy version
+[28:59] management our boats are fast in the
+[29:00] case of
+[29:01] eager version management commits are
+[29:02] fast so our boats are fast so the thing
+[29:05] is that since we have not written
+[29:06] anything to the memory system
+[29:08] all that we need to do is we need to
+[29:10] flush the redo log and this we can do
+[29:12] quite happily
+[29:15] so to summarize
+[29:18] there are two approaches either is that
+[29:20] we are extremely optimistic
+[29:23] and eager so we directly write to memory
+[29:25] but we maintain an undo law
+[29:28] such that if there is an abort the state
+[29:30] can be fixed
+[29:31] or we are kind of pessimistic so we
+[29:34] write to a redo log
+[29:36] and if the transaction commits later on
+[29:38] then the rights from the redo long are
+[29:40] written to the
+[29:41] memory system so let us not come to
+[29:45] conflict detection
+[29:46] so here also we can either be eager or
+[29:49] lazy so look at eager
+[29:51] so as you can see the little bears on
+[29:53] the right
+[29:55] we check for conflicts as soon as a
+[29:57] transaction accesses a memory location
+[30:02] this does increase our overheads quite
+[30:04] substantially
+[30:05] in a sense that accessing a memory
+[30:08] location
+[30:10] does increase our overheads because
+[30:12] every single access now has to be
+[30:14] burdened with
+[30:15] checking for conflicts so you can do a
+[30:18] lazy approach
+[30:19] if you look at the files over here
+[30:22] so this checking is done at the time of
+[30:25] committing a transaction
+[30:27] so let us look at the semantics of
+[30:29] transactions so we had discussed
+[30:32] different consistency models when it
+[30:34] came to regular memory accesses
+[30:37] so we have something quite similar in
+[30:39] the case of transactions as well
+[30:42] so the metric that is commonly used is
+[30:44] serializable serializable
+[30:47] so this is also used in database
+[30:49] transactions to a large extreme
+[30:52] this is sequential consistency at the
+[30:54] level of transactions
+[30:57] it basically means it is possible
+[31:00] to arrange all the transactions in a
+[31:02] single sequence
+[31:04] where we are respecting the program
+[31:06] order of transactions
+[31:08] within each thread right so it's this is
+[31:11] like sc at the level of transactions
+[31:14] we have strictly serializable
+[31:18] so if you would recall in sequential
+[31:19] consistency we do not really care about
+[31:22] any real-time order
+[31:25] so let me give you an example
+[31:28] let's say that we set x equal to 1 in
+[31:31] thread
+[31:32] one and we set x equal to two in thread
+[31:35] two
+[31:38] so let's say the first write happens and
+[31:40] then the second right happens two days
+[31:42] later
+[31:45] still in a sequential ordering we could
+[31:48] have the right that happened two days
+[31:50] later appear
+[31:51] first and then the right that happened
+[31:54] happened two days earlier appear later
+[31:56] so sequential consistency will happily
+[31:58] allow this
+[32:00] absolutely no problem because the time
+[32:02] at which an event actually happened is
+[32:05] doesn't matter it's emitting right and
+[32:08] what really matters is
+[32:10] whether program order is preserved or
+[32:12] not and whether it is possible to
+[32:14] arrange all the accesses in a single
+[32:16] sequence which is legal
+[32:19] but strictly serializable
+[32:22] adds a real-time constraint so it makes
+[32:25] the ordering consistent with real-time
+[32:27] ordering which basically means that if
+[32:28] let's say there are two transactions
+[32:30] that don't overlap in time
+[32:32] this means that transaction a starts
+[32:35] after transaction b
+[32:37] ends right so after transaction b ends
+[32:40] if transaction a starts
+[32:42] it should be ordered after it in the
+[32:44] equivalent sequential order
+[32:46] all right so this basically means we
+[32:48] look at all transactions
+[32:51] and let's say you consider each pair in
+[32:54] this case as you are seeing transaction
+[32:56] is starting at a point which is after
+[32:58] the time
+[32:59] at which transaction b ends this means
+[33:02] that in the sequential ordering
+[33:04] and mind you these transactions are
+[33:06] issued by different trends
+[33:08] not the same thread so there is no
+[33:10] program order between
+[33:12] nonetheless in the sequential ordering
+[33:14] final sequential ordering
+[33:16] a will have to appear after
+[33:21] of course if they are concurrent in the
+[33:22] sense if there is an overlap between
+[33:24] them then of course the ordering doesn't
+[33:26] matter
+[33:27] right so then the ordering is not
+[33:28] specified but otherwise
+[33:31] strict serializability which is also
+[33:34] known as linearizability but i don't
+[33:35] want to get into linearizability because
+[33:37] that has a different definition
+[33:39] and it technically is not meant for
+[33:42] what is meant for transactions is
+[33:44] strictly serializable
+[33:46] where we take the order into account and
+[33:48] the order basically says that if they
+[33:49] are non-overlapping
+[33:51] and one starts after the other then the
+[33:53] same needs to reflect
+[33:55] in the equivalent sequential order
+[33:58] now we come to opacity opacity is tricky
+[34:01] opacity is tricky but
+[34:03] in a large number of cases it's actually
+[34:05] required so we have only talked about
+[34:07] committed transactions we have not said
+[34:09] anything at all about aborted
+[34:13] okay so we have kind of remained mum
+[34:17] about aborted transactions so to aborted
+[34:20] transactions need to see a consistent
+[34:22] state
+[34:24] right which is produced so consistent
+[34:27] is a state that is produced by only
+[34:29] committed transactions right
+[34:31] so what kind of a state should an
+[34:33] aborted transaction see
+[34:35] this means that an aborted transaction
+[34:39] is it allowed to see a state which is
+[34:42] always consistent or can it be slightly
+[34:45] at one and what implications would that
+[34:47] have
+[34:49] so let us study this in the context of
+[34:51] an example
+[34:53] so in atomicity let's look at two atomic
+[34:56] blocks
+[34:57] sorry not in atomicity but to study
+[34:59] opacity
+[35:00] let's look at two atomic blocks so
+[35:02] initially as
+[35:04] is our convention x is initialized to
+[35:06] zero y
+[35:07] is initialized to zero so that is our
+[35:09] convention
+[35:10] so the second transaction sets both
+[35:13] equal to five
+[35:14] which means at the end of this x is
+[35:16] equal to y
+[35:17] and the first transaction does not read
+[35:19] x and y
+[35:22] but it just so sorry it doesn't write to
+[35:24] x and y but it only reads their values
+[35:27] so what you would see is that in any
+[35:30] execution where transactions commit
+[35:34] x will always be equal to y okay
+[35:37] if let's say these are the only
+[35:39] transactions x will always be equal to
+[35:40] one
+[35:43] but let us assume optimistic concurrency
+[35:45] control
+[35:46] where we detect conflicts and also
+[35:48] resolve them at the end
+[35:51] so assume thread one reads x as zero
+[35:57] then the transaction on thread two
+[35:59] finishes
+[36:02] say the transaction on thread two
+[36:04] finishes then clearly there is a
+[36:06] conflict
+[36:07] but we at this point of time we realize
+[36:09] that we will abort the transaction that
+[36:11] is going on thread 1
+[36:13] and will allow this transaction to
+[36:14] commit
+[36:16] then what will happen is that it will
+[36:18] set x as 5 and y
+[36:20] s 5 and x is equal to y but look at what
+[36:23] has happened
+[36:24] what has happened is that even though
+[36:26] this transaction is going to abort
+[36:28] but since you're following an optimistic
+[36:30] protocol the commit about
+[36:32] decision will be made when we reach the
+[36:33] end of the transaction so the compiler
+[36:35] will add
+[36:36] some degree of extra code to make a
+[36:39] decision at this point of time
+[36:42] but the problem that has been caused is
+[36:45] basically that
+[36:47] we have read x to be 0 and then
+[36:50] this transaction has stalled
+[36:53] now we finish the second one now we will
+[36:57] read y to be five
+[37:01] if we read y to be five if we look at
+[37:03] this while loop over here
+[37:07] which will basically loop on while t1 is
+[37:09] not equal to t2
+[37:11] we'll be stuck in the while loop we will
+[37:12] never reach the end and given the fact
+[37:14] that we'll never reach the end
+[37:17] we will never reach the point where we
+[37:19] make a commit or about decision
+[37:22] since we'll never reach that point our
+[37:24] system is in jeopardy
+[37:26] because one transaction is not
+[37:30] about it but it'll just keep on running
+[37:32] it'll keep on using the resources of the
+[37:34] cpu will keep on running
+[37:36] and the system will be in an incorrect
+[37:39] right so the system will be in incorrect
+[37:41] state why
+[37:42] well because this transaction is just
+[37:44] continuing to run in an infinite loop
+[37:46] and no decision is being taken on it
+[37:50] so if you think about it why did this
+[37:52] happen
+[37:54] this happened so i'll just erase the ink
+[37:58] this basically happened because even
+[38:00] though we were fully aware
+[38:02] that this transaction is going to abort
+[38:05] we allowed it to read an inconsistent
+[38:09] we allowed it to read rx0 and ry5
+[38:13] which can never be produced by a
+[38:16] consistent state which is defined
+[38:18] as just the set of all committed
+[38:22] that would never produce a result of
+[38:24] this type because that will always
+[38:25] produce a result which says x is equal
+[38:27] to y
+[38:28] so in a sense what has happened is that
+[38:30] an aborted transaction
+[38:32] has read an inconsistent state
+[38:36] so if you want aborted transactions to
+[38:40] always read a consistent state or i
+[38:41] should add
+[38:43] even aborted transactions to always read
+[38:45] a consistent state
+[38:47] which is produced only by committed
+[38:48] transactions we will have the property
+[38:51] called opacity
+[38:52] opacity will not allow y to be read as 5
+[38:55] so this problem with opacity will never
+[38:58] happen which basically means if you go
+[39:01] back over here
+[39:02] opacity means that even aborted
+[39:06] need to read or see a consistent state
+[39:09] which is only produced by committed
+[39:12] consequently these two reads will not
+[39:13] happen and you will not be stuck in this
+[39:15] fight
+[39:16] so of course this was kind of a
+[39:18] contrived convoluted example you may
+[39:20] argue
+[39:21] but many such cases do arise in real
+[39:24] life and
+[39:24] many times arise inadvertently in real
+[39:27] life
+[39:29] and that's why opacity kind of saves you
+[39:31] so especially when you're looking at
+[39:33] optimistic concurrency particularly with
+[39:36] software transactional memory opacity
+[39:39] is definitely desired
+[39:43] now let us look at mixed mode accesses
+[39:45] which look at both
+[39:46] transactional accesses as well as
+[39:48] non-transactional accesses
+[39:51] say common correctness or consistency
+[39:53] model is called single lock atomicity
+[39:56] where we assume that all the
+[39:57] transactions are protected by a single
+[39:59] lock
+[40:00] so anytime a transaction begins it
+[40:02] acquires the lock and then it releases
+[40:04] it so of course this lock is a
+[40:06] hypothetical global lock
+[40:08] and data races are defined in a similar
+[40:12] but with this correctness model or let's
+[40:14] say this can also be a practical model
+[40:16] if you decide
+[40:17] to implement transactions in this manner
+[40:19] this will reduce concurrency big time
+[40:22] right this will not allow disjoint
+[40:23] access parallelism not something that we
+[40:25] want
+[40:27] so if we go back to our discussion on
+[40:29] logs we could use
+[40:31] standard two-phase locking and
+[40:35] have multiple locks so this is called
+[40:38] disjoint lock
+[40:40] atomicity
+[40:43] so in this case we use
+[40:46] many locks let's say one lock per
+[40:49] variable
+[40:49] but the catch is that we need to a
+[40:51] priory know
+[40:53] which locks a transaction is going to
+[40:55] use such that the locks can be acquired
+[40:57] in a certain order right in a certain
+[41:00] lock order they can be acquired so this
+[41:02] aspect was discussed quite a bit in the
+[41:05] previous slide
+[41:06] but this is one more model
+[41:09] where transactions use multiple locks
+[41:12] let's say one per variable
+[41:15] but they acquire them in a certain order
+[41:17] to avoid deadlocks then we have this
+[41:20] model transactional sequential
+[41:22] consistency
+[41:25] where we basically assume that every
+[41:28] non-transactional instruction
+[41:30] is basically a single instruction
+[41:35] so we can order all transactions either
+[41:37] committed or aborted
+[41:39] and regular instructions fair of course
+[41:42] what i'm not saying here is a regular
+[41:43] instruction is being assumed to be a
+[41:45] single instruction transaction
+[41:47] in a sequential order everything
+[41:49] transactional non-transactional
+[41:51] committed about it doesn't matter
+[41:53] everything can be arranged in a
+[41:55] sequential audit
+[41:57] which needless to say follows program
+[41:59] order and is legal
+[42:01] so this is transactional sequential
+[42:03] consistency this of course gives us a
+[42:04] lot
+[42:05] it's hard to enforce in practice
+[42:08] and as i said all the instructions in
+[42:11] the equivalent sequential order
+[42:13] are in program order including the ones
+[42:15] which are within the transactions and
+[42:17] transactions themselves
+[42:19] right they are also in program order so
+[42:21] this is like the gold standard of
+[42:23] transactional memory so this is hard to
+[42:27] implement in practice
+[42:28] but normally opacity is acclimated
+[42:34] so now let's come to discussing
+[42:36] practical protocols so we will discuss
+[42:38] software transactional memory first
+[42:42] the choices that we have are a choice of
+[42:45] the concurrency control mechanism
+[42:47] optimistic or predictivistic
+[42:50] a choice of the version management
+[42:52] mechanism lazy or eager
+[42:55] a choice of the conflict detection
+[42:57] mechanism
+[42:59] lazy or eating
+[43:04] so what is the basic support that is
+[43:08] the basic support that is required is
+[43:10] that we augment
+[43:12] every transactional object or every
+[43:15] variable with
+[43:17] some degree of metadata this basically
+[43:20] means
+[43:23] that if there is some metadata
+[43:25] associated with an object we can keep
+[43:26] track of its state
+[43:28] and also use that metadata to detect
+[43:30] conflicts
+[43:33] along with detecting conflicts we can
+[43:35] also see we can also lock variables
+[43:38] and this can be used to stall other
+[43:41] transactions so we can also associate a
+[43:42] lock with the metadata
+[43:45] so let us now see how we maintain read
+[43:48] write sets
+[43:50] each transaction maintains a list of
+[43:52] locations that it has
+[43:54] read in the read set and written in the
+[43:56] right side
+[43:59] furthermore since we are talking about
+[44:01] software transaction memory
+[44:03] every memory read or write operation is
+[44:06] augmented
+[44:07] so a read is augmented or
+[44:10] it is replaced by a function so the
+[44:13] function in this case
+[44:14] can be something of the form like read
+[44:16] tx
+[44:18] which is basically you send the read
+[44:20] operation
+[44:22] to the memory and you enter the variable
+[44:25] the address
+[44:26] of the variable in the read set right tx
+[44:30] is the same function analog for a write
+[44:32] operation where you are sending
+[44:35] the fact that you want to write
+[44:38] of course the details of the variable so
+[44:40] so that is implicit over here
+[44:43] and we enter the address in the right
+[44:47] set
+[44:48] if it's not already there in addition
+[44:50] whatever changes are required to the
+[44:52] undo or redo log they are done so all of
+[44:54] this is done automatically
+[44:56] within the transaction the only thing
+[44:58] that we do in the read
+[45:00] the only argument that we actually send
+[45:02] is the address and the rest is all done
+[45:04] internally
+[45:06] similarly the only arguments that are
+[45:08] sent to the right tx function by the
+[45:11] are basically the address that needs to
+[45:14] be written in the value
+[45:16] so many times a programmer writes a
+[45:18] normal program
+[45:20] but once it is enclosed in an atomic
+[45:24] block
+[45:25] the compiler automatically converts it
+[45:27] to a program
+[45:29] that has these tx and write tx functions
+[45:32] within them
+[45:35] so what it does is that every axis
+[45:39] is replaced by a function call
+[45:44] right and the function call is read tx
+[45:46] and
+[45:48] write tx
+[45:51] so first talk about the bartok stm which
+[45:54] is nice easy and simple
+[45:56] and the references to this you'll find
+[45:58] in the book
+[46:00] so here we have eager version management
+[46:02] which means we have an undo log
+[46:05] and we have lazy conflict detection so
+[46:06] typically we do have
+[46:08] lazy conflict detection in many software
+[46:11] transaction memory proposals
+[46:14] so they should not come as a surprise so
+[46:16] every variable has the following fields
+[46:20] it has a value it has a version
+[46:25] and it has a log so this is what a
+[46:28] transactional variable looks like
+[46:30] that along with the value the extra
+[46:32] fields are the version and the log
+[46:35] so this is what a read operation would
+[46:37] look like
+[46:39] that when we read we record the version
+[46:41] of the variable so we record you know
+[46:43] what is the version of the variable that
+[46:44] we have read
+[46:45] in our read set we add the variable to
+[46:49] the read set
+[46:51] and then we read the value it's as
+[46:52] simple as that so reading in this case
+[46:54] is an ultra fast operation
+[46:57] where all that we do is we just record
+[46:59] the version put the variable in the read
+[47:00] set if required and return
+[47:04] rights in comparison are more
+[47:07] elaborate we will see why so in this
+[47:11] case we first lock the variable
+[47:15] we will see why there is a need to lock
+[47:17] it we lock it at the
+[47:18] right time and release it at commit time
+[47:21] so we will see what is the need to
+[47:22] actually do it
+[47:26] we add the old value to the undo logs
+[47:28] recall that we are using eager version
+[47:31] so if let's say we are overwriting
+[47:33] correct
+[47:34] data sorry if you are overwriting data
+[47:38] add the old value to the undo log but
+[47:40] let's say there are two writes to the
+[47:41] same address in a transaction for the
+[47:43] second right this is not required
+[47:47] we write the new value
+[47:50] all right sorry that's all
+[47:54] so there's a key point over here is that
+[47:56] the right is made more elaborate
+[47:58] because we are locking the variable
+[48:02] right and it is also being made more
+[48:04] elaborate
+[48:06] if let's say we are writing to a
+[48:09] variable for the first time in the
+[48:10] transaction so there is a need to update
+[48:12] the undo log
+[48:14] so of course if you are not able to find
+[48:16] the log for a variable then we abort
+[48:20] now let's come to the all complex commit
+[48:24] so here what we do is that for each
+[48:26] entry in the read set
+[48:28] we check if the version of the variable
+[48:30] is still the same
+[48:32] so what you will see later on in the
+[48:33] same slide is that after we commit we
+[48:36] implement the version of every variable
+[48:38] so this will basically tell us from the
+[48:40] time that we read the variable
+[48:42] till the commit point has any write come
+[48:46] in between or not
+[48:48] if the write has come in between then of
+[48:50] course there is a case for an abort
+[48:52] so this will easily be found out if you
+[48:54] check the version of the variable
+[48:56] so recall that we are tying the value on
+[48:59] the version of the variable together
+[49:02] and so then you know so both are like
+[49:05] part of the same package
+[49:06] so we just check the version of the
+[49:08] variable and that's it
+[49:12] say the versions are not the same right
+[49:14] has come in the middle so we
+[49:15] straightforward we abort
+[49:18] otherwise what we do is that the read
+[49:20] check passes
+[49:21] so we move to the right check and
+[49:23] needless to say since we're using an
+[49:25] about
+[49:25] the undo log has to be restored so
+[49:28] everything
+[49:29] all the writes of the underlock have to
+[49:31] with it back
+[49:33] for each entry in the right set
+[49:36] what we do is that we increment the
+[49:40] version
+[49:41] and we release the lock sorry
+[49:44] so for each entry of the right set we
+[49:46] increment the version and we release the
+[49:50] so incrementing the version basically
+[49:52] ensures or it
+[49:53] provides a signal to others that the
+[49:56] value of the variable has changed
+[49:58] so just in case you read an older value
+[50:00] now you need to abort because the new
+[50:02] value of the variable is what i am
+[50:04] writing to right now
+[50:05] and we release the log so the locking
+[50:08] mechanism also ensures
+[50:10] that the rights
+[50:13] are mutually disjoint their periods are
+[50:15] disjoint you can't write to the same
+[50:17] variable by two threads at the same
+[50:19] point of time
+[50:20] because the second thread will never get
+[50:22] the lock
+[50:23] right and so given the fact that the
+[50:25] second thread will never get the lock
+[50:26] you'll never have a right right conflict
+[50:29] and the read write conflicts can be
+[50:30] detected by the version
+[50:32] of the barrier so this is simple idea
+[50:35] so the pros and cons are reads are
+[50:38] simple they are fast
+[50:40] it provides a strong semantics for
+[50:43] but the negative aspect is that it does
+[50:46] not provide opacity
+[50:48] right so opacity is something where an
+[50:50] aborted transaction actually sees a
+[50:52] consistent state
+[50:56] but this is not provided and the other
+[50:59] thing is that we are using locks
+[51:01] and also a lock is being held for a
+[51:03] large duration it is being held
+[51:05] from the time of a ride till they commit
+[51:07] you are kind of holding on to the lock
+[51:10] and rights themselves become slow
+[51:12] because of this locking
+[51:16] now before you would ask the question
+[51:17] let me also say why it does not provide
+[51:21] the reason is that if there is an
+[51:22] aborted transaction
+[51:24] it will still because we are using the
+[51:27] undo log base mechanism its rights
+[51:33] will still be visible in memory so if
+[51:35] you go back to the right slide
+[51:37] which is over here you will see that its
+[51:40] rights will be visible right so we are
+[51:43] writing a new value that is directly
+[51:44] going to memory
+[51:45] so of course for a variety of reasons we
+[51:47] may decide to abort at commit time
+[51:50] but nonetheless its rights will be
+[51:51] visible all right
+[51:54] so because it's rightfully visible and
+[51:55] aborted transaction will not see may not
+[51:58] see a consistent state
+[52:00] and that will cause trouble this is why
+[52:02] this algorithm does not provide
+[52:08] so with an undo log also uploads become
+[52:11] more expensive than comments but if you
+[52:13] expect a transaction to commit most of
+[52:15] the time about not an issue
+[52:18] furthermore a transaction can read
+[52:20] intermediate values which are written by
+[52:22] other transactions hence
+[52:23] as we have argued in the previous slide
+[52:25] opacity is not guaranteed
+[52:27] and locks are also held and kept for a
+[52:29] long time so locking overhead is high
+[52:33] so now we will discuss the tl2 stm
+[52:37] which is slightly more sophisticated in
+[52:40] the sense it does provide for opacity
+[52:42] and it uses a different method instead
+[52:44] of eager version management
+[52:46] it uses lazy version management which is
+[52:48] a redo log
+[52:49] so one thing you can see quite quickly
+[52:51] is that if let's say opacity is supposed
+[52:53] to be provided
+[52:54] at the software level a redo log is
+[52:58] because that will ensure that rights are
+[53:00] not visible rights will only be visible
+[53:03] when a transaction commits which means
+[53:05] that any other transaction
+[53:06] be it aborted or committed will always
+[53:10] and with a state which has been created
+[53:12] by committed transactions
+[53:15] but here again there is a problem it
+[53:17] uses a global timestamp or a global
+[53:19] clock
+[53:19] which needs to be accessed by all
+[53:23] transactions but a good aspect of this
+[53:26] algorithm is that variables are locked
+[53:28] only at commit time and every
+[53:31] atomically does the following right at
+[53:36] when it starts so it increments the
+[53:39] global clock so both of them
+[53:42] these are atomics it's like a fetch an
+[53:44] increment
+[53:46] think of it this way so in this case uh
+[53:49] it's more like an increment in fetch but
+[53:52] the
+[53:52] idea being the same so atomically does
+[53:56] both of these instructions both of these
+[53:58] operations which in
+[54:00] which are easily supported in hardware
+[54:02] the key point is it increments the
+[54:04] global clock
+[54:06] and every transaction has a read version
+[54:08] a tx.rv read timestamp
+[54:11] so that each time stamp is set to the
+[54:13] value of the incremented global flop
+[54:16] and since they are happening atomically
+[54:17] both of them together as a transaction
+[54:21] so of course this is not a transaction
+[54:22] in a transaction sense but this is
+[54:24] implemented using atomic instructions
+[54:27] that we studied when we were discussing
+[54:28] coherence these operations can be done
+[54:32] and then the global clock is stored in
+[54:33] the field tx dot
+[54:35] rv read watch
+[54:38] now what do we do when we are reading
+[54:41] well when we are reading a transact when
+[54:43] you're reading
+[54:45] of course the transaction id is
+[54:46] important and the object
+[54:49] is the object there in the radio block
+[54:50] so the object in this case can be a
+[54:52] memory variable as well
+[54:54] so if it is there in the redo log we
+[54:56] return the value from the readable
+[54:59] if it is not there then we do a little
+[55:02] bit of a trick
+[55:04] so what we do is that we first read the
+[55:07] timestamp
+[55:09] so here the timestamp is being used as
+[55:11] the version
+[55:12] where you we read the timestamp into a
+[55:15] temporary variable v1
+[55:18] we read the value of the object and then
+[55:20] we read the timestamp yet once again
+[55:23] and then we check if both the versions
+[55:26] or the timestamps are the same or not
+[55:29] so why do we do that the aim is to
+[55:32] collect a snapshot
+[55:34] because you have to you have a value and
+[55:37] a timestamp right
+[55:43] so what can happen is that you can read
+[55:46] a value
+[55:48] and then you know because of a race
+[55:49] condition the time stamp may change
+[55:52] or you may read a timestamp and because
+[55:53] of a race condition the associated value
+[55:55] may change so both may be out of sync
+[55:57] because one thing you need to realize is
+[55:59] that there can be an arbitrary delay
+[56:03] between these instructions so
+[56:06] maybe we may read a very old time stamp
+[56:08] and then we may read the value and then
+[56:10] we may read another time stamp so
+[56:13] because of this arbitrary delay
+[56:16] what we should verify is whether the
+[56:20] timestamps are the same if they are the
+[56:22] same
+[56:23] then we can be sure that this value
+[56:26] corresponds to this timestamp so this is
+[56:28] a very standard programming idiom
+[56:30] in concurrent systems where we actually
+[56:32] read the time stamp twice
+[56:35] such that the value timestamp pair is
+[56:38] collected atomically
+[56:39] where you know that look this value
+[56:40] corresponds to this timestamp and this
+[56:42] time step corresponds to this vector
+[56:45] fine so we verify that
+[56:48] and we also verify right so
+[56:51] so in this case to v1 should be equal to
+[56:54] v2 otherwise we will abort
+[56:57] we also verify if v1 which now we have
+[57:00] proven
+[57:01] which has to be equal to v2 if this is
+[57:04] greater than
+[57:06] the read version of the transaction
+[57:07] which basically means
+[57:09] that some other transaction has written
+[57:11] to this variable
+[57:13] after this transaction started
+[57:16] so which makes the value stale see if
+[57:18] this is the case
+[57:20] that v1 is greater than tx dot rv then
+[57:22] also we abort which basically means the
+[57:24] transaction started
+[57:26] but some others transaction has written
+[57:29] to the variables
+[57:31] after we started and it has committed
+[57:32] also
+[57:34] so given the fact that the variables
+[57:35] have become stale we
+[57:38] bail out we abort and of course if the
+[57:40] object is locked
+[57:42] then also we are quote all right so we
+[57:44] check for these three things so this
+[57:45] makes reads expensive
+[57:47] and then we add the read to the read set
+[57:49] if this check succeeds
+[57:51] and we return the result so the
+[57:53] important
+[57:54] points over here is this
+[57:58] idea of checking the timestamp twice to
+[58:00] ensure that the value and the timestamp
+[58:01] are in sync
+[58:02] because otherwise we can have arbitrary
+[58:04] delays between these statements
+[58:06] and the value in the timestamp may not
+[58:08] be in sync right because of the delays
+[58:10] you might read a value but the timestamp
+[58:12] may be for some other value that's the
+[58:14] reason you read twice and compare
+[58:16] and also to ensure that once a
+[58:18] transaction begins
+[58:21] if any other transaction writes
+[58:24] to the value after that then there is an
+[58:26] overlap
+[58:27] so we will have a read write conflict so
+[58:30] this check over here
+[58:31] eliminates the possibilities of this
+[58:33] read write conflict
+[58:36] now let's look at the right operation in
+[58:38] this case thankfully the right operation
+[58:40] is simple
+[58:42] we add the entry to the redo log if
+[58:44] required which means that
+[58:47] if this is the first write to that
+[58:48] address there is a need to add the entry
+[58:51] to the redo log
+[58:52] perform the right rights are cheap okay
+[58:56] so right nothing needs to be done right
+[58:57] search
+[58:58] no problem coming to the all
+[59:01] complex commit operation yet once again
+[59:05] so recall that in the bartok stm we were
+[59:07] like heavily into verifying reads
+[59:09] but in this case given the fact that we
+[59:11] have made reads expensive
+[59:13] we actually do more with verifying
+[59:15] rights
+[59:16] so for each entry in the right set what
+[59:19] do we do
+[59:21] we lock the object so this is only a
+[59:23] temporary locking
+[59:25] for the period of the commit operations
+[59:27] in this case we hold locks
+[59:29] for a much smaller duration so we lock
+[59:31] the object
+[59:32] and of course the locking is done in
+[59:33] such a way to avoid deadlocks
+[59:36] in case there is a deadlock it is
+[59:37] detected so the programmer
+[59:39] need not bother it is detected and
+[59:41] recovery is initiated
+[59:43] so the programmer as such need not
+[59:44] bottle but for each entry
+[59:47] we lock it it is a failure we abort
+[59:51] then what we do is that we increment the
+[59:54] global clock yet once again atomically
+[59:57] and the incremented value becomes the
+[60:00] right version
+[60:02] so we have two timestamps rv and wv
+[60:05] so rv is read question wb is right
+[60:10] so for each entry in e in the read set
+[60:15] all right so sorry i'm sorry this should
+[60:16] be capital t x
+[60:18] so wherever just have capital t x so for
+[60:21] each entry e
+[60:22] in the read set what do we do
+[60:25] we check if the time stamp is still
+[60:27] greater than dx dot rb
+[60:31] so this is the same check that we were
+[60:33] doing over here it is exactly the same
+[60:35] check
+[60:36] that we were doing over here we were
+[60:38] checking the version with
+[60:40] tx dot rv so again i'm sorry here all
+[60:42] the time this should be
+[60:44] dx should be like this okay so
+[60:48] that correction will be made but here
+[60:50] the key idea is that we do this check
+[60:53] once again
+[60:54] which means that at the time of
+[60:55] committing also we are ensuring
+[60:58] that there is no read write conflict
+[61:00] okay
+[61:02] the reasons remain the same
+[61:05] after that what we do is that we write
+[61:08] back the redo log
+[61:10] and for every entry in the right set we
+[61:13] increment its timestamp how is that done
+[61:15] when the timestamp is set
+[61:17] equal to the right
+[61:20] counter over here and we release the
+[61:22] lock so this is all that needs to be
+[61:24] done so the comment operation is kind of
+[61:26] similar
+[61:28] at least in principle conceptually looks
+[61:30] the same
+[61:31] as the park rock stm but of course in
+[61:34] this case we have a redo log
+[61:36] and the locking is for a much shorter
+[61:38] duration in the sense we lock over here
+[61:40] we release over here and of course
+[61:43] before we lock in that case we are
+[61:45] incrementing the version in this case we
+[61:46] increment the timestamp
+[61:49] and for reading we just verify that
+[61:51] there is no read write conflict
+[61:55] now how do we verify if there is no
+[61:57] right right conflict well
+[61:59] that is quite simple given the fact that
+[62:02] we are using a redo log
+[62:04] it could very well be possible that many
+[62:06] other transactions are writing to the
+[62:07] same right set
+[62:09] and there could be a right right
+[62:12] but in this case keep in mind that for
+[62:15] the entire duration of the commit we are
+[62:17] essentially locking the entire right set
+[62:20] if there is an overlap and we are trying
+[62:24] to write at the same point of time one
+[62:25] of the lock
+[62:26] operations will fail and that's when one
+[62:28] of the transactions will abort
+[62:30] if let's say two transactions with
+[62:32] overlapping right sets are succeeding
+[62:34] it basically means that one transaction
+[62:38] so committing meaning at the beginning
+[62:40] it locks a
+[62:42] variable and then it releases then the
+[62:44] second transaction commits
+[62:47] lock and release so in this case
+[62:50] as you can see there is no problem even
+[62:54] if the right sets do
+[62:55] overlap because of a redo log the writes
+[62:59] are visible
+[63:00] only after a successful commit
+[63:03] and furthermore right sets can overlap
+[63:06] there is no issue
+[63:08] because the commits are still being
+[63:09] arranged in sequential order
+[63:12] but if there is an overlap in terms of
+[63:14] time which is actually not allowed
+[63:16] because that will become a concurrent
+[63:17] and conflicting access
+[63:19] then the lock failure will indicate that
+[63:22] two transactions are writing to the same
+[63:26] same object at the same point of time
+[63:29] and that
+[63:30] would indicate that there is a need to
+[63:32] abort
+[63:34] all right so that is why a right right
+[63:35] conflict with a redo log is not a big
+[63:37] big deal the read write conflict is a
+[63:39] bigger deal
+[63:41] but that we are solving using time steps
+[63:45] pros and cons well a simple idea it does
+[63:48] provide opacity
+[63:49] well why opacity because the moment we
+[63:51] use a redo log we only see the
+[63:54] state provided by created by
+[63:58] committed transactions you also hold
+[64:00] locks very much
+[64:02] it's for a lesser amount of time of
+[64:04] course the redo log is slower it makes
+[64:06] comments slow
+[64:08] that's okay we are getting a lot we are
+[64:09] getting of opacity so redo log even
+[64:12] though it's slower
+[64:13] and comments are slower that's okay you
+[64:15] still use locks so we will try to remove
+[64:17] locks when we go to hardware
+[64:20] but in general in software transactional
+[64:22] memory locks
+[64:24] are required so what is the settle point
+[64:28] well the subtle point is we are using
+[64:29] two time stamps per transaction tx dot
+[64:32] rv and tx dot wv
+[64:35] so we will have tx or wv is greater than
+[64:38] equal to t x dot rb plus 1
+[64:41] right so y greater than equal to well it
+[64:44] could be equal to if there is no
+[64:45] transaction in the middle because there
+[64:46] are two increments
+[64:48] greater than it can be if other
+[64:50] transactions have committed
+[64:51] in the middle so you first write the
+[64:54] variables to permanent state then we
+[64:56] update their timestamps
+[64:59] this is typically what is done when you
+[65:01] have a value timestamp formula
+[65:03] you first write the variables themselves
+[65:06] to permanent state and then you update
+[65:08] the time stamps if another transaction
+[65:10] sees an updated timestamp it will
+[65:12] automatically figure out that the value
+[65:14] is there in permanent state
+[65:15] this justifies the order and finally we
+[65:18] release the locks so this allows
+[65:20] later reads
+[65:23] all right to go through so this provides
+[65:27] for opacity as well so now we will
+[65:30] discuss hardware transactional memory
+[65:32] as you can see
+[65:36] so hardware transaction memory's main
+[65:38] advantage would be
+[65:39] that it will not use locks
+[65:44] so let's now make a case for hardware so
+[65:46] stm systems do not handle
+[65:49] lists the reason being that these
+[65:52] accesses are not instrumented so we have
+[65:54] not been
+[65:56] replacing them with function calls so
+[65:58] that's the reason non-transactional
+[65:59] accesses even though they can cause a
+[66:01] lot of trouble
+[66:02] data races and so on but they are not
+[66:04] handled
+[66:05] acquiring releasing managing locks is
+[66:07] quite expensive
+[66:09] maintaining undo and redo locks
+[66:11] particularly in software is also
+[66:12] difficult
+[66:13] hardware is much faster but you have to
+[66:16] create the hardware which is it is
+[66:20] expensive right there are high startup
+[66:21] costs
+[66:24] so the hardware support which is which
+[66:27] will be discussed is mostly based on the
+[66:29] widely popular
+[66:31] log tm proposal you will find references
+[66:34] for it in the book
+[66:36] so the basic isa support that is needed
+[66:38] is we need three new instructions
+[66:40] for begin a port and commit
+[66:44] version management hardware schemes
+[66:46] mostly use eager version management
+[66:49] they use the undo log
+[66:53] it is hard to maintain a redo log
+[66:54] because you know you need a separate
+[66:56] region and so on but the undo log is the
+[66:58] cache
+[66:59] think of it the the basic l1 cache l2
+[67:02] caches they can be used as undo log
+[67:05] and it's much easier to do so we will
+[67:07] see how that's the reason eager version
+[67:09] management is used
+[67:11] the log has its dedicated set of
+[67:12] addresses in virtual memory
+[67:16] right so so in this case this is if we
+[67:19] are using a redo log that is otherwise
+[67:23] we just simply use the cache
+[67:28] so the cache line every cache line is
+[67:30] augmented with two bits
+[67:32] read and write if r is equal to one this
+[67:35] means that some word
+[67:37] some four byte word out of this cache
+[67:40] line has been read and it is a part of a
+[67:42] transaction so
+[67:43] it is made a part of the read set and if
+[67:46] any word has been written to then we set
+[67:47] w
+[67:48] equal to 1 which means that some word
+[67:50] has been written to
+[67:52] so it has made a part of the right set
+[67:59] so here is the so see here is the key
+[68:01] idea we
+[68:02] modify we make a small change to the
+[68:05] regular
+[68:06] directory based cache coherence protocol
+[68:08] to detect conflicts
+[68:10] so this is the hallmark of any of these
+[68:12] transaction memory schemes
+[68:14] that instead of designing a new protocol
+[68:16] we use the regular
+[68:17] cache coherence protocol to augment it
+[68:21] to detect
+[68:22] conflicts in the case of transaction
+[68:24] memory so let us say core d has a miss
+[68:27] it will send so let's say cody has a
+[68:29] miss right it will send a read miss to
+[68:31] the directory
+[68:33] the directory will find that core c is a
+[68:35] shared so it will forward the read miss
+[68:37] to 4c
+[68:39] 4c will detect a conflict how will it do
+[68:41] that well it will try to read the line
+[68:43] from its cache
+[68:44] it will find that it has written to it
+[68:46] which means it's a part of its right set
+[68:48] so it will see that there is a conflict
+[68:50] so it will send in that
+[68:52] back to the directory the knack message
+[68:55] will then be bounced from the directory
+[68:57] it will be sent to core d
+[68:59] 4d will realize that there is a conflict
+[69:02] so the transaction at t will abort
+[69:04] this can be done either in hardware or
+[69:06] with some software support
+[69:08] so the support that is required is that
+[69:10] the transaction you have to clean up the
+[69:12] state and retry
+[69:14] so typically a signal may be sent to
+[69:15] software to retry the transaction
+[69:19] but the key point the operative point
+[69:20] here is that
+[69:22] every cache line is being augmented with
+[69:25] two bits
+[69:25] a read bit and a write bit and they are
+[69:29] indicating whether the line is
+[69:32] in the read set or in the right set but
+[69:35] of course what happens if the line gets
+[69:38] evicted here goes to l2 cache those are
+[69:40] all corner cases we'll gradually deal
+[69:42] with them
+[69:45] so the key point whenever
+[69:49] the cache is being used as the undo log
+[69:51] is that if let's say the entire read
+[69:53] and write set can be confined to the
+[69:55] cache then there is no problem
+[69:57] if it can be confined to l1 cache for
+[69:59] example
+[70:00] then there is no problem because if
+[70:02] there is
+[70:04] a commit all that we need to do
+[70:09] is that we need to set the read write
+[70:11] bits
+[70:13] to 0 0 which means they are not the part
+[70:15] of a they are not a part of a rewrite
+[70:17] set anymore because the transaction has
+[70:20] and there are mechanisms known as flash
+[70:23] clear mechanisms
+[70:25] where basically what we do is that in
+[70:27] the sram array
+[70:28] we have these read write sets as a
+[70:30] separate sub array and we set
+[70:31] all of them together in one go so
+[70:34] descriptions are there in the book
+[70:36] regarding how exactly this is done
+[70:39] and there are many patents as well but
+[70:40] the key idea is that
+[70:42] this is a known mechanism it's a simple
+[70:45] of how you set a large number of bits to
+[70:47] zero in one go
+[70:49] if of course there is an abort then also
+[70:52] we need to do a flash clear
+[70:54] but there is a need to actually
+[70:59] replace the undo log
+[71:02] sorry to bring in the undo log and write
+[71:04] it so one small
+[71:06] point is due over here so when i meant
+[71:10] that the log has this dedicated set of
+[71:11] addresses
+[71:13] if you are using a redo log for sure yes
+[71:15] but even when you are using an undo log
+[71:18] the undo log has to be stored somewhere
+[71:21] so where will they store it the undo log
+[71:24] will be stored
+[71:25] somewhere in a separate region in
+[71:26] virtual memory
+[71:28] which will be accessible to the process
+[71:30] and to the hardware
+[71:31] so if there is a need to undo the
+[71:33] hardware will automatically read
+[71:35] all the variables from there and update
+[71:39] right such that the state is similar to
+[71:42] what it was before the aborted
+[71:46] so the fixing the state can be the can
+[71:49] be done by either software or by
+[71:51] hardware
+[71:52] but the key point is that while a
+[71:55] transaction is an execution if there is
+[71:57] an eviction what happens
+[71:59] see if there's an eviction in the m
+[72:03] the state at the directory is set to m
+[72:05] at c
+[72:06] where c is the number of the core that
+[72:08] evicted the block
+[72:10] for example let's say if poor three
+[72:11] evicted the block the state at the
+[72:13] directory will be m at three
+[72:16] m at three basically means it was there
+[72:18] in the modified state
+[72:20] in core three but port three evicted the
+[72:22] block from l1 to let's say l2
+[72:25] we set the overflow bit of core three to
+[72:28] okay in the s state let us assume that
+[72:32] there are silent directions which means
+[72:34] that in the underlying directory
+[72:35] protocol also
+[72:37] if let's say there is an eviction in the
+[72:39] s state it doesn't necessarily inform
+[72:43] so with that in mind here is what we do
+[72:46] whenever the directory gets a request
+[72:48] for a block in the m at c state
+[72:52] so basically the state is let's say m at
+[72:54] three and it gets a request from another
+[72:56] code let's say core four
+[72:59] then it will forward that request to
+[73:01] code three
+[73:05] so code 3 in this case so let's say
+[73:12] so in this case code 3 but we are
+[73:13] calling it core c actually
+[73:15] so core c may not have the block in the
+[73:17] cache the reason being it may not have
+[73:19] it in the l1 cache because it is
+[73:20] displaced to lt
+[73:23] it will nonetheless infer a conflict
+[73:25] because of the state of the block
+[73:27] because the directive is also sending
+[73:29] the its current state of the block along
+[73:31] with the message
+[73:33] it will see that the directory's current
+[73:35] state is m at c
+[73:38] because it is m at c it will infer that
+[73:40] since the directory never lies
+[73:42] that most likely i had it in the
+[73:44] modified state and i evicted it
+[73:46] and now somebody else wants to access it
+[73:49] but this
+[73:49] locks for sure is in my right set so it
+[73:52] will infer a conflict
+[73:55] so then what it will do
+[73:58] is that it will
+[74:01] it will need to do something if it's a
+[74:03] normal request
+[74:05] so the normal request will not have an m
+[74:07] at c from the directory
+[74:14] i'm sorry i slightly stand corrected
+[74:17] so if it gets a message with m at c
+[74:21] then it will assume that there is a
+[74:23] conflict and it will
+[74:26] send a knack back and then that will
+[74:28] lead to an abort
+[74:29] but if it's a normal request which means
+[74:31] this m at c
+[74:32] is not coming then it will infer that
+[74:35] the line was there in the s
+[74:37] state and from the s state it was
+[74:40] evicted
+[74:41] so this is what it will infer all right
+[74:44] and if the other transaction just wants
+[74:47] to read there is no problem but if it
+[74:48] wants to write there is a read write
+[74:51] and a conflict has to be signaled so in
+[74:53] this case what you see is you see a
+[74:55] strange way of state management
+[74:59] so what is happening is that depending
+[75:02] upon the message that is coming from the
+[75:04] directory
+[75:05] say the directory is sending a message
+[75:07] with an m at c to core c
+[75:10] it will figure out that look yes i don't
+[75:12] have the line currently with me in l1
+[75:15] but since the directory sending this
+[75:17] message most likely had it in the m
+[75:19] state and it got evicted
+[75:22] and let's say if no but if a request is
+[75:25] still coming
+[75:27] it will then assume that most likely had
+[75:30] it in a state and it got elected
+[75:34] so let's look at an example over here or
+[75:38] d
+[75:38] will send kodi starts the process
+[75:44] so the first thing is of course that so
+[75:47] so i'll start slightly from
+[75:49] uh to the left words from t equal to
+[75:51] zero
+[75:52] so the first is corsi had a line it
+[75:54] evicted it said send a message to the
+[75:57] the directory sets the state to m at c
+[76:01] primarily because core c was the only
+[76:03] code which
+[76:04] had the
+[76:07] block in the modified state so it will
+[76:10] set it to mfc
+[76:12] and then what it is going to do
+[76:15] is that it will not do anything it will
+[76:17] wait for subsequent requests
+[76:20] when quartey sends a read miss message
+[76:22] to the directory
+[76:23] it will realize that its current state
+[76:25] is mrc so it will send the read miss
+[76:27] message
+[76:28] and the mrc directive core c will
+[76:31] realize several things
+[76:33] it will realize that its overflow bit is
+[76:36] set to 1 because this is set just after
+[76:38] the event
+[76:39] so overflow bit basically means that
+[76:41] some
+[76:42] line was in the read set or right set
+[76:45] and it was
+[76:46] evicted to the lower level says overflow
+[76:48] bit is one
+[76:50] if its overflow bit is one and the state
+[76:54] that is coming
+[76:55] has an mrc then what will happen
+[77:00] right is that it will automatically
+[77:04] infer that there is a conflict
+[77:05] because i had it in the modified state i
+[77:08] sent it down
+[77:09] that's okay but it's still in my right
+[77:11] set in the modified state
+[77:13] and somebody else wants to read it so
+[77:14] there is a conflict so it will send an
+[77:16] act back
+[77:17] the mac will bounce from the directory
+[77:19] go to quarty and it will be a knack
+[77:21] and corey will subsequently abort
+[77:26] that is the key broad idea over here
+[77:29] that quality will subsequently abort
+[77:31] after it gets a knack from course c via
+[77:33] this mechanism
+[77:35] so this allows speculative data
+[77:38] so like so that's the term
+[77:42] speculative data because this data finds
+[77:45] entries and read and write sets
+[77:46] it allows speculative data to be
+[77:48] displaced
+[77:50] from the higher level caches and sent to
+[77:52] the lower level caches
+[77:55] there are of course some subtle issues
+[77:58] so assume a block has been evicted
+[78:00] if there is a conflicting request by a
+[78:02] non-transactional access
+[78:04] then of course the current transaction
+[78:06] has to abort because the
+[78:07] non-transactional access cannot occur
+[78:10] if a transaction aborts then of course
+[78:12] you have to flush the read write sets
+[78:16] so the read write sets flushing
+[78:18] basically means that all the r and w
+[78:20] bits have to be set to zero
+[78:22] right all the rnw bits have to be set to
+[78:24] zero zero
+[78:27] in this case what could have happened is
+[78:29] some blocks might have been evicted and
+[78:31] gone to the lower levels of the
+[78:32] hierarchy
+[78:34] but since we restore the entire undo log
+[78:37] what will happen is the correct state of
+[78:39] all the blocks will get restored in l1
+[78:43] in this case even if there are wrong
+[78:45] values written by an aborted transaction
+[78:47] and they are floating around in the
+[78:48] lower levels of the cache hierarchy
+[78:51] it doesn't really matter because if you
+[78:53] think of a processor it only
+[78:54] trusts all the data that is there in l1
+[78:57] cache something that is
+[78:59] below l1 is assumed to be stale anyway
+[79:02] because l1 cache has the most up-to-date
+[79:04] data so
+[79:05] the undo log is directly written to the
+[79:07] l1 level can get evicted later that
+[79:09] doesn't matter
+[79:11] but if the undo log is returned to the
+[79:13] l1 level
+[79:14] then as far as the processor is
+[79:16] concerned the most up-to-date data is
+[79:18] there which is the undo log
+[79:20] which means any other value that was
+[79:22] generated
+[79:23] by the aborted transaction even if it's
+[79:26] floating around at lower levels doesn't
+[79:29] after the transaction finishes all the
+[79:32] read write bits with each line
+[79:34] all the overflow bits with the core and
+[79:36] the msc kind of bits but c
+[79:37] is the core number all of these are
+[79:39] cleared
+[79:40] clearing these two is trivial but we
+[79:42] have already discussed
+[79:45] how to clear these and to clear
+[79:48] these well there is something called a
+[79:50] flash clear mechanism which is explained
+[79:53] some detail in the book
+[79:56] good so now we have completed this huge
+[79:59] long humongous chapter
+[80:02] so what we have seen is there are two
+[80:04] broad paradigms
+[80:06] in parallel project shared memory and
+[80:08] message passing
+[80:10] message passing is far more suitable for
+[80:13] a loosely coupled multi-processing
+[80:15] system
+[80:16] but for any multi-core system shared
+[80:18] memory programming is used
+[80:21] here of course there is a need to create
+[80:23] specifications
+[80:25] so plsc is something that all memory
+[80:27] models follow and adhere to
+[80:30] and that lays the foundation for cache
+[80:32] coordinates
+[80:33] memory consistency models are of many
+[80:35] types
+[80:37] the key important variables are writer
+[80:39] atomicity and program order
+[80:43] these relationships are captured by the
+[80:45] po rf fr and ws relations
+[80:47] which we have discussed in great depth
+[80:50] and to enforce the axioms of coherence
+[80:52] where the serialization axiom comes from
+[80:54] plsc
+[80:55] and the right propagation axiom comes
+[80:58] more from common sense that we don't
+[80:59] want rights to be lost
+[81:01] there are many ways many protocols
+[81:04] snoopy protocols directory protocols to
+[81:07] enforce the accidents of coordinates
+[81:09] and then we looked at data race freedom
+[81:11] and we looked and we define what is a
+[81:13] properly synchronized program
+[81:15] and if a program is data is free its
+[81:17] execution is in sc
+[81:20] finally we talked about transactional
+[81:22] memory its correctness properties
+[81:24] different protocols hardware protocols
+[81:26] software protocols
+[81:28] and how easy it is to write correct
+[81:31] database free code
+[81:32] of course wrapped in atomic blocks and
+[81:34] transactions where the
+[81:35] underlying system does the rest so this
+[81:38] concludes
+[81:39] this chapter
+[81:52] you

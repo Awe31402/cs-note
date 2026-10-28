@@ -1,0 +1,1042 @@
+[00:00] [Music]
+[00:12] thank you
+[00:20] welcome to the third lecture on Power
+[00:22] and temperature management
+[00:25] so we'll first look at power management
+[00:27] and then get into temperature management
+[00:32] so the most
+[00:34] popular method of managing voltage
+[00:37] managing power is what is called voltage
+[00:39] frequency scaling rather it's called
+[00:42] Dynamic voltage frequency scaling or
+[00:44] dbfs
+[00:45] so what happens is that as we have
+[00:48] discussed the voltage and frequency have
+[00:51] a relationship it used to be be linear
+[00:54] not anymore
+[00:56] so then uh what is the relationship
+[00:59] between this and this
+[01:01] well the relationship between this and
+[01:04] this is the voltage is some function of
+[01:06] the frequency
+[01:07] and in general increasing the frequency
+[01:10] means you have to increase the voltage
+[01:13] almost all the time
+[01:15] so most processors as you can see from
+[01:17] the Intel pentiumm processor they have a
+[01:19] table
+[01:20] there's a voltage frequency table a dvfs
+[01:24] that given a frequency what should the
+[01:26] voltage be if it is 1.6 gigahertz
+[01:29] then
+[01:32] you know what should
+[01:34] the voltage be 1.484 volts Supply
+[01:37] voltage and again 0.6 gigahertz 0.956 so
+[01:40] on and so forth
+[01:42] so recall that you know we had discussed
+[01:44] this relationships thread there in
+[01:47] lecture one this is lecture three at the
+[01:49] moment right so lecture one of the same
+[01:52] same slide set on Power and temperature
+[01:56] so then who decides who makes these
+[01:59] decisions of when to change the voltage
+[02:01] and frequency
+[02:03] so this can be done by Hardware in the
+[02:05] sense when it sees it's heating up it
+[02:07] can reduce the frequency or when it is
+[02:10] seeing less activity on the CPU it can
+[02:13] reduce the frequency
+[02:15] or it could be software controlled where
+[02:17] the OS gives a direction to the hardware
+[02:20] to reduce or increase its frequency so
+[02:23] the CPU Frac utility on Linux
+[02:26] actually does that so that is software
+[02:29] control
+[02:32] say every chip has a power grid and a
+[02:35] frequency regulation system
+[02:37] so we have a 3.3 volt power supply
+[02:40] typically
+[02:42] and a voltage regulator that
+[02:45] provides voltages in the range of 0.8 to
+[02:47] 1.2 volts
+[02:49] and then again we have a quartz clock so
+[02:53] the quartz clock will generate a fixed
+[02:55] 130 133 megahertz signal
+[02:58] and the PLL is kind of you know is a
+[03:01] frequency multiplier on top of this
+[03:02] quartz clock
+[03:04] so this multiplies the frequency hence
+[03:06] you know you can't like scale it to an
+[03:08] arbitrary frequency but you can scale it
+[03:10] to different multiples of this one 133
+[03:13] megahertz as the PLL is set up to do
+[03:15] that
+[03:16] so the PLL provides a frequency base and
+[03:19] then a voltage base is provided by the
+[03:21] voltage regulators
+[03:23] they could be on cheaper off chip most
+[03:25] of the time they are off chip but the
+[03:27] plls could be on chip though
+[03:30] so then the idea is that if you want to
+[03:33] generate any frequency you need to tell
+[03:35] the PLL that look I want to generate
+[03:38] 2.13 gigahertz so this is 133 megahertz
+[03:41] times 16. so you essentially do a
+[03:44] frequency multiplication with the factor
+[03:46] 16. so it will do that and of course
+[03:49] distinct factors are possible arbitrary
+[03:51] factors are not possible but then what
+[03:54] happens is that to go from let's say one
+[03:56] frequency to another frequency the PLL
+[03:59] needs to re-lock re-lock basically means
+[04:02] that it will temporarily stop
+[04:04] then try to generate the new frequency
+[04:07] this process will take several
+[04:09] adjustments finally the PLL will
+[04:12] converge or lock to a frequency and then
+[04:14] it will keep on generating that
+[04:16] frequency but during this time the chip
+[04:18] is unusable so this is known as a PLL
+[04:20] locking time the PLL is known as a phase
+[04:22] locked Loop
+[04:25] so what happens is that let's say I want
+[04:28] to change my voltage and frequency
+[04:31] so I keep on operating and let's say I
+[04:34] want to go from voltage v0 to V1
+[04:37] so first I increase the voltage after I
+[04:41] have done that I tell the PLL to
+[04:43] increase the frequency so the voltage
+[04:45] can always be increased there is no
+[04:47] issue in that but to increase the
+[04:49] frequency you need higher voltage that's
+[04:51] the reason increase voltage first
+[04:53] once our voltage Regulators have done
+[04:56] their job for this period of time our
+[04:58] processor is not usable typically 10 to
+[05:01] 20 microseconds
+[05:03] then there is a steady state
+[05:05] and the steady state continues
+[05:08] and then what happens is that my voltage
+[05:11] again goes down the steady state in
+[05:14] terms of voltage right not in terms of
+[05:16] frequency
+[05:17] and then what I do is while reducing
+[05:20] I again
+[05:23] bring my frequency down that can be done
+[05:26] so while bringing the frequency down I
+[05:28] need not bring the voltage down I can
+[05:29] bring it down later
+[05:31] so so again I bring my frequency down
+[05:33] and then again I bring my voltage down
+[05:35] and continue
+[05:37] so as you can see uh I always increase
+[05:40] the voltage first
+[05:42] that is needed and then I increase the
+[05:46] foil reducing the frequency
+[05:49] again I reduce the frequency first and
+[05:51] then I reduce the voltage
+[05:54] so let's now look at Hardware based dvfs
+[05:58] so what we do is that we estimate the
+[06:01] amount of CPU activity which is not a
+[06:03] very hard thing to do
+[06:05] so we can look at the IPC we can look at
+[06:08] the usage of different functional units
+[06:13] so if it is low
+[06:15] then we can reduce the frequency because
+[06:17] we are not using the CPU a lot so maybe
+[06:20] we are doing a lot of i o
+[06:23] so then why do you need high frequency
+[06:24] if it is high then most likely
+[06:29] uh you are doing something which is
+[06:32] important which is CPU heavy you would
+[06:34] need high frequency so well why not
+[06:37] increase it
+[06:39] so again these are a conflicting set of
+[06:41] requirements okay so this set of
+[06:43] requirements over here are conflicting
+[06:47] look at the power and temperature if
+[06:49] both are low on the lower side
+[06:52] then it makes sense to increase the
+[06:54] frequency because you can get better
+[06:56] performance but that would depend upon
+[06:58] whether increasing the frequency will
+[07:01] help or not
+[07:03] if both of them are high then you have
+[07:06] to reduce the frequency because you
+[07:08] don't want a high power scenario or a
+[07:11] high temperature scenario to continue
+[07:13] for long
+[07:14] right so this is the broad
+[07:17] philosophy of any hardware based
+[07:21] frequency control where you look at a
+[07:23] bunch of requirements
+[07:26] which it may actually be in odds with
+[07:28] each other right they may be conflicting
+[07:30] how would they be conflicting well
+[07:34] it's simple uh it could be that as I
+[07:38] said you may want to increase the IPC
+[07:40] further but the temperature is high
+[07:42] hence
+[07:44] you cannot increase the frequency so of
+[07:46] course you whatever decision is taken
+[07:48] has to take in take into account the
+[07:51] actual power temperature realities and
+[07:54] the CPU activity
+[07:56] software-based dvfs can easily be done
+[07:59] so a lot of
+[08:02] processors expose
+[08:04] instructions for
+[08:07] the OS to actually change the voltage
+[08:10] frequency setting
+[08:12] so video is a quintessential example so
+[08:14] if you're looking at 30 frames per
+[08:16] second 30 FPS video
+[08:18] which means that one frame needs to be
+[08:21] processed in
+[08:22] 33 milliseconds
+[08:25] assume that we can process a frame in 20
+[08:27] milliseconds
+[08:29] then clearly there is a 13 millisecond
+[08:31] Slack so why have such a large Slack
+[08:35] what we can instead do
+[08:39] is that we can reduce the frequency
+[08:44] so then what will happen is that we will
+[08:46] reduce power also and as we have seen a
+[08:48] small reduction in frequency is a big
+[08:50] reduction in power
+[08:51] but of course we need a method a model a
+[08:54] formula to relate the processing time
+[08:56] which is this 20 milliseconds with the
+[09:01] so now uh
+[09:05] if we look at
+[09:08] regular programs
+[09:11] so if you can classify them as hard real
+[09:14] time means strict real-time constraints
+[09:17] soft real time means even if you violate
+[09:19] a constraint it is fine interactive we
+[09:22] know something like a game
+[09:24] periodic would be a periodic task like
+[09:27] this again video processing that every
+[09:28] once every 33 milliseconds you need to
+[09:31] process
+[09:32] and then batch is something which runs
+[09:34] in the background you don't really care
+[09:35] when it finishes unless it takes very
+[09:37] long
+[09:39] then we can have based on the
+[09:42] classification different policies for
+[09:44] real-time tasks
+[09:46] uh we have to set the dvfs settings I
+[09:49] said the deadline is being met as long
+[09:51] as the deadline is being met there is no
+[09:53] need to increase the frequency any
+[09:55] further
+[09:56] interactive jobs well we'll have to look
+[09:58] at what is called the quality of
+[10:00] experience of the user if it is high
+[10:02] well
+[10:03] don't increase the frequency consider
+[10:05] lowering it if it is low consider
+[10:09] increasing it
+[10:10] again periodic jobs like this take the
+[10:13] periodicity into account and see if we
+[10:15] are completing before the deadline or
+[10:17] not
+[10:19] and bad jobs will look at what are the
+[10:22] requirements in many cases a bad job
+[10:25] would be you know go and compress some
+[10:27] database or some file or something or a
+[10:30] set of files or run a script on a bunch
+[10:32] of files
+[10:33] so you don't really care how long it
+[10:35] takes if you don't care how long it
+[10:37] takes that it take a long time what's
+[10:38] the issue
+[10:41] so Linux has a CPU freck utility which
+[10:44] is also known as a speed Governor
+[10:46] because it governs the speed
+[10:48] so what the CPU freck utility does is
+[10:51] that it has different policies or
+[10:54] different settings
+[10:55] and because Linux is a general OS you
+[10:57] know it runs on all kinds of processors
+[10:59] so it cannot really have anything which
+[11:01] is Crosshair specific and even for Intel
+[11:04] AMD different processors have different
+[11:06] dvfs settings
+[11:08] so you would want Linux to kind of have
+[11:10] the flexibility to map a high level uh
+[11:14] thing to actually a low level thing like
+[11:16] a voltage or frequency
+[11:18] so performance is maximum possible
+[11:20] frequency so this is this is clear
+[11:23] power save is minimum again this is
+[11:25] clear this is the other side of the
+[11:26] extrema
+[11:28] On Demand is basically that
+[11:32] you set a constant rate of CPU
+[11:34] utilization
+[11:36] and if it increases
+[11:39] well then increase the frequency such
+[11:41] that the CPU finishes its job sooner
+[11:45] so this of course uses a set of
+[11:47] thresholds in the synth you know you
+[11:48] want the CPU utilization to sort of be
+[11:50] between these two points
+[11:52] so then uh
+[11:54] the OS will work with the processor and
+[11:58] keep setting the dvfs settings
+[11:59] accordingly
+[12:01] conservative is again a version of the
+[12:04] on-demand but slightly more on the
+[12:06] conservative side as the name suggests
+[12:08] nothing more to add here
+[12:11] so then interactive actually relies on
+[12:15] the formula that we were talking about
+[12:17] Fair uh the CPU utilization
+[12:22] is being related to frequency because
+[12:24] look it's not very clear sometimes even
+[12:27] if the CPU utilization is low you would
+[12:30] want that low part or whatever you are
+[12:32] running to run as quickly as possible
+[12:34] such that some other entity like an i o
+[12:36] device or something
+[12:38] can actually
+[12:40] uh
+[12:42] get the data faster sometimes you have
+[12:44] high sorry low CPU utilization because
+[12:46] of high memory Miss rates
+[12:49] in that case also it's an issue because
+[12:51] in lowering the frequency doesn't really
+[12:53] help
+[12:54] so the relationship between these
+[12:57] foreign application need to be
+[12:59] understood and the OS either has to
+[13:01] create a model or the programmer has to
+[13:03] help but in this case you know Linux
+[13:05] tries to create some model of its own
+[13:09] and based on that it tries to provide a
+[13:12] good quality of experience where it has
+[13:14] some heuristics with respect to what
+[13:16] constitutes a good quality of experience
+[13:19] so this would this it would apply for
+[13:21] purely interactive jobs
+[13:23] right so of course it can do other there
+[13:26] are other tricks up its sleeve they
+[13:28] increase the process priorities and so
+[13:29] on at the OS level but since we are
+[13:33] talking of dvfs which is voltage
+[13:35] frequency scaling
+[13:37] uh we can use as I said a bunch of
+[13:40] thresholds which are these two
+[13:43] uh where you say that look we want the
+[13:47] CPU to be utilized this much to this
+[13:49] much right maybe 80 to 100 of the time
+[13:53] or 50 to 70 percent of the time and then
+[13:55] it will ensure that whatever work it has
+[13:58] this is how much the CPU is used
+[14:01] but interactive would use a formula so
+[14:04] it's slightly sophisticated and the
+[14:06] other two are simple extrema so I hope
+[14:09] that these five are clear so keeping
+[14:12] this in mind let's move forward
+[14:14] so dvfs was a simple mechanism Hardware
+[14:17] can do it software can do it right both
+[14:21] can do it
+[14:23] and this is a very old idea it's not a
+[14:25] new idea by any you know by any measure
+[14:28] it's not anyway
+[14:30] now here is the fun part that we can do
+[14:33] more
+[14:35] so what we can do is that for dynamic
+[14:37] power what we have seen is if there are
+[14:39] no transitions
+[14:42] which means if there is no one to zero
+[14:44] and no zero to one if no transitions
+[14:46] means no path
+[14:49] because there is no voltage transition
+[14:51] right you will still dissipate static
+[14:53] power but you won't dissipate Dynamic
+[14:56] power
+[14:58] so Dynamic power is you know purely
+[15:01] dissipated via voltage transitions
+[15:04] and the best way of stopping these
+[15:06] transitions is that you simply disable
+[15:08] the clocks if this is the clock
+[15:10] you end it with the clock gating signal
+[15:12] if the signal is one this is zero the
+[15:14] result is zero regardless of the clock
+[15:17] and if the clock gate is zero then this
+[15:20] signal is 1 which means that the output
+[15:22] here is the clock
+[15:24] which basically means that when you feel
+[15:28] that your circuit is not going to work
+[15:30] that you would know for instance if you
+[15:32] are running integer instructions then
+[15:35] your
+[15:36] floating Point Unit will not be used if
+[15:39] you are running floating Point
+[15:40] instructions your integer unit will not
+[15:41] be used
+[15:43] so this is known to the processor at
+[15:45] least the earlier stages what will be
+[15:48] the usage of later stages
+[15:49] so this information can be properly
+[15:52] conveyed you can have software support
+[15:54] as well but that would be too much
+[15:55] because a lot of Hardware details will
+[15:58] have to be exposed to software which is
+[16:00] in general not a good idea
+[16:03] so what we can do is that we can
+[16:07] get the clock which means set the clock
+[16:09] to Zero by setting the clock gate signal
+[16:11] to 1.
+[16:13] and then basically no clock no
+[16:15] transitions no Dynamic part right so
+[16:18] essentially it's in a Negative Edge
+[16:21] triggered scenario
+[16:23] whatever is there in the latch at the
+[16:26] inputs prior to the negative Edge gets
+[16:28] transferred to the outputs
+[16:30] and then this leads to a bunch of
+[16:32] transitions throughout the logic
+[16:35] part of the pipeline but this is not
+[16:37] going to happen because the clock is
+[16:39] disabled so there is no movement
+[16:42] of course how do you predict is an
+[16:44] important thing you can use past history
+[16:47] or you can look at what is there in the
+[16:51] decode stage and try to make a guess try
+[16:53] to forecast so this is difficult but
+[16:55] clock gating again is an industry
+[16:57] standard now
+[16:59] there are a lot of correctness problems
+[17:01] the first is that verifying such
+[17:04] circuits becomes very hard very tough
+[17:06] very difficult
+[17:08] so in a lot of designs
+[17:11] the designers explicitly want that
+[17:15] regardless of clock gating either width
+[17:18] clock gating
+[17:19] or without clock gating the internal
+[17:23] states of all flip flops should be the
+[17:25] same
+[17:26] otherwise verifying will become very
+[17:28] tough and very difficult and the
+[17:30] internal state is going to become
+[17:32] very difficult to verify that's the
+[17:34] reason you have to somewhat
+[17:36] make conservative choices and say that
+[17:38] look you can clock it as much as you
+[17:40] want but anytime I verify
+[17:43] the state should be indistinguishable
+[17:45] from the scenario in which there is no
+[17:47] clock character
+[17:49] it clearly introduces spurious clock
+[17:51] edges because if the clock is one and
+[17:53] you are getting it you are then kind of
+[17:54] enforcing a one to zero transition which
+[17:56] is early
+[17:58] this may cause faults in the circuit
+[18:01] because clearly the circuit is not
+[18:03] expecting that a transition will come
+[18:05] early
+[18:06] so if you want to gate the clock you get
+[18:08] the clock when it is at level zero
+[18:10] that's the safest then the level 0 is
+[18:12] going to continue
+[18:15] clock gating example we all have seen a
+[18:18] carry look ahead added so if bit number
+[18:21] four changes right so then Sky look at
+[18:24] idea is simple we propagate some
+[18:26] information here and then we again
+[18:29] propagate some information back and that
+[18:32] allows us to do the addition so bit
+[18:34] number four changes its entire path so
+[18:37] there's a tree in Reverse basically from
+[18:39] here to the root the entire path will
+[18:41] see transitions
+[18:43] so this part in red will see transitions
+[18:46] but the rest of the elements will not
+[18:47] see any change so they can be clocked it
+[18:49] this is one example there can be many
+[18:52] such examples of course is an example
+[18:54] within a functional unit
+[18:55] you may argue that this is two fine
+[18:58] grained a level and I will not contest
+[19:01] but
+[19:03] in general it's a better idea to do it
+[19:06] at the functional unit level as opposed
+[19:08] to intra functional unit levels
+[19:12] other simple ideas issue and fetch
+[19:15] throttling so clearly there's a power
+[19:17] versus IPC trade-off as you do more
+[19:20] architectural tricks you in you spend
+[19:22] more power
+[19:23] so the fetch rate issue rate commit rate
+[19:26] essentially how wide your processor is
+[19:28] can be dynamically adjusted saying
+[19:31] instead of issuing six instructions per
+[19:33] cycle I will Issue four that will bring
+[19:36] down your power automatically of course
+[19:38] it will bring down your IPC but you need
+[19:40] to make a trade-off the entire thing is
+[19:41] about trade-off
+[19:43] so of course you may argue that let's
+[19:46] say for a given benchmark
+[19:48] if
+[19:50] this is the issue rate
+[19:54] and this is the IPC
+[19:57] and let's say I have a second axis which
+[19:59] is power
+[20:01] then you can say that look initially the
+[20:03] IPC is kind of low but as the issue rate
+[20:05] increases IPC becomes like this
+[20:08] similarly for power you can say that
+[20:10] look uh
+[20:12] initially the power is quite low but
+[20:16] as I increase the issue rate it kind of
+[20:19] goes like this
+[20:20] right so then you can say that look
+[20:23] maybe you know a good point to operate
+[20:26] is somewhere here
+[20:27] you can right so this of course depends
+[20:30] on other factors like temperature and
+[20:32] Battery budgets and so on but an
+[20:35] argument can be made so we can plot the
+[20:37] IPC with the issue rate and say that
+[20:39] look as we increase the issue rate IPS
+[20:40] increases power also increases
+[20:43] what do I consider to be a nice and safe
+[20:45] point this is a decision that Architects
+[20:48] have to make based on other
+[20:50] concentrations
+[20:53] now let's look at leakage power so
+[20:55] leakage power is not the same as Dynamic
+[20:58] power this is based on
+[21:01] Dynamic power was based on transitions
+[21:04] leakage power or static power is
+[21:07] dissipated statically
+[21:09] and it is basically based on the fact
+[21:11] that interfaces are not ideals the
+[21:13] current leaks out so well so what's the
+[21:16] idea simply turn off the supply as
+[21:18] simple as that so disconnect the
+[21:19] connection
+[21:20] between either the
+[21:24] silicon layer and the power grid so we
+[21:26] have a power grid so what happens is the
+[21:28] way that the power is provided to the
+[21:31] circuit is basically of this grid like
+[21:33] shape and every grid Point basically
+[21:36] provides power here so the idea of
+[21:38] having a grid is that you can nicely
+[21:40] balance the power so if let's say
+[21:42] there's a high power draw here current
+[21:43] can flow in Via different directions
+[21:45] over here either low power draw here
+[21:47] then the reverse effect will happen but
+[21:50] the idea is you have a power grid and we
+[21:51] have connections to the power grid for
+[21:53] different functional units
+[21:55] so we can have these you know decoupling
+[21:58] transistors here known as sleep
+[21:59] transistors and it's a transistors after
+[22:02] all the switch right so you can just
+[22:04] open this switch so this will get
+[22:05] disconnected from the power grid
+[22:07] basically no power no leakage there is
+[22:09] nothing to leak similarly instead of the
+[22:12] power grid we can turn off the
+[22:13] connection of the ground grid so then
+[22:15] current will not flow or we could have
+[22:18] two decoupling
+[22:20] transistors on both sides and then turn
+[22:24] both of them off so then this layer will
+[22:26] become fully floating it will not be
+[22:29] able to
+[22:31] uh get any power so the idea here is
+[22:34] simple if we turn this off then
+[22:36] basically and also this off then this
+[22:39] becomes an open circuit
+[22:40] so there is no way that current can flow
+[22:43] in here other than the tiny amount of
+[22:45] leakage via this transistor which is
+[22:47] minimal this is minimal as compared to
+[22:50] all the transistors in this functional
+[22:51] unit leaking which is actually much much
+[22:54] so the key idea is that we create these
+[22:57] islands of transistors like this is an
+[22:59] island this is an island
+[23:01] each island is connected to both to the
+[23:03] ground grid and power grid and we have
+[23:05] this transistors
+[23:06] so what we do is if we disconnect them
+[23:08] current doesn't flow and no current
+[23:11] flows so basically no leakage and this
+[23:14] is known as power gating which is done
+[23:16] but it is expensive as we shall shortly
+[23:18] see
+[23:21] there are a bunch of issues we have to
+[23:23] keep in mind so many issues I just
+[23:25] listed them down
+[23:27] so the idea is that the current that is
+[23:30] being sent to these functional units
+[23:32] right
+[23:34] should not
+[23:39] reduce right because what would happen
+[23:42] is that the transistor itself
+[23:45] would have a certain current carrying
+[23:47] capacity it would have a resistance so
+[23:49] the current and voltage etcetera should
+[23:51] not reduce I have to look at what
+[23:53] current is still available to the
+[23:55] functional unit
+[23:56] it should roughly be as it was a direct
+[23:58] connection right so this transistor has
+[24:00] to be really wide
+[24:02] the Sleep transistors themselves can
+[24:05] take time to switch on and off because
+[24:07] they are large transistors they would
+[24:08] have large capacitor capacitances
+[24:11] associated with them so
+[24:14] if let's say they take a fair amount of
+[24:16] time to turn on off then during that
+[24:19] time the system is unusable
+[24:22] so we'll have to take that into account
+[24:23] so clearly unlike clock gating power
+[24:25] gating cannot be done at a very fine
+[24:27] granularity they can't it can't be done
+[24:29] very quickly
+[24:31] so we'll have to figure out larger uh
+[24:35] quanta of time for instance
+[24:38] we could have you know coarse grain
+[24:40] partitioning like if at the level of
+[24:42] full core if a core is not being used
+[24:44] because the OS has not given a task to
+[24:47] it then we can park it
+[24:49] so as I said there will be some leakage
+[24:51] via the Sleep transistors that is not
+[24:53] much if I were you I won't consider it
+[24:57] the key problem I would say the reason
+[25:00] that this is in red
+[25:02] is because there will be very very
+[25:04] abrupt changes to the
+[25:06] current that is either flowing into an
+[25:09] feu via the power grid or the ground
+[25:12] grid grid they'll be very very abrupt
+[25:15] changes because you are disconnecting a
+[25:16] large circuit
+[25:18] so this will have fundamentally a
+[25:20] destabilizing effect over the grids it
+[25:23] will cause these current pulses and this
+[25:25] current pulses may go and destabilize
+[25:28] other functional units that are
+[25:30] connected
+[25:31] that may cause faults as we shall see in
+[25:33] the next chapter
+[25:35] so the right way of doing it is to sort
+[25:38] of do it at a time when the system is
+[25:40] not used a lot or add this decoupling
+[25:43] capacitors which will be able to absorb
+[25:46] those spikes
+[25:48] right but large capacitors are required
+[25:50] otherwise the destabilizing effect may
+[25:53] actually flip bits which is something
+[25:55] that we don't want so this process of
+[25:58] power getting a circuit or unpower
+[26:00] gating is
+[26:02] problematic and you have to design this
+[26:05] part very carefully
+[26:07] second sleep transistor same problem as
+[26:09] the first reduces both current as well
+[26:11] as
+[26:13] the voltage and furthermore you have to
+[26:15] predict in advance similar to clock
+[26:17] gating but in this case you are
+[26:19] predicting for a larger duration of time
+[26:22] and finally when you power gate
+[26:24] something it loses its state
+[26:26] so you clearly don't want it to remember
+[26:28] something that you would use later
+[26:29] because the moment you power gate
+[26:32] anything that you have stored is gone
+[26:33] unless it is stored somewhere in memory
+[26:37] so these were a lot of issues right but
+[26:40] that doesn't mean that it is not done it
+[26:42] is done
+[26:43] but again with these riders or caveats
+[26:49] now we can look at something else which
+[26:51] is
+[26:53] I would say it's a part of the standard
+[26:55] practice
+[26:57] so let's look at some things
+[27:00] transistors that have shorter channels
+[27:02] and transistors with longer channels
+[27:06] this is a normal transistor the rule of
+[27:08] thumb it takes one unit of power and
+[27:11] time is one unit
+[27:12] a long Channel transistor clearly
+[27:16] will be slower but not very slow right
+[27:19] so recall that you know even for a small
+[27:22] amount of performance we can spend a lot
+[27:25] of power so essentially it will be
+[27:27] significantly more power efficient of
+[27:29] course this is for current day
+[27:30] technology 21 2021-22 I'm not sure about
+[27:33] the future
+[27:34] but again if the channel is very long
+[27:38] it's going to be 0.3 units it'll save a
+[27:40] lot of power and the performance loss
+[27:43] will be little but depends on the design
+[27:46] so what you can do is that you can have
+[27:48] normal transistors on the critical path
+[27:50] for Speed
+[27:51] and slower transistors of the critical
+[27:54] path to save power which is a standard
+[27:56] technique so then what will happen is
+[27:58] that we will not perceive the fact that
+[28:00] they are slow because they are not on
+[28:01] the critical path anyway they are not
+[28:03] determining the timing
+[28:05] similarly along with the channel length
+[28:08] gate sizing so the delay is typically
+[28:10] looks like this a plus b by W for w is
+[28:13] the gate size gate width
+[28:15] uh sorry width of the transistor I'm
+[28:18] sorry yeah so larger is the width of the
+[28:21] transistor
+[28:22] lower is the delay
+[28:24] for obvious reasons is bigger so it can
+[28:26] it can store more charge it can affect
+[28:28] transitions faster but wider it is
+[28:33] more is the power
+[28:35] so then if you have a slow transistor
+[28:38] you'll have a smaller W by L ratio
+[28:40] faster one larger so I just it's a
+[28:43] rehashing of what I just said but the
+[28:45] idea is the same that you have slow
+[28:47] transistors of the critical path
+[28:49] so this saves power
+[28:53] you have faster transistors which are on
+[28:55] the critical path which gives you the
+[28:57] performance right you have very very
+[28:59] fast transistors which are on the
+[29:02] critical path for performance which
+[29:03] would be the ones with
+[29:07] as I said
+[29:08] larger widths but in this case you will
+[29:11] be dissipating power in other case you
+[29:13] trade off delay for power in a different
+[29:16] direction
+[29:18] another such idea which is adaptive body
+[29:21] biasing so we will see all of these
+[29:23] things in the next chapter as well in a
+[29:25] slightly different of thought
+[29:28] and here the threshold voltage vth of a
+[29:32] transistor is of course a function of
+[29:35] the supply voltage and the body to
+[29:38] substrate sorry body to Source voltage
+[29:43] so what happens is if I increase the vdd
+[29:45] which is the
+[29:47] Source voltage
+[29:49] right then uh I can kind of bring the
+[29:52] threshold voltage down
+[29:54] if I bring the threshold voltage down
+[29:57] I'll increase my leakage power but
+[29:58] increase the speed of the transistor
+[30:00] quite a bit because in this case to
+[30:02] actually change its state I don't have
+[30:04] to charge much right my threshold
+[30:05] voltage is lower hence the transition is
+[30:08] faster
+[30:10] similarly if I tinker with this body
+[30:13] voltage
+[30:14] I can also lower or increase increase or
+[30:18] decrease
+[30:20] my threshold voltage which will give me
+[30:22] a performance benefit or take you in the
+[30:25] reverse Direction where it will make the
+[30:28] transistor slower but more power
+[30:29] efficient
+[30:31] so forward body wise thing is when we
+[30:33] increase VPS this will reduce vth
+[30:36] needless to say it will increase
+[30:38] performance but also increase leakage
+[30:40] power right here well
+[30:42] similarly we do reverse body biasing
+[30:45] which is decrease VBS
+[30:46] it will increase the threshold voltage
+[30:48] but it will reduce the leakage power
+[30:50] reduce the switching speed
+[30:53] so this is again one more knob that we
+[30:55] have the idea is the same
+[30:58] forward body bias the critical path to
+[31:00] make it faster
+[31:02] ignore the power that you are expanding
+[31:06] and reverse body bias the non-critical
+[31:09] path transistors
+[31:12] then what will happen is when you are
+[31:15] reverse body biasing it
+[31:18] you will save power
+[31:21] another idea is the idea of a drowsy
+[31:24] cash because up till now we were kind of
+[31:26] dealing with generic in circuit elements
+[31:30] right we were not dealing with memory
+[31:32] elements
+[31:34] so drowsy caches we will Define a normal
+[31:37] so caches typically have a normal
+[31:38] operating mode we'll Define a drowsy
+[31:40] mode
+[31:41] so let's see if the vdd is one volt
+[31:45] right which is typically the case these
+[31:47] days you will have a row of SRAM cells
+[31:49] and you can read write to everything
+[31:52] it is possible for me to reduce the
+[31:55] supply voltage to a value
+[31:57] fair I can't read or write the voltage
+[32:00] is not sufficient to read or write
+[32:03] but I can still maintain the value
+[32:06] and I will not make any mistakes I'll
+[32:08] not lose any value 0 will not become a
+[32:10] one and one will not become a zero this
+[32:12] is a neat idea it's a neat idea of why
+[32:15] the reason being that
+[32:19] we are
+[32:22] reducing the voltage to reduce the
+[32:25] amount of leakage so this is just to
+[32:26] reduce leakage
+[32:28] we are reducing the voltage to reduce
+[32:31] leakage power
+[32:36] but we are not making mistakes because
+[32:38] we are not reducing it so much that the
+[32:40] cell loses its value we are only
+[32:42] reducing it to a level where it will
+[32:44] maintain its value but it will not be
+[32:46] operational you can't read or write you
+[32:48] want to read or write increases voltage
+[32:49] back again
+[32:51] so this is a drowsy mode where you're
+[32:53] not sleeping you're just drowsy at 0.3
+[32:55] volts you can maintain the value but not
+[32:57] access so and the great idea is here
+[33:01] that it takes one or two cycles to
+[33:03] either enter or exit The Drowsy mode
+[33:06] so we treat a set of cache lines as one
+[33:08] unit and we can turn it on and off as
+[33:11] one unit so we don't want to do it like
+[33:12] cash line by line but maybe like at the
+[33:15] group of several lines 16 lines 32 lines
+[33:18] and once the set is turned on we don't
+[33:21] want to turn it off turn it on
+[33:24] very frequently that would kill our
+[33:27] performance that would you know induce a
+[33:30] lot of voltage transitions voltage
+[33:32] transitions make the power grids
+[33:34] unstable they draw in a lot of current
+[33:37] which also dissipates power
+[33:39] so we will need an architectural
+[33:41] mechanism to basically predict in the
+[33:44] future what would the accesses look like
+[33:47] we will take temporal and spatial
+[33:50] locality into account and then decide
+[33:52] what part to put in Rousey mode
+[33:57] circuit looks like this this is not very
+[33:59] tough as a circuit so we have in fact
+[34:04] seen this
+[34:10] so we have seen this circuit this is a
+[34:13] inverted pair
+[34:15] these are the word line transistors so
+[34:17] we have seen them right so this is not
+[34:19] something that we have not seen
+[34:21] so this is The Drowsy signal so let us
+[34:24] see what happens if the drowsy signal is
+[34:26] one
+[34:27] if the drowsy signal is one
+[34:32] then what happens is
+[34:34] that the word line enabled
+[34:39] basically becomes zero
+[34:48] so that is how our logic is that if the
+[34:50] drowsy signal is 31 then the word line
+[34:53] enabled here we make it zero
+[34:56] so what would this mean T1 is on
+[34:59] so let's see this is not
+[35:02] T2 is off because this is zero
+[35:06] and T3 is on
+[35:09] why is T3 on well let's see so this uh
+[35:14] this is one so this voltage here is zero
+[35:17] so this is one so the T3 is on if T3 is
+[35:21] on let's look at this value this is the
+[35:24] river in Reverse of this this value is
+[35:26] one inverse is zero T4 is off
+[35:29] so if T4 is off then essentially this
+[35:33] gate is open so we did it vdd low goes
+[35:37] here and this becomes the power line
+[35:40] okay so this goes to the power line over
+[35:42] here so this is the circuit diagram so
+[35:45] what basically happens is that your
+[35:46] power line becomes
+[35:48] vdd low
+[35:51] on the other hand if let's say The
+[35:55] Drowsy mode is off let us see what
+[35:57] happens
+[35:59] then this would be zero your word line
+[36:02] enable will be one
+[36:04] so if this is 1 then this signal here is
+[36:07] zero this is zero the inverse is 1 then
+[36:11] this is zero this is one
+[36:13] because this is 0 this transistor is not
+[36:16] conducting but because this is one here
+[36:18] the output would be vdt
+[36:21] given the fact that the output would be
+[36:23] vdd and this is one over here and
+[36:25] wordline enable is 1 your word line
+[36:27] enabled in this case would be one
+[36:29] so what would happen is that your word
+[36:31] lines would get enabled when the power
+[36:33] is equal to vdt
+[36:35] and in the previous case when this was
+[36:38] actually 0 the output would have been 0.
+[36:41] so when your power would have been equal
+[36:43] to vdd low which was the previous case
+[36:46] this value here would be 0. so which
+[36:49] basically means that when my word lines
+[36:51] are enabled and my circuit is
+[36:52] operational for Reading Writing I have
+[36:54] full Supply voltage
+[36:56] but when
+[36:58] my word lines are not enabled and my
+[37:01] circuit is not enabled for Reading
+[37:03] Writing I have a lower Supply voltage
+[37:05] which is vdt though at this point of
+[37:07] time I cannot access it but I can still
+[37:10] maintain the value which is exactly what
+[37:12] this circuit over here is showing
+[37:16] so we have discussed power management
+[37:18] we'll now spend
+[37:21] a very very short amount of time
+[37:24] discussing temperature management
+[37:25] because in general reducing power is
+[37:28] tantamount to reducing temperature
+[37:31] sometimes we can do more so the question
+[37:34] is how do you measure temperature that's
+[37:35] very hard because on a chip you have a
+[37:38] spreader heat sink everything so what we
+[37:40] can do is we place thermal sensors over
+[37:42] the chip
+[37:44] a thermal sensor is nothing but a bunch
+[37:46] of diodes
+[37:48] and the transition time of a diode is
+[37:51] dependent on the temperature
+[37:53] so what happens is that you take a
+[37:55] sequence of diodes and you measure the
+[37:57] transition time
+[37:59] using another clock another circuit
+[38:01] based on the time you try to infer the
+[38:03] temperature
+[38:05] so what happens is that in general our
+[38:08] temperature remains ok but sometimes you
+[38:09] can have this temperature hot spots
+[38:12] you can always do dvfs static power
+[38:14] reduction fetch throttling
+[38:16] stop and go is again a simple technique
+[38:20] where if a core is getting very hot just
+[38:22] don't just stop it let it cool down
+[38:25] then you can do what is called heat and
+[38:27] run thread assignment which is a don't
+[38:29] allow to hot pores to be close to each
+[38:31] other because then what will happen is
+[38:33] there will be lateral heat transfer and
+[38:35] they will get heated up even more
+[38:36] because if there is a heat transfer
+[38:39] leakage will increase that will increase
+[38:40] temperature the leakage temperature
+[38:42] feedback
+[38:43] so what you do at least what a good
+[38:46] scheduler OS scheduler should do
+[38:48] is that you should read the temperature
+[38:50] from the on shape temperature sensors
+[38:53] if a threads activity is increasing its
+[38:56] power will increase so you move it to a
+[38:57] colder region of the chip because
+[39:00] leakage is a slightly non-linear
+[39:02] function of temperature so you don't
+[39:03] want this feedback to set in moment you
+[39:06] have more activity you move it to a
+[39:07] corner space out the course
+[39:10] so I have a diagram here if let's say
+[39:12] there is a lot of hot regions here dark
+[39:14] means hot
+[39:16] so what will happen is that they will
+[39:18] kind of mutually transfer heat and then
+[39:20] they will transfer heat sideways it will
+[39:22] have a full hot region instead of that
+[39:25] just take both both the hot course and
+[39:27] place them far away so their heat
+[39:29] transfer will be limited by that
+[39:31] non-linear leakage temperature feedback
+[39:33] loop is not kicking in
+[39:35] hence what is happening is that overall
+[39:37] things in our chip are cooler than the
+[39:40] earlier case
+[39:41] so again don't have to hot cores nearby
+[39:44] lateral heat conduction leads to the
+[39:46] leakage temperature feedback loop which
+[39:47] is slightly non-linear
+[39:50] if a large hotspot forms a spreader will
+[39:53] find it hard to dissipate heat even
+[39:55] though it does a good job but its
+[39:57] capabilities are limited
+[39:59] typically what would happen is that we
+[40:01] have a temperature on the sorry a
+[40:04] constraint on the peak temperature
+[40:06] right or we Define something as the TDP
+[40:09] thermal design power is a max amount of
+[40:11] power that
+[40:12] the chip can dissipate before reaching a
+[40:15] temperature cut off so the idea is that
+[40:18] even
+[40:20] when the total power is much lower than
+[40:23] the TDP hot spots can still perform
+[40:25] still form which is why the Hardware's
+[40:29] hand will be forced to bring in dvfs but
+[40:32] again with proper scheduling of the jobs
+[40:35] a lot of this can be managed
+[40:40] so this is the last slide this is
+[40:41] something that we always love to look at
+[40:43] so let me just quickly summarize the
+[40:47] major power consumption mechanisms are
+[40:49] of course Dynamic power leakage power
+[40:51] short circuit power can come in this
+[40:54] Dynamic power is purely a function of
+[40:57] the number of Transitions and leakage
+[40:59] power is a function of many many things
+[41:01] the number of interfaces that are
+[41:04] non-ideal the current conduction
+[41:05] mechanisms and then and also things like
+[41:09] the supply voltage body wires and other
+[41:11] things
+[41:12] temperature modeling is tough but it's
+[41:14] not very tough as we have seen we looked
+[41:16] at the four years heat conduction
+[41:18] equations
+[41:19] and how they generalize to the finite
+[41:22] difference and finite element methods
+[41:24] and how the greens function
+[41:26] fundamentally
+[41:27] changes a quadratic problem to linear
+[41:31] power consumption again can be reduced
+[41:33] using a combination of dbfs clock
+[41:36] getting power getting throttling
+[41:38] and there are a few bespoke mechanisms
+[41:41] as well such as drowsy caches for
+[41:43] reducing leakage power
+[41:46] so given that we have looked at Power
+[41:48] and temperature very deeply and very
+[41:50] thoroughly in this section we will use
+[41:52] these Concepts going further going
+[41:55] forward to the next chapter where we
+[41:58] will discuss reliability which is very
+[42:00] heavily dependent upon what we have
+[42:03] talk talk thought and discussed in this
+[42:06] chapter so see you in the next chapter

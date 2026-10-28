@@ -1,0 +1,1370 @@
+[00:00] [Music]
+[00:23] so let us now discuss enhancements to
+[00:25] the directory protocol so the directory
+[00:28] protocol as was was described in the
+[00:31] previous lecture is correct is complete
+[00:35] but it is not efficient so let us first
+[00:38] list some of the common problems
+[00:40] associated with directories and how we
+[00:43] will fix them so the first is that we
+[00:46] need an entry for each block in a
+[00:48] program's working set so recall that the
+[00:51] working set is defined as the amount of
+[00:53] memory that the program uses in a short
+[00:56] period of time so of course there is
+[00:58] some subjectivity in this definition but
+[01:00] there is a somewhat better definition in
+[01:02] the book that talks about the short
+[01:04] period of time in terms of the phases
+[01:06] that a program goes
+[01:08] through so a program typically has a
+[01:11] settled phase of execution and another
+[01:13] settled phase of execution so in these
+[01:16] settled phases roughly it uses you know
+[01:19] constant amount of memory and it works
+[01:20] on that so that's the working set so
+[01:23] each for each block over here we need an
+[01:25] entry in the directory right and so this
+[01:28] is required and this is required for all
+[01:30] the course so the directory per se has
+[01:32] to be
+[01:33] huge in each directory we need an entry
+[01:36] for each constituent cash and that adds
+[01:39] to the storage
+[01:40] overheads and given the fact that we
+[01:42] have a single directory that itself can
+[01:45] become a point of
+[01:47] contention hence we have to look at
+[01:50] solutions to make this simple idea an
+[01:54] efficient
+[01:58] idea so what we can do is that we can uh
+[02:01] take care of the size and contention
+[02:04] problems like this that we take the
+[02:07] physical address space and we partition
+[02:10] the physical address
+[02:12] space uh into different disjoint sets so
+[02:16] this is set one set two and so on so we
+[02:19] just partition the physical address
+[02:22] space uh so one nice way of partitioning
+[02:25] is instead of partitioning by the msps
+[02:26] we partition them by the LSPs of the
+[02:28] block address it will be far more
+[02:30] uniform that way and for each partition
+[02:33] we assign a directory so we can have
+[02:35] multiple directories that is not an
+[02:38] issue and given the fact that a single
+[02:41] block will always be mapped to a
+[02:42] directory you know to the same directory
+[02:45] correction sorry correctness is not an
+[02:47] issue so what we do is that we split the
+[02:50] address space and each partition gets
+[02:53] mapped to a
+[02:55] directory a directory will then handle
+[02:57] all the requests for the part of the
+[02:59] address space that it
+[03:01] owns So this also issues the resolves
+[03:04] the issue of the single point of
+[03:06] contention in the sense that we have
+[03:08] multiple directories that look at
+[03:10] different
+[03:11] addresses so based on the address a
+[03:14] message can be routed to the correct
+[03:16] directory on the nooc and that directory
+[03:19] will have a smaller size as compared to
+[03:21] a large big combined
+[03:25] one so now let us come to the list of
+[03:28] sharers so how do we me contain the list
+[03:30] of sharers so one is a fully mapped
+[03:33] scheme so if there are n processors and
+[03:36] assume I have one sister cache per
+[03:38] processor I can have a bit Vector of
+[03:40] these n sharers right capital N
+[03:43] sharers for each block uh is associated
+[03:47] with a bit Vector of sharers if I have
+[03:49] 64 sharers I need to have 64 bits or
+[03:52] eight bytes per
+[03:54] block so I can have a slightly more
+[03:57] space efficient solution what I can do
+[04:01] is that is that I can have a single bit
+[04:03] for a set of caches so instead of 64 I
+[04:07] can break it into maybe sets of four and
+[04:09] have 16 such sets so this could be set
+[04:13] one this could be you know one 2 three
+[04:16] four right first four bytes this could
+[04:17] be set two set three set four and so on
+[04:21] and so forth and so then if I have a one
+[04:25] over here for a for a set it'll indicate
+[04:29] that
+[04:31] at least one of the sister caches within
+[04:33] the set has a copy of the block right
+[04:37] then what we can do is we can run a
+[04:39] small Snoopy protocol inside the set or
+[04:43] uh we can
+[04:45] uh essentially query each of the caches
+[04:48] within the set by sending a multicast
+[04:50] message something of this nature is
+[04:53] possible and uh so there are two
+[04:56] advantages one is that this reduces the
+[04:58] storage space at at the directory that
+[05:01] is01 and the second is that this is
+[05:04] naturally amenable to the structure of a
+[05:06] modern multicore system because a modern
+[05:09] multicore system is typically broken
+[05:11] down into tiles where we have like these
+[05:14] caches and cash Banks sorry cores and
+[05:16] cash bank combines right so where we
+[05:20] have a single trial we'll have a core
+[05:22] and a cash bank so in a certain sense
+[05:24] within a tile they share a bus so
+[05:27] Nothing Stops us from having a like a
+[05:30] local Snoopy protocol running here and
+[05:33] an overall directory
+[05:35] protocol so that will ensure that you
+[05:38] know in each set we have an order of
+[05:40] Rights and we also have a Global Order
+[05:42] of
+[05:43] Rights the other is that uh we store the
+[05:47] IDS of only K sharers so this is like a
+[05:50] partially mapped scheme that only for K
+[05:52] sharers you know we store the ID so we
+[05:55] just say that look we we will only store
+[05:57] the IDS of K sharers that that is
+[05:59] because typically most blocks are not
+[06:03] associated with that many sharers right
+[06:05] so maybe we'll have like two four six
+[06:07] maximum sharers Al so let's say if we if
+[06:10] we do for four and so assume we have 64
+[06:13] blocks and we store only for four
+[06:16] sharers so what we need is we need four
+[06:18] into six bits which is 24
+[06:21] bits and after that we can have an
+[06:25] overflow bit that stores the fact that
+[06:28] there are more than Cas
+[06:32] sharers so the Overflow bit which will
+[06:35] be one additional bit over 24 will be 25
+[06:39] this will essentially indicate that look
+[06:41] we have more than K sharers but the
+[06:43] Overflow bit will the fact that it is
+[06:45] being set will indicate this but this
+[06:48] will be a very rare event in the sense
+[06:49] we
+[06:50] expect very very few blocks to have more
+[06:53] than Cas shors so in this case we can
+[06:56] revert to a mechanism where every
+[06:58] message is broadcast to all the sister
+[07:02] caches and this of course will be much
+[07:04] slower far slower but given the Rarity
+[07:07] of this
+[07:08] event uh this is perfectly doable and is
+[07:11] done also it is known as The partially
+[07:13] mapped scheme which is reasonably
+[07:17] popular now let's come to the size of
+[07:20] the directory so the directory should
+[07:22] ideally be as large as a number of
+[07:24] blocks in the programs working set you
+[07:26] might not have one program you might
+[07:28] have many programs
+[07:30] so the directory should ideally be as
+[07:32] large as the sum of the working sets
+[07:35] since you have multiple directories of
+[07:36] course the work the blocks will get
+[07:38] partitioned but at least the directory
+[07:41] as a whole should uh contain all the
+[07:46] blocks so of course having an entry for
+[07:48] every block in the physical address is
+[07:50] Impractical so the way a directory is
+[07:52] designed is that it is designed as a
+[07:54] cache similar to a set associative cache
+[07:58] right uh with the same thing that we use
+[08:00] certain bits of the block to address the
+[08:03] you know offset and index and all of
+[08:05] that so it is designed the same way as a
+[08:08] set associative
+[08:10] cache and it does keep the state of a
+[08:13] limited number of blocks because after
+[08:15] all it's a finite sized cache and it's
+[08:17] organized organized exactly the same way
+[08:20] as a set associative cache with a tag
+[08:22] array and the data array and the tag
+[08:24] array in this case is some bits on the
+[08:26] Block address and the data array in this
+[08:28] case
+[08:30] uh will contain the list of sharers and
+[08:32] the
+[08:33] state if an entry is evicted from the
+[08:35] directory what do we do well what we do
+[08:38] so this is why the size of the directory
+[08:40] is
+[08:42] important so if it is a shared block so
+[08:45] uh so furthermore we can say that look
+[08:48] certain parts of the address space are
+[08:51] either readon or private so they did not
+[08:53] enter the directory in the first place
+[08:56] itself but if let's say it's a shared
+[08:59] block block then it has to be it has to
+[09:01] enter the directory and if it is evicted
+[09:03] we need to invalidate it in all the
+[09:05] caches this is the overhead this is the
+[09:08] problem and this is why we need large
+[09:10] directories in the first place uh that
+[09:12] we don't need it and this is exactly why
+[09:15] we did all of those optimizations such
+[09:18] that we can store as many blocks as
+[09:20] needed in the directories right because
+[09:24] evicting a block from the directory is
+[09:26] expensive in the sense that all the cash
+[09:29] that need it they also need to discard
+[09:33] it a few more issues so we uh we can
+[09:38] have a new kind of a Miss in a
+[09:41] multiprocessor system which we didn't
+[09:43] have in a uniprocessor
+[09:45] system consider a 64 byte block it is
+[09:48] possible that different threads access
+[09:51] different memory words within the block
+[09:53] so consider a block like this which is
+[09:55] let's say 64 bytes possible that thread
+[09:58] one access access these set of bytes and
+[10:00] thread to accesses these set of
+[10:03] bytes if they are accessing these bytes
+[10:06] concurrently what will happen is that
+[10:07] one thread will invalidate the block
+[10:09] then the other thread will invalidate
+[10:11] the block so the block will just keep
+[10:13] bouncing between the
+[10:15] threads but in effect uh so this
+[10:18] bouncing will reduce the performance but
+[10:21] there is no true sharing in the sense of
+[10:23] same set of bytes are not being shared
+[10:25] this is false sharing why is it false
+[10:28] sharing because
+[10:30] we are accessing different sets of bytes
+[10:32] and these bytes are disjoint they are
+[10:34] not the same but they happen to be
+[10:36] located in the same 64 byte block which
+[10:39] is causing the block to bounce because
+[10:42] blocks for us are Atomic
+[10:44] units so to reduce such FAL sharing
+[10:46] misses we need to use a Smart compiler
+[10:49] that places data far more intelligently
+[10:52] and
+[10:53] smartly and the smart compiler
+[10:57] essentially uh with an intelligent
+[10:59] placement of data can reduce the amount
+[11:01] of false
+[11:03] sharing also when we design a real uh
+[11:07] cash governance protocol as we saw in
+[11:09] the moesi protocol so in the Moi
+[11:11] protocol actually we didn't have five
+[11:13] states if we include the temporary
+[11:14] States we had actually seven states so
+[11:18] there are a lot of interactions in real
+[11:20] hardware and lot of you know events can
+[11:23] happen so it's possible that multiple
+[11:26] messages or different types for the same
+[11:28] block might arrive at the same time
+[11:31] along with that we might have context
+[11:32] switches we might have interrupts we can
+[11:34] have a lot of things right so to capture
+[11:39] all of these interactions and to have a
+[11:41] state diagram that captures all these
+[11:44] combinations of
+[11:45] events right which will be concurrent
+[11:48] events we need to do a lot so whenever
+[11:52] we have such concurrent events so so let
+[11:55] us say one event could be that I want to
+[11:58] uh
+[12:00] transition from the m to S State and at
+[12:02] the same point of time
+[12:04] another uh so I receive a read Miss and
+[12:07] a right Miss at the same time so do I
+[12:09] transition to the S state or do I
+[12:11] transition to the invalid State and who
+[12:13] sends the data to
+[12:15] whom so all of these concurrent
+[12:19] events right to the same set of uh to
+[12:22] the same
+[12:23] block uh which can cause problems these
+[12:26] are known as race conditions and all
+[12:28] such race conditions need to be handled
+[12:31] because we don't want a single Corner
+[12:33] case to kind of derail the entire cach
+[12:35] cence
+[12:36] protocol hence if we consider all of
+[12:38] these things and we design a practical
+[12:41] cache cence protocol we can very well
+[12:44] have a 100 plus States so it is not
+[12:47] unknown and it's not uncommon or
+[12:49] unnatural to have 200 plus States in a
+[12:51] cach cence protocol and of course it is
+[12:54] not possible to verify that the protocol
+[12:56] is correct but we can have an automated
+[12:59] verifier which can take the state
+[13:01] diagram and verify if the protocol is
+[13:05] indeed correct in the sense that whether
+[13:07] it captures all the corner cases or
+[13:11] not all right so now we will extend the
+[13:14] basic cach Corin protocol to implement
+[13:17] something which is very important called
+[13:19] a critical section and Implement Atomic
+[13:22] operations which are also syn
+[13:23] synchronization
+[13:25] operations so this is a quintessential
+[13:28] example that that is given that where we
+[13:30] want to update the balance of a bank
+[13:34] account so in this case we just want to
+[13:37] add you know I'm using the Indian rupees
+[13:40] over here so we want to add 100 rupees
+[13:44] to a bank account right so you know in
+[13:48] international viewers replace rupees
+[13:50] with dollars or your local currency it
+[13:52] doesn't matter so rupee is the Indian
+[13:55] national currency it is also said as INR
+[13:57] Indian national rupee
+[13:59] and this is the symbol so we add two
+[14:02] lines like this so let's say I want to
+[14:05] add 100 rupees to my bank
+[14:09] account so what we do is we read the
+[14:12] balance in the account which is a load
+[14:14] operation put it in a register
+[14:17] T1 we add 100 to it and then we put the
+[14:22] register T2 again back with a store
+[14:25] operation we want all of these to happen
+[14:28] atomically in the sense either all three
+[14:30] happen or none
+[14:32] happens so unfortunately this code
+[14:35] cannot be executed in parallel by
+[14:37] multiple threads in a sense a multiple
+[14:39] threads try to update the bank balance
+[14:42] the same account balance at the same
+[14:46] time the execution can sadly be
+[14:49] incorrect let us see
+[14:51] why so let us look at this right so I uh
+[14:56] will uh I'm already putting an in
+[14:59] correct symbol over here to draw your
+[15:01] attention to the fact that look a
+[15:03] mistake is going to happen so let's
+[15:05] assume that the original balance was
+[15:08] 100 and then I add 100 more it becomes
+[15:12] 200 and then the final balance is
+[15:15] 200 so uh then here each line
+[15:19] corresponds to a line of assembly code
+[15:21] as you can see a load a register ad and
+[15:24] then a
+[15:25] store so let us assume that we have two
+[15:28] threads running the same piece of code
+[15:30] and the two lines uh two corresponding
+[15:32] lines execute in
+[15:34] parallel a lot of problems can happen so
+[15:38] the final answer will be
+[15:40] wrong Final Answer should be 300 because
+[15:43] we are adding 100 twice but we will see
+[15:45] that that will not
+[15:47] happen so what will happen let me erase
+[15:50] the ink over here and uh you'll clearly
+[15:53] see what is my problem the problem is
+[15:56] that if both these lines execute roughly
+[15:59] at the same time both will read the
+[16:01] original account balance to be
+[16:03] 100 both both will then locally add 100
+[16:06] to 100 and make it
+[16:08] 200 and finally both will store
+[16:11] 200 so the point is that if this happens
+[16:17] wrong The Final Answer should be 300
+[16:21] because we are adding 100 + 100 plus 100
+[16:24] but what we see over here is that
+[16:27] because there was no synchronization
+[16:28] between these two pieces of code the
+[16:31] final answer is 200 and that is not
+[16:33] correct and the reason basically is that
+[16:36] we have a race what is called a race
+[16:38] condition that the same
+[16:40] address we are simply reading both both
+[16:44] the threads are reading it to 100
+[16:46] they're Computing the new balance and
+[16:48] writing it back and the final answer is
+[16:51] not correct it's
+[16:54] wrong and what would have avoided this
+[16:57] well what would have avoided this is if
+[16:59] this entire code block would have
+[17:01] executed before this entire code block
+[17:04] or vice versa so in this case the
+[17:06] starting balance would have been 200 we'
+[17:09] have set this to 300 and finally written
+[17:14] 300 so one solution is that we
+[17:18] restrict this piece of code so we say
+[17:21] that before we enter it we somehow lock
+[17:23] it we will see how and this ensures that
+[17:27] two threads cannot be executing the this
+[17:29] piece of code at the same time only one
+[17:30] thread
+[17:31] can and then uh once it is done
+[17:34] executing we unlock it so this ensures
+[17:36] that only one thread can execute this
+[17:38] piece of code then another thread then
+[17:41] another
+[17:42] thread so this is set to execute
+[17:48] automically right what does automically
+[17:50] mean in this case it means that either
+[17:52] all three lines appear to execute
+[17:55] instantaneously is the same as the
+[17:57] definition of atomicity in the case of a
+[17:59] right that either all three lines appear
+[18:02] to execute
+[18:04] instantaneously or they appear to
+[18:08] execute not at all or the or it appears
+[18:11] that they have not executed at all so in
+[18:14] this case if these three lines execute
+[18:16] automically then we will find that first
+[18:19] the balance will be updated from 100 to
+[18:21] 200 and then from 200 to 300 the way
+[18:24] that this is done is that we create a
+[18:27] critical section so this piece of code
+[18:29] with a lock and unlock is a critical
+[18:31] section also known as a CS in a critical
+[18:35] section this lock function returns when
+[18:38] the thread has exclusive access to this
+[18:40] piece of code no other thread can
+[18:42] simultaneously execute and unlock kind
+[18:45] of relinquishes the
+[18:48] lock so how do we use Atomic uh
+[18:51] instructions to implement locks that are
+[18:53] a vital aspect of the critical
+[18:56] section for implementing Lo Lo and
+[18:59] unlock functions we need Atomic
+[19:00] instructions we'll see in a second what
+[19:03] they are so an atomic instruction is
+[19:06] similar to an atomic critical section in
+[19:08] the sense it either executes completely
+[19:10] or not at all nobody observes a partial
+[19:14] state in addition most Atomic operations
+[19:18] also act as a fence and so that fence
+[19:21] property is there which basically says
+[19:23] that all instructions before it complete
+[19:26] then the fence executes and then all
+[19:28] instructions
+[19:30] begin so let us look at one Atomic
+[19:32] exchange operation which we will also
+[19:34] call the synchronizing operation in a
+[19:37] second we will see how that
+[19:38] works and an atomic exchange operation
+[19:41] will look like
+[19:43] this right and we will use the Corin
+[19:46] protocol to implement it so we will see
+[19:48] how but the way that it looks like is it
+[19:51] takes two arguments a register and a
+[19:53] memory instantaneously or let's say it
+[19:57] appears to execute instantane ously it
+[20:00] automatically exchanges their contents
+[20:02] so register's contents go to the memory
+[20:04] the memory's contents go to the register
+[20:07] so this is an atomic exchange
+[20:09] instruction and almost well not almost
+[20:12] all instruction sets that are
+[20:14] commercially used have such Atomic
+[20:17] instructions because they are required
+[20:20] without them we'll not be able to
+[20:22] implement
+[20:23] locks so in x86 instruction set if we
+[20:26] just add the lock prefix to an
+[20:29] otherwise non-atomic exchange it becomes
+[20:32] an atomic exchange and an atomic
+[20:34] instruction is expensive well why is it
+[20:37] expensive well number
+[20:39] one uh it does a write in the sense you
+[20:42] know you're reading it and then you're
+[20:44] writing it so in that sense but that's
+[20:47] not that expensive it's more expensive
+[20:50] because it's a fence so a fence
+[20:53] essentially prohibits out of order
+[20:54] execution between instructions on both
+[20:57] sides of the fence this is why these
+[20:59] instructions are very expensive but they
+[21:02] will be used to implement what we call
+[21:04] synchronization edges uh in our
+[21:07] execution witness we will see in a
+[21:09] second
+[21:10] how so let us again look at an atomic
+[21:13] exchange so an atomic exchange what it
+[21:16] does is that it exchanges the contents
+[21:19] of a register and memory and that to
+[21:21] automically so nobody sees a partial
+[21:23] state in the sense that let's say this
+[21:25] contains three this contains five
+[21:28] so you will either see 35 or you will
+[21:31] see 53 but no other state let us now
+[21:34] look at the implementation of a lock
+[21:36] function in
+[21:38] assembly so the loog function uses an
+[21:41] atomic exchange instruction as is
+[21:43] visible here and so we assume that xch
+[21:47] in this case refers to Atomic
+[21:49] exchange so what we do is that we every
+[21:53] lock function needs to have an
+[21:55] Associated lock address so let us assume
+[21:58] that the register
+[22:00] r0 contains the lock
+[22:03] address and
+[22:05] uh the furthermore The Exchange
+[22:07] instruction also contains a fence all
+[22:10] right so this so the exchange
+[22:11] instruction is a synchronizing
+[22:13] instruction so along with uh doing an
+[22:17] atomic exchange it contains a fence as
+[22:20] well and furthermore the semantics of
+[22:22] the lock is such that if the memory
+[22:24] address contains zero it means that the
+[22:26] lock is free it is not
+[22:29] Acquired and if the memory address
+[22:31] contains one it means the lock has been
+[22:33] acquired by some thread we don't know
+[22:35] which thread but some thread has
+[22:36] acquired the
+[22:38] lock so now uh the way to acquire the
+[22:41] lock is these two pieces of code so we
+[22:43] move one to register R1 and then we
+[22:46] exchange the contents of R1 with the
+[22:49] lock
+[22:50] address so at the end at the end of this
+[22:53] Atomic operation the lock address
+[22:56] contains
+[23:00] one basically but that's not important
+[23:02] so so this anyway we are doing but what
+[23:05] we care about is the value of R1 because
+[23:08] that will contain the old value of the
+[23:10] address so the value of R1 is zero this
+[23:13] means that this instruction essentially
+[23:16] acquired the lock so it set the status
+[23:18] from zero it set it to one which means
+[23:20] that the lock was free and then now it
+[23:22] set it to acquired so this means that
+[23:25] the current thread has acquired the lock
+[23:28] so we compare R1 with zero if it is not
+[23:31] equal which means if R1 is 1 this means
+[23:34] that the lock
+[23:36] was acquired by some other thread prior
+[23:39] to this exchange instruction hence we
+[23:42] have not acquired the lock so we go over
+[23:44] here but if R1 is equal to zero it means
+[23:47] that the previous value was zero and of
+[23:50] course the current value is one so we
+[23:51] have acquired the loog so the function
+[23:54] just returns so pretty much it keeps on
+[23:57] trying to acquire a lock in a loop over
+[24:00] and over and over again until it gets
+[24:03] the lock all right and the unlock
+[24:07] function what we do is we do the same
+[24:10] thing we store zero at the Lock address
+[24:12] so again we use an atomic instruction
+[24:14] for this purpose and the reasons will be
+[24:17] clear very soon so we put zero in R1 and
+[24:21] then we do an atomic
+[24:24] exchange uh so in this case what we do
+[24:28] is that the contents of 0 r0 come to R1
+[24:31] but that's not important what is
+[24:33] important is the contents of R1 go here
+[24:35] and the contents are zero this means the
+[24:38] lock is free and after that we return
+[24:41] and given the fact that this
+[24:44] instruction uh so there is no need to
+[24:46] Loop and the there is the reason there
+[24:48] is no need to Loop is because this
+[24:50] instruction will be successful at some
+[24:53] point in time right so that is
+[24:55] essentially a requirement of coherence
+[24:57] so we'll see how extends to such Atomic
+[25:00] instructions but pretty much the idea is
+[25:03] that we just need to execute it once we
+[25:05] need to set this to zero and move out in
+[25:09] both cases we are using this Atomic
+[25:11] instruction which also contains a
+[25:14] fence all right so this is the lock
+[25:17] function and this is the unlock function
+[25:20] so the unlock function does not have a
+[25:21] loop but in principle The Log function
+[25:24] might keep on looping till Infinity
+[25:27] because it'll never get the lock because
+[25:29] another thread is taking the
+[25:32] lock so implementation of atomic
+[25:35] exchange how do we Implement Atomic
+[25:37] exchange all
+[25:38] right so what we do is that uh so the
+[25:43] general format is you have a register
+[25:45] and a memory
+[25:47] address so R1 needs to be put into some
+[25:51] temporary storage location we will read
+[25:55] the value of R2 right so R2 is a memory
+[25:58] address so the value of the
+[26:00] address uh whose the value stored at
+[26:03] address
+[26:04] R2 that will be put into R1 and then the
+[26:08] final is the the last step is that we'll
+[26:12] do a store operation put temp over there
+[26:15] so this is essentially what is called a
+[26:16] read modify WR operation in the sense
+[26:19] that we are reading this memory location
+[26:21] there is a read and clearly we are
+[26:24] modifying so in this case we are not
+[26:26] modifying R1 is still being kept but we
+[26:28] maybe we can have an increment operation
+[26:30] also where we change it so that would be
+[26:32] a modify and then we have a right so
+[26:36] involves Three Steps A Memory read a
+[26:38] memory write and a register move all
+[26:40] three of them need
+[26:42] to appear to happen instantaneously or
+[26:46] need to happen automically and such kind
+[26:49] of a read modify WR instruction that
+[26:51] combines a read some sort of a registor
+[26:55] movement right and uh then a right is
+[27:00] what we want to implement using an
+[27:03] extension of our cache coherence
+[27:05] protocol that is the challenge that lies
+[27:09] uh in front of us all right so the
+[27:12] method for this is like this that we get
+[27:16] exclusive access with right permissions
+[27:19] for the memory address in R2 right so
+[27:22] that's the first thing that we get
+[27:24] exclusive access for this address
+[27:29] right so so the exclusive access that we
+[27:31] get the the way we get it is that we
+[27:33] essentially get the line in the M state
+[27:37] right so basically the line is set to
+[27:38] the m state so we have right permissions
+[27:41] for the memory address in R2 so this can
+[27:44] be gotten by getting a right Miss on the
+[27:47] by placing a right Miss on the bus so we
+[27:49] get exclusive access then we perform the
+[27:52] operation in the sense we read the
+[27:54] register and then uh we read the memory
+[27:56] location into the register
+[27:59] and finally we uh transfer the old value
+[28:02] of the register into
+[28:05] the uh into the memory address all right
+[28:08] so we perform a
+[28:10] swap so the interesting thing is that
+[28:13] the way we guarantee atomicity so the
+[28:16] way that we guarantee atomicity is that
+[28:19] after getting exclusive access we uh
+[28:24] perform these three operations quickly
+[28:26] all right so so the question is how
+[28:28] so first is that in an exchange
+[28:30] operation uh we need to understand that
+[28:34] there is a fence right there is a fence
+[28:36] within it so we wait for the exchange
+[28:39] operation to reach the head of the RO
+[28:41] right so we just wait for the exchange
+[28:43] operation to reach the
+[28:48] top and so this will guarantee that all
+[28:51] the instructions before it have
+[28:53] completed and gone
+[28:54] away and after that it is possible that
+[28:57] you know some rights might have been
+[28:59] delivered to the memory system but they
+[29:01] would not have reached their final
+[29:02] location so at this point we would flush
+[29:05] the right buffers and mhrs and so on and
+[29:08] get pretty much get an acknowledgement
+[29:10] from the memory system that all the
+[29:13] instructions which were fetched before
+[29:15] the atomic exchange have all completed
+[29:18] totally and no other instruction after
+[29:22] fence uh has will be allowed to perform
+[29:25] any read or write so we'll pretty much
+[29:28] stall that part of the execution so that
+[29:30] is the fence part and after this once
+[29:34] exchange reaches the head of the roob
+[29:36] that is when uh this is sent to the
+[29:38] memory system so the memory system the
+[29:40] first thing that it does is it gets
+[29:43] exclusive access and uh till the time
+[29:47] that the exchange operation is not
+[29:49] completed uh
+[29:51] the uh so interrupts are not delivered I
+[29:54] mean think of it that way that
+[29:55] interrupts are kind of kept on hold and
+[29:57] inter should only be delivered to the
+[29:59] next instruction not to this and there
+[30:02] are variants of this instruction that
+[30:04] additionally provides a status of
+[30:07] whether uh this could execute
+[30:08] successfully or not in that case
+[30:11] interrupts are delivered so this
+[30:13] instruction can be executed partially so
+[30:16] then of course the user will know that
+[30:18] this instruction didn't execute
+[30:21] successfully but let's for the time
+[30:22] being assume that this executed
+[30:25] successfully so what we do is we get get
+[30:28] access to the line in the M State we
+[30:30] quickly perform the Swap and then we
+[30:32] perform the right and we wait for the
+[30:35] right to fully complete which means that
+[30:37] we need to flush off the right buffers
+[30:39] and mshr and all intermediate buffers so
+[30:42] pretty much the architecture has to
+[30:44] provide some kind of a mechanism to
+[30:46] ensure that a right has fully completed
+[30:49] right so some sort of a mechanism for
+[30:51] you know complete completion of Rights
+[30:53] needs to be there most of the time just
+[30:56] flushing the buffers is good enough
+[30:58] because the rights ultimately then head
+[31:00] towards their final
+[31:03] destination
+[31:06] right so while this instruction is being
+[31:09] done it is possible that we might get
+[31:11] other requests from the local cache or
+[31:13] other caches or the directory when the
+[31:15] operation is in progress so it's
+[31:17] possible we have read but we have not
+[31:18] written and then suddenly a right Miss
+[31:21] comes so the question is uh what do we
+[31:24] do well we do
+[31:26] not respond to any any of these requests
+[31:28] until the atomic exchange is
+[31:31] complete and only when the operation is
+[31:34] over do we respond to the directory or
+[31:36] other caches right so for us uh
+[31:40] executing an atomic instruction is kind
+[31:42] of heavy the overheads are uh large in
+[31:45] terms of performance and the reason that
+[31:48] the overheads are large is like this
+[31:49] because we have a fence that's number
+[31:51] one and number two when we are uh we
+[31:54] need to also execute this instruction
+[31:56] very carefully in a sense that after we
+[31:59] start we simply do not respond to any
+[32:02] message and we quickly perform the
+[32:04] memory read WR register move and then we
+[32:08] uh respond to other
+[32:10] messages so uh so this ensures that this
+[32:13] instruction cannot be interrupted in the
+[32:15] middle all right so now the question is
+[32:19] that if you haven't understood up till
+[32:22] now why did we design the lock in this
+[32:25] manner and why do we need a fence well
+[32:28] so the idea basically was that we will
+[32:30] have a piece of code a lock so we keep
+[32:33] on spinning on the lock address that's
+[32:35] why it's also called a spin lock this
+[32:38] process has a lot of
+[32:40] overheads in addition to the fence uh so
+[32:43] we will see what but pretty much the
+[32:45] idea is that the reason it acts like a
+[32:48] fence is because none of the
+[32:50] instructions in the critical section
+[32:52] should actually execute before the
+[32:55] lock right uh because if if they
+[32:58] actually do then the notion of having a
+[32:59] lock that kind of breaks down so that is
+[33:02] the reason we need to have a fence here
+[33:03] that we acquire the lock first and then
+[33:06] the instructions in the critical section
+[33:08] execute they completely finish and after
+[33:11] that an unlock operation happens that's
+[33:14] the reason we need one fence in the lock
+[33:16] part and one fence in the unlock part
+[33:19] all
+[33:19] right so now uh if we also think about
+[33:24] this piece of code I want to raise one
+[33:26] more point before actually move ahead so
+[33:29] if you actually uh look at the structure
+[33:32] of a critical
+[33:33] section what here is what you're going
+[33:35] to observe what you'll observe is it
+[33:38] starts with a lock then we have the code
+[33:40] and then an unlock again a lock and then
+[33:42] an unlock and so on so the key uh
+[33:46] instruction over here is the atomic
+[33:47] exchange
+[33:49] instruction so if I just look at the
+[33:51] program snippet of all of these Atomic
+[33:54] exchange instructions across all the
+[33:57] threads
+[33:58] I claim it will be an sc well why
+[34:01] because SC is program order plus
+[34:04] atomicity program order is clearly being
+[34:07] maintained because there is a fence
+[34:08] Within These instructions so program
+[34:10] order is clearly being maintained and
+[34:13] given that these are Atomic instructions
+[34:15] Atomic city is also being maintained so
+[34:18] uh the synchronizing instructions or the
+[34:21] synchronization instructions in this
+[34:23] case these are all the exchange
+[34:24] instructions if I were to just consider
+[34:27] them
+[34:28] then they will be in SC and this is an
+[34:30] important property which we will use
+[34:32] later so bear this in mind keep this in
+[34:35] mind all right so now uh coming to the
+[34:38] lock process what we do is we do an
+[34:40] atomic exchange we see if we set the
+[34:42] lock from 0 to one if not we try again
+[34:45] if not we try again so we keep trying so
+[34:49] in each try what we are essentially
+[34:51] doing is that we are locking it in the M
+[34:54] State and we are trying to perform the
+[34:57] swap
+[34:58] and if let's say there are multiple
+[34:59] threads that are trying all of them are
+[35:01] locking it in the M state so the block
+[35:03] will pretty much bounce between these
+[35:06] threads this will add to the overheads
+[35:09] quite
+[35:10] substantially so that's the reason there
+[35:12] is a more efficient version of this lock
+[35:15] so it still uses a fence it still uses
+[35:17] an atomic exchange so it does all of
+[35:20] that but it is just that the number of
+[35:22] these line bouncing is much lower and
+[35:25] let's see how uh that is constru
+[35:28] Ed so in this case what we do is that
+[35:32] this lock function so we move one to R1
+[35:35] so we first test if the lock is
+[35:37] free so what we do is that we load the
+[35:41] value of the lock into register R2 We
+[35:43] compare it with
+[35:45] zero and then if it is not equal to zero
+[35:48] then we again come back so again so here
+[35:51] also we run a spin Loop right here also
+[35:54] we run a loop it's called a spin Loop
+[35:57] but instead of uh having the costly
+[36:01] expensive exchange instruction we have
+[36:03] the simple load
+[36:05] instruction so what will happen is that
+[36:08] if let's say one thread holds a lock and
+[36:10] the rest n threads are trying to acquire
+[36:12] it all of them will ultimately have the
+[36:14] line in the EST State and they can only
+[36:16] be spinning on their local copies and
+[36:19] this is going to be a very fast
+[36:22] instruction right uh this instruction is
+[36:25] going to be extremely fast because we
+[36:27] have replaced an expensive exchange
+[36:29] instruction with a less expensive load
+[36:32] instruction where the cach line does not
+[36:34] have to be locked in the modified
+[36:36] state so here since we'll be operating
+[36:39] only in the shared
+[36:41] State all that a thread needs to do is
+[36:44] it needs to spin on its local copy once
+[36:47] it Finds Its local copy to actually be
+[36:49] zero well then it attempt an exchange
+[36:53] only when it thinks that the lock is
+[36:55] free when it reads a zero in that case
+[36:58] what it will do is it'll exchange R1
+[37:01] with the value of the lock it'll compare
+[37:03] R1 with zero if it is equal it means we
+[37:06] have gotten the lock that's great
+[37:08] otherwise if it is not equal it'll again
+[37:11] jump back to test and again we will keep
+[37:14] on spinning but we'll uh in a spin we
+[37:17] will not do atomic exchanges we'll just
+[37:19] do a read and when we see some hope when
+[37:22] we see the lock to free lock to be free
+[37:24] we'll again try to attempt it
+[37:27] so uh there are power efficient versions
+[37:30] of this in the sense we can add a random
+[37:32] delay or we can add what is called
+[37:34] exponential back off but initially we
+[37:37] wait for some time which
+[37:39] is let's say t units or a maximum of T
+[37:42] units between Z and T units then another
+[37:45] if let's say we are not successful we
+[37:47] again wait for some time which is which
+[37:49] is between 0 and 2 T units again we wait
+[37:52] for random duration which is between 0
+[37:54] and 40 units and so on so ultimately
+[37:57] this works and uh with extremely
+[38:01] extremely high probability we actually
+[38:03] acquire the lock and given the fact that
+[38:06] we acquire the lock well what's left
+[38:09] then uh we return and we execute the
+[38:11] critical
+[38:12] section unlocking is simple uh so this
+[38:15] is the same as the basic exchange lock
+[38:18] so we we'll call this the ex the tax
+[38:21] lock the test and exchange lock as
+[38:24] compared to the basic version so in this
+[38:26] case we just EXT the contents of R1 and
+[38:28] since R1 contains zero zero goes over
+[38:31] here so the lock becomes de facto free
+[38:34] and then we return all right so this is
+[38:37] the basic structure of um of an
+[38:41] optimized version of the lock acquire
+[38:44] algorithm where instead of the exchange
+[38:47] function we use the test and exchange
+[38:49] function where the spin Loop is on
+[38:51] testing and in the spin Loop we have a
+[38:53] much cheaper load instruction as opposed
+[38:56] to the expense
+[38:58] exchange instruction which had a
+[39:00] fence right it had a fence it had a
+[39:02] right it had all of that stuff but in
+[39:04] this case because we have a load uh it
+[39:07] is possible for multiple caches to have
+[39:09] the Block in the shared state so we only
+[39:12] spin on the local copy in the local
+[39:16] cache so it turns out that there are a
+[39:19] large number of
+[39:21] additional Atomic operations not just an
+[39:24] atomic exchange so one of the most
+[39:27] common once is a test and set so here
+[39:30] let's say we have task R1 8 r0 let 8 r0
+[39:33] be the address of the log I I kind of
+[39:35] generalized it so this is the pseudo
+[39:38] code of it and entire pseudo code
+[39:39] executes
+[39:41] automically so here if the lock address
+[39:44] is equal to zero we set it to one we set
+[39:47] the value of R1 to one which indicates
+[39:50] success else we set the value of R1 to Z
+[39:54] which
+[39:54] indicates failure
+[39:58] then we have Fetch and increment so in
+[40:00] Fetch and increment what we do is we
+[40:04] again take a register and a memory
+[40:05] address the contents of the memory
+[40:08] address are transferred to the
+[40:10] register and we increment the contents
+[40:13] of the memory address so 8 r0 is equal
+[40:17] to R1 + 1 which is previous value + one
+[40:21] and this happens
+[40:22] automically so we can extend this to
+[40:24] fetch an ad where you have two registers
+[40:27] than the memory address assuming the ISA
+[40:29] supports it so in this case we read the
+[40:32] old value of the memory address and the
+[40:36] new value of the memory address is R1
+[40:38] which is the old Value Plus an offset
+[40:41] R2 now we will discuss two more uh
+[40:46] synchronization operations which are
+[40:48] regarded as extremely powerful what
+[40:50] makes a synchronization uh operation
+[40:52] powerful I'll discuss that a few slides
+[40:55] later so the first one is compar and set
+[40:58] so in compare and set We compare the
+[41:00] memory address 8
+[41:02] r0 with the value of a register
+[41:06] R3 if it is equal we set the value of 8
+[41:10] r0 to R2 and we set R1 which is the flag
+[41:14] saying
+[41:16] success otherwise if this uh if we are
+[41:18] not able to do this we set R1 equal to Z
+[41:21] which indicates
+[41:25] failure all right so what do we do uh
+[41:28] what we do is that we read the memory
+[41:31] address and we compare it with a value
+[41:34] if it matches then we uh set it to the
+[41:38] value of this register and we set R1 to
+[41:41] one indicating success otherwise we set
+[41:44] R1 to zero which indicates
+[41:48] failure uh then uh let's look at another
+[41:51] pair of synchronization instruction this
+[41:54] is a pair okay so unlike the other ones
+[41:56] it's a pair it's always meant to be used
+[41:58] in pairs is called load link and store
+[42:02] conditional so the first load link looks
+[42:04] like a regular load but it's just it's
+[42:06] just synchronizing load so R1 is equal
+[42:09] to 8 r0 means the contents of the
+[42:14] are sent to register R1 right and uh so
+[42:20] basically uh so if you actually look at
+[42:23] the cast instruction I'll tell you a
+[42:25] quick difference if you haven't seen up
+[42:27] till now the cast instruction actually
+[42:29] requires four arguments three registers
+[42:32] and one memory most isas will not be
+[42:35] able to support it unless we do a little
+[42:37] bit of trickery here and there but the
+[42:39] LL and SC pair is nicely supportable by
+[42:44] most risk instruction sets so if you see
+[42:47] the first instruction it's a regular
+[42:48] load but it's slightly special in the
+[42:50] sense it's a synchronizing load and it
+[42:53] has
+[42:55] um uh it it has it's it's it's also a
+[42:59] fence and then what we do is that we uh
+[43:03] call
+[43:04] SC and in SC what we do is we store one
+[43:07] in R2 and we try to
+[43:09] store uh one in the lock
+[43:13] address so so here is what we are
+[43:16] actually trying to do so the connotation
+[43:18] of lock address is slightly uh different
+[43:20] over here so if 8 r0 is not written to
+[43:24] since the last load linked right so so
+[43:28] here it doesn't really matter what is
+[43:30] the value of the lock address what we
+[43:32] really care about is that when we do
+[43:34] store
+[43:36] conditional uh since the last time that
+[43:38] we did a load
+[43:40] link has there have there been any
+[43:42] rights to this
+[43:44] address if there have been no rights to
+[43:47] this address we set 8 r0 is equal to
+[43:50] R2 all right and we set the status equal
+[43:54] to one otherwise we set the status equal
+[43:56] to to zero all right uh so so that is
+[44:01] the broad idea over
+[44:04] here that uh what we do is uh is that
+[44:09] when we acquire a lock over here uh we
+[44:16] basically uh execute the this
+[44:19] instruction in pairs first we do a load
+[44:21] and then we do a store conditioner and
+[44:24] let's say in between them if no other
+[44:26] thread has access
+[44:27] the lock
+[44:28] address then the lock address is set to
+[44:33] one uh I I I mean you know any address
+[44:36] is set to one but it can be another
+[44:38] value it can be set to zero also it
+[44:39] doesn't matter and but the most
+[44:41] important thing is we set the status to
+[44:43] one we set R3 to 1 and if let's say that
+[44:47] there has been an intervening right we
+[44:49] set R3 to0 so what this basically does
+[44:52] is on the
+[44:53] timeline it just indicates that between
+[44:55] the LL and the s C right this is an LL
+[44:59] LL okay and the SC no other thread has
+[45:03] written to the lock
+[45:05] address so uh this also can be used as a
+[45:08] synchronizing
+[45:10] operation uh right uh so so this
+[45:13] definitely can be used uh to achieve
+[45:16] something similar to what compar and set
+[45:18] does so you'll find Details In the
+[45:22] book so now given all of these different
+[45:26] synchron ing operations what else can we
+[45:28] do with them so what we can do is that
+[45:32] we can write a set of Lock Free
+[45:34] algorithms that don't actually require
+[45:36] locks so what is the problem with the
+[45:39] with locks if if the thread goes to
+[45:41] sleep after acquiring the lock all the
+[45:45] other threads weight right if the thread
+[45:47] uh you know all the other threads weight
+[45:50] they you know there's nothing that they
+[45:52] can
+[45:53] do in this case however you take a look
+[45:56] at this piece of code I'm trying to
+[45:58] update the account balance and I'm not
+[45:59] using any locks instead what I'm using
+[46:02] is I'm using these Atomic operations and
+[46:06] all of these Atomic operations all of
+[46:09] them can be implemented with basic
+[46:11] changes to the Corin protocol which
+[46:13] let's say let's consider the last
+[46:16] example we load this address in the
+[46:19] mstate and then uh we simply wait till
+[46:24] the subsequent store and and in the
+[46:27] middle if anybody else has invalidated
+[46:30] it then uh we say that this address has
+[46:33] been return to otherwise we see it has
+[46:36] not been written to that is all that we
+[46:38] need to bother
+[46:43] about
+[46:46] okay now coming to this I'll use the
+[46:49] cast The compare and set primitive to
+[46:51] implement this so first is that we have
+[46:53] an atomic Loop sorry an infinite Loop in
+[46:57] infinite Loop first we read the account
+[46:59] balance which was the same earlier
+[47:02] also then uh we say set T2 is equal to
+[47:05] T1 +
+[47:07] 100 and then what we do is we do a
+[47:09] compare and set so in the compare and
+[47:13] set essentially what we check is if the
+[47:16] account balance is still equal to
+[47:18] T1 okay so the account balance is still
+[47:22] equal to T1 then we set the account
+[47:24] balance equal to T2 so you can run two
+[47:28] simultaneously so what will happen is
+[47:30] that if both do the cast together one of
+[47:33] them will succeed and one of them will
+[47:35] fail uh why is that well uh the reason
+[47:38] is that one of them will automatically
+[47:40] change the account balance from 100 to
+[47:42] 200 and when the other thread performs
+[47:45] the cash its account balance will not
+[47:47] match what it
+[47:48] read so so that one will
+[47:51] fail so in this case what we are
+[47:53] essentially doing is that we have
+[47:55] replaced a code with a lock and an
+[47:58] unlock uh which had high overheads lock
+[48:01] and unlock you know as you saw you need
+[48:03] so many functions and furthermore you
+[48:06] need so many calls for just getting the
+[48:08] lock and then doing the job so we have
+[48:11] kind of folded all of that into this
+[48:13] simple piece of code that does not
+[48:14] require logs all that we need to do is
+[48:17] we need to repeatedly execute these Gast
+[48:20] instructions until we are
+[48:22] successful when will we not be
+[48:24] successful well when there are
+[48:27] concurrent uh requests to update the
+[48:30] account. balance variable that is when
+[48:33] we will not be
+[48:34] successful
+[48:36] otherwise simil this also works similar
+[48:39] to an llsc similar to a load linked and
+[48:41] store conditional something that we saw
+[48:43] over here so it's a similar uh
+[48:46] philosophy so we read the account
+[48:48] balance once we update it and before
+[48:51] writing we check whether the account
+[48:53] balance is the same as the old value
+[48:54] something that we read if it is equal we
+[48:58] updated and this entire cast operation
+[49:02] happens automically which is the magic
+[49:05] of atomic instructions so as you can see
+[49:08] that the cast might fail for a few
+[49:10] threads because some thread would have
+[49:12] had a successful cast and it updated the
+[49:15] account balance so threads will continue
+[49:17] to iterate until the compare and set
+[49:20] operation is successful but once it is
+[49:22] they will get out so we still uh you
+[49:25] know if you let's say consider one of
+[49:27] the consider the best case we don't have
+[49:29] to execute all the extra uh instructions
+[49:32] of the lock and unlock code we directly
+[49:35] execute this and we are done of course
+[49:37] it's possible for a threat to starve in
+[49:39] the sense it never gets the lock that is
+[49:42] because the status of the cast operation
+[49:44] for it never returns as
+[49:46] successful then of course there is a
+[49:48] problem but in practice this actually
+[49:50] doesn't happen so you know very rarely
+[49:52] it does happen in practice so it's not
+[49:55] really something that most people should
+[49:56] worry about and logf free algorithms
+[49:59] consequently are very
+[50:02] popular now but let's say that we still
+[50:05] want to eliminate starvation right so we
+[50:07] don't want to entertain the possibility
+[50:10] that one threat continuously tries to
+[50:12] account tries to update its account
+[50:14] balance but it's not able to do because
+[50:16] some other thread is getting in and
+[50:18] updating the account balance in parallel
+[50:20] right the cast is
+[50:22] failing so you want to totally eliminate
+[50:25] starvation we go for weight free
+[50:28] algorithms so in this wait fore
+[50:31] algorithms what happens is that one
+[50:33] request
+[50:34] T first finds another request r that is
+[50:37] waiting for a long time so each one of
+[50:40] them so let's say a request in this case
+[50:44] would be a request to update the account
+[50:46] balance
+[51:01] right and so what happens is that we can
+[51:05] have an array of requests where we store
+[51:08] all the pending
+[51:09] requests so once a request ke comes it
+[51:12] tries to find another request in this
+[51:14] array that has been waiting for a long
+[51:17] time so then uh R is let's say close to
+[51:21] starvation because it is somehow not
+[51:23] able to execute all of its steps
+[51:25] correctly so in that case T decides to
+[51:28] help R in the sense it tries to do the
+[51:31] job that R was trying to do so T decides
+[51:34] to help R by doing
+[51:36] it so then what will ultimately happen
+[51:39] is that let's say R becomes the oldest
+[51:42] message in the queue all other threads
+[51:45] will ultimately try to help are so they
+[51:48] will one of them will have to be
+[51:50] successful because now all the threads
+[51:52] are trying to do the same thing and
+[51:54] either R will finish its job or some
+[51:56] thread will finish the job of r on its
+[51:59] behalf regardless of who finishes the
+[52:03] job this strategy ensures that no
+[52:06] request is Left Behind and such
+[52:08] algorithms where the request of one
+[52:11] thread actually first reaches out and
+[52:14] helps the requests of other threads is
+[52:17] known as an altruistic algorithm right
+[52:19] where you do something for somebody else
+[52:21] this ensures that our system is overall
+[52:23] weight free which basically means that
+[52:26] if
+[52:28] I have a set
+[52:31] of instructions if I have a critical
+[52:34] section where I want to update something
+[52:36] right and
+[52:38] uh so let's say you know I'm trying to
+[52:41] acquire a lock or
+[52:43] something and so it doesn't matter any
+[52:45] kind of a concurrent algorithm I'm
+[52:47] trying to update a lock
+[52:49] or uh get uh Implement a shared stack or
+[52:54] queue or whatever but essentially I'm
+[52:56] trying to do some parallel
+[52:57] operation so the logf free algorithm
+[53:00] does not give us guaranteed completion
+[53:02] as you can see there is an infinite Loop
+[53:05] but in comparison the weight free
+[53:07] algorithm will actually give us
+[53:09] guaranteed completion because ultimately
+[53:12] all the requests will help R so
+[53:15] basically uh there is no starvation in
+[53:17] weight free
+[53:18] algorithms because one request does help
+[53:21] another request and along with no
+[53:25] starvation the other nice thing is that
+[53:28] requests are guaranteed to complete in
+[53:31] finite time if not bounded
+[53:36] time so let us now given that we have
+[53:39] seen we have a very very basic idea of
+[53:42] log free and weight free algorithms let
+[53:45] us ask a question are all Atomic
+[53:47] operations equally
+[53:48] powerful so what is this actually mean
+[53:51] what is for what is power so let us
+[53:53] Define the consensus problem so the
+[53:55] consensus problem is that each thread
+[53:58] proposes a value so let's say we have 10
+[54:01] threads in the system so thread one
+[54:04] proposes three thread 2 proposes 5 and
+[54:09] thread 10 proposes 7 and so
+[54:12] on so then we run a parallel algorithm
+[54:15] similar to the algorithms that I have
+[54:17] shown you know similar to you know this
+[54:19] algorithm right so this is a parallel
+[54:22] algorithm if you think about it they're
+[54:24] all trying to do a cast
+[54:27] right uh so then in parallel we choose
+[54:31] one among the proposed values and
+[54:33] everybody agrees so let us say that we
+[54:36] choose five so that is one among the
+[54:38] proposed values and everybody
+[54:40] agrees so why is the consensus problem
+[54:43] important because it's a theoretical
+[54:45] basis of most concurrent algorithms
+[54:48] including the algorithm for example for
+[54:53] uh deciding that which thread should get
+[54:55] a lock so assume that we have a single
+[54:57] lock for a critical section and five
+[55:01] threads are interested in acquiring It
+[55:04] ultimately one thread will acquire it
+[55:06] and it will go and execute the critical
+[55:10] section so this is an example of a
+[55:13] consensus problem because ultimately all
+[55:16] the threads are agreeing on one thread
+[55:19] which is kind of chosen as the winner
+[55:21] that goes ahead and executes the
+[55:23] critical section and it unlocks and it
+[55:25] gets out
+[55:26] after that one among the remaining
+[55:28] threads will again kind of be chosen as
+[55:30] the winner in the sense it will get the
+[55:32] lock it'll execute the critical section
+[55:35] and get out so the fact that we are
+[55:38] choosing one winner and that winner is
+[55:41] going to get the lock and furthermore
+[55:43] the winner is being agreed to by all the
+[55:45] threads this is an example of a
+[55:47] consensus so the consensus problem kind
+[55:50] of forms the basis of most parallel and
+[55:52] concurrent algorithms particularly
+[55:55] algorithms that implement these data
+[55:56] structures like you know this parallel
+[55:59] log or something like a parallel Q or a
+[56:01] parallel stack or something like that
+[56:03] right
+[56:05] so so in this case the consensus problem
+[56:09] is important what is the problem again
+[56:11] we are multiple threads all the threads
+[56:14] each thread proposes a value one among
+[56:17] the proposed values is chosen and
+[56:19] accepted by all what is the consensus
+[56:23] number it is the maximum number of
+[56:25] threads that can solve this problem
+[56:28] using a weight free algorithm right so
+[56:31] so the consensus number is actually for
+[56:33] a certain type of operation so the
+[56:35] consensus number let's say for Atomic
+[56:38] exchange would be the maximum number of
+[56:40] threats that can solve the consensus
+[56:43] problem using a weight free algorithm
+[56:46] which means that we are let's say
+[56:47] guaranteed to attain consensus in a
+[56:50] finite amount of time using only basic
+[56:53] register read wrs and the atomic
+[56:55] exchange primitive
+[56:57] so this clearly gives us an idea of the
+[57:00] power
+[57:01] of an atomic operation the power of a
+[57:04] concurrent operation in the sense that
+[57:07] it can solve consensus for how many
+[57:09] threats so there is a proof I'm not
+[57:11] getting into it but you can read har and
+[57:14] Sha's book that the atomic power of
+[57:17] atomic exchange test and set Fetch and
+[57:20] add fetch an increment and so on even
+[57:22] Atomic uh I mean all of this this entire
+[57:25] family of
+[57:26] instructions right exchange test and set
+[57:29] Fetch and add Fetch and increment and so
+[57:31] on their consensus number is two so
+[57:34] beyond two threads they will actually
+[57:37] not be able to solve the consensus
+[57:40] problem using the constraints that we
+[57:42] have describe which is that it should be
+[57:44] a weight free
+[57:45] algorithm
+[57:47] and uh we will only use Atomic
+[57:50] operations of this type so this
+[57:53] basically constraints the kind of
+[57:55] parallel code that we can write and also
+[57:58] for let's say acquiring a lock without
+[58:00] starvation for example which will also
+[58:02] be a consensus
+[58:03] problem more than two threads they will
+[58:06] actually not be able to manage so that
+[58:08] is why every architecture needs to
+[58:11] implement either the compare and set
+[58:14] primitive compare and set Atomic
+[58:16] operation or the llsc the load Link
+[58:19] store conditional Atomic operation both
+[58:22] of these have a consensus number of
+[58:24] infinity which means that that for an
+[58:26] infinite number of threads they can
+[58:28] solve the consensus problem right which
+[58:31] is an agreement problem they can solve
+[58:32] it so this are by all means the most
+[58:36] powerful right so I should add the word
+[58:39] most powerful and most architectures
+[58:42] would Implement some form of
+[58:45] these uh consensus Primitives uh sorry
+[58:48] some form of these Atomic operations but
+[58:51] they would also Implement either one of
+[58:53] compare and set or llsc because is very
+[58:56] important that we have an infinite
+[58:58] consensus number all
+[59:01] right so we have discussed a lot of
+[59:04] coherence so we have spent two full
+[59:06] lectures discussing coherence so what we
+[59:09] will now do is we'll uh kind of wrap up
+[59:12] this discussion
+[59:14] on memory models orders coherence and so
+[59:17] on so we will in the next lecture we
+[59:20] will discuss a little bit about memory
+[59:23] models we already know a lot we'll kind
+[59:25] of summarize our knowledge and we'll
+[59:27] discuss about data races which is kind
+[59:29] of the cap on the bottle right so this
+[59:33] so this has all the results that we need
+[59:36] to write practical programs on
+[59:39] extremely uh relaxed memory model
+[59:42] machines

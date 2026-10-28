@@ -1,0 +1,1112 @@
+[00:00] the
+[00:06] [Music]
+[00:35] let's now take a look at floating Point
+[00:36] multiplication and division so floating
+[00:39] Point multiplication is uh along the
+[00:41] same lines as floating Point addition
+[00:43] and subtraction a little bit of a
+[00:45] difference nothing much but floating
+[00:47] Point division is uh
+[00:50] different so let's first take a look at
+[00:52] floating Point uh multiplication which
+[00:54] is easy so let me motivate by showing an
+[00:58] example in decimal
+[01:00] so let's assume that we have this
+[01:03] convention that any you know decimal
+[01:05] significant will be of the form X Point
+[01:09] some numbers some digits and there's
+[01:12] basically one digit to the left of the
+[01:14] decimal point so this uh will actually
+[01:17] be
+[01:19] 4.0 can actually redraw
+[01:24] that so this is the convention that we
+[01:26] are
+[01:27] using we can multiply two numbers of the
+[01:30] type
+[01:32] 4.0 time let's say 10 ^ - 4
+[01:37] time 5.0 * 10 ^ -
+[01:43] 5 so what we would do is that first we
+[01:47] will multiply the two significants four
+[01:50] and five so this will give us
+[01:54] 20.0 and uh then what we will do is that
+[01:57] we will multiply these two
+[02:00] you know exponent terms so we'll
+[02:03] basically add the exponents and add -4
+[02:07] and
+[02:08] -5 so what we'll get
+[02:17] is 20.0 * 10 ^ - 9 so note that after
+[02:21] the multiplication the result here that
+[02:24] was obtained by multiplying the
+[02:26] significance is not
+[02:30] in the normal form so to bring it to the
+[02:33] normal form what we can do is that we
+[02:36] can do two uh make it 2.0 * 10 * 10^ - 9
+[02:43] which is 2.0
+[02:47] * 10 the^ -
+[02:51] 8 so uh then this comes back to the
+[02:54] normal form so we'll do something very
+[02:56] very similar with binary numbers over
+[02:58] here so what we'll do is that we'll add
+[03:02] exponents right uh so because there a
+[03:05] multiplication we'll add the exponents
+[03:07] so recall that the E field is actually
+[03:10] the real
+[03:11] exponent right plus the
+[03:15] bias so if I then have EA EA is XA plus
+[03:19] bias similarly if I have EB EB is a real
+[03:23] exponent XB plus a
+[03:25] bias so if I add EA plus EB then the
+[03:28] bias will get add
+[03:30] twice uh and that'll definitely be wrong
+[03:34] so the final result that we want is X a
+[03:36] +
+[03:37] XB plus bias but since EA plus EB will
+[03:41] add the bias twice what we do is we add
+[03:43] EA and EB and then subtract the bias so
+[03:47] then uh the final result that we'll get
+[03:49] is essentially the sum of the
+[03:52] exponents uh represented in the bias
+[03:54] notation so this will be the final
+[03:56] exponent
+[03:57] e and then what we we will do is we'll
+[04:00] compute uh temporary value W which is
+[04:03] the product of the significance so the
+[04:06] same way multiplied 4.0 * 5.0 so
+[04:10] whatever are the significance we'll
+[04:11] multiply
+[04:12] them after that uh we need to normalize
+[04:17] it in the sense that if the significant
+[04:20] is greater than equal to two then uh
+[04:23] what we need to
+[04:25] do uh you know is that we need to you
+[04:28] know shift the number to the right and
+[04:32] uh uh to and also adjust the decimal
+[04:36] point so this normalization has to be
+[04:38] done uh to ensure
+[04:41] that uh you know all our numbers are in
+[04:44] the normal
+[04:46] form then uh you know if some shifting
+[04:49] has been done some amount of rounding
+[04:51] can be done not can be done has to be
+[04:54] done because if some bits are being
+[04:55] thrown out we want the remaining
+[04:58] significant to reflect the
+[05:00] effect at least rounding can cause
+[05:03] further problems so we we have to
+[05:05] renormalize so mind you these steps are
+[05:08] uh exactly the same as floating Point
+[05:12] addition and subtraction
+[05:32] so they are exactly the same as uh we
+[05:34] had in floating Point addition and
+[05:36] subtraction so uh I'm not you know uh
+[05:42] rediscussed same the only steps that are
+[05:44] different is that we add the exponents
+[05:47] and since we would be adding the
+[05:48] exponents in a biased form we'll be
+[05:50] essentially adding the bias twice so the
+[05:53] bias at least one of them needs to be
+[05:55] subtracted second we need to multiply
+[05:58] significance and and the rest of the
+[06:00] stages remain the same so the complexity
+[06:02] of this is same as the time taken is the
+[06:05] same as the time for an add Supply
+[06:07] subtract and multiply which is all in
+[06:10] login time then one more thing that I
+[06:13] didn't mention is the sign of the result
+[06:16] so well uh if both the numbers have the
+[06:18] same sign the sign of the result is
+[06:19] positive so and if both of the numbers
+[06:22] have opposite sign the sign of the
+[06:24] result is
+[06:27] negative so once we have the the sign of
+[06:30] the result we have the new significant
+[06:34] uh which has been normalized and the new
+[06:36] exponent we can construct the result so
+[06:38] we can give given two floating Point
+[06:40] numbers with a multiply operation we can
+[06:43] construct the result and we can return
+[06:48] it all right so let me now summarize the
+[06:51] same Pro uh process the same procedure
+[06:55] with the help of a flowchart so let's
+[06:57] assume that we are multiplying two
+[06:59] floating Point numbers A and B and the
+[07:03] product of the numbers will be saved in
+[07:08] C so uh if a is so first let us do some
+[07:12] very very simple checks if a is equal to
+[07:16] zero then we can set C to Z and we can
+[07:20] get out else if B is equal to Z we can
+[07:23] set C to zero and we can get
+[07:25] out otherwise uh some amount of
+[07:30] additional work is
+[07:32] required uh so so let's see what's the
+[07:34] additional work like sorry this is an
+[07:36] extra step that needs to be removed so
+[07:39] uh the first thing that we do is we
+[07:41] compute the sign of the
+[07:46] result so uh what we essentially do is
+[07:49] that we'll compute the sign of the
+[07:51] result here and the sign of the result
+[07:53] is an exclusive or of the signs of A and
+[07:56] B so if both of them have the same sign
+[08:00] right then this so so basically the way
+[08:02] that we are representing the sign of a
+[08:04] or b is uh by the sign bit so the sign
+[08:08] is zero means that the number is greater
+[08:10] than equal to zero if the sign bit is
+[08:13] one it means that the number is less
+[08:15] than zero see as you can see if both the
+[08:19] numbers have the same sign they're
+[08:20] exclusive or is zero so the number is
+[08:22] positive if they have different signs
+[08:25] the exclusive R is one and the number is
+[08:29] negative
+[08:30] so the sign bit is one then we compute
+[08:33] the final exponent e which is E A Plus E
+[08:36] B minus the bias and after that we see
+[08:40] if there is an overflow or underflow
+[08:41] because you know we are increasing the
+[08:44] exponent so if we have exceeded the
+[08:46] range of the number system we report
+[08:48] this and we exit otherwise we multiply
+[08:50] the significance PA * PB and save it in
+[08:54] W uh we normalize W and update the
+[08:57] exponent again there is a possibility of
+[08:59] overflow or underflow if that is the
+[09:01] case we report otherwise we do some
+[09:04] rounding uh then we renormalize and
+[09:07] update the
+[09:08] exponent then if there is you know then
+[09:11] again there is a possibility of us
+[09:13] exceeding the range of the number system
+[09:15] if that has happened we report otherwise
+[09:18] we move to constructing the result so
+[09:20] given the new significant given the new
+[09:23] exponent and you know the computed sign
+[09:27] bit uh we can combine all of these these
+[09:30] three pieces of information to create
+[09:33] the result or the product C which should
+[09:36] be returned uh you know uh so which is
+[09:39] pretty much the output of this
+[09:42] particular
+[09:45] circuit now let us take a look at
+[09:48] floating Point
+[09:50] division let's first take a look at a
+[09:52] simple division algorithm so let us
+[09:54] divide a by B to produce C so the first
+[09:58] difference
+[09:59] between floating Point Division and
+[10:01] regular integer
+[10:03] division is that in floating Point
+[10:05] division there is no notion of a
+[10:07] remainder there is nothing called a
+[10:09] remainder in floating Point
+[10:11] division because in integer division we
+[10:13] had a remainder the reason was that our
+[10:17] quotient could only be an integer but in
+[10:19] floating Point division the quotient can
+[10:21] be a floating Point itself so there is
+[10:24] no notion of a remainder this makes our
+[10:26] job
+[10:27] easy after this let's try to design a
+[10:30] very simple division algorithm the same
+[10:32] way we have division in decimal so in
+[10:35] decimal let's say that we want to divide
+[10:37] two numbers so what we do is that uh so
+[10:41] we can let's say you know consider an
+[10:44] example let's try to divide 4 divided
+[10:49] by
+[10:53] uh uh let's see instead of four let me
+[10:57] make it five
+[11:19] so what we do is that we will first
+[11:21] divide the significance so 5 divided by
+[11:23] 2 is
+[11:26] 2.5 then uh what we will do is we will
+[11:30] adjust uh so we'll basically compute the
+[11:32] new exponent which is 10 the^ 5 - 3 so
+[11:37] in in multiplication we add the
+[11:39] exponents and division we subtract the
+[11:41] exponents so what we get is 2.5
+[11:45] * 10 the^
+[11:49] 2 so this is exactly what we need to do
+[11:52] in division we need to subtract the
+[11:54] exponents and uh we need to divide the
+[11:57] significance after that start the rest
+[12:00] of the steps will be the same so let's
+[12:02] first take a look at subtracting the
+[12:04] exponents so let XA and XB be the real
+[12:06] exponents so they are represented in
+[12:09] their biased form so what we need to do
+[12:11] is if we dividing a by B we need to
+[12:13] compute XA minus XP since they are being
+[12:17] stored in the biased form they will be
+[12:20] stored as XA minus XB plus
+[12:22] bias so recall that EA is XA plus bias
+[12:29] similarly EB is XB plus bias you know
+[12:34] plus the bias right so e minus EB is
+[12:37] same as XA minus XB because the bias
+[12:40] gets cancelled out that's the reason we
+[12:42] need to add the bias once again to the
+[12:45] result of the subtraction to compute the
+[12:47] final exponent which is saved in biased
+[12:50] form all right so what do we do once
+[12:54] again sorry uh we extract uh the
+[12:59] exponent field from A and B uh we
+[13:02] subtract them and then we add the bias
+[13:06] so why do we add the bias the reason we
+[13:08] add the bias is because the E fields are
+[13:12] essentially stored in bias not notation
+[13:15] themselves and they are basically equal
+[13:17] to the real exponent plus the bias all
+[13:21] right so once I subtract EA minus EB the
+[13:23] bias gets subtracted but since the final
+[13:27] e field also needs to be saved in bias
+[13:29] notation we need to add the bias once
+[13:32] again such that what we are essentially
+[13:34] encoding is XA minus XB plus the
+[13:37] bias subsequently what we do over here
+[13:41] is that we divide the significance so we
+[13:43] divide PA by PB and uh we save that in
+[13:47] the result W right so e and the W is a
+[13:50] standard convention that we have been
+[13:52] using up till now after this what we do
+[13:55] is we normalize the result that we have
+[13:58] to do
+[13:59] if some bits were discarded we do some
+[14:02] rounding and then we renormalize so so
+[14:05] these three steps will always be common
+[14:07] in all floating Point algorithms it's
+[14:10] not just addition or subtraction it's
+[14:13] also multiplication division and
+[14:14] anything else that the final output has
+[14:17] to be normalized after that if some bits
+[14:20] are being discarded there's a need for
+[14:22] rounding and if that again causes the
+[14:26] number to be in a non-normal form it
+[14:29] needs to be renormalized once again and
+[14:32] in the book you'll find a proof that
+[14:33] renormalizing only once is sufficient
+[14:35] you don't have to renormalize twice all
+[14:38] right so so I'll not discuss the
+[14:40] specifics but it's just that these three
+[14:42] steps will be common in all algorithms
+[14:46] so what is the complexity of
+[14:51] this okay so the complexity of this
+[14:54] entire algorithm is same as the
+[14:56] complexity of the division here which is
+[14:58] the most complicated operation and what
+[15:01] we have seen is we have seen two
+[15:03] algorithms for you know integer division
+[15:06] so mind you this division is an integer
+[15:10] Division and we have seen two algorithms
+[15:13] for integer Division and uh
+[15:19] they take order of n log and time right
+[15:22] so so this is uh yeah so so basically
+[15:27] here uh they take order of n log in time
+[15:30] so actually in this case it's not
+[15:31] exactly integer division because when
+[15:33] you're dividing 5 by 2 to get 2.5 you're
+[15:37] not doing integer division rather what
+[15:39] you are doing is that you're dividing 50
+[15:41] divided by 2 so then you're getting
+[15:45] 25 and then you're putting the decimal
+[15:47] point between two and five so this is
+[15:49] what we have learned uh in our uh you
+[15:54] know primary school that to divide let's
+[15:56] say you know one number by another to
+[15:58] increase the Precision you can left
+[16:00] shift the dividend uh by certain
+[16:04] positions and then uh right shift the
+[16:07] final quotient right so that will give
+[16:09] us the floating Point division but
+[16:10] essentially what we are doing is we are
+[16:12] dividing numbers albeat we are
+[16:14] increasing the Precision by first left
+[16:16] Shifting the dividend and then right
+[16:18] Shifting the quotient right the same way
+[16:20] that we you know divide two numbers to
+[16:24] get a decimal output the same Primary
+[16:26] School algorithm that can be done done
+[16:29] but in any case the integer division
+[16:31] algorithms that we have learned take
+[16:34] order of n log and time so they are slow
+[16:37] so it turns out that we can design
+[16:39] algorithms which are much faster and uh
+[16:43] which are better in terms of their
+[16:45] properties so let's look at them next
+[16:49] but the uh summary of this particular
+[16:52] slide is that uh
+[16:57] the final result is pretty much coming
+[17:01] out of a process of division and this is
+[17:03] the slowest operation because we are
+[17:06] essentially using integer division
+[17:08] albeat in a slightly different fashion
+[17:12] and so that's the reason uh but anyway
+[17:14] this is a slow operation takes n log and
+[17:16] time using both the restoring and
+[17:19] non-restoring algorithms that's the
+[17:21] reason the overall algorithm is slow and
+[17:24] what is the slightly different fashion
+[17:26] so let's see if I want to divide 5 by 2
+[17:30] I can always say that look the quotient
+[17:31] is equal to two it's regular integer
+[17:33] division but what we have learned in
+[17:36] school uh in primary school is slightly
+[17:38] different if I want to divide 5 by two
+[17:41] what I actually end up doing is I divide
+[17:43] 50 by 2 so I get
+[17:46] 25 then I realized that since I
+[17:49] multiplied 5 by
+[17:51] 10 uh I'll sort
+[17:55] of uh you know compensate for that so if
+[17:59] 50x 2 is 25 I'll say that 5x 2 is
+[18:04] 2.5 and let's see if I want more
+[18:07] Precision so I want to divide 5 by 3
+[18:10] what I can instead do if I need you know
+[18:12] more Precision in the output is that I
+[18:15] will first compute what is 500 by 3 so
+[18:19] 500 by 3 in regular integer
+[18:22] division
+[18:27] is66 so I'll say that look since 500 by
+[18:30] 3 is 166
+[18:32] 5x3 is 166 divided 100 which is
+[18:37] 1.66 so similarly instead of 500 by 3 I
+[18:40] could have done 5,000 by 3 and then uh
+[18:43] or I could have done 50,000 divided by
+[18:47] 3 so this would have given
+[18:51] me
+[18:55] 16,666 then I could have said that look
+[18:58] now 5 by 3 is 1.
+[19:02] 6666 so I've increased the number of
+[19:04] digits after the decimal point so I've
+[19:06] increase the Precision of the result so
+[19:09] but what I'm doing in each and every
+[19:10] step is regular integer division so I am
+[19:13] first Computing uh the result of one
+[19:17] more division where the dividend has
+[19:19] been shifted to the left and then uh to
+[19:23] compute 5x3 I'm inserting the decimal
+[19:26] point at the right and appropriate
+[19:29] location so the same thing can be done
+[19:32] over here this is not integer regular
+[19:34] integer Division I can shift uh let's
+[19:37] say the significant of a by certain
+[19:40] places to the left perform the division
+[19:42] and then shift the quotient that many
+[19:44] places to the right so that has not been
+[19:46] mentioned to avoid cluttering up the
+[19:49] slide but uh this is pretty much what I
+[19:52] would do you know what I do anyway for
+[19:55] normal division right normal Primary
+[19:57] School Division that also can be done
+[19:59] but in any case the long and short of it
+[20:02] is that this is a slow
+[20:05] operation so I can uh do something which
+[20:08] will make all my operations much
+[20:12] faster so let us look at gold smith
+[20:15] division so we'll talk about two
+[20:16] division algorithms so one is gold smith
+[20:19] division so uh my
+[20:22] basic uh Insight is like this let's say
+[20:26] I want to compute a ided by B
+[20:29] so a / B is a multiplied with 1 by
+[20:34] B I have a fast algorithm for
+[20:37] multiplication so pretty much my problem
+[20:40] reduces to finding what is 1 by B so 1X
+[20:44] B is known as the reciprocal so if I
+[20:46] have a fast algorithm for finding the
+[20:48] reciprocal of a
+[20:50] number then what I can do is I can
+[20:52] multiply that you know multiply 1 by B
+[20:55] with a and compute a by B so let us thus
+[21:00] try to compute the reciprocal of B which
+[21:03] is 1 by B then we can use standard
+[21:07] multiplication
+[21:09] also if B is represented in the normal
+[21:13] form which is PB
+[21:15] * you know 2 ^ x which is the exponent
+[21:20] then you know I can compute 1 by PB I
+[21:23] mean 1 by the significant time 2 ^ - x
+[21:27] so this part is simple this can be
+[21:29] ignored so I can just take the
+[21:31] significant and try to compute 1 by PB
+[21:34] which is the core part of the
+[21:37] operation so let's first consider the
+[21:39] case of a normal floating Point number
+[21:42] and of course if B is a denormal number
+[21:44] we can do something similar but I will
+[21:47] not you know discuss that in interest of
+[21:49] time but a very very easy extension can
+[21:51] be done to handle denormal numbers as
+[21:54] well so let me just consider the case of
+[21:57] normal significance
+[21:59] where a normal floating Point
+[22:01] significant is between 1 and 2 in the
+[22:04] sense that 1 is less than equal to PB
+[22:07] Which is less than
+[22:09] two so if this is the case I can
+[22:13] represent the floating Point significant
+[22:15] PB as 1+
+[22:19] X so uh 1+ X where X is less than one so
+[22:24] this is so PB is between 1 and two so
+[22:27] since I can thus represent it as
+[22:29] something as the form one 1 + x where 0
+[22:33] is less than equal to x and x itself is
+[22:36] less than one so this can be done given
+[22:40] the fact that this can be
+[22:43] done let us now do some more
+[22:46] algebra so the algebra that we will do
+[22:49] is like this that the first thing that
+[22:51] we will do is that we'll slightly uh
+[22:54] clean up one special case so we have
+[22:57] said that zero is is less than equal to
+[22:59] X is less than 1 but look at the what
+[23:02] happens when X is equal to Z so when X
+[23:05] is equal to zero then the significant is
+[23:08] essentially
+[23:09] one if the significant is one the
+[23:13] reciprocal of the significant is also
+[23:15] one so this is a very trivial case and
+[23:17] this can be handled separately so at
+[23:19] least in this discussion let's assume
+[23:21] that the significant is of the form PB =
+[23:24] 1 + x and 0 is less than x is less than
+[23:28] 1 X is strictly between 0 and 1 it make
+[23:31] it'll make our life
+[23:32] simple then let's go to the next step
+[23:36] which is let's say that X is of the form
+[23:38] 1 -
+[23:39] x- or alternatively x- is of the form 1
+[23:43] - x so since X is strictly between 0 and
+[23:47] 1 also x- is strictly between 0 and 1 so
+[23:50] we can say that x- is less than 1 so
+[23:54] some more Algebra 1 + 1 is 2 so this is
+[23:57] 1 by 2 - x- I take the half
+[24:01] outside uh then I have 1 / 1 - x- by 2
+[24:07] so this is half * 1 by 1 -
+[24:10] y I say that Y is equal to x- by2 so
+[24:14] this term is being represented as y
+[24:17] since x- is less than 1 Y is less than
+[24:21] half all right so since x- is less than
+[24:24] 1 and Y is equal to x- by 2 y becomes
+[24:28] less than half so uh we finally end up
+[24:32] with this expression over here when 1 by
+[24:34] the significant is half * a number of
+[24:37] the form 1 by 1 - y for y is equal
+[24:42] to x- by 2 which is equal to 1 - x / 2
+[24:50] which can be computed very easily right
+[24:53] using a regular subtraction and a shift
+[24:57] right and a right shift it can be
+[24:59] computed very very
+[25:01] easily all right so uh what we can do is
+[25:05] that actually let me go back uh so since
+[25:08] we are multiplying a number by half and
+[25:10] everything is in base two uh so
+[25:12] multiplying a number by half pretty much
+[25:14] means multiplying a number with 2^ minus
+[25:18] one or or dividing by the number by two
+[25:21] is that we will compute the result of 1
+[25:23] by 1 - Y and right shift it by one
+[25:26] position so that is the same as
+[25:28] multiplying it by half so for example
+[25:31] you know 6 / 2 or 6 * half 6 is
+[25:36] 110 this if I if I'm dividing it by two
+[25:39] it's the same as right shifting this by
+[25:41] one position so the result is 1 one
+[25:43] which is
+[25:45] three so this half is not a big deal
+[25:47] even multiplying a binary number with
+[25:49] half is same as right shifting that's
+[25:51] also not a big deal the difficulty lies
+[25:54] in Computing 1 by 1 - y if we can do
+[25:57] that quick we are
+[25:59] done so 1 by 1 - Y is equal
+[26:04] to let's see so let us multiply 1 + y to
+[26:08] the top to the numerator and 1 + y to
+[26:10] the denominator so we get 1 + y and
+[26:14] recall that 1 - y * 1 + y is 1 - Y
+[26:19] 2 so similarly we'll
+[26:23] have we can do the same once again so we
+[26:26] can multiply 1 + y Square to the
+[26:29] top so and if you multiply 1 + y Square
+[26:32] also to the
+[26:34] bottom so we can basically do this if we
+[26:37] multiply 1 + Y 2 to the bottom as well
+[26:40] so 1 - y^ 2 * 1 + Y 2 is 1 - y ^ 4 so we
+[26:48] can continue in that way so then what we
+[26:51] will see is that we'll have the
+[26:53] numerator will be 1 + y 1 + Y 2 till 1 +
+[26:57] y to ^ 6
+[26:58] 16 and the denominator will be 1 - y ^
+[27:04] 32 so here is an
+[27:07] interesting uh observation that we can
+[27:09] make the given the fact that we are
+[27:12] working with a 32-bit system where the
+[27:14] mantisa has only 23 bits right you know
+[27:18] given that you know that's a fact for
+[27:21] us irrespective of the value of
+[27:24] y
+[27:26] right uh so so what we know about y
+[27:29] right instead of seeing respect to the
+[27:30] value let's see what do we know about y
+[27:32] let's go to the previous slide what we
+[27:35] know is y is less than
+[27:37] half right this is something that we
+[27:39] know that Y is less than 2^ minus 1 so y
+[27:44] ^
+[27:45] 32 is less
+[27:54] than 2 ^ - 32 all right right so if this
+[28:00] number is less than 2 ^ - 32 so this is
+[28:05] well outside 32 bits so this y ^ 32 in
+[28:08] our system is practically zero the
+[28:12] reason being that it cannot be
+[28:13] represented at all within our 23 mantisa
+[28:16] bits right so you I cannot represent a
+[28:19] number 1 - y ^
+[28:24] 32 fa
+[28:35] and the reason that's the case is that 2
+[28:37] ^ minus 32 basically means that that we
+[28:41] have
+[28:42] zero
+[28:44] then uh we
+[28:48] have so then we have 31
+[28:51] 1es sorry we have 31 zeros and then we
+[28:55] have a one so 1 minus this quantity
+[28:58] simply cannot be represented using 23
+[29:00] bits so you know no valid mantisa can
+[29:04] capture or represent this number because
+[29:07] this number is simply you know y the^ 32
+[29:09] is too small to be captured in our
+[29:12] number system and 1 - y ^ 32 is too
+[29:17] close to 1 and there's no way of
+[29:18] representing this as a result you know
+[29:22] there is no point in multiplying this
+[29:24] with even more terms and this ter this
+[29:27] term 1us y ^ 32 is practically 1 because
+[29:31] irrespective of you know whatever its
+[29:34] value is it cannot be represented and
+[29:37] also it makes no sense to multiply the
+[29:39] numerator and denominator with other
+[29:41] terms for example even if you multiply
+[29:44] this at 1 + y ^ 32 it'll make no
+[29:47] difference at all the reason being that
+[29:50] y ^ 32 cannot be represented so it will
+[29:52] not affect any of the other terms since
+[29:55] it will not affect any of the other
+[29:57] terms
+[29:59] so this number is approximately
+[30:03] equivalent to 1 + y 1 + multiplied with
+[30:08] 1 + y s till 1 + y ^ 16 so we can
+[30:12] actually we are actually discarding the
+[30:14] denominator all right and the reason we
+[30:17] are discarding the denominator is
+[30:18] because the denominator is too close to
+[30:21] one and it is in fact so close that our
+[30:25] number system will not be able to
+[30:26] distinguish between
+[30:29] just the numerator and the numerator
+[30:31] divided by the denominator the reason it
+[30:34] will not be able to
+[30:36] distinguish is for another reason so
+[30:38] let's consider uh you know one reason we
+[30:41] have G we have given let's also consider
+[30:43] one more
+[30:44] reason so what
+[30:46] is you
+[30:48] know one by any number of the form one
+[30:51] by 1
+[30:53] - uh X
+[30:56] right this is a number of the
+[31:05] form so on and so forth right so any
+[31:09] number of the form 1 by 1
+[31:15] minus is equal to
+[31:29] see just so if I expand the denominator
+[31:31] in you know using this particular series
+[31:35] expansion so the one will get multiplied
+[31:37] with the numerator but if any of the
+[31:39] other terms get multiplied with a
+[31:41] numerator there will be no way of
+[31:43] representing the product because all of
+[31:46] those numbers will be less than 2 ^
+[31:48] minus 32 given the fact that Y is less
+[31:50] than half and they cannot be represented
+[31:53] so since they cannot be represented
+[31:55] they'll have to be ignored and that is
+[31:57] why we ignore the denominator and what
+[31:59] we have essentially created maybe I can
+[32:02] clean the slide and
+[32:05] show what we have essentially created is
+[32:08] We have replaced a fraction with a
+[32:10] numerator and a denominator with just a
+[32:14] product of terms without a denominator
+[32:16] at all and the product of terms is 1 + y
+[32:19] * 1 + Y 2 till all the way one till 1 +
+[32:23] y ^ 16 all
+[32:26] right so this is uh exactly what we have
+[32:29] done it's a product and this can be very
+[32:32] quickly
+[32:33] computed uh in our system so what we can
+[32:36] do is first we can compute y then we can
+[32:39] compute y * Y which is y sare then we
+[32:42] compute y Square * y^ 2 which is y ^ 4
+[32:47] we do the same to get y ^ 8 and then we
+[32:49] do the same to get y ^ 16 so this is
+[32:53] five steps so if it's an N bit number
+[32:55] system this will take login steps for in
+[32:58] every step there is a multiplication
+[33:00] that again takes login steps so total
+[33:03] complexity is
+[33:07] login Square so this is significantly
+[33:11] faster than the N login time algorithm
+[33:13] that we have seen and the reason it is
+[33:15] faster is because we pretty much use
+[33:18] this expansion over
+[33:22] here right you know this kind of an
+[33:24] expansion is used
+[33:32] all right so using this particular form
+[33:35] we have been able to quickly compute 1
+[33:37] by 1 - y right so 1 by 1 - Y is pretty
+[33:41] much a product of terms of the form 1 +
+[33:44] y 1 + Y 2 * 1 + y ^ 4 * 1 + y ^ 8 * 1 +
+[33:50] y ^ 16 so pretty much is a product of
+[33:53] five terms for each term we compute a
+[33:56] power of Y
+[33:58] so we compute the sum the product of
+[34:01] these five terms and this is our result
+[34:03] once we have 1 by 1 - y uh we need to
+[34:07] multiply it with half which is the same
+[34:10] as right shifting it by one position so
+[34:12] this will give us the reciprocal of the
+[34:14] significant then we again go back and
+[34:17] given a reciprocal of the significant
+[34:19] we'll multiply it you know with the
+[34:22] significant of a so we basically get PA
+[34:26] ided by PB and then the rest of the
+[34:29] division algorithm will be the same as
+[34:32] so we are essentially getting this point
+[34:33] i'llbe with a much faster method the
+[34:36] rest of the steps are exactly the
+[34:39] same all
+[34:41] right so the complexity of this uh uh
+[34:45] I'm sorry a small error in this slide so
+[34:48] time CL complexity of finding the
+[34:49] reciprocal is log of n square right as
+[34:53] we had computed on on the last slide
+[34:55] that is log of n Square and the time
+[34:58] required thus for all the
+[34:59] multiplications is log of N sare and the
+[35:01] total time is log of n sare sorry this
+[35:04] is one uh bug that I'll fix in the
+[35:07] subsequent versions of this slide but
+[35:09] this is what it should
+[35:11] be all right so let us now use a
+[35:14] slightly different kind of method to
+[35:17] find the reciprocal of PB uh using the
+[35:21] using a different method method called
+[35:23] the Newton rapson method the Newton
+[35:24] rapson and gold smith are similar
+[35:26] methods but but let's at least for the
+[35:28] sake of it learn a new
+[35:30] method so given any number let's try to
+[35:33] find the reciprocal of the number so let
+[35:35] us designate PB as a generic number B
+[35:39] where B is of the same range 1 is less
+[35:41] than equal to B Which is less than two
+[35:45] so the aim is to compute 1 by
+[35:47] B so let us do one thing let us create a
+[35:50] function
+[35:51] FX where FX is equal to 1x x - B
+[35:58] right so let us you know arbitrarily
+[36:00] create a function FX of the form 1X xus
+[36:04] B right so
+[36:08] FX is equal to Z when X is equal to 1 by
+[36:13] B uh so uh what we can see that when FX
+[36:17] is equal to zero right so that is
+[36:21] when 1X X is equal to b or rather
+[36:28] B uh or rather sorry X is equal to 1 by
+[36:32] B so we have created a function of this
+[36:36] type so the problem of computing the
+[36:39] reciprocal right so the reciprocal of B
+[36:42] is the same as Computing the root of FX
+[36:44] so the root of FX is where FX becomes
+[36:47] zero and where does FX become zero well
+[36:51] FX becomes Zer when X is equal to 1 by B
+[36:54] see if I can take this equation and find
+[36:56] the point where it becomes zero then
+[36:59] essentially I'll find that point is
+[37:01] where X is equal to 1 by B and that is
+[37:03] the reciprocal which we want to compute
+[37:06] right so I'm essentially what I'm doing
+[37:10] is I'm converting the problem of
+[37:12] computing a reciprocal one by some
+[37:14] number as Computing the root of an
+[37:16] equation so we'll use a traditional
+[37:19] equation solving
+[37:21] technique uh to
+[37:23] actually compute the reciprocal of a
+[37:25] number and this technique is is the
+[37:27] newon refson
+[37:29] method so let us do one thing let's
+[37:32] start with an arbitrary value of x which
+[37:35] is x0 right so let us guess the value
+[37:37] arbitrary value and start from there let
+[37:40] us locate x0 on the graph of f on the
+[37:43] graph of
+[37:44] FX let us draw a tangent to FX at this
+[37:47] point and let's keep repeating so a
+[37:50] picture is worth a th000 words I'll tell
+[37:52] you what we do let us arbitrarily guess
+[37:55] a value of x which is
+[37:58] x0 right and then we locate the point x0
+[38:02] on the curve of FX so this is the curve
+[38:05] of FX you know let's assume that you
+[38:07] know for some FX this is the curve so
+[38:10] what we will do is that at this point
+[38:12] let us compute a tangent to this curve
+[38:16] so if we compute a tangent to this curve
+[38:18] at some point this will intersect the
+[38:20] x-axis so let this point be
+[38:23] X1 again let us locate the point on the
+[38:27] Curve y = FX where is x coordinate is X1
+[38:31] which is this point let us again compute
+[38:34] a tangent to the curve uh so let it
+[38:37] intersect the x-axis at Point X2 let us
+[38:41] again locate the point on FX whose x
+[38:44] coordinate is X2 again we compute the
+[38:47] tangent of the curve and let this point
+[38:51] X3 so in this manner we just can keep
+[38:54] going till we reach the final root and
+[38:57] the root is where we expect X to be
+[38:59] equal to 1x b a standard equation
+[39:02] solution method is called the Newton
+[39:04] rson method and so here it's a
+[39:07] mathematical
+[39:08] method where we take some point on the
+[39:10] curve we keep Computing
+[39:13] tangents uh then uh you know till we hit
+[39:17] root so the way that we would actually
+[39:20] do it in a in Hardware is that we'll
+[39:23] implement this maths in the hardware
+[39:25] we'll start from a random point x0 find
+[39:28] the point on the curve compute the
+[39:29] tangent see where it intersects the
+[39:32] x-axis again find the curve and keep
+[39:34] repeating the
+[39:36] process so uh recall that my equation
+[39:39] was FX is equal to 1xx - B so Computing
+[39:44] the tangent means finding the derivative
+[39:47] at X right at some point x wherever we
+[39:51] want to compute the tangent at so f- of
+[39:54] X is DFX by DX which in this case is -1
+[39:58] by x² so that x0 the derivative of the
+[40:01] curve is -1 /
+[40:05] x0
+[40:06] Square so the equation of the tangent so
+[40:09] let's find the equation of tangent so
+[40:11] let's say the equation of General
+[40:13] equation of a straight line y = mx + C
+[40:16] so in this case we know M which is the
+[40:18] slope the slope at x0 is - 1 by x0 S so
+[40:24] uh essentially the equation of the
+[40:26] tangent is y = - x by x0 S Plus a
+[40:30] constant
+[40:32] C so we need to Now find the constant C
+[40:36] so what do we know we know that at
+[40:39] x0 Y is equal to right the value of y
+[40:42] which is equal to FX is equal to 1x x0
+[40:48] minus B so this is something that we
+[40:49] know because at x0 FX is 1 by x0 - B so
+[40:54] this is something that we know this can
+[40:56] be substit Ed in this equation to find
+[40:59] the value of
+[41:02] C so once we do that what we see is y =
+[41:07] right mx +
+[41:09] C so at x0 this is the value of y 1 by
+[41:13] x0 minus B MX so this part was M - 1 by
+[41:18] x0 S and at x0 the value of x is x0 of
+[41:23] course plus C which is the constant
+[41:26] whose value we want want to find out so
+[41:29] what we will do is we'll do a little bit
+[41:31] more of algebra and it will come that
+[41:34] you know the last stage will tell us
+[41:37] that c is equal to 2 by x0 minus B so
+[41:41] the equation of the tangent becomes y =
+[41:44] - x by x0 S so the equation of the
+[41:47] tangent of course you can say at x0
+[41:51] right so this is something that can be
+[41:53] said that the equation of the tangent at
+[41:57] is y = - x / x0 2 + 2x x0 - B right mx +
+[42:05] C We Know M and C so this is the
+[42:07] equation so let this curve let this
+[42:10] tangent this line intersect the x-axis
+[42:14] at Point
+[42:17] X1 if that is the case what we can do is
+[42:20] so we need to find this point X1 so what
+[42:23] we know is that when it intersects the
+[42:25] x-axis Y is equal to 0
+[42:28] so we can thus say that Z you know zero
+[42:32] and this is this needs to be mx + C so
+[42:36] since we have computed this as a value
+[42:38] of
+[42:39] c and this is the value of M the value
+[42:43] of x where this intersects the x-axis is
+[42:45] X1 so this is the equation that we can
+[42:48] create and if we solve this equation
+[42:50] we'll find that X1 is equal to 2x0 - bx0
+[42:55] s
+[42:57] so let us now Define one more function
+[42:59] called an errored function so recall
+[43:01] that we have defined two functions
+[43:02] arbitrarily we have guessed and we hope
+[43:05] that you know it'll help us one such
+[43:07] function that we had defined is FX which
+[43:10] is 1x x - B so the inside here was that
+[43:14] at the root of the function when FX is
+[43:17] Zer we'll have X as 1 by B which is what
+[43:20] we want to compute now we are guessing
+[43:23] one more function called the error
+[43:33] so the error function is defined the
+[43:35] like this you know so these functions
+[43:37] defining them is actually an art for
+[43:40] different functions you need to Define
+[43:42] them differently so in this case this is
+[43:44] how we are defining them so the error
+[43:47] function ex is BX -1 that's the way we
+[43:50] are defining it so what is the advantage
+[43:53] of defining it this way that when we
+[43:56] reach the root X X where X is equal to
+[43:58] 1x B the error becomes equal to zero so
+[44:02] you just put X here so if x is 1 by b b
+[44:04] * 1 by B is 1 and 1 - 1 is 0 so the
+[44:08] error is zero so our aim is also to make
+[44:11] the error as zero and the error happens
+[44:14] to be zero when we reach the root of the
+[44:18] FX so what is the initial error so the
+[44:21] initial error at point x at point Sorry
+[44:24] x0 is bx0 minus one
+[44:27] that is the initial error what is the
+[44:30] error after we
+[44:32] reach
+[44:34] uh after we reach Point X1 it's B X1
+[44:38] -1 since this is what X1 was computed to
+[44:41] be if we go back we'll say X1 was
+[44:44] computed to be this
+[44:47] expression so uh B X1 - 1 is B * 2x0 -
+[44:52] bx0 s - 1 we do a little bit of
+[44:55] algebraic manipulation ations till we
+[44:57] come to this result so bx0 so the error
+[45:02] is minus of bx0 - 1
+[45:05] s and bx0 minus 1 is the error of
+[45:08] x0 so this will become minus of error of
+[45:12] x0 square so we can alternatively say
+[45:14] that the error of at Point X1 its
+[45:18] absolute value is equal to the absolute
+[45:21] value of the error is equal to the
+[45:24] square of the absolute value of the
+[45:25] error at x0
+[45:27] similarly you know we can extend this
+[45:29] argument we can say that the
+[45:31] error sorry uh we can say that the error
+[45:35] at any point
+[45:37] xn is equal to the error
+[45:40] at X of
+[45:44] nus1 squar which is equal
+[45:48] to the error at X of n minus
+[45:53] t to the power 4 and so on
+[45:58] so uh we will use this result the way we
+[46:00] will use this result is like this that
+[46:03] let us now try to put a bound on the
+[46:06] error so we know that since B uh is
+[46:10] actually representing the significant of
+[46:12] one of our floating Point operant it is
+[46:15] between 1 and 2 so 1 is less than equal
+[46:17] to B is less than two is a significant
+[46:21] of a normal floating Point
+[46:23] number so let our first guess x0
+[46:28] right our first guess x0 actually be
+[46:31] half right so the range of bx0 -1 B * x0
+[46:39] -1 uh what will it be so what is the
+[46:42] range of b b is between 1 and two so the
+[46:45] range will actually be between Min -
+[46:47] half and zero right so that will be the
+[46:50] range of bx0 -1 which is the error at
+[46:54] Point x0
+[46:57] so hence ex0 the error at point x0 is
+[47:00] always less than equal to
+[47:03] half since the error at any point is
+[47:05] less than equal to half and we reduce
+[47:09] the error by a power of
+[47:11] two you know in every iteration
+[47:14] ultimately the error will approach zero
+[47:17] because if we come back to this
+[47:19] equation then initially if the error you
+[47:21] know is half then at this point the
+[47:23] error will be
+[47:24] 1/4 and uh you know this become 1/ 18
+[47:28] and it'll sort of keep going down and
+[47:29] down and down till It ultimately reaches
+[47:33] zero right so because in any number that
+[47:36] we if we multiply by itself and a number
+[47:38] is less than one it will ultimately
+[47:40] reach zero so the error will ultimately
+[47:42] converge at zero so this at least tells
+[47:44] us that our initial estimate if we set
+[47:47] x0 as half is a good estimate because we
+[47:51] can not only bound the error but we can
+[47:54] in repeated steps the error will
+[47:56] ultimately converge to
+[47:58] zero so let us look at the maximum error
+[48:01] that is possible in iteration 0 in
+[48:03] iteration 0 it is half in iteration 1
+[48:06] it's 1X 2 squ 2 it is 1x 2 ^ 4 3 it is
+[48:10] 1x 2 ^ 8 4 is 1x 2^ 16 and ultimately 5
+[48:16] is 1x 2^
+[48:21] 32 so uh one thing that needs to be kept
+[48:25] in mind that the error after five
+[48:28] iterations is becomes 1 by 2 ^ 32 which
+[48:32] is a fairly small number but there is an
+[48:35] there's a very very important point to
+[48:37] make here that the error function that
+[48:39] we actually considered which is uh let
+[48:42] me go back the error function that we
+[48:44] actually considered here I had at that
+[48:47] point said it's defined arbitrarily now
+[48:50] let
+[48:51] me uh take some Liberty to say that it
+[48:54] was not that arbitrary it has a certain
+[48:56] physical
+[48:57] connotation and uh this physical
+[48:59] connotation we'll require right now so
+[49:01] why don't you remember this expression
+[49:03] and carry on with me till this slide so
+[49:05] we had said that look the error function
+[49:08] ex is defined as BX -
+[49:10] one which is essentially B * X - 1 by B
+[49:17] so X - 1 by B is pretty much the
+[49:20] distance between our current estimate of
+[49:23] what the root is and the theoretical
+[49:25] root right so this is our current
+[49:27] estimate that is x - 1 by
+[49:30] B right so that is essentially the
+[49:32] difference between what we want to
+[49:35] compute 1 by B and what we currently
+[49:38] have so basically you can say that this
+[49:40] is B * Delta for Delta is the
+[49:44] difference so if B *
+[49:46] Delta is let's say equal to 2 ^ -
+[49:51] 32 and B
+[49:54] itself is a number
+[49:57] so what was the bound on B again the
+[49:58] bound of B was between 1 and two so B
+[50:02] itself if it if it is between 1 and two
+[50:05] it means that Delta is definitely you
+[50:09] know the bound on Delta so let's say if
+[50:12] this is one this remains if this is two
+[50:14] then Delta will be a number between 2 ^
+[50:17] - 32 and 2 ^ - 33 which is anyway much
+[50:22] smaller than what our Manas can
+[50:24] represent because our Manas cannot not
+[50:26] go beyond 23 bits so five iterations is
+[50:30] more than enough to drive the Delta so
+[50:33] Delta here is defined as a difference
+[50:35] between what we have and what is the
+[50:38] ideal value right so this Delta over
+[50:41] here five tions is sufficient to drive
+[50:44] the Delta so low that it is beyond our
+[50:47] limit of precision so thus we should not
+[50:49] concerned which further means that if we
+[50:52] do the Newton rson iteration for five
+[50:54] iterations whatever value of you know X
+[50:58] that we have so initially we have x0
+[51:01] then we'll have X1 finally we'll have X5
+[51:04] the value of X5 is very very close to
+[51:08] the value 1 by B which is what we wanted
+[51:10] to compute so there is still a small
+[51:13] difference and this difference is Delta
+[51:15] but the difference is smaller than our
+[51:18] smallest
+[51:20] Precision so and since this floating
+[51:22] Point representation is approximate we
+[51:24] can use this fact to uh in a sense uh
+[51:29] ignore that minimal amount of error
+[51:31] because there's nothing that we can do
+[51:32] about it and go forward and why are we
+[51:35] ignoring because our mantisa has a fixed
+[51:37] size which is 23 bits right so so that's
+[51:41] the reason there is no
+[51:43] choice all right now uh given the fact
+[51:46] that we have put a limit or a bounce on
+[51:51] error what we will what we thus see from
+[51:54] this slide
+[51:56] is that uh five iterations will suffice
+[51:59] and why five because you know we reach 2
+[52:03] the^ 32 which is beyond
+[52:05] our uh you know beyond our limit of 23
+[52:08] bits so how many iterations do we take
+[52:11] well if we we have a 32bit number system
+[52:14] so in that sense n is equal to 32 and we
+[52:17] proceed in powers of two so we proceed
+[52:20] in log steps so we require login
+[52:23] iterations and in each iteration what do
+[52:25] we do we compute a new value of x so
+[52:28] what is the new value of x the way we
+[52:30] compute it is X1 is = to 2x0 - bx0 s or
+[52:35] alternatively any xn is 2 * x n -1 - b x
+[52:42] nus1 s so there are only multiplications
+[52:46] and subtractions here so each step also
+[52:49] takes login
+[52:51] time so the total time taken by all the
+[52:55] steps is Log and time login which is
+[52:57] login whole Square Order of login whole
+[53:00] Square so this is this takes the exactly
+[53:03] the same amount of time as a goldi uh
+[53:06] algorithm is just a different way of
+[53:07] doing things it has certain graphical
+[53:10] connotation and one more interesting
+[53:12] thing that this can do is that of course
+[53:14] we used it to compute the reciprocal we
+[53:17] can use but we can use it to compute
+[53:19] other mathematical functions also but
+[53:22] this I'll uh mention after you know a
+[53:24] few slides
+[53:27] all right so the time complexity is like
+[53:29] this again a small error in this slide
+[53:31] I'll fix it in every step of the
+[53:33] operation we need to compute this thing
+[53:36] so this requires some shifts and
+[53:37] multiplies and subtracts so this
+[53:39] requires order of login time so the
+[53:41] total time of the algorithm sorry a
+[53:43] small mistake here is order of log n for
+[53:45] each step multiplied with log n
+[53:49] steps right which is order of
+[54:00] log of n² like log n log n whole Square
+[54:05] all right so this is the time it's same
+[54:07] as the Goldsmith algorithm in that
+[54:09] sense all right so we reach the end of
+[54:12] the chapter on computer arithmetic a
+[54:14] fairly large chapter so I leave you
+[54:18] with a problem to do can you use the
+[54:21] Newton rafson method
+[54:35] to design a piece of Hardware a hardware
+[54:37] circuit to compute square root of x so
+[54:40] given a number we want to you know given
+[54:42] a positive number we want to compute its
+[54:45] square root so for this you need to find
+[54:47] two estimates one estimate for FX such
+[54:51] that its root is equal to square root of
+[54:53] x and another error function
+[54:57] such that you know it has some physical
+[54:59] connotation with the actual error and
+[55:01] also the error function reduces
+[55:02] significantly in each
+[55:04] iteration uh such that the number of
+[55:06] iterations are bounded and ultimately
+[55:08] the error approaches zero so you need to
+[55:10] guess these two functions to a little
+[55:11] bit of math the rest Remains the Same
+[55:15] and at the end you need to give us a
+[55:17] fast Hardware algorithm to compute
+[55:19] square root of
+[55:20] x all right so this ends chapter 7 I'll
+[55:23] see you in chapter 8 where we will disc
+[55:26] discuss processor design

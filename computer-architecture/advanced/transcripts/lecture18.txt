@@ -1,0 +1,1471 @@
+[00:00] [Music]
+[00:13] welcome to chapter 6
+[00:15] the chapter on gpus or graphics
+[00:18] processors
+[00:20] so here is the background that we
+[00:21] require for this chapter
+[00:24] so we need three things specifically we
+[00:27] need inordered pipelines
+[00:32] a basic knowledge of c plus plus
+[00:34] programming
+[00:35] and some knowledge of parallel
+[00:37] programming so for parallel programming
+[00:39] you can also look at chapter nine that
+[00:42] will give you
+[00:42] some idea of parallel programming or the
+[00:44] early or the first part of the two book
+[00:47] series
+[00:48] uh computer organization and
+[00:50] architecture so that has something about
+[00:52] parallel programming or you can consult
+[00:54] the web
+[00:55] or any other book so broadly speaking
+[00:58] from this
+[00:59] book within chapter 2 and these two as a
+[01:03] matter of fact nothing else is required
+[01:07] so there are three parts to this chapter
+[01:09] three sections
+[01:10] first we'll give a broad overview of
+[01:12] application specific
+[01:14] computing notably existing gpus a6
+[01:19] and fpgas then we will look at the cuda
+[01:22] 10 programming language
+[01:25] so even though as we speak kuda 11 is
+[01:27] the latest
+[01:28] but we'll discuss kuda 10 because that
+[01:30] for us is complex enough
+[01:33] and also the time of writing this book
+[01:35] it was the latest version
+[01:37] and finally we'll go to the design of
+[01:40] gpgps
+[01:44] so let's first start with the question
+[01:46] are we satisfied with an ipc of four or
+[01:48] six
+[01:50] even achieving this ipc is quite hard so
+[01:53] if you look at a very aggressive out of
+[01:55] order processor with all the tricks that
+[01:57] we have done
+[01:58] so with all the tricks with regards to
+[02:00] advanced speculation
+[02:02] replay pipeline optimizations all of
+[02:04] that
+[02:05] including memory system optimizations
+[02:06] getting an ipc of four or six is very
+[02:08] hard
+[02:10] writes at the typical ipc for an out of
+[02:12] order pipeline
+[02:14] even if it's four issue would be between
+[02:16] 1.5 and 2.5 typically
+[02:19] so even getting four or six is quite
+[02:21] hard almost impractical
+[02:23] but it turns out that we are not
+[02:24] satisfied with it the reason being that
+[02:27] if we consider very large programs such
+[02:30] as for example simulating an airplane
+[02:32] wing
+[02:33] weather prediction image recognition
+[02:37] they have far more you know they have
+[02:39] far serious ilp requirements and far
+[02:41] higher performance requirements as well
+[02:45] so the reason i say that is because
+[02:47] linear algebra particularly matrix
+[02:49] algebra
+[02:50] forms a core of these methods
+[02:53] and consequently
+[02:57] if let's say i were to add two matrices
+[02:59] then the instruction level parallelism
+[03:01] is huge
+[03:02] and in that an ipc of 406 is actually
+[03:05] too low so you consider this piece of
+[03:06] code
+[03:07] so in this piece of code we're just
+[03:09] adding two matrices element by element
+[03:11] so if we look at this then we have two
+[03:14] loops
+[03:14] iterating from zero to n loop iterators
+[03:17] being i and j
+[03:20] so if we consider this then
+[03:23] what we can see is that for different
+[03:24] pixels
+[03:27] uh these are completely independent
+[03:28] computations
+[03:30] totally independent
+[03:34] okay so for different pixels
+[03:37] these computations are totally
+[03:38] independent so for large values of n
+[03:41] we have truck loads of parallelism we
+[03:43] have a huge amount of parallelism
+[03:46] right if n is a large value the reason
+[03:49] is we consider
+[03:50] n square points and all n square points
+[03:53] can be processed
+[03:54] in parallel all of these order n square
+[03:56] additions
+[03:57] can happen in parallel and that is
+[03:59] exactly why
+[04:02] we are not satisfied with the meager ipc
+[04:05] that we get
+[04:05] we we need a different computing
+[04:07] platform
+[04:09] so what's the what's the main big deal
+[04:12] with these high ilp
+[04:13] programs well many of these linear
+[04:16] algebra based programs that deal with
+[04:18] mattresses
+[04:19] regardless of the matrix operation they
+[04:22] have a very high degree of ilp extremely
+[04:24] high degree of value
+[04:27] existing multi-core processors such as
+[04:29] the ones that we have
+[04:30] designed possibly maybe with one or
+[04:33] multiple out-of-order ports
+[04:35] they are very general purpose in the
+[04:37] sense they are designed
+[04:39] to execute a very large array of
+[04:41] programs so they're kind of constrained
+[04:43] by the fetch and issue width
+[04:45] switch is not much it is limited to four
+[04:47] to six and that also restrains the ipc
+[04:49] to remain within this value
+[04:51] so a solution here is to create a new
+[04:54] processor that has
+[04:57] hundreds of aliens so what we want to do
+[04:59] is that we want to design a different
+[05:01] kind of processor
+[05:03] fair we will have very very small
+[05:05] computing units
+[05:07] right hundreds of small computing units
+[05:28] okay so we'll have hundreds of small
+[05:31] small computing units
+[05:32] and what these small computing units
+[05:34] will basically give us
+[05:36] is that let's say for these simple
+[05:39] pieces of codes
+[05:40] where we have to do many additions or
+[05:42] multiplications in parallel
+[05:44] we'll be able to realize the massive
+[05:46] amount of parallelism
+[05:48] so for these small computing units we
+[05:50] can either call them an ali or report
+[05:52] they're often small one two three issue
+[05:54] in ordered ports they have a very simple
+[05:56] isa
+[05:58] many of the advanced features of modern
+[06:00] programming languages such as irregular
+[06:02] memory accesses or conditional branches
+[06:04] are not supported
+[06:06] so what we need to do is we need to
+[06:08] create a processing framework
+[06:10] for such kind of parallel programs that
+[06:13] have a massive number of parallel yet
+[06:16] simple operations so the key point is
+[06:19] that the operations are
+[06:21] simple
+[06:24] so we'll now discuss asics asips and
+[06:27] fpgas
+[06:31] so what we want to do is we want to
+[06:33] create a custom chip
+[06:36] with android surveillance
+[06:40] so one of the options is to create an
+[06:42] asic an application specific
+[06:44] integrated circuit so this is done
+[06:48] only for a specific application specific
+[06:51] you know specific kind of application
+[06:53] with the inputs outputs formats
+[06:54] everything is fixed
+[06:56] so instead of using software we just
+[06:57] create a chip for it
+[06:59] but needless to say there has to be a
+[07:01] market for it because without a market
+[07:03] we cannot really design a chip
+[07:05] so this will be used in all kinds of
+[07:07] devices which include
+[07:10] well uh let's say that asics are using
+[07:12] all kinds of devices but it doesn't mean
+[07:14] that the same asic
+[07:16] is used in all kinds of devices
+[07:17] different asics are used
+[07:19] for example let's say for a video camera
+[07:21] you would
+[07:22] have to do image processing at a very
+[07:24] fast rate so we can have an image
+[07:26] processing
+[07:27] with it for washing machines will
+[07:29] require a different kind of chip
+[07:31] so we will fabricate a different basic
+[07:33] and given the fact that video cameras
+[07:35] and washing machines have a huge market
+[07:39] what we can do is that
+[07:42] well we have a large enough market to
+[07:43] justify the creation of a specific chip
+[07:47] for doing a specific task so these are
+[07:49] in general not
+[07:50] all that programmable
+[07:54] so as i said a6
+[07:58] have a lot of value in the sense that we
+[08:00] need not have large processors
+[08:02] that run programs but they have a lot of
+[08:04] value in specific scenarios
+[08:06] they can be made program more
+[08:08] programmable if we move from a6
+[08:11] sick to asip and asip is an application
+[08:14] specific instruction set process
+[08:16] which brings in a little bit more in
+[08:19] terms of flexibility
+[08:21] so it provides a degree of flexibility
+[08:23] in the sense there is some
+[08:24] isa support so you can think of it as a
+[08:27] weak processor with very heavy asic like
+[08:29] functionalities there is a basic isa
+[08:32] support
+[08:33] and there is definitely some flexibility
+[08:35] including the flexibility to write small
+[08:37] programs
+[08:39] but of course the what you can do is
+[08:42] quite limited
+[08:43] in that uh then we have place
+[08:49] so the good old days we had a
+[08:51] programmable logic arrays or al is
+[08:54] see if we look at it this can be used to
+[08:56] implement any boolean function so for
+[08:58] example if let's say we have three
+[09:00] inputs a b
+[09:01] and c and the inputs at this point will
+[09:03] become a bar
+[09:05] b bar and c bar
+[09:10] so here the idea basically was
+[09:20] that we choose a subset of these so
+[09:22] clearly we can't choose a and a bar both
+[09:24] together
+[09:24] but we choose a subset of this for
+[09:26] example a bar b and c
+[09:28] so what you're seeing in this wire so
+[09:29] this is not a single wire
+[09:31] but it is actually a group of three
+[09:33] wires that are going into this and gate
+[09:35] so the first wire is carrying any one of
+[09:38] a or a bar the second one any one of b
+[09:40] or b bar and the third one any one of c
+[09:42] and c bar
+[09:44] so essentially this the and gate over
+[09:46] here is computing a min term so that is
+[09:48] why this is known as the and plane
+[09:50] so just to remind you once again this is
+[09:52] not a single wire but a set of three
+[09:54] wires
+[09:55] so here what we are doing is we are
+[09:57] computing the min term
+[10:01] okay and
+[10:06] so the advantage of
+[10:11] computing the min term over here
+[10:14] is that we can compute different kinds
+[10:16] of min terms so let's say we
+[10:18] want to let's say compute abc the our
+[10:20] function
+[10:21] is of this type then the first
+[10:24] min term could be abc the second
+[10:27] one would be a bar b and c
+[10:31] bar then what we can do is we can take
+[10:34] two wires
+[10:35] like this and we can leave the rest so
+[10:38] it doesn't matter so we can choose
+[10:40] uh in for this vertical wire again we
+[10:43] don't have a single wire but let's say
+[10:45] we have multiple wires we have eight
+[10:47] so out of this we can only choose these
+[10:49] two
+[10:50] and send them to an or gate so then the
+[10:53] output over here
+[10:55] would basically be the output of this
+[10:57] sum of these two min terms
+[11:00] so similarly we have other or gates so
+[11:02] this is known as the or plane
+[11:03] so they can then take another set of min
+[11:05] terms and maybe like enable them enable
+[11:07] this this and this
+[11:08] and compute all of this so this will be
+[11:10] another boolean function so this is
+[11:12] being used to compute boolean functions
+[11:14] so we are computing f1 f2 f3 and f4
+[11:19] so in this case as you can see we can
+[11:21] generate one two three four five six
+[11:24] seven
+[11:25] eight we can generate eight min terms
+[11:31] okay and then
+[11:37] among the eight minterms
+[11:41] uh what we can do is that we can
+[11:44] we are generating four functions so we
+[11:46] can choose any
+[11:48] uh of those eight min terms do an or
+[11:51] a logical order of that and we can
+[11:53] generate four boolean functions similar
+[11:55] to the way that they are generated
+[11:57] so as you can see that these selecting
+[12:00] units over here are fully programmable
+[12:03] that's the reason we call this a
+[12:04] programmable logic array
+[12:06] we are given a boolean function and a
+[12:09] set of variables
+[12:10] we can implement it in fact we can
+[12:12] compute several boolean functions
+[12:14] so that's the reason even implementing
+[12:16] something like an adder
+[12:18] can actually be quite simple because one
+[12:20] of them could be the boolean function
+[12:21] for the sum
+[12:22] and the other one for the carry so this
+[12:24] as you can see is a quite
+[12:26] flexible programmable logic array
+[12:30] this of course plas have been superseded
+[12:33] by fpgas
+[12:35] because pla is only for combinational
+[12:37] logic functions
+[12:38] there are no state elements but to
+[12:40] implement something similar to a
+[12:42] processor
+[12:43] we need state elements in the sense
+[12:45] elements like flip flops and registers
+[12:47] which can store values
+[12:49] right so we need some sort of a bit
+[12:51] storage mechanism something similar to a
+[12:53] state element
+[12:58] and we need a flexible interconnect
+[13:01] right so basically
+[13:02] why are flexible interconnect because
+[13:04] we'll have to store different logic
+[13:06] elements sorry connect
+[13:07] different logic elements to different
+[13:09] state elements
+[13:11] and that is where we have the
+[13:13] opportunity of creating
+[13:15] a custom processing unit so this is why
+[13:19] we use an fpga which has these things so
+[13:21] you can think of an fpga as an extension
+[13:23] of a bla
+[13:24] that has state elements and the
+[13:25] flexibility of connection
+[13:28] so what it does is that along with
+[13:31] programmable logic so incidentally now
+[13:34] the amount of programmable logic in
+[13:35] fpgas has gone down
+[13:37] quite substantially so given that
+[13:41] the the presence of plas in fpgas
+[13:45] has reduced quite substantially we have
+[13:48] moved to
+[13:48] lookup tables or luts so here the idea
+[13:51] basically is
+[13:52] that assume that we want to add two four
+[13:54] bit numbers
+[13:56] so what is the total size of the input
+[13:58] it is eight bits
+[14:00] right and the total size of the output
+[14:02] maximum could be five bits so what i can
+[14:04] have
+[14:05] is that i can have a table with two
+[14:07] raised to power eight entries which is
+[14:09] like all combinations
+[14:10] and for each combination i can store the
+[14:13] output
+[14:14] right so let's say it's a five bit
+[14:16] output for each combination i just store
+[14:17] the value of the output
+[14:20] whatever it is so that will give me the
+[14:21] sum as well as the carry
+[14:23] okay so uh i can
+[14:26] basically take any function so we have a
+[14:28] lot of customized
+[14:31] software extremely sophisticated
+[14:32] software these days that can take any
+[14:35] and basically map it into a set of
+[14:38] simple lookup table accesses
+[14:40] even if we are adding 264 bit quantities
+[14:42] right
+[14:44] so we are adding two large 64-bit
+[14:46] numbers we can still break it into a
+[14:48] large number of smaller computations
+[14:50] such that we access these lookup tables
+[14:53] so with lookup tables and flexible logic
+[14:56] and flexible interconnects
+[14:57] we can implement anything addition
+[14:59] subtraction multiplication
+[15:01] large processors everything so flexible
+[15:04] interconnect can be used to connect luts
+[15:06] and state elements together
+[15:09] so this will provide us with high
+[15:11] computational throughput
+[15:13] so note that reconfigurable
+[15:15] architectures such as fpgas
+[15:17] so so this method of using plas luts
+[15:19] interconnects and so on
+[15:21] so even flexible interconnects are done
+[15:23] with a pla like logic only where let's
+[15:26] say you know we want a packet to go this
+[15:28] way
+[15:29] so all that we need to do is we'll have
+[15:31] a set of multiplexers over here and we
+[15:33] will then
+[15:34] configure it to route all the signals to
+[15:36] go that way
+[15:38] so fpga also use something called an
+[15:39] anti-fuse so i'll
+[15:42] uh so that can be seen on literature on
+[15:45] right so basically that is more like a
+[15:47] persistent element
+[15:49] where once programmed it maintains its
+[15:51] state and it ensures that whatever
+[15:52] signals from this will get routed that
+[15:55] but we will not discuss that in great
+[15:58] detail
+[15:59] but what we will discuss is that fpgas
+[16:02] are extremely flexible and they have a
+[16:03] very large number of logic elements so
+[16:05] you can
+[16:06] implement massive parallelism the only
+[16:08] thing is that their clock speed is quite
+[16:10] limited 400 to 600 megahertz
+[16:13] and it's also not the case that one
+[16:14] clock cycle achieves a lot of things
+[16:16] right so so even for a simple operation
+[16:20] that would take one second on an asic it
+[16:22] may take multiple cycles on an fpga
+[16:25] so fpgas are limited in terms of their
+[16:27] frequency
+[16:28] in terms of their area overheads all
+[16:31] everything so they are fairly
+[16:35] you know they're extremely used uh
+[16:37] they're fairly used frequently when
+[16:39] creating hardware prototypes
+[16:41] but nowadays they're also used to
+[16:42] implement production quality systems
+[16:44] because
+[16:45] both the efficiency of fpgas and the
+[16:47] software used to program fpgas
+[16:50] that has matured significantly so for
+[16:53] many tasks like dna sequencing and
+[16:55] linear algebra and so on fpgas are not
+[16:57] bad candidates
+[16:58] but they are quite expensive so one fpga
+[17:01] is almost as expensive as a
+[17:03] state-of-the-art server
+[17:06] so given the fact that a6
+[17:10] are very good but again
+[17:13] asics are extremely specialized and
+[17:16] furthermore if i have a small
+[17:17] application
+[17:18] i'm not really going to make an asic for
+[17:19] it it's too expensive
+[17:21] fabricating a chip when the market
+[17:23] demand is not there
+[17:24] or is not that much to justify the huge
+[17:26] costs
+[17:27] and given the overheads of fpgas
+[17:30] particularly for graphics intensive
+[17:32] tasks
+[17:33] which is almost everything we do these
+[17:35] days in our windowing systems games and
+[17:37] so on
+[17:38] gpus were designed
+[17:41] so initially they were handling graphics
+[17:43] intensive tasks
+[17:44] like mostly handling the windowing
+[17:47] systems or modern operating systems
+[17:50] and also games but later on they were
+[17:52] repurposed
+[17:54] to run numerical programs and scientific
+[17:57] right so this is how the gpu the
+[18:00] graphics processor unit became a
+[18:03] gpgp all right a general purpose
+[18:09] so what is the need for a gpu level
+[18:11] let's do a little bit of math so
+[18:14] consider the display
+[18:16] on which i am recording this video so it
+[18:18] has 1920 pixels
+[18:20] on one axis and 1080 pixels on the other
+[18:23] axis so it's a high resolution
+[18:25] it's an hd display the refresh rate
+[18:28] which is the number of frames that i
+[18:29] show per second
+[18:30] is 60 60 frames per second so this means
+[18:34] that roughly 125 million pixels have to
+[18:36] be processed per second
+[18:39] if i consider a three gigahertz
+[18:41] processor with an ipc of two
+[18:42] which is medium to high it'll be able to
+[18:46] process six billion instructions per
+[18:48] second
+[18:49] roughly and so which basically means 48
+[18:52] instructions per
+[18:53] pixel okay so this is roughly you know
+[18:57] what
+[18:58] we will have to process okay
+[19:01] so 48 instructions per pixel even though
+[19:04] it sounds to me a lot but actually it's
+[19:06] not a lot if i look at you know this
+[19:08] high
+[19:09] intensity games that we have all of the
+[19:11] effects that we have all the video that
+[19:13] we watch
+[19:14] so nowadays what happens nowadays even
+[19:16] if
+[19:17] you know i'm writing a book or making a
+[19:19] powerpoint i keep on listening to some
+[19:21] music on youtube or keep watching a
+[19:24] youtube video at the corner
+[19:26] right so then you know my processor has
+[19:29] to do both it has to run powerpoint as
+[19:31] well as
+[19:32] process the sound of a youtube video and
+[19:34] the video of a youtube video
+[19:36] so typically you know this much is not
+[19:38] enough
+[19:39] so for more high definition and high
+[19:42] intensity graphics
+[19:43] we need better platforms
+[19:47] for the graphics effects and hd modes
+[19:51] so this is where the need for gpus comes
+[19:53] up
+[19:54] so gpus are used for many things so
+[19:58] one thing we need to understand before
+[19:59] we actually look at gpus
+[20:02] about you know modern graphics systems
+[20:04] so the modern graphics system
+[20:08] as compared to what things were 30 years
+[20:10] ago where we thought of the screen
+[20:12] just as an array of pixels right so i'm
+[20:15] talking of things 30 years ago
+[20:17] so we thought that you know the screen
+[20:19] has x pixels and y pixels
+[20:21] so we have xy pixels and this can be
+[20:24] represented as an xy element array
+[20:27] each element of the array is assigned a
+[20:28] color
+[20:30] right and all that we need to do is we
+[20:32] need to compute these arrays and show
+[20:33] them
+[20:34] and in monitors of those days that
+[20:36] worked at roughly 30 to 50 frames per
+[20:39] incidentally this array is part of frame
+[20:41] so you just have to recompute this array
+[20:43] 30
+[20:44] 40 50 times every second and most of the
+[20:46] time the array remained constant
+[20:48] you know there was no change only when
+[20:49] there was a change this was updated
+[20:52] but modern graphics is quite different
+[20:55] so in modern graphics
+[20:57] we have to construct the image so what
+[20:59] the user actually writes
+[21:02] is a set of rules that is what the user
+[21:06] writes
+[21:07] so these are a set of rules so let's say
+[21:09] there is a character running you know
+[21:11] in the middle of a city with guns and
+[21:13] police cars after him with sirens
+[21:15] glazing
+[21:16] as you have in a game so what the user
+[21:18] writes the user defines the objects
+[21:20] defines the interactions between the
+[21:22] objects
+[21:24] puts effects such as shadows and
+[21:26] elimination and so on
+[21:28] but the final scene has to be
+[21:29] constructed from the rules
+[21:32] and furthermore if it's a small monitor
+[21:34] like the monitor of a mobile phone
+[21:37] then of course rectangles will appear
+[21:38] smaller but you'll still see the scene
+[21:41] if let's say move it to a big monitor
+[21:43] we'll still see the scene
+[21:45] so this means that whatever the user
+[21:48] does
+[21:49] is not really specified in terms of
+[21:51] coordinates but rather in terms of rules
+[21:54] so the user basically says that look in
+[21:55] this frame
+[21:57] this is the starting and end point of a
+[21:59] rectangle
+[22:00] and let's say that you know we move it
+[22:02] to a bigger monitor
+[22:03] the rectangle will get scaled
+[22:05] appropriate
+[22:07] so when this method is used it's called
+[22:09] vector graphics
+[22:10] where for example if you're storing a
+[22:12] line we just store its
+[22:14] first coordinate and the second coding
+[22:16] now if you move to another monitor with
+[22:17] the line needs to be lengthened
+[22:19] it's very easy to lengthen it because we
+[22:21] are not storing each pixel of the line
+[22:23] but rather we are starting the
+[22:25] start and the end so it can be lengthy
+[22:28] so you can have a library to lengthen it
+[22:29] and render it
+[22:30] render it means show it right show it
+[22:33] correctly
+[22:34] so we'll discuss about rendering but
+[22:36] rendering basically means creating the
+[22:38] graphics
+[22:38] object on the screen so when such a rule
+[22:42] based system is used
+[22:44] as you can see over here where a rule
+[22:46] based system has been used to create
+[22:47] this tree full of fruits
+[22:50] so the image was much smaller right
+[22:53] maybe the image was this side
+[22:54] size but when i expanded it it became
+[22:57] this size
+[22:58] but it still looks like a good image
+[22:59] it's not bloody
+[23:01] in comparison i took another image where
+[23:03] only the pixels were stored
+[23:06] as opposed to vector this is called a
+[23:07] raster
+[23:09] rasterized image so the rasterized image
+[23:14] when i actually made it bigger
+[23:17] you can see the blurriness in this image
+[23:19] so this is called raster graphics so
+[23:22] the two paradigms that we have in gpus
+[23:25] particularly
+[23:27] is that in the olden days we mostly had
+[23:31] raster graphics because we only cared
+[23:33] about arrays of pixels
+[23:34] but after that very soon we came to a
+[23:37] point where we represent an object
+[23:39] as a set of polygons so you'll see
+[23:41] mostly it is triangles
+[23:42] but let's say polygons and shapes of all
+[23:44] sizes
+[23:45] and any image is generated by the
+[23:47] interaction of these shapes
+[23:50] here again there are two generations the
+[23:51] first generation was 2d
+[23:53] that the tom and jerry kind of cartoons
+[23:55] and the current generation is 3d where
+[23:58] you have these in a 3d characters and
+[23:59] games and movies and so on right so that
+[24:01] is like three
+[24:03] so movies of course we don't generate
+[24:05] anything but movies there is a separate
+[24:06] problem that movies come encoded
+[24:09] and they need to be decoded by the
+[24:10] graphics card why enco
+[24:12] encoding and decoding because encoding
+[24:14] means like heavily compressing a movie
+[24:17] and decoding means uncompressing right
+[24:19] with as little loss of quality as
+[24:21] possible
+[24:22] that said and done most graphics tasks
+[24:26] the powerpoint be it a game or be just
+[24:28] your windowing system
+[24:30] specify the interaction in terms of
+[24:32] objects and the gpu's job to pretty much
+[24:35] convert that into a scene which you see
+[24:37] on the monitor
+[24:38] raster graphics is still used in the
+[24:40] sense many objects are still specified
+[24:42] as arrays of pixels
+[24:44] but that's not all that common
+[24:48] so given the fact that these gpus were
+[24:50] doing so much of geometry
+[24:53] people observed that this would be the
+[24:56] gpu could be easily repurposed
+[24:58] to create a gp gpu that also does
+[25:02] general purpose computation without
+[25:04] changing the
+[25:05] design of a gpu very much
+[25:10] so if we further look at this right if
+[25:12] we further look at this need for gpu's
+[25:15] slide you will see that in vector
+[25:19] as we have said i'm just repeating some
+[25:21] things
+[25:22] that the programmer has created a high
+[25:24] level set of objects
+[25:25] with shades textures characters worlds
+[25:28] etc
+[25:29] with the rules for interaction and this
+[25:31] vector graphics capability of the gpu
+[25:34] was later on used or leveraged to create
+[25:37] a gpgp
+[25:38] where a gpu continues to do what it was
+[25:41] doing
+[25:42] but additionally it can also be
+[25:44] repurposed to run
+[25:45] absolutely general purpose numerical and
+[25:48] scientific ports
+[25:50] right so this for example would be
+[25:53] an example of an auto-generated scene
+[25:56] from a game
+[25:57] where you can see a lot of effects you
+[25:59] can see this complex object over there
+[26:01] you can see the effect of light shading
+[26:03] elimination
+[26:04] just look at this point and look at this
+[26:06] point so this point you can clearly see
+[26:09] the
+[26:09] effect of the face of the rock pointing
+[26:11] towards the sun
+[26:12] and you can see the shade over here so
+[26:15] all of this has been automatically
+[26:17] generated
+[26:18] after the main after the design was
+[26:21] given
+[26:22] to the gpu and you can also see the
+[26:24] effect of texture
+[26:25] just look at the texture of this wall it
+[26:27] gives a feeling that this is the one but
+[26:29] this area gives you the feeling it's the
+[26:30] sky so the texture etc
+[26:33] was all added so a lot of these things
+[26:35] were added and you will see that if
+[26:37] let's say i play the same game on the
+[26:39] mobile phone
+[26:40] you will pretty much have a very similar
+[26:42] visual experience
+[26:44] because of the fact that the gpu of the
+[26:46] mobile phone can
+[26:47] interpret the rules differently as per
+[26:49] its screen size
+[26:52] so this is where our gpu
+[26:55] or gpus have come to
+[26:59] so now the thinking is that well asics
+[27:02] are very good
+[27:02] their but their usage is very limited
+[27:04] and they are very
+[27:06] expensive to at least create so there's
+[27:09] a very high startup cost
+[27:10] so unless the volume is large a6 make no
+[27:12] sense
+[27:14] fpgas again are great for prototyping
+[27:16] and maybe a small set of applications
+[27:19] traditional gpus great for graphics
+[27:24] but if let's say i can kind of combine
+[27:26] all of these three
+[27:28] kind of get the power of traditional
+[27:30] gpus to do graphics power of a6 to do
+[27:32] general purpose computing
+[27:34] and power fpgas in the sense i have a c
+[27:37] of computational units
+[27:39] i'll arrive at the modern general
+[27:40] purpose chief
+[27:42] this is a broad idea so this can look at
+[27:45] games high intensity graphics movie is
+[27:47] of course
+[27:50] far more powerful than an out of order
+[27:53] so we will first focus on the graphics
+[27:56] aspect of a gpu
+[27:57] and then we look at the general purpose
+[27:59] let's find so first we focus on
+[28:02] the graphics aspect
+[28:05] next we focus on the
+[28:10] general purpose aspect
+[28:16] okay so the graphics aspect what we need
+[28:19] is we need to
+[28:19] we need something called a shader
+[28:21] program this is a master program which
+[28:24] all the heavy work on objects vertices
+[28:28] their pixels
+[28:29] right it looks at transformation
+[28:31] rotation skewing and so on
+[28:33] so it applies all the transformations
+[28:35] that are needed to images
+[28:37] it applies the effects so as we have
+[28:39] seen in the previous image it applies
+[28:42] the effect of texture shading
+[28:46] it does all of that automatically which
+[28:48] also translate to linear algebra
+[28:50] operations
+[28:51] primarily but we will discuss how
+[28:55] having a general purpose language for
+[28:57] these actually translates into something
+[29:00] bigger right something much bigger than
+[29:02] the scope of gpus themselves
+[29:07] let us now show the basic structure of a
+[29:10] shader program
+[29:12] so in a shader program we take in input
+[29:14] data
+[29:16] which can be in the form of pixels or
+[29:19] vertices then we
+[29:24] take in these three inputs
+[29:28] so the first input actually comes from a
+[29:31] dedicated memory structure known as a
+[29:33] texture
+[29:34] cache or a texture memory
+[29:37] so this provides all the textures
+[29:40] for the image in the image region
+[29:44] then we have a bunch of read-only data
+[29:46] think of them as constraints
+[29:48] for the model so many gpus particularly
+[29:51] in the early days
+[29:52] used to have used to have a cache for
+[29:55] read-only data
+[29:57] so maybe much of that doesn't exist
+[29:58] today but something of this nature
+[30:01] used to be there it used to be called
+[30:03] the constant cache
+[30:05] and then of course gpus regularly
+[30:07] communicate with
+[30:08] memory so when we are talking of memory
+[30:11] here
+[30:12] it is mostly off-chip memory
+[30:15] so the gpu and the cpu do not share
+[30:18] caches
+[30:20] in general they speak they communicate
+[30:23] via the offship dram memory and finally
+[30:27] the output is in terms of pixels and
+[30:29] vertices
+[30:30] some of it is stored in the caches
+[30:33] inside the gpu
+[30:35] and of course if more data is generated
+[30:37] which is not subsequently used
+[30:40] then it is written to the off chip
+[30:42] memory
+[30:44] so the graphics pipeline of a typical
+[30:47] graphics processor this is the way that
+[30:48] it looks but there are some
+[30:50] changes so one of the stages has changed
+[30:53] so i will describe that later
+[30:55] but the quintessential graphics pipeline
+[30:59] that shader programs use it is a
+[31:02] dedicated
+[31:03] uh graphics pipeline that has these four
+[31:05] stages the first is the vertex processor
+[31:09] then the rasterizer the fragment
+[31:11] processor and the pixel engine
+[31:14] so what the programmer does is that she
+[31:16] specifies a scene
+[31:19] in terms of the basic broad objects and
+[31:21] the interaction between the objects
+[31:23] the light sources elimination shading
+[31:27] the normal vectors of the surfaces and
+[31:30] the rest is automatically
+[31:34] computed in hardware and in software so
+[31:38] there are dedicated programming language
+[31:40] apis that allow you to write all of this
+[31:43] and a lot of it at runtime is converted
+[31:46] into
+[31:46] ptx code and what we shall see sas code
+[31:50] so we'll discuss that later
+[31:52] but essentially native code for the gpu
+[31:57] so there are two very common apis
+[31:59] application programming interfaces that
+[32:01] are used
+[32:03] windows systems often use directx and
+[32:06] opengl is quite
+[32:07] platform independent the gpu programs
+[32:11] are typically written in two parts there
+[32:14] is a part that runs on a normal cpu
+[32:17] and there is a part that runs on the gpu
+[32:20] so this is compiled in the gpu specific
+[32:24] right so so basically you can think of
+[32:25] it as a fat binary
+[32:28] a fat binary basically contains code of
+[32:31] different instruction sets
+[32:38] so the program binary as we discussed is
+[32:40] fat
+[32:42] in the sense that it contains both cpu
+[32:44] code as well as gpu
+[32:47] so nvidia programs are first compiled to
+[32:50] a virtual isa
+[32:51] so we will discuss in detail in later
+[32:53] lectures
+[32:54] what is exactly the need for a virtual
+[32:58] but that's what nvidia programs are
+[33:01] compiled to
+[33:03] and the virtual isa is called ptx or
+[33:05] portable thread execution
+[33:06] that is a virtualized at run time
+[33:11] the ptx virtual isa is actually compiled
+[33:13] to the actualize
+[33:14] so this is something like java where
+[33:17] let's say if you take the code of a
+[33:21] of a program you first compile it to ptx
+[33:25] and then you distribute that so this
+[33:28] ensures that nobody is seeing your code
+[33:29] your code remains safe your intellectual
+[33:31] property remains safe
+[33:33] and you assume a virtual machine and
+[33:36] design an isa for it and distribute it
+[33:39] but real time a lot of optimizations
+[33:41] need to be done
+[33:42] and these optimizations are nicely
+[33:44] captured
+[33:46] by the compiler for that specific gpu
+[33:49] so that specific gpu
+[33:53] at runtime it is
+[33:57] dynamically compiled to sas or shader
+[34:00] assembly
+[34:02] so the vertex processor this is the way
+[34:04] that it looks
+[34:06] which is the first stage so recall that
+[34:07] there are four stages in the pipeline
+[34:10] so we typically decompose a 3d surface
+[34:13] into a set of triangles
+[34:15] because it is very easy to work with
+[34:16] triangles
+[34:18] and triangles also have some
+[34:21] inherent advantages right which other
+[34:24] representations
+[34:25] don't have the most important being that
+[34:29] all the vertices are on the same plane
+[34:31] so it's very easy to specify the plane
+[34:34] of a triangle and its normal vector
+[34:36] we can then compute effects such as
+[34:38] reflection very easily
+[34:41] and also there is a lot of literature
+[34:43] and processing triangles and most
+[34:45] triangle operations
+[34:46] ultimately degenerate into matrix
+[34:50] we can perform ray tracing which is
+[34:52] trace the path of light
+[34:53] light rays see how they interact with
+[34:56] surfaces
+[34:57] so that will give you effects of
+[34:58] elimination and reflection
+[35:02] finally we can add color and texture to
+[35:05] a surface
+[35:07] we can move rotate and scale the objects
+[35:09] as is required
+[35:11] and also calculate the depth of the
+[35:13] triangle which is the depth of the
+[35:14] object in the image as measured from the
+[35:16] eye
+[35:18] so with that what we can do is that
+[35:21] things that are far away will appear to
+[35:25] look slightly different
+[35:26] and also they'll be occluded or hidden
+[35:28] by nearby objects so this occlusion
+[35:32] is important of which object hides the
+[35:35] other object right
+[35:37] and so much of this is computed here but
+[35:39] it's also computed later
+[35:41] so the vertex processor you can think
+[35:43] about as the stage that
+[35:45] performs all the geometric operations on
+[35:48] the shapes so this heavily uses linear
+[35:51] and previously this was using custom
+[35:55] hardware
+[35:56] now the vertex processor sport is
+[35:58] basically mapped to generic hardware
+[36:01] and on generic hardware it just
+[36:02] translates to tons and tons of linear
+[36:05] rejection
+[36:11] so nowadays the vertex processor has
+[36:13] been replaced by the polymorphism
+[36:16] so the polymorph engine itself is
+[36:18] pipelined it has a five stage pipeline
+[36:20] so if you think about it there is a
+[36:22] pipeline within a pipeline stage
+[36:25] so the polymorph engine has five stages
+[36:28] vertex fetch tessellation
+[36:31] viewport transformation attributes setup
+[36:34] and stream output so in modern gpus they
+[36:39] don't have the vertex processor again so
+[36:41] i must
+[36:42] underscore the fact that we are mostly
+[36:43] talking about nvidia family of gpus over
+[36:47] we are not talking about other gpus at
+[36:49] the moment
+[36:52] so in the vertex fetch stage
+[36:55] what is what happens is we convert local
+[36:59] object coordinates to world coordinates
+[37:01] so normally what happens is that
+[37:03] in the programs in the shaded programs
+[37:05] that users write
+[37:07] in opengl for example
+[37:10] they specify local coordinates but
+[37:13] all the objects are not in the same
+[37:15] coordinate system so when all of them
+[37:17] are in the same coordinate system
+[37:19] this is referred to as world coordinates
+[37:22] where you use the same axis same 3d axis
+[37:25] xyz
+[37:26] for all the objects
+[37:29] and then the next part of this
+[37:33] vertex fetch stage is to also fetch the
+[37:38] is fetch the vertices and then do
+[37:40] geometric operations on top of them
+[37:43] so this is where we simulate the motion
+[37:45] of limbs for example in life like
+[37:47] characters
+[37:48] move objects you're shooting a bullet
+[37:50] the movement of the bullet
+[37:52] and we also along with pre-programmed
+[37:54] motion we also look at
+[37:56] other visual effects such as elimination
+[37:58] shading and so on
+[38:02] so we have a process here known as the
+[38:05] hull
+[38:05] shader so what this does is that let's
+[38:09] say it takes a large polygon so a large
+[38:11] polygon may be something like this
+[38:12] right it divides this into a smaller set
+[38:16] of polygons right could be triangles
+[38:18] and there could be triangles maybe
+[38:20] triangles may not be triangles doesn't
+[38:22] matter
+[38:23] but it is just that objects which are
+[38:25] closer to the viewpoint which means
+[38:27] closer to the eye
+[38:28] they have a higher granularity in a
+[38:31] sense the resolution is better
+[38:33] and objects that are far away from the
+[38:35] viewpoint they have a lower granularity
+[38:37] this roughly corresponds to the way that
+[38:39] we view objects
+[38:40] that objects that are close to us close
+[38:43] to our eye
+[38:45] we tend to see them better so if let's
+[38:47] say this is the eye
+[38:49] and let's say you know an object that is
+[38:51] close by we tend to see it much better
+[38:54] as opposed to even a large object that
+[38:56] is far away we don't
+[38:57] see that much of detail in it so this is
+[38:59] also
+[39:01] coming in over here
+[39:04] so then we have tessellation
+[39:07] tessellation basically means once we
+[39:09] have created the polygons
+[39:11] once you have manipulated them to some
+[39:13] extent right
+[39:16] we break them down into a set of smaller
+[39:19] objects or
+[39:20] which are triangles and line segments so
+[39:22] we have already discussed the advantages
+[39:25] of triangles
+[39:26] the advantages of triangles are twofold
+[39:28] first is a triangle lies on a single
+[39:30] plane
+[39:31] and second there are lots and lots of
+[39:34] algorithms there is a lot of research in
+[39:36] computer graphics to work on triangles
+[39:40] the third stage is known as viewport
+[39:42] transformation
+[39:44] see the total seen in the window if i
+[39:46] create a large scene right so it's a
+[39:48] large scene with lot of objects
+[39:49] characters and so on
+[39:51] all of it will not fit in my screen so
+[39:53] what will fit in my screen
+[39:55] is a subset of this it that i choose
+[39:58] known as the viewport
+[39:59] so what this will this state will do is
+[40:01] this will kind of get rid of all the
+[40:03] objects or parts of the objects that are
+[40:04] over here
+[40:05] and only focus on the viewport right so
+[40:08] the first stage was vertex
+[40:10] fetching we primarily fetch the vertex
+[40:12] divided into polygons smaller polygons
+[40:14] do some geometric operations
+[40:17] then tessellate which is to divide it
+[40:18] into triangles such that we can do more
+[40:20] operations on it
+[40:22] then we focus on the viewport the part
+[40:25] of the scene that is visible
+[40:28] then this is a very important step
+[40:32] this step has further ramifications down
+[40:34] the pipeline
+[40:36] in the sense other stages which are
+[40:39] later on in the pipeline they
+[40:44] uh tend to read data from this state
+[40:48] so here what we do is we compute the
+[40:51] depth of each object
+[40:54] and so let's say there is a complex
+[40:56] object like a stone
+[40:58] so we find out how far it is from the
+[41:00] eye okay
+[41:02] the distance we annotate its front face
+[41:06] so that so if this is the front face so
+[41:08] basically the part that is visible
+[41:10] that part is annotated right so this
+[41:13] part is annotated
+[41:15] and then if let's say there is a small
+[41:17] light source over here
+[41:20] then we look at different rays of light
+[41:22] and see the way that they
+[41:24] interact with the surface and given the
+[41:28] fact that
+[41:28] different parts of the surface have
+[41:31] different normal vectors
+[41:33] there'll be different degrees of
+[41:34] reflection and scattering of light so
+[41:36] all of that is computed
+[41:37] in parallel of course so
+[41:40] basically the list of triangles some
+[41:42] degree of elimination information
+[41:44] some degree of distance information
+[41:47] right elimination and distance primarily
+[41:49] distance from the eye
+[41:51] right a hypothetical eye of course and
+[41:53] the elimination of the front face
+[41:56] this information which is basically a
+[41:58] huge list of triangles this is written
+[42:00] into memory
+[42:01] such that it can be passed to the next
+[42:02] stage so in some cases it is written to
+[42:05] the cache and it's kind of internally
+[42:07] pipelined to the next stage
+[42:08] in some cases there is a need to
+[42:10] actually write it to
+[42:12] main memory the next process
+[42:17] so basically we finished the first stage
+[42:19] of the
+[42:20] big pipeline so the first stage we
+[42:22] looked at
+[42:24] the vertex processor which has been
+[42:26] replaced nowadays as i said
+[42:28] with the polymorph engine so given a set
+[42:32] we convert the set of triangles into a
+[42:35] set of
+[42:36] fragments so fragment basically the set
+[42:40] of pixels
+[42:42] and so instead of looking at a
+[42:44] triangular geometrical thing we do the
+[42:46] same thing
+[42:48] but in this case since you are aware of
+[42:49] the display we
+[42:51] look at each pixel within the triangle
+[42:53] so this triangle then becomes a fragment
+[42:57] we here again optionally can compute the
+[43:00] color and visibility of each fragment
+[43:03] and given the fact that rasterization
+[43:06] well of course is required but it does
+[43:08] not involve a lot of geometric
+[43:10] operations it is hard to derive any
+[43:13] general purpose value out of a piece of
+[43:15] hardware that does rasterization
+[43:17] quite unlike the polymorph engine
+[43:21] vertex processor consequently
+[43:26] there is a dedicated hardware unit even
+[43:28] in modern
+[43:30] gpus that performs rasterization this is
+[43:33] known as the rasterizer hardware unit
+[43:39] okay so this does the process of
+[43:41] frustration
+[43:43] quite well in fact
+[43:47] so next we come to the third
+[43:50] stage which is known as a fragment
+[43:52] processor so
+[43:54] what does the fragment processor take
+[43:55] from the previous stage which is the
+[43:57] rasterizer is basically a set of
+[43:59] in kind of pixel format okay but the
+[44:02] triangles are not fully developed
+[44:05] so there is a need to develop the
+[44:06] triangles in the sense map it
+[44:08] to the final scene so to develop the
+[44:12] triangles what we need to do
+[44:14] is that we need to find the color of the
+[44:16] fragment right or color of the pixels
+[44:18] within the fragment
+[44:21] the information that we have up till now
+[44:23] is just the color of the three vertices
+[44:25] of the triangle we don't really have the
+[44:28] information of the internals
+[44:30] of the triangle right
+[44:35] so in this case the broad idea
+[44:38] uh is like this
+[44:42] that we find the colors uh of here and
+[44:45] we somehow try to interpolate try to
+[44:47] find out the colors from here
+[44:49] just by applying a function on these
+[44:51] three colors and of course the
+[44:52] dimensions of the triangle
+[44:55] then we add a texture over here
+[44:59] right so we also superimpose a texture
+[45:01] over here for example
+[45:03] if this is good we'll simply superimpose
+[45:05] board if it is
+[45:06] brick we'll put in brick and finally fog
+[45:08] computation
+[45:09] which is something similar to what i had
+[45:11] said before
+[45:13] that objects that are close by to the
+[45:16] look slightly differently so if let's
+[45:19] object that is close by looks
+[45:20] differently in the sense the resolution
+[45:22] is higher we see brighter colors
+[45:24] objects that are far away also appear to
+[45:26] be slightly darker
+[45:27] but this also depends on the light
+[45:29] sources
+[45:31] so accommodating these effects is known
+[45:32] as fog computation
+[45:34] so we will discuss this so what are the
+[45:36] three sub stages here in the fragment
+[45:39] interpolation which is finding the color
+[45:41] within the triangle
+[45:42] texture mapping and fog computation
+[45:47] so for interpolation there are two
+[45:50] stage shading stages so
+[45:56] it's called garage shading and form
+[45:58] shading corrode shading is simpler phong
+[46:00] shading is more difficult
+[46:02] the idea over here is to find the colors
+[46:04] of the pixels
+[46:05] within the triangle so here we assume
+[46:08] the triangle is the flat surface
+[46:10] so this is the quintessential assumption
+[46:11] that a triangle lies on a plane it's a
+[46:13] flat surface
+[46:15] we take into account all the sources of
+[46:18] ambient light
+[46:20] okay so basically wherever there is
+[46:22] light we take into account
+[46:23] all the sources including in the
+[46:26] reflections from other triangles right
+[46:27] take
+[46:28] all of that all the rays are kind of
+[46:31] let's say hitting this triangle right
+[46:34] the triangle has a normal vector
+[46:36] oriented along some axis
+[46:39] so if we compute the dot products we'll
+[46:41] find out the light that is hitting the
+[46:43] triangle
+[46:44] the color of the light of course that is
+[46:46] hitting the triangle
+[46:47] we need to take into account the
+[46:49] absorptivity and the reflectivity and
+[46:51] the transmissivity of the surface
+[46:53] in the sense that this can be a
+[46:55] translucent object as well
+[46:57] but let's leave trustless translucency
+[47:00] for the time being
+[47:01] so if you look at the reflectivity of
+[47:03] the surface
+[47:04] then what we can do is we can take this
+[47:06] into account
+[47:08] and we can also look at the colors of
+[47:11] the vertices over here all three
+[47:13] use a complex function which is of
+[47:15] course easily computable in hardware
+[47:18] to find the colors of all the pixels
+[47:21] all right so this is known as gorod
+[47:23] shading
+[47:26] the other approach is known as
+[47:30] fong shading which is more complicated
+[47:32] where we assume that the triangle need
+[47:34] not be a plane need not necessarily be a
+[47:37] it can be a smoothly varying surface
+[47:41] okay so it could be a surface like this
+[47:44] so let me just draw a bigger version
+[47:50] it just could be a surface like this
+[47:53] okay
+[47:55] and this will have a very complex model
+[47:57] of reflectivity
+[47:59] which will of course be far more time
+[48:00] consuming but this
+[48:02] may be able to model a smooth surface
+[48:04] quite well
+[48:06] so we are of course making the
+[48:07] assumption that a triangle lies on a
+[48:09] single plane
+[48:10] but this may be able to model
+[48:14] the surface of a kind of an
+[48:18] complex sloping object much better right
+[48:22] so this was all about borrowed shading
+[48:24] and phong shading
+[48:25] both fall in the class of interpolation
+[48:27] algorithms for pixels
+[48:29] within the triangle next coming to
+[48:32] textures as you can see
+[48:34] there's a brick texture here dirt wood
+[48:36] and so on so we're applying a texture to
+[48:38] each fragment
+[48:39] most gpus will have a dedicated cache to
+[48:42] store texture information
+[48:47] and the last is fog computation so fog
+[48:50] think of it as distance fog so you look
+[48:53] at the pixels that are close by
+[48:54] you see a better granularity they appear
+[48:57] clearer
+[48:58] right but look at the distances far away
+[49:02] they appear blurred
+[49:03] right so there is lesser of a
+[49:04] granularity also see the lines even
+[49:07] though the railway line is parallel
+[49:09] don't you see at the end it appears to
+[49:11] kind of converge
+[49:13] it does right so these effects that
+[49:16] provide the perception of distance are
+[49:18] known as distance form
+[49:20] and since the vertex processor is
+[49:22] already giving us this information about
+[49:24] which object lies where
+[49:26] in the sense that from the eye if i were
+[49:28] to measure the distance
+[49:30] then which object is how far
+[49:33] this information can be used here to
+[49:35] render the scene
+[49:36] render means create the scene from the
+[49:38] rules
+[49:40] so i said the effect of distance is
+[49:41] clearly seen so this is known as fog
+[49:45] which is the third substage in this
+[49:47] stage
+[49:49] finally we come to the last stage of the
+[49:52] traditional gpu pipeline
+[49:54] it is known as the pixel engine
+[49:57] so the pixel engine buy and launch does
+[50:00] two things
+[50:01] it does depth and color buffering
+[50:06] so different fragments have different
+[50:09] depths
+[50:10] okay so the call them as
+[50:13] it's called the z depth or the z depth
+[50:16] so let's call it the z
+[50:17] depth based on the z depth we compute
+[50:19] the visibility of the pixels because
+[50:21] what would happen is we could have two
+[50:24] one object could be hiding a part of the
+[50:26] other object so this is known as
+[50:28] occlusion
+[50:30] so these effects of occlusion where one
+[50:33] object
+[50:33] is hiding a part of the other object
+[50:37] this needs to be computed how will it be
+[50:40] computed well the way
+[50:41] that it will be computed
+[50:45] is like this that we know the
+[50:49] the coordinates the end coordinates of
+[50:52] all the objects
+[50:54] so we know where the stand with respect
+[50:56] to the i we know that
+[50:57] z depths so we just compute the
+[50:59] visibility of each of the fragments
+[51:01] right each of the pixels if you want to
+[51:03] go one level lower
+[51:05] but typically the fragment level is fine
+[51:08] so then we can variable uh
+[51:11] deliberately hide or occlude parts of
+[51:14] the objects
+[51:16] furthermore uh we can look at
+[51:18] translucency so we had discussed
+[51:20] translation earlier also
+[51:23] so given that we had promised to come
+[51:24] back to transl translucency here it is
+[51:28] so the pixel color value is represented
+[51:31] using 32 bits normally
+[51:33] there is a rgb channel right rgb is red
+[51:37] green and blue
+[51:39] so we have eight bits each to indicate
+[51:41] the intensity of the color for rg
+[51:42] and b and alpha is a degree of
+[51:44] transparency
+[51:46] right so one end is fully transparent
+[51:48] and other end is fully opaque
+[51:50] and anything in between is translucent
+[51:52] so these values are also
+[51:54] computed and the translucency effects
+[51:56] are taken care of over here in the pixel
+[51:59] engine
+[51:59] where we display the translucent engines
+[52:02] in
+[52:03] in this translucent objects correctly
+[52:07] and finally once the entire scene has
+[52:11] been created it is sent
+[52:12] to the display device whatever it may be
+[52:15] the monitor or
+[52:18] large screen display projector whatever
+[52:20] it may be
+[52:21] so by early 2004 high-end processors
+[52:24] were approaching a peak throughput of
+[52:26] around 20 gigaflops
+[52:28] but even those days gpus were exceeding
+[52:30] 50 gigaflops it is just that gpus were
+[52:33] doing their own thing
+[52:34] they were doing graphics computations
+[52:37] and
+[52:38] there was no way to repurpose or use a
+[52:40] gpu to do general purpose competitions
+[52:44] but the processing
+[52:47] power of a gpu was increasing by beeps
+[52:50] and bounce
+[52:51] so it became 160 170 gigaflops in just
+[52:54] within one year
+[52:55] and then just kept on increasing right
+[52:57] so it reached a teraflop very soon
+[53:00] so now you know evil processor designers
+[53:04] and programmers
+[53:05] laid their eyes on gpus so they thought
+[53:08] it's a good idea to repurpose the gpu's
+[53:10] resources
+[53:12] in the sense that a large part of the
+[53:14] computation that you have just seen
+[53:16] involves linear algebra other than the
+[53:18] rasterizer
+[53:19] to some extent most of it will generate
+[53:22] linear algebra
+[53:24] and if that is being done for a
+[53:26] graphical scene it can done it can be
+[53:28] done for other high performance and
+[53:29] scientific workloads as well
+[53:32] so what we can do is that we can have a
+[53:34] more generic design of a gpu
+[53:37] fair let's say the programmer writes in
+[53:39] a certain layer call this the programmer
+[53:41] layer
+[53:42] then there is a layer of software which
+[53:44] provides a lot of apis and libraries
+[53:47] and resources to kind of convert it to
+[53:50] another lower layer and again a bunch of
+[53:52] other layers you know we have already
+[53:54] discussed ptx and then
+[53:56] with the virtual instruction set and sas
+[53:58] shader assembly
+[53:59] so with this set of layers a simple
+[54:02] graphical operation can sort of be
+[54:05] mapped to a large number of linear
+[54:07] algebra and numerical operations
+[54:10] and if a graphical program can be done
+[54:12] we can take any other program and just
+[54:14] map it to ptx ptx should ideally not
+[54:16] care
+[54:17] and this can be even a general purpose
+[54:19] program so this is how the idea of a
+[54:22] general purpose
+[54:23] gpu was born fair the gpu processes
+[54:27] scenes that's fine
+[54:29] and then we can repurpose the hardware
+[54:33] so before repurposing the hardware
+[54:36] an initial solution was to repurpose the
+[54:39] software
+[54:39] in the sense what we do is that
+[54:43] instead of directly making the hardware
+[54:45] generic what people initially did is
+[54:47] that they took
+[54:51] linear algebra calculations for other
+[54:54] problems map them to scenes
+[54:56] allowed the gpu to process the scenes
+[54:58] and extracted the
+[54:59] results from the computed scene which
+[55:02] you will think about it is a really
+[55:04] indirect way of doing things it's much
+[55:05] better
+[55:06] to repurpose the hardware that is
+[55:09] exactly what they did they designed more
+[55:10] flexible gpus instead of repurposing the
+[55:14] right make the hardware generic such
+[55:16] that it can do graphics oriented tasks
+[55:18] as well as non-graphics oriented tasks
+[55:24] so now we have finished the first part
+[55:27] which is discussing
+[55:28] traditional gpus asics and fpgas
+[55:38] what we have realized is that
+[55:39] traditional gpus have a lot of power
+[55:42] it is just that initially it was not
+[55:44] realized but later on once it was
+[55:46] realized a more generic substrate was
+[55:48] created
+[55:49] so the next two sections will talk about
+[55:52] the software aspect which is programming
+[55:54] the gpgpus
+[55:56] and then the design aspect of how do we
+[55:58] exactly design them
+[56:00] so this lecture which is the first part
+[56:02] will end over here
+[56:04] and the second part will be there in the
+[56:08] next lecture
+[56:19] you

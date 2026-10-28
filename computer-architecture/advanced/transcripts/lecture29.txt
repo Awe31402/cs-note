@@ -1,0 +1,1785 @@
+[00:22] In this lecture, we will discuss
+[00:23] routing.
+[00:25] Routing is basically an algorithm
+[00:28] which says how a packet should move
+[00:31] from a given source to a destination.
+[00:34] Right, which path should it take?
+[00:38] So, why is this a big deal? Well, uh
+[00:40] it's a big deal for several reasons. So,
+[00:42] the first is that in our system
+[00:46] no flit is dropped. So, that's
+[00:48] important. So, that is, you know,
+[00:50] otherwise routing would not be maybe
+[00:51] that big a deal, but given the fact that
+[00:53] we are not allowed to drop any flit
+[00:56] we need to kind of
+[01:00] maintain flow control at every link
+[01:03] which basically means that at every edge
+[01:06] we have credit-based or on-off flow
+[01:07] control.
+[01:09] And uh
+[01:10] pretty much
+[01:11] flits are not sent unless enough buffer
+[01:14] space is available.
+[01:15] Because of the first requirement, what
+[01:18] happens
+[01:19] is that flits queue up in routers. As a
+[01:21] result, there is congestion.
+[01:23] To avoid congestion, we use virtual
+[01:26] channels which can solve the problem to
+[01:28] some extent, but not to a large extent.
+[01:31] So, we still do have congestion.
+[01:33] So, it is necessary to search for
+[01:35] alternative routes in the sense we go
+[01:36] around this and so on and so forth
+[01:39] such that we can avoid congested areas
+[01:42] and still route
+[01:43] as many flits as possible as quickly as
+[01:46] possible from a source to a given
+[01:48] destination.
+[01:49] Kindly note that all the flits of a
+[01:51] packet
+[01:54] follow the same route.
+[01:55] But all the packets of a message need
+[01:57] not follow the same route.
+[01:59] Again in an NOC typically we
+[02:04] have packets only but sometimes you know
+[02:06] we have large message transfers as well.
+[02:08] I mean a multi-packet message transfers
+[02:10] as well.
+[02:11] And every packet has a head flit so the
+[02:13] routing is basically done for the head
+[02:15] flit.
+[02:16] The rest of the body flits just follow
+[02:19] the head flit.
+[02:20] And the tail flit is the last flit in
+[02:22] the packet.
+[02:26] So the aim of routing is to send a
+[02:28] message from a sender to a receiver via
+[02:31] a path of intermediate routers.
+[02:34] It is always good to have a choice of
+[02:36] multiple routes. Uh this is called path
+[02:38] diversity.
+[02:40] Why is path diversity important? Because
+[02:44] higher is the path diversity more is the
+[02:46] congestion tolerance.
+[02:49] So what is a good route? Is it the
+[02:52] shortest path or is it the shortest
+[02:54] time?
+[02:56] So uh ideally the shortest path may not
+[02:58] be the shortest time because we could
+[03:00] have congestion on the way.
+[03:02] So it should be the shortest time.
+[03:05] But again
+[03:06] is it like we would have a distribution
+[03:08] of times in the sense one packet may
+[03:10] take a lot of time, one packet you know
+[03:12] may take a lot of time, other one may
+[03:14] take
+[03:15] may go very fast.
+[03:17] So what should the distribution be like?
+[03:19] So we can have many metrics over here.
+[03:22] So any good route would typically try to
+[03:24] minimize the latency and also be fair in
+[03:26] the sense it would try to reduce the
+[03:29] span between the time that packets take.
+[03:32] Right? To as small a value as possible
+[03:34] in the sense be fair.
+[03:36] And not to unnecessarily penalize other
+[03:38] packets or basically to delay them.
+[03:43] So what are some of the problems we
+[03:44] should avoid?
+[03:46] So we'll discuss these problems in
+[03:47] detail but essentially any
+[03:50] routing algorithm will three problems,
+[03:53] deadlocks, live locks and
+[03:56] starvation.
+[03:59] So look at this. This is a typical
+[04:01] street. So basically here we have a
+[04:03] gridlock kind of situation, right? Cars
+[04:06] are trying to move God knows where and
+[04:08] in which direction. These guys are
+[04:09] trying to go this way. They are coming
+[04:11] to go this way. So it's all kind of
+[04:13] mixed up, right? Nobody can make any
+[04:15] progress.
+[04:17] So this is with
+[04:19] a city. So here again, you know, you
+[04:21] can't take a helicopter and kind of
+[04:23] airlift cars, right? So that is not
+[04:25] possible.
+[04:26] So basically what you do in this case is
+[04:28] you somehow, you know, try to ease the
+[04:31] congestion by seeing what is it that you
+[04:33] can move
+[04:34] or maybe force a few cars to take a
+[04:36] longer route in the sense all of these
+[04:39] cars could just be asked to exit this
+[04:42] way, right? It doesn't matter wherever
+[04:43] you're going.
+[04:45] Right? So maybe you know, this car wants
+[04:47] to go over here, but just make it exit
+[04:49] this way, go somewhere else and then
+[04:51] again come back here, right? Via a long
+[04:53] route. So all of that needs to be done
+[04:55] because like uh
+[04:57] real traffic network
+[04:59] we also cannot drop packets.
+[05:02] So as a result to avoid congestion
+[05:05] and to avoid such deadlock kind of
+[05:06] situations, many long routes have to be
+[05:09] taken.
+[05:11] So in our case the meaning of a deadlock
+[05:13] is like this that no car can make any
+[05:16] progress. So if you see these four cars
+[05:19] and let's say we have only a single car
+[05:22] and a space for only a single car in
+[05:24] each block, right?
+[05:26] Right? A block is like this point to
+[05:27] this point.
+[05:28] Then as we can see nobody can make any
+[05:30] progress because this car is trying to
+[05:32] go this way, but there's a car over
+[05:33] here. This car can't move. This car
+[05:35] can't move. This car can't move.
+[05:37] So there is clearly a circular weight
+[05:39] situation.
+[05:40] Of course, one option would be that this
+[05:42] car goes this way, takes a long route
+[05:44] and comes back.
+[05:45] And by that time this slot would have
+[05:47] become empty.
+[05:50] But again, uh there is a need to
+[05:52] actually
+[05:54] realize that via a routing algorithm
+[05:56] that would not allow such deadlocks to
+[05:59] happen in the first place. Otherwise,
+[06:01] just solving them becomes quite
+[06:03] difficult.
+[06:05] In an NOC, we can have exactly the same
+[06:09] If we assume a buffer size of one flit,
+[06:12] then this is nothing but a deadlock
+[06:18] So, in this case, we have flits in
+[06:20] router A trying to go to router B.
+[06:23] Then a flit over here trying to go to C,
+[06:25] but C has no space. C trying to go to D
+[06:27] and D to A.
+[06:31] So, let's now look at other problems uh
+[06:34] along with deadlocks, which is livelock
+[06:36] and starvation.
+[06:38] So, livelock basically is that flits
+[06:42] continuously get transmitted, quite
+[06:43] unlike a deadlock where continuous
+[06:45] movement is happening.
+[06:47] But the fact is that they're never
+[06:49] reaching their destinations. In a
+[06:50] certain sense, if this is the
+[06:52] destination, this is the source,
+[06:54] so a flit goes and it just kind of goes
+[06:56] around and around and around in circles.
+[06:58] So, it basically never reaches the
+[07:01] So, in this case, quite unlike
+[07:03] deadlocks, movement is happening,
+[07:04] progress is happening, but it's not
+[07:06] meaningful progress.
+[07:08] So, the flits are not reaching the
+[07:09] destination. As a result, there is this
+[07:12] infinite looping
+[07:13] and these routing algorithms in a sense
+[07:15] never terminate. So, this is a livelock,
+[07:18] which is
+[07:19] clearly not acceptable.
+[07:22] And starvation is
+[07:23] that a certain flit never makes
+[07:25] progress. In the sense, it's just stuck
+[07:28] in a router.
+[07:29] It never moves towards its destination.
+[07:32] This, in other words, would essentially
+[07:34] mean that it has the lowest priority.
+[07:38] Its router always ignores it and in its
+[07:40] place transmits other flips, right? So,
+[07:43] it continually does that.
+[07:45] It transmits other flips, right? And it
+[07:48] doesn't
+[07:50] transmit this. So, we have a famous
+[07:52] result in computer science, which is
+[07:55] reasonably straightforward and common
+[07:57] sense, also.
+[08:00] That let's say we have starvation
+[08:01] freedom.
+[08:02] Starvation freedom basically means
+[08:05] that it is never the case
+[08:09] that a certain flit will never make
+[08:15] Then this would
+[08:18] Assuming that there are no live locks,
+[08:20] this would imply
+[08:21] deadlock freedom.
+[08:29] Right?
+[08:30] So, starvation freedom would imply
+[08:32] deadlock freedom because starvation
+[08:33] freedom says that no packet is ever
+[08:36] stuck. And given the fact that we are
+[08:38] seeing that there are no live locks,
+[08:41] this means if it's not stuck, means
+[08:42] what? It is moving, right? So, you never
+[08:45] have
+[08:47] it will reach its destination.
+[08:48] Furthermore, if a packet is never stuck,
+[08:51] it also means another thing, which is
+[08:53] that
+[08:55] it always has the flexibility to move.
+[08:57] As a result, there is no deadlock.
+[08:59] Because a deadlock means that till
+[09:01] infinite time, indefinite time,
+[09:03] none of your
+[09:05] flits that are involved in this circular
+[09:07] weight kind of situation, none of them
+[09:08] can move.
+[09:10] But given the fact that moving is
+[09:11] guaranteed because we have starvation
+[09:13] freedom, it would imply deadlock
+[09:16] But mind you, the converse is not true
+[09:17] in the sense that if there is deadlock
+[09:20] freedom,
+[09:21] it doesn't mean that there is starvation
+[09:24] And what's a good way of proving it?
+[09:26] Well, we can
+[09:27] just, you know, prove it using a counter
+[09:29] example. So, we can basically say,
+[09:30] "Look,
+[09:32] all that I can do I I mean, in this
+[09:34] case, actually, with an example. So, I
+[09:35] can say that, "Look, what I can do
+[09:38] is that I can take a flit in a router
+[09:40] and I can delay it forever.
+[09:42] So, there's a router over here with its
+[09:44] queues.
+[09:45] I can just take one of these flits, put
+[09:47] it in like
+[09:49] an auxiliary queue and kind of keep it
+[09:50] over there, delay it forever.
+[09:52] So, in this case that flit is suffering
+[09:55] from starvation.
+[09:57] No doubt.
+[09:58] But, you know, I'm the rest of my
+[10:00] algorithm could be designed in such a
+[10:02] way that there are no deadlocks and we
+[10:03] will find
+[10:05] a lot of examples of such algorithms
+[10:07] discussed in this chapter which are
+[10:09] provably deadlock free.
+[10:11] So, in this case deadlock freedom does
+[10:13] not guarantee starvation freedom. But,
+[10:16] mind you the other way which is that if
+[10:17] there is no starvation freedom, there
+[10:19] are no deadlocks always holds true.
+[10:22] So, now the question is that how do we
+[10:24] solve this issue of starvation and live
+[10:26] lock?
+[10:27] Well, both the problems can be solved by
+[10:29] implementing a version of aging
+[10:31] which basically says that the longer a
+[10:33] flit stays in a router, right? kind of
+[10:35] jack up its priority.
+[10:37] Jacking up its priority essentially
+[10:39] means that instead of taking other
+[10:41] routes to avoid congestion,
+[10:43] it takes a straight route.
+[10:47] Right? So, so let's say, you know, it's
+[10:48] going, but at this point you decide that
+[10:50] there is congestion.
+[10:52] And then, you know, it waits and then
+[10:53] its priority gets hiked up.
+[10:56] It kind of takes a straight route, you
+[10:57] know, as straight as it can, the
+[10:59] shortest path to the destination.
+[11:01] That prevents live locks and
+[11:03] furthermore, given that its priority is
+[11:05] high because it has waited for so long,
+[11:07] it would prevent starvation as well.
+[11:10] Right? So, in that sense aging is a
+[11:11] generic solution. But, again, aging is
+[11:14] something that is hard to implement in
+[11:17] practice.
+[11:19] Aging is hard to implement. In In fact,
+[11:21] in practice even starvation freedom is
+[11:23] hard to implement
+[11:25] because if you think about it
+[11:26] philosophically,
+[11:28] starvation freedom or starvation,
+[11:30] rather,
+[11:32] is an attribute of a single node, right?
+[11:34] So, this is kind of a local property.
+[11:37] In a sense, you are saying that
+[11:40] this is local to the router. But, you
+[11:42] know, in deadlocks, what happens? If you
+[11:45] take a look at this case, this is more
+[11:46] like, you know, not local. It's kind of
+[11:48] global.
+[11:49] Or let's say more than local.
+[11:51] So, in this case, the network's
+[11:53] configuration is such
+[11:55] that the flit buffers are full and the
+[11:57] flits are not able to move.
+[11:59] As a result, we are seeing a
+[12:03] deadlock. So, a deadlock is more of a
+[12:05] global thing and starvation is local.
+[12:08] And even if you don't want starvation,
+[12:13] you still have to guarantee that another
+[12:15] router who's your neighbor has
+[12:16] sufficient space available.
+[12:19] And that is often very hard to do. So,
+[12:20] that's why achieving starvation freedom
+[12:22] in practice is hard.
+[12:25] Or let's say guaranteeing starvation
+[12:26] freedom only making local decisions is
+[12:28] hard.
+[12:29] That is why most papers kind of
+[12:31] guarantee deadlock freedom, starvation
+[12:33] freedom, and livelock separately.
+[12:35] Right? So, they don't take the
+[12:37] starvation freedom route.
+[12:39] And they basically kind of
+[12:42] divide these into multiple sub classes
+[12:44] and
+[12:46] sort of look at them differently.
+[12:50] Now, the question is how do you deal
+[12:52] with deadlocks? So, as I So, as I said,
+[12:54] livelocks
+[12:55] and some aspects of starvation can be
+[12:58] taken care of by aging. And mind you,
+[13:01] aging is also kind of a local property
+[13:03] in the sense it's local to the router.
+[13:06] The longer you are there, the more you
+[13:08] age. So, the router kind of chooses you
+[13:09] over others, if at all it can send.
+[13:13] So, let's say we have a deadlock
+[13:15] avoidance protocol or a protocol which
+[13:17] just prevents deadlocks, right? Stops
+[13:20] them from happening.
+[13:21] Then, in this case, what we can do is
+[13:23] that we can say that, "Look, you You
+[13:25] always have someone to send your packet
+[13:27] to.
+[13:29] And so that will take care of deadlocks.
+[13:31] And for starvation and live locks, you
+[13:32] just implement aging, which is a local
+[13:34] solution. In a sense, internally you
+[13:37] have a priority system which does not
+[13:38] allow a flit
+[13:41] or a packet to stay in your router
+[13:43] indefinitely. So the more senior it
+[13:45] gets, the more aged it becomes,
+[13:48] kind of keep on increasing its priority
+[13:50] until, you know, you can say that, you
+[13:52] know, by this time the flit would have
+[13:54] definitely been sent.
+[13:57] So dealing with deadlocks, so we will be
+[13:59] looking at this diagram several times.
+[14:01] So it's important we understand this
+[14:03] diagram.
+[14:07] So in this case, we have packet P1,
+[14:10] which is trying to go from D to B.
+[14:13] It is stuck at A because D to A it has
+[14:15] traversed, but A to B it has not
+[14:17] traversed.
+[14:18] It's not able to go because of packet
+[14:20] two, which has to go from A to C.
+[14:23] The one link it has traversed, so in
+[14:24] that sense
+[14:27] it's kind of stuck because it's not able
+[14:28] to go to C.
+[14:30] Similarly, packet three is going to go
+[14:32] from B to D, and packet four is going to
+[14:34] go from C to A.
+[14:37] So we say that, let's say packet P1, for
+[14:40] instance, which is this packet, is
+[14:42] holding channel one.
+[14:44] Holding channel one basically means its
+[14:46] flits are in its flits are in the
+[14:49] buffers of channel one.
+[14:51] That's what in this case uh holding
+[14:54] would mean.
+[14:56] That its flits are in the buffers of
+[14:58] channel one.
+[15:00] And in a sense, it's holding it. It's
+[15:02] trying to hold channel two. In the
+[15:03] sense, it's trying to look for
+[15:05] buffer space that is associated with
+[15:07] channel two.
+[15:09] But it's not able to hold it, hence it
+[15:11] just wants to
+[15:12] hold this channel.
+[15:14] And why is it wanting? Well, the reason
+[15:16] being that P2, which is supposed to go
+[15:18] from A to C,
+[15:20] is actually physically resident over
+[15:22] here,
+[15:22] and it is not able to move forward
+[15:25] because C does not have free buffers
+[15:27] because P3 is holding on to it.
+[15:29] So, what are you essentially doing? You
+[15:31] are essentially saying that I'm a
+[15:32] packet,
+[15:33] I'm holding on to a channel with the
+[15:35] definition that I just mentioned,
+[15:37] and I want to hold on to another
+[15:39] channel, right? Uh such that my flits
+[15:42] can move from in this case from channel
+[15:44] one to channel two.
+[15:47] And in this case, since nobody is able
+[15:48] to move, you are clearly seeing a
+[15:50] deadlock situation.
+[15:56] So, we will now introduce the resource
+[15:58] dependence graph, the RDG.
+[16:01] Where basically it's a bipartite graph,
+[16:03] we have packets on one side,
+[16:05] and we have channels on the other side.
+[16:08] So, basically we say that these are
+[16:10] packets,
+[16:13] and we have channels.
+[16:20] So, then there is an arrow from, let's
+[16:22] say, packet PI to channel J like this
+[16:25] if the packet PI is waiting for it to be
+[16:27] free or it if it wants channel
+[16:31] two. Uh is it right? If P1 want Sorry,
+[16:33] if P1 wants channel two, there is an
+[16:35] arrow.
+[16:36] Similarly, if P1 is holding a channel,
+[16:38] then there is an arrow from one to P1.
+[16:41] So, there's an arrow from channel from
+[16:43] channel J
+[16:44] to packet PI, then if the packet PI This
+[16:47] basically means that packet PI holds the
+[16:50] right to transmit on channel J.
+[16:53] Right? So, basically in this case, it is
+[16:55] P1 is holding channel one, it wants to
+[16:57] hold channel two. P2 is holding channel
+[16:59] two, it wants to hold channel three.
+[17:02] Similarly for P3 and P4, right? Very
+[17:04] interesting. It's holding channel four,
+[17:06] it wants to hold channel one.
+[17:08] So, as you can see, there is a nice
+[17:12] cycle in this directed graph, right? So,
+[17:15] there is a cycle.
+[17:17] And a cycle essentially means a circular
+[17:20] wait, and a circular wait essentially
+[17:22] means that this is a deadlock situation
+[17:25] because I have something, but I want
+[17:27] something from my neighbor. My neighbor
+[17:29] has what I want, but it wants something
+[17:31] from its neighbor, and its neighbor is
+[17:33] not able to give it for the same reason.
+[17:35] So, on and so forth, we form a cycle,
+[17:37] hence none of us can make any progress.
+[17:40] Right? So, this cyclic wait situation is
+[17:42] a deadlock.
+[17:44] And a theoretical tool, a mathematical
+[17:46] tool to basically characterize a
+[17:48] deadlock,
+[17:49] is the resource dependence graph, which
+[17:51] is drawn in this way.
+[17:53] Which is that if you hold a channel,
+[17:54] then there's an arrow from the channel
+[17:56] to you.
+[17:57] And if a packet wants a channel, there
+[17:59] is an arrow from the packet to the
+[18:01] channel it desires to hold. If there is
+[18:03] a cyclic wait, we are gone because there
+[18:05] is a deadlock.
+[18:08] So, let us now extend this concept to a
+[18:10] channel dependence graph or a CDG.
+[18:14] Which if you think about it, is a
+[18:15] modified version of the resource
+[18:18] dependence graph.
+[18:20] So, if I come back to the graph over
+[18:24] then what you would see is that
+[18:27] there is an arrow from channel one
+[18:30] to packet P1, then an arrow from P1 to
+[18:34] And the definitions of these arrows I
+[18:36] was just explaining a couple of minutes
+[18:37] ago
+[18:39] that uh you know, if there is a from
+[18:41] arrow from a channel to a packet,
+[18:44] then it means that
+[18:46] this packet kind of owns this channel.
+[18:48] And if there's an arrow from a packet to
+[18:50] a channel, it means
+[18:51] the packet is desirous of getting access
+[18:54] to this channel.
+[18:57] So, now if you think about it, we can
+[18:59] remove the packets from the picture and
+[19:01] instead directly add an edge between the
+[19:03] channels. For example,
+[19:05] if you see there is a path from channel
+[19:07] one to channel two, of course via packet
+[19:10] P1,
+[19:11] but
+[19:13] having packet P1 over there
+[19:16] is this is kind of incidental in the
+[19:17] sense it's not adding a great amount of
+[19:19] value.
+[19:20] So, I can instead have a graph where
+[19:22] this is not there, but I have a direct
+[19:24] edge from one to two.
+[19:26] Same way the direct edge from two to
+[19:27] three, three to four, and then from four
+[19:29] to one.
+[19:31] This is exactly what I have over here
+[19:33] that I removed the packets.
+[19:38] I've just considered the dependencies
+[19:40] between channels, which is one to two,
+[19:42] two to three,
+[19:43] three to four, four to one, and so on.
+[19:47] So, what would
+[19:49] be kind of common sense over here
+[19:51] is that we if we have a cycle in the
+[19:54] channel dependence graph,
+[19:57] right? So, so so let's look at this
+[19:58] particular case.
+[20:00] It would imply a deadlock,
+[20:02] which basically means
+[20:04] that, you know, there is a circular
+[20:06] weight
+[20:07] in the sense
+[20:10] one is waiting on two, two on three,
+[20:12] three on four, and four on one. So, this
+[20:13] is like a
+[20:14] circular weight kind of situation.
+[20:17] And any kind of a circular weight kind
+[20:19] of situation is a deadlock.
+[20:21] So, in the CDG, we need to avoid these
+[20:24] cycles.
+[20:27] So, the
+[20:28] sad part is that we could have deadlocks
+[20:31] even with virtual channels.
+[20:34] So, let us do one thing. So, in this
+[20:35] case, let us slightly change the
+[20:37] connotation of the channel dependence
+[20:39] graph.
+[20:40] So, let us call it the virtual channel
+[20:42] dependence graph, right? So, basically
+[20:44] every channel is a virtual channel.
+[20:48] So, in this case, what will happen
+[20:52] is that we can say that, look, every
+[20:54] physical channel
+[20:57] is associated with two VCs.
+[21:01] Let us further number these VCs zero and
+[21:05] one.
+[21:07] So, we can say that for all the
+[21:09] zero-numbered virtual channels, we have
+[21:12] a deadlock situation over here.
+[21:15] And for all the one-numbered virtual
+[21:17] channels, we have a deadlock situation
+[21:19] over here. So, basically, as you can
+[21:21] see, even with virtual channels,
+[21:24] right? Assuming we slightly change the
+[21:29] graph to a virtual channel dependence
+[21:30] graph,
+[21:32] so what we have basically over here is
+[21:35] that even with virtual channels, we have
+[21:37] deadlocks.
+[21:38] Uh as you can see over here,
+[21:41] that deadlocks are indeed possible, as
+[21:44] you can see here.
+[21:46] That the virtual channels are kind of of
+[21:49] So, of course, you know, you have
+[21:50] multiple two VCs per physical channel,
+[21:53] but still we have that a deadlock
+[21:56] situation that is here. So, having
+[21:58] virtual channels does not
+[22:01] prevent deadlocks, even though we will
+[22:03] see that there is a protocol which
+[22:06] can make a VC design kind of deadlock
+[22:10] immune, but we will take a look at it.
+[22:17] So, now let's come to the
+[22:20] to a new concept turn graphs, which we
+[22:22] are introducing over here.
+[22:24] So, let's first see what is a need for
+[22:26] introducing a turn graph or a TG when we
+[22:29] already have
+[22:31] CDGs and RDGs defined. So, their
+[22:34] disadvantages are like this,
+[22:36] that uh look, if you draw uh the
+[22:39] topology of the network, right?
+[22:41] A certain channel oriented this way,
+[22:43] someone oriented this way. So, there's a
+[22:45] orientation information, which way are
+[22:47] you going? So, we can have our, you
+[22:49] know, we can have directions like this.
+[22:51] We can say that they are like north,
+[22:53] south, east and west. So, this
+[22:56] north-south-east-west information of
+[22:58] channels
+[22:59] is kind of getting lost, and this is
+[23:02] what we are referring to as orientation.
+[23:04] And we don't want to lose this
+[23:06] information, right? So, the basic steps
+[23:09] are like this.
+[23:13] Let us consider a path C in the channel
+[23:15] graph in the channel dependence graph.
+[23:17] So, basically a path C you know, could
+[23:19] be any path. It could be let's say this
+[23:21] path here or it could be the entire
+[23:22] cycle. It doesn't matter. You consider a
+[23:24] path.
+[23:26] So, the turn graph will contain all the
+[23:29] nodes and the channels that belong to C.
+[23:33] So, C basically contains what? It
+[23:34] contains a set of channels, right?
+[23:38] So, the turn graph
+[23:40] the nodes of the turn graph will be all
+[23:41] the nodes and the channels. So, the
+[23:43] moment you consider channels,
+[23:45] automatically you are considering nodes.
+[23:47] So, everything that belongs to C will
+[23:49] belong to the turn graph, but with an
+[23:52] additional rider
+[23:53] that it will preserve the orientation of
+[23:56] the channels and it will not contain any
+[23:58] other channel.
+[24:00] So, I'll explain this with an example or
+[24:02] maybe I should go to the example here on
+[24:04] the next slide.
+[24:05] So, let this be the original graph. So,
+[24:07] well, so this is a computer science term
+[24:09] graph
+[24:11] where we have the original NOC network
+[24:13] on chip.
+[24:14] And we have four nodes A, B, C, and D.
+[24:18] And as you can see, we have a bunch of
+[24:20] channels that connect to them.
+[24:22] So, uh the channel
+[24:24] a channel dependence graph can be formed
+[24:27] after of course you have formed our
+[24:28] channels.
+[24:30] So, let us look at four channels here, 1
+[24:33] 2 3 and 4.
+[24:34] One connects A to B, two B to C, three C
+[24:38] to D, and four uh D to A.
+[24:41] So, what I can do is that I can create a
+[24:44] channel dependence graph of the form 1 2
+[24:47] 3 4.
+[24:48] Right? Assuming that there is a deadlock
+[24:51] But, this is a CD. So, here is the fun
+[24:54] part that I will consider, you know,
+[24:56] these four channels in the
+[24:58] CDG and create a turn graph out of them.
+[25:01] So, to do that, what I will do is I'll
+[25:03] extract the node information from the
+[25:05] original graph.
+[25:07] I'll extract the channel information
+[25:09] from the CDG.
+[25:11] Then, what I will do is that I will have
+[25:14] the nodes as they are.
+[25:16] I will have the channels as they are,
+[25:19] preserve their orientation. So, as you
+[25:21] can see, I've extracted the nodes from
+[25:23] here, I've extracted the channels from
+[25:24] here.
+[25:25] And the path is clearly visible.
+[25:28] And the orientation is the same in the
+[25:30] sense, you know, channel one is going
+[25:32] from
+[25:33] west to east. It is going from west to
+[25:35] east over here.
+[25:37] And I have something additional, we
+[25:39] insert a new node called the channel
+[25:41] node in the middle of each edge or
+[25:43] channel, right? So, in the middle of
+[25:45] each edge or channel,
+[25:46] so let's say this is channel one. Uh to
+[25:48] kind of delineate that,
+[25:50] I add a new node called the channel
+[25:53] node, and I have one here, two here,
+[25:55] three here, and
+[25:56] four over here.
+[26:01] So, if there is a path C in the CDG,
+[26:03] there will be a path having the same
+[26:05] channel nodes in the TG.
+[26:07] So, that is clear. So, the reason is
+[26:08] that if I have a path in a CDG with
+[26:10] channel nodes 1, 2, 3, and 4,
+[26:14] then I'll have a path in the TG with
+[26:15] exactly the same channel nodes 1, 2, 3,
+[26:18] and 4. And of course, there
+[26:20] uh you know, the
+[26:21] regular nodes are the ends of each
+[26:23] channel.
+[26:24] So, the most important result uh here in
+[26:27] this slide is that if there is a cycle
+[26:29] in the TG CDG,
+[26:31] then the same cycle will be visible in a
+[26:33] TG also if we extract if the cycle is a
+[26:36] part of this path C, right? If a cycle
+[26:38] in the CDG, it is possible to construct
+[26:40] a TG
+[26:42] that exhibits a cycle.
+[26:45] So, coming back to this, as you can see,
+[26:47] there is a cycle in the CDG, so we were
+[26:49] able to construct a turn graph
+[26:52] with a cycle with the channel nodes over
+[26:55] here and we preserve the orientation of
+[26:57] the channel as per the original graph.
+[27:00] So, the turn graph is in many ways
+[27:04] kind of capturing information of the
+[27:06] orientation, capturing the information
+[27:08] of the nodes and the channels.
+[27:10] And it is taking a particular path in
+[27:13] the CDG.
+[27:15] And of course, we are interested
+[27:16] primarily in those paths which contain
+[27:21] So, what are the properties of the TG?
+[27:24] So, again, this is all simple stuff, but
+[27:26] it is
+[27:27] kind of necessary to enumerate that uh
+[27:30] every edge in the CDG
+[27:33] right? So, edge in a CDG means what? It
+[27:35] is basically a link from channel one to
+[27:37] two.
+[27:38] Would translate to either a set of
+[27:40] collinear nodes in a TG in the sense,
+[27:43] you know, if this is from A to B and
+[27:45] that is from B to C.
+[27:47] It could be collinear in the sense it
+[27:49] could be A to B and B to C or you could
+[27:52] have a turn. You could go to A to B and
+[27:54] then you could turn and then go to C.
+[27:57] So, either it would be collinear or it
+[27:59] would imply a turn.
+[28:03] Furthermore, every cycle in the CDG will
+[28:05] also be a cycle in the TG in the sense
+[28:08] you can create a TG that exhibits the
+[28:10] cycle.
+[28:12] And furthermore, every cycle in the CDG
+[28:15] which is equivalent to a cycle in the TG
+[28:18] it can be translated to a sequence of
+[28:20] straight paths and turns. So, as I said,
+[28:23] because every edge in the CDG is either
+[28:25] a set of three collinear nodes or a turn
+[28:28] it's a sequence of either straight paths
+[28:30] or turns in the corresponding turn
+[28:34] So, what is our aim? Our aim is to
+[28:36] ensure that there are no cycles in the
+[28:38] turn graph.
+[28:39] If there are no cycles in the turn
+[28:41] graph, then basically what happens is
+[28:43] it's not possible to create a turn graph
+[28:45] with cycles. That's a more accurate way
+[28:47] of putting it.
+[28:49] It means that, you know, all CDGs will
+[28:52] have no cycles, which means there will
+[28:53] be no deadlocks.
+[28:55] So, if a routing protocol is having
+[28:57] these in a cycle-free TGs and CDGs,
+[29:01] then uh the routing protocol is probably
+[29:03] deadlock-free.
+[29:05] Right? So, essentially, what you will
+[29:06] have to do
+[29:08] is that you'll have to create a protocol
+[29:09] such that it is not possible to create a
+[29:12] turn graph with a cycle.
+[29:14] If it is possible to do so,
+[29:17] which is to create a protocol protocol
+[29:19] in which all possible turn graphs are
+[29:21] cycle-free,
+[29:22] then we have a deadlock-free routing
+[29:24] protocol.
+[29:27] So, let's start looking at some of the
+[29:29] simplest routing protocols. We'll
+[29:32] gradually kind of jack up the
+[29:34] complexity. So, we are starting with the
+[29:36] simplest routing protocol, which is
+[29:38] simple yet very inefficient. But,
+[29:41] anyway, we'll start with the simplest.
+[29:45] So, what we do is that we take a mesh of
+[29:49] nodes. So, every node is a router.
+[29:52] And then we give every node an X
+[29:54] coordinate and a Y coordinate. So, let's
+[29:57] say if you have node A,
+[29:58] we'll give it the coordinates X1 and Y1.
+[30:03] Similarly, if you have node B, we will
+[30:05] give it the coordinates X2 and Y2.
+[30:08] So, we'll route along the X axis first.
+[30:11] So, we will keep the Y coordinate the
+[30:13] same,
+[30:14] and we will change X1 to X2. So, we will
+[30:17] move from X1 Y1
+[30:19] to X2 Y1.
+[30:22] And uh then what we will do is we will
+[30:25] keep X2 the same, and we will route
+[30:28] along the Y axis. So, we'll change from
+[30:30] Y1 to Y2.
+[30:32] So, we'll go along the X axis first,
+[30:35] then go along the
+[30:37] Y axis.
+[30:39] All right?
+[30:40] So, basically, this is from X1 Y1 to X2,
+[30:43] Y1 and then X2, Y1 to X2, Y2.
+[30:47] So, this is dimension ordered routing or
+[30:49] XY routing. Well, why?
+[30:51] Uh the main reason being that first we
+[30:53] go along the x-axis and then we go along
+[30:56] the
+[30:57] y-axis.
+[31:00] So, similarly if you have n dimensions
+[31:02] in the sense if we have a cube or
+[31:04] something,
+[31:06] we can order them uh you know, we can go
+[31:08] along dimension one first, then along
+[31:11] dimension two first, then along
+[31:12] dimension three,
+[31:14] so on and so forth.
+[31:17] So, basically if you have dimension one,
+[31:18] two, and three, we go along one
+[31:20] dimension, then the next, and then the
+[31:21] next, uh so on and so forth.
+[31:25] So, uh if you have n dimensions, of
+[31:26] course, we order the dimensions and then
+[31:29] we go
+[31:30] along them.
+[31:33] So, this is, of course, a simple
+[31:35] technique as you can see, right?
+[31:38] But, the point is that this has
+[31:40] absolutely no path diversity because
+[31:42] given the starting point and the end
+[31:44] point,
+[31:45] the path is fixed.
+[31:49] So, what we can do is that let us assume
+[31:53] that the turn graph has a cycle, right?
+[31:56] So, let's try to prove by contradiction.
+[31:58] Let's assume that with this protocol I'm
+[32:00] able to create a turn graph that has a
+[32:03] cycle, right?
+[32:05] So, that is kind of the
+[32:07] boon or bane of my
+[32:09] contention, right? Uh that
+[32:13] uh we will have. So, of course, many
+[32:15] cycles are possible, but I can, you
+[32:17] know, kind of break them down in either
+[32:19] into a simple
+[32:20] clockwise cycle or an anti-clockwise
+[32:22] cycle. So, let us look at an
+[32:23] anti-clockwise cycle. The proof for a
+[32:25] clockwise cycle is similar.
+[32:27] But, again, you know, if I kind of break
+[32:29] it down into a simple shape, I'll either
+[32:32] have a clockwise or an anti-clockwise
+[32:37] So, in an anti-clockwise cycle,
+[32:41] uh let's see what will happen. So what
+[32:43] will happen is
+[32:44] that we will have uh so in an
+[32:46] anti-clockwise cycle in a turn graph,
+[32:48] right?
+[32:49] So the in the turn graph, let us
+[32:52] focus on this turn. So this turn is the
+[32:55] one that is the most important.
+[32:58] It is the CK uh the CKth channel to the
+[33:01] CK + 1th channel turn.
+[33:04] This turn is technically not allowed in
+[33:06] the XY right routing protocol because a
+[33:08] packet is traversing in the Y direction
+[33:10] first
+[33:12] and then it is moving along the X
+[33:13] direction.
+[33:16] So you go go along the Y direction first
+[33:19] and then you go along the X direction,
+[33:21] which is not allowed because it is XY
+[33:24] routing, it is not YX routing, right? So
+[33:26] if first go along Y then along X is not
+[33:28] allowed.
+[33:30] Which basically means that if this turn
+[33:32] is not allowed, we cannot construct a TG
+[33:35] with an anti-clockwise cycle. Similarly,
+[33:37] we can't construct a TG with a clockwise
+[33:39] cycle, hence for all cases,
+[33:42] we cannot construct a TG with a cycle
+[33:44] since a TG since you know all possible
+[33:46] TGs will not have cycles,
+[33:48] we will not have any deadlocks.
+[33:52] This basically proves that
+[33:55] any XY routing protocol
+[33:58] is provably deadlock free. Well, why?
+[34:01] The reason is quite simple. The reason
+[34:03] is basically that
+[34:05] we will not have deadlocks because we
+[34:07] can't create a TG with a cycle, either
+[34:09] clockwise or anti-clockwise because
+[34:12] one of the turns will be precluded.
+[34:16] Right? So even in a clockwise cycle, so
+[34:17] actually the arrows will be reversed.
+[34:20] Right? Uh so all the arrows, if you go
+[34:22] by the red ones, they will be reversed.
+[34:26] So here again, here again, you know,
+[34:29] this turn is the one that will not be
+[34:31] allowed in a clockwise case.
+[34:33] Because we are going going around
+[34:35] Sorry, going along Y first and then
+[34:38] along X, which is not allowed, right?
+[34:42] So, what are the problems with XY
+[34:43] routing? Well, first, the good thing is
+[34:46] it is simple, but the bad thing is there
+[34:48] is no path diversity. The route is
+[34:49] fixed.
+[34:51] The algorithm cannot adapt to any kind
+[34:54] or any form of congestion, right?
+[34:57] So,
+[34:58] because it cannot adapt or to any form
+[35:01] of congestion,
+[35:03] there is a problem.
+[35:06] So, now let us look at what is called
+[35:09] oblivious routing, the Valiant's
+[35:11] algorithm.
+[35:13] So, what we do is we choose a point P at
+[35:15] random.
+[35:16] We send the message from the source to
+[35:18] P,
+[35:19] and then from P to the destination,
+[35:21] which is B.
+[35:23] So, the idea is that since there are so
+[35:24] many choices for P, we can send a
+[35:27] message to P and then from P to B.
+[35:30] So, in this case, we are dealing with
+[35:31] congestion much better because the point
+[35:33] P can really be at random, so there is a
+[35:35] lot of path diversity.
+[35:37] And furthermore, we are using the basic
+[35:40] XY routing protocol to go from A to P
+[35:42] and to go from P to B.
+[35:45] So, that is what we are doing. The basic
+[35:46] protocol is being used.
+[35:48] So, in this case, this algorithm is also
+[35:51] provably deadlock-free because for each
+[35:54] leg of the journey, XY routing is being
+[35:56] used.
+[35:58] But, the routes are long and suboptimal
+[36:00] because even to go from A to B,
+[36:04] or let's say A was here and B was here,
+[36:06] and let's say P was over here,
+[36:08] we would have to take a long long
+[36:10] detour.
+[36:13] So, the key point over here
+[36:16] is that the routes can be Sorry, in the
+[36:18] detour, I go along X first and then
+[36:20] along Y,
+[36:21] but you get the point, right? So, that
+[36:24] it will be a long path.
+[36:27] So, to avoid that, we
+[36:29] we kind of, you know, tie the hands of
+[36:31] aliens oblivious routing.
+[36:34] And we have minimally oblivious routing.
+[36:36] In this case, we create a window around
+[36:38] B.
+[36:41] So we send the message from the source
+[36:45] and we choose the point P in this small
+[36:48] window only. So this reduces the extra
+[36:50] work, the extra effort.
+[36:52] Still provides us with a degree of
+[36:54] randomness and path diversity.
+[36:59] to P, any node which is any node within
+[37:01] the window.
+[37:03] And then we send uh
+[37:04] a message from P to the destination,
+[37:08] So the computed routes in this case are
+[37:11] not very long because we have
+[37:12] constrained the choice of P.
+[37:14] So we could on the other hand also have
+[37:17] a window around A and have the nodes
+[37:21] node P along A and then from P to B. It
+[37:23] will not make a you know, big
+[37:24] difference.
+[37:26] But the key point is that the computed
+[37:27] routes are not very long. We have
+[37:30] reduced the amount of path diversity,
+[37:32] but still there is some. So this is like
+[37:34] a trade-off. It's like a trade-off
+[37:35] between pure XY routing and between pure
+[37:39] oblivious routing, right? It's kind of a
+[37:41] trade-off between them.
+[37:44] So it's somewhere in the middle.
+[37:50] So now we will look at adaptive routing,
+[37:53] which
+[37:54] takes the kind of
+[37:56] jacks up the game one level further,
+[37:58] where we have
+[38:00] a fair amount of path diversity and we
+[38:02] also don't have very long routes.
+[38:06] So here what we do is first we label the
+[38:08] directions north, south, east, and west.
+[38:16] So now if we consider
+[38:19] uh the two possible turns that we have
+[38:22] can have simple turns.
+[38:24] So, any
+[38:25] you know, big path
+[38:27] in a turn graph can pretty much be
+[38:29] reduced
+[38:31] and to these two simple cycles if at all
+[38:36] This is a clockwise cycle.
+[38:38] And this is an anti-clockwise cycle.
+[38:42] So, in the clockwise cycle,
+[38:44] the turns that we will have other than
+[38:46] collinear paths
+[38:48] is basically
+[38:50] north to east, east to south, south to
+[38:53] west, and west to north.
+[38:56] And similarly, the anti-clockwise paths
+[38:58] will be north to west, west to south,
+[39:00] south to east, and east to north.
+[39:03] So, if you think about it,
+[39:05] each cycle essentially consists of four
+[39:07] turns for each.
+[39:10] Out of these four turns, we can allow
+[39:13] only six turns at the most in the sense
+[39:16] that one of these turns we can get rid
+[39:18] of here, one of these turns we can get
+[39:19] rid of here.
+[39:21] So, if we do that, then what you can see
+[39:24] very easily is that none of these cycles
+[39:26] will complete.
+[39:28] A clockwise cycle will not complete and
+[39:30] an anti-clockwise
+[39:34] cycle will also not complete
+[39:36] because we have gotten rid of one of the
+[39:38] turns, right?
+[39:39] So, how many ways are there of getting
+[39:41] rid of turns? We have four ways of
+[39:43] getting rid of turns here, four ways of
+[39:45] getting rid of turns here. So, we have
+[39:47] four cross four or 16 ways of getting
+[39:49] rid of turns.
+[39:52] So, the idea is that we are allowing six
+[39:55] turns,
+[39:56] right? And because
+[39:59] one we are getting rid of, so three are
+[40:00] left. One we are getting rid of, three
+[40:02] are left. We're allowing six turns.
+[40:05] So, we have to remove one turn from each
+[40:07] cycle to prevent a cycle from forming in
+[40:10] the turn graph.
+[40:11] And if you see in the case of XY
+[40:13] routing,
+[40:15] we were actually allowing four turns.
+[40:17] One of them was this way. One of them
+[40:18] was this way.
+[40:20] One was this way and one was this way.
+[40:23] So, only four turns were being allowed.
+[40:25] In this case, we're allowing more turns.
+[40:27] The more are the turns, more is the
+[40:29] flexibility that we are allowing.
+[40:31] Right? So, from four, we have gone up to
+[40:33] six. We can't have more.
+[40:35] Otherwise, we'll be then be kind of
+[40:38] creating a cycle.
+[40:40] So, this is known as the theory of turns
+[40:42] and this any method of routing
+[40:44] which essentially uses
+[40:46] six available turns and essentially does
+[40:48] not take two turns.
+[40:51] This is known as adaptive routing.
+[40:53] Right? So, the packets don't turn in
+[40:54] certain directions.
+[40:56] And this guarantees that it is deadlock
+[40:58] free.
+[40:59] Why is it deadlock free? Because a cycle
+[41:01] will not form in any TG. And why will a
+[41:04] cycle not form?
+[41:05] Because we can
+[41:07] reduce all complex paths with cycles to
+[41:10] two simple cycles, clockwise or
+[41:11] anticlockwise.
+[41:13] Each one of them will have four turns.
+[41:15] If we remove one each, then we can't
+[41:17] have a clockwise cycle.
+[41:20] Neither an anticlockwise cycle.
+[41:24] So, the types of routing algorithms
+[41:26] based on turns, we have already
+[41:27] discussed XY routing. We have four turns
+[41:29] allowed here.
+[41:31] And here, we get rid of one each, let's
+[41:33] say.
+[41:33] So, we have four choices, 4 cross 4 16
+[41:36] combinations. So, we can have 16 such
+[41:39] adaptive routing algorithms that
+[41:41] eliminate one turn from each cycle.
+[41:45] And we can then, you know,
+[41:48] create many routing algorithms. As I
+[41:49] said, 16. Three of them are quite
+[41:52] popular. They are known as west first,
+[41:54] north last, and negative first.
+[41:56] So, let's look at one of them. Let's
+[41:59] look at all of them one by one.
+[42:03] So, in west first, what we do
+[42:07] is that we disallow two turns where west
+[42:09] comes at the end. This is one turn.
+[42:12] This is one more turn, so both of these
+[42:14] are disallowed because west is coming at
+[42:16] the end. And the name of our algorithm
+[42:18] is west first. So, we have north to west
+[42:21] and south to west.
+[42:23] And the allowed turns
+[42:25] will basically be these.
+[42:27] But we have not allowed this turn which
+[42:29] is going south and going west. And we
+[42:32] have not allowed this turn which is
+[42:33] going north and going west, so both of
+[42:35] these are not allowed.
+[42:37] Similarly, we could have north last. So,
+[42:39] then this is the reverse of this. First
+[42:42] has become last. So, the two turns that
+[42:44] we'll not allow is the ones in which
+[42:46] north comes first, which is north to
+[42:48] west and north to east.
+[42:50] So, these two, which is north to east
+[42:53] and north to west, are
+[42:55] not allowed. And finally, we have
+[42:56] negative first in the sense
+[42:59] that if you're going from north to west,
+[43:02] so you can think of west as a negative
+[43:05] And similarly, east to south
+[43:08] you can also look at that
+[43:10] as the negative direction. So, these two
+[43:12] turns we will not allow, right? If
+[43:14] anything is going in a negative
+[43:15] direction comes at first.
+[43:18] So, you get the pattern. So, what we are
+[43:20] doing is that for one cycle, we're
+[43:22] allowing three. For the other cycle,
+[43:23] we're allowing three.
+[43:25] And we are having six available turns.
+[43:27] This is giving us a high path diversity
+[43:30] and a reasonably high congestion
+[43:32] avoidance capability in the sense
+[43:35] that this is way, way more flexible than
+[43:38] basic XY routing.
+[43:43] So, given the fact that we have
+[43:45] discussed adaptive routing,
+[43:47] let us now look at cases which use
+[43:51] virtual channels. In fact, you know, one
+[43:53] of the early uses of virtual channels
+[43:55] was actually deadlock avoidance.
+[43:57] But later on, you know, that kind of
+[43:59] become became a secondary use case. But
+[44:02] let's look at a very old algorithm
+[44:04] which used virtual channels
+[44:07] to basically ensure that there are no
+[44:09] deadlocks. So, here again what we are
+[44:11] doing is we are assuming a simple graph
+[44:13] as we did earlier
+[44:15] with two VCs per physical channel.
+[44:18] And uh we number the VCs zero and one.
+[44:22] So, the packet is injected into VC zero
+[44:24] all the time.
+[44:26] It keeps traveling in VCs numbered zero
+[44:29] until it crosses an imaginary line
+[44:31] called the date line.
+[44:32] So, what I do is I draw an imaginary
+[44:34] line in the middle of this channel
+[44:36] called it the date line.
+[44:38] The moment
+[44:40] you know, flits of a packet cross this,
+[44:42] the head flit of the packet crosses this
+[44:44] it will shift to VCs labeled one and
+[44:46] henceforth it will only continue in VCs
+[44:49] labeled one
+[44:50] till it reaches its destination. It will
+[44:52] never
+[44:53] go back to VCs labeled zero. So, what
+[44:55] are we doing?
+[44:56] We're essentially introducing some sort
+[44:59] of an asymmetry.
+[45:02] That is being introduced and asymmetry
+[45:05] is being introduced. Where you start in
+[45:07] VCs numbered zero, wait till you cross
+[45:10] the deadline.
+[45:11] Henceforth you move to VCs labeled one.
+[45:15] So, the claim is that this is probably
+[45:16] deadlock free. There will be no
+[45:19] And it's not very hard to prove that and
+[45:22] the reason
+[45:23] or the basic the crux of the proof will
+[45:25] again be asymmetry.
+[45:29] So, consider a flit on a VC numbered
+[45:31] one. It is never going to wait for
+[45:35] any VC which is numbered zero. Because
+[45:37] as I said, once it
+[45:39] crosses the date line, it in a sense is
+[45:41] promoted. So, it will only look at, you
+[45:43] know, higher aspects of life which is
+[45:45] basically VCs
+[45:47] numbered one. And if there are, you
+[45:49] know, multiple numbers one and more,
+[45:52] right? But it will never look at a lower
+[45:54] number in this case is zero.
+[45:56] As a result, a cyclic weight is not
+[45:58] possible because zero numbered
+[46:01] VCs will wait on one numbered VCs, but
+[46:03] not vice versa.
+[46:05] So, cyclic wait is not possible. Thus, a
+[46:07] cycle is not possible. Hence, you get
+[46:09] the pattern. Deadlocks are not possible.
+[46:14] So, we have discussed a fair amount of
+[46:16] routing. So, let us now We still have
+[46:19] some time left
+[46:20] in this lecture.
+[46:24] So, we will
+[46:25] look at the basics of a
+[46:28] router.
+[46:32] So, a router basically looks like this.
+[46:35] Then, let's first, you know, consider
+[46:37] four directions, north, south, east,
+[46:39] west.
+[46:40] So, a router will get inputs. So, it is
+[46:42] like it's a physical router if it's not
+[46:44] at the rim or periphery.
+[46:47] It'll be connected to four other routers
+[46:49] in all four directions, north, south,
+[46:52] east, and west.
+[46:54] And also, it'll have this additional
+[46:56] connection from the local tile. Well,
+[46:59] recall that a tile
+[47:00] is basically a group of cores and cache
+[47:03] banks that send their data to the local
+[47:06] So, the router will take data from its
+[47:08] local tile. So, these will be its five
+[47:10] inputs.
+[47:11] And the five outputs again will be
+[47:15] the physical channels in the north,
+[47:16] south, east, west directions.
+[47:18] And again, an output to its local tile.
+[47:22] So, broadly speaking, a router has five
+[47:25] inputs, and it has
+[47:27] five outputs.
+[47:30] So, if you know, if you think about it,
+[47:32] how do you design a router? Well, uh
+[47:34] interesting question.
+[47:37] So, basically, we will always have a
+[47:39] single physical channel, but the single
+[47:41] physical channel it the channel itself
+[47:44] may logically be divided into multiple
+[47:46] virtual channels.
+[47:49] So, of course, if you have a single
+[47:51] virtual channel, we could have a single,
+[47:53] you know, buffer queue, queue of flits.
+[47:55] But if you have two VCs, we basically
+[47:57] need to create
+[48:00] two logical channels, two queues, one
+[48:02] queue per VC that buffers all the flits.
+[48:05] And uh the point is in a router, you
+[48:08] know, even before you process a flit, it
+[48:10] needs to be buffered. It needs to be
+[48:12] stored.
+[48:13] So, all the flits need to be buffered
+[48:15] first.
+[48:18] So, here again we have multiple options
+[48:20] if you have multiple VCs, right, for a
+[48:23] single physical channel.
+[48:24] One is that, you know, if you have K
+[48:26] VCs, we have K of these, you know,
+[48:28] buffer queues, flit buffer queues.
+[48:31] The negative aspect of this design is
+[48:34] that these have these will have a small
+[48:37] size. So, let's say these are eight
+[48:38] entries each.
+[48:40] Then it means that if there are 12
+[48:41] flits, we will not be able to pack all
+[48:43] 12 over here, uh right? So, four will
+[48:47] still be there with the sender.
+[48:49] Instead, we could have one large set of
+[48:53] buffers and kind of split it into
+[48:56] different individual buffer queues. So,
+[48:58] we could have VC zero.
+[49:00] So, this, for example, could be the head
+[49:02] of the queue. This could be the tail of
+[49:03] the queue, head of the queue, the tail
+[49:05] of the queue, so on and so forth. And uh
+[49:08] basically you can see the flexibility
+[49:10] over here that when you would add a new
+[49:13] flit, you'll add it to the tail of the
+[49:14] queue.
+[49:16] And basically if you remove something,
+[49:19] basically that would be tantamount to
+[49:20] the head advancing over here, right?
+[49:24] Uh right, because all the you always
+[49:26] remove from the head and you add to the
+[49:28] tail of the queue. So, the head would
+[49:30] basically move in this direction. Tail
+[49:33] will also move in this direction.
+[49:35] So, what can be done is that you can
+[49:36] have a large circular queue of buffers,
+[49:40] and that could be logically split into
+[49:42] different sub queues where, of course,
+[49:44] these individual, you know, sub queues
+[49:47] or queues per VC would be
+[49:48] non-overlapping.
+[49:50] That could in principle be done where
+[49:53] there is no overlap between them.
+[49:55] And the advantage of this design clearly
+[49:58] would be the
+[49:59] flexibility. There would be a tremendous
+[50:01] amount of flexibility over here.
+[50:04] And this design would be quite flexible.
+[50:07] And the reason for that
+[50:10] would basically be
+[50:12] that you know, some of these
+[50:14] that you know, there's a large
+[50:16] number of buffers and one queue can grow
+[50:18] at the expense of others.
+[50:20] And you're assuming that not all the
+[50:23] flit buffer queues would kind of be at
+[50:25] their maximum occupancy all the time.
+[50:28] So, if one of them is disproportionately
+[50:29] large, we can accommodate.
+[50:34] So, then the first stage was of course
+[50:36] buffer right. This is the second stage.
+[50:38] So, we will actually we are in the
+[50:40] process of creating a router pipeline.
+[50:45] So, in this case what we are basically
+[50:46] doing is that we are creating a pipeline
+[50:49] of stages
+[50:50] where we are saying that first you
+[50:52] buffer the flits. The next thing is you
+[50:55] compute the route.
+[50:56] So, let's say that I'm over here and I
+[50:58] need to go to the destination which is
+[51:00] over here.
+[51:01] I need to figure out what is the next
+[51:03] node on the path that I should send the
+[51:05] packet to.
+[51:07] And the route computation is only done
+[51:09] for the head flit of the packet.
+[51:11] There is no reason to do it for the rest
+[51:13] because the rest of the flits in the
+[51:16] would follow the same route. So, we'll
+[51:18] have a head flit, then we'll have a
+[51:20] bunch of body flits, and then we will
+[51:22] have a tail flit.
+[51:25] So, what we do is that we compute the
+[51:26] route for the head flit.
+[51:29] The rest of the body flits and the tail
+[51:31] flit kind of follow the head flit and
+[51:33] they take the same route.
+[51:35] So, what we need to do is the moment we
+[51:37] see the head, we need to find out its
+[51:40] So, in fact, the critical path
+[51:42] of the entire router computation
+[51:45] actually contains
+[51:47] actually is for the head flit. The rest
+[51:49] kind of follow the head flit. But the
+[51:51] critical path is only for the head flit
+[51:58] Uh so for the purpose of routing, we use
+[52:01] a routing table. So let us consider this
+[52:03] node over here, node five.
+[52:06] So node five, as you can see, has four
+[52:08] neighbors, and of course the other
+[52:09] neighbor would be its local tile.
+[52:12] So node five in this case would maintain
+[52:14] a routing table, which basically says
+[52:16] that given the destination, which are
+[52:18] all the other destinations,
+[52:20] where do I send the flit or packet to? I
+[52:23] specify the next hop
+[52:25] for the final destination.
+[52:28] I specify the next hop. This is as per
+[52:31] the routing protocol or as per the
+[52:33] routing policy
+[52:35] of the
+[52:39] of the node.
+[52:40] So this table here shows the routing
+[52:42] decisions for the north last algorithm.
+[52:45] So if you see the north last algorithm,
+[52:47] we will not have any turns where north
+[52:49] is coming first. In the sense, these two
+[52:53] north to east and north to west, are the
+[52:55] turns which will be
+[52:57] precluded.
+[52:59] And we are doing this for node five. So
+[53:01] note that in some cases, we may have a
+[53:03] choice of multiple routes.
+[53:05] But again, that is good because if you
+[53:07] have a choice of multiple routes, we
+[53:09] will have some idea of the congestion
+[53:10] information.
+[53:15] So where do we get congestion
+[53:17] information from? So this can be
+[53:20] uh gotten from the
+[53:24] uh from the credit-based information or
+[53:26] from the way that the rate at which
+[53:29] buffers are clearing.
+[53:30] So go back to our discussion on flow
+[53:34] So on flow control, uh that part, right?
+[53:36] We did discuss the idea of credits.
+[53:41] So uh from a credit-based uh
+[53:43] So, so so this credit-based information,
+[53:46] this is what can give us
+[53:48] the rate at which our buffers are
+[53:49] clearing up and all the number of
+[53:52] credits that I have for different
+[53:53] directions. So, that will kind of tell
+[53:55] you which direction is kind of more
+[53:56] congested.
+[53:58] So, we take that into
+[53:59] into account.
+[54:02] And we also see in the last time the
+[54:03] channel was used, right? A particular
+[54:05] channel was used, how long did it take?
+[54:08] And uh basically, what was the delay?
+[54:10] Was I able to send all the flits for the
+[54:12] packet together or was there a delay? On
+[54:14] the basis of that, I do my competition.
+[54:17] So, this is a routing table over here.
+[54:19] So, let us understand the logic behind
+[54:22] creating this particular routing table.
+[54:26] So, in this case, let's say from five,
+[54:28] my destination is one.
+[54:31] So, as I said, the north to west turn is
+[54:33] what I will avoid. So, I'll go west.
+[54:37] I go west.
+[54:38] I want to go to two. The answer is
+[54:39] simple, I go north.
+[54:41] I want to go to three. Again, the north
+[54:44] to east turn is something I've avoided,
+[54:46] so I'll go east.
+[54:48] I need to go to four. Well, the answer
+[54:50] is simple, I just go west.
+[54:52] I need to go to six. The answer is
+[54:54] simple, I go to east.
+[54:56] I need to go to seven. So, in this case,
+[54:59] I can either go east and then south or I
+[55:02] can Sorry, I can go west and then south
+[55:04] or I can go south and then west. It
+[55:06] doesn't matter. Both the turns for me
+[55:08] are allowed. So, here I have an option
+[55:10] of two turns, south or west.
+[55:13] I need to go to eight. Again, it's
+[55:14] straightforward, I go south and I go to
+[55:17] need to go to nine.
+[55:19] So, this is quite similar to seven. I
+[55:20] have an option of two routes, south or
+[55:22] east. So, as you can see, in many cases,
+[55:25] it's a small network. So, basically,
+[55:27] in many cases, there is no path
+[55:29] diversity because I don't need it. But
+[55:31] wherever, you know, I need to make a
+[55:33] diagonal crossing, Uh, I either don't
+[55:36] have path diversity because a turn is
+[55:38] precluded,
+[55:39] or I do have path diversity in the case
+[55:42] of seven and nine.
+[55:44] So, I will have similar routing tables,
+[55:46] you know, for every destination, where
+[55:48] do I need to go at every node.
+[55:50] And this is kind of hardwired, because
+[55:52] my routing protocol as such is
+[55:54] hardwired.
+[55:55] And mind you, this is provably deadlock
+[56:00] So, the router pipeline up till now,
+[56:02] where we have discussed buffer write and
+[56:03] route computation, we'll discuss the
+[56:06] next one.
+[56:07] So, if I were to draw it, I will have my
+[56:09] local channel, I will have north, south,
+[56:11] east, west.
+[56:13] Each physical channel is associated with
+[56:16] two of these virtual channels, so I'll
+[56:18] have two virtual channels over here.
+[56:21] And then what I can do is that all the
+[56:24] buffer information, signal route
+[56:25] information, etc., will be sent to this
+[56:28] pipeline lab, so this will be the end of
+[56:30] cycle one.
+[56:32] In cycle two, I'll compute the route.
+[56:35] And then again in cycle three,
+[56:38] I will do the virtual channel
+[56:40] allocation. Again, this is for the head
+[56:43] So, the idea over here is that let's say
+[56:44] at this point you decide that you need
+[56:46] to go east.
+[56:48] So, with the physical channel that is
+[56:50] going east, maybe two or three or four
+[56:53] virtual channels are associated.
+[56:56] So, let's say four virtual channels are
+[56:58] associated with it.
+[57:00] Which one do I take?
+[57:01] Right? The first one, second one, third
+[57:03] one, or fourth one?
+[57:05] So, that would also depend upon what are
+[57:07] the channels that are allocated to other
+[57:09] flits that are other packets in the
+[57:11] past.
+[57:12] Right? I need to ensure that my virtual
+[57:14] channels are also kind of equitably
+[57:18] So, what I basically do now is that I do
+[57:21] this allocation process,
+[57:23] where, uh, given a head flit,
+[57:26] I, based on my, you know, load balancing
+[57:29] algorithm,
+[57:30] I allocate a virtual channel to it, and
+[57:32] that is written into the head flip in
+[57:34] the buffer queue.
+[57:36] And then I do subsequent processing.
+[57:41] So, let us now go to stage four, which
+[57:43] is the next step.
+[57:45] It is the switch allocation step.
+[57:48] So, if you look at this diagram once
+[57:50] again, we see that there are four,
+[57:53] sorry, five physical channels as inputs.
+[57:56] And each channel
+[57:58] has
+[58:00] uh two of these VCs. So, basically, we
+[58:02] will have pretty much 10
+[58:05] VCs that want a switch port.
+[58:09] So, we'll have So, we need a switcher,
+[58:11] you know, so our switch
+[58:13] has to have 10 inputs and five outputs,
+[58:15] and the five outputs will be the five
+[58:17] physical channels.
+[58:18] Four each that are going in four
+[58:20] directions: north, south, east, west,
+[58:23] and local.
+[58:25] And then
+[58:29] uh we uh
+[58:34] have uh you know, these five outputs:
+[58:36] north, south, east, west, and local.
+[58:39] And we have 10 inputs, uh two uh virtual
+[58:42] channels per physical channel, so it is
+[58:44] 10 cross five.
+[58:47] So, if it is uh 10 cross five, we need a
+[58:50] switch. So, what does a switch do?
+[58:52] A switch connects an input to an output.
+[58:56] And
+[58:57] for a single output, only a single input
+[59:00] can be connected in the sense two inputs
+[59:01] cannot be connected to the same output.
+[59:04] So, we need an M cross N switch, pretty
+[59:06] much, right? So, we need to allocate the
+[59:09] switch. We need to make the connections.
+[59:11] And in a sense, it is like we have M
+[59:13] inputs, N outputs.
+[59:15] And here there is a connector that
+[59:17] connects an input to an output.
+[59:21] And naturally, for every column, a
+[59:22] column corresponds to an output, only
+[59:24] one input or one row can be connected.
+[59:27] And what you have, of course, there are
+[59:29] multiple bits that go in parallel, but
+[59:31] you have these pass transistors.
+[59:34] Where if I set the control bit to one,
+[59:36] essentially a connection is established
+[59:38] uh between these two lines.
+[59:40] And if it is zero, there is no
+[59:42] connection.
+[59:44] So, the main aim is that we need to
+[59:45] operate a switch.
+[59:47] But prior to operating the switch, we
+[59:49] need to make these mappings.
+[59:53] Right? So, then uh we allocate the
+[59:55] switch ports. So, we reserve which means
+[59:57] we reserve a path to the output port.
+[60:00] So, here uh needless to say, fairness is
+[60:03] important because it should never be the
+[60:05] case
+[60:06] that, you know, flits in one VC are
+[60:09] waiting and then they're waiting
+[60:10] forever.
+[60:11] So, fairness basically is uh tantamount
+[60:14] to starvation freedom over here.
+[60:21] Right? So, basically we have to ensure
+[60:23] that at this place at this particular we
+[60:26] have starvation freedom.
+[60:30] So, because we have starvation freedom,
+[60:34] uh what will happen
+[60:37] uh is that uh
+[60:43] uh what will basically happen is that
+[60:48] uh
+[60:50] all VCs will be guaranteed to get access
+[60:53] to the switch. And once they get access
+[60:55] to to the switch, nothing else is there,
+[60:57] then they can directly access the
+[60:58] physical channel and go. So, the
+[61:00] buffering is only at the input. It is
+[61:02] not at the output. So, these are input
+[61:04] buffered systems. Right? So, there will
+[61:06] be no stalling that happens at the
+[61:08] output. So, once the fourth stage switch
+[61:11] allocation is done, the fifth stage,
+[61:13] which is switch traversal, can happen.
+[61:16] And that will happen quite quickly, and
+[61:17] the latency is quite critical here, but
+[61:19] switch traversal would be just traverse
+[61:21] the switch and send the packet. So, as I
+[61:23] said, there are no buffers and there is
+[61:25] no waiting, there is no stalling. So,
+[61:27] once you traverse the switch, the packet
+[61:29] is sent.
+[61:30] And then resources can be released in
+[61:32] the sense that once the tail flit leaves
+[61:35] the router,
+[61:36] we reclaim the VC, right? So, the VC,
+[61:39] the virtual channel,
+[61:41] is reclaimed.
+[61:47] So, uh before we go into the
+[61:49] hierarchical design of switches, I would
+[61:51] like to pretty much switch to the next
+[61:54] lecture uh by giving, you know, I would
+[61:56] like to summarize by giving an idea of
+[61:59] the router pipeline, right? The
+[62:01] five-stage pipeline that we have
+[62:02] discussed up till now. So, let me
+[62:04] quickly summarize this and the rest of
+[62:06] these details will be covered in the
+[62:08] next lecture.
+[62:10] So, the router pipeline that we have
+[62:12] discussed up till now, the first stage
+[62:14] is buffer write, so buffer write is
+[62:17] clearly stage one.
+[62:19] So, here what we have is that for every
+[62:21] physical channel, we have multiple
+[62:23] virtual channels associated with it.
+[62:26] The buffers come
+[62:28] and the buffers are
+[62:30] uh sorry, the flits come and the flits
+[62:32] are buffered in these VCs and basically
+[62:34] when a head flit is coming,
+[62:36] it knows its VC number. So, the head
+[62:38] flit is aware of its VC number in the
+[62:41] sense the previous router has stamped it
+[62:43] with its VC number.
+[62:45] And let's say if it's coming from the
+[62:46] local tile, then we have already done
+[62:48] the VC allocation and then it then only
+[62:50] it is coming into the router.
+[62:52] So, we are assuming that any head flit
+[62:55] and consequently the rest of the flits
+[62:57] in its packet, they are already aware of
+[62:59] which VC they need to go to. They are
+[63:01] buffered there.
+[63:02] So, here of course, we could have a
+[63:04] uh sorry, a split buffer design
+[63:08] or we could have a shared buffer design.
+[63:12] The split buffer is that these buffers
+[63:14] are
+[63:15] separated into separate structures.
+[63:19] And shared buffered is where we have a
+[63:21] single structure, but it is kind of
+[63:22] dynamically split between the VCs.
+[63:28] we have these buffer control signals or
+[63:30] route information that is sent to the
+[63:32] route competition unit,
+[63:34] which will be stage two.
+[63:37] Uh that then we do VC allocation,
+[63:40] virtual channel allocation, which is
+[63:41] stage three.
+[63:43] So again, the route computation and the
+[63:45] virtual channel allocation and switch
+[63:47] allocation, all of them happen for the
+[63:49] head flit because the rest of the flits
+[63:52] follow them.
+[63:53] But again, you know, this is splittable.
+[63:55] So there is and there is more to this.
+[63:57] Let me come to this point. So once the
+[63:59] VCs have been allocated,
+[64:01] what happens is that uh
+[64:05] we kind of stamp the head flit and tell
+[64:07] it that, "Look, you have been allocated,
+[64:09] let's say, VC number two on, you know,
+[64:11] this physical channel. Now you go
+[64:13] ahead."
+[64:14] And what we can do is that we can also
+[64:17] additionally mark the rest of the flits
+[64:19] in the packet, but mind you, all of them
+[64:20] may not have arrived at that point.
+[64:23] And then we go to the switch allocation
+[64:25] stage. So here, as I said, you know,
+[64:27] there's a little bit of complexity. It
+[64:29] depends on
+[64:30] whether we take decisions at the flit
+[64:33] level
+[64:34] or we take decisions at the packet
+[64:37] level.
+[64:38] So if we take decisions at the flit
+[64:40] level, then pretty much every single
+[64:42] flit will have to contend for switch
+[64:44] allocation, which is like, you know,
+[64:46] this stage over here.
+[64:48] So here we will basically say that,
+[64:50] "Look, you know, the first flit, you
+[64:52] allocate this, then you forget about it,
+[64:53] then you schedule flits from other VCs,
+[64:56] come back to the second flit in the
+[64:57] packet."
+[64:58] So on and so forth.
+[65:00] So that will basically be flit-level
+[65:03] decision-making, where every flit is
+[65:05] treated independently, but of course,
+[65:08] uh you know, the only caveat here is
+[65:10] that body and tail flits follow the same
+[65:13] route as the head flip.
+[65:15] But again, as I said, it's possible that
+[65:17] we send
+[65:19] a head flip after a long time we send a
+[65:22] body flip. Again, after a long time we
+[65:24] send the next body flip, so on and so
+[65:25] forth.
+[65:27] The other would be that we send the
+[65:28] entire packet together assuming all of
+[65:30] it has arrived.
+[65:31] So, that would be if we go for packet
+[65:33] level buffering first, you know, the
+[65:35] entire packet is sent in one go.
+[65:37] Then the switch allocation has to be
+[65:38] done once for the entire packet, but
+[65:40] that is kind of rare. If you just go by
+[65:42] flip level,
+[65:43] every single flip will have to contend
+[65:45] separately.
+[65:47] Then we have this switch over here,
+[65:49] which as I have discussed has 10 inputs
+[65:53] and it has five outputs.
+[65:56] So, basically the allocation decision
+[65:58] was already made in stage four.
+[66:00] So, the last stage is nothing. It's
+[66:02] quite dumb, actually. It's just
+[66:03] basically traversing the switch.
+[66:06] We traverse the switch and we go away
+[66:08] through the output link. Uh In the
+[66:10] output, there is absolutely no
+[66:11] buffering. No buffering, no waiting, no
+[66:14] stalling. So, once you are allocated a
+[66:16] switch, you just go ahead. That's it.
+[66:18] No No one is there to stop you.
+[66:20] So, then you just go and
+[66:23] basically, you know, we'll also have
+[66:25] this flow control module over here,
+[66:28] right, which is taking care of credits
+[66:29] or on our flow control.
+[66:32] The idea is that you have sufficient
+[66:35] credits. So, this credit information is
+[66:36] also kind of flowing into the switch
+[66:38] allocator over here.
+[66:40] If you don't have enough credits,
+[66:42] there's no point allocating the switch
+[66:44] because, you know, you can't send the
+[66:46] packet or the flip anyway.
+[66:48] But the key point is that once we have
+[66:50] credits, you know, you are sure and
+[66:52] you're sending, so you are sure that the
+[66:54] data will be buffered at the other end,
+[66:57] right? The flip data will be buffered at
+[66:58] the other end. That much you are sure
+[67:01] of. So, that's the reason you can sort
+[67:03] of fearlessly send the flips.
+[67:05] And you'll And you're sure that they
+[67:07] will not be dropped or discarded.
+[67:09] So, this is a five-stage router
+[67:11] pipeline. And if you think about it,
+[67:13] five stages, you know, can take five
+[67:15] cycles that makes things
+[67:18] reasonably slow.
+[67:20] Not a great idea, but again, we will
+[67:23] look at ways of optimizing this and
+[67:25] making these things faster in the next
+[67:27] lecture. And of course, also look at
+[67:29] other aspects.
+[67:31] But this is this lecture ends over here
+[67:33] with the description of this five-stage
+[67:36] router pipeline.

@@ -1,0 +1,1817 @@
+[00:00] [Music]
+[00:34] Welcome to chapter 7. This is a chapter
+[00:37] on computer
+[00:38] arithmetic. We shall use all the
+[00:41] knowledge that we have gained in
+[00:42] designing digital logic. All the
+[00:45] knowledge that we gained in chapter 2,
+[00:47] the language of bits to design circuits
+[00:50] in this chapter to implement adders,
+[00:52] multipliers and dividers.
+[00:55] So this is uh chapter 7 of the book
+[00:59] computer organization and architecture
+[01:01] published by McGraill in
+[01:04] 2015. So we'll have we we have these six
+[01:07] parts in this
+[01:09] chapter. Uh we have addition,
+[01:11] multiplication and division. So these
+[01:13] are integer addition, multiplication and
+[01:15] division. And then we have floatingoint
+[01:18] addition, multiplication and division.
+[01:20] So the entire chapter is broken down
+[01:22] into six sections.
+[01:25] So let's take a look at the simplest
+[01:27] problem which is to add two one bit
+[01:29] numbers a and
+[01:32] b. So if we add two one bit numbers
+[01:37] uh what is it that we can get? The
+[01:39] largest number that we can get will
+[01:41] actually require two bits. So let's see
+[01:44] how and
+[01:45] why. If you add 0 and 0. So let's assume
+[01:49] the output is two bits. So the output is
+[01:51] 0 0. If you add 1 and 0 the output is 0
+[01:56] 1. Similarly, if you add 0 and 1, the
+[02:00] output is 0
+[02:03] 1. And if we add 1 and 1,
+[02:08] uh the output is 1 0. So 1 so 1 + 1 is 2
+[02:14] and the representation of two is 1 and
+[02:16] 0. So what we see is that for the first
+[02:19] three results one bit is sufficient. For
+[02:22] the last result we need two bits. So
+[02:25] pretty much we can say that we add two
+[02:28] one bit numbers. The final result can
+[02:30] take two bits. So it's better if we
+[02:32] allocate two
+[02:34] bits. So the least significant bit of
+[02:36] the result of so it's a two bit result.
+[02:39] Right? So the least significant bit
+[02:41] which is let's say this bit is known as
+[02:46] uh the
+[02:50] sum and the most significant
+[02:54] bit in is known as the
+[02:58] carry. So we shall see why if you add 0
+[03:01] and 0 the sum is zero nothing is being
+[03:04] carried. Same is true for 1 and 0 and 0
+[03:06] and 1. But we add 1 and 1 1 +
+[03:11] 1 then
+[03:13] uh so if you do a binary addition of 1
+[03:15] and 1
+[03:18] uh so what do we get? So what we would
+[03:21] get is that essentially the units
+[03:24] position uh I'm sorry the least
+[03:26] significant position will be a zero and
+[03:29] we'll be carrying one
+[03:31] uh to the next
+[03:34] position. So basically the carry will be
+[03:36] one and the sum will be zero. So 1 0 in
+[03:39] decimal is
+[03:42] two. All right. So let me give you some
+[03:45] more examples of let's say binary
+[03:47] additions. We would do it exactly the
+[03:49] same way as we do in base 10. And we can
+[03:52] take a look at uh the carry business in
+[03:55] some more detail. Let's assume it's 1 0
+[03:58] 1 1
+[04:00] plus 0 0
+[04:03] uh 1
+[04:05] 0. So 1 0 1 1 if you consider it to be
+[04:09] an unsigned number, it's 11 in base 10
+[04:11] and 0 0 1 0 is 2 in base 10. So if you
+[04:14] add it should be 13 in base 10. So 1 + 0
+[04:18] is 1. 1 + 1 is 2. In binary it's 1 0. So
+[04:23] the sum is 0 and the carry is 1.
+[04:26] So the carry goes to the next position
+[04:29] this position. So 1 + 0 + 0 is 1 and we
+[04:34] again have 1. So what is the sum? It is
+[04:37] 8 + 4 12 + 1 13 which is exactly what we
+[04:41] would expect. So addition in binary is
+[04:44] exactly the same as uh addition in uh
+[04:48] base 10. There is no difference at all.
+[04:50] And in base 10 uh we also carry a one.
+[04:54] So, so let's say you know I was to do
+[04:56] the same similar kind of an addition uh
+[05:00] let's say in base 10 which would maybe
+[05:02] be something of this
+[05:05] type. So 2 + 9 is 11. I write one and
+[05:08] then I do a
+[05:10] carry. So it's 1 + 5 is 6 + 2 is 8 and 7
+[05:14] + 1 is 8. So the same way we do a carry
+[05:18] in base 10, we do a carry in base 2 as
+[05:21] well. And uh so in the case of a one bit
+[05:25] we call the least significant bit as the
+[05:27] sum and the next bit as the
+[05:32] carry. Uh so uh if I draw a simple truth
+[05:36] table of what are the values of a and b
+[05:39] and what is the sum and carry. So we see
+[05:41] if a and b are zero and zero the sum is
+[05:44] zero the carry is zero. If a is zero and
+[05:47] b is one the sum is one and carry is
+[05:50] zero. Likewise, if a is one and uh b is
+[05:54] zero,
+[05:56] uh the sum is uh one and uh the carry
+[06:00] here is zero. And lastly, if a is one
+[06:04] and b is one, the sum is zero and the
+[06:08] carry is
+[06:09] one. So the sum is lsp mind you and the
+[06:12] carry is the msp.
+[06:14] So what we can see if you want to
+[06:16] implement this uh in a boolean uh system
+[06:21] we can see that the sum bit over here is
+[06:24] actually a x or b. Uh so why is this the
+[06:28] case? So basically if 0 and 0 the xr of
+[06:31] them is zero 0 and one the exclusive or
+[06:35] is one and zero is one and one and one
+[06:39] it's zero. So we can say that this is
+[06:41] this function. So go back to chapter 2
+[06:45] uh again for an explanation of this is
+[06:46] the exclusive or
+[06:48] operator which can be expanded to this
+[06:53] where the plus sign is denoting the or
+[06:57] operation and the dot sign is denoting
+[07:02] the and operation. So it's essentially a
+[07:05] complement and b or a and b
+[07:08] complement. So that is a sum and the
+[07:13] carry will happen in only one case when
+[07:16] both a and b are one. So we can see it
+[07:19] is a and b that is when we'll have a
+[07:22] carry. So we can then uh implement a
+[07:25] simple boolean circuit called a half
+[07:27] adder which adds to one bit numbers to
+[07:30] produce a two bit result. So in this
+[07:33] case we'll add a and b and the result
+[07:36] will have a sum and a carry bit. So we
+[07:39] just need to implement the circuit uh
+[07:42] the boolean formula showed over
+[07:46] here. Uh so what we see over here is to
+[07:49] that this particular formula needs to be
+[07:52] implemented. So we take a complement we
+[07:55] end it with b and other head and ended
+[07:58] with b complement. After two and gates
+[08:01] we compute a or function and this
+[08:03] becomes the sum and the carry was
+[08:07] anyway a and b. So what we do is we pass
+[08:12] a and b via an and
+[08:14] gate and uh the result is the
+[08:25] carry. Let's now consider a full adder.
+[08:28] So basically full adder will be required
+[08:31] when we want to add three bits and here
+[08:33] is when we'll need to uh add three bits.
+[08:36] So let's assume that there is a large
+[08:38] boolean number right something of this
+[08:44] type. So in this case when we perform
+[08:46] the addition for the first we can uh for
+[08:50] the LSP bits we can use a half adder. So
+[08:52] it'll produce a sum of zero and a carry
+[08:54] of one.
+[08:56] So mind you for the second position we
+[08:59] are actually
+[09:01] adding three bits. We're adding one + 0
+[09:07] +
+[09:08] 1. Right? So this will produce a sum of
+[09:11] zero and a carrier one. But essentially
+[09:14] a full adder
+[09:17] uh will be something that takes three
+[09:19] bits as input. So you take three bits as
+[09:22] input. 1 plus the m the largest uh
+[09:25] possible sum that we can have will
+[09:28] essentially be 1 + 1 + 1 which is three
+[09:31] is binary representation is 1 and 1. So
+[09:33] two bits are
+[09:34] sufficient. So in this case a full adder
+[09:37] will have three inputs and it will have
+[09:40] two outputs. So in this
+[09:43] sense two bits are sufficient
+[09:46] uh to get the outputs. So what we can
+[09:49] say is that the three input bits can
+[09:52] basically be called a b and a carry in.
+[09:57] So in this case you know uh the first
+[09:59] number here can be called
+[10:01] a this number can be called b and the
+[10:06] there is a carry which is actually
+[10:07] coming from the right. So this can be
+[10:12] called the carry
+[10:13] in. Then what will be the output? The
+[10:16] output will will output will be a sum
+[10:19] the sum s and we'll have a carry as an
+[10:22] output and to differentiate that from
+[10:24] carry in let's call it carry
+[10:26] out. All right. So uh there are three
+[10:29] bits coming into a full adder which is a
+[10:31] b and carry in. If you're adding two
+[10:34] large uh if you're adding two multi- bit
+[10:37] binary numbers so a will be let's say
+[10:41] the iat bit of one number b will be the
+[10:43] iat bit of the second number and carry
+[10:45] in will be the carry that is coming in
+[10:48] from the right and the outputs will be
+[10:51] the sum and the carry out. So the number
+[10:55] will be equal to 2 * carry out plus s a
+[10:59] simple binary expansion and this is what
+[11:02] the truth table will look like. So if a
+[11:05] b and carry in are all zeros so
+[11:07] naturally sum and carry out both are
+[11:10] zero. Similarly if a and b are 1 one
+[11:13] each carry in is zero it's zero and one.
+[11:15] So a reader just needs to verify all the
+[11:18] entries in this table and ensure that
+[11:21] they are correct. So let's take a look
+[11:22] at the last entry. So this is the sum a,
+[11:26] b and carry in are all ones. So 1 + 1 +
+[11:29] 1 is three or 1 1 in binary. So sum is 1
+[11:33] and the carry out is
+[11:37] 1. So what are the equations for the
+[11:40] full adder? Let's take a look at this.
+[11:42] So the sum if you take a look at the sum
+[11:45] let's let's again go back. So
+[11:48] essentially in the
+[11:50] sum if uh so when is the sum equal to
+[11:53] one? The sum is equal to
+[11:55] one when
+[11:57] uh b is one and a and carry in are zero
+[12:01] or when a is
+[12:03] one or when carry in is one the rest two
+[12:06] are zero or when all three are one. So
+[12:09] what we can see is that the sum is one
+[12:11] only when you know if and only
+[12:13] if out of a b and carry in an odd number
+[12:17] of them are equal to one. Right? So
+[12:19] basically in this
+[12:21] case b is one the rest are zero. In this
+[12:25] case a is one the rest are zero. In this
+[12:28] case c is one the rest are zero or all
+[12:31] three of them are equal to one.
+[12:36] So typically uh any such function uh for
+[12:39] the sum can be represented like this as
+[12:42] a x or b x or carry in. So this will be
+[12:45] true only when
+[12:48] uh an odd number of a b and carry in are
+[12:51] one. So either one of them is one the
+[12:52] rest are zero. So 0 x or 1 is one or
+[12:57] when all three of them are equal to one.
+[12:59] So basically
+[13:01] one XR1 XR1 can be thought of like this
+[13:07] that 1 XR1 is zero and then zero
+[13:12] exclusive or with one
+[13:15] is
+[13:17] one. So we can just do a simple
+[13:20] algebraic uh expansion of this. We can
+[13:23] take uh since the rule of associivity is
+[13:27] followed uh we can take a x or b and
+[13:30] expand it to a and b complement uh or a
+[13:34] complement and b and just keep on
+[13:37] expanding it. So finally if we do the
+[13:39] algebra this is the final uh result that
+[13:42] we
+[13:49] get. So in this uh expression over here
+[13:53] what we see is that when will this be
+[13:55] true? So this will so this expression
+[13:57] will be true when a is one both b and
+[14:00] the carry-in are zero. Similarly in this
+[14:03] expression this will be true when b is
+[14:06] one and uh both a and the carry in are
+[14:09] zero. Similarly for this. So this takes
+[14:13] care of the first three cases and the
+[14:15] last case will happen uh when uh the
+[14:19] last case will be true when all three of
+[14:22] a b and the carry in all three of them
+[14:24] are equal to one. So this is exactly
+[14:27] what we have in this truth table over
+[14:30] here. Uh this is exactly what we are
+[14:32] trying to
+[14:35] capture. Now let's come to
+[14:38] uh the carry out. So when is the carry
+[14:41] out equal to true? So the carry out is
+[14:44] equal to
+[14:45] true when a and b both are one carry in
+[14:49] is zero. When b and carry in are one a
+[14:53] is zero or a and carry in are one or
+[14:58] when all three are. So essentially the
+[15:01] carry out is true when at least
+[15:05] two of a b and carry in are equal to
+[15:09] one. So this can be nicely captured in
+[15:12] this uh thing. So so uh let me just
+[15:15] summarize when is carry out equal to
+[15:17] true. Carry out is equal to true when at
+[15:20] least two out of three
+[15:24] of a b and carry in are equal to
+[15:30] true. So this will become
+[15:33] uh uh so the way to express this is if a
+[15:38] and b are true then uh a and b this
+[15:41] expression will be true. If a and
+[15:44] carrying are true then this will be true
+[15:46] or this expression will be true. So
+[15:48] essentially if these three bits any two
+[15:51] of them are true at least one of the
+[15:53] conditions here should be true and thus
+[15:55] carry out will be equal to one otherwise
+[15:58] carry out will be equal to
+[16:00] zero. So for creating a full adder we
+[16:03] basically need to create a circuit that
+[16:06] will realize these boolean equations in
+[16:09] hardware. So this is the circuit of a
+[16:12] full adder. Looks complicated but it's
+[16:14] not complicated. So carry out is
+[16:16] slightly easier to uh
+[16:22] understand. Uh so carry out is a and b
+[16:25] or a and carry in or b and carry in. So
+[16:29] what we can see is that this is a and
+[16:33] b. Uh this is a and carry in and this is
+[16:39] uh b and carry in.
+[16:43] uh
+[16:45] so uh what we do is that we have three
+[16:48] and gates and we have an orgate whose
+[16:50] output is carry
+[16:52] out. Now let us consider the
+[16:56] sum. So in the case of uh the sum what
+[17:00] we need to do is we need to figure out
+[17:02] uh the values of each of these
+[17:04] expressions. So let's consider the first
+[17:06] one a and b complement and complement of
+[17:09] carry in. So this will get get captured
+[17:13] like this a is coming
+[17:16] here then
+[17:18] uh uh I'm sorry yeah this one a is
+[17:21] coming here so this is a this value is b
+[17:26] complement and this value over here is a
+[17:30] complement of carry in so this is
+[17:32] getting captured over here so the output
+[17:35] is a and b complement and complement of
+[17:38] carry in similarly the rest of The two
+[17:41] endgates are capturing the rest of the
+[17:44] two terms which are this and this. And
+[17:47] we need one and gate to capture this
+[17:49] term which is a and b and carry in which
+[17:52] is the first and gate where we are just
+[17:55] computing the and other values. And at
+[17:57] the end to compute the or we have a four
+[17:59] input or gate. So this gives us the sum.
+[18:02] So computing the sum is more difficult
+[18:05] requires more hardware as compared to
+[18:07] computing the carry out. But this is
+[18:10] pretty much the circuit of a full adder
+[18:12] for you which takes three bits as input
+[18:15] adds them and there's a two-bit output
+[18:18] where the lsb the least significant bit
+[18:20] is the sum and uh the most significant
+[18:23] bit is the carry out. So both of these
+[18:25] are getting computed in this fashion.
+[18:28] Let us consider the addition of two n
+[18:30] bit
+[18:31] numbers. So the way that we start is we
+[18:34] just uh so these are two n bit binary
+[18:36] numbers. The way we add them is exactly
+[18:39] the same way as we add base 10 numbers.
+[18:42] So we start from the right and move
+[18:45] towards the left. So we first add the
+[18:48] first pair of
+[18:51] numbers and
+[18:54] uh so if we add the first pair of
+[18:57] numbers what we see is that we add 1 and
+[19:00] 1. So 1 + 1 is 1 0. So we have zero as
+[19:03] the sum bit and we carry over one to the
+[19:07] next position. In the next position we
+[19:10] need to add 1 + 1. So again the sum bit
+[19:13] will be zero. And again we'll carry over
+[19:16] a one to the next position. Again we add
+[19:20] 1 + 1. So the sum bit is again zero. And
+[19:24] we carry over one. So we have zero. And
+[19:27] the finally we again carry over a one to
+[19:29] the next position. and the addition
+[19:32] completes. So the final result is 1 and
+[19:36] four
+[19:37] zeros. So what do we do? We start from
+[19:39] the least significant position. We start
+[19:42] from the
+[19:43] LSP. Then we add the corresponding pair
+[19:46] of bits and the carry in and we produce
+[19:49] a sum and the carry out. So the carry
+[19:51] out pretty much at the position is the
+[19:55] carry in for the i + 1 position.
+[20:00] So some quick observations are due. So
+[20:03] we need to keep adding the pair of bits
+[20:05] pairs of bits and proceed from the LSP
+[20:07] to the
+[20:09] MSP. If a carry is generated we add it
+[20:12] to the next pair of bits and at the last
+[20:15] step if a carry is generated then uh so
+[20:18] if you see here in the last step a carry
+[20:20] is generated so it essentially becomes
+[20:22] the most significant bit the MSP of the
+[20:26] result. So the carry effectively ripples
+[20:29] through the
+[20:32] bits. So let us first design a very
+[20:35] simple adder called a ripple carry
+[20:36] adder. So in this case we'll add two uh
+[20:40] multi-bit binary numbers a and b. So
+[20:43] let's assume that they have n bits each
+[20:45] and the bits are a1 to a n right that's
+[20:50] the addition that we do plus so bn means
+[20:54] the nth bit and b1 means the first bit
+[20:57] so when we add we'll first add a1 and b1
+[21:01] so mind you there is no carry input so
+[21:03] we can use a half adder so the half
+[21:05] adder will produce a sum bit and it'll
+[21:08] produce a
+[21:09] carry subsequently we need to add a2 V2
+[21:12] and the carry that was generated. So we
+[21:15] need a full
+[21:17] adder. So again uh we save the sum bit
+[21:20] over here and we move the carry to the
+[21:23] next position. So here also we use a
+[21:27] full adder and we add a3 b3 and the
+[21:31] carry. So in a similar fashion we go
+[21:33] till the nth position which is the last
+[21:37] point. We add the carry a n and
+[21:40] bn. So finally we have a sum bit and we
+[21:43] have a carry out. So since we have
+[21:45] nothing more to add the carry out
+[21:47] becomes the most significant bit of the
+[21:51] result. Right? So this is this carry out
+[21:54] uh the bit that comes out. So this is
+[21:56] exactly the same as the addition that
+[21:59] was done over here. The only important
+[22:02] point to note here is that at the least
+[22:05] significant position we have a half
+[22:09] adder because there is no carry input
+[22:11] and the rest of the adders are full
+[22:15] adders. So this particular adder let me
+[22:18] actually go back once again. This is
+[22:20] called a ripple carry adder because
+[22:22] essentially the carries pass from one
+[22:24] adder to the other. It's like a ripple.
+[22:26] It's like a wave a wave of carries going
+[22:29] from you know right to left. Uh so the
+[22:34] in so in this problem uh what we are
+[22:37] essentially doing is uh so this is sort
+[22:39] of a textual description of what I
+[22:41] described on the previous slide that we
+[22:44] start from the right and we gradually
+[22:48] move to the left and we keep on adding
+[22:51] the carry values.
+[22:56] So how long does the ripple carry adder
+[22:58] take? Right? So the question is when we
+[23:00] design an adder we should know how long
+[23:03] it takes and uh you know to perform the
+[23:07] addition such that we can when we
+[23:08] compare two adders we can compare them
+[23:11] on the basis of the time. So let us
+[23:14] assume that the time a half adder takes
+[23:17] is th and the time a full adder takes is
+[23:21] tf. So as we see the total time that
+[23:24] this adder will take uh let me go back
+[23:27] is essentially the time for one half
+[23:29] adder to to compute its carry and then
+[23:32] since these are in series it'll be th
+[23:37] + n minus one in an n bit addition we'll
+[23:41] have n minus one full adders so it'll be
+[23:43] th + n -1 *
+[23:47] tf so let me now define the notion of
+[23:50] asmtotic time complexity ity which is
+[23:54] very very important in computer science.
+[23:57] So most of the time we are primarily
+[23:58] interested in something
+[24:00] called the order of the function. For
+[24:04] example, let's consider uh this
+[24:07] expression 2n + 3 n +
+[24:11] 4. So if we take a look at it well uh 3n
+[24:16] is important, four is important but
+[24:17] consider n is a fairly large value. So
+[24:21] the only term that actually dominates
+[24:23] this expression is 2
+[24:25] n². So the rest of the terms in a
+[24:28] certain sense can be ignored. Again it's
+[24:31] being mathematically inaccurate but we
+[24:33] shall see that there are some advantages
+[24:35] to this. So basically these terms can
+[24:37] technically well not technically but in
+[24:40] a certain sense can be ignored and uh so
+[24:44] basically even let's say the constant 2n
+[24:46] squared we can while you know broadly
+[24:50] thinking of the approximate time we can
+[24:52] even ignore the constant two and we can
+[24:55] say that this function sort of grows as
+[24:59] n² right uh ignoring constants so it is
+[25:03] possible to say that a function of the
+[25:06] form 2 n ^ 2 + 3 n + 4 is
+[25:12] um you know the order of
+[25:15] n² and uh the reason it is possible to
+[25:18] say this is because we have decided to
+[25:21] get rid of
+[25:23] constants and uh so if you see you know
+[25:26] the maybe the graph of this function uh
+[25:29] will essentially be uh quadratic graphs
+[25:33] might be something like this and maybe n
+[25:36] square will sort of be half of it. It'll
+[25:38] be something like this. But pretty much
+[25:40] you know we sort of want an approximate
+[25:43] representation where we don't want uh
+[25:46] many constants. So we can say that look
+[25:49] as long as two curves are
+[25:52] uh sort of one curve is a multiple of
+[25:56] the other curve right it's some constant
+[25:58] times another curve we'll ignore the
+[26:00] constant. So we can say that this is
+[26:02] approximately growing as n square would
+[26:05] grow. So let us try to formalize this
+[26:08] notion. So let me uh introduce the big O
+[26:11] notation. So this notation is called big
+[26:13] O capital O. So formally we say that a
+[26:17] function fn is order of so big o of gn
+[26:23] if if
+[26:25] uh fn is less than equal to a constant
+[26:29] time
+[26:31] cgn for all n greater than some n0 where
+[26:35] c is a positive constant. So let me uh I
+[26:39] I'll explain it with an example but let
+[26:40] me uh say what this means in a slightly
+[26:44] colloquial sense. So so let's consider
+[26:46] two functions fn and gn. So let's say
+[26:49] this function is the same old function 2
+[26:52] n² + 3 n +
+[26:55] 4 and we are saying that this is order
+[26:58] of
+[26:59] n². So what this basically means is that
+[27:02] we can say that 2 n². So let's consider
+[27:06] positive n. So the absolute value will
+[27:08] go away. So anyway the absolute value is
+[27:10] more of a mathematical artifact. We can
+[27:13] say that this
+[27:15] is you know less than equal to 10
+[27:19] n² for n greater than 100. Right? You
+[27:24] can definitely say that
+[27:26] uh that this is uh less than this. In
+[27:29] this case, c will be equal to 10 and
+[27:34] uh n0 will be equal to 100. So it can be
+[27:36] said that you know this function 2 n ^2
+[27:40] + 3 n + 4 will essentially grow the same
+[27:43] way as n² will grow ignoring constants.
+[27:47] So let's look at other another example.
+[27:49] So in simple terms what we are saying is
+[27:52] that beyond a certain n beyond a certain
+[27:54] value of n gn is greater than or equal
+[27:58] to a certain constant * fn. For example
+[28:03] beyond 15 n² + 10 n + 16 is less than
+[28:08] equal to 2 n². So in this case we can
+[28:11] say n0 is equal to
+[28:13] 15 and c is equal to 2.
+[28:19] Now let's consider an example of the big
+[28:21] notation. So let's uh look at fn is
+[28:25] equal to 3 n ^2 + 2n + 3 and let's find
+[28:31] its asmtotic time complexity.
+[28:33] So fn is 3 n² + 2n + 3 which is less
+[28:37] than equal to 3
+[28:38] n² plus well 2n is less than 2n² when n
+[28:43] is greater than 1 and 3 is also less
+[28:46] than 3 n² when n is greater than 1. So
+[28:49] if we if I sum up all of these terms fn
+[28:52] is less than equal to 8
+[28:54] n².
+[28:57] So what can be said is that fn is
+[29:00] actually order of
+[29:02] n² where the constant n0 is equal to 1
+[29:07] and c is equal to 8.
+[29:10] So if we plot the graphs we'll notice an
+[29:12] interesting thing that after this point
+[29:15] one
+[29:17] right which will uh roughly be here we
+[29:21] can see that fn is clearly greater than
+[29:25] uh no no I'm sorry 8 n squared uh so 8 n
+[29:29] square is this green curve over here and
+[29:31] fn is the red curve so we can see that 8
+[29:35] n square is clearly greater at all
+[29:37] points uh as compared compared to the
+[29:40] original function fn. So we can say that
+[29:43] 8 n squar is a strict upper bound on fn
+[29:46] as shown in the figure. So essentially
+[29:48] the point is that we can have you know
+[29:50] any kind of function with any number of
+[29:52] polinomial terms. We want to find a
+[29:55] simple upper bound and ignore
+[29:58] multiplicative and additive constants.
+[30:01] So the order notation pretty much gives
+[30:03] us a mathematical tool of achieving
+[30:06] that.
+[30:09] For example, let's consider this
+[30:11] function 0.1
+[30:16] ^ 100 plus 10,000 * 10 ^ 99 plus a big
+[30:20] constant. Let's find its asmtotic time
+[30:23] complexity. So it is true that you know
+[30:26] this coefficient is very small and this
+[30:28] coefficient is very large but definitely
+[30:31] we can find a value of
+[30:33] n at which you know uh this term will
+[30:37] dominate right. So uh keeping that in
+[30:42] mind uh we can use the same algebraic
+[30:46] formula listed in the previous slides
+[30:48] and essentially say that fn is order of
+[30:51] n of 100. So pretty much we have to take
+[30:53] the highest exponent while computing the
+[30:56] order of a function. So in this case is
+[30:59] n ^ 100. Why is this the case? Because
+[31:02] we can always find say if this is fn
+[31:06] right we can always find a constant c
+[31:10] such that c is less than n ^
+[31:14] 100 uh
+[31:17] for a certain n greater than n0 right so
+[31:22] basically we can always find something
+[31:24] of that nature so so one thing is if I
+[31:27] set c as 10,000 so 10,000 n ^ 100 is
+[31:32] more than this term but again these two
+[31:34] terms will increase but that's okay if I
+[31:36] keep on increasing the value of n
+[31:39] ultimately I'll find out some value of
+[31:41] n0 and c such that this function is
+[31:44] strictly less than c n ^ 100 for all
+[31:48] values of n so we hence we can say that
+[31:52] fn is equal to order of n ^ 100 so one
+[31:57] simple way is that if it's a polomial
+[31:59] expression take the highest power of n.
+[32:03] Right? So that is the order of the
+[32:05] function. So we shall essentially use
+[32:08] the bigo notation which is actually very
+[32:10] easy and
+[32:12] uh you know is very easy to use and very
+[32:15] easy to compute to characterize the time
+[32:18] taken by different types of adders. So
+[32:20] so let me you know uh talk about some
+[32:23] issues that students typically raise. So
+[32:26] students might say that look uh we might
+[32:28] have a function of this type uh let's
+[32:30] say.1
+[32:32] n² plus
+[32:38] uh 300
+[32:41] n +
+[32:43] 20 and so in this case for lot of values
+[32:47] of n pretty much this term will
+[32:50] dominate. Uh so the question is is it
+[32:53] still order n square or is it order n
+[32:56] and how do we use it to
+[32:58] compare? So the question is that so the
+[33:01] bigo notation is an approximate
+[33:03] representation is sort of telling you
+[33:05] that a function for sufficiently large
+[33:08] values of n is bounded by another
+[33:12] function
+[33:14] uh after taking multiplicative constants
+[33:17] into account. Right? So basically it's
+[33:19] all that it's saying is that look uh if
+[33:22] you have a function of maybe you know
+[33:23] this type then
+[33:27] uh this is bounded by some other
+[33:30] function of this
+[33:32] type right so it's sort of finding a
+[33:34] boundary of the function so this
+[33:36] function if if this function is
+[33:39] fn this is something of the form c *
+[33:43] gn right that's what we are seeing and
+[33:46] so when you are saying that fn is order
+[33:48] of GN this is exactly what we are trying
+[33:50] to say that we're sort of creating an
+[33:52] envelope for the function such that fn
+[33:55] is less than uh the envelope at all
+[33:59] points. So this has some value in the
+[34:01] sense of course the value of n matters
+[34:03] the multiplicative constant matters
+[34:06] essentially the value of n0 and c
+[34:08] definitely matter right there's no doubt
+[34:11] about that but still it gives us a good
+[34:13] idea and it is very unlikely that in
+[34:18] real life if you have one function whose
+[34:20] asytoic complexity is higher than that
+[34:23] of another function then it'll actually
+[34:25] be faster in practice. So that typically
+[34:28] does not happen in a sense an
+[34:31] order n time algorithm or a circuit
+[34:34] right is typically much faster than
+[34:37] order n² of course n I mean there might
+[34:40] be more constants in this equation which
+[34:42] are getting ignored but typically it's
+[34:45] the case that an order n time algorithm
+[34:48] is much
+[34:51] faster. So let's take a look at the
+[34:53] complexity of a ripple carry adder. So
+[34:55] let's actually go
+[34:57] back. So at this point what we see is
+[35:00] that the time complexity is th + n
+[35:04] minus1 *
+[35:06] tf. So basically these th and tf are
+[35:09] constants. So the only variable in here
+[35:13] is n. And so we can say that this is
+[35:16] equal to order of n where n is the
+[35:18] number of
+[35:19] bits that we're trying to add. So the
+[35:22] complexity of a ripple carry error thus
+[35:24] becomes order of n in the sense that you
+[35:28] know uh
+[35:30] asytoically uh roughly we will take
+[35:33] order n steps if we have n bits if it's
+[35:36] a 32-bit addition roughly we'll take you
+[35:39] know some k * 32 steps and if it's uh a
+[35:44] 64-bit addition we'll roughly take c *
+[35:49] uh 64 steps.
+[35:52] So the question is can we do something
+[35:54] faster? Can we do something which is
+[35:56] much better than order of n? That's the
+[35:58] question that we need to
+[36:01] ask. Well the answer is
+[36:04] yes. So let's look at a carry select
+[36:08] adder which takes order of square root
+[36:10] of n
+[36:12] time. So let's do one thing. Let's group
+[36:14] bits into blocks of size k. So if you're
+[36:18] adding two 32-bit numbers a and b and k
+[36:21] is equal to
+[36:22] four then the blocks are so what we'll
+[36:25] do is we'll group them into blocks. So
+[36:27] we'll consider four bits at a time. A1
+[36:30] to A4, B1 to B4. Then we'll add them. A
+[36:35] carry will propagate across the blocks.
+[36:37] Same way a carry will
+[36:39] propagate. And uh for for each block of
+[36:42] bits four and four, we'll produce the
+[36:45] result of each uh block with a small
+[36:48] ripple carry adder. So we'll have
+[36:50] separate ripple carry adders for each
+[36:52] such small block.
+[36:57] So in this case what will happen is that
+[36:59] instead of treating adding a bit at a
+[37:02] time we'll be adding uh four bits entire
+[37:06] block at a
+[37:07] time. So the carry will then propagate
+[37:10] across blocks which will still take
+[37:12] order of n time but let's come up with a
+[37:15] novel idea of how to speed it up. Right?
+[37:17] So what was the original aim? The
+[37:20] original aim was that from an order n
+[37:24] complexity we want to move to a order of
+[37:27] square root of n time
+[37:29] complexity. So here is what we want to
+[37:32] do. Let's do one
+[37:34] thing. So so let's consider the
+[37:37] structure of the addition. Right? So
+[37:39] what what have we done? We have
+[37:41] essentially divided the numbers into
+[37:43] blocks of four bits.
+[37:57] So let's consider one
+[37:59] block. So what is the inputs? What are
+[38:02] the inputs to the block? The input to
+[38:04] the block is the carry input from the
+[38:07] previous block. What is the output from
+[38:10] the block? The output from the block is
+[38:13] the carry from the block. Right? So, so
+[38:16] these are the two inputs and outputs.
+[38:19] There there is a carry
+[38:21] in and there is a carry out. If we know
+[38:25] the value of the carry in, we can
+[38:27] perform the addition
+[38:29] correctly. So let's consider any block.
+[38:32] So what are the possible values of carry
+[38:34] in? They're either zero or one. Right?
+[38:37] Only two uh values of the carry in can
+[38:41] be
+[38:42] there. So what we can do? So here is the
+[38:44] brilliant idea behind the carry select
+[38:47] adder right. So this is very important.
+[38:49] So what we can do is
+[38:52] that for each block
+[38:56] uh we can actually produce two results
+[38:59] right? So when we are doing the addition
+[39:00] you can actually produce two results
+[39:03] result one and result
+[39:06] two. So basically when you're adding two
+[39:11] numbers, so let's say we're adding uh
+[39:13] you know two blocks of numbers from A4
+[39:15] to let's say
+[39:17] uh well A4 might not be the right
+[39:20] example. Let me just maybe delete
+[39:28] it. Uh let's say that we are trying to
+[39:32] add A12
+[39:46] plus. So for this particular block the
+[39:49] value of the carry input can either be
+[39:52] zero or one right. So we don't know
+[39:54] that. So let's first assume the carry
+[39:57] input is zero. And let's produce an
+[40:01] output. So the output will have five
+[40:03] bits. Four of them are sum bits and one
+[40:06] of them is the carry
+[40:08] out. Then in parallel what we can so
+[40:12] since it's in hardware right we can do a
+[40:15] lot of computations that are in parallel
+[40:17] right so there is no need of doing one
+[40:19] after the other in parallel what we can
+[40:22] do is that we can perform another
+[40:25] addition for the two blocks assuming
+[40:28] that the carry in in was actually one.
+[40:32] So that will also produce its result and
+[40:36] a carry
+[40:40] out. All right. So what we can do is
+[40:42] that for each block we produce two
+[40:44] results. We assume an input carry of
+[40:46] zero into the block. So we produce one
+[40:49] result and we produce one more result.
+[40:51] We assume an input carry of one. Both of
+[40:54] these since it's in hardware both of
+[40:56] these can happen in parallel. Right? So
+[40:58] far what we can do is that for each
+[41:01] block so assume that we are adding to
+[41:04] 32-bit numbers and we have blocks of
+[41:06] size fours we'll have essentially eight
+[41:09] pairs where one eight blocks for one
+[41:12] block we'll have two pairs of four bit
+[41:14] numbers right so for each block we
+[41:18] actually produce two
+[41:20] results the first result assumes that
+[41:23] the input carry coming from the previous
+[41:25] block is zero and the second result
+[41:27] assumes
+[41:28] The input carry coming from the previous
+[41:30] block is
+[41:31] one. The result will have the sum bits
+[41:35] and a carry out bit.
+[41:38] Now uh so what we have for let's say two
+[41:42] 32-bit numbers that we are trying to add
+[41:45] a +
+[41:47] b we have a sequence of
+[41:51] uh eight uh blocks right where each
+[41:55] block has four
+[41:57] bits so we can generalize it let's say
+[42:00] each block has k bits and that's also
+[42:02] fine and uh so they are supposed to be
+[42:06] equalized rectangles Sorry. And uh so
+[42:09] then essentially what we can do at this
+[42:11] point. So so in the in stage one what
+[42:14] have we done? What we have done is that
+[42:17] we have for each block we have done the
+[42:20] addition assuming an input carry of zero
+[42:23] and an input carry of one. So we have
+[42:25] two
+[42:25] results. In stage two what we do is we
+[42:28] start at the least significant block. So
+[42:31] clearly the input carry into this is
+[42:32] zero.
+[42:34] So then we quickly choose the
+[42:36] appropriate result from the first stage
+[42:38] and again send so the result will have
+[42:40] the carry out. So we again send the
+[42:42] carry to the next block. Then we quickly
+[42:45] choose the appropriate result from the
+[42:47] first stage and send the uh you know the
+[42:49] appropriate carry out to the next block
+[42:51] and so on and so
+[42:53] forth. So how long does this process
+[42:56] take? So let's first find out how long
+[42:58] did stage one take and how long does
+[43:00] stage two take. So let's assume that
+[43:03] each block has k
+[43:05] bits. So we are essentially doing the
+[43:08] additions in all the blocks in parallel.
+[43:11] Uh you know mainly because there's no
+[43:13] carry business, right? We're assuming a
+[43:15] carry of both zero and one and each
+[43:17] block since it is k bits we can use a
+[43:19] ripple carry adder. So that will take
+[43:22] order of k
+[43:24] time. And in this case what we do is we
+[43:29] start at one block. So we quickly decide
+[43:31] which output it is. We send the carry.
+[43:35] Let's say the carry here is one. Then in
+[43:38] the previous stage we have already
+[43:39] computed two results. So we choose that
+[43:42] result which corresponds to an input
+[43:44] carry of one. Then we quickly propagate
+[43:47] the output carry again and again and
+[43:49] again. So we can say that in each stage
+[43:51] it takes roughly takes constant time
+[43:54] which is order one. And since there are
+[43:57] you know each block is k bits right. So
+[44:00] basically there are n byk blocks. So we
+[44:02] can say that the entire operation takes
+[44:05] order of n by k time
+[44:09] units. All
+[44:12] right. So uh so so what again let me
+[44:16] just summarize what we do in stage two.
+[44:18] Given the result of this let's say nth
+[44:22] block in this case the second block we
+[44:25] compute the carryin for the third block
+[44:27] which is very easy.
+[44:29] we just take the carry that is coming
+[44:32] in. So let's say for the second block
+[44:35] for you know block number two we know
+[44:37] the carry in since we have the premputed
+[44:40] results we can immediately find what is
+[44:42] the carry out and then this goes to the
+[44:45] next block the third block and since
+[44:48] again we know what is the carry in we
+[44:50] can choose from one of one among the two
+[44:53] precomputed
+[44:54] results and send the carry out and so
+[44:58] forth. So in this manner we proceed till
+[45:01] the last
+[45:01] block. At the last block we choose a
+[45:04] correct result and uh basically this
+[45:09] finishes the entire
+[45:12] computation. So how much time did we
+[45:14] take in doing this right? So the so
+[45:18] since a block size is K as I said stage
+[45:20] one roughly takes order K units of time
+[45:24] and so this can be K * some constant it
+[45:26] does not matter. uh so that's the reason
+[45:28] I have removed it for the sake of
+[45:30] simplicity but uh the reader is
+[45:33] encouraged to assume it takes C * C1 * K
+[45:36] time and so the constants don't matter
+[45:39] they'll get uh factored out in our
+[45:41] equation so for the sake of simplicity
+[45:44] let's assume that stage 1 takes K units
+[45:47] time since there are n byk blocks stage
+[45:50] two will take n by k units of time so
+[45:53] total time is k + n by k so what What is
+[45:57] K? K is the block size, the number of
+[45:59] bits in one block. So let me write it
+[46:06] down. K is the block size and N is the
+[46:12] number of bits that we are trying to
+[46:15] add. So N is clearly cannot be changed
+[46:19] once the problem is given to you. But
+[46:21] the block size can be changed.
+[46:23] So let's do one thing for finding out
+[46:26] the minimum of this function. Let's
+[46:27] differentiate it with respect to k. So
+[46:30] whenever the derivative is zero, uh
+[46:33] we'll be able to find uh a maxima or
+[46:37] minima. So uh in this case we want to
+[46:39] minimize the time. So we want a minima.
+[46:42] So let's differentiate it with respect
+[46:44] to k. So it becomes 1 - nx k². And so
+[46:48] the optimal value of k for which the
+[46:51] total time is minimized is actually
+[46:53] square root of n. That's a very very
+[46:55] important point to take into account.
+[46:58] Which means that let's say if we have a
+[47:01] 32-bit addition, right? We're adding two
+[47:03] 32-bit numbers. So square root of 32 is
+[47:06] between five and six. So any of the
+[47:09] numbers are fine. So what we essentially
+[47:11] need to do is that we need to create
+[47:13] five bit blocks of numbers. So let's say
+[47:17] a5 to
+[47:20] a1.
+[47:23] Similarly
+[47:26] a 6 to a 10. And similarly you know we
+[47:31] need to add these blocks and use a
+[47:34] ripple carry adder uh I'm sorry use a
+[47:37] carry select adder to add these pairs of
+[47:40] blocks. So that will give us the fastest
+[47:42] possible time. And what is the fastest
+[47:44] possible time? So it's essentially k + n
+[47:48] by k when k is equal to square root of n
+[47:52] becomes square roo&lt;unk&gt; of n + n /
+[47:56] roo&lt;unk&gt; of n which is 2 * roo&lt;unk&gt; of n
+[48:00] which can be written in an approximate
+[48:03] notation as order of square root of n
+[48:06] because all additive and multiplicative
+[48:09] constants are ignored.
+[48:11] So pretty much what we have
+[48:13] achieved in our uh carry select adder is
+[48:19] that we have created an adder that takes
+[48:21] order of square root of n
+[48:24] time and uh so which is fast. We thus
+[48:28] have a root end time adder. So basically
+[48:31] how fast was a ripple carry adder? The
+[48:34] ripple carry added which was very very
+[48:43] simple took order of end
+[48:46] time and the carry select
+[48:57] adder takes order of square root of n
+[49:00] time. So it is expected to be much
+[49:02] faster.
+[49:04] So mind you as I said it is not
+[49:07] necessary that for relatively small
+[49:09] values of n any function which is order
+[49:12] of n is actually slower in the sense I
+[49:16] can always give a pathological example
+[49:18] for oh I'm sorry uh I can always give a
+[49:22] pathological example that
+[49:24] consider this function which is an order
+[49:28] n versus consider this
+[49:31] function for most values of n actually
+[49:34] this
+[49:36] function is
+[49:37] smaller but this is a very very
+[49:40] pathological example it's typically not
+[49:42] the case see even if uh so I encourage
+[49:46] students to actually implement the carry
+[49:48] select adder in hardware and see for
+[49:52] themselves find out for themselves that
+[49:54] it is genuinely faster than the ripple
+[49:57] carry adder uh so so I mean asytoic time
+[50:00] complexity definitely gives you a broad
+[50:02] direction that yes maybe it is faster
+[50:05] but also you can implement it in
+[50:07] hardware and see that it is faster and
+[50:10] definitely as you increase the number of
+[50:11] bits 64 128 and so on the carry select
+[50:15] adder is definitely much much faster as
+[50:18] can be seen from the asytoic complexity
+[50:21] as well now let's ask a magic fish can
+[50:24] we do
+[50:25] better well magic fish says
+[50:28] yes we can do better we can do much much
+[50:32] better in
+[50:34] fact. So how much better can we do
+[50:39] right? Uh that's the uh important
+[50:47] answer. Let's now consider the carry
+[50:50] look ahead adder which is much faster.
+[50:54] So we'll roughly do it in order of login
+[50:56] time. So which is significantly faster
+[50:59] as compared to n and square root of n.
+[51:02] So let's first take a look at the
+[51:03] insights. So since you know since this
+[51:06] adder is much faster and also this is
+[51:08] the adder that is used in most
+[51:10] commercial processors
+[51:12] uh it is also far more complicated. So
+[51:14] we need to take it slow. So let's first
+[51:17] take a look at the main insight. So the
+[51:19] main problem in addition is the carry
+[51:23] right. So the carry is the one that goes
+[51:25] from one block to the other and that is
+[51:28] essentially the sequential bottleneck.
+[51:30] Otherwise in hardware if you can do
+[51:32] things in parallel then things will be
+[51:34] much faster right. So if you can so if
+[51:37] you take a look so basically where did
+[51:38] the speed up in the carry select adder
+[51:41] come from it came from the fact that in
+[51:44] stage one we can treat each block
+[51:47] separately in parallel. Right? So
+[51:50] essentially we can treat all the blocks
+[51:52] simultaneously. We assume we don't know
+[51:54] what's the carry but we produce two
+[51:56] results. So we do extra work and we
+[51:59] produce two results for an input carry
+[52:00] of 0 and one. So that is stage one. Then
+[52:04] in stage two the carry quickly
+[52:07] ripples and instead of rippling across
+[52:10] bits it ripples across blocks. So it
+[52:12] takes bigger
+[52:13] strides and uh we quickly choose from
+[52:16] one of the two precomputed outputs. So
+[52:19] essentially we get a time complexity
+[52:21] which is k + n by k and we differentiate
+[52:25] it and we find the optimal value of k to
+[52:28] be square root of n and thus the total
+[52:30] time is order of square root of n. But
+[52:33] essentially all our benefits came from
+[52:36] computing the carry very quickly. So let
+[52:39] us thus focus on computing the
+[52:41] carry without actually performing the
+[52:46] addition if required. So some kind of a
+[52:48] shortcut to get rid of the scary carry
+[52:52] business. So let's do one thing. So we
+[52:54] need to define a little bit of algebra
+[52:56] before we actually proceed. So let us
+[52:59] consider two corresponding bits of a and
+[53:02] b. So a and b are the two numbers that
+[53:05] we are trying to add. We're trying to
+[53:06] add a plus b and both of them are n bit
+[53:10] numbers. Uh so let's define a generate
+[53:13] function. A generate function means that
+[53:16] a carry is generated after the addition.
+[53:19] So C out is equal to
+[53:22] one. On similar
+[53:25] lines, let us
+[53:27] define a propagate function. So
+[53:29] basically if I consider a block of
+[53:33] bits if irrespective of the input carry,
+[53:37] irrespective of the input carry, we are
+[53:40] generating an output carry. We say that
+[53:42] the block is generating a carry. For
+[53:45] example, let me consider this block 1 1
+[53:48] + 1 1
+[53:52] irrespective. So so if I irrespective of
+[53:54] the input carry uh uh we will always
+[53:58] generate an output carry. So input carry
+[54:00] is zero. So 1 + 1 will be zero and this
+[54:02] will be one and output carry of one will
+[54:04] be generated. Let's assume that the
+[54:07] input carry is 1. So 1 + 1 + 1 is 1
+[54:12] carry of 1 again 1 and a carry out of
+[54:16] one. So if this is the contents of the
+[54:18] block irrespective the input carry the
+[54:21] output carry will always be one. So we
+[54:23] are saying that we are
+[54:25] generating. Now let us define a
+[54:27] propagate function. So the propagate
+[54:30] function says that the output carry is
+[54:32] equal to the input carry. So let's
+[54:34] consider the example. So let's consider
+[54:36] a single bit example which will be far
+[54:39] easier to understand. So let's assume so
+[54:42] let's consider the values of ai and bi.
+[54:45] So let's consider multiple
+[54:47] values. So let's assume these are zero
+[54:49] and
+[54:50] zero. If they are zero and zero and
+[54:53] let's consider the
+[54:56] carry irrespective of the value. So
+[54:59] let's consider the carry in irrespective
+[55:02] of the value of the carry in the carry
+[55:05] out will be zero. Right? So even if the
+[55:09] carry in is one we'll still not generate
+[55:12] a carry. If it's zero we'll still not
+[55:13] generate a
+[55:15] carry. Now let's
+[55:18] assume yeah now assume that ai is zero
+[55:22] and bi is one. Right?
+[55:27] So in this
+[55:29] case uh so it's so in this case let's
+[55:32] see uh so let me maybe draw a quick uh
+[55:36] line here to demark
+[55:38] it if the input carry is
+[55:42] zero then the output carry is
+[55:45] zero but if the input carry is
+[55:49] 1 then we we are adding 1 + 0 + 1 which
+[55:54] is 1 0 right so the output carry is
+[55:59] one. So what we can clearly see is that
+[56:02] the output carry is the same as the
+[56:04] input
+[56:05] carry. Now let's consider one more
+[56:10] example. In this case let ai be 1 let bi
+[56:19] zero and let's assume that the input
+[56:22] carry is zero. When the input carry is
+[56:24] 0, we are adding 0 + 1 + 0. No carry is
+[56:28] being generated. So the output is output
+[56:30] carry out is
+[56:31] zero. If however the input carry is 1,
+[56:36] then we are adding 1 + 1, the sum is
+[56:39] zero, the carry out will be equal to 1.
+[56:46] Hence the output carry will be equal to
+[56:49] one. So in both of these
+[56:52] cases the carry
+[56:55] out is equal to the carry in. In the
+[56:59] first case irrespective of the carry in
+[57:01] the carry out is zero. So let's consider
+[57:06] case. In this case ai is one bi is
+[57:10] one irrespective of the input
+[57:13] carry. So let's assume that the input
+[57:17] carry is zero. So then we add 0 + 1 + 1
+[57:21] the carry is generated. Let's assume
+[57:24] carry in is
+[57:25] 1. So we add 1 + 1 +
+[57:29] 1 again a carry out is generated. So
+[57:32] irrespective of the input
+[57:35] uh irrespective of c in c out is always
+[57:38] one. So what we can say is that if ai
+[57:42] and bi both of them are one which is
+[57:44] when ai and bi is true we can say that
+[57:48] this combination of bits or this block
+[57:52] right which has one bit of a and one bit
+[57:54] of b is generating a carry. So when do
+[57:57] you generate a carry? You generate a
+[57:59] carry when irrespective of the input
+[58:02] carry you always generate an output
+[58:04] carry. That will happen if ai is one and
+[58:06] bi is one. So I can define a function GI
+[58:11] which is AI and BI. So if GI is true
+[58:14] means that a carry is always
+[58:17] generated. Now let's consider this case
+[58:20] when a is ai is zero, bi is 1 or ai is 1
+[58:24] and bi is zero. So how can I represent
+[58:26] this case? The way that this case can be
+[58:30] represented is by ai exclusive or
+[58:33] bi. So if you go back to our discussions
+[58:37] in chapter 2, the XR function. So let me
+[58:40] just you know do a quick recap of the XR
+[58:43] function. We have anyway seen that many
+[58:45] many times. So the XR function is one.
+[58:48] When AI is zero, BI is one or AI is one,
+[58:52] BI is zero. That's when
+[58:55] AI exclusive or BI is one. In the
+[58:59] remaining cases, it is zero. So when AI
+[59:02] exclusive or BI is true, we can say that
+[59:06] the carry is being
+[59:07] propagated. What does propagation mean?
+[59:10] Propagation means that the carry output
+[59:13] is equal to the carry input. So if carry
+[59:15] in is zero, then carry out C out is
+[59:18] zero. If C in is one, then C out is one.
+[59:22] So that's when the propagate function
+[59:24] will be true. And if both ai and bi are
+[59:27] zero then irrespective of the carry in
+[59:30] the carry out will be zero. So in a
+[59:31] sense the carry is being
+[59:33] absorbed. So what is the takeaway point
+[59:36] from this slide? The takeaway point from
+[59:38] this slide is the generate function that
+[59:41] we have defined which is AI and BI means
+[59:44] irrespective of the carry in a carry out
+[59:46] is always
+[59:47] generated and pi which is propagate I
+[59:51] which means that this function if this
+[59:54] function is true it means that uh the
+[59:58] carry out C out is equal to C in. So
+[60:02] keeping this in mind let's move forward.
+[60:04] So let's use the GNP generate and
+[60:06] propagate functions for a bit pair. Uh
+[60:09] so the carry out can be said it is equal
+[60:12] to
+[60:13] GI. So plus means so plus here means an
+[60:17] or and dot means an
+[60:19] and. So this is so if GI is true then a
+[60:23] carry out is definitely being generated
+[60:26] otherwise or
+[60:29] uh the carry input is true and the
+[60:31] propagate is true. So there are only two
+[60:33] ways that see out can be one. Either the
+[60:35] block is generating a carry or the block
+[60:39] is propagating a carry and the carry
+[60:42] input is
+[60:43] one. So we can say G it is GI or PI and
+[60:48] carry
+[60:50] input. So let's consider an example.
+[60:52] Let's say AI is zero, BI is 1. Let the
+[60:56] input carry be C in. Compute GI PI and C
+[60:59] out. So GI is AI and BI which is 0 and 1
+[61:02] which is zero. So this is not
+[61:04] generating. PI is AI XR BI which is 0 XR
+[61:08] 1 which is one. So it's propagating. So
+[61:11] C out is GI plus P GI or PI and carry
+[61:15] input. So this is
+[61:17] zero. It's
+[61:20] propagating and uh we don't know the
+[61:22] input carry. So we can say C out is
+[61:24] equal to C in this case.
+[61:30] So let's now consider a multi-bit system
+[61:32] where a block does not have one bit each
+[61:34] of a and b but it has multiple
+[61:37] bits. So let's define some simple
+[61:40] terminology first. So let's say that c
+[61:43] out i means the output carry
+[61:47] for the iat bit
+[61:49] pair. Similarly let's say c in i is the
+[61:53] input carry for the iat bit pair.
+[61:58] Similarly, GI is the generate value of
+[62:00] the generate function for the IAT bit
+[62:02] pair and pi is the value of the
+[62:04] propagate function for the IAT bit pair.
+[62:08] A bit pair is a pair of bits. So when we
+[62:10] are adding we have you know multiple
+[62:12] bits of A and multiple bits of B. Right?
+[62:15] So one corresponding pair of bits is
+[62:17] called a bit pair.
+[62:20] So now let's write some basic equations
+[62:23] for multi-bit systems and let's see what
+[62:25] it looks
+[62:26] like. So let's see uh we we have already
+[62:30] derived this that for the first bit pair
+[62:32] C out1 it is G1 plus P1 times the carry
+[62:37] that is so no times P1 and the carry
+[62:42] that is coming in which is C in 1.
+[62:46] Now let's consider the second
+[62:50] uh bit pair switches. So basically let's
+[62:53] consider the two bits a2 a1 and
+[62:59] b2
+[63:04] b1. So basically for the first bit pair
+[63:07] this is the equation right? This is the
+[63:09] equation for the first bit pair. If I
+[63:12] consider the second bit pair over here,
+[63:14] the carry that is coming out C out2 is
+[63:17] G2 or P2 and the carry that is coming
+[63:22] out of the first bit pair. So then I can
+[63:26] do a little bit of algebra and replace C
+[63:28] out1 with this expression here which
+[63:31] comes to here and I just rearrange the
+[63:35] terms. So what I see is that for finally
+[63:40] I have C out2 which is the carry which
+[63:43] is coming out from this as C
+[63:48] out and the carry which is going
+[63:52] in which is C in
+[63:56] one. So I finally have an equation in
+[63:59] terms of C in one and the generate and
+[64:01] propagate
+[64:03] functions of the pair of bits.
+[64:08] So, so the way that the generate
+[64:10] function for essentially the pair of
+[64:13] bits, right? So, I I can think of this
+[64:15] as you know one big block now, right? So
+[64:19] for this block the generate function is
+[64:21] actually G2 or P2 and
+[64:24] G1 and the propagate function
+[64:27] is P1 and P2 which basically means that
+[64:30] the input carry will show up in the
+[64:32] output if every pair of bits is
+[64:35] propagating it. So that's the reason for
+[64:36] the and function. And a nice way of
+[64:39] understanding the generate is that
+[64:41] either the last pair the second pair is
+[64:43] generating or the first pair is
+[64:45] generating and the second pair is
+[64:47] propagating. Right? So this can be
+[64:49] considered as the generate for the two
+[64:52] bit pair and this as the
+[64:53] propagate. So let's consider three bit
+[64:56] system. So we can write a similar
+[64:58] equation that either uh see out for at
+[65:03] the end of three bits either the third
+[65:05] bit pair is generating or the third bit
+[65:08] pair is propagating the carry generated
+[65:11] out of the second uh out of the addition
+[65:14] of the first two bits.
+[65:16] So then here for this equation we can
+[65:19] substitute this result. After doing some
+[65:22] algebra we again come at this. So this
+[65:25] is the generate function for a threebit
+[65:28] system. So when will a threebit block
+[65:31] generate? When either the third bit pair
+[65:34] is generating or the second bit pair is
+[65:37] generating and the third bit pair is
+[65:40] propagating or the second and third bit
+[65:42] pairs are propagating and the first bit
+[65:44] pair is
+[65:46] generating. And when will it propagate?
+[65:48] It'll propagate when all the three bit
+[65:50] pairs P1, P2 and P3 all of them are
+[65:54] propagating. So the input carry will
+[65:55] reflect in the output.
+[65:59] So similarly we can have much more
+[66:01] complicated algebra but all that you
+[66:03] what you can see is that all of these
+[66:05] are essentially following the same
+[66:07] pattern exactly the same
+[66:09] pattern. So for a 4bit system the
+[66:12] generate function looks something like
+[66:14] this. The pattern is the same. So for a
+[66:17] 4bit block, so let's assume
+[66:21] A4. Okay, let me write it. A4, A3, A2,
+[66:25] A1 being added
+[66:33] to. So when will this actually generate?
+[66:36] It'll generate when either you know this
+[66:39] bit pair over
+[66:40] here. Uh let me use a laser pointer.
+[66:43] It's easier. Okay. So when this bit pair
+[66:47] over here is generating which we see
+[66:49] over here or this bit pair is
+[66:52] propagating and this bit pair is
+[66:54] generating or these two are propagating
+[66:57] and the carry is being generated here or
+[67:00] all of these three are generating and a
+[67:03] carry is being generated over here. When
+[67:06] will a carry propagate across this
+[67:08] block? when every single bit pair P1 and
+[67:10] P2 and P3 and P4 all of them are
+[67:14] propagating the carry. So in the same
+[67:17] way for an N bit system we can create a
+[67:19] generate function and a propagate
+[67:22] function. So let's take a look at the
+[67:25] pattern. So uh coming to the pattern
+[67:29] here for a single bit block see out is
+[67:33] G1 plus G1 or P1 and carry input where
+[67:37] is a simple
+[67:39] functions for a two bit uh system uh for
+[67:44] a two-bit block we can see the generate
+[67:46] function is slightly more complicated
+[67:48] the logic has been explained and the
+[67:51] propagate function is P1 and P2 which
+[67:53] means both the bit pairs need to
+[67:54] propagate. So we just keep going on and
+[67:57] on and for a 4-bit system we can clearly
+[68:00] see the generate function is more
+[68:03] complicated in the sense either the four
+[68:05] fourth bit pair is generating or the
+[68:08] fourth bit pair is propagating and the
+[68:10] third bit pair is generating and so on.
+[68:13] And when does a 4-bit system actually
+[68:15] propagate? When all the bit pairs are
+[68:18] propagating the carry the input carry to
+[68:20] the output. Similarly for an nbit
+[68:24] system we can create a generate function
+[68:27] and a propagate function and given the
+[68:30] input carry we can find out the output
+[68:37] carry. So now the idea is can we compute
+[68:40] the generate and propagate functions
+[68:42] quickly. So let us look at some other
+[68:45] results
+[68:47] uh for the G&amp;P functions. So let us do
+[68:50] one thing. Let us divide a block of n
+[68:53] bits into two
+[68:56] parts. So let's consider this block of n
+[68:59] bits. So we divide it into one part is 1
+[69:01] to m and the other is n + one m plus m
+[69:06] bits here and n plus1 to n bits over
+[69:09] here. Let the carry out and the carry in
+[69:12] to this block be carry in here and the
+[69:14] carry out
+[69:16] here. So we want to find the
+[69:18] relationship between
+[69:21] the generate function for the entire n
+[69:24] bit block, the propagate function for
+[69:25] the entire n bit block and the generate
+[69:28] and propagate
+[69:30] functions for these subblocks. So
+[69:34] generate from 1 to m, propagate from 1
+[69:37] to m, generate from n +1 to n and
+[69:40] propagate from n +1 to n. What do they
+[69:43] exactly look like?
+[69:46] So let's take a look at uh this equation
+[69:50] and try to work it
+[69:53] out. Uh so in this equation let me
+[69:57] uh so the carry
+[70:00] out is essentially equal. So let's do
+[70:03] one thing. Let's call the
+[70:06] carry which is propagating from let's
+[70:09] say the subblock or the first m bits to
+[70:12] the remaining n minus m bits as c sub
+[70:15] right let's refer to this carry as c
+[70:18] sub. So the final c out the carry out is
+[70:22] the generate of n +1 to n. So this
+[70:25] blocks the final carry out what how will
+[70:28] it how will we
+[70:30] compute either this simple block over
+[70:33] here
+[70:35] uh of n minus m bits either this is
+[70:38] generating in that case we'll have a
+[70:40] carry out or it is propagating the carry
+[70:44] that has come from its right which is C
+[70:47] sub that's the only two ways in which we
+[70:49] can get carry out so carry out will be G
+[70:52] M +1 N or P M +1 N uh for those M N
+[70:58] minus M bits ended with C sub. So either
+[71:01] you're generating or you're propagating,
+[71:03] right? There's no other way to generate
+[71:05] a carry. Uh so there's no other way for
+[71:08] carry out to be
+[71:09] one. So you do a little bit of algebra.
+[71:12] We'll keep G M + 1 N and this and the C.
+[71:16] So what is C sub?
+[71:18] C sub is basically the carry out of this
+[71:22] other block over here consisting of the
+[71:24] first m
+[71:26] bits. So we can write that as so when
+[71:29] will its carry out be true? when either
+[71:32] it is generating a carry G1 to M or it's
+[71:37] propagating the carry input and so which
+[71:40] is P1 tom ended with carry in by doing a
+[71:44] little bit of algebra and rearranging
+[71:46] the terms what we see is that the
+[71:49] generate
+[71:51] function from uh 1 to n will essentially
+[71:55] be the generate function of the first n
+[71:58] minus m bits or the propagate
+[72:02] functions value from for the first n
+[72:04] minus m bits and the generate function
+[72:08] the first one to m bits which
+[72:10] means that either the first 1 to m bits
+[72:13] is generating a carry and the carry is
+[72:16] being propagated through the n minus m
+[72:19] bits or the n minus m bits are
+[72:22] generating a carry and the carry is
+[72:24] being reflected in the carry out that's
+[72:26] the only two ways so what we can write
+[72:29] ultimately c out is G1 N + R P 1N and C
+[72:35] input where the generate function for
+[72:37] the N bit system can be represented as a
+[72:42] function of the generate and propagate
+[72:45] functions of the first m bits and the
+[72:48] remaining n minus m bits.
+[72:51] So the important equations that we get
+[72:54] from
+[72:55] this particular section over here is
+[73:00] that
+[73:03] uh generate 1 to n. So so basically the
+[73:06] first 1 to n bit. So consider a block of
+[73:09] the first 1 to n bits. When will it
+[73:13] actually generate a carry?
+[73:17] It will generate a carry
+[73:21] if the bits from n +1 to n you know the
+[73:26] rightmost
+[73:27] sublock if that is generating a carry
+[73:32] or if
+[73:34] the or you know if this sublock over
+[73:37] here uh from the the last n minus m bits
+[73:42] if that sublock is
+[73:44] propagating
+[73:46] and the other sublock consisting of the
+[73:49] first m bits is actually generating a
+[73:51] carry. So that is pretty much the two
+[73:54] ways in which a carry can be generated
+[73:57] from the n bit block. So let me explain
+[74:00] this in a different way. So let me
+[74:02] consider n bits. We are dividing it into
+[74:05] two subblocks. So one
+[74:09] sublock consists of the bits from n +1
+[74:13] to n and the other sublock consists of
+[74:16] the bits of from 1 to m. We have a carry
+[74:20] input and we have a carry output. So
+[74:24] let's try to understand this particular
+[74:26] equation slightly intuitively. So when
+[74:29] will the carry output
+[74:32] uh be actually one? The carry output
+[74:35] will be one if the entire block of n
+[74:38] bits either generates a carry which
+[74:40] means irrespective of the carry input
+[74:41] the carry output will be one right or
+[74:45] the entire
+[74:46] subblock or the entire block from 1 to n
+[74:50] propagates the input carry and the input
+[74:53] carry if it's one carry out will be
+[74:56] one. So basically for the generate
+[74:58] function of 1 to n
+[75:01] bits. So when will this uh n bit block
+[75:05] actually generate a
+[75:07] carry? It'll generate a carry if let's
+[75:10] say this block. So let's call this left
+[75:13] block and let's call it right. So when
+[75:15] the left block over here is generating a
+[75:18] carry or the left block from n +1 to n
+[75:22] is propagating a carry and the right
+[75:25] block is generating a carry. So in this
+[75:27] case a carry will be generated and it'll
+[75:29] get propagated till the
+[75:31] end. Now when is the n bit block
+[75:35] actually propagating a carry? It is
+[75:38] propagating a carry when so essentially
+[75:40] carry comes here and it sort of gets
+[75:43] propagated till the end. This will
+[75:45] happen if both the blocks the left one
+[75:47] and the right
+[75:48] one both of them are propagating a
+[75:51] carry. So the propagate function will be
+[75:53] P m + 1 to n ended with P of 1 to M. So
+[75:59] which is a similar logic that we used
+[76:01] when we are writing the equations for
+[76:03] multi-bit systems and so this is also
+[76:06] one way of writing the equations. So we
+[76:08] shall find it uh very handy when we
+[76:10] discuss a carry look ahead adder. But
+[76:14] the important take-home point over
+[76:17] here is that a carry output a carry out
+[76:22] is generated only under
+[76:25] two circumstances.
+[76:28] The circumstances is that either the n
+[76:30] bit block generates a carry which means
+[76:33] irrespective of the input carry the
+[76:35] output will always be
+[76:37] one or when it propagates a carry which
+[76:41] means that if the input carry is one the
+[76:44] output carry will be one and if the
+[76:46] input carry is zero the output carry is
+[76:48] zero. So the problem that we wanted to
+[76:51] solve over here is that given an n bit
+[76:55] block can we represent it can we
+[76:57] represent its generate and propagate
+[77:00] functions in terms of the generate and
+[77:03] propagate functions of the different
+[77:05] subblocks the left one and the right
+[77:07] one. We were able to do that and these
+[77:11] are the two equations to do that. So the
+[77:14] take-home point here is that the
+[77:16] generate function for the entire block
+[77:18] is essentially the generate function of
+[77:20] the n minus m left
+[77:23] bits ored with the propagate function of
+[77:26] the n minus m left bits with the
+[77:28] generate function of the m right
+[77:30] bits and the propagate
+[77:34] function for the entire n bit block is
+[77:38] essentially the end of the propagate
+[77:39] functions of
+[77:42] uh the individual subblocks.
+[77:47] Now let's give an insight of computing
+[77:52] quickly. So the idea is that we can
+[77:54] compute G&amp;P for a large block by first
+[77:58] computing the generate and propagate
+[78:00] functions for smaller subblocks. Then we
+[78:03] can combine them using these
+[78:05] equations to actually. So you know if
+[78:08] you see this diagram we have the
+[78:11] generate and propagate functions for
+[78:12] smaller
+[78:13] subblocks and these have been combined
+[78:16] to gen to create the generate functions
+[78:18] for a larger block. And once we have
+[78:21] that we can uh let me just clean the
+[78:25] screen of annotations. One
+[78:28] second. We can then use this
+[78:33] equation to sort of given the carry in
+[78:36] compute the carry
+[78:37] out
+[78:39] right so then uh so what's the idea we
+[78:42] take smaller sublocks compute their G&amp;P
+[78:45] functions we combine the solutions for
+[78:47] the smaller subblocks to find the
+[78:50] generate and propagate functions for a
+[78:52] larger
+[78:53] block and so on and so forth. So a fast
+[78:58] algorithm to compute G&amp;P will have to
+[79:01] use some sort of a what is called a
+[79:03] divide and conquer strategy which means
+[79:06] first solve the problems for very small
+[79:11] blocks and gradually combine it to get
+[79:14] the solutions for bigger and bigger
+[79:16] blocks. Right? So basically this we want
+[79:19] to do in order login time. Let's see
+[79:22] how. So the carry look ahead adder is
+[79:25] similar to
+[79:28] uh the carry select adder in the sense
+[79:31] there are two
+[79:32] stages. So in stage one we compute the
+[79:36] generate and propagate functions for all
+[79:38] the blocks. How do we do it? we combine.
+[79:43] So first we find the solutions to for
+[79:47] uh GNP functions of a single all the
+[79:51] single bit pairs. We combine the
+[79:53] solutions to find G&amp;P functions for sets
+[79:56] of two
+[79:57] blocks. Uh then we combine the solutions
+[80:00] to find G&amp;P functions for sets of four
+[80:03] blocks and so on.
+[80:07] Uh so so basically you know two blocks
+[80:09] means two blocks of bits. So basically
+[80:12] what we do let me explain this. If you
+[80:15] have a and
+[80:17] b and a contains 32
+[80:21] bits b contains 32 bits. So let's
+[80:25] contain consider each bit pair.
+[80:30] So what we do is initially we compute
+[80:32] the generate and propagate functions for
+[80:34] each bit pair and then what we do is
+[80:37] that we sort of create a multi- bit
+[80:41] system where we compute it for two
+[80:44] blocks right
+[80:46] uh two blocks or let's two bit
+[80:55] pairs and similarly we combine the
+[80:59] of four bit pairs. So I should maybe
+[81:02] make it bit pairs. It's slightly easier
+[81:10] understand. So similarly uh we just keep
+[81:12] on increasing the size of each block.
+[81:14] Okay, the number of bit pairs in each
+[81:17] block. And uh so finally so so what do
+[81:20] we do? So if we start out with assuming
+[81:23] that A has 32 bits and B has 32
+[81:29] bits. So we start out in a parallel
+[81:32] fashion by computing
+[81:35] the GNP functions for each pair of bits.
+[81:39] So at this point each block contains one
+[81:43] pair of bits.
+[81:45] Then what we do is that we combine
+[81:48] uh you know for let's say a1 a2 a1 b1
+[81:52] and a2
+[81:54] b2 we combine the solutions to get the
+[81:57] solution for a two-bit
+[81:59] system. Then we take all the solutions
+[82:01] for two bit blocks and we get solutions
+[82:05] for four bit blocks. Right? Solutions
+[82:08] means G&amp;P functions. Then we combine the
+[82:11] solutions for four bit blocks and then
+[82:13] we get for 8 bits. Then from 8 and 8 16
+[82:16] and finally 16 and 16 32. So you find
+[82:20] the GNP functions for a block size of 32
+[82:22] bits at the end. Right? For a block of
+[82:26] size 32 bits means 32 bit pairs. So also
+[82:30] you know I would instead of have writing
+[82:31] blocks here I would rather say you know
+[82:34] for two bit pairs and four bit pairs.
+[82:38] So basically at the end of this exercise
+[82:41] what is it that we have? We essentially
+[82:43] have G32 and
+[82:46] P32. So what is the final carry out? The
+[82:50] final carry out of the 32-bit addition
+[82:54] G32 or with
+[82:57] P32 and the carry in if there is a carry
+[83:02] in right. So, so that is the simple uh
+[83:05] equation that we have and uh so this is
+[83:09] essentially so what do we get in stage
+[83:11] one? What we get in stage one is that we
+[83:15] uh sort of create a hierarchy and we
+[83:18] consider larger and larger block sizes
+[83:20] and we compute their G&amp;P functions. So
+[83:23] this is shown in this diagram. So in
+[83:26] this diagram what we do is that
+[83:30] uh so so let's do one thing. So let's
+[83:33] say let's number the bit pairs first bit
+[83:36] pair second third fourth and so on. So
+[83:39] let's say that in level zero we consider
+[83:41] two bit pairs can be done we have the
+[83:43] solutions for a two- bit system. So we
+[83:46] compute the g&amp;P uh functions for the
+[83:50] first two bit pairs which is 1 to2 3 to
+[83:53] 4 till 29 to 30 and 31 to 32. So this is
+[83:57] level zero this is level one. In the
+[84:01] next level, what we do is we compute the
+[84:03] G&amp;P functions for a four bit system for
+[84:06] four bit
+[84:07] pairs from 1 to four. Similarly, another
+[84:11] groups of four and so on. So, at this
+[84:14] point
+[84:15] uh so we actually have 16
+[84:19] uh you know bit pair uh you know we have
+[84:22] 16 blocks at this point. We have eight
+[84:26] blocks. Then we what we do is we take
+[84:28] those eight blocks and coales them into
+[84:31] four blocks by computing the G&amp;P
+[84:33] functions from bit pairs 1 to 8 uh GP
+[84:36] functions from 9 to 16, GP functions
+[84:40] from 17 to 24 and 25 to 32. And then we
+[84:45] again coales them to find the GP
+[84:48] functions from bit bit pairs 1 to 16 and
+[84:53] GP functions from bit for bit pairs 17
+[84:57] 32 and then finally we compute the GP
+[85:00] function for the entire block of 32 bits
+[85:04] right which is from 1 to
+[85:07] 32. So basically there are two important
+[85:10] points that we need to understand here.
+[85:12] So this thing can be done and mind you
+[85:15] in each level all of these computations
+[85:17] are happening in parallel right they are
+[85:20] not happening in series. So hardware by
+[85:22] definition is parallel uh it is not in
+[85:28] series. So pretty much in level one, so
+[85:32] we will have many of these hardware
+[85:34] circuits that will be computing the
+[85:37] values of the GP functions for uh you
+[85:40] know the for the bit pairs in parallel.
+[85:44] So this all of these things will happen
+[85:46] simultaneously at the same time can
+[85:48] happen in the same time. There is no
+[85:50] dependency per se between these circuits
+[85:54] and there will be 16 of such circuits.
+[85:56] So for example the GP circuit here will
+[85:59] compute uh the G&amp;P functions for the
+[86:02] first two bit pairs this for the third
+[86:04] and fourth bit pairs and then we
+[86:06] gradually we you know we shall merge. So
+[86:10] the GP function here will take the GP
+[86:12] functions of this unit and this unit and
+[86:15] merge them as
+[86:17] per this equation right can easily be
+[86:21] done as per these two right. So what
+[86:23] needs to be done you need an orgate and
+[86:25] an AND gate very simple and in this case
+[86:28] you need only an AND
+[86:30] gate. So so these these are simple
+[86:33] computations. Similarly,
+[86:36] uh this block will take the inputs from
+[86:38] this this circuit. We'll take an input
+[86:40] from this circuit and another circuit
+[86:42] here. And we'll just keep on uh doing
+[86:46] this and at every point for the
+[86:49] propagate function we need to do an and
+[86:51] for the generate function we need to do
+[86:53] a single or and a single
+[86:55] and. So what we can say is that for each
+[87:00] level the time that it takes is the time
+[87:03] that any one of these circuits take
+[87:05] because all of them are working in
+[87:06] parallel and they take roughly order of
+[87:09] one time which means constant time. So
+[87:12] this also takes order of one time and so
+[87:15] roughly all of them since they're the
+[87:16] same circuit take the same time. So the
+[87:19] total time that that you require is
+[87:22] essentially order of the number of
+[87:25] levels right. So how many levels would
+[87:28] you have the number of levels we will
+[87:30] have? So consider the fact that we have
+[87:33] 32 bits and at each level the number of
+[87:37] circuits. So we start from 16 because
+[87:39] we're considering maybe in this case two
+[87:41] bit pairs at the same time.
+[87:44] So we start with 16 and then go half of
+[87:47] that 8 4 2 and 1. So the number of
+[87:50] levels since we're decreasing by two in
+[87:53] every uh you know in every layer right
+[87:56] in every level the number of levels is
+[87:59] bas
+[88:00] basically order of login to the base
+[88:05] 2. So in computer science whenever we
+[88:09] say you you know say that a number is of
+[88:12] the form login we typically mean it is
+[88:14] login to the base 2. So that's the
+[88:17] reason this can be written as simple as
+[88:19] order of login. But in any case log to
+[88:22] the base 2 or base 10 or base 100 does
+[88:25] not matter because log to the base 2 and
+[88:28] login to the base 50 they only differ by
+[88:31] a constant factor which anyway the order
+[88:33] notation takes care of. So the base does
+[88:36] not matter. It's just order of log of n.
+[88:39] So essentially computing this part the
+[88:43] G&amp;P functions for
+[88:46] uh you know blocks of bits starting from
+[88:50] consecutive bit pairs to 1 to 4 then 5
+[88:54] to 8 9 to 12 13 to 16 and so on and then
+[88:59] uh you know blocks of 8 blocks of 16 and
+[89:01] the entire block of 32 will essentially
+[89:04] take order login
+[89:06] time because for each level we do a
+[89:09] constant amount of work right one and
+[89:12] for the propagate and one on and one and
+[89:15] for the generate and we have order of
+[89:17] login levels so the total time it'll
+[89:20] take is order of login and we will have
+[89:23] essentially in a tree of GP functions
+[89:26] like in an inverted
+[89:27] triangle for different we'll have GNP
+[89:31] functions for different ranges of bits
+[89:34] so the question is we need to use it to
+[89:36] actually do our addition

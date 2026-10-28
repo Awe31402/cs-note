@@ -1,0 +1,1581 @@
+[00:21] Welcome to chapter 10. It's a chapter on
+[00:24] me the main memory.
+[00:26] So the main memory is uh
+[00:28] the off-chip memory structure that
+[00:30] almost all processors have.
+[00:33] And we will see that you know, it's much
+[00:35] more than a cache. It's large. It's
+[00:38] complex. It admits multiple
+[00:40] technologies. So we will have
+[00:43] many, many lectures to discuss all
+[00:46] aspects of main memory.
+[00:50] So what kind of background do you need?
+[00:51] Well, caches for sure.
+[00:54] Some amount of digital electronics, yes.
+[00:59] Then uh you uh
+[01:02] need some background of uh
+[01:05] basic computer architecture. This you
+[01:07] can get in my previous book.
+[01:09] So now of course the website has
+[01:13] been updated to a better one, basic
+[01:17] comp arc
+[01:22] .com, basiccomputerarchitecture.com.
+[01:26] So uh as I said, other than caches and
+[01:28] basic digital electronics, we would need
+[01:31] some device physics at least to
+[01:32] understand
+[01:34] non-volatile memory devices.
+[01:37] So chapter seven at the moment is
+[01:39] broadly what you need
+[01:41] to start with.
+[01:43] Right? And then uh we will
+[01:46] sort of keep that in mind and go
+[01:48] forward.
+[01:53] So now uh
+[01:55] here is how we will proceed. So we will
+[01:57] discuss the space of DRAMs.
+[02:00] So this will be done, you know, there
+[02:01] are multiple sections. First is uh basic
+[02:04] DRAM device construction.
+[02:06] The design space of protocols, the
+[02:08] timing aspects, the memory controller.
+[02:11] So all four are for DRAMs.
+[02:13] So once you have understood this, we'll
+[02:17] all emerging memory technologies uh
+[02:19] which are non-volatile technologies.
+[02:22] And finally the roofline model, the
+[02:24] roofline model
+[02:27] basically is a performance model that
+[02:29] involves off-chip memory.
+[02:32] And it's not off-chip memory is not
+[02:34] necessary. It involves memory, but a
+[02:36] large part of the model essentially is
+[02:38] determined by the off-chip memory
+[02:40] performance. So we'll discuss that.
+[02:44] So let's come to the
+[02:46] you know, the most uh iconic slide of
+[02:48] this entire lecture series on DRAMs,
+[02:51] which is this.
+[02:52] So a DRAM
+[02:54] in its barest form is a very simple
+[02:56] device. It has a capacitor.
+[02:59] The capacitor has a voltage.
+[03:02] If the voltage is close to the supply
+[03:04] voltage, it's a logical one.
+[03:06] Otherwise, it's a logical zero. As
+[03:08] simple as that. Nothing else.
+[03:11] And there is a single access transistor
+[03:13] that is controlled by a word line.
+[03:15] In SRAMs also, we had a similar case. We
+[03:17] had two access transistors. In this
+[03:19] case, we have only one. Only one.
+[03:22] And then this is connected to a bit
+[03:23] line. So clearly, if logical one is
+[03:25] stored here, the bit line gets charged
+[03:27] up.
+[03:28] Otherwise, if it's a logical zero, then
+[03:31] whatever charge is there on the bit
+[03:33] line, it gets discharged via this one.
+[03:37] So we have
+[03:39] broadly seen uh what a DRAM is. Because
+[03:42] it's such a simple device, there is
+[03:43] nothing to explain.
+[03:45] But to have a functioning device is a
+[03:48] separate issue altogether.
+[03:52] So let's first look at uh the nuances of
+[03:54] reading and writing. Writing as such is
+[03:56] easy.
+[03:57] Writing, you just, you know, this every
+[04:00] transistor is a switch, so you basically
+[04:02] turn the switch, connect the switch.
+[04:05] And now that there is a circuit, you
+[04:07] just charge it.
+[04:08] So you turn on the access transistor and
+[04:10] you write. Write basically would mean
+[04:13] that if you want to write a zero,
+[04:15] you set the voltage of the bit line to
+[04:17] zero.
+[04:18] Otherwise, you set the voltage of the
+[04:20] bit line to one and the
+[04:22] capacitor will get charged.
+[04:25] Reading on the other hand is much
+[04:27] harder.
+[04:29] After the access transistor is turned
+[04:31] on, you have to wait for the bit line to
+[04:33] get charged or discharged.
+[04:35] This will take a lot of time.
+[04:42] This is very time-taking.
+[04:44] Why is this time-taking? Because it's a
+[04:46] tiny capacitor which is charging a huge
+[04:48] bit line.
+[04:49] So it's going to take a fair amount of
+[04:51] time for it to do that. So of course we
+[04:54] will use the pre-charging trick. So
+[04:55] recall that
+[04:57] the pre-charging trick basically says
+[04:59] that we set the voltage of the bit line
+[05:01] to VDD by 2.
+[05:03] And then we just monitor the difference.
+[05:05] Look at the minor perturbations, right?
+[05:07] Whether it's going up or going down.
+[05:09] So you don't have to wait for it to
+[05:11] reach a logical zero or one.
+[05:13] But once you are sure, like the voltage
+[05:16] uh
+[05:16] change has gone beyond the noise margin,
+[05:19] you can declare the value.
+[05:22] But here the complexity start. The first
+[05:25] is unlike SRAMs, in this case,
+[05:28] the cell loses its value.
+[05:31] Loses its value basically mean meaning
+[05:33] that if there is something stored on the
+[05:35] capacitor,
+[05:36] let me just uh clear off the ink.
+[05:40] If there is something stored on the
+[05:41] capacitor, it'll get totally discharged.
+[05:44] So at the end of the reading process, if
+[05:46] one was stored here,
+[05:48] the one will become a zero.
+[05:51] So this is a destructive read.
+[05:54] So this means that every time we read,
+[05:56] we will have to follow it up with a
+[05:57] write.
+[05:59] Which means that if let's say the value
+[06:01] one was stored,
+[06:03] and in the process of reading, the one
+[06:05] becomes a
+[06:08] We'll have to convert that zero back to
+[06:10] one, which means read and then write.
+[06:13] So the value needs to be restored. So
+[06:15] the key thing is that whatever was there
+[06:17] has to be restored.
+[06:20] Another interesting nuance of this is
+[06:22] that the capacitor that is there,
+[06:25] that will gradually lose all of its
+[06:27] stored voltage or stored charge.
+[06:31] So when it loses all of its stored
+[06:33] voltage or charge
+[06:35] due to different forms of leakage,
+[06:38] what will happen is that uh
+[06:41] if a one is stored,
+[06:44] then it'll
+[06:45] the current will leak, leak, leak, leak.
+[06:47] Ultimately, it'll become a zero.
+[06:49] If a zero is stored, we don't have that
+[06:51] issue. But if a one is stored, we will
+[06:53] have that issue.
+[06:55] So the capacitor will periodically lose
+[06:57] its charge, consequently its voltage.
+[07:00] As a result, there is a need for
+[07:02] periodic refresh operations where we
+[07:04] simply read the value and write what we
+[07:06] read back again.
+[07:08] So basically, let us say that initially
+[07:10] the voltage across the capacitor was
+[07:14] VDD.
+[07:16] And let's say it leaks, leaks, leaks,
+[07:17] and then becomes 2 VDD by 3 at some
+[07:20] point.
+[07:21] And then we try to refresh it.
+[07:24] The voltage will go back to VDD once
+[07:26] again. So recall that just prior to the
+[07:28] refresh point, had we read the value,
+[07:32] the value would have still been correct.
+[07:34] But the point is it wouldn't have been
+[07:35] correct for a long time. Hence there was
+[07:37] a need to refresh the value.
+[07:40] So the idea here is that we periodically
+[07:42] read the value that is stored and we
+[07:44] write it back to ensure that whatever
+[07:47] charge has leaked away, it gets
+[07:49] restored. So we will see that this
+[07:51] refresh process does introduce
+[07:53] complexities into the protocol. But what
+[07:56] we have up till now is that we have
+[07:57] destructive reads.
+[07:59] Which is something that we did not have
+[08:01] in the case of SRAMs.
+[08:03] In the case of SRAMs, there were no
+[08:05] destructive reads. In this case, we do.
+[08:07] So this is point number one.
+[08:09] That we have destructive reads.
+[08:17] Point number two is the need for
+[08:19] periodic refreshes.
+[08:26] So let's keep this line keep this thing
+[08:28] in mind and keep moving forward.
+[08:31] So the question is how do you create a
+[08:33] DRAM device, right? So because the main
+[08:35] thing is the creation of this capacitor.
+[08:38] So there are two kinds of capacitors
+[08:39] that are used in DRAM circuits, the
+[08:41] trench capacitor and a stack capacitor.
+[08:45] So we would want as much of DRAM density
+[08:48] as possible.
+[08:56] So if you want that, so one thing we may
+[08:59] want to do is we may want to go deep.
+[09:02] If we don't want to If you don't want to
+[09:04] invest a lot of area on the chip, we may
+[09:06] want to go deep.
+[09:08] So what that will do
+[09:10] is that it will
+[09:12] allow us to create a capacitor without
+[09:14] taking a lot of
+[09:16] area. So recall that the capacitance is
+[09:19] epsilon A by D.
+[09:21] So for any decent capacitance,
+[09:24] what we should do is that the area can
+[09:26] be high if it's kind of like into the
+[09:28] substrate.
+[09:30] And the D we want to keep small. So
+[09:32] which means we want a very narrow but a
+[09:34] very deep structure.
+[09:37] So broadly speaking, this would be the
+[09:38] structure if I were to translate this to
+[09:40] this,
+[09:42] I would have a metallic contact with the
+[09:46] And then I would have this transistor
+[09:48] over here. You can see its doped regions
+[09:51] and the word line connection.
+[09:53] From the doped region of this
+[09:55] transistor, I could connect to the
+[09:57] capacitor directly.
+[09:59] So, in a sense from the doped region
+[10:01] there is this connection which is one
+[10:02] end of the transistor one end of the
+[10:04] capacitor, I'm sorry.
+[10:06] Right? So, this could be a polysilicon
+[10:08] electrode which is basically one of the
+[10:10] parallel plates.
+[10:12] Conceptually speaking and the other is
+[10:15] that we'll have a dielectric in the
+[10:16] middle.
+[10:18] And finally a buried uh
+[10:20] n region.
+[10:23] The other electrode or in a certain
+[10:26] sense the other parallel plate. Of
+[10:27] course, you know, these are not parallel
+[10:29] plates but still two separate electrodes
+[10:31] of the capacitor. The buried n-type
+[10:34] doped region is buried within the
+[10:36] substrate and the substrate is connected
+[10:38] to the ground.
+[10:40] So, pretty much this is what our
+[10:42] capacitor looks like.
+[10:45] And the reason why we have such a deep
+[10:48] trench. Okay, this is not drawn to
+[10:49] scale.
+[10:50] But the trench is very very deep.
+[10:55] The reason
+[10:56] for this
+[10:58] is basically because we want to
+[11:00] save on chip area.
+[11:02] And basically store
+[11:05] as many you know fabricate as many DRAM
+[11:07] cells as possible. Increase the density
+[11:10] as much as we can. This is only possible
+[11:12] if you have these very very deep
+[11:14] capacitors.
+[11:16] Because if you see its area
+[11:17] cross-section on top is very small.
+[11:21] Stacked capacitors on the other hand
+[11:25] are not as difficult to fabricate as
+[11:27] trenches because these trenches are
+[11:29] ultra deep. And depositing, you know,
+[11:32] dopants and so on is tough.
+[11:35] So, what we do instead is that we have a
+[11:38] 3D structure which rises up. It doesn't
+[11:40] go down.
+[11:42] But it rises up.
+[11:44] So, in this case uh what we have is that
+[11:47] we have again two electrodes separated
+[11:49] by a dielectric. But the dielectric
+[11:52] looks like this. This is one electrode
+[11:54] connected to the substrate.
+[11:56] Right? Uh and this is the other one.
+[12:00] Which is the electrode two.
+[12:01] Which could be a metal or polysilicon
+[12:03] electrode. So, you can see you know
+[12:05] their
+[12:06] structure.
+[12:07] So, here of course the design is
+[12:11] naturally, you know, slightly less dense
+[12:13] I would say.
+[12:14] But again given the structure for such a
+[12:17] small structure, you can actually have a
+[12:19] great capacitance mainly because as you
+[12:21] can see, you know, the area is like
+[12:23] this, right? So, the area is much more
+[12:25] than what you see it is.
+[12:27] So, because of this even a small
+[12:28] structure, the capacitance can be
+[12:31] reasonably high. So, this is an
+[12:33] alternative design which is far easier
+[12:36] and is far more reliable also. You can
+[12:38] fabricate it quite easily. So, hence
+[12:41] stacked capacitors are used.
+[12:43] And only in a very, you know, specific
+[12:45] set of cases are trench capacitors
+[12:48] needed.
+[12:52] So, now we have seen this. We have seen
+[12:54] many avatars of this particular
+[12:59] diagram.
+[13:01] So, in this particular diagram over
+[13:04] here,
+[13:05] this is an array of DRAM cells. So,
+[13:07] unlike SRAM cells, DRAM cells are
+[13:10] connected to a
+[13:12] single bit line.
+[13:14] So, what happens is we have a row of
+[13:16] cells and each one of them is a row.
+[13:18] They are connected to a single bit line.
+[13:20] We have a row decoder that basically
+[13:22] enables a row. So, if this row is
+[13:24] enabled, all the values come to the
+[13:27] bit lines. So, in general we consider
+[13:29] reads because they are on the critical
+[13:31] path. Writes are often not on the
+[13:33] critical path. So, most of our
+[13:35] discussion will center around reads.
+[13:38] So, what happens? Uh there is a good
+[13:40] reason for having the sense amplifier
+[13:42] before the column multiplexers.
+[13:44] We will discuss this in some detail
+[13:46] later. But the sense amplifier has a
+[13:49] dual purpose. The first is that it
+[13:53] monitors the, you know, the very minor
+[13:55] changes in voltage over and above the
+[13:58] precharge voltage in the bit lines.
+[14:02] So,
+[14:05] because it
+[14:07] monitors these very minor voltage
+[14:09] changes,
+[14:14] uh what basically happens is
+[14:17] that uh
+[14:21] uh you know, these very very small
+[14:24] voltage changes the sense amplifier does
+[14:26] such that you can very quickly decide on
+[14:29] a value whether it's zero or one based
+[14:30] on the direction in which the voltage is
+[14:32] swinging.
+[14:33] In addition, the sense amplifier stores
+[14:35] the bit.
+[14:37] Because as I said, whenever you read,
+[14:39] it's a destructive read. So, whatever
+[14:41] you read, you have to store it and write
+[14:43] it back again. That is why the sense
+[14:45] amplifier has a storage purpose as well.
+[14:49] After that, when we are doing a read, we
+[14:52] choose a subset of these sense
+[14:53] amplifiers to read. So, you need one
+[14:55] more decoder.
+[14:56] Say, you have a column decoder which
+[14:58] chooses a subset of the columns. Let's
+[15:00] say it chooses this and this.
+[15:01] And finally they come out. They are
+[15:04] stored in a temporary read buffer and
+[15:06] then they are read out.
+[15:08] So, the main difference is in the case
+[15:10] of an SRAM, the sense amplifiers are
+[15:12] after the column mux demux.
+[15:14] But in this case, they are before.
+[15:17] Writing is much easier because you have
+[15:19] these strong write drivers.
+[15:21] Where you can, you know, drive a zero or
+[15:23] one with these, you know, big fat
+[15:25] drivers, right? So, writing in a certain
+[15:28] sense is far easier because you just of
+[15:31] course in this case you're sending
+[15:32] signals in the reverse path. Like you
+[15:34] know, something like this. But
+[15:36] fair enough.
+[15:37] Right? This is a faster process. Read is
+[15:39] the slow one.
+[15:40] Also, it's on the critical path. Hence
+[15:42] we shall focus more on reads.
+[15:45] So, there are two architectures, open
+[15:48] bit line architecture and folded bit
+[15:50] line architecture. So, we will discuss
+[15:52] what are the advantages uh of them.
+[15:56] They have their own unique share of
+[15:58] advantages.
+[16:00] So, the main concept is that uh a DRAM
+[16:03] cell is connected to a single bit line.
+[16:06] So, if they are connected to a single
+[16:08] bit line, there will be problems. Either
+[16:12] uh they will go down to zero or they
+[16:15] will go up to one. So, they are all
+[16:18] uh kind of connected uh
+[16:22] to I mean uh the disadvantage of
+[16:25] connecting is that the bit line has a
+[16:27] huge resistance and capacitance. And
+[16:29] driving it to zero or one even using the
+[16:31] precharging trick
+[16:33] will take a long time.
+[16:36] So, instead
+[16:37] what you do
+[16:40] is that
+[16:42] you use a
+[16:43] sense amplifier.
+[16:45] Right? And that still again takes a long
+[16:47] time.
+[16:48] But again, that's why DRAM reads are
+[16:50] slow. I don't think you can do much
+[16:52] about it.
+[16:53] But there are some of the easier tricks
+[16:57] that can be done which is like somehow
+[16:58] shortening the bit line and making it
+[17:01] more tolerant to noise.
+[17:03] So, this So, let's maybe note down these
+[17:05] things, you know, the fact that it still
+[17:07] takes a long time is an issue. So, you
+[17:08] try to shorten.
+[17:10] And you make it more
+[17:15] noise tolerant.
+[17:21] So, how do you do that?
+[17:23] Well, so you bring in the notion of the
+[17:24] pairs once again.
+[17:26] So, let's take a look at this diagram in
+[17:28] some detail. So, this diagram I claim
+[17:31] solves both of these problems and it
+[17:33] solves them quite well also.
+[17:38] So, what we do is that we divide a
+[17:40] column into a group of cells.
+[17:43] And so, in this case as you can see we
+[17:45] have divided into two groups, this group
+[17:48] and that group. This is one one group.
+[17:50] This is one more group.
+[17:52] So, the bit line is connected to the
+[17:54] sense amplifier. This is a sense
+[17:56] amplifier, okay?
+[17:58] So, it's connected to a sense amplifier
+[17:59] over here.
+[18:01] And so, this sense amplifier takes two
+[18:03] inputs.
+[18:06] So, the cool thing about it is it takes
+[18:08] two inputs and it compares.
+[18:11] As opposed to comparing the sense
+[18:13] amplifier with a reference voltage
+[18:15] voltage line,
+[18:17] the sense amplifier by definition always
+[18:19] compares. And it looks at the
+[18:21] difference. If the difference is greater
+[18:23] than some, you know, delta V,
+[18:26] declares a logical one.
+[18:28] And if it is less than some minus delta
+[18:31] V, it declares a logical zero.
+[18:34] So, in this case as you can the bit
+[18:36] lines are shorter. So, because the bit
+[18:38] lines are shorter, our first requirement
+[18:41] is satisfied which is that I don't have
+[18:43] to charge a long bit line.
+[18:45] Furthermore, if there is some noise in
+[18:47] the sense external electromagnetic noise
+[18:50] for which the line is
+[18:52] accumulating a potential.
+[18:55] So, what happens is that it affects uh
+[18:59] you know, nearby cells in a similar
+[19:01] manner. So, most likely both the bit
+[19:03] lines would accumulate the same amount
+[19:05] of noise, roughly the same.
+[19:07] So, that would cancel out because I'm
+[19:08] subtracting, right? So, that would
+[19:10] cancel out.
+[19:13] So, the main reason that that would
+[19:16] cancel out is like this.
+[19:18] That uh you know, in the same region
+[19:21] they would pick up similar kind of noise
+[19:23] from either the cross talk noise from
+[19:26] other wires or power grid noise or
+[19:28] external electromagnetic noise.
+[19:30] But this canceling out effect will
+[19:31] happen which clearly makes it more noise
+[19:33] tolerant.
+[19:35] So, this is a nice architecture where I
+[19:37] don't have to charge a very very long
+[19:39] bit line. Because I have this, you know,
+[19:41] tiny capacitor which I've deliberately
+[19:43] made more tiny to increase the storage
+[19:45] density.
+[19:47] So, this makes a lot of sense. So, if F
+[19:50] is the feature size, this is very
+[19:52] compact design that requires roughly 6 F
+[19:55] squared area per cell, right? Roughly.
+[19:58] So, this can be computed uh you know,
+[20:00] using a storage model, but that's not
+[20:02] that important. This is roughly that's
+[20:04] going to be the case.
+[20:06] And you clearly have high susceptibility
+[20:08] to noise.
+[20:10] So, it's a good idea, but it turns out
+[20:14] there are some complexities uh with
+[20:17] this.
+[20:18] We can opt for the folded bit line
+[20:21] architecture, which is uh
+[20:24] slightly more inefficient. So, I can
+[20:26] tell you the area per cell uh right now,
+[20:29] 8 F squared. But, the advantages are
+[20:32] that it's simpler, the structure is more
+[20:33] regular, easier to fabricate, and more
+[20:40] So, what you do is you have two bit
+[20:41] lines. They snake through the DRAM cells
+[20:43] in a column.
+[20:44] And uh
+[20:46] but they're not connected to all pairs
+[20:49] all cells, right? They're only connected
+[20:50] to half of them. Like this bit line is
+[20:53] connected here, here.
+[20:55] These two are skipped. Again, connected
+[20:57] here and here.
+[20:58] This bit line is connected here, here,
+[21:00] but skips these two cells and skips
+[21:03] these two.
+[21:04] So, roughly a bit line will be connected
+[21:06] to half of the cells.
+[21:08] And most of the capacitance essentially
+[21:10] arises from
+[21:13] uh you know, the inputs to the cell,
+[21:15] basically the capacitance. The
+[21:18] transistor has some capacitance, and of
+[21:20] course, the capacitor uh
+[21:21] you know, also has some capacitance.
+[21:24] And uh that's the reason. So, we have
+[21:26] significantly reduced the capacitance of
+[21:29] the
+[21:30] long line over here. And that's the
+[21:33] reason the RC delay would be much lower
+[21:35] because we are have making less
+[21:37] connections.
+[21:40] So, in a certain sense, these bit lines
+[21:43] are faster. They're also more noise
+[21:44] tolerant because they're roughly in the
+[21:46] same region, you know, both sides of the
+[21:48] cell.
+[21:49] So, any noise affecting them would
+[21:50] affect them equally, which would be
+[21:52] canceled out at the sense amplifier
+[21:53] level.
+[21:55] So, the folded bit line architecture
+[21:57] also, as you can see, does not insert
+[21:59] that many sense amplifiers in the
+[22:02] The other architectures insert a lot of
+[22:05] sense amplifiers in the bit middle, but
+[22:06] that's not happening here. They are at
+[22:09] the end. Of course, you can have a
+[22:10] hybrid of open and folded where uh you
+[22:13] can basically
+[22:16] take a large column, kind of split it
+[22:18] into small ones, and then for each have
+[22:21] an array of sense amplifiers. Can be
+[22:22] done.
+[22:23] So, of course, there are many
+[22:24] combinations. Which one is the best? Uh
+[22:27] There are many other factors to decide
+[22:29] that. Of course, you know, the ease of
+[22:31] manufacturing is a big
+[22:34] factor.
+[22:35] Then, the efficiency is one more factor,
+[22:37] right? Efficiency given by the access
+[22:39] latency, notably the read access
+[22:41] latency, right?
+[22:43] That's uh
+[22:49] And then, the storage density is an
+[22:51] important factor.
+[23:02] So, keeping all of these factors in
+[23:04] mind, we have to make our uh
+[23:07] decision.
+[23:09] So, let us discuss the design of a sense
+[23:11] amplifier. So, I will
+[23:13] show uh the first part of the circuit,
+[23:16] which is a precharge circuit.
+[23:19] So, the sense amplifier has multiple sub
+[23:20] circuits. This circuit is known as the
+[23:22] equalizer or the precharge circuit. Very
+[23:24] simple.
+[23:26] We have three transistors, T1, T2, and
+[23:29] T3.
+[23:31] All their gates are connected to the
+[23:33] same line, and this is connected to the
+[23:35] EQ terminal,
+[23:37] or equalization terminal.
+[23:45] So, what happens is that if I connect
+[23:48] them to
+[23:51] voltage one, then what will happen is
+[23:54] all the transistors will be enabled.
+[23:56] And the voltage here is a reference
+[23:58] precharge voltage VDD by two, which will
+[24:00] get transferred to both the bit lines.
+[24:02] So, both the bit lines in a sense will
+[24:04] get precharged,
+[24:06] and their voltage will get set to VDD by
+[24:09] two.
+[24:10] Once that has been done, I can disable
+[24:12] all the transistors, and the voltage
+[24:14] will be maintained.
+[24:16] All right? So, the voltage will be
+[24:18] maintained. So, its job will be that uh
+[24:24] basically uh its uh voltage will get
+[24:27] locked to VDD by two. That's the idea.
+[24:31] Given the fact that this job essentially
+[24:34] equalizes the voltage between these two,
+[24:36] which is also what this transistor does,
+[24:38] equalizes them, and sets them to VDD by
+[24:42] So, the reason we need this is that in
+[24:44] case, you know, there is some small
+[24:46] errors are introduced in this, the
+[24:47] equalization also happens here.
+[24:51] The second part is the sense amplifier
+[24:53] per se,
+[24:55] which has a dual purpose. So, its first
+[24:57] job, of course, is to sense amplify,
+[24:59] senses data,
+[25:00] and also temporarily buffers data. So,
+[25:02] this is purpose one, this is purpose
+[25:04] two. Sensing and buffering. It's a four
+[25:07] transistor structure, as you can see.
+[25:11] The gates have an interesting cross
+[25:14] connection.
+[25:16] So, the gates of this N MOS and this P
+[25:18] MOS are connected, and they're connected
+[25:20] to the second bit line.
+[25:22] And the gates of this N MOS and this P
+[25:26] to the
+[25:27] first bit line. So, this is kind of a
+[25:29] cross connection of gates over here.
+[25:32] And the internal the midpoint is
+[25:34] connected They are connected to two
+[25:36] lines, SAN and SAP. The way that this
+[25:38] midpoint was connected,
+[25:40] the same way these two midpoints are
+[25:42] connected to the SAN line. N, as we will
+[25:44] see, is for negative, P for positive.
+[25:47] This is what they are connected, and of
+[25:49] course, the
+[25:51] each terminal is connected to each bit
+[25:53] line. So, this is kind of a
+[25:56] complex structure with feedback, and
+[25:58] feedback always suggests some sort of
+[26:00] storage or buffering. That is what by
+[26:03] definition, feedback suggests.
+[26:08] So, now let's do a case-by-case
+[26:10] analysis, and let's see if what the
+[26:13] circuit actually does. V1 is the voltage
+[26:15] on bit line one, V2 is the voltage on
+[26:18] bit line two.
+[26:20] So, let us assume
+[26:21] that V1 is slightly higher than V2,
+[26:24] slightly. So, V1 slightly higher than
+[26:27] V2.
+[26:28] Or let's say V1 is equal to V2 plus
+[26:30] epsilon. That is what slightly higher
+[26:32] would mean.
+[26:34] Let this be equal to zero volts, and let
+[26:37] the voltage here be one volt. So, let us
+[26:39] assume one volt is logical one, and zero
+[26:41] volt is a logical zero.
+[26:43] So, what is it that is going to happen,
+[26:46] right?
+[26:48] So, what is going to happen is basically
+[26:51] like this, that we will focus our
+[26:53] attention on T2.
+[26:55] One side of T2 is basically zero volts,
+[27:00] and other side of T2 is
+[27:03] V2, which is the
+[27:07] lower voltage, and V1 is the higher
+[27:09] voltage. So, given the fact that this is
+[27:12] V1 is greater than V2,
+[27:15] there is a certain gate to
+[27:19] uh source and gate to drain differential
+[27:23] So, this will make the T2 transistor
+[27:25] more conductive, right?
+[27:28] Which means that as the T2 transistor
+[27:31] get more conductive, V2 will dip even
+[27:34] more.
+[27:35] Because V2 will dip even more, it'll
+[27:38] gradually approach zero, which will make
+[27:40] T3 more conductive.
+[27:42] So, if you see ultimately what's going
+[27:43] to happen
+[27:45] is that this will become conductive.
+[27:48] So, let me maybe clear off the clutter.
+[27:50] It'll become slightly easier to
+[27:52] understand what I'm saying.
+[27:54] So, we have a case where V1 is slightly
+[27:57] more than V2.
+[27:59] See, if that is the case, this becomes
+[28:01] more conductive. So, over time, what
+[28:03] will happen is that this will become
+[28:04] connected to
+[28:06] bit line two. So, bit line two will go
+[28:08] towards zero. Right? It'll kind of go
+[28:10] towards zero.
+[28:11] Because it's going towards zero, this
+[28:13] will become more conductive.
+[28:16] Because this is will become more
+[28:17] conductive, a path will get formed like
+[28:19] this. So, V1 will go towards one.
+[28:23] All right? So, the main question over
+[28:26] here is to focus our attention on T2 and
+[28:31] And as you are seeing,
+[28:33] on T2, the main action will start on T2
+[28:36] first, where basically this is zero
+[28:39] volts. The voltage over here is V2, and
+[28:42] the voltage over here is V1, and V1 is
+[28:45] clearly more than zero. So, the
+[28:47] transistor is not in a cutoff state.
+[28:50] And V1 is greater than V2, and there is
+[28:53] some drain to source voltage, so current
+[28:55] can flow. So, this will make it
+[28:58] conductive. The moment it is conductive,
+[29:01] bit line here will lose charge. So, V2
+[29:03] will uh V2 is going to go down even
+[29:07] Gradually, as it goes even down more,
+[29:09] the P MOS transistor will start
+[29:10] reacting. This will become conductive.
+[29:13] And then, V1 will increase even more,
+[29:15] which will again make this one more
+[29:17] conducting. So, there will kind of be a
+[29:18] feedback path
+[29:20] right here,
+[29:22] which is something that we can see. And
+[29:23] clearly, in this case, we are not
+[29:25] interested in this transistor, or we are
+[29:27] not interested in this transistor
+[29:29] because they are not conducting.
+[29:32] Ultimately, what happens is that V1 will
+[29:34] reach, let's say, one volt if you assume
+[29:36] VDD is one volt, but whatever, it'll
+[29:38] reach VDD.
+[29:40] And ultimately, V2 will reach zero.
+[29:43] Right? So, because it is going in that
+[29:44] direction. And this is going to happen
+[29:47] quite quickly because there's a feedback
+[29:49] path. As V2 goes down, this becomes more
+[29:51] conducting. V1 goes up. Because of V1,
+[29:54] V2 goes down even more. Because of V2
+[29:56] going down, V1 goes up even more. So,
+[29:58] there is a mutual feedback of V1 and V2
+[30:01] because of these two transistors over
+[30:03] here, which is why they will quickly
+[30:06] reach their
+[30:07] destination voltage values very, very
+[30:10] quickly. Uh V1 will reach VDD and V2
+[30:13] will reach zero very, very quickly.
+[30:16] Right? It's going to be a fast thing.
+[30:19] So, then, uh you know, this is a very
+[30:21] interesting situation over here
+[30:25] that if there is a minor difference,
+[30:27] then V1 races up and V2 races down. And
+[30:30] as you can see, it's a symmetric
+[30:31] circuit.
+[30:32] So, let's say if uh another case where
+[30:34] V2 is equal to V1 plus epsilon, the
+[30:37] reverse will happen. And in that case,
+[30:39] T1 T4 will become active and T2 T3 will
+[30:41] become dormant. And exactly the reverse
+[30:43] situation will happen.
+[30:45] And in all cases, the negative line is
+[30:47] set to zero and this is sent to that's a
+[30:49] logical one, which is VDD over here.
+[30:52] So, the point is that
+[30:57] this symmetry is of course helping us
+[30:59] that it is able to amplify a minor
+[31:01] difference.
+[31:02] So, let me perhaps write it down.
+[31:16] And once a minor difference is
+[31:18] amplified,
+[31:20] it will gradually become a major
+[31:22] difference. And if I want to disable
+[31:24] this completely,
+[31:26] then I can set all the voltages to VDD
+[31:28] by two, which is the precharge voltage.
+[31:30] In that case, nothing will happen.
+[31:32] Mainly because all the voltages are
+[31:35] equal, right? So, this feedback will not
+[31:37] start.
+[31:40] So, as you can see, because of this
+[31:42] feedback, it's inherently stable
+[31:46] So, it will maintain the value. They If
+[31:48] this Let's say this bit line is set to
+[31:50] one, this is zero, it will kind of
+[31:52] maintain the value. So, its job of
+[31:54] temporary temporarily buffering is also
+[31:56] being satisfied.
+[32:00] So, the full circuit would look somewhat
+[32:02] like this
+[32:03] where we have our DRAM cells, then we
+[32:05] have our sense amplifiers. The sense
+[32:07] amplifier per se has two parts. One is
+[32:10] the precharge part, which we have seen.
+[32:13] The other is the sense amplifier part.
+[32:16] And this is over here.
+[32:19] And then, uh basically, what we have is
+[32:22] we have this circuit that we have not
+[32:23] seen up till now, which we will see
+[32:26] in less than a minute.
+[32:29] So, let us quickly go through the text
+[32:31] here. So, the sense amplifiers are
+[32:33] clearly serving a dual purpose. So, they
+[32:35] are precharging In fact, it's three
+[32:37] purposes: precharging, sensing, storing.
+[32:40] Naturally, they are buffering data.
+[32:43] Right?
+[32:44] So, this part we have seen. So, then we
+[32:47] will see the next part.
+[32:49] So, the next part basically says that do
+[32:51] I take these to the column mux demux
+[32:54] part or not?
+[32:55] So, in this case, I would like to draw
+[32:57] your attention to the chip select
+[32:59] signal, which essentially selects this
+[33:01] chip, as the name suggests.
+[33:03] So, if the signal is zero, then
+[33:05] essentially, this becomes an open
+[33:06] circuit right here. There are no
+[33:08] connections between this part and that
+[33:10] part. So, if the signal is zero, there
+[33:12] are no connections whatsoever.
+[33:15] If the signal is one, then only you can
+[33:16] say that this part of the circuit is
+[33:19] enabled.
+[33:20] Then, of course, you can read or write.
+[33:22] Let's look at the read path first. So,
+[33:24] the read enable is enabled. Again, this
+[33:26] is a closed circuit.
+[33:28] Right? And again,
+[33:31] uh this is
+[33:33] So, so basically, this part is coming
+[33:34] here. So, this is a closed circuit over
+[33:36] here.
+[33:37] And uh you are able to read it. So, of
+[33:39] course, the other bit line in this case
+[33:42] uh would go to
+[33:44] another place.
+[33:46] And uh then the column mux demux will
+[33:49] take care of it.
+[33:51] In case write enable is one,
+[33:54] all right?
+[33:55] So, then, what will happen
+[33:59] is that we will take both the bit lines
+[34:02] and we will write opposite values to
+[34:05] them.
+[34:06] So, see, read only reading one is good
+[34:08] enough. But for writing,
+[34:10] uh basically, we will we need the bit
+[34:12] line pair in this case. The reason we
+[34:14] need the bit line pair is because uh you
+[34:16] know, for this sense amplifier over
+[34:18] here, the aim of writing is to both
+[34:21] write to here as well as the cell.
+[34:23] So, we write one value. So, write enable
+[34:25] goes in here to both.
+[34:27] And the
+[34:29] value goes in here and its complement
+[34:31] goes in here. And the right drivers
+[34:33] basically drive both
+[34:35] such that this this sense amplifier is
+[34:37] set.
+[34:39] All right. So, the column mux demux, of
+[34:41] course, would choose a set of columns.
+[34:43] But the moment it is chosen, the right's
+[34:45] main aim is to write a zero like this or
+[34:48] a one like this, so it's opposite one
+[34:50] and zero, right?
+[34:52] Such that, you know, you're writing also
+[34:54] into the sense amplifiers as well as
+[34:57] you're writing into the cell.
+[35:02] So, the process of reading is somewhat
+[35:04] easy. So, we have discussed it. Let's
+[35:06] nonetheless discuss it once again. You
+[35:09] precharge the bit lines. At that time,
+[35:11] you set the voltages on the SAN and SAP
+[35:13] lines to VDD by two.
+[35:15] So, that would basically mean that uh
+[35:17] your sense amplifier at that point is
+[35:19] disabled. Right? So, that is exactly
+[35:21] what it would mean. That there is no
+[35:23] zero one business. So, this thing is
+[35:25] totally disabled because the voltage
+[35:27] here is VDD by two. If here, it is VDD
+[35:29] by two.
+[35:31] So, let me maybe erase the slides. So,
+[35:34] the voltages here and here are VDD by
+[35:38] So, as a result, you know, nothing is
+[35:39] going to swing and go up and go down.
+[35:42] So, you have essentially disabled it.
+[35:44] Now, what we do is we enable the
+[35:46] corresponding word line via the row
+[35:48] decoder decoder.
+[35:50] We enable the sense amplifier. So, this
+[35:53] thing is basically enabling the sense
+[35:55] amplifier.
+[35:57] Right? SA is for sense amplifier, SAN
+[35:59] and SAP. So, this becomes zero, this
+[36:02] becomes VDD or a logical one. You enable
+[36:05] chip select and read enable.
+[36:07] You select the column address in a
+[36:08] column mux demux unit such that you're
+[36:10] reading the right set of columns and you
+[36:12] stream the data out.
+[36:14] So, this is going to be a destructive
+[36:16] read. But thankfully, the value is being
+[36:19] buffered in the sense amps.
+[36:21] So, after reading, we still keep the
+[36:23] cell enabled such that it can write by
+[36:25] having its word line set to one.
+[36:29] And the old value, which is now in the
+[36:31] sense amps,
+[36:33] this is written
+[36:35] This old value is written to the cell
+[36:37] automatically. It's kind of written back
+[36:40] automatically because the cell is open
+[36:42] and the bit lines are charged after
+[36:44] that. So, then automatically, the cell
+[36:46] gets refreshed.
+[36:50] The process of writing and refreshing is
+[36:53] like that only, slightly easier. The
+[36:55] first part is the same.
+[36:58] What you do is you enable the row.
+[37:02] You precharge it. You set the values of
+[37:04] the sense amps. So, the sense amp values
+[37:06] are set. And then, you automatically
+[37:09] allow them to restore all the values in
+[37:11] the cells.
+[37:14] In the second stage, once everything is
+[37:17] restored,
+[37:19] we use the strong write drivers to write
+[37:22] values to the sense amps and
+[37:23] subsequently to the DRAM cells.
+[37:28] So, let us understand the main reason
+[37:30] for doing this. So, what happens is that
+[37:31] we access a full row together, right?
+[37:34] Because a full row is connected to the
+[37:36] same word line.
+[37:38] So, even if you want to write to some
+[37:39] subset of cells in it, we don't really
+[37:42] have that choice.
+[37:44] Right? So, let's say that our mux demux
+[37:46] says that you write to these cells and
+[37:47] ignore the rest. We don't have that
+[37:49] choice because our word line does not
+[37:51] have that level of granularity.
+[37:54] So, what you need to do is that you need
+[37:56] to open the full row. Open the full row
+[37:58] basically means set the word line to
+[38:00] one.
+[38:02] Sorry. The moment you do that, it will
+[38:04] start charging the bit lines. And then,
+[38:07] the value will get destroyed because we
+[38:09] have destructive reads.
+[38:11] So, there is a
+[38:12] need to simulate a read first.
+[38:16] Right? So, that's the reason the writing
+[38:18] is a tricky business in DRAMs. It's not
+[38:20] that simple.
+[38:22] So, essentially, you are kind of well,
+[38:24] simulating a read or doing a read, it
+[38:25] doesn't matter.
+[38:27] But you enable the full row because
+[38:29] that's the only choice that you have.
+[38:30] You can't enable a part of it.
+[38:32] Then, basically, do the precharging.
+[38:37] This will automatically set the values
+[38:38] of the sense amps. And then, you would
+[38:40] allow the sense amps
+[38:42] to restore the values back again.
+[38:46] So, this is not achieving anything other
+[38:48] than the fact that it is kind of opening
+[38:50] the row. It's a This is a This is a dual
+[38:52] purpose.
+[38:53] This opens the full row.
+[38:58] And the other dual purpose that it is
+[39:00] serving
+[39:01] is that it brings the sense amps in sync
+[39:03] with the row.
+[39:06] So, the sense amps
+[39:08] are absolutely in sync with the row.
+[39:11] And the point is that the row
+[39:14] can remain open for quite some time. So,
+[39:16] we will discuss There are different
+[39:17] architectures. But the main idea is that
+[39:19] the row is enabled. It is Its values are
+[39:22] in sync with the sense amps.
+[39:24] And basically, the point is that there
+[39:26] is no current flow or charging
+[39:28] discharging going on after this process.
+[39:31] So, then, what we do is we use a strong
+[39:33] write drivers to kind of overwrite what
+[39:35] is there in the sense amps.
+[39:37] So, you write the value to the sense
+[39:39] amps. And not to all of them, but this
+[39:41] is to a subset. This is to the ones that
+[39:42] your column multiplexers basically
+[39:48] point two, right? So basically you may
+[39:50] say that look I'll write to only columns
+[39:52] two, three, four, and five. So before
+[39:54] you go forward let us say that every
+[39:56] this is a very important thing. I myself
+[39:58] have been confused by this several times
+[40:01] but every column
+[40:04] stores a single bit.
+[40:09] Okay, in a DRAM array every column
+[40:11] stores a single bit. So once I have a
+[40:12] set of columns in the row that I'm
+[40:14] interested in
+[40:16] I can then basically use my
+[40:20] column mux demux to basically choose
+[40:22] those columns such that I can
+[40:25] send my data that way.
+[40:29] So then the idea now is
+[40:35] that
+[40:36] once the columns are chosen, I overpower
+[40:39] the sense amps and the DRAM cells
+[40:43] and basically I write new values in. So
+[40:45] this can be done but our sense amps
+[40:47] still remain in sync with the cells even
+[40:49] after this process.
+[40:51] So the writing process would require
+[40:53] some time to finish, right? Once I've
+[40:55] done the right such that again these
+[40:57] come in sync. So this is known as a
+[40:59] right recovery time which is the time
+[41:01] after I initiate the right.
+[41:03] Right? So after initiation of the right
+[41:05] and the right finally completed.
+[41:07] So from initiation to completion it will
+[41:09] require this much of time
+[41:12] which is known as the right recovery
+[41:15] Finally we have the refresh operation.
+[41:20] So as I said a DRAM cell would
+[41:21] periodically lose its value which means
+[41:24] charge would leak out through the
+[41:25] capacitor.
+[41:27] So what we need to do is we need to read
+[41:30] the values and write them back which is
+[41:31] nothing but stage one of writing which
+[41:34] is exactly this step over here. Exactly
+[41:37] This is all that we are doing. We are
+[41:39] enabling the row, pre-charging it,
+[41:41] letting it set the value of the sense
+[41:43] amplifiers, letting the sense amplifiers
+[41:45] set the value of the cell.
+[41:47] So this is ensuring that the cells their
+[41:49] voltage levels are restored
+[41:51] and then we disable the cell.
+[41:55] Of course we do it row by row but the
+[41:56] basic operation is this.
+[41:59] So what we can do is that we can do all
+[42:01] the rows one after the other. That would
+[42:02] be a burst mode but very inefficient.
+[42:05] The reason being that the entire
+[42:07] DRAM array is unusable during that time.
+[42:11] Or basically find out some time, try to
+[42:13] squeeze some time between regular
+[42:15] operations and try to do the refresh.
+[42:18] This would be an interspersed refresh
+[42:21] kind of distributed over time
+[42:23] but at least it would not impact regular
+[42:25] operation that much or to a large extent
+[42:28] it will not impact the regular operation
+[42:31] of the DRAM array.
+[42:34] So reading writing should be clear. So
+[42:35] the main thing is the funny nature of
+[42:37] the sense amp
+[42:39] which kind of needs to gravitate towards
+[42:42] one state, one zero state or zero one
+[42:44] state or the other state where SAN and
+[42:47] SAP are VDD by two
+[42:49] where essentially it's a disabled state.
+[42:51] Let's call it an X state.
+[42:53] So once it gravitates to one state which
+[42:55] is not X, it will automatically set the
+[42:58] values in the DRAM cells.
+[43:00] But we again need to wait for that.
+[43:04] So once you know all of these things
+[43:06] have happened, we have read, write,
+[43:09] refresh, everything.
+[43:11] We are in a position to look at the
+[43:13] memory hierarchy.
+[43:15] Right? So how do we have these
+[43:18] DRAMs and DRAM modules so on and so
+[43:21] forth.
+[43:24] So what we will see is that given a CPU
+[43:26] it would it can have multiple DRAM
+[43:28] channels where a channel is a bus. It's
+[43:30] a set of parallel copper wires
+[43:32] where we can have anywhere from 32 to
+[43:34] 128 bit parallel copper wires this way
+[43:37] and that way.
+[43:38] And then we have these DRAM chips. A
+[43:40] DRAM
+[43:41] A DRAM chip
+[43:43] is not a DRAM chip is actually an array
+[43:45] of DRAM chips. So it's like a DRAM it's
+[43:47] called a DIM, a dual inline memory
+[43:49] module which basically looks like this.
+[43:52] So this essentially you stick this in
+[43:55] into the motherboard and as you can see
+[43:57] this has one, two, three, four, five,
+[43:58] six, seven, eight DRAM chips, right?
+[44:01] So we have these DIMs that are connected
+[44:03] like this to the same channel. Again
+[44:05] several DIMs.
+[44:07] And the CPU typically has multiple DRAM
+[44:10] channels to
+[44:11] to connect to multiple DIMs. Where each
+[44:13] DIM has multiple chips and you know
+[44:15] there's a big hierarchy. We'll discuss
+[44:17] this later. But the key idea is that
+[44:19] given that modern CPUs have gigabytes of
+[44:23] an elaborate organization is needed.
+[44:26] So what does the memory hierarchy look
+[44:28] like? A CPU has an I cache, a D cache,
+[44:30] L2 caches of course.
+[44:33] And you know you have you can have L3
+[44:36] and L4 caches but let's say L2 is the
+[44:38] last level.
+[44:39] So with every bank or every set of banks
+[44:42] we have a memory controller associated.
+[44:44] The diagram here says it's a single
+[44:45] bank.
+[44:47] Fair enough. That's a simplistic way of
+[44:48] looking at it but a set of banks are the
+[44:50] memory controller
+[44:52] which basically does the job of
+[44:54] coordinating every single thing with the
+[44:56] DIMs of a specific channel.
+[44:59] Right? So so basically you know you
+[45:01] could
+[45:03] I'm not saying that every bank has a
+[45:04] dedicated memory controller but every
+[45:06] channel has a dedicated memory
+[45:07] controller
+[45:09] and you have a link between the bank and
+[45:12] the memory controller for a channel. So
+[45:14] two channels, two memory controllers.
+[45:16] And the memory controller is fully aware
+[45:18] of what is connected, their internal
+[45:20] states, everything and it just controls
+[45:24] it. So previously
+[45:26] the memory controller was one more chip
+[45:27] on the motherboard but now it has moved
+[45:30] into the CPU for efficiency reasons.
+[45:35] So this is a DIM module. We have seen
+[45:36] that. So adding DIM modules to the
+[45:38] motherboard is simple. Just plug them in
+[45:40] like that.
+[45:41] And then there is a memory bus that is
+[45:44] connected to the CPU or a memory
+[45:46] channel.
+[45:47] And this is the memory channel. This is
+[45:49] also called the memory bus by the way.
+[45:51] Right? So it's not just sorry it's still
+[45:54] not just called a memory channel
+[45:56] but people also refer to it as the
+[45:58] memory bus as well.
+[46:02] So this is what we had looked at. So we
+[46:05] had said we have a CPU. If you consider
+[46:07] a channel the memory controller is over
+[46:09] here. It's part of the overall CPU
+[46:11] package.
+[46:14] Then you have multiple DIMs connected to
+[46:17] a channel. For one DIM
+[46:21] what you have
+[46:24] is that you can divide a DIM into
+[46:26] multiple ranks but typically you can say
+[46:28] that one DIM is one rank.
+[46:31] A rank is a complex
+[46:34] structure. Conceptually it's a complex
+[46:37] I'll just come to it in a second.
+[46:40] So then
+[46:42] we have different banks within a rank
+[46:44] and each bank has multiple arrays of
+[46:47] DRAM cells.
+[46:50] So the idea of a rank is like this. A
+[46:53] rank is basically a set of DRAM chips.
+[46:56] Okay?
+[46:58] So a rank is a set of DRAM chips. In
+[47:00] this case you can assume that all of
+[47:02] them are perhaps in the same rank or
+[47:04] this is one rank and this is one more
+[47:06] rank.
+[47:07] That can be assumed. Two ranks.
+[47:10] Within each DRAM chip we have multiple
+[47:13] banks. Right? So this is
+[47:16] you know this is one organization with a
+[47:18] rank just as you know
+[47:19] like like one bank per chip but this
+[47:21] could be that this is a DRAM chip and
+[47:24] within a chip we have multiple banks.
+[47:25] This is a second organization.
+[47:28] And a bank is a set of DRAM arrays. So
+[47:32] the way that it works is we have a
+[47:37] The channel kind of connects to a DIM.
+[47:41] A DIM has multiple ranks.
+[47:44] A rank comprises multiple chips.
+[47:48] And a chip comprises multiple banks
+[47:51] where a bank is
+[47:53] a set of arrays and a bank contains a
+[47:55] set of DRAM arrays.
+[47:58] Complex organization. So we will be
+[48:00] discussing this you know over and over
+[48:02] again in many different forms.
+[48:05] But the
+[48:06] broad definition of a rank so I don't
+[48:08] want to talk more because we will be
+[48:10] talking more about it later
+[48:12] is that it's possible for all the DRAM
+[48:14] chips to operate in lockstep.
+[48:17] Number one they operate in lockstep and
+[48:19] they have the same delay from the memory
+[48:22] controller.
+[48:23] Essentially the they are equally far
+[48:25] from the memory controller or a signal
+[48:28] or a message takes exactly the same time
+[48:31] between all devices
+[48:34] between the memory controller and all
+[48:35] devices in a certain rank. This is very
+[48:38] important. We will see from a timing
+[48:40] perspective
+[48:41] but let's just keep this in mind.
+[48:44] That signal take signals take roughly
+[48:46] the same size
+[48:48] to reach them from the memory
+[48:51] So the memory controller as far as it is
+[48:54] concerned it treats a rank as if the
+[48:56] most atomic as the atomic unit.
+[48:59] And it issues a command to the rank. Of
+[49:02] course it can do bank level things but
+[49:03] that is rare. It issues a command to the
+[49:06] rank saying that tell all your devices
+[49:08] to execute this and it does that. It
+[49:10] executes them in lockstep
+[49:12] because the memory controller assumes
+[49:14] that every single device in the rank
+[49:16] will get the signal at exactly the same
+[49:20] So in case you know you're not able to
+[49:22] fully understand this, that's all right.
+[49:24] As long as you appreciate that it's a
+[49:26] hierarchical structure. We will
+[49:29] deliberate on this structure you know
+[49:31] gradually more and more and more but
+[49:33] let's not you know get too much into it
+[49:36] because we'll get a lot of chances to
+[49:37] discuss this thread bare.
+[49:42] each DRAM
+[49:44] chip or device, right? Each DRAM chip,
+[49:46] which is a part of a rank,
+[49:51] furthermore is divided into several
+[49:54] banks.
+[49:57] So, a bank is nothing but a logical
+[50:00] agglomeration of
+[50:03] different arrays. It's a set of DRAM
+[50:05] arrays.
+[50:07] In
+[50:10] you know, in principle,
+[50:12] different banks can be triggered
+[50:14] differently. They could be doing
+[50:15] different operations at the same point
+[50:17] of time.
+[50:18] This theoretically, you know, the
+[50:21] protocol allows.
+[50:23] Very rarely that happens, but in
+[50:25] principle, it can be done.
+[50:27] As far as we are concerned, even if you
+[50:29] say that a rank contains a bunch of
+[50:31] arrays and all of them operate in sync,
+[50:34] we are fine.
+[50:36] But, we will see that later on that
+[50:37] having banks is a good idea.
+[50:40] Mainly because the different structures
+[50:42] in a bank can share some hardware. We'll
+[50:46] discuss this.
+[50:47] And clearly, the arrays within a bank
+[50:49] operate in perfect synchrony, right? In
+[50:51] perfect lockstep and synchrony. That
+[50:53] goes without saying.
+[50:54] Even the banks have some independence,
+[50:56] but that is very little in practice,
+[50:58] right? That is very, very little in
+[51:00] practice.
+[51:01] Right? And even different chips within a
+[51:03] rank also don't operate that it's only a
+[51:06] rank that is
+[51:08] by and large an independent
+[51:11] entity in so far as the overall protocol
+[51:14] is concerned.
+[51:15] And as I said, a DIMM may have multiple
+[51:17] ranks.
+[51:20] In theory, a rank can uh
+[51:23] in a a straddle DIMM, so it can
+[51:26] encompass multiple DIMMs, but that
+[51:29] in general won't happen because
+[51:31] different DIMMs, you know, they have
+[51:32] different distances from the memory
+[51:35] So, that would not happen, but you will
+[51:37] have different DIMMs, and a DIMM can
+[51:38] have multiple ranks or can have just one
+[51:42] And
+[51:43] you'll clearly have different DIMMs per
+[51:50] Some more information.
+[51:52] A DRAM array, if it is accessed, you
+[51:55] access typically a single column.
+[52:01] So, the array would contribute only a
+[52:03] single bit per access, because you're
+[52:05] accessing a single column, and a single
+[52:07] column, as I said, contributes just one
+[52:09] bit.
+[52:10] So, a bank has four arrays, and all four
+[52:12] arrays are accessed in parallel, which
+[52:14] they are,
+[52:15] then they will contribute four bits.
+[52:19] So, this means that if I want to read 64
+[52:21] bytes in one go, that is my block size
+[52:23] for a read, right? I would need 16 banks
+[52:26] that are activated in parallel.
+[52:29] So, when I say that uh
+[52:33] I have an X16 DRAM,
+[52:36] this basically means that there are 16
+[52:38] arrays in the bank.
+[52:39] In this case, if a bank has four arrays,
+[52:41] it is X4,
+[52:43] right? But, if I have X16, I have 16
+[52:46] arrays in a bank, and a bank basically
+[52:48] is contributing
+[52:50] 16 bits in one go.
+[52:53] So, as of 2021 and later, X64 and X128
+[52:56] configurations were available.
+[52:59] But, the point is that they were
+[53:01] available only in 3D configurations. So,
+[53:04] we'll discuss what 3D memory looks like,
+[53:06] but primarily, they were 3D
+[53:07] configurations.
+[53:09] So, now to summarize, a CPU would have
+[53:11] multiple DRAM channels, right?
+[53:14] Given a DRAM channel, you'll have
+[53:16] multiple DIMMs connected to it.
+[53:18] Given a DIMM, uh you will have multiple
+[53:21] ranks, but a rank is a conceptual term.
+[53:23] It's
+[53:25] basically a it's a collection of
+[53:26] hardware, no doubt, but it's a
+[53:27] conceptual term
+[53:29] where every single member of a rank is
+[53:31] equally far away from the CPU
+[53:33] in terms of time.
+[53:35] Ranks will have chips. Chips are also
+[53:37] known as devices. It can have multiple
+[53:39] chips. Each chip will have multiple
+[53:42] Where, as I said, in principle, multiple
+[53:44] banks can be doing separate things, but
+[53:46] they almost never do.
+[53:48] A bank will have multiple arrays.
+[53:51] An array is typically accessed, and you
+[53:53] access a single column of an array only
+[53:55] in one cycle, and that yields one bit.
+[53:58] And then you access, as I said, you
+[54:00] access a row column of an array, and
+[54:02] that yields one bit. But, because we
+[54:03] access
+[54:05] let's say 64 arrays in parallel
+[54:08] in a rank, we get one bit from each, so
+[54:11] we get 64 bits total.
+[54:15] So, what is the information that you
+[54:17] send on a channel?
+[54:19] Well, uh so you send the address. Which
+[54:21] address are you interested in?
+[54:23] What is the command? Read, write,
+[54:24] refresh? What do you want to do?
+[54:27] If you want to write something, you send
+[54:28] the data, and also chip select, which
+[54:30] basically says which chips
+[54:33] right uh you want to
+[54:36] use. So, chip select now is primarily
+[54:38] used to select the rank. All right? So,
+[54:40] the address and command, these are sent.
+[54:43] These are unidirectional buses, because
+[54:44] the memory controller would send them
+[54:47] to the DRAM, but the DRAM would not send
+[54:49] anything back.
+[54:50] The data bus is bidirectional, basically
+[54:53] because for stores, it goes from MC to
+[54:57] DRAM devices, to the DIMMs.
+[54:59] And for loads, the data comes back the
+[55:01] other way.
+[55:03] The chip select signal has a long legacy
+[55:05] and history. Long back, it was used to
+[55:08] select a single chip. But now, it is
+[55:10] used to basically select the rank.
+[55:14] And the same channel is multiplexed
+[55:17] across DIMMs, because if you see your
+[55:19] diagram, you have multiple DIMMs that
+[55:21] are connected to a channel.
+[55:24] So, well, there are several ways. One is
+[55:25] time sharing, which is simple. I would
+[55:27] have always preferred this, that look, I
+[55:29] am using it for 20 cycles,
+[55:32] then you use it for 20 cycles.
+[55:34] The other is spatial, where I divide a
+[55:36] 128-bit channel to two 64-bit channels.
+[55:40] So, in this case, what happens is that
+[55:42] one DIMM only uses 64 bits, the other
+[55:44] one uses the other 64.
+[55:46] So, I can have a temporal partitioning,
+[55:50] and I can have a
+[55:53] spatial partitioning.
+[55:56] So, let's now look at the data bus and
+[55:58] the address bus. Address bus is also
+[56:00] used for sending commands.
+[56:02] So, we will uh
+[56:05] uh basically
+[56:08] uh refer to it as address/command bus.
+[56:12] So, what you see here is that I have an
+[56:15] organization here where I have 16 of
+[56:18] these banks.
+[56:20] Then, I'm assuming here that one bank is
+[56:22] one chip.
+[56:24] So, what has happened is that I'm
+[56:25] organizing them column-wise as ranks.
+[56:28] So, a rank
+[56:30] is a column.
+[56:33] So, basically, let's say that this is
+[56:35] one rank. The first column is one rank.
+[56:39] Right? So, this is one rank.
+[56:42] This one is the next rank, next rank.
+[56:44] And as you can see, you know, we will
+[56:46] quickly see they are roughly as far
+[56:49] uh they're roughly equally far from the
+[56:50] memory controller, and that will be
+[56:52] evident in the next discussion.
+[56:56] So, what we do is that we treat all the
+[56:58] devices in a rank as if they are running
+[57:01] in perfect sync in lockstep. So, we send
+[57:04] them any command. So, it can either be a
+[57:06] command like activate a row, like open a
+[57:08] row,
+[57:10] close a row. Close a row would basically
+[57:11] mean, you know, disabling the word line.
+[57:14] Do a refresh.
+[57:15] Give me some data back.
+[57:17] Anything.
+[57:19] All the commands have to reach them at
+[57:21] the same point of time. So, you have a
+[57:23] single red address and command bus. And
+[57:26] even the address is also broadcasted,
+[57:28] right? All of you read address number
+[57:30] All of you read the 13th row.
+[57:32] Or whatever, the 17th column in the 13th
+[57:34] row.
+[57:35] So, this also has to be broadcasted to
+[57:37] all of them. So, you'll have one like
+[57:39] heavy broadcast bus,
+[57:41] which is address/command
+[57:43] bus, which sends both. Which has
+[57:45] connections to every device.
+[57:47] And you're you're assuming that within a
+[57:49] rank,
+[57:50] the signal is reaching all of them at
+[57:52] the same point of time.
+[57:55] Which, you know, is roughly the case,
+[57:57] because you're kind of broadcasting,
+[57:58] right? It's a single bus that is
+[58:01] carrying the signal.
+[58:02] And similarly, for the next column,
+[58:04] again, you're broadcasting again and
+[58:06] again and again, but only one of these
+[58:07] ranks would be enabled. That would be
+[58:09] enabled because of these chip select
+[58:11] lines. So, chip select lines will either
+[58:13] enable this rank or this rank or this
+[58:15] one. One of them is enabled, and the one
+[58:18] that is enabled is the one that would be
+[58:19] processing.
+[58:21] The data buses, on the other hand, can
+[58:23] be
+[58:25] separate.
+[58:27] So, what we could do is we could have
+[58:29] four of these data buses,
+[58:31] because we're assuming that there are
+[58:32] four banks, right? So, let's say one
+[58:34] bank is contributing 16 bits.
+[58:38] one data bus for 16 bits that is
+[58:40] connected to all of these topmost banks.
+[58:43] So, the rank that is enabled is the one
+[58:45] that would transfer data. Transfer data
+[58:47] or read data, it doesn't matter.
+[58:49] But, the fact is that uh a data bus
+[58:52] should does need not have
+[58:55] the kind of broadcast connections that
+[58:57] the address command bus actually needs.
+[58:59] Because address command bus, you want
+[59:00] the time to re the sorry, the address or
+[59:03] command to reach at exactly the same
+[59:05] time, but that's not a requirement with
+[59:07] the data bus.
+[59:08] So, the data bus, one you could have for
+[59:10] these banks, one you could have for
+[59:12] these banks, one for these, and one for
+[59:14] these.
+[59:17] So, given the fact that we have a data
+[59:19] bus, which is like one per row, pretty
+[59:22] much,
+[59:23] the data buses don't have the degree of
+[59:25] broadcast connections
+[59:27] that the address command bus has.
+[59:31] And more are the connections, more
+[59:35] is the length of the wire and more is
+[59:37] its capacitance. So, the capacitance is
+[59:39] more important, right? It will have a
+[59:40] lot of capacitance,
+[59:42] a lot of input gate capacitance and so
+[59:44] on and all of these are in parallel.
+[59:47] So, the address command bus will have a
+[59:48] high RC delay. It's going to be slow.
+[59:51] The data buses, on the other hand,
+[59:53] because they have limited connections,
+[59:55] are going to be fast.
+[59:56] And this is the key inside the double
+[59:58] data rate memory uses. We will see how
+[60:01] and why.
+[60:03] But, the if I want to only keep one
+[60:06] thing in mind, there should be only one
+[60:08] takeaway point.
+[60:10] The takeaway point here should be that
+[60:12] address command bus is very heavily
+[60:14] loaded. The data buses are not that
+[60:16] heavily loaded and consequently, they
+[60:18] are much faster.
+[60:22] So, this is exactly what I was saying
+[60:24] that the address command buses reach
+[60:26] every bank.
+[60:28] And they broadcast signals and they main
+[60:30] aim is that
+[60:31] the signals have to
+[60:34] reach at the same time and you're
+[60:36] multiplexing addresses and commands.
+[60:38] You're multiplexing both.
+[60:40] The data bus, on the other hand, is
+[60:42] split into different lanes and the lanes
+[60:44] have limited connections. So, it's much
+[60:45] faster.
+[60:47] And lower the number of connections,
+[60:48] lesser is the capacitive loading and RC
+[60:51] time constant values, so faster is the
+[60:53] bus.
+[60:54] So, that is why what double data rate or
+[60:56] DDR memory does is that it runs the data
+[60:59] bus faster. It runs it at twice the
+[61:02] speed of the address command bus,
+[61:06] which is something that you can afford
+[61:08] because it's fundamentally a faster bus.
+[61:12] So, now that we have
+[61:13] kind of discussed everything about
+[61:16] DRAMs,
+[61:17] we are in a good position to discuss the
+[61:20] rest,
+[61:21] which is in in all the details about the
+[61:24] DRAM protocol, timing, memory controller
+[61:26] design.
+[61:27] So, basically, we are kind of well
+[61:30] poised for the second lecture, which
+[61:32] will be on uh
+[61:35] details of the DDR4 protocol, primarily.

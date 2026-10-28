@@ -1,0 +1,1728 @@
+[00:00] [Music]
+[00:14] welcome to chapter 9 the chapter on
+[00:16] multicore systems so this is by far the
+[00:20] longest chapter in the book and also by
+[00:22] far the most complex but we will break
+[00:25] it down into very very simple sub
+[00:28] chapters and and we'll discuss each one
+[00:31] in great detail then you'll find that
+[00:33] this is not that hard after all because
+[00:36] in a certain sense this combines
+[00:38] everything that we have learned up till
+[00:40] now it combines pipelines as you will
+[00:43] see it combines caches it combines the
+[00:47] onchip network and it also requires a
+[00:50] certain amount of knowledge in basic
+[00:52] data structures namely graph algorithms
+[00:56] so so that is required uh so
+[00:59] particularly when there are cycles and
+[01:01] graphs and
+[01:03] also the topological sort algorithm this
+[01:07] is something that students need to
+[01:09] know right uh so topological sort
+[01:13] existence of Cycles in a graph these are
+[01:16] the two basic concepts that students are
+[01:19] expected to know and this chapter
+[01:21] heavily Builds on chapters seven and 8
+[01:25] uh so even if uh somebody hasn't gone
+[01:27] through chapter 8 uh but whatever is
+[01:30] required uh pointers will be supplied at
+[01:33] the right points within the
+[01:37] chapter so this is how we will proceed
+[01:40] the first is that an overview of
+[01:43] parallel programming will be provided so
+[01:46] most of us have written sequential
+[01:48] programs throughout our life we have not
+[01:50] written a parallel program but this
+[01:52] entire chapter is about building
+[01:55] hardware
+[01:57] for parallel programs the next is a uh
+[02:02] fairly large number of slides on
+[02:04] theoretical foundations this is very
+[02:07] important because this lays the Bas uh
+[02:09] base for pretty much the entire chapter
+[02:13] then we will discuss cache coherence and
+[02:15] memory models so if somebody has
+[02:17] understood this then understanding these
+[02:20] two is going to be very very easy and
+[02:23] finally we will discuss data races with
+[02:25] a very very important theorem that we
+[02:27] will cover over here which is very
+[02:30] important for the correctness
+[02:32] of uh the entire system so if somebody
+[02:36] has covered all of these I would say
+[02:38] that they know almost enough to
+[02:42] successfully survive and thrive as a
+[02:44] multicore engineer the last module which
+[02:47] is on transactional memory is strictly
+[02:49] optional so if somebody doesn't have
+[02:52] enough time he or she may not cover this
+[02:54] even though covering it is
+[02:58] not uh discouraged in the sense if they
+[03:02] have enough time they can look at
+[03:03] transactional
+[03:05] memory so first let us motivate the need
+[03:09] for multicore systems so what I'm
+[03:12] showing you is some open source data
+[03:15] where the x-axis is the date so it
+[03:17] starts from 1999 to
+[03:19] 2012 and the y axis is essentially the
+[03:22] performance of
+[03:26] processors the performance represented
+[03:28] in the y-axis is presented in terms of
+[03:31] the specint 2006 score so the specint uh
+[03:36] these are a set of standard
+[03:39] benchmarks distributed by spec the
+[03:41] performance evaluation
+[03:43] Cooperative so a spec score is provided
+[03:47] where the spec score is
+[03:50] essentially uh it is the ratio of
+[03:52] execution time on a given machine with
+[03:55] respect to a machine in the past so
+[03:58] these are relative numbers so let's not
+[04:00] go into the units of the y axis consider
+[04:02] them to be arbitrary units but the most
+[04:05] important point to note is that we are
+[04:07] seeing a gradual
+[04:10] saturation in single core
+[04:13] performance and uh this gradual
+[04:15] saturation after 2010 or so so I didn't
+[04:19] plot uh so each one of these points
+[04:22] actually represents a distinct processor
+[04:24] okay distinct CPU so I could have
+[04:26] plotted more data but the results would
+[04:27] have been the same that single core
+[04:29] performance by and
+[04:31] large has remained constant it has not
+[04:34] changed it does tend to increase a
+[04:36] little bit primarily because we are able
+[04:39] to pack in more cash because the
+[04:41] transistors are getting
+[04:43] smaller but just because transistors
+[04:45] gets
+[04:46] smaller it doesn't really mean that the
+[04:50] efficiency is also increasing uh
+[04:53] commensurately the reason being that
+[04:55] there is something called a design rule
+[04:57] in a vsi fabrication process so a design
+[05:00] rule basically
+[05:02] specifies the rules for placing let's
+[05:04] say two transistors or two logic gates
+[05:07] side by
+[05:09] side so what is really happening with
+[05:11] design rules is that they are getting
+[05:13] more restrictive in the
+[05:16] sense that it is not really possible to
+[05:19] arbitrarily Place different kinds of
+[05:21] transistors and different kinds of
+[05:22] structures that use transistors beside
+[05:25] each other because of that there is a
+[05:30] you know there is a sublinear increase
+[05:32] in performance so there is a certain
+[05:34] amount of
+[05:36] saturation so as we can see single core
+[05:38] performance has saturated in this time
+[05:41] frame after 2008 you can clearly see the
+[05:45] signs of
+[05:48] saturation so basically the idea is that
+[05:52] instead of a single core take a large
+[05:54] problem divide it into smaller problems
+[05:57] and have multiple cores to collaborate
+[05:59] solve a task so what we do is we take a
+[06:02] big
+[06:03] problem divide it into several smaller
+[06:07] problems and assign each problem to a
+[06:10] separate core so each problem uh is
+[06:14] essentially assigned first to a thread
+[06:17] so a thread is a lightweight process so
+[06:20] I'll tell you the difference between a
+[06:21] process and a thread that's a very
+[06:24] important distinction to make at this
+[06:26] level so a process is essentially a
+[06:29] running instance of a
+[06:32] program all
+[06:33] right so when you know when you take a
+[06:36] program like let's say if you take
+[06:37] PowerPoint so PowerPoint as such is a
+[06:40] data file right which is residing in the
+[06:43] file system but when I double click it
+[06:45] it becomes a program a running program
+[06:47] so a running program instance of a
+[06:50] running program is a process so a
+[06:52] process clearly has its virtual memory
+[06:54] and open files network connections all
+[06:57] of that a thread
+[07:00] is essentially what is called a
+[07:01] lightweight process in the sense it's a
+[07:03] process in its own right but it we also
+[07:08] Define a set of sister threads each
+[07:11] thread being a process in its own right
+[07:13] but the threads do
+[07:16] share a large part of the virtual
+[07:18] address space namely they have their
+[07:20] separate stacks and
+[07:22] registers that that is their private but
+[07:25] other than this private storage they do
+[07:28] share the Heat keep region where all the
+[07:30] dynamically allocated arrays go they do
+[07:33] share the
+[07:34] code so different threads can
+[07:37] communicate by reading and writing to
+[07:39] Shared memory because they share as I
+[07:42] said large parts of the virtual address
+[07:44] space so that is important that uh these
+[07:48] are not really unrelated processes but
+[07:51] instead each of these threads can
+[07:53] communicate with each other so you can
+[07:56] say that they are they together form a
+[07:58] hole so Linux defined something called a
+[08:01] thread group where instead of one
+[08:04] process I create a thread group with
+[08:05] multiple threads the threads do share as
+[08:08] I said uh part of the virtual memory
+[08:11] space between them so what is private to
+[08:14] a thread is actually it stack and of
+[08:17] course it's you know set of registers
+[08:19] and so on but pretty much that's
+[08:24] it so uh each sub problem is mapped to
+[08:28] First a thread in the software space and
+[08:30] then to a core so let me uh Delete the
+[08:34] ink on this slide it will be clearly
+[08:36] visible to you that each sub problem is
+[08:39] mapped to a separate thread and that
+[08:42] thread is mapped to a code so each of
+[08:45] these blue boxes over here are
+[08:47] essentially
+[08:49] cores so let us consider an example it's
+[08:51] a working example you will find the
+[08:54] details in the book along with the code
+[08:57] so I will not explain the exact parallel
+[09:01] programming semantics that is not the
+[09:04] aim of the book so the aim of the book
+[09:06] is to introduce two paradigms to you one
+[09:09] is a shared memory Paradigm other is a
+[09:11] message passing
+[09:12] Paradigm so we will again take some
+[09:15] Liberty with the syntax so the syntax
+[09:18] will not be exact but let's put it this
+[09:21] way it'll be similar so what is a
+[09:23] problem we take an array numbers which
+[09:25] is a very very large array it can
+[09:27] contain a billion elements right it
+[09:29] contains size elements and it's an array
+[09:32] with a very large
+[09:33] array it contains size elements
+[09:38] okay so the aim is to compute the sum of
+[09:41] all of its elements all right that's the
+[09:44] aim so let's not worry about overflows
+[09:48] so let's assume that the entire sum does
+[09:50] not overflow so let's compute the sum of
+[09:53] all the elements so the way that this is
+[09:55] done is that it is done by Distributing
+[09:58] the work among the N threads so let us
+[10:01] distribute them equally so we divide the
+[10:04] array into n
+[10:06] parts we assign each part to a
+[10:09] code so uh what do we do we take a large
+[10:14] ARR we break it down into let's say part
+[10:18] one part
+[10:20] two part
+[10:22] 10 each of these parts is assigned to a
+[10:25] core all right so we compute the partial
+[10:29] sum which is the sum of each
+[10:36] part all right and then we add the
+[10:40] partial sums all right so each thread
+[10:44] computes the sum of each part so if
+[10:46] there are n threads we end up with n
+[10:48] partial sums then we add the partial
+[10:51] sums so this first operation of actually
+[10:54] dividing a large problem into smaller
+[10:57] sub problems the way we have partitioned
+[11:00] this array is known as the map
+[11:03] step and then each map step
+[11:07] produces each step right uh each step
+[11:11] over here
+[11:13] produces a partial sum and the partial
+[11:16] sums are added and this process of
+[11:19] addition of the partial sums is known as
+[11:21] the reduced step so you must have heard
+[11:24] of the popular programming Paradigm
+[11:27] called map reduce so map reduce is
+[11:29] basically
+[11:34] this so let us now look at the first uh
+[11:37] programming Paradigm which is shared
+[11:39] memory based Paradigm so in this case we
+[11:42] have nend course and they communicate
+[11:43] via shared memory so the way they
+[11:45] communicate is that let's say there is
+[11:47] the same
+[11:49] variable so uh variable X is let's say
+[11:52] assigned five over here then we read the
+[11:56] variable X into a register
+[11:59] and it will automatically get the value
+[12:01] five subject to the fact that it is
+[12:04] being read later so this will of course
+[12:07] be a topic of intense discussion when is
+[12:10] something written when is something read
+[12:11] but for the time being let's assume that
+[12:14] all of these things
+[12:16] happen the way that we would expect in
+[12:18] an intuitive manner what is intuitive or
+[12:21] not we have 50 slides to explain that so
+[12:24] each code runs a thread different
+[12:25] threads share parts of the virtual
+[12:28] memory space and the main communication
+[12:31] happens via reading and writing to
+[12:33] Shared variables so these shared
+[12:36] variables
+[12:38] are variables that are
+[12:40] not declared on the stack so they are uh
+[12:45] typically declared on the Heap so so
+[12:47] they are essentially let's put it this
+[12:49] way variables that have a global scope
+[12:51] that do not have a function scope that
+[12:53] have a broadly speaking Global scope
+[12:56] right Global to at least the piece of
+[12:58] code that the threads are running so
+[13:00] when we see an example it will become
+[13:03] clear so let us look at the code so this
+[13:06] code is the openmp code so I'm not
+[13:09] showing all of it uh but I'm showing the
+[13:11] relevant parts of it so openmp is
+[13:14] basically an extension to
+[13:17] cc++ almost all cc++ compilers support
+[13:23] openmp So if you write it in openmp
+[13:26] which is just a small addition on top of
+[13:28] it they will compile it to parallel code
+[13:31] automatically you don't have to do
+[13:32] anything so let's see so given we have n
+[13:36] threads so which let's say are defined
+[13:38] as hash defined constants so we have an
+[13:41] array of partial sums where each entry
+[13:44] stores a partial sum int numbers with
+[13:47] size entries is the big long array whose
+[13:50] sum of sum we want to compute and the
+[13:53] final St sum will be stored in this
+[13:55] variable result all right so the final
+[13:59] sum of adding up all the
+[14:01] elements is going to be stored over here
+[14:05] so the parallel section this is how it's
+[14:07] going to
+[14:08] look uh that we will Define our
+[14:12] openmp uh directive hash pragma OMP so #
+[14:17] for openmp and parallel so this
+[14:20] indicates that whatever is there
+[14:23] inside the left curly bracket and the
+[14:26] right curly bracket which is essentially
+[14:28] all of this piece of code this piece of
+[14:31] code will execute in parallel so if we
+[14:33] have n threads then n copies of this
+[14:36] code will be made and they'll be
+[14:38] dispatched to each of the threads which
+[14:41] will run on its separate code so we can
+[14:43] always have less course than n but then
+[14:46] a core will have to run multiple threads
+[14:50] uh right in a multitasked Time shared
+[14:53] kind of manner so the first is get my
+[14:56] processor ID let's say that is a get my
+[14:58] core
+[15:00] ID so int my ID is om get thread num
+[15:04] this is an openmp statement which gets
+[15:07] the thread number right it gets the
+[15:08] number of the thread whether it's three
+[15:10] or five or seven it just gets the number
+[15:13] of the thread in my
+[15:15] ey it adds a portion of the
+[15:19] numbers so uh so what is my portion will
+[15:22] my portion starts from my ID so core 0
+[15:24] gets zero core one gets one core two
+[15:26] gets two and so on so I find the
+[15:29] starting and ending ending index of my
+[15:31] portion of my array which is essentially
+[15:33] my ID into size by n and end uh index is
+[15:38] start index plus size by n so all that I
+[15:42] have is that I have a simple for Loop
+[15:45] that simply
+[15:48] uh uh iterates through this portion of
+[15:51] the array and then adds up all the
+[15:54] numbers and stores them in partial sums
+[15:56] my ID of course here the implicit
+[15:58] assumption is that the entire partial
+[16:00] sum each of these uh entries in partial
+[16:04] sums each entry is initialized to zero
+[16:06] that is the
+[16:08] Assumption so after making that
+[16:10] assumption all that I do is I add up all
+[16:13] the numbers for my part of the array so
+[16:17] each thread does that so considering a
+[16:20] large array if let's say it's broken
+[16:23] into n parts so thread
+[16:25] one let's count from zero thread zero
+[16:28] would add everything in this
+[16:30] chunk thread one would count everything
+[16:34] from this two would count everything
+[16:37] from this and so on and so
+[16:39] forth so now all of their partial sums
+[16:43] are stored in the array partial sums
+[16:46] subsequently the parel section completes
+[16:48] right so this was the line share of the
+[16:50] work where the large problem was divided
+[16:52] into small problems so this part
+[16:57] completes now
+[17:00] then the sequential section begins in
+[17:03] the sequential section all that we do is
+[17:06] that a single thread which would be the
+[17:10] thread that initiated this parallel
+[17:12] processing so the control returns back
+[17:14] to
+[17:15] it it iterates from 0 to L and simply
+[17:18] adds up all the partial sums and stores
+[17:20] them in the variable result which as you
+[17:24] can see was initialized to
+[17:26] zero so this completes our processing so
+[17:29] as you can see the primary feature over
+[17:32] here is we have a parallel section and
+[17:35] then we have a sequential section after
+[17:37] that the map portion of the work is done
+[17:40] in the parallel section and we are using
+[17:43] two openmp directives here hash pragma
+[17:45] OMP
+[17:47] parallel to run a piece of code copies
+[17:50] of a piece of code on each code and
+[17:55] furthermore we have a get processor ID
+[17:58] is ESS essentially get core idid it gets
+[18:00] the number
+[18:03] of uh so so it's actually well uh I
+[18:06] should I should be more accurate over
+[18:08] here is actually get thread ID and as I
+[18:11] said we can have many more threads and
+[18:13] number of quotes and what we really care
+[18:14] about our
+[18:15] threads so this gets the thread number
+[18:19] and the thread are numbered 0 to n minus
+[18:21] one so from the thread number we can
+[18:24] find
+[18:26] out uh the starting and ending index of
+[18:29] the portion of the array assigned to
+[18:31] let's say thread
+[18:32] ey then all that we do is compute the
+[18:35] partial sum For Thread I the same
+[18:38] happens for the rest of the threads and
+[18:39] then we add the partial
+[18:41] sums so here the simple directive is
+[18:44] doing much more than what you think it
+[18:46] is doing and it is handling the entire
+[18:48] code of creating the thread setting
+[18:52] their state and dispatching the code to
+[18:55] them and the get thread num is very
+[18:58] simple because even if let's say n
+[19:00] copies of the same code are made they
+[19:03] will still return different values for
+[19:05] this function and the values will range
+[19:07] from 0 to n minus
+[19:11] one all right so given that we have seen
+[19:14] this let's see a quick visualization of
+[19:16] what just happened so we had a parent
+[19:19] thread we initialized the parent thread
+[19:22] then we spawned a set of child
+[19:24] threads so set of child threads all did
+[19:27] the job of taking a port portion of the
+[19:29] array and adding it portion of the array
+[19:31] and adding all the
+[19:33] elements then they wrote the values to
+[19:35] the partial
+[19:37] sum partial sum sorry there was a thread
+[19:40] join operation where all of these
+[19:41] threads threads kind of terminated and
+[19:43] joined the main thread the main thread
+[19:46] subsequently began there was sequential
+[19:49] section where all the partial sums were
+[19:51] added and the variable result was
+[19:53] finally
+[19:56] computed now let's look at another
+[19:58] Paradigm so which is not really used in
+[20:02] multicore systems it is used in
+[20:05] multiprocessor systems where the
+[20:07] multiple processors are connected over a
+[20:12] network so here the idea is that the CES
+[20:16] communicate by sending messages to each
+[20:19] other so we can say that maybe one
+[20:21] processor is over here then they are
+[20:24] connected to the other one via Ethernet
+[20:28] and so there can be a complex network of
+[20:32] uh processors processing nodes rather
+[20:36] and uh the network cards so uh the
+[20:40] connection will happen on the basis of
+[20:42] sending messages uh so the messages are
+[20:45] sent to the IP addresses the standard
+[20:49] network based communication the way it
+[20:51] happens on the
+[20:52] internet that one processor will send a
+[20:55] message to another and they can be
+[20:56] connected with any arbitrary apology it
+[20:59] doesn't matter but the messages are
+[21:01] pretty much sent using the standard
+[21:03] networking tcpip networking
+[21:07] protocols the memory is not shared
+[21:11] so as I said all communication is by
+[21:14] sending and receiving
+[21:15] messages there are two very basic
+[21:18] functions that MPI MPI is essentially
+[21:21] message passing interface that MPI
+[21:23] supports so uh I don't claim to be
+[21:27] explaining MPI per se in great detail
+[21:31] and the program that is shown is also
+[21:35] it'll it is like MPI but it's not MPI
+[21:39] with the exact
+[21:41] syntax so one function can be send P ID
+[21:44] comma Val where I send an integer Val to
+[21:46] process with IDP ID so it can be
+[21:49] processed with IDP ID or it can be so
+[21:52] this is an MPI process so the MPI
+[21:55] process will be mapped to some machine
+[21:56] and some IP address but let's for the
+[21:59] time being forget about that receive p
+[22:02] is receive an integer in this case from
+[22:05] process with IDP ID this is a blocking
+[22:08] call which means until we don't receive
+[22:10] we just wait we don't do anything else
+[22:13] if the P ID is equal to any Source then
+[22:15] it means that as long as someone sends a
+[22:18] message even if someone sends a message
+[22:22] uh the receive function will return with
+[22:24] the value sent
+[22:25] by that process so we so we don't want
+[22:29] uh message from a given process any
+[22:32] process will
+[22:34] do so given that the message passing
+[22:37] code which looks like MPI but it's not
+[22:40] MPI is like this we start all the
+[22:43] parallel processes so we have this
+[22:46] directive over here spawn all parallel
+[22:50] processes so what this directive does is
+[22:53] that if let's say we have configured it
+[22:54] so I'm not showing that code if we have
+[22:57] configured n processes then pretty much
+[23:00] over the machines on a network it will
+[23:03] initiate those end
+[23:05] processes for each process execute the
+[23:08] following code int my ID is equal to get
+[23:11] my process
+[23:13] ID so we had get thread num in uh MPI in
+[23:17] this case we get a process ID which will
+[23:19] again return the same thing an integer
+[23:21] between 0 n and minus
+[23:24] one we compute all the partial sums so
+[23:27] this codee for comput the partial sums
+[23:29] are exactly identical with one
+[23:31] difference we don't have an array so in
+[23:34] the other case we used an array because
+[23:36] we shared memory in this case we don't
+[23:38] so in this case we don't share the
+[23:40] virtual or physical address space so
+[23:42] what we do is that uh we well we
+[23:46] definitely don't share the virtual
+[23:48] address space the physical address space
+[23:50] we may share if uh multiple processes
+[23:53] are running on the same machine but
+[23:55] that's uh irrelevant uh so the partial
+[23:58] sum here is initialized to zero we add a
+[24:01] portion of the array and we store the
+[24:03] sum to the local variable partial
+[24:07] sum so one of these processes we
+[24:09] designate it to be the main process or
+[24:11] the root process so let that process
+[24:15] have a process ID of zero and let the
+[24:18] rest of the processes have an ID which
+[24:19] is between one and N minus one so if
+[24:23] it's a non-root process meaning the my
+[24:25] ID field is not zero
+[24:28] then we send the partial sum to the root
+[24:31] so we invoke the send function send it
+[24:33] to process zero which is the root and
+[24:35] what do we send we send the partial
+[24:38] sum so the map process ends here now for
+[24:41] the root uh we have int sum is equal to
+[24:44] partial sum so
+[24:46] we uh so so we initialize the sum value
+[24:50] with uh What uh the partial sum the root
+[24:54] has computed then for the rest of the
+[24:57] processes we run this for loop as long
+[25:00] as we receive a message from any
+[25:03] Source we add the integer to sum and
+[25:06] given the fact that we know how many
+[25:08] messages we'll receive which are n minus
+[25:11] one messages we just run this Loop for
+[25:14] nus one
+[25:17] times all right and after running it for
+[25:20] n minus one times we will get all the
+[25:22] messages we'll add them
+[25:24] up then a little bit of cleanup is
+[25:27] required little bit of bookkeep keeping
+[25:28] all the processes will be shut down and
+[25:31] the Su variable will be returned back to
+[25:33] the
+[25:34] colum so here clearly there has been no
+[26:02] only transfer of messages right only
+[26:04] messages have been transferred without
+[26:06] having a shared uh virtual address
+[26:09] space so this is clearly slower but more
+[26:12] scalable so as compared to Shared memory
+[26:14] this is undoubtedly more slower because
+[26:16] of the overhead of sending messages but
+[26:19] clearly it is more scalable so a shared
+[26:21] memory maybe will not scale more than
+[26:23] 200 notes 200 cores right where each
+[26:27] core is running a thread but message
+[26:29] passing can scale to thousands or
+[26:32] hundreds of thousands of
+[26:33] notes right uh so you you so basically
+[26:37] this thing is uh you can say made to
+[26:40] scale right it's slower but more
+[26:42] scalable all
+[26:45] right okay so now let's keep
+[26:49] going uh so the summary is shared memory
+[26:53] of course easy to program not scalable
+[26:56] and the code is portable across machines
+[26:58] so across different machines we just
+[27:00] initialize the threads the threads are
+[27:03] scheduled on the
+[27:04] course using a scheder a scheduler in
+[27:08] American
+[27:09] English and uh it's kind of portable
+[27:13] code in the sense that code that runs on
+[27:15] one machine will run on another MPI is
+[27:18] also portable because it's a it's a
+[27:21] standard but nevertheless it's hard to
+[27:24] program if we are relying on hardwired
+[27:27] IP addresses
+[27:28] then of course the code is not portable
+[27:30] at all but in many cases uh so the MPI
+[27:34] interface nicely abstracts all of that
+[27:36] in that case the portability is much
+[27:38] much more and clearly scalability is
+[27:41] there in a sense that message passing is
+[27:43] always more
+[27:44] scalable but it is not really the method
+[27:47] of choice for what we are interested in
+[27:49] which is a multicore system for a
+[27:52] multiprocessor system like a data center
+[27:55] level super computer message passing is
+[27:57] great but not for what we need so we
+[28:00] will primarily focus on shared
+[28:05] memory so to focus on shared memory uh
+[28:08] we will not be able to move much further
+[28:11] unless we do a little bit of math so
+[28:13] this mathematics is embodied in the
+[28:16] amal's
+[28:19] law the amal's law predicts that if we
+[28:23] increase the number of
+[28:24] processors what will the scalability of
+[28:27] the system look like all right so the
+[28:31] question is how much is it that we can
+[28:34] parallelize that is what the amdel law
+[28:38] predicts so we are limited by the
+[28:41] fraction of the sequential
+[28:44] section uh which is
+[28:48] FC because as we have discussed uh
+[28:51] program a parallel program in particular
+[28:54] has two sections it has a sequential
+[28:57] section whereas single thread runs and
+[29:00] we have a parallel section where the
+[29:02] multiple threads run so the amul's law
+[29:04] is by and
+[29:07] large the key mathematical determinant
+[29:11] of how much speed up we tend to get if
+[29:13] we have P processors and a program where
+[29:17] we have a parallel section and a
+[29:19] sequential section so for p processors
+[29:22] the time that the parallel section
+[29:24] actually
+[29:26] requires is like this
+[29:30] uh I'm sorry I stand corrected it's not
+[29:34] requires it is the time that the
+[29:38] parallel execution requires or the
+[29:39] execution in parallel mode requires it
+[29:42] is a time required by the overall
+[29:45] sequential execution so the sequential
+[29:47] execution can be broken down into two
+[29:50] parts one is f SEC the sequential
+[29:54] part of the
+[29:56] execution and the other is is the
+[29:59] parallel part of the execution which is
+[30:01] the 1 - F SEC
+[30:04] time the base line which is the
+[30:06] sequential execution type so when I have
+[30:10] P processors what I'm in a sense
+[30:11] speeding up is I'm speeding of the
+[30:14] parallel part so I make a rather ideal
+[30:17] idealistic assumption over here that if
+[30:20] I have P processors then I'm speeding up
+[30:22] the parallel part P times so this is
+[30:25] typically not the case we typically do
+[30:26] not see a linear speed up
+[30:28] but let's assume we do as in this in
+[30:31] this problem uh of dividing an array we
+[30:33] actually will so what we will actually
+[30:38] see is that the time required by the
+[30:41] parallel section will be get will get
+[30:43] divided by P the number of course the
+[30:46] number of processing elements so the
+[30:49] time the parallel time will be given by
+[30:51] this equation so the speed up which is T
+[30:54] SEC by T par will actually be given by
+[30:58] this equation which is 1 by F sequential
+[31:01] plus 1 - F sequential divided P so as I
+[31:06] increase
+[31:07] p uh this quantity the denominator will
+[31:10] decrease so the numerator Remains the
+[31:12] Same and the ratio will increase so the
+[31:14] speed up will increase but here is the
+[31:17] most important part the Crux of the
+[31:19] argument that as P tends to Infinity the
+[31:22] speed up will tend to 1 by F SEC so the
+[31:25] essentially what will happen is that the
+[31:27] speed up will set saturate it'll
+[31:29] asymptotically saturate so beyond a
+[31:31] certain point for a given problem with a
+[31:34] given sequential execution part
+[31:37] regardless of the number of cours that
+[31:39] we add the speed up will remain the same
+[31:42] so that is the key message
+[31:44] here so what I'm doing here is I'll show
+[31:47] you I'm showing you a graph where the
+[31:49] x-axis is a number of
+[31:52] processors all
+[31:54] right and uh so I'm increasing that from
+[31:57] one 1 till 200 and the y axis is the
+[31:59] speed up and the different bars pretty
+[32:03] much show the different the fraction of
+[32:06] the sequential
+[32:08] part if the sequential part is
+[32:11] 10% then uh the speed up does saturate
+[32:14] at 10 and that to quite early so beyond
+[32:16] this point increasing the number of
+[32:19] processors has no effect at
+[32:21] all then I'll show you for 5% which is
+[32:24] the green line here also signs of
+[32:27] saturation at this this point which is
+[32:28] roughly 25 processors beyond that
+[32:32] there's no point in investing the
+[32:34] Improvement will be slow and gradual we
+[32:36] can maybe take it up till this point
+[32:38] which is maybe like 42 43 processors not
+[32:42] beyond that in comparison if the
+[32:45] sequential part is
+[32:47] 2% our ultimate uh speed up will be
+[32:51] large okay so as you have seen it'll
+[32:53] tend to 1 by fsec which is 5050 so we
+[32:57] can see that that up till around 150 odd
+[32:59] processors maybe 200 it is saturating
+[33:02] but somewhat
+[33:03] gradually and it'll ultimately saturate
+[33:06] though it is saturating somewhat
+[33:08] gradually so we can uh if we invest 100
+[33:12] the money for 150 processors we will get
+[33:15] a good speed up which is roughly sorry
+[33:19] the line is not fully
+[33:20] straight uh which is roughly like this
+[33:23] you know it's roughly like 37
+[33:25] 38 so the most important point point is
+[33:28] that the key determinant of the overall
+[33:30] speed up is a sequential execution
+[33:32] fraction F secc and that determines what
+[33:36] will be the ultimate the final speed up
+[33:39] even if I have infinite number of
+[33:41] processors and it will saturate in this
+[33:43] astoic manner totally determined by this
+[33:47] equation which means that look if the
+[33:50] problem is such
+[33:52] that fsec is high there is no point in
+[33:55] investing a lot of processor so it shows
+[33:57] us the
+[33:58] limitation of the parallelism right
+[34:01] limitations of the parallelizing
+[34:03] activity and it also shows us the amount
+[34:05] of saturation that can happen so when
+[34:08] you are considering
+[34:10] large, core or 10,000 core nodes so this
+[34:14] will by the way hold for both shared
+[34:16] memory as well as message passing so
+[34:18] when I'm considering large
+[34:20] supercomputers the problems that need to
+[34:22] run on them uh they need to have
+[34:24] extremely small sequential execution
+[34:28] Parts because otherwise that if you
+[34:30] don't have that amel's law will
+[34:33] dictate
+[34:35] that uh we saturate and that to we
+[34:38] saturate
+[34:41] soon next I will describe the Gustafson
+[34:44] baris's
+[34:49] law so this remedy is a crucial flaw or
+[34:54] rather shortcoming of amul's law
+[34:57] so amel's law had an assumption that the
+[35:00] amount of work the problem that we
+[35:02] solved let's say when we have 10,000
+[35:05] cores Remains the Same that will not be
+[35:07] the case right see the old workload is W
+[35:12] right let's measure it in terms of time
+[35:17] then uh the new workload right so so we
+[35:20] can measure it in terms of time
+[35:22] instructions doesn't matter the units
+[35:23] are not important but the new workload
+[35:26] if let's say we have P
+[35:29] processors uh it needs to be much larger
+[35:32] right it cannot be the same if I have
+[35:34] 10,000 processors I cannot be solving
+[35:37] the same problem I need to be solving a
+[35:39] bigger problem because let's think about
+[35:41] it on a smaller machine like a laptop we
+[35:44] solve a small problem you know let's say
+[35:47] like doing our assignments but on a
+[35:50] bigger superc computer we try to predict
+[35:53] climate
+[35:54] change so we scale the parallel part by
+[35:58] the number of processors which is p so
+[36:00] the new workload again with arbitrary
+[36:04] units is equal to F SEC into W which is
+[36:09] part this is a this 1 - F SEC * W used
+[36:13] to be the Earth while parallel part but
+[36:15] it is being scaled with the number of
+[36:19] multiplied with the number of processors
+[36:22] P right so the parallel part is being
+[36:25] scaled by a factor of P
+[36:28] so this becomes the new
+[36:30] workload all right so if this is the new
+[36:34] workload let's say that this is linearly
+[36:37] dependent on the time and the time
+[36:40] sequential time uh can be since linearly
+[36:43] dependent we have a constant of
+[36:45] proportionality Let It Be
+[36:47] Alpha so then we can have Alpha * W mu
+[36:51] is equal to Alpha time this
+[36:54] entire uh expression and the parallel
+[36:58] time over
+[37:00] here right so so this is the new
+[37:03] workload in the sense is a new workload
+[37:05] for the sequential
+[37:07] time and
+[37:10] uh the parallel time or the time when we
+[37:14] parallelize will essentially be the new
+[37:17] workload which is running
+[37:19] on uh P parallel processors so similar
+[37:23] to amel's law this Factor over here
+[37:26] right we get divided by P so what will
+[37:29] pretty much happen is p and p here will
+[37:31] cancel F SEC W and F SEC W over here
+[37:35] here will can cancel so pretty much the
+[37:38] parallel time will just be Alpha *
+[37:40] W so what I'm doing is so the parallel
+[37:43] time is the time that time
+[37:48] required is a time
+[37:51] required
+[37:55] while running on
+[38:03] P
+[38:05] processors
+[38:07] okay and a sequential time is the time
+[38:10] required while running on One
+[38:13] processor of course we are not running
+[38:15] the old workload instead we are running
+[38:17] the new workload and the new workload is
+[38:21] essentially the old sequential part plus
+[38:24] the old parallel part multiplied with
+[38:27] the fact of
+[38:29] P so the new workload if measured in
+[38:32] terms of time is Alpha * W new which is
+[38:34] Alpha * this
+[38:36] expression right uh so I'm deleting this
+[38:39] divided by P over here something that I
+[38:41] had
+[38:42] added uh all right so this is the new
+[38:45] workload and this is essentially the
+[38:47] time required if I have a single
+[38:50] code but the thing is that I don't have
+[38:52] a single core if I'm if I have P
+[38:56] processors then then what I can do is I
+[38:58] will divide the parallel part not the
+[39:00] sequential part just the parallel part
+[39:03] because the parallel part will be sped
+[39:05] up so I'll divide that by a factor of p
+[39:08] and then you will see my terms will
+[39:10] nicely cancel out and the time remaining
+[39:13] will be Alpha * W so if I divide the
+[39:16] sequential time with the parallel time
+[39:18] Alpha will cancel out what I'm left with
+[39:21] is this expression I'll clean it up I'll
+[39:23] take W out so the final speed up
+[39:28] with the scaled workload mind you is FSE
+[39:32] plus 1us F SEC * P where p is the number
+[39:35] of
+[39:38] right so uh the there are several
+[39:42] interesting firsts over here so the uh
+[39:47] key point
+[39:49] is for a large
+[39:52] P pretty much what you are seeing is
+[39:54] that the small fsec over here Will stop
+[39:57] being a factor so the speed up will
+[40:00] pretty much become proportional to P so
+[40:02] let me see if I graph after this oh
+[40:04] sorry I I don't uh but uh the thing is
+[40:08] this thing can be very nicely graphed so
+[40:11] what you will see is that the speed up
+[40:13] will become proportional to the number
+[40:15] of processors which is a good thing and
+[40:19] but of course the slope will be will be
+[40:22] decided by 1 minus fsec so so fsec in
+[40:26] this case instead of being being a
+[40:27] limiter the way it
+[40:29] was when we were dealing with amel's law
+[40:33] the the fraction fsec over here is just
+[40:37] deciding the slope which is also
+[40:38] important it is essentially telling us
+[40:40] that if let's say double the number of
+[40:42] processors what is it that I get and
+[40:45] that will be decided by the slope right
+[40:48] uh but uh the key factor over here is
+[40:52] that the net speed up we will get when
+[40:55] the workload is scaled is
+[40:57] pretty
+[40:58] much proportional to the number of
+[41:03] processors so this is the advantage of
+[41:05] the gustafs and barc's law that it is
+[41:08] actually amel's law Plus+ in a certain
+[41:11] sense that it's scales the workload
+[41:14] right so so that's the most important
+[41:17] point over
+[41:18] here let's keep
+[41:21] going so let us discuss the design space
+[41:24] multiprocessors the Flint classific
+[41:29] apption so here we will look at the
+[41:31] entire design space of the multi
+[41:34] processing world right uh so uh we will
+[41:37] start with a conventional uni processor
+[41:40] so conventional uni processor which is a
+[41:42] single core is there in the design space
+[41:47] so where we pretty much have a it's
+[41:49] called an sisd
+[41:51] multiprocessor where uh we have a single
+[41:54] instruction stream a single program
+[41:56] basically which supplies the
+[41:58] instructions and a single and
+[42:00] essentially single data stream a single
+[42:02] memory which supplies the
+[42:04] data all right so we have seen
+[42:07] that then we will have simd so simd is
+[42:12] something
+[42:13] that was used in the good old
+[42:17] days in Vector processor so what simd is
+[42:20] it's a single instruction but multiple
+[42:23] data so what that basically does is that
+[42:26] we can let's say
+[42:28] take four integers x y z and
+[42:32] U so these four integers maybe they're
+[42:36] 32 bits each so we'll pack them into
+[42:39] what is called a vector register each
+[42:41] register is 128
+[42:43] bits we can have four
+[42:46] more variables x- Y dash Z Dash and
+[42:51] u-h again we'll pack them into a 128bit
+[42:55] vector register so we need to define a
+[42:57] vector register file as well and when we
+[43:00] add the two Vector registers we'll get a
+[43:02] final
+[43:05] outcome so the final outcome so so this
+[43:07] entire addition adding four numbers will
+[43:10] be treated still as a single instruction
+[43:13] where we'll add two Vector registers the
+[43:14] output is a vector so one instruction is
+[43:17] adding four pairs of numbers for the
+[43:19] result is X Plus x dash over
+[43:23] here over here we'll have y + Y dash
+[43:27] over here we'll have Z + z Dash and over
+[43:32] here we'll have u+
+[43:34] u-h all
+[43:36] right so we perform pairwise additions
+[43:39] of numbers but we perform four pairs
+[43:42] using a single instruction so we have a
+[43:44] single instruction but multiple data see
+[43:46] multiple data x y z and U multiple data
+[43:49] but single
+[43:51] instruction then we will consider MISD
+[43:55] where the data is the same which means
+[43:56] that that the problem is the same but
+[44:00] there are different programs solving the
+[44:02] same
+[44:03] problem this is very rare but one very
+[44:06] very important examples is in
+[44:09] aircrafts so modern aircrafts are mostly
+[44:12] computer controlled or autopilot and
+[44:14] emergency response a lot of things are
+[44:16] computer controlled but computers can
+[44:19] make mistakes wires can get snapped
+[44:21] programs can have bugs so what modern
+[44:24] aircrafts actually do is that they have
+[44:27] three separate processors made by
+[44:29] different vendors so one could be Intel
+[44:31] one could be mips one could be
+[44:34] IBM so then the same data which is the
+[44:38] same sensor data is provided to all
+[44:41] three all three produce the result so if
+[44:44] the result is turned left by 70° that is
+[44:46] a result all three produce a result then
+[44:50] the voting
+[44:52] circuitry gives the final result on the
+[44:55] basis of a majority vote
+[44:57] so here what do we have is the same data
+[44:59] single data because it all comes from
+[45:03] sensors same set of sensors multiple
+[45:06] instructions because there are different
+[45:07] programs running on different processors
+[45:10] with different makes
+[45:13] but uh the final output is meant to be
+[45:16] the same if it should be the same most
+[45:19] of the time not most of the time all of
+[45:21] the time okay so when you're running on
+[45:23] an aircraft there is no room for error
+[45:26] all the time the outputs should be the
+[45:29] same and if they are not which means if
+[45:32] there is a fault God forbid we will go
+[45:36] for a voting and the best two out of
+[45:38] these three will be chosen not the best
+[45:41] two but the ones the the two of them
+[45:43] that match so we're not assuming that we
+[45:45] have two failures at the same time so
+[45:48] the two that match they will be chosen
+[45:50] because of the voting
+[45:52] circuit what we are most interested is
+[45:55] MD m multiple instructions multiple
+[45:59] data and uh so this is what we will look
+[46:02] at where the instruction stream is
+[46:04] different multiple
+[46:05] threads uh the threads even if they are
+[46:08] compiled from the same C code but we are
+[46:11] they're not really running in lock step
+[46:13] right so the instruction streams are
+[46:15] different and they could very well be
+[46:17] running different instructions as well
+[46:19] and working on different parts of data
+[46:21] so MD is a broad umbrella that we would
+[46:25] be looking at
+[46:27] so this is again uh explained so I would
+[46:30] like to go over all four of these once
+[46:32] again a cist as I said is a regular uni
+[46:36] processor a single core processor
+[46:39] simd simd is for a vector instruction
+[46:46] set so in this case we have Vector
+[46:49] resistors so we used to have Vector
+[46:52] processors that only had or primarily
+[46:54] predominantly had Vector resistors
+[46:57] but most common processors such as x86
+[47:00] or R do have Vector instructions to
+[47:01] their Isa so x86 notably has the SS 1 2
+[47:05] 3 and four the MMX the ssse sorry the
+[47:09] MMX ssse and the AVX instruction sets uh
+[47:13] feature extensions on the base x86
+[47:16] instruction set and they do provide
+[47:18] Vector
+[47:20] capability and the vectors instructions
+[47:22] are heavily used in numerical code in
+[47:24] graphics code in games and so on to
+[47:27] speed up the most critical aspects of
+[47:29] the computation and what do they do well
+[47:31] uh they Define a register which is
+[47:33] essentially a packs a set of integers or
+[47:37] floating Point values within 128 or 256
+[47:41] bits then performs pairwise
+[47:44] operations so such simd uh instructions
+[47:47] are very very important in most of our
+[47:52] code like games and other highly
+[47:54] performance in intensive uh codes that
+[47:57] require a lot of scientific and linear
+[47:59] algebra
+[48:01] operations MD processors
+[48:05] airplanes mimd processors MD they in two
+[48:09] kinds single program multiple data and
+[48:12] multiple program multiple
+[48:15] data so this is the most common where we
+[48:18] have a single program we write the
+[48:20] program once as we have shown in
+[48:23] openmp uh so here uh the data string s
+[48:27] vary in the sense that we work on
+[48:29] different pieces of data and the same
+[48:32] program is run on different CES and each
+[48:34] core of course runs a subset of
+[48:36] instructions of the program hence we say
+[48:39] we have different instruction streams
+[48:41] but the program is the same so we don't
+[48:43] write different programs for different
+[48:44] course right so hence we have this get
+[48:48] thread ID and get openmp thread num
+[48:51] Primitives to essentially identify which
+[48:54] thread it is such that the appropriate
+[48:56] data can be f
+[48:58] another relatively RAR cousin of
+[49:01] spmd is mpmd in mpmd well uh what we do
+[49:06] is that we have different kinds of
+[49:08] processors we might have a core or a
+[49:10] specific
+[49:11] accelerator so then in the parallelism
+[49:14] itself while programming we create a
+[49:16] separate program for the core and a
+[49:17] separate program for the accelerator so
+[49:21] as you saw in the chapter on gpus any
+[49:24] program that is
+[49:25] written in
+[49:27] Cuda is ends up actually being two
+[49:30] separate programs one program is sent to
+[49:33] the CPU and one program is sent to the
+[49:35] GPU and then they execute their parts
+[49:38] right so the programmer clearly knows
+[49:41] which part runs on the CPU which part
+[49:43] runs on the GPU and they are kind of
+[49:45] written separately right even though
+[49:49] they might be in the same file but they
+[49:50] nevertheless written separately so each
+[49:53] core or accelerator in this case runs a
+[49:56] different program that is mpmd we don't
+[49:59] have many examples of this but with
+[50:01] modern exam modern processors that use
+[50:05] accelerators we have started to see more
+[50:08] of such kind of programming where we
+[50:12] write some code for the CPU write some
+[50:14] code for the accelerator IBM used to
+[50:16] have a cell processor at one point of
+[50:19] time where there was one large big fat
+[50:21] Master Core and then there were many of
+[50:24] these small slave cores for this small
+[50:26] numerical
+[50:28] operations they could do them in
+[50:30] parallel so again the programming model
+[50:32] was such that you would write separate
+[50:34] code for the master code master code and
+[50:37] separate codes for the smaller slave
+[50:40] codes but it's nevertheless not that
+[50:42] common what is more common as
+[50:46] spmb all right so next we will
+[50:49] discuss Hardware threads so let's
+[50:52] understand the basic notion of Hardware
+[50:54] threads
+[50:56] so we traditionally have processes that
+[50:58] run on different
+[51:00] course and uh what really happens is
+[51:04] that these cores have really grown over
+[51:06] time so they are cores with very large
+[51:09] issue widths large fetch widths commit
+[51:13] width but if we have low
+[51:16] ILP right then we are essentially
+[51:19] wasting issue slots so we cannot take
+[51:22] advantage of a six issue or 8 issue
+[51:25] processor if if it has low ILP
+[51:29] right uh the reason is if you can only
+[51:32] sustain an ILP of one or two the rest of
+[51:35] the issue slots are being wasted so why
+[51:38] can can't we run multiple processes in
+[51:41] this case they are not threads that
+[51:44] share the address space they are
+[51:47] multiple processes simultaneously on the
+[51:53] core so the point that I would like to
+[51:56] underscore over
+[51:59] here that these processes do not share
+[52:03] the address space so they are not
+[52:05] software threads in the sense in which
+[52:08] we have been talking about them so let's
+[52:11] say they are not software
+[52:14] threads they are separate
+[52:18] processes which do not necessarily share
+[52:21] the address space they could I mean they
+[52:25] could be software threads
+[52:27] but again that would be a specialization
+[52:30] of the overall generic concept the
+[52:33] generic concept is that these are
+[52:34] multiple processes which can be
+[52:36] unrelated to each other but these
+[52:39] processes share the same core in the
+[52:41] sense in the same window of time they
+[52:43] execute
+[52:46] concurrently and they are known as
+[52:47] Hardware threads they are not the same
+[52:49] as software threads they are Hardware
+[52:53] threads what is the advantage of having
+[52:56] Hardware threads so we have three kinds
+[52:59] of Hardware multi-threading as it is
+[53:02] called and in server processors all
+[53:06] these three kinds of Hardware threads
+[53:09] are
+[53:10] extremely common right so they are
+[53:13] extremely common and you will find very
+[53:16] few server processors as of today and
+[53:19] today is 22nd of December
+[53:23] 2020 where uh you will
+[53:27] find uh a server processor that does not
+[53:29] support Hardware threes to some extent
+[53:31] so I'll tell you why it's that important
+[53:34] so what we can do is let's say we run
+[53:37] instructions from thread one for K
+[53:40] Cycles so in this Cas Cycles what will
+[53:42] happen so typically we
+[53:45] will encounter some long latency event
+[53:48] in the sense that there'll be a couple
+[53:50] of memory requests those memory requests
+[53:52] will go down to the memory system and
+[53:54] fetch their data
+[53:56] and we also need to understand one thing
+[53:59] why is the ILP of some code low right
+[54:02] why do we see low IPC at the end the
+[54:05] reason we see is essentially because of
+[54:07] memory
+[54:08] misses and also it can also be that a
+[54:11] dependent structure is such that uh we
+[54:14] will not be able to run many
+[54:15] instructions in parallel because it is
+[54:18] really uh you know it's a snake like
+[54:20] code uh where there are a lot of
+[54:23] dependencies that can be the case but
+[54:25] most of the time it is because of poor
+[54:27] memory behavior that we actually see a
+[54:30] low
+[54:31] ILP right uh we sorry we see a low IPC
+[54:35] because it we might have high ILP but
+[54:37] we'll actually see a low IPC because of
+[54:39] it so let's say that it is poor memory
+[54:43] Behavior like poor cache locality right
+[54:47] so in that case what we can do is we can
+[54:49] execute a few
+[54:51] instructions we'll not be able to make a
+[54:53] lot of progress because the data would
+[54:54] not have come back then we switch to
+[54:57] thread two execute a few more
+[54:59] instructions for let's say k Cycles then
+[55:02] thread three thread four and we come
+[55:03] back by the time we come back to thread
+[55:06] one our expectation is
+[55:08] that a lot of the data from the memory
+[55:11] system would have
+[55:13] arrived so what do we need what do we
+[55:16] need at the level of the core at the
+[55:18] level of the hardware to support such
+[55:22] kind of
+[55:24] multi-threading so what we need is is
+[55:26] that we need separate program counters
+[55:29] one for each Hardware thread separate
+[55:32] robs can be the same Ro but then well it
+[55:36] has to be a special kind of roob that
+[55:38] allows instructions of thread two to
+[55:40] retire even the instructions of thread
+[55:42] one or before it it's better to have
+[55:44] separate
+[55:45] robs separate checkpointing State and
+[55:48] retirement register
+[55:50] files
+[55:52] furthermore rename table entries Etc can
+[55:55] be shared in the sense can have one
+[55:57] master rename table but of course the
+[55:59] architectural registers and instruction
+[56:01] packets have to be tagged with the
+[56:04] thread ID right so the thread ID will
+[56:06] tag many of these structures including
+[56:09] lsq entries so uh in if the lsq is
+[56:13] storing physical address then of course
+[56:15] we can forward between threads across
+[56:17] threads but if it is storing virtual
+[56:20] addresses so recall our discussion on
+[56:22] whether lsq store physical or virtual
+[56:24] addresses in Chapter 7
+[56:27] but if it is storing virtual addresses
+[56:29] with some additional
+[56:31] guarantees then the thread ID needs to
+[56:33] be
+[56:34] there
+[56:36] additionally uh we have some options
+[56:40] with respect to physical
+[56:42] registers uh so I uh have deliberately
+[56:45] not mentioned that but this is the right
+[56:47] time to mention see either they have
+[56:49] separate physical register spaces so in
+[56:52] that case the physical register should
+[56:54] be tagged with the thread ID ID or if
+[56:57] they share the physical registers then
+[57:00] of course the rename table will take
+[57:01] care if you have a single free list and
+[57:05] uh then what it will do is that it will
+[57:07] just assign physical registers to the
+[57:10] different threads as it normally does
+[57:13] but it of course we will have to
+[57:17] ensure that
+[57:20] uh uh the the partitioning of the
+[57:23] physical registers across the threads is
+[57:25] perfect in a sense it's never the case
+[57:27] that we create a dependency or we do not
+[57:30] respect a dependence between uh the
+[57:33] producer and the consumer because of
+[57:35] this so this is doable as I said there
+[57:37] are two ways either separate physical
+[57:39] register spaces where we tar it with the
+[57:42] thread
+[57:43] ID uh right and so that will kind of
+[57:46] indicate that which thread does it
+[57:48] belong to that is one
+[57:51] option right and the next is that if
+[57:54] there is a high latency event like an L2
+[57:57] Miss so then also we should switch from
+[58:01] one thread to the other which means we
+[58:03] need not wait for K Cycles let's say in
+[58:05] the middle uh there is an L2 Miss right
+[58:10] so then at that specific point of time
+[58:11] we can switch so for some of these very
+[58:14] high latency events core screened uh
+[58:17] multi-threading is a good
+[58:20] idea let us now specialize this
+[58:24] description a little bit more and look
+[58:26] at some of the finer points so we will
+[58:29] move to fine grain
+[58:31] multi-threading where uh let's see that
+[58:34] you know let's look at let's try to
+[58:35] optimize this further so one is if
+[58:38] there's a high latency event which means
+[58:40] that if it is let's say in hundreds of
+[58:42] Cycles then cor scen multi-threading is
+[58:44] a good idea but if we reduce K to one to
+[58:48] five cycles and you can quickly switch
+[58:50] between the threads in the sense that we
+[58:53] can quickly switch between uh
+[58:55] instructions of thread one thread two
+[58:56] thread three thread four something like
+[58:58] a rapid contact switch then uh we can
+[59:02] even take care of events like L1 misses
+[59:06] so of course in out of order processor a
+[59:08] miss and L1 is not a major event because
+[59:11] we might find enough independent
+[59:12] instructions assuming we don't and we
+[59:15] find some of these low ILP phases then
+[59:18] we can quickly switch to another thread
+[59:20] and the switching interval can be made
+[59:23] kind of low uh let's say between you
+[59:25] know Ball Park of one to five Cycles
+[59:28] maybe can be more slightly more though
+[59:31] in that case if you are switching
+[59:32] between these threads then this would be
+[59:35] called fine grain multi-threading but of
+[59:37] course there are overheads so what the
+[59:40] fet unit needs to do is it needs to be
+[59:42] smart and of course we will need to have
+[59:45] separate Branch
+[59:47] predictors uh for the different threads
+[59:49] otherwise they'll end up polluting each
+[59:53] other that is point number one
+[59:56] decode unit can be shared so maybe you
+[59:58] can look at the pipeline right so fetch
+[60:00] unit of course has to be separate decode
+[60:02] unit can be shared because it does not
+[60:04] maintain any state the rename table the
+[60:08] rename
+[60:10] table will become more complicated
+[60:13] because in this case the architectural
+[60:16] register ID is a combination of the
+[60:18] thread ID and the architectural register
+[60:22] ID right so once that is there
+[60:27] right uh we
+[60:29] can uh proceed henceforth so as we have
+[60:32] discussed for physical registers we we
+[60:34] can share all the physical
+[60:36] registers and uh simply have a free list
+[60:40] which is also shared so that will not
+[60:42] cause any issues in correctness or what
+[60:45] we can do is we can have a separate
+[60:46] physical register file for a separate
+[60:49] thread and then uh the dispatch stage
+[60:54] where we write to the instruction window
+[60:57] so the instruction packet would anyway
+[60:59] have the thread ID so it will never be
+[61:01] the case that uh we will actually
+[61:04] broadcast and wake up values uh you know
+[61:07] it'll never be the case that thread 2
+[61:08] will wake up a value of thread one and
+[61:11] that will be ensured by uh essentially
+[61:14] the rename stage where the tags are set
+[61:16] in such a way that this will never
+[61:19] happen and this will not happen because
+[61:21] architectural register ID is kind of
+[61:24] being prefixed or suffixed with the
+[61:26] thread ID so it'll never be the case
+[61:28] that we'll actually create a false
+[61:31] dependence after the instruction window
+[61:33] will uh select the logic will change
+[61:36] because uh we will have instructions
+[61:40] belonging to different threads and in an
+[61:43] out of order pipeline we might have fine
+[61:47] grain multi-threading here also where we
+[61:49] say that for five Cycles we'll select
+[61:51] instructions from thread one then two
+[61:53] then three then four and then then the
+[61:56] after select we will have uh execute
+[62:01] execute is so sorry the register file
+[62:03] read so the register file read since we
+[62:07] have the physical register
+[62:09] ID here again two options if we share
+[62:12] the file then well we can just go and
+[62:14] read it if you have separate register
+[62:16] files the thread ID is required to take
+[62:18] us to the correct
+[62:20] prf and then the execute stage will
+[62:23] different unit such as the floating
+[62:25] point unit for example it does maintain
+[62:28] State uh per executing thread so this
+[62:32] state management is going to be
+[62:33] important for example uh in the floating
+[62:36] Point uh architecture of
+[62:39] x86 uh the state of the unit is
+[62:42] important or let's say we have Flags
+[62:43] register right decisions are taken on
+[62:46] the basis of the last comparison so with
+[62:48] multiple threads this is going to become
+[62:51] slightly more
+[62:52] complicated and after that when uh let's
+[62:56] say we the lsq again physical addresses
+[63:00] nothing much is required but uh virtual
+[63:03] addresses we need to Target with a
+[63:05] thread ID and finally when we have
+[63:08] retirement we need to have separate RS
+[63:12] right that is required for this purpose
+[63:16] so one thing that should be rather clear
+[63:18] is that we have a
+[63:21] choice between having shared structures
+[63:24] in our pipeline between the threads and
+[63:29] uh having separate structures so there
+[63:32] are benefits
+[63:34] to both so let me first discuss one end
+[63:39] of the spectrum then I'll discuss the
+[63:40] other end of the Spectrum in the next
+[63:42] slide so one end of the spectrum is
+[63:44] hyperthreading so many of you who have
+[63:46] been buying Intel processors would have
+[63:49] seen the word hyperthreading so
+[63:51] hyperthreading
+[63:54] supports uh parallel threading to some
+[63:58] extent so we will discuss this in the
+[63:59] next slide as one end of the spectrum
+[64:02] and other end of the spectrum is smt so
+[64:04] let's first discuss these terms and then
+[64:06] we will describe the Spectrum in
+[64:09] between so simultaneous multi threading
+[64:12] as we have discussed or
+[64:14] is the case where the hardware threads
+[64:17] run
+[64:18] simultaneously and what we do is instead
+[64:21] of you know fetching and
+[64:24] executing uh so instead of the course
+[64:26] and fine grain approach where
+[64:28] essentially we say that look the next
+[64:30] case Cycles totally belong to thread
+[64:33] one right uh so then what does totally
+[64:36] belong again is a subject to
+[64:40] interpretation but we can always say
+[64:42] that look for the next case Cycles we'll
+[64:44] only Fetch and execute and issue
+[64:46] instructions belonging to thread ey the
+[64:49] for the next case Cycles only to thread
+[64:51] I
+[64:52] +1 that would be a course grain or fine
+[64:56] way of doing things but the smt way of
+[64:58] doing things would be that let's say if
+[65:00] we have six issue slots and we have
+[65:03] let's say four threads in the system we
+[65:05] can dynamically split the issue slots
+[65:07] between the threads so we can say that
+[65:09] look we have an instruction window full
+[65:12] of instructions belonging to different
+[65:15] threads this cycle I'll pick two
+[65:18] instructions from thread one two for two
+[65:21] from thread three and one each from the
+[65:24] rest of the two threads
+[65:26] I I can say
+[65:27] that so then what will happen is that
+[65:30] pretty much all the instructions in the
+[65:32] pipeline are executing
+[65:34] together and that would anyway happen
+[65:37] because course and fine grain
+[65:40] multi-threading uh in a large out of
+[65:43] order processor would ultimately lead
+[65:44] you to smt because the point is that we
+[65:47] will in any case because of these high
+[65:51] latency events we will have instructions
+[65:53] floating around from different threads
+[65:55] unless of course we're talking of
+[65:57] something like an in order processor
+[65:59] with with a short pipeline where for K
+[66:02] Cycles we execute instructions from
+[66:04] thread one and then we flush the
+[66:06] pipeline again bring in thread two again
+[66:09] flush the pipeline again come to thread
+[66:11] one and so on then of course it does
+[66:13] make sense to totally give a processor
+[66:17] to one thread but in out of order
+[66:19] pipeline where there is a large time
+[66:22] lag between Fetch and commit which with
+[66:25] so many stages we'll end up having
+[66:27] instructions in any case from the
+[66:29] different threads even if we say that
+[66:32] look case Cas Cycles belong to you and K
+[66:34] Cycles belong to somebody
+[66:36] else that is going to be an inefficient
+[66:40] use of resources because some resources
+[66:42] will remain idle so it's much better to
+[66:45] consider all the threads together at the
+[66:47] same time holistically have some
+[66:49] fairness
+[66:50] criteria and have a few more criteria
+[66:55] which we will discuss and partition the
+[66:58] issue slots or for that matter all other
+[67:02] time slots uh can be intelligently
+[67:06] partitioned between uh the thread such
+[67:08] that uh number one they are scheduled in
+[67:11] a fair manner second some of the
+[67:14] critical instructions which can increase
+[67:17] the ILP at a later point of time such as
+[67:19] load instructions get scheduled and also
+[67:23] if you have a pre-existing priority of
+[67:25] threads like a thread is real time it is
+[67:27] processing video or something it gets
+[67:29] higher
+[67:30] priority and if let's say we have
+[67:32] learned some instruction patterns like
+[67:34] an instruction based on instruction
+[67:36] types for example if we have learned
+[67:39] that these add instructions are very
+[67:40] critical because they determine the
+[67:43] result of arithmetic operations as well
+[67:45] as the compute the values of memory
+[67:48] addresses hence let us give them more
+[67:50] priority so based on you know such kind
+[67:53] of thumb
+[67:54] rules we can
+[67:56] design uh select mechanism basically so
+[68:00] the select becomes rather important over
+[68:02] here to choose which instructions
+[68:05] ultimately get issued which means that
+[68:08] even if a lot of instructions have woken
+[68:10] up and they belong to multiple threads
+[68:13] which are the ones which get selected
+[68:16] and and then move on to execution so
+[68:18] this entire thing is called issue and so
+[68:22] so these issue slots issue slot
+[68:24] partitioning partitioning is the most uh
+[68:28] vital aspect of an smt processor and as
+[68:31] I said course and fine multi threading
+[68:33] are old ideas which make a lot of sense
+[68:37] in an in ordered processor with a short
+[68:39] pipeline or let's say when K is very
+[68:42] large right so let's say we run one
+[68:45] thread for 200 Cycles then run one more
+[68:47] for 200 Cycles so the overlap in terms
+[68:50] of their instruction footprint will be
+[68:52] low otherwise uh by default we would
+[68:55] like to prefer
+[68:57] smt hyper threading is essentially smt
+[69:00] at the other end of the spectrum where
+[69:02] you static partitioning so all the
+[69:05] resources are divided by a factor of two
+[69:09] right or maybe I should use a division
+[69:10] symbol like this divided by a factor of
+[69:13] two which means that starting from the
+[69:15] instruction window to the functional
+[69:17] units to the register file essentially
+[69:20] everything the entire core is divided
+[69:23] into two virtual cores virtual core one
+[69:25] and virtual core two and this includes
+[69:28] the issue slots as well so this will
+[69:30] allow two threads to run where we have
+[69:33] simply cut the
+[69:35] resources of the core and partitioned it
+[69:37] equally between the two virtual cores so
+[69:40] one virtual core can execute thread one
+[69:43] Hardware thread one and other can
+[69:45] execute Hardware thread two so this is
+[69:49] still not all that efficient and you do
+[69:51] lose
+[69:52] flexibility but let's say if you have a
+[69:54] homogeneous workload hyperthreading is
+[69:57] sometimes very useful right for
+[69:59] increasing the throughput of the system
+[70:02] so hyper threading by comes by default
+[70:04] on almost all major Intel machines but
+[70:08] uh for larger server processors such as
+[70:11] Power 8 power 9 and so on uh we do have
+[70:15] uh smt as the method of
+[70:18] choice so let's now graphically compare
+[70:23] them so let us have four threads as you
+[70:26] can see we have threads with four
+[70:27] separate colors green uh pinkish uh
+[70:33] bluish and purplish sorry my colors are
+[70:36] not all that great and uh so then uh we
+[70:40] have Cod screen multi-threading where as
+[70:43] you can see for two cycles uh we issue
+[70:46] only instructions from thread one then
+[70:49] thread two thread three and thread four
+[70:51] you can see the degree of idleness over
+[70:53] here that even if you could issue more
+[70:56] instructions we don't so uh when we are
+[70:59] saying for grain and fine grain is
+[71:02] basically at the level of issue it's not
+[71:04] that much at the level of fetch we can
+[71:06] still have parallel fetch but uh it is
+[71:09] essentially at the level of the issue
+[71:12] the issuance is where we do the
+[71:15] partitioning right so so that is a
+[71:17] traditional connotation in fine grain of
+[71:20] course we switch every cycle so we so so
+[71:23] but as we have use different numbers in
+[71:27] the slides in the previous slides so
+[71:30] there it was written that core screen
+[71:32] multi staring for 10 Cycles you run one
+[71:35] thread and for 10 one more but that
+[71:36] would be hard to visualize so let us
+[71:39] visualize it kind of in a simple fashion
+[71:42] so here every cycle there is a change
+[71:45] but here also what you see is there is a
+[71:47] degree of wastage right there is no
+[71:50] doubt a certain degree of wastage of
+[71:53] issue slots which is not desirable
+[71:56] so what we actually do uh is that we
+[71:59] take simultaneous multi-threading where
+[72:02] we have a smart scheduler of
+[72:04] instructions so to speak that nicely
+[72:07] packs all the instructions all right so
+[72:10] what you can uh see over here that it
+[72:13] nicely packs all the instructions so we
+[72:15] have five in five green instructions
+[72:17] here see five green and five of these
+[72:20] purple ones and then five of them and
+[72:23] similarly blue five of them five of them
+[72:26] all right so the counts as you can see
+[72:28] are the same but they just packed more
+[72:30] efficient so we just have a little bit
+[72:32] of wastage over here but other other
+[72:35] than that we don't have any wastage of
+[72:37] issue slots so this is far more
+[72:39] efficient in terms of throughput for
+[72:44] sure right uh in an uh in a
+[72:47] multi-threaded uh environment you can
+[72:49] clearly see the higher throughput and
+[72:51] the higher utilization of the issue
+[72:53] slots
+[72:55] so then uh one question can be that you
+[72:58] know why is it
+[73:00] not that common well the point is that
+[73:03] there are overheads so we need to create
+[73:05] a scheduler which can actually do this
+[73:08] identify and do it at runtime plus we
+[73:11] have different instruction criticality
+[73:13] metrics in the sense there might be some
+[73:16] instructions on which many many more
+[73:18] instructions are
+[73:19] dependent so then those instructions
+[73:22] should be given higher priorities a lot
+[73:23] of priority mechanisms
+[73:25] basically are there if we want to do
+[73:28] this rather efficiently so this used to
+[73:31] be a extremely hot area of
+[73:33] research uh while ago couple of years
+[73:36] ago so even now also there are a lot of
+[73:38] research papers coming out but it's kind
+[73:41] of saturated but still the key core most
+[73:45] important idea is that different threads
+[73:48] have different priorities can have and
+[73:51] different instructions within threads
+[73:53] can have different priorities so
+[73:55] efficient scheduling such that we
+[73:57] maximize the throughput and also provide
+[74:00] some per thread quality
+[74:03] guarantees this is
+[74:06] uh difficult problem there's a lot of
+[74:08] work in this area so a lot of these
+[74:10] problems have also been solved to a very
+[74:12] large extent so smt is clearly the most
+[74:17] flexible but if I would take Intel
+[74:19] processors they would consider only two
+[74:21] threads and then they would hyper thread
+[74:24] so hyper thread basically Ally means
+[74:25] that you draw a vertical
+[74:27] split this part belongs to Virtual Core
+[74:30] 1 and this part belongs to Virtual Core
+[74:32] 2 when we have two threads that
+[74:35] is all right so we have completed most
+[74:39] of parallel programming at least the
+[74:41] simple parts so we discussed
+[74:45] openmp
+[74:47] openmp is the language of choice for
+[74:50] writing parallel code on most machines
+[74:54] is it's nice easy and simple people also
+[74:58] use the pthreads
+[75:00] API which is at a lower level as
+[75:03] compared to openmp but both of these are
+[75:05] essentially augmentations of
+[75:08] cc++ right additional uh libraries uh
+[75:12] over
+[75:15] cc++ so uh in this case uh P threads
+[75:20] is no doubt more flexible but open MP is
+[75:23] more popular and for message passing
+[75:26] systems we use
+[75:27] MPI then we discuss the Flint's
+[75:30] classification of CISD simd MD and MD
+[75:34] processors and finally uh so so then uh
+[75:37] along with that performance aspects were
+[75:39] discussed Amel log or substance law
+[75:42] which place a bound on the speed up and
+[75:44] finally we discuss a little bit of
+[75:46] Hardware threading where a hardware
+[75:48] thread is definitely not the same as a
+[75:50] software thread but it is just multiple
+[75:53] programs utilizing the sources of a core
+[75:57] which is overdesigned at the same time
+[76:00] so what this does is that if you try to
+[76:03] overlap the low ILP phase of one thread
+[76:06] with the high ILP phase of another
+[76:08] thread such that the resources of the
+[76:10] entire core can be used the most
+[76:13] optimally and this is more useful for
+[76:16] Server programs where you have a bunch
+[76:18] of threads bunch of processes and we
+[76:21] want all of them to execute right so
+[76:23] we're essentially looking at bulk
+[76:25] throughput so that is why smt is the
+[76:28] main technology over here so regardless
+[76:31] of what we are using so a modern server
+[76:34] you know uh has a lot of
+[76:37] Technologies and so it clearly has a
+[76:39] huge cache and it has a large number of
+[76:42] course so uh you can expect anywhere
+[76:45] between 16 to 128 course so they of
+[76:48] course vary in their strength but
+[76:50] nevertheless and all the coures Also may
+[76:52] not be of the same type and more over
+[76:55] each
+[76:56] core can actually be running multiple
+[77:00] Hardware threads right so as far as we
+[77:03] are concerned if multiple Hardware four
+[77:05] Hardware threads are running on a core
+[77:07] then pretty much these are like four
+[77:09] virtual cores right on top of this so
+[77:12] the server actually is a very very
+[77:14] complicated World okay with an array of
+[77:17] cash Banks and a network an onchip
+[77:19] Network to take messages from cash bank
+[77:22] one or a core to a cash bank right
+[77:25] there's a huge amount of things
+[77:27] happening inside and also as we have
+[77:29] seen Hardware threads within a core it's
+[77:32] a very very complicated environment
+[77:35] inside
+[77:36] the package of a processor
+[77:39] chip now in this can we write parallel
+[77:42] code correctly it'll turn out that we
+[77:44] cannot unless you understand the
+[77:46] theoretical foundations of how to do it
+[77:49] correctly so this will be the topic of
+[77:52] our next lecture right right which is
+[77:55] the theoretical foundations of parallel
+[77:59] programming and parallel systems

@@ -1,0 +1,1584 @@
+[00:00] e
+[00:09] [Music]
+[00:43] now let us look at some case studies of
+[00:45] two of the more popular IO protocols one
+[00:48] is PCI Express and the other is
+[00:52] USB so PCI Express is an IO protocol for
+[00:58] motherboards so mother boards need a bus
+[01:00] to connect the io elements for example
+[01:03] you know you can have a large
+[01:05] motherboard like this with
+[01:07] the uh CPUs chip over here and you'll
+[01:11] have a lot of IO cards at different
+[01:13] points so they need to be connected to
+[01:16] the CPU in some way right so we need a
+[01:19] bus to
+[01:20] connect all the io elements to the CPU
+[01:24] so there were many popular buses in the
+[01:26] late '90s
+[01:27] uh two of them in particular were
+[01:31] popular one was the PCI the peripheral
+[01:34] component interconnect bus and the AGP
+[01:37] The Accelerated Graphics Port bus so
+[01:39] nowadays since most graphic proc
+[01:42] Graphics processors have come on Chip
+[01:45] have come inside the cpu's chip right uh
+[01:48] AGP bus is kind of out of fashion so
+[01:51] after subsequent
+[01:53] standardization uh the PCI bus and also
+[01:56] you know I need to
+[01:58] slightly uh take back my statement
+[02:00] because there are also some more some
+[02:02] other mother motherboards which can have
+[02:05] a separate GPU you know for high
+[02:07] performance gaming systems can have a
+[02:10] separate GPU on the motherboard where
+[02:12] also this needs to be connected to the
+[02:15] CPU so since all of them will be
+[02:17] connected uh using a bus a
+[02:20] standardization effort led to the PCI
+[02:22] Express standard and the previous uh bus
+[02:26] Technologies PCI and AGP where some got
+[02:30] you know deprecated and they are not as
+[02:33] of now uh being used uh at least in new
+[02:37] systems so the PCI Express standard
+[02:41] which you can find on their
+[02:43] website uh defines the concept of a PCI
+[02:46] Lane which is a highspeed Serial bus so
+[02:49] serial bus means it sends one bit at a
+[02:52] time
+[03:00] so uh a lanee per se does not use
+[03:02] parallel links mainly because it's a
+[03:05] very very high frequency bus so the time
+[03:07] between successive bits is very small so
+[03:11] there is a possibility of different
+[03:12] amount a variable amount of delay
+[03:14] different amounts of delay across the
+[03:17] different links you know if we have
+[03:19] parallel Lanes so synchronization
+[03:21] becomes difficult but you know it's not
+[03:23] impossible but in general inside a
+[03:25] single PCI Lane we transmit a single bit
+[03:28] at a time but mind you know it is uh you
+[03:32] can have a bus with parallel uh links as
+[03:35] well so there are tradeoffs and one
+[03:38] trade off it needs to be slightly
+[03:41] slower so uh in general in a PCI Express
+[03:45] so PCI Express is a very very broad
+[03:47] standard and it is mainly meant for
+[03:50] motherboard buses right uh not for
+[03:54] others so buses on the motherboards a
+[03:56] very high
+[03:57] bandwidth that is a usage you know
+[03:59] peripheral component interconnect it's
+[04:02] an Express uh Bus Express means
+[04:05] fast uh so this so you know on the
+[04:08] PowerPoint presentation if users click
+[04:11] this link they can go to the standard of
+[04:14] the PCI Express bus so let's take a look
+[04:17] at the topology
+[04:18] first so this is basically a point too
+[04:22] bus with multiple lanes and a lane uh as
+[04:26] we have defined is a single bit full
+[04:29] duplex
+[04:30] channel uh with data striping so I'll
+[04:33] tell you in a second what this is uh so
+[04:36] furthermore you know so let's say you
+[04:38] know there are two nodes there is a GPU
+[04:40] and there is a CPU they talk to each
+[04:44] other uh via uh PCI Express bus so it is
+[04:50] possible to have you know a single lane
+[04:52] or you can have multiple Lanes as well
+[04:54] so in the multiple Lanes you can send
+[04:56] multiple bits in parallel which uh
+[04:59] basically mean uh by data striping so of
+[05:03] course sending data across multiple
+[05:05] Lanes as the issue of
+[05:07] synchronization that at the receiver we
+[05:09] sort of have to synchronize the
+[05:11] data so that uh is difficult but can be
+[05:15] done and the number of lanes can vary
+[05:18] anywhere from 1 to
+[05:20] 32 so now let's take a look at the
+[05:22] different layers of the PCI
+[05:25] xbs uh using the same terminology that
+[05:28] we have defined
+[05:30] so we have defined a physical layer So
+[05:32] Physical layer has the signaling part so
+[05:35] signaling is lvds based differential
+[05:39] signaling so every lane basically has
+[05:42] two wires and they monitor the
+[05:43] difference between them the the encoding
+[05:47] is Noel this is not something we have
+[05:48] covered but uh readers can definitely
+[05:51] read about this on the web so it's
+[05:54] called 8 bit 10bit encoding many other
+[05:56] buses also use this so here what happens
+[05:59] is that every 8bit uh piece of data
+[06:02] every 8 bit frame is actually converted
+[06:05] to a 10bit frame and uh the additional
+[06:08] bits give us a little bit of error
+[06:11] detection and correction capability so
+[06:14] this is called 8 bit to 10 bit encoding
+[06:16] which makes the signaling somewhat more
+[06:18] robust robust to bit flips at
+[06:21] least and the timing is Source
+[06:24] synchronous in the sense that we send
+[06:26] the clock along with the signal uh such
+[06:29] that it can be recovered at the side of
+[06:31] the
+[06:32] receiver now let's come to the data link
+[06:34] layer so the frame size is 1
+[06:37] byte right so that's how much we send
+[06:40] but of course we use the 8 bit 10 bit
+[06:42] encoding uh the error correction that we
+[06:45] have is called is 32-bit CRC so uh
+[06:49] recall that CRC codes are very very
+[06:51] useful especially when we have a burst
+[06:53] of
+[06:54] erors the PCI Express Bus can uh sustain
+[06:58] split transactions so this is a
+[07:00] requirement of almost all high
+[07:02] performance buses that deal with modern
+[07:05] devices that we don't want to lock up
+[07:08] the bus right for one single
+[07:11] transaction and the bandwidth that we
+[07:13] can support is 250 megabytes per second
+[07:16] per
+[07:17] Lane uh so so this is uh you you know
+[07:21] it's not super fast but it's not super
+[07:24] slow either and uh so you know if you
+[07:28] take a look at it uh a DVD uh which is
+[07:32] around 5 GB right which stores an entire
+[07:37] movie so this roughly is 5,000 megabytes
+[07:41] so to transfer the contents you know to
+[07:43] read the contents of the entire DVD and
+[07:45] transfer it to another device uh which
+[07:48] can accept data at this rate it'll take
+[07:51] 5,000 by 250 seconds which is 20 seconds
+[07:55] to you know read the contents of a DVD
+[07:57] or to read you know large parts of it so
+[08:00] so in that sense it is
+[08:02] not extremely slow it's a fairly high
+[08:05] performance bus but yes we could have
+[08:08] faster Al Alternatives such as Optical
+[08:11] buses and so on so we are not discussing
+[08:14] them in this uh uh lecture but uh
+[08:19] readers can find uh details of Novel
+[08:22] Technologies with fairly higher
+[08:25] bandwidths and the network layers so uh
+[08:27] we have a set of routing called switches
+[08:31] uh which allow us to Route uh data
+[08:33] between you know different point topoint
+[08:39] links now let's consider the USB bus the
+[08:42] universal serial bus so recall
+[08:45] that uh the USB bus we have also
+[08:48] discussed in the past and what we
+[08:51] discussed is that it's very very popular
+[08:54] any device now is that you want to
+[08:56] connect to the computer uh basically
+[08:59] basically is connected via USB bus
+[09:02] almost all laptops desktops phones have
+[09:05] a USB connector so it has become a de
+[09:07] facto standard today for connecting all
+[09:10] types of peripherals to a computer so
+[09:12] it's not a motherboard bus so if let's
+[09:15] say this is your laptop right and you
+[09:17] want to connect an external device such
+[09:19] as a
+[09:22] mouse so then this is connected via USB
+[09:26] port so you can also connect scanners
+[09:29] printer cell phones pen drives you name
+[09:31] it and uh so USB ports do allow pretty
+[09:35] highspeed signaling and traffic also
+[09:37] there are three kinds of USB so there is
+[09:40] starting from you know slow USB to super
+[09:43] fast USB but in any case for all our
+[09:46] external uh externally connected IO
+[09:49] devices USB is a fairly popular and uh
+[09:55] High performing technology so it has up
+[09:58] till now you know not Prov to be a
+[09:59] bottleneck for all our current
+[10:02] devices so each USB port or host can be
+[10:05] connected to a set of devices arranged
+[10:07] as a tree so what you can do is that you
+[10:10] can connect this USB port to what's
+[10:13] called a hub so the Hub can have four
+[10:16] ports which can connect to you know few
+[10:18] more devices and maybe this can also be
+[10:21] a hub which can again connect to few
+[10:23] more devices you can have a tree of
+[10:25] devices right connecting to a single USB
+[10:30] ort so each of the internal nodes would
+[10:32] be a hub and we can connect a total of
+[10:37] 127 devices including hubs of course to
+[10:41] a max depth of five uh to a single USB
+[10:47] port uh let us move forward so let's
+[10:50] look at a basic USB
+[10:52] connector so a lot of people would have
+[10:54] seen uh USB connectors on the side of
+[10:56] their desktop or front of their desktop
+[10:59] side of the laptops so there's a normal
+[11:01] USB connector which has four pins so uh
+[11:06] one of the pins so so recall that USB is
+[11:08] both a data transfer and a power
+[11:11] delivery bus right so I'll tell you why
+[11:14] the latter is required
+[11:30] so the requirement for the latter is
+[11:32] like this that there might be many
+[11:33] devices you know like uh small mice or
+[11:38] you know pen tablets or flash drives
+[11:42] which we insert and they don't have a
+[11:44] battery or any power of their own that's
+[11:47] the reason it is necessary
+[11:49] for uh the USB drive to actually Supply
+[11:53] the power and in this way the device can
+[11:56] run in addition uh you know there are
+[12:00] some other benefits of this for example
+[12:02] you can charge your phone with a laptop
+[12:04] that was not the original intent though
+[12:07] so that's the reason we have a VCC pin
+[12:09] which is a supply pin that provides 5vt
+[12:12] DC power and we have a ground pin in
+[12:16] addition we have two pins for data
+[12:18] transfer and since the data transfer
+[12:21] happens via differential
+[12:23] pair similar to
+[12:25] lvds we have two pins uh data positive
+[12:29] and data negative pin so their mean
+[12:31] voltage is 3.3 volts and the voltage
+[12:34] swing is around 3.3
+[12:36] volts so for micro and mini USB ports so
+[12:40] micro and mini USB ports you will
+[12:42] typically find in smaller devices like
+[12:45] phones and
+[12:47] tablets so they have a different
+[12:49] connector the standard USB connector uh
+[12:51] does not go in there so it is kind of
+[12:53] large for these devices they have a
+[12:55] smaller uh significantly smaller
+[12:57] connector and these
+[13:00] devices actually have five pins in fact
+[13:04] I'm at the moment I'm taking a look at
+[13:06] my uh phone's uh micro USB
+[13:11] port uh so that has uh I'm sorry the
+[13:14] mini USB port and that has five pins so
+[13:17] the additional pin is called
+[13:20] ID uh the ID pin uh basically helps us
+[13:25] differentiate between a device and a
+[13:27] host which means that let's see if I'm
+[13:29] connecting uh my
+[13:34] mouse uh to a
+[13:40] computer my mouse becomes the
+[13:43] device and the computer becomes the host
+[13:46] so in some cases you know it is
+[13:48] necessary to break the Symmetry uh you
+[13:51] know especially when you have a tree of
+[13:52] devices you want data to either flow
+[13:54] towards the host or towards uh the
+[13:56] devices so it gives it a sense of
+[13:59] Direction uh that uh you know which way
+[14:02] uh the communication is happening and uh
+[14:06] this is to differentiate between the
+[14:08] device and the
+[14:09] host so uh we use the signaling
+[14:14] mechanism that we have is the NR zi
+[14:17] signaling mechanism with dummy bits of
+[14:19] course for clock recovery so recall that
+[14:22] we needed dummy bits the reason being
+[14:24] that you know if you have a constant uh
+[14:27] voltage then you'll not be able to
+[14:28] recover the clock we might fall out of
+[14:30] synchrony so uh that is the reason it
+[14:33] was necessary to force a
+[14:35] one sometimes such that at least
+[14:37] there'll be some Transitions and the
+[14:39] clock can be
+[14:41] recovered so the USB data link layer
+[14:44] actually defines uh four kind of
+[14:48] packets so we have uh control
+[14:52] messages uh so the control messages are
+[14:54] used to configure
+[14:56] devices and uh so so so they are
+[14:59] basically sent at the beginning of a USB
+[15:02] connection to ensure that the device is
+[15:04] configured properly and it can talk to
+[15:07] the computer we have interrupts so for
+[15:10] example when we press a key on the
+[15:12] keyboard uh we have an uh interrupt uh
+[15:15] so the interrupt uh goes to the
+[15:19] computer we have bulk transfer which has
+[15:22] uh you know pretty huge frame
+[15:25] sizes and a large amount of data is
+[15:27] transferred so you can you know print a
+[15:29] large page right uh with bulb transfer
+[15:32] so this is used mainly for printers and
+[15:34] so
+[15:36] on and then you have isochronous data
+[15:39] transfer which means data transfer at a
+[15:41] fixed rate where the rate is known in
+[15:43] advance for example you this is this can
+[15:46] hold for a camera right web camera or
+[15:49] something right uh so you you have these
+[15:53] four kinds of data transfer modes
+[15:55] control interupt bulk and isochronous
+[15:58] depending upon
+[15:59] uh the kind of device that is uh being
+[16:04] uh used so of course you know these uh
+[16:06] Concepts span across multiple layers uh
+[16:09] in the stack but of course you know they
+[16:12] have the physical layer is the same for
+[16:14] all but starting from the data link
+[16:16] layer there is some amount of
+[16:17] differentiation and of course you know
+[16:19] like PCI Express and all modern buses
+[16:22] USB is also a split transaction bus so
+[16:24] it does not lock any channel per se
+[16:29] so the network layer of any USB device
+[16:32] is
+[16:34] uh decided like this that every uh USB
+[16:39] host every single
+[16:41] uh device that is connected is assigned
+[16:43] a 7bit ID by the host so the total
+[16:46] number of devices that you can connect
+[16:48] is limited to
+[16:50] 128 because this is 2 ra to^ 7 which is
+[16:54] 128 so every USB device furthermore
+[16:57] defines a set of ports so recall that a
+[17:00] port is both a physical thing because it
+[17:03] allows you to connect also it's a
+[17:04] logical abstraction so every USB device
+[17:08] uh typically has 16 inputs and 16
+[17:12] outputs so basically since you know in
+[17:15] each Port uh this is 2^ 4 so basically a
+[17:20] port has a unique 11bit address which is
+[17:22] the 7bit device ID and the 4bit port ID
+[17:26] which make it a unique 11 bit
+[17:29] address so software drivers talk to the
+[17:33] device by sending messages to the
+[17:34] corresponding Port right so this is sort
+[17:37] of very similar to what we saw that
+[17:39] happens on x86 systems and their
+[17:42] motherboards that every device defines a
+[17:45] set of ports and the software uh
+[17:48] essentially sends messages to those
+[17:51] ports and talks to the devices basically
+[17:54] by reading and writing to those
+[17:57] ports uh sub sequently we have the
+[17:59] protocol layer so in the protocol layer
+[18:02] uh we have uh different kinds of
+[18:05] protocols
+[18:07] but by far the most popular and uh the
+[18:11] most commonly implemented are what are
+[18:12] called a stream pipe and a message pipe
+[18:15] so in a stream pipe the structure is
+[18:17] unstructured in in so the structure of
+[18:19] communication is
+[18:21] unstructured which basically means that
+[18:23] we are just sending data and you know
+[18:25] it's not per say synchronous and you
+[18:27] know one such example would be some sort
+[18:29] of a feed connecting a sensor or other
+[18:33] kinds of devices where we are not really
+[18:35] interested in uh the reliability of the
+[18:38] transmission or neither are we
+[18:40] interested in some sort of a rate
+[18:42] limiting as compared to that what is uh
+[18:44] slightly more popular is a message pipe
+[18:47] which is a structured uh communication
+[18:49] with a hand shaking me hand shaking
+[18:51] mechanism so there is a way for the
+[18:54] receiver to tell the sender that it has
+[18:57] received the data
+[19:00] so we can think of uh stream pipes as
+[19:04] basically a method where data simply
+[19:07] comes in uh to the
+[19:10] computer right uh for data simply comes
+[19:13] in to the computer and there is no
+[19:15] communication there's no defined format
+[19:18] and uh a lot of devices that use
+[19:20] unidirectional communication like some
+[19:22] of the simple web cameras would
+[19:25] basically send a stream of data using
+[19:27] the stream pipe mechanism
+[19:30] however if we consider another device uh
+[19:33] where you know it is connected via
+[19:36] USB and then there is a fair amount of
+[19:38] control that is happening in the sense
+[19:41] that the computer is sending messages to
+[19:44] the device and the device is sending
+[19:45] messages back so that can be uh maybe
+[19:50] you know something like uh putting in a
+[19:52] flash drive or something where we are
+[19:54] essentially initiating several
+[19:56] transactions so in that case uh we would
+[20:00] rather use something which is more
+[20:02] structured which is a message
+[20:06] pipe so the summary of USB is like this
+[20:09] that it can uh be used to connect many
+[20:12] kinds of peripheral devices keyboards
+[20:14] mous web cameras pen drives almost
+[20:16] anything so nowadays it has become the
+[20:19] deao standard uh to connect devices with
+[20:22] USB links and also most of the modern
+[20:25] phones are actually charged with USB
+[20:28] links
+[20:29] so the connection is a point too serial
+[20:32] connection right so it's a universal
+[20:34] serial bus after all and uh maybe I've
+[20:37] missed uh this part but yes full form of
+[20:41] USB is universal serial
+[20:44] bus and uh why serial well uh it's the
+[20:47] same logic as PCI Express we try to
+[20:51] send
+[20:54] uh uh you know we we sign to send a
+[20:57] single bit at a time
+[20:59] uh instead of multiple bits because
+[21:01] synchronizing across the bits is
+[21:02] difficult and also since these are
+[21:04] external connectors the links are fairly
+[21:06] long so there is a fair amount of noise
+[21:09] that these links are exposed to as a
+[21:12] result you know transmitting more bits
+[21:14] at a time terribly limits the bandwidth
+[21:17] so we have Point too links which are
+[21:19] again serial single bit links and uh
+[21:22] it's a half duplex communication so in
+[21:24] the sense that it's not possible for the
+[21:26] sender and receiver to be talking at the
+[21:28] same
+[21:29] time let's look at the physical layer so
+[21:31] the signaling is lvds based signaling so
+[21:34] that's almost common for almost all high
+[21:37] performance IO
+[21:39] protocols the encoding is NR zi but
+[21:43] however a transition is represented by a
+[21:45] logical zero not by a logical
+[21:47] one and uh the timing per se is
+[21:51] asynchronous in the sense that clock is
+[21:53] recovered from the NR zi
+[21:56] transitions but since we don't want you
+[21:59] know if we have a lot of ones means that
+[22:02] the voltage remains constant so we might
+[22:04] not be able to recover the clock so we
+[22:06] add a dummy zero uh after six continuous
+[22:10] ones for clock recovery right so for
+[22:12] clock recovery this is done that we add
+[22:14] a dummy zero after six uh continuous
+[22:17] ones so this ensures that we are at
+[22:20] least able to see some transitions such
+[22:22] that the clock can be recovered at the
+[22:24] other side the side of the
+[22:26] receiver so the frame frame size varies
+[22:29] from 46 bits to 1,58 bits depending upon
+[22:32] the type of communication if it's a
+[22:35] small interrupt the frame size can be
+[22:37] small but if you are doing a bulk
+[22:39] transfer the frame size will be much
+[22:42] larger the error correction is CRC so
+[22:45] recall that PCI Express also use CRC CRC
+[22:49] is great when there are a burst of
+[22:51] Errors again it's a split transaction
+[22:53] bus so there are three kinds of USB
+[22:56] formats that have been defined and they
+[22:59] use uh you know they use different
+[23:02] frequencies so there is a low speed USB
+[23:05] which is only at 192 KOB bytes per
+[23:08] second so this technology is fairly old
+[23:11] but nevertheless you know this can be
+[23:12] used for mice and keyboards and so on
+[23:14] because they don't generate a lot of
+[23:16] data
+[23:17] anyway 1.5 megabytes per second uh will
+[23:22] be for web cameras and other devices
+[23:24] which are at least generating some
+[23:26] amount of
+[23:27] video so so this is called Full speeded
+[23:29] USB and now we have a much faster 60
+[23:33] mbes per
+[23:35] second highspeed USB which is you know
+[23:39] for HD quality uh devices so there is a
+[23:43] spectrum of uh USB uh protocols for you
+[23:46] know these three devices but the basic
+[23:49] uh you know the basic structure for all
+[23:51] of them is the
+[23:52] same the network layer uh well uh the
+[23:55] addressing is like this that we have a
+[23:57] 4bit ports the ports are also called
+[24:00] endpoints in uh
+[24:02] USB so every device div uh you know is
+[24:05] assigned 16 input ports and 16 output
+[24:08] ports so they have a 4bit ID so 7 + 4 it
+[24:12] becomes 11bit ID we use a tree of hubs
+[24:15] so where one Hub can have one Upstream
+[24:18] port and up to four Downstream ports so
+[24:21] Upstream is essentially towards the host
+[24:24] and downstream is towards other
+[24:27] devices and we can support a maximum of
+[24:29] 127 devices per USB port on the computer
+[24:34] so if this is the computer right uh or
+[24:37] the you know the
+[24:38] host then for one port we can support
+[24:42] maximum of a tree of 127 devices
+[24:45] inclusive of
+[24:47] hubs so the connections well we can have
+[24:49] two pipes you can have message pipe
+[24:51] which is structured and acknowledged and
+[24:53] a stream pipe which is
+[24:54] unstructured and we can have four types
+[24:57] of traffic which will have different
+[24:59] frame sizes and of course uh you know
+[25:02] the even at the protocol layer as was
+[25:04] discussed the for these four kinds of
+[25:07] traffic there are changes in all layers
+[25:10] so with starting with a different frame
+[25:12] size in the data link layer to uh better
+[25:16] Network support at the network layer
+[25:19] to uh some more support of the protocol
+[25:21] layer so we have four kinds of protocols
+[25:24] the control is for control messages
+[25:27] interrupt is for for a keyboard and
+[25:29] mouse interrupt right where you know
+[25:32] something is being sent to the processor
+[25:34] for immediate action bulk will be mainly
+[25:37] for
+[25:38] printers and isochronous is where the
+[25:41] rate of uh you know data sending is
+[25:43] constant so that would be a web camera
+[25:46] or other kinds of recording
+[25:49] devices so now that we have seen the
+[25:52] case studies of two IO protocols namely
+[25:55] PCI
+[25:56] Express and uh USB let us look at
+[26:00] storage media which is the last part of
+[26:02] this
+[26:04] chapter so uh our hard disks Optical
+[26:08] drives and solid state drives are the
+[26:10] three kinds of storage media that I want
+[26:12] to discuss so what is storage media well
+[26:16] so if I turn off my computer all the
+[26:19] data inside the processor and in the
+[26:21] memory devices like the dam and so on
+[26:24] all of them get erased what but still
+[26:27] our files and our data and images and
+[26:29] everything else stay right the reason
+[26:32] they stay is that we have some permanent
+[26:34] storage media uh namely hard disks
+[26:37] Optical drives and solid state drives
+[26:40] you know our USB keys and so
+[26:42] on which maintain data even if uh the
+[26:47] system is powered off all right so even
+[26:49] if you know we turn off the system our
+[26:51] data Still
+[26:53] Remains so let's take a look at hard
+[26:55] disk first then we'll take a look at
+[26:58] Optical dri CDs and DVDs and at the end
+[27:01] we'll take a look at solid state
+[27:04] drives so hard disk store data uh
+[27:08] basically via having small magnets and
+[27:11] extremely small magnets a sequence of
+[27:13] tiny magnets so we use NR zi encoding so
+[27:17] let's see how so a given magnet will
+[27:20] have a North Pole and a South
+[27:21] Pole see in this case if you
+[27:26] see so whenever uh two magnets are uh
+[27:30] aligned in the same direction so if you
+[27:33] consider this
+[27:34] right so in this case the magnetic field
+[27:38] you know let's assume that it flows from
+[27:41] south to
+[27:43] North it is aligned in the same
+[27:45] direction so once uh a piece of metal
+[27:49] actually uh flows over
+[27:51] this it will of course a moving magnet a
+[27:55] moving piece of metal on a magnetic
+[27:58] field a certain amount of EMF will be
+[28:01] introduced but also another thing is
+[28:04] that if uh you know this will be one
+[28:06] kind of a signal but if you look at this
+[28:10] point the magnetic field essentially
+[28:11] here is
+[28:13] reversing right so here you have we have
+[28:16] one magnet which is you know north south
+[28:19] and another one South North so the
+[28:21] magnetic field at the junction of these
+[28:23] two small
+[28:25] magnets in a sense is reversing
+[28:29] so if the head actually passes over this
+[28:31] it'll have a much larger potential jump
+[28:35] uh you know uh the the reason being that
+[28:37] we are moving it through a changing
+[28:39] magnetic field so this is how we will
+[28:42] infer at this point when there is a
+[28:44] change in the magnetic field a bigger
+[28:46] change that we are encoding a logical
+[28:48] one and if there is a smaller change or
+[28:50] no change we are encoding a logical
+[28:55] zero uh similarly here uh the the
+[28:58] direction of the magnets is the same
+[29:00] direction of magnetic fields is the same
+[29:03] so here uh we basically assume that
+[29:06] since the directions of both the magnets
+[29:08] are the same we assume that it's a
+[29:11] logical zero and here the direction
+[29:13] again changes right so since the
+[29:17] direction again changes we assume it's a
+[29:19] logical one so this is exactly the NR zi
+[29:22] encoding where we assume that for no
+[29:24] transitions it's a zero for a transition
+[29:27] there is a logical one
+[29:29] and uh to ensure that we don't fall out
+[29:31] of syn we also add dummy bits so this we
+[29:35] can see nrz encoding it is not necessary
+[29:38] that it will always be at the level of
+[29:40] signals it can be also at the level of
+[29:43] the orientation of magnets as we see
+[29:45] here that if the magnetic field is the
+[29:48] same we assume it's a logical zero
+[29:51] however if the magnetic field is
+[29:53] different we assume that it's a logical
+[29:56] one right and and this is an example of
+[29:59] nrz encoding uh I'll beat with you know
+[30:02] in a different setting but nevertheless
+[30:04] it is
+[30:05] nrz and this is exactly what is
+[30:08] happening in our hard disks but as you
+[30:11] can see a typical hard disk which is not
+[30:13] very large you know it actually fits uh
+[30:16] it doesn't fit on a palm but it's
+[30:18] slightly larger than than a palm and
+[30:20] hard disk is incredibly storage
+[30:23] efficient so one hard disk can easily
+[30:25] store you know as of today uh you know 1
+[30:29] tbte at that size so 1 tbte is 1024 GB
+[30:33] so roughly it
+[30:35] is 10 ^ 12 bytes so these magnets are
+[30:39] extremely small so these magnets are
+[30:41] very very very very small and we have a
+[30:44] lot of millions billions of such magnets
+[30:47] uh on a magnetic surface so the way we
+[30:50] read them is that we basically move a
+[30:52] metallic head on the magnets there's a
+[30:55] relative motion between metal and the
+[30:57] magnets and we sense the magnetic field
+[31:00] whether there's a change in it or
+[31:01] whether the magnetic field is remaining
+[31:04] same so the architecture of a hard disk
+[31:07] is somewhat like this that it actually
+[31:09] contains multiple such discs but let's
+[31:11] take a look at a single disk so a single
+[31:14] disc is called a platter right so
+[31:16] platter is basically a metallic disc
+[31:19] with of course a hole in the middle so
+[31:21] you can it's a donut shape it looks like
+[31:23] a pretty much like a CD actually with a
+[31:25] hole in the middle and
+[31:28] and uh it is divided into these
+[31:31] concentric rings so each such concentric
+[31:35] ring as you can see over here is
+[31:37] actually called a track and each track
+[31:40] basically contains these small small
+[31:42] magnets okay so let me draw these
+[31:45] magnets so each of these magnets if I
+[31:48] consider this magnet and it sort of you
+[31:50] know blow it up it has a South Pole and
+[31:52] a North Pole right so each of these
+[31:55] magnets has a certain orientation and
+[31:57] the bits are basically stored in the
+[31:59] relative orientations of these magnets
+[32:02] so a what is a track well a track is a
+[32:05] concentric ring and what is a sector
+[32:08] well a sector is a portion of the track
+[32:11] all right so it is basically you know
+[32:12] one portion as we can see a certain
+[32:14] angular portion of the track so for
+[32:17] example this is a sector this is one
+[32:19] more sector and so on so what are the
+[32:22] three terms that we have defined now
+[32:24] well we have defined a platter
+[32:28] a platter is basically a ring uh with a
+[32:31] hole in the middle the hole in the
+[32:33] middle is for basically spinning this
+[32:35] ring uh then we have defined the notion
+[32:38] of a track where a track is one of the
+[32:41] concentric circles uh which contains
+[32:44] many many magnets that are arranged side
+[32:46] by side and we have defined a sector
+[32:50] which basically means that a track is
+[32:52] divided into fixed size sectors so
+[32:55] typically in a hard disk the sector size
+[32:58] is a constant so you know it one of the
+[33:00] common values is it can be 512 bytes so
+[33:04] the sector size is typically constant
+[33:06] and a sector will basically be a portion
+[33:09] of the
+[33:10] track right so these are the three terms
+[33:13] that we have defined a platter a track
+[33:15] and a
+[33:17] sector so the way that the hard disk
+[33:20] works is somewhat like this that we have
+[33:24] multiple platters if you look at it you
+[33:26] know if we here the first platter second
+[33:30] third and fourth so we basically have
+[33:34] four
+[33:35] platters over here in the hard disk so
+[33:38] these four platters are connected
+[33:40] together uh with a spindle so basically
+[33:42] the platters are rotating like this
+[33:44] right at a fairly hard uh high speed so
+[33:47] the speed is typically
+[33:49] 5,400 RPM or revolutions per minute
+[33:59] which is 90 revolutions
+[34:01] per second all right so uh this is uh so
+[34:06] it basically rotates you know very very
+[34:08] quickly so the speed of rotation is
+[34:10] extremely high so so the rotation is
+[34:12] very very quick and what we uh do is uh
+[34:16] so also then what we have is is that we
+[34:19] have this head whose job is to read the
+[34:22] bits that are there on the platter so
+[34:24] let me just remove the ink on the screen
+[34:26] and let's focus on the head a little a
+[34:27] little bit
+[34:29] more so the head uh is basically a piece
+[34:33] of very very sophisticated
+[34:35] Electronics but at the core of the head
+[34:38] all that it has is that it it has a
+[34:42] little bit of metal over here which
+[34:45] essentially senses the EMF uh so so you
+[34:50] know it's a it's a small metallic coil
+[34:53] uh where at the both ends of it a
+[34:55] potential is induced because of the
+[34:57] changing magnet magnetic field and the
+[34:59] small potential is sensed by the
+[35:01] electronics of the head and depending
+[35:04] upon the change in the magnetic field we
+[35:06] infer a logical one
+[35:28] in the sense that the head is connected
+[35:30] over here to a motor which can either
+[35:32] rotate it in this direction or rotate it
+[35:35] in that direction which means that again
+[35:37] the head can either you know rotate in
+[35:40] this direction or rotate in that
+[35:43] direction so it is not sliding along the
+[35:46] radius of the platter rather it is H you
+[35:51] know it is basically you know sliding
+[35:53] this way or you know sliding that way in
+[35:55] a circular Arc and and uh so this allows
+[35:59] us to actually position the head on the
+[36:02] right track because recall that a
+[36:04] platter actually has multiple
+[36:07] tracks and uh so we need to position the
+[36:10] head on the right track so this this
+[36:12] will be done by first rotating the head
+[36:14] then we need to wait for the right
+[36:16] sector which needs to rotate and come
+[36:18] under the head after that we need to
+[36:20] start reading the data which basically
+[36:23] means we need to sense the changes in
+[36:25] the magnetic uh changes in the potential
+[36:28] that is being induced because of the
+[36:30] change in the magnetic field and then
+[36:32] read the data for the sector process it
+[36:34] and send it to the
+[36:36] processor so the head is a very small
+[36:39] device which is over here and it is
+[36:41] rotated with an arm so of course if we
+[36:44] have multiple platters we'll have
+[36:45] multiple heads I'm not showing multiple
+[36:47] but I'll show that in a separate diagram
+[36:50] where we'll not have one head but we'll
+[36:51] have multiple heads one for each
+[36:54] platter so this is shown over here so
+[36:57] this particular uh diagram shows us the
+[37:02] shows us a two platter system for each
+[37:05] platter has two recording surfaces the
+[37:07] top surface here and uh the bottom
+[37:09] surface here and again the top and the
+[37:12] bottom both the platters are connected
+[37:15] to a spindle and the spindle is
+[37:17] connected with a spindle motor where at
+[37:20] a fixed RPM uh both the platters
+[37:24] rotate so recall that these discs are
+[37:27] actually rotated rting at a very very
+[37:29] very high speed so something like 5,400
+[37:32] RPM or 7,200 RPM so for each recording
+[37:36] surface uh we have one more spindle over
+[37:39] here with the arms and there is a redr
+[37:42] head at uh the bottom of each arm so it
+[37:46] can either read by sensing the changes
+[37:48] in the magnetic field or it can write by
+[37:51] basically you know inducing a magnetic
+[37:53] field such that the magnets Orient
+[37:55] themselves you know the way that that we
+[37:57] want them to be oriented you know in
+[38:00] response to an external field so
+[38:02] basically for each recording surface we
+[38:04] have one head so this has one head at
+[38:06] the top one for the bottom which is this
+[38:08] arm again one head for the top surface
+[38:11] and one more head for the bottom surface
+[38:13] so this will have four
+[38:14] heads so uh it is actually not possible
+[38:17] for us to read data from multiple
+[38:19] platters
+[38:21] simultaneously the reason being that you
+[38:23] know coordinating all four heads is
+[38:24] somewhat difficult that's the reason we
+[38:28] uh basically read from only you know one
+[38:30] surface or one platter at a time and all
+[38:33] of these uh heads uh which are you know
+[38:37] all of these connected via arms to this
+[38:40] spindle over
+[38:42] here uh this is connected to an actuator
+[38:45] whose job is to you know rotate the
+[38:47] heads a little bit anticlockwise or a
+[38:50] little bit clockwise such that they
+[38:52] align
+[38:54] under uh the right track so of course
+[38:57] you know this this head is and the
+[38:58] diagram could have been slightly more
+[39:00] accurate in the sense the head actually
+[39:02] should have been longer such that it
+[39:03] reaches the innermost track but
+[39:05] hopefully the readers will give me that
+[39:07] much of slack so so what I again mean is
+[39:10] that the head should have been you know
+[39:12] this arm should have been longer so the
+[39:14] head reaches here and then of course the
+[39:16] head could rotate in this man direction
+[39:18] or in that direction such that it could
+[39:21] reach uh all the tracks on the
+[39:25] platter but anyway let's leave this much
+[39:28] of inaccuracy in the drawing and let's
+[39:31] go forward so then what happens is that
+[39:34] we have the electronics of the drive
+[39:36] which basically controls the spindle
+[39:38] motor and so recall that all the all the
+[39:40] risks rotate at a fixed RPM so you have
+[39:43] constant angular velocity and uh we uh
+[39:48] then basically read data and the data uh
+[39:51] read data or we write data and so via
+[39:53] the drive Electronics it comes to the
+[39:55] bus interface where if the hard disk is
+[39:58] connected by a PCI Express bus then the
+[40:01] data traverses by the bus to the CPU so
+[40:06] we can either read data from the hard
+[40:08] disk or we can write data but you know
+[40:11] the greatness of a hard disk is that
+[40:12] since data is stored in terms of
+[40:15] sequences of uh magnets we don't lose
+[40:19] the magnetism once we turn off the
+[40:21] computer right so so this is a method of
+[40:23] stable data storage even when the
+[40:25] computer is turned off
+[40:29] so let us now look at the different
+[40:31] aspects of reading data from a hard disk
+[40:35] the first is to rotate the head and put
+[40:37] it on the correct track so this part of
+[40:40] the latency where we essentially rotate
+[40:43] the head and uh you know put the head on
+[40:46] the right
+[40:47] track uh so you know maybe we need to
+[40:49] rotate this and bring it to the end or
+[40:51] we maybe need to bring it over here so
+[40:54] this time is called the seek time once
+[40:57] we are on the right track we need to
+[40:59] wait for the desired sector to come
+[41:02] under the head right so this we need to
+[41:05] do uh such that you know whatever sector
+[41:08] so recall that the track is divided into
+[41:10] sectors so we need to wait for the right
+[41:12] sector to rotate and come under the head
+[41:15] this is called the rotational
+[41:17] latency where of course the assumption
+[41:19] is that the hard disk rotates at
+[41:21] constant angular velocity which is true
+[41:23] for most hard dis in the market in
+[41:25] almost 100% of the hard diss rotate with
+[41:28] constant angular
+[41:30] velocity subsequently we read or write
+[41:33] data so we need to perform error
+[41:35] checking we need to do any error
+[41:37] correction if any errors have been
+[41:39] induced and we need to do the framing
+[41:42] which means you know uh take a set of
+[41:45] bits and create a much larger frame out
+[41:47] of it and in the case of read we need to
+[41:50] transfer data back to the CPU which is
+[41:52] the transfer time so if I include all of
+[41:55] these components the where the transfer
+[41:58] basically starts when the head is on the
+[42:00] first bit of the
+[42:01] sector what we will see is a total dis
+[42:04] access time is a seek time which again
+[42:07] you're getting the head uh getting the
+[42:09] head on the right track once you're on
+[42:13] the right track the rotational latency
+[42:15] gets the head to the right sector once
+[42:18] the head is on the first bit of the
+[42:20] sector the time it takes to basically
+[42:23] read out all the data perform error
+[42:25] checking the frame
+[42:28] and
+[42:29] uh transferring it to the CPU is called
+[42:33] the transfer time so the sum of these
+[42:36] times is the time it requires to
+[42:38] actually perform a hard disk access what
+[42:41] are the three compon three components
+[42:43] once again is the seek time the
+[42:45] rotational latency and the transfer
+[42:50] time so let us now look at what is uh a
+[42:54] logical block address and what's a
+[42:56] physical block address
+[42:57] address so uh software programs use the
+[43:01] logical block address to address a hard
+[43:04] disk block which is also called a sector
+[43:06] so we'll use the term a hard disk block
+[43:09] and a sector
+[43:10] interchangeably so because in in the
+[43:13] software parland it's called a block in
+[43:15] a hard disk parland it's called a sector
+[43:17] but they actually mean the same thing so
+[43:20] what happens is that the hard disk
+[43:22] internally has an addressing scheme fair
+[43:25] for the different concurrent tracks that
+[43:28] we have and for the different sectors uh
+[43:31] they have a unique physical address so
+[43:34] the hard disk will internally convert
+[43:36] The Logical address that the CPU or the
+[43:38] program is sending to a physical
+[43:41] address and the physical address
+[43:43] actually has the recording surface you
+[43:46] know which platter it is which track and
+[43:48] which
+[43:49] sector so most hard diss will
+[43:52] essentially dedicate a recording surface
+[43:55] for storing this information which tells
+[43:57] it given a certain logical address so
+[44:00] where of course what is a logical
+[44:02] address in simple
+[44:04] terms if let's say it's a 128 GB hard
+[44:07] disk we can think of the hard disk as
+[44:10] one large array of bytes from 0o till
+[44:13] 128 GB right 128 GB minus one so of
+[44:17] course this is divided into 5 512 BYT
+[44:20] sectors so every sector will have an
+[44:23] address this has to be mapped to a
+[44:25] physical address so we have a recording
+[44:28] surface which just has this mapping in
+[44:31] addition you can have a small dram cache
+[44:35] uh with the hard disk which can store
+[44:37] some of the most recently used mappings
+[44:40] between you know logical blocks so
+[44:42] logical block sort of you know similar
+[44:45] to virtual memory we assume that every
+[44:48] block has an address even though it can
+[44:49] be stored in different parts of the hard
+[44:51] disk so such kind of a logical to a
+[44:54] physical block mapping
+[44:57] can be stored on the hard disk which it
+[44:59] typically is in addition we can have a
+[45:02] small uh subset of the mappings in a
+[45:05] small dam device which is there inside
+[45:07] the hard disk itself such that the
+[45:10] latency for finding out the mapping is
+[45:11] somewhat
+[45:13] reduced the hard disk what the hard disk
+[45:15] can further do is let's assume a sector
+[45:17] gets damaged permanently right so
+[45:20] because of some reasons the magnets lose
+[45:22] their
+[45:23] magnetism so in that case what we can do
+[45:26] is that that we can uh use this
+[45:28] recording surface which we have
+[45:31] dedicated you know dedicated it for
+[45:33] saving information about the disc to
+[45:36] also have the data for all the bad
+[45:39] sectors you at least record which
+[45:41] sectors are bad and once you know we
+[45:44] have a bad sector we can sort of remove
+[45:46] its mapping and we can remap logical
+[45:49] sectors to other healthy physical
+[45:51] sectors so let's assume that there was a
+[45:53] logical block
+[45:54] ID and it was mapped to a certain sector
+[45:58] right later on we find that this sector
+[46:00] has failed in the sense that the magnets
+[46:03] that are there in the sector don't work
+[46:05] anymore so we can remove this mapping we
+[46:08] can instead map it to one more physical
+[46:11] sector which is fine so all of these
+[46:14] things are possible inside the hard disk
+[46:17] Because the actual uh
+[46:20] track sector and recording surface
+[46:23] information is not visible outside the
+[46:25] hard disk the only thing that is visible
+[46:28] outside the hard disk is basically an
+[46:31] abstraction for the abstraction treats a
+[46:33] hard disk as one huge large array of
+[46:38] bytes so now that we have discussed our
+[46:41] hard disks we are not done yet because
+[46:45] the hard disk as we have defined is a
+[46:48] fairly simple device so the CPU
+[46:51] basically sees a single hard drive as a
+[46:55] large array of bikes
+[46:58] right so the size of the hard drive is 1
+[47:01] tbte the CPU sees this as a 10 ^ 12
+[47:06] entry array of bytes and of course
+[47:09] internally uh it is implemented it's a
+[47:12] fairly complicated structure in a sense
+[47:14] it can have one spindle and it can have
+[47:17] you know many many recording surfaces
+[47:19] connected to
+[47:20] it and it'll have a lot of platters and
+[47:23] recording surfaces they will have their
+[47:25] own tracks and sectors
+[47:27] so but all of this complexity is being
+[47:30] hidden from the user uh which in this
+[47:33] case is a
+[47:35] CPU because it just perceives the hard
+[47:37] disk as a very very simple device but
+[47:40] recall that internally the hard disk is
+[47:42] a fairly difficult device it has magnets
+[47:46] if you let's say expose a hard disk to a
+[47:49] strong electromagnetic field it might
+[47:50] lose its
+[47:51] data also one more negative aspect of
+[47:55] hard disks if we sort of go back to to
+[47:57] this figure is that it has a lot of
+[48:00] mechanical components for example this
+[48:03] motor is a mechanical
+[48:04] component all of these spindles and
+[48:07] these platters are mechanical components
+[48:10] the actuator here for the head arms are
+[48:12] also mechanical
+[48:14] components moreover you know the head
+[48:16] needs to be actually a little bit
+[48:20] above uh the spindle you know this
+[48:23] little bit can be you know several
+[48:25] nanometers so in a the hard disk is very
+[48:28] very sensitive to damage if you let's
+[48:31] say drop a hard disk or let's say the
+[48:32] temperature
+[48:33] increases the chances of failure of a
+[48:36] hard disk actually become very very high
+[48:38] mainly because it uses mechanical
+[48:41] components so of course we have nicely
+[48:44] abstracted out a hard disk with this
+[48:46] formula over
+[48:48] here which tells us that we
+[48:51] first seek the right track
+[48:56] that's the seek time then we seek the
+[48:59] right uh small C over here uh then we
+[49:03] seek the right
+[49:06] sector then we seek then we transfer the
+[49:09] data but in reality a hard disk can have
+[49:13] failures because you know there are too
+[49:15] many mechanical components and there is
+[49:17] very high temperature
+[49:19] sensitivity so we looked at one way of
+[49:22] fixing the problem of the low
+[49:24] reliability of hard disks by basically
+[49:26] basically having this you know
+[49:28] dedicating One recording surface to
+[49:30] saving a mapping for a mapping is
+[49:32] between a logical block ID which is a
+[49:34] logical group of 512 bytes as perceived
+[49:38] by the CPU and a physical block ID which
+[49:42] is an actual sector within the hard disk
+[49:46] just in case if this sector goes bad we
+[49:48] can always remap it to another
+[49:52] sector but what happens to the data
+[49:54] we'll end up losing the data right which
+[49:56] is not something that is uh desirable
+[50:00] especially you know imagine that the a
+[50:02] bank has a set of hard Diss and one hard
+[50:06] disk goes bad it should not be the case
+[50:08] that somebody's Account Details are just
+[50:10] gone so to sort of IM uh you know
+[50:14] Rectify all of these issues and make
+[50:16] ourselves immune to disk failures for
+[50:19] which you know there are many reasons
+[50:20] mechanical reasons temperature reasons
+[50:23] what do we do we use what is called raid
+[50:27] which means redundant array of
+[50:29] inexpensive discs which basically means
+[50:31] don't have one hard disk but have
+[50:33] multiple that will allow you to tolerate
+[50:36] faults and also recover from
+[50:40] failures in addition uh a rate system
+[50:45] also increases the total bandwidth which
+[50:48] means that uh so so what happens in a
+[50:50] current system in a current system if
+[50:53] you want to read two different blocks
+[50:55] from the same disk we need to read them
+[50:57] serially which means one after the other
+[51:00] this is low
+[51:01] bandwidth we can increase the bandwidth
+[51:04] if we can read from multiple discs in
+[51:06] parallel so we'll see how to do it which
+[51:08] is by using raid so a raid has twin
+[51:12] advantages one advantage of raid is
+[51:15] higher reliability of course so if you
+[51:18] have a it's sort of makes you immune to
+[51:21] failures so higher
+[51:24] reliability where a dis fails or a part
+[51:26] of a dis fails uh we can still recover
+[51:29] and the other is higher
+[51:41] bandwidth so let us consider the
+[51:43] simplest raate configuration which is
+[51:45] rate
+[51:47] zero so in this case what we do is that
+[51:50] we consider two diss right we consider
+[51:53] uh disk one and we consider disk two and
+[51:56] and let us consider each block to be 512
+[51:59] bytes so we keep block B1 in disk one
+[52:03] block B2 in disk 2 so essentially all
+[52:05] the odd number blocks we keep them on
+[52:09] disk
+[52:10] one and all the even numbered blocks we
+[52:13] keep them on disk
+[52:15] 2 so Distributing data in this manner
+[52:18] across diss is uh defined as is called
+[52:23] as data striping so in this case of of
+[52:26] course there is no additional
+[52:28] reliability however it allows us to read
+[52:31] even and odd blocks in parallel for
+[52:34] example if let's say we're trying to
+[52:35] print a page and the page is in blocks
+[52:38] B3 and B4 we can then since there are
+[52:41] two Diss and you know we'll have uh one
+[52:44] CPU which can send the data to the io
+[52:48] ports or in add or we can even better we
+[52:51] might have dma which will read the data
+[52:54] from the hard disks and you know
+[52:56] directly write it to memory from where
+[52:58] it can go to the io
+[52:59] ports so uh we can have this kind of a
+[53:02] configuration where we have two hard
+[53:04] diss we can read B3 and B4 in parallel
+[53:08] so in a sense this will double our
+[53:11] bandwidth of course the flip side of
+[53:13] this is that reliability number one is
+[53:16] not there and the second is that there's
+[53:18] a high enough
+[53:20] probability that uh we might want to
+[53:23] read two odd blocks at the same time so
+[53:26] that when not be possible because for a
+[53:28] given hard disk we can only read one
+[53:30] block at a
+[53:33] time so let us now consider a variation
+[53:36] of this idea and let us call it raid
+[53:39] one so in raid one what we do is that we
+[53:43] take two diss well we can take more than
+[53:46] two but let's consider an example with
+[53:49] two so let us assume that there are five
+[53:52] blocks B1 to B5 so we simply replicate
+[53:56] them across the disc so we need to
+[53:58] ensure that this copy of B1 is exactly
+[54:01] the same as this copy of
+[54:03] B1 this copy of B3 is exactly the same
+[54:07] as this copy of B3 and so
+[54:09] on so the advantage of this scheme is
+[54:13] that it is immune to one disk failure
+[54:15] which means that if even if this disk
+[54:18] completely fails we will still be able
+[54:21] to run the system in a normal fashion
+[54:24] just by using dis number two
+[54:27] right because there is a complete
+[54:29] mirroring between the discs furthermore
+[54:33] it is possible to read any pair of
+[54:35] blocks in parallel for example we can
+[54:38] read B1 and B2 or B1 and B3 in parallel
+[54:42] from both the discs so this in a sense
+[54:45] doubles our bandwidth so our
+[54:47] bandwidth from the diss
+[54:51] doubles this is great but mind you all
+[54:54] of this is being achieved with a 100%
+[54:57] extra overhead in
+[54:59] storage but uh yes it is true that our
+[55:02] total storage
+[55:04] capacity in a sense is being divided by
+[55:07] half with this strategy but the
+[55:09] advantage is we are doubling the
+[55:12] bandwidth also uh if one of the dis
+[55:15] fails our system will not perceive uh
+[55:19] the problem at all then of course we can
+[55:21] add one more disk you know in the place
+[55:24] let's assume that disk one fails we can
+[55:27] add uh disk
+[55:29] 3 so we need to then initialize disk 3
+[55:32] by copying all the contents of dis two
+[55:34] to this three such that both of them
+[55:36] mirror each
+[55:40] other now let's take a look at the at an
+[55:43] extension of this idea so let us
+[55:45] consider rate 2 three and four so all
+[55:48] three of them are actually in the same
+[55:51] you know belong to the same class belong
+[55:53] to the same family of rate protocol
+[55:56] calls so here the idea is that we don't
+[56:00] have a 100% overhead in terms of
+[56:03] storage uh so 100% overhead was
+[56:06] perceived to be a fairly large price
+[56:08] that you pay for raate one so instead
+[56:11] what has happened is that in rate 2 3
+[56:14] and four what we do is that we create
+[56:17] these disk groups so so let's consider
+[56:20] we have five diss so we have four diss
+[56:23] for the data disk 1 2 3 and four and we
+[56:26] we have one more disk called the parity
+[56:29] disk so what we do is that we divide
+[56:33] data into small small blocks so a block
+[56:36] in this case in the case of rate 2 3 and
+[56:39] four uh you know does not necessarily
+[56:42] mean that is 512 bytes it can be smaller
+[56:44] as well so we consider one such you know
+[56:48] small block one such chunk and uh across
+[56:52] the dis so let's take B1 B2 B3 and B4
+[56:56] across the disk we perform an exort
+[56:58] operation compute the parity and set it
+[57:01] equal to the value of the parity block
+[57:03] on the parity
+[57:05] disk so uh this is exactly what is being
+[57:10] computed over
+[57:12] here so we are Computing the parity
+[57:16] P1 as B1 XR B2 XR B3 XR B4 so if you
+[57:21] would recall our previous
+[57:23] discussion then uh you would
+[57:27] understand uh that uh if let's say any
+[57:30] one of these discs fails for example
+[57:32] let's say dis number three fails then
+[57:35] the information for B3 will get wiped
+[57:38] out but we can still reconstruct disk
+[57:40] number three by basically Computing B1
+[57:44] XR
+[57:46] B2 XR
+[57:49] B4 xord with exclusive or with P1 so if
+[57:54] we do this we'll be able to recompute B3
+[57:57] so if there is a single dis
+[57:59] failure uh there is still no issue there
+[58:01] is no loss of data because with the
+[58:04] parity information we can recover the
+[58:07] data and we can add a new disk in its
+[58:09] place which is of course starts out to
+[58:12] be empty and we can reconstruct it its
+[58:15] contents from the parity pits so having
+[58:19] a parity we had seen that we had seen
+[58:21] the notion of parity in the context of
+[58:24] error correction and error detection so
+[58:28] this is something
+[58:30] similar uh that uh if let's say one of
+[58:33] the dis fails so we are assuming a fail
+[58:35] stop model of failure which basically
+[58:38] means that if a disk fails it stops and
+[58:41] the programmer is aware of it the system
+[58:43] is aware of it so in this case uh you
+[58:47] know for example what happens on one of
+[58:49] my storage areas is that if a dis fails
+[58:52] and orange button starts flashing so
+[58:54] this dis is removed we put in a new disk
+[58:57] and reconstruct the contents based on
+[58:59] the contains of the rest of the Diss and
+[59:01] the parity so note that if two diss fail
+[59:05] simultaneously then we will not be able
+[59:07] to
+[59:10] recover so the block size in rate 2 3
+[59:13] and four is actually different so in
+[59:16] rate two a block size is actually one
+[59:18] bit so we stripe data you know bitwise
+[59:21] across the diss this is not really a
+[59:24] good idea because you know what we have
+[59:27] also seen in chapter 3 from what we have
+[59:30] seen in chapter 3 we don't Access Data
+[59:33] at the level of
+[59:34] bits sometimes you know for some very
+[59:38] very obscure class of applications we
+[59:40] might be doing it in general we don't
+[59:42] Access Data at the level of bits so this
+[59:45] will make it uh you know makes access
+[59:48] pretty
+[59:49] complicated nevertheless you know you
+[59:51] can parallely read out one stream of
+[59:53] bits from here one from here one from
+[59:55] here
+[59:56] so uh so in principle your bandwidth
+[59:59] does
+[60:00] increase it's a somewhat better idea to
+[60:03] actually stripe data at the level of
+[60:05] bytes but this is also not very
+[60:08] practical the reason is that if you
+[60:10] let's say want to write something we'll
+[60:13] have to write to all the diss so let's
+[60:14] say we want to write you know 256 bytes
+[60:17] right so a disadvantage of this scheme
+[60:20] rate three is that since data is being
+[60:23] striped at bytes we'll write the first
+[60:25] bite here second right here third here
+[60:27] fourth here fifth 6th 7th 8 and also
+[60:31] compute the parities and write to the
+[60:33] parity there'll be a massive amount of
+[60:35] traffic that is being sent to all the
+[60:38] discs so what is much much more
+[60:40] practical is actually rate four and so
+[60:43] rate two and three are there in the
+[60:45] Spectrum but they are not used rate four
+[60:47] is used so rate 4 one advantage of a of
+[60:51] rate four is that we treat uh data as
+[60:54] blocks of five 12 bytes so in this case
+[60:58] if we want to write 256 bytes we can
+[61:01] only write to the first disk and then uh
+[61:04] we
+[61:05] can uh just uh recompute the parity so
+[61:11] so recall that uh for recomputing the
+[61:14] parity it is not really
+[61:17] necessary to read the contents of B2 B3
+[61:22] B4 okay so so this is a slightly
+[61:25] profound results so let me show a proof
+[61:29] this so let us assume that we have four
+[61:33] data blocks and we have B1 XR
+[61:41] B2 is equal to the
+[61:44] parity now let's assume that we write to
+[61:48] the first block B1 and we change its
+[61:50] contents and we make it B1
+[61:53] Dash so now we want to find find out
+[61:56] what will be the new parity and our
+[61:59] claim is that we do not have to read B2
+[62:01] B3 and B4 so let us do a little bit of
+[62:05] algebra so let us compute B1
+[62:21] XR so this you know this the top implies
+[62:26] that this is B1 XR the parity
+[62:30] P now what we do is any number Exclusive
+[62:34] or you know any block or any set of bits
+[62:36] exclusive or with itself is zero and
+[62:39] zero exclusive or with any other
+[62:41] quantity is that quantity itself so so
+[62:44] let's uh break this down B1 exclusive or
+[62:47] B1 is again zero exclusive or B2
+[62:57] this is equal to so so you know this is
+[63:00] a standard identity that Z exclusive or
+[63:02] X is equal to X so this is
+[63:11] B2 all right and which is uh sorry this
+[63:21] B4 which
+[63:23] is or the parity
+[63:26] now let us compute the new parity the
+[63:28] new parity p dash is B1
+[63:32] Dash exclusive or with
+[63:36] B2
+[63:38] B3 and
+[63:40] B4 which we can write
+[63:44] as exclusive
+[63:46] R so recall that this quantity is equal
+[63:49] to this
+[63:52] B1 exclusive or the parity p so the new
+[63:57] parity is basically given by this
+[63:59] expression over here and what this
+[64:03] expression says that it is equal to the
+[64:05] old contents of block
+[64:08] B1 uh exclusive or with the new contents
+[64:11] of block B1 exclusive or with the parity
+[64:15] so recall that there is absolutely no
+[64:17] reason to read blocks B2 B3 and B4 this
+[64:21] is a great advantage of the raid four
+[64:23] scheme that to compute the the new
+[64:26] parity especially when we are writing to
+[64:27] a block and we have also kept the block
+[64:30] large enough such that most wrs will
+[64:32] only fit within the same block so we
+[64:35] don't have to access multiple diss the
+[64:38] problem with accessing multiple discs is
+[64:40] that we essentially tie all of them up
+[64:42] and this restricts the bandwidth of the
+[64:44] overall system so for that we have kept
+[64:47] our block size large enough 512 bytes
+[64:51] and to compute the new parity it is not
+[64:53] necessary to read the rest of the discs
+[64:56] we just read the old value of the parity
+[64:59] on the parity disk the new and old
+[65:02] contents of the block that are that is
+[65:03] being written to and compute the new
+[65:06] parity which of course has to be written
+[65:07] to the parity disk so coming
+[65:12] back to uh the
+[65:15] slide uh what we see is that uh uh raid
+[65:21] four which is practical in the sense it
+[65:24] does not tie up many disc
+[65:27] has the same advantages as the rest of
+[65:29] the rate schemes in terms of computing
+[65:31] the parity and this is a direct uh you
+[65:35] know corer of Boolean algebra that
+[65:37] whenever a certain block is being
+[65:39] written to for example if B7 is being
+[65:41] written to it is not necessary to read
+[65:45] B5 B6 and B8 we only have to read the
+[65:49] parity P2 and the new value of P2 which
+[65:53] is P2 Dash is given as P2 exclusive or
+[65:57] with the old contents of B7 exclusive or
+[66:01] with the new contents of B7 which is
+[66:03] something that we just proved so in this
+[66:06] manner uh what will happen is that for
+[66:10] any for any
+[66:12] write uh we will have to write to the G
+[66:15] given block we have to first read a
+[66:17] given block we have to read the old
+[66:20] parity then update the block and the
+[66:22] parity right so one right actually
+[66:25] translates to two reads and two wres so
+[66:28] yes there is some additional overhead in
+[66:30] a raid system but the advantage is that
+[66:33] if let's say any of these dis dies for
+[66:35] example if disk 3 dies we can still
+[66:38] reconstruct it with the contents of the
+[66:41] other Diss and the parity
+[66:45] disk furthermore uh raid 4 also has a
+[66:50] bandwidth advantage in the sense it is
+[66:53] possible to read multiple blocks in
+[66:55] parallel
+[66:56] for example we can read B10 and B12 in
+[66:59] parallel we can read uh you know b14 and
+[67:02] B4 in parallel so of course we cannot
+[67:05] read two Blocks Resident on the same dis
+[67:08] in parallel for example we can't read
+[67:11] B18 and B10 in parallel so yes there are
+[67:14] some restrictions but uh you know it is
+[67:19] expected that if uh we are getting a
+[67:22] random stream of blocks we'll at we'll
+[67:24] be able to to increase the bandwidth the
+[67:27] read bandwidth by at least 4X because
+[67:30] they are expected to be to different
+[67:32] diss the requests are expected to go to
+[67:34] different Diss and if they're busy all
+[67:36] the time all of them can be supplying
+[67:38] data so recall that when we are
+[67:40] supplying data uh it is not really
+[67:43] necessary to read the contents of the
+[67:45] rest of the blocks and the parity and
+[67:47] compute that all of them are correct I
+[67:50] mean even though it can be
+[67:52] done but uh this is typically not done
+[67:55] in the interest of performance also
+[67:58] blocks themselves have error detecting
+[68:00] codes so if there is any problem in the
+[68:02] block we'll be able to find it in
+[68:06] addition our failure model that we are
+[68:08] assuming is a fail stop model which
+[68:11] means that discs have their own error
+[68:12] detecting logic and if they feel that
+[68:16] you know there are errors which are not
+[68:18] you know which cannot be recovered from
+[68:21] then uh and the entire disk uh is sort
+[68:24] of in distress then the entire dis fails
+[68:28] so in a typical rate system once a dis
+[68:30] is in distress we replace it and
+[68:32] reconstruct the
+[68:34] contents so uh the take-home point over
+[68:37] here is that uh rate four is appears to
+[68:41] be the better solution among rids 2 3
+[68:44] four better in terms of uh mostly
+[68:49] performance and bandwidth but there are
+[68:52] problems with raate four the problem
+[68:54] with raate four
+[68:57] that uh you know every write we need to
+[69:00] access this parity disk as well uh one
+[69:03] read and one right so the parity dis
+[69:05] might become a bottleneck right so if
+[69:08] there are multiple rights to different
+[69:09] Diss and since the parity disk is always
+[69:12] accessed it can it has a potential of
+[69:14] becoming a
+[69:18] bottleneck right so for reading a single
+[69:20] block we have to access all the diss uh
+[69:23] for one one yeah so I'm just summarizing
+[69:26] the performance aspects so for one bit
+[69:28] and one bite level striping for reading
+[69:31] any block all the discs have to be
+[69:33] access which is a bad idea that's the
+[69:36] reason we went for uh rate four but rate
+[69:39] four has a problem with this parity
+[69:42] disk right it's a single point of
+[69:46] contention so let us thus try to fix
+[69:49] this problem with rate
+[69:52] five so in rate Five what we do
+[69:56] is that we don't have a single parity
+[69:58] dis rather in a five dis system we
+[70:02] distribute the parity blocks across the
+[70:04] diss for example for B1 B2 B3 and B4 we
+[70:09] keep the parity block on disk number
+[70:12] five then for the next row of blocks we
+[70:14] keep it on disk one then on dis 2 then
+[70:17] three then four so by rotating the
+[70:20] parity blocks among the discs for you
+[70:22] know for different rows of blocks where
+[70:25] able to avoid that problem where
+[70:27] essentially there was a single dis which
+[70:29] was a point of contention so we have
+[70:31] distributed the parity blocks so this
+[70:34] again has the same advantages as raid 4
+[70:37] without of course a single dis which
+[70:40] becomes a point of contention so it is
+[70:42] reliable and has high bandwidth so most
+[70:46] commercial
+[70:47] systems use some variant of raid five
+[70:50] because raid five is uh you know fairly
+[70:53] robust in terms of reliability a fairly
+[70:56] High performing uh solution for example
+[71:00] you know we can in this five in a five
+[71:03] system uh we can unless two requests are
+[71:07] to the same disk our bandwidth will
+[71:09] increase by five times because all five
+[71:12] discs can be accessed in
+[71:15] parallel so if we need additional
+[71:18] reliability which means immunity to two
+[71:20] disk failures so recall that rate Five
+[71:23] gives you immunity to only one dis dis
+[71:25] failure see one disk fails we can
+[71:28] contents but if we want immunity against
+[71:31] two disk
+[71:32] failures what we can do is we can go for
+[71:35] rate six which gives you higher
+[71:38] reliability and higher bandwidth of
+[71:40] course but definitely higher reliability
+[71:42] and also the overheads for maintaining
+[71:44] reliability are higher so let us have
+[71:47] two parity blocks where the parities are
+[71:49] computed
+[71:50] differently so I cannot describe all the
+[71:53] details but if ever you take a course on
+[71:55] on field Theory you will get to know
+[71:57] more about it so what we do is that we
+[72:01] have two Diss and and these parity
+[72:04] blocks uh I'm sorry we have two blocks
+[72:07] and these parity blocks are distributed
+[72:09] across the diss
+[72:10] uniformly for example for the first row
+[72:14] we have P1 a and
+[72:16] p1b on diss 5 and six then for the
+[72:20] second row we have uh P2 a and p2b
+[72:25] again on uh diss 6 and one so in a
+[72:30] similar manner we distribute the blocks
+[72:32] so of course since we have more parity
+[72:35] information that is being saved our
+[72:37] effective storage uh capacity comes down
+[72:41] but the advantage is that even if let's
+[72:43] say two of these discs fail for example
+[72:45] let's say dis three and four they fail
+[72:48] we can always insert two new and empty
+[72:51] discs in their place and reconstruct the
+[72:54] data as well as the parity information
+[72:57] from the rest of the four diss so that
+[73:00] is the advantage of rate six but of
+[73:03] course uh you know in terms of
+[73:05] performance as well as in terms of
+[73:07] reliability there are tradeoffs in the
+[73:09] sense it's more reliable but it offers A
+[73:12] reduced storage capacity because more
+[73:15] bits go to store parity
+[73:18] information you know error detecting and
+[73:21] error correcting information and uh in
+[73:24] add add if let's say I change this block
+[73:28] then I need to read and write this block
+[73:30] and definitely the other two parity
+[73:32] blocks as well so for any single right
+[73:35] there is much more traffic and that
+[73:37] reduces performance

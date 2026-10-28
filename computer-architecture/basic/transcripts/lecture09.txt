@@ -1,0 +1,1864 @@
+[00:34] Welcome to the
+[00:37] ARM assembly language section.
+[00:39] ARM assembly languages ​​are some
+[00:40] of the most popular and
+[00:41] interesting
+[00:43] assembly languages ​​to
+[00:43] learn.  So in this
+[00:46] section we are going to have
+[00:47] a lot of fun.  This
+[00:50] chapter is part of
+[00:51] the book "Computer Organization
+[00:52] and Architecture
+[00:53] " edited by
+[00:54] me, Dr. Smi
+[00:55] Sareni.  It was
+[00:59] published by McGraill in
+[01:00] 2015 and should be
+[01:01] available in almost all
+[01:03] bookstores and online,
+[01:04] you know, both
+[01:05] brick-and-mortar bookstores and
+[01:06] online
+[01:07] bookstores.  So, why is it
+[01:11] worth learning the
+[01:13] ARM instruction set?  So
+[01:15] let's first
+[01:15] look at why it's
+[01:16] worth studying, and
+[01:18] then what knowledge is
+[01:19] needed.  ARM is a very
+[01:20] popular
+[01:21] instruction set.  Almost all
+[01:24] phones today,
+[01:26] as of 2016,
+[01:27] tablets, and all sorts of
+[01:28] small
+[01:29] computing
+[01:30] devices that aren't
+[01:32] desktops or
+[01:33] laptops, run
+[01:34] on ARM processors.  So
+[01:36] they use the
+[01:37] ARM instruction set.
+[01:39] ARM is a company
+[01:40] based in
+[01:41] Cambridge, United
+[01:42] Kingdom.  They
+[01:43] actually license
+[01:44] their designs, and
+[01:45] then these designs
+[01:46] are used by
+[01:47] other manufacturers
+[01:49] to embed them into
+[01:50] silicon chips
+[01:51] .  So, before we
+[01:54] actually start this
+[01:55] chapter, I would like to
+[01:56] point out that the readers
+[02:03] should already have a good
+[02:04] understanding of
+[02:05] assembly language in the
+[02:06] sense that they
+[02:06] should have
+[02:07] read the previous
+[02:09] chapter, i.e. Chapter 3
+[02:10] , and understood a lot of
+[02:11] things about how
+[02:12] programs are written in
+[02:13] assembly language, how
+[02:14] instructions work,
+[02:16] how
+[02:16] assembler instructions work
+[02:18] , the concept of functions, the concept of
+[02:19] the stack, the
+[02:20] concept of coding.
+[02:26] So, all of that has to be
+[02:27] there, and the reason
+[02:28] the book was
+[02:29] designed that
+[02:30] way is because
+[02:31] if you know, then
+[02:32] at least in my
+[02:34] opinion, it's impossible to
+[02:35] give an introduction to
+[02:36] assembly language and
+[02:36] teach complex assembly language at the same time
+[02:39] .  It is better
+[02:43] to separate these issues.
+[02:46] Therefore, it is better to first
+[02:47] teach what
+[02:49] assembly language is, for example, a
+[02:50] very simple one, and then
+[02:51] move on to
+[02:52] teaching the complex
+[02:53] assembly language
+[02:54] used in
+[02:55] commercial
+[02:56] processors, because
+[02:57] then the student will have a
+[02:58] sufficient level of
+[02:59] understanding to
+[03:00] actually understand
+[03:02] what a modern
+[03:04] assembly instruction set looks like.  So,
+[03:13] with that in mind, I'm
+[03:15] going to start this chapter at a
+[03:16] slightly higher level,
+[03:17] because I'm assuming
+[03:19] that the readers have already, uh,
+[03:20] read Chapter 3.
+[03:21] So they understand the
+[03:23] basics of assembly language,
+[03:24] and they also understand how to
+[03:25] write simple
+[03:26] programs in
+[03:28] assembly language, and they have a
+[03:29] basic understanding
+[03:30] of how to implement,
+[03:32] uh, if statements,
+[03:33] loops, uh, functions
+[03:34] using stacks using
+[03:37] assembly language.  So, these are
+[03:42] some of the concepts
+[03:44] we will take for
+[03:45] granted in this
+[03:46] particular chapter.
+[03:48] Back to ARM.  ARM
+[03:50] has many licenses
+[03:51] around the world.  ARM
+[03:55] creates the
+[03:57] processor design and then
+[03:58] sells it.  The design
+[04:01] can be
+[04:02] integrated by a third
+[04:03] party with other
+[04:04] components.
+[04:06] For example, if ARM
+[04:08] sells a processor to a
+[04:09] phone company,
+[04:10] then they can
+[04:11] integrate the
+[04:13] ARM processor and also have other,
+[04:14] uh, smaller circuits
+[04:15] around it.
+[04:20] For example, a circuit for
+[04:21] processing input
+[04:22] data from a camera or a
+[04:23] circuit for interacting with
+[04:25] the accelerometer in a
+[04:26] phone.  So all these
+[04:30] additional schemes
+[04:31] can be added.
+[04:33] Thus, the
+[04:34] ARM instruction set as
+[04:35] such is very
+[04:35] versatile.  So,
+[04:37] along with many
+[04:38] integer
+[04:39] instructions, it
+[04:40] supports
+[04:42] floating point instructions and
+[04:43] has so-called
+[04:44] vector extensions.
+[04:46] So we'll talk
+[04:47] more about vector
+[04:49] instructions in Chapter
+[04:50] 11. But vector, uh,
+[04:51] instructions
+[04:52] allow us
+[04:53] to do multiple
+[04:54] additions, uh, at
+[04:55] the same time in a single
+[04:56] loop.  So we
+[04:58] will not discuss
+[04:59] these extensions.  Also,
+[05:02] ARM has a very popular,
+[05:04] uh, I would say,
+[05:05] assembler subroutine
+[05:06] or extension.  It
+[05:09] is called the
+[05:10] thumb instruction set.  And
+[05:12] a lot of ARM programs
+[05:13] actually
+[05:14] use the
+[05:15] thumb instruction set, which is a
+[05:17] slightly simpler
+[05:18] instruction set
+[05:19] than the one we're
+[05:20] introducing here, uh
+[05:21] , you know, in this
+[05:22] section.  So I can
+[05:25] call it thumb IA
+[05:27] or thumb assembly language
+[05:28] .  So, essentially, the
+[05:31] thumb instruction set is like
+[05:32] this.  It's
+[05:34] a little simpler.  We wo
+[05:35] n't
+[05:36] discuss that, uh,
+[05:37] in this section.  Uh,
+[05:40] we'll discuss
+[05:40] the general
+[05:41] ARM instruction set
+[05:43] for integers only in
+[05:44] this section.  So
+[05:48] we'll have five
+[05:49] separate, uh, sections
+[05:50] .  First, we will start
+[05:52] with basic instructions,
+[05:54] advanced
+[05:54] instructions, then
+[05:55] look at
+[05:56] branch instructions,
+[05:57] memory instructions,
+[05:59] load-
+[06:00] store instructions, and
+[06:02] finally look at
+[06:04] instruction encoding
+[06:05] .  So, like a
+[06:09] simple RISK, ARM has 16
+[06:11] registers.  They are
+[06:12] numbered from R0
+[06:14] to R15.  And unlike
+[06:17] plain RISK and
+[06:18] many other
+[06:19] assembly languages, the
+[06:21] program counter is explicitly visible,
+[06:22] and the program counter
+[06:24] used to
+[06:25] influence
+[06:26] moves and the like.
+[06:28] So, it's available to
+[06:29] software
+[06:29] ,
+[06:30] available to
+[06:31] assembly language.  The memory is a
+[06:33] standard
+[06:34] Vonnegut architecture,
+[06:35] meaning that the
+[06:36] instruction memory and
+[06:38] data memory are combined into
+[06:39] one.  Uh, it's, uh,
+[06:41] you know, a typical
+[06:43] aspect of
+[06:45] Newman's architecture, that there's
+[06:47] one kind of memory;  it
+[06:48] is not separate.  So, of the 16
+[06:50] registers that ARM has,
+[06:52] uh, some of them
+[06:53] are reserved for
+[06:55] special purposes.
+[06:57] So let's
+[06:58] take a look at them.  So,
+[07:00] R15 is the
+[07:01] program counter.  So I'm
+[07:03] starting, uh, you know,
+[07:05] the other way around: ARM R15 is the
+[07:07] program counter,
+[07:08] so it's
+[07:10] either called R15 or PC.  R14 is the
+[07:13] reference register.
+[07:16] It can also
+[07:17] be considered a
+[07:18] return address register.  R13
+[07:21] is reserved to
+[07:23] store the
+[07:23] stack pointer or
+[07:25] SP.  R11 and R12, uh, have...
+[07:28] well, R11 and R12
+[07:30] can sometimes have a
+[07:31] special meaning.
+[07:34] So R12 is an
+[07:35] intraprocedural
+[07:37] register
+[07:38] called a scratch
+[07:39] register, which essentially
+[07:40] means, uh, that it
+[07:42] can be explicitly
+[07:44] uh, uh, store
+[07:45] temporary values ​​in a
+[07:46] function call, but
+[07:48] other
+[07:49] registers can also be used, and R11
+[07:50] is called a
+[07:51] frame pointer.
+[07:53] So we'll discuss what a
+[07:54] frame pointer is,
+[07:56] actually, towards the
+[07:57] end of this chapter,
+[07:58] but we'll talk
+[07:59] more about the
+[08:01] frame pointer in the next
+[08:02] chapter, uh, about
+[08:03] x86 assembler.  So in
+[08:08] this section we
+[08:09] will
+[08:09] use a slightly
+[08:10] different kind of semantics.
+[08:12] So we'll, uh, each
+[08:13] instruction will be
+[08:15] explained with a
+[08:15] table.
+[08:18] So, in the table, the
+[08:19] first column
+[08:20] will consider the semantics
+[08:21] that we introduced
+[08:22] near the end of the
+[08:23] previous section
+[08:24] .  So it will essentially
+[08:28] show different modes
+[08:29] of instruction.  Then we'll
+[08:32] give an example, and
+[08:34] then we'll talk about
+[08:35] explaining the
+[08:37] case shifting notation that we
+[08:38] introduced.  So,
+[08:41] the simplest of the
+[08:42] simple instructions in the
+[08:44] ARM ISA is the
+[08:45] move instruction.  What does the
+[08:49] move instruction do?    The
+[08:51] move instruction transfers
+[08:54] a value to a register.
+[08:56] For example,
+[08:57] move R1 R2.  So
+[09:00] it essentially transfers
+[09:02] the value of R2 to R1.
+[09:06] Alternatively, the
+[09:08] move instruction can
+[09:09] transfer the value of the
+[09:10] immediate
+[09:11] expression to a register.
+[09:12] So, the first operand
+[09:14] is always a register.
+[09:16] The second operand can
+[09:17] be either a register
+[09:18] or direct
+[09:19] processing.  So
+[09:21] let's look at the second
+[09:22] example of moving
+[09:24] R1.  So, here is a
+[09:28] well-known feature of ARM
+[09:30] ISA, that all
+[09:30] direct
+[09:31] expressions are preceded by a hash.
+[09:34] So once we
+[09:35] add this hash symbol
+[09:36] here, you can
+[09:37] see the hash symbol,
+[09:38] it will be above the three
+[09:39] on your keyboard.
+[09:41] So, all
+[09:42] direct actions in ARM
+[09:43] must be
+[09:44] preceded by either a
+[09:46] hash prefix.  So when we
+[09:48] say "move
+[09:50] R1#3", essentially I'm taking
+[09:51] register R1 and moving
+[09:56] three there.  So, this is the
+[10:05] simplest
+[10:06] "
+[10:07] move" instruction in RMISA.
+[10:09] So, "move"
+[10:10] has an option.  It
+[10:12] is called MVN.  MVN is
+[10:13] "move not".  This is
+[10:15] similar to the instruction "
+[10:17] not" in the simple risk.
+[10:19] So what we do is
+[10:21] when we
+[10:23] do mvn r1 (comma r2)
+[10:25] , essentially
+[10:26] the complement of ` on` or
+[10:28] each inverted
+[10:30] bit of ` on` is passed from
+[10:33] r2 to r1.  So this
+[10:35] tilde character is the
+[10:36] complement to ` on`.  So
+[10:38] , to summarize, the
+[10:40] one's complement of 1 0 0 0
+[10:42] in a Boolean expression
+[10:44] is 0 1 1. So,
+[10:46] each bit
+[10:47] is replaced by its
+[10:49] complement.  One
+[10:51] is replaced by zero, and
+[10:52] zero is replaced by one.  So,
+[10:56] the MVN instruction is essentially the
+[10:57] same as the
+[10:58] "move" instruction, but
+[10:59] instead of moving a
+[11:01] register or
+[11:02] immediate actions,
+[11:03] it moves in the
+[11:04] complement of the register
+[11:05] or immediate
+[11:06] actions.  So, now
+[11:11] let's look at
+[11:12] arithmetic
+[11:13] instructions.    The
+[11:16] instructions are almost the same as
+[11:17] for
+[11:18] simple risk.  So
+[11:22] , in this case, the
+[11:23] addition
+[11:24] and subtraction instructions are similar to a
+[11:25] simple risk.
+[11:27] The first operand is the
+[11:28] destination.
+[11:32] The second operand is the
+[11:33] first
+[11:34] registered
+[11:35] source point, which is RS1.
+[11:39] Recall Chapter 3. And
+[11:40] the second operand can
+[11:43] or an immediate
+[11:44] handler.
+[11:45] For example, adding
+[11:48] R1, R2, R3.  In this
+[11:50] case, we add R2 +
+[11:52] R3 and store the
+[11:53] result in R1.  Again
+[11:57] , you know, I would like to
+[11:59] point out that I'm
+[12:00] intentionally going a little
+[12:01] fast because I'm
+[12:02] assuming that
+[12:03] the students have already
+[12:03] mastered a certain
+[12:05] amount of knowledge in the
+[12:05] previous chapter
+[12:07] .  So it will be a little
+[12:11] easier for them to master this
+[12:12] section, right?  But
+[12:14] if you, say,
+[12:16] look at this
+[12:17] section from scratch, you
+[12:18] will find it a little difficult.
+[12:19] So, I would ask you to
+[12:20] review the lectures
+[12:21] or read the book up
+[12:23] to the previous
+[12:24] chapter, which is
+[12:25] chapter 3. So,
+[12:27] going back to the
+[12:28] addition statement
+[12:30] , I can
+[12:30] alternatively
+[12:31] write addition r1,
+[12:37] r2, 2 and #hash3.  This will make it
+[12:44] so that R1 will store R2 +
+[12:50] three.  Similarly, we
+[12:54] have a
+[12:55] subtraction instruction that is exactly the
+[12:56] same as in the
+[12:57] simple
+[12:58] risk instruction set.
+[13:01] So, first we have the
+[13:02] destination register.
+[13:05] So the first operand
+[13:06] here is the
+[13:07] destination register.  Then, uh
+[13:15] , we have two
+[13:16] source operands.
+[13:18] One of them is a
+[13:19] source, and the other is a
+[13:20] source/e-e
+[13:21] direct source
+[13:22] or direct.
+[13:24] So when I write
+[13:26] sub R1 R2 R3, essentially
+[13:28] inside R1, we have
+[13:30] the placement of R2 minus R3.
+[13:34] So, similar to
+[13:35] subtraction, there is another
+[13:36] instruction
+[13:37] called RSB or
+[13:38] reverse subtraction.
+[13:40] So in reverse
+[13:41] subtraction, instead of
+[13:43] subtracting R2 and R3, uh,
+[13:45] instead of
+[13:46] doing R2-R3, we
+[13:47] actually do
+[13:49] R3US R2.  So, uh, here
+[13:53] the reader might ask,
+[13:54] you know, if you have a
+[13:55] subinstruction,
+[13:56] why do you need a
+[13:58] reverse
+[13:59] subtraction instruction, right?
+[14:01] Well, the answer is simple
+[14:05] in meaning.  Suppose
+[14:09] you want
+[14:10] to calculate 3-r1, not r 1-3
+[14:12] 3-r1.  We can't
+[14:16] write a statement of
+[14:17] the type, so let's say
+[14:18] you want to
+[14:19] set this to r2.  We
+[14:21] cannot write
+[14:23] an instruction of the form r2.
+[14:29] Right?  So, this is not
+[14:31] allowed because the
+[14:32] second operand must
+[14:33] be a register.  Therefore,
+[14:35] this is not allowed.  But what
+[14:36] we can
+[14:37] write is RSP or
+[14:38] reverse subtraction,
+[14:40] uh, oops, sorry, there
+[14:41] shouldn't be a comma here.
+[14:43] R2, R1, and 3. So this
+[14:49] would set R2 to 3-R1,
+[14:51] which is exactly what we need.
+[14:56] So, in simple terms,
+[14:57] this will actually
+[14:58] take two
+[14:59] instructions, because
+[15:00] we're
+[15:01] going to subtract R first, we're going to
+[15:02] subtract
+[15:03] three from R1 first.  So let
+[15:05] 's calculate R1 minus 3, and
+[15:07] then multiply that by
+[15:08] minus 1. So
+[15:09] the developers at ARM are very
+[15:11] smart.  Instead of
+[15:14] having this solution
+[15:15] with two instructions,
+[15:16] they created a new
+[15:19] called RSP reverse
+[15:20] subtraction, which
+[15:21] allows us
+[15:22] to calculate 3-R1 in a
+[15:23] single instruction.
+[15:27] Good.  So now
+[15:30] some examples.
+[15:32] The first example is
+[15:33] to write a program in
+[15:35] ARM assembler to
+[15:36] calculate 4 + 5-19 and
+[15:38] store
+[15:39] the result in R1.  Here's a
+[15:43] simple solution that's
+[15:44] simple but not
+[15:45] optimal, but
+[15:46] let's
+[15:47] look at it nonetheless.  So
+[15:50] , first we
+[15:51] store four in R1
+[15:53] , then we store
+[15:55] five in R2 using a
+[15:57] move instruction, then we
+[15:59] add R1 + R2,
+[16:00] store them in R3,
+[16:02] move 19 to R4,
+[16:03] then we subtract 19
+[16:05] from R3, which is R1 +
+[16:07] R2, and store the
+[16:08] result in R1.  A slightly
+[16:11] better solution that is
+[16:13] optimal.  We
+[16:14] place four in R1.
+[16:17] Then we consider that
+[16:19] R1 is equal to R1 + 5. In the
+[16:22] sense that R1 will become 9.
+[16:24] Then we take R1,
+[16:26] we set R1 as R
+[16:28] 1-19, and the previous
+[16:29] value of R1 is 4
+[16:32] + 5 = 9. So we
+[16:33] calculate 9-19 as -10,
+[16:35] which is the final
+[16:36] answer.  So, this
+[16:38] was a slower and
+[16:39] easier to understand
+[16:40] solution.  This is a little
+[16:43] hard to understand, but it's
+[16:45] not too hard,
+[16:47] because in the first line we
+[16:48] set R1
+[16:50] to 4. In the second
+[16:51] line we take R1
+[16:53] to be R1 + 5, which, uh, you
+[16:54] can all check, is what is
+[16:56] , uh, you
+[16:57] know, mentioned in the
+[16:59] problem description.  Then
+[17:03] we subtract, uh, 19
+[17:05] from the sum, and we get the
+[17:06] correct answer.
+[17:12] Now let's
+[17:13] look at logical
+[17:14] instructions.  Logical
+[17:16] instructions are also
+[17:17] very similar to
+[17:18] instructions.  So, the
+[17:22] first three instructions are
+[17:24] somewhat simple.  The fourth
+[17:25] instruction is a little more
+[17:26] complicated.  So the
+[17:29] first instruction is the
+[17:30] "and" instruction, which is
+[17:31] very similar to the one
+[17:33] we had, uh, with simple
+[17:34] risk.  Uh, so, uh
+[17:39] , the "AND" instruction has the same
+[17:40] idea as the first one,
+[17:42] so in all of these
+[17:43] instructions, the first
+[17:44] operand is the
+[17:45] destination.  Then
+[17:49] we have the first source
+[17:50] and the second source.
+[17:52] The second operand of
+[17:53] the source can be either
+[17:55] res, a register,
+[17:56] or an immediate.
+[17:59] For example, one
+[18:01] example could be r1
+[18:03] , r2, r3 , where we
+[18:04] set r1 as r2
+[18:05] and r3.  So e
+[18:08] is actually an exclusive, or x, or
+[18:10] zor, as we call it.
+[18:12] So in EO R1, R2, R3 we have
+[18:14] R1 which is
+[18:15] set to R2, X
+[18:18] or R3 or RR is logical
+[18:21] or so in logical
+[18:23] or what we are doing
+[18:24] is similar to the
+[18:25] or instruction in
+[18:26] simple risk.  So we
+[18:27] simply calculate the
+[18:29] logical or for R2 and R3
+[18:30] .  So, it is important
+[18:33] to note that in all of
+[18:34] these instructions,
+[18:35] the instruction
+[18:36] itself consists
+[18:37] of only three letters.
+[18:39] So in simple risk
+[18:40] we had some
+[18:41] two-letter
+[18:42] instructions like or
+[18:44] etc.  So it's not true, and
+[18:46] LD and ST.  So this is not the case in
+[18:49] ARM.  So in ARM they
+[18:51] tried to keep the
+[18:52] instruction length the
+[18:53] same.  So here is
+[18:56] the reason, or they
+[18:57] replaced it with OR
+[18:59] R. So the
+[19:03] BIC bit clearing instruction is
+[19:04] a bit unclear at the moment
+[19:05] .  So, this is
+[19:09] essentially R1-it's R2, not R3.
+[19:15] look at a simple
+[19:17] example and see
+[19:18] what it is.  So
+[19:21] let's consider
+[19:22] that R2 is maybe
+[19:25] just four bits
+[19:26] to make life easier for ourselves
+[19:27] , and the rest of the bits
+[19:28] are zero.  And
+[19:29] similarly, let R3
+[19:30] be the same.  So there
+[19:42] won't be that many
+[19:44] 1*1*0*1.  Now this is
+[19:46] a number, and this number
+[19:48] is 1, and 0
+[19:49] is 0. 1 and 1
+[19:51] is 1. 1 and 0
+[19:59] is 1.
+[20:00] Look, if you
+[20:01] see what's
+[20:03] happening here, is that
+[20:04] all the bits that
+[20:05] are set in R3,
+[20:06] that is, all the bits that are
+[20:07] equal to one in
+[20:09] R3, not in R3, those bits
+[20:10] become zero, and
+[20:11] when it ends up with
+[20:13] some other
+[20:14] number, all the bits in
+[20:15] those bit positions
+[20:17] become zero.
+[20:19] Hence the name
+[20:20] bit cleaning.  So,
+[20:25] or alternatively, if I
+[20:26] want to explain: if
+[20:27] this is, let's say, the first
+[20:29] operand, which in this
+[20:30] example is R2, and this is the
+[20:31] second operand, which
+[20:33] is R3, then all the bits that are
+[20:34] set at different
+[20:35] points in the same
+[20:37] bit positions, in the
+[20:38] end result
+[20:40] we have zeros.  So it's
+[20:44] like these bits at these
+[20:45] bit positions
+[20:46] are being cleared.  This
+[20:50] bit clearing instruction or
+[20:51] BIC instruction.  So
+[20:54] look at the example again,
+[20:55] this time with
+[20:56] logical variables.
+[20:59] Write a program in
+[21:02] calculate a not b uh,
+[21:03] sorry, a or b uh,
+[21:04] all of this not uh, where a
+[21:06] and b are single-bit
+[21:07] logical values.
+[21:08] Suppose a
+[21:09] is zero and b
+[21:10] is one.
+[21:11] Save the result
+[21:13] in r0.  So, to
+[21:16] calculate not of a or b,
+[21:18] we do the following: arm
+[21:19] uh, in fact,
+[21:21] also accepts hexadecimal
+[21:22] numbers.  So, the format is the
+[21:25] same.  First there is a
+[21:26] hash to indicate the
+[21:28] value, and then you
+[21:30] write 0x to
+[21:31] indicate that it is in
+[21:32] hexadecimal
+[21:33] format.  So we
+[21:36] load
+[21:37] the value zero into R0, and
+[21:39] we load,
+[21:40] sorry, an
+[21:41] OR operation with one,
+[21:42] so the value of A or B
+[21:45] is currently stored in R0.
+[21:50] Subsequently, we calculate the
+[21:52] NOT for R0 using the
+[21:53] MVN instruction, i.e.,
+[21:55] we set R0 as
+[21:59] NOT for R0 zero.  So, in
+[22:05] this case, we
+[22:12] load two
+[22:13] logical variables with
+[22:14] constants.  We
+[22:16] calculate their "OR"
+[22:17] and then finally
+[22:18] get their logical
+[22:20] complement.  Let's
+[22:23] now look at
+[22:24] the multiplication instructions
+[22:26] that are available in the ARM ISA.
+[22:30] The simplest version of the
+[22:31] multiplication instruction
+[22:33] that we have in ARM is
+[22:34] mull mul.  So, the
+[22:38] mull instruction is very
+[22:39] similar to the
+[22:41] addition and
+[22:41] subtraction instructions, where the first
+[22:44] destination register.  So,
+[22:46] we have two operands.
+[22:48] The first
+[22:49] source operand is always
+[22:50] a register, and the second
+[22:51] can be in a register
+[22:52] or directly.
+[22:53] So, it's simple.  R1 is R2
+[22:56] *R3.  So, while ARM is a
+[23:00] risk-free instruction set, it does have some
+[23:02] somewhat complex
+[23:03] instructions.  So you
+[23:05] know there is a
+[23:06] basic trade-off.
+[23:09] The trade-off is
+[23:10] whether we always
+[23:11] prefer
+[23:12] simplicity, or sometimes we
+[23:13] can make our
+[23:15] a little more complex so that
+[23:17] you know that some
+[23:18] common patterns in
+[23:19] programs could be
+[23:20] accounted for.  So
+[23:24] one such common
+[23:26] pattern that is found in
+[23:27] many programs,
+[23:28] you know, particularly
+[23:29] citations that
+[23:30] use
+[23:31] linear algebra and
+[23:32] matrix operations,
+[23:33] is the MLA operation of
+[23:34] multiplication and
+[23:35] accumulation.  So,
+[23:38] it actually
+[23:39] accepts four
+[23:40] registers as operands.
+[23:42] Uh, the first register is the
+[23:44] destination register,
+[23:45] in this example R1 is the
+[23:50] Uh, so from the three
+[23:52] output operands,
+[23:54] what we're
+[23:55] calculating is R2*R3
+[23:57] plus R4.  So we have a
+[24:01] multiplication operation where the
+[24:02] first and second
+[24:03] output operands
+[24:04] are multiplied, and we
+[24:05] add that to R4.  So
+[24:10] this, uh, is usually
+[24:11] required in a lot of
+[24:12] linear
+[24:14] algebra calculations.  That's why this
+[24:16] is supported.  Another
+[24:19] interesting aspect
+[24:20] of multiplying two numbers is
+[24:21] this.  So,
+[24:23] let's consider a 32-bit
+[24:25] instruction set.
+[24:28] So, the range of
+[24:30] the number system
+[24:32] is
+[24:33] approximately from -2^31 to
+[24:35] 2^31-1.  So,
+[24:39] let's say we
+[24:41] multiply -2^31 by -2^31.
+[24:43] The answer will be 2^62,
+[24:45] which is well outside the
+[24:47] range of a 32-
+[24:48] bit
+[24:50] number system, so
+[24:51] we will end up with an
+[24:53] overflow.  But
+[24:58] let's say we don't
+[24:59] want to have
+[24:59] overflow, and we
+[25:01] need some
+[25:02] mechanism by
+[25:02] which we
+[25:04] can store, uh,
+[25:05] store the product
+[25:06] without overflow.  So
+[25:10] let's do some
+[25:11] math.  As you can see, the
+[25:15] largest number that
+[25:17] we can get
+[25:19] by multiplying two
+[25:20] signed numbers, uh,
+[25:22] by two 32-bit
+[25:24] signed numbers is 2*2^
+[25:25] 62. If we look at
+[25:27] two unsigned
+[25:28] numbers, then essentially the
+[25:30] largest number, uh,
+[25:32] that I can get is uh
+[25:34] -uh, so in an
+[25:35] unsigned
+[25:37] 32-bit number system, uh
+[25:38] -uh, the largest number is
+[25:40] 2^32-1.  So if I
+[25:42] square this, it's going to be
+[25:44] 2^64-2*+ one.
+[26:02] So we'll see it in
+[26:04] both of these cases.
+[26:05] So, this is significant.  This is
+[26:07] signed multiplication,
+[26:09] where we consider them to be
+[26:10] signed numbers.  This is an
+[26:11] unsigned number.  So
+[26:13] in any case,
+[26:15] we use
+[26:16] either a signed or
+[26:17] unsigned number.  64
+[26:18] bits are enough to
+[26:20] store the product.  64
+[26:33] bits is enough in this sense
+[26:34] .  So for
+[26:36] this purpose ARM has two
+[26:38] instructions Smull and UL.
+[26:42] So, Smull is
+[26:43] sign multiplication, where we
+[26:44] actually multiply the
+[26:45] third and fourth
+[26:47] operations.  We multiply
+[26:50] R2*R3.  We perform
+[26:51] sign multiplication.  So
+[26:52] we assume that R2
+[26:54] and R3 have a sign, and the
+[26:55] final result is a
+[26:56] sign.  So a 64-bit
+[26:58] product can't actually be
+[26:59] stored in a
+[27:00] single register
+[27:01] because it's a 32-bit
+[27:03] register, but it
+[27:04] can be stored in two
+[27:05] registers.  So
+[27:08] the lower 32 bits can
+[27:10] be stored in R0, and the upper
+[27:12] 32 bits in R1.  So together
+[27:16] we will have a 64-bit
+[27:17] number.  So this is a
+[27:23] that does this with
+[27:25] four operands,
+[27:26] where we multiply the third
+[27:27] and fourth
+[27:28] operands, and the first and
+[27:30] second operands
+[27:31] together store a
+[27:32] single number, where R0
+[27:33] stores the lower 32
+[27:34] bits and R1 stores the upper 32
+[27:36] bits.  So we have a
+[27:40] similar instruction
+[27:41] called um, which is
+[27:42] unsigned multiplication.
+[27:46] So if you see
+[27:47] this instruction, the
+[27:48] top and bottom
+[27:49] instructions are exactly
+[27:51] the same.  The only
+[27:53] difference is
+[27:55] that instead of
+[27:56] signed multiplication, it's
+[27:58] So we treat R2
+[28:00] and R3 as
+[28:01] unsigned quantities as well and
+[28:02] perform
+[28:05] Thus, the final
+[28:06] result
+[28:06] will fit within 64
+[28:08] bits.  The lower 32 bits
+[28:10] can be stored in R0, and
+[28:12] the upper 32 bits in R1.  So the
+[28:16] only difference
+[28:18] between SL and UAL is
+[28:19] that SL performs
+[28:20] signed multiplication and
+[28:22] UL performs unsigned multiplication.
+[28:25] Now let's look at an
+[28:26] example.  So let's
+[28:28] calculate 12 Q + 1 and
+[28:29] store the result
+[28:31] in R3.  So let's
+[28:33] do one thing.  Let's
+[28:35] load the values
+[28:36] .  So loading
+[28:37] values ​​essentially
+[28:38] means transferring
+[28:39] values.  So let's
+[28:41] pass 12 into R0 and
+[28:43] one into R1.  So now
+[28:47] let's do a
+[28:48] logical calculation.
+[28:51] So, in ARM ISA uh the symbol at
+[28:52] uh is used
+[28:53] to indicate that what
+[28:55] comes
+[28:56] after it is an
+[28:57] instruction.  So
+[29:00] first we multiply R0
+[29:01] by R0, that is, we calculate
+[29:03] 12 squared and
+[29:04] store it in R4.
+[29:07] Thus, R4
+[29:08] will contain 12
+[29:10] squared.  And here is the greatness of the
+[29:12] MLA instruction
+[29:13] of multiplication and
+[29:14] accumulation.  So
+[29:17] here we calculate R3
+[29:20] as R4*R0 plus R1.  R4 is already
+[29:28] 12 squared
+[29:30] , and R0 is 12. So
+[29:32] it's 12 cubed plus
+[29:34] the value in R1 is
+[29:36] 1. So we get
+[29:40] 12Q + 1. So we see
+[29:41] that with the
+[29:43] MLA uh instruction,
+[29:44] calculating 12Q + 1
+[29:45] actually became very
+[29:47] simple, and we could
+[29:48] do it in two
+[29:49] assembly instructions
+[29:51] after we
+[29:52] loaded the values
+[29:54] into the registers.  So, it's
+[29:57] actually very
+[29:58] cheap and very fast
+[29:59] .  So, the user
+[30:03] should remember that
+[30:04] sometimes, uh, it's worth
+[30:05] looking into some of the
+[30:06] extended instructions
+[30:08] that ARM provides, such as
+[30:09] MLA, smell, and um, to
+[30:10] simplify the calculations
+[30:12] , and also reduce
+[30:13] the number of lines of
+[30:14] code, because in
+[30:16] assembly language, the fewer
+[30:17] lines of code, the more
+[30:18] efficient the program
+[30:19] .  Now let's
+[30:27] look at some
+[30:30] ARM instructions.  So, ARM has a
+[30:35] shift operand notation.  So, uh,
+[30:37] let's see
+[30:38] what it is.
+[30:41] Let's consider, uh, the
+[30:42] register.  So we
+[30:45] can optionally
+[30:46] specify the offset
+[30:48] value after the register identifier
+[30:49] .  So there are four
+[30:51] ways we
+[30:52] can actually
+[30:53] shift a register in ARM.
+[30:55] This is, uh, LSL.  So
+[30:57] let me
+[30:58] first explain what's
+[30:59] in this table.  So,
+[31:01] LSL stands for logical
+[31:03] shift left.  So
+[31:06] just write, or
+[31:07] maybe I can
+[31:08] write here.  LSL,
+[31:09] sorry, LSL is
+[31:11] left shift.  LSR is
+[31:22] logical shift, right?
+[31:28] So it seems like a
+[31:29] simple risk.  ASR is
+[31:39] arithmetic shift,
+[31:41] right?  So there is no
+[32:00] arithmetic shift
+[32:01] to the left.  That's why we did
+[32:03] n't define it.
+[32:04] So LSL is the same as
+[32:06] LSL in the simple case,
+[32:07] it's a logical
+[32:08] left shift, and, uh, then there are
+[32:10] two kinds of
+[32:11] right shifts.  With a
+[32:12] logical
+[32:14] right shift, we add
+[32:15] zeros to the MSP, and with an
+[32:17] right shift, we
+[32:18] double the sign
+[32:19] bit.  So, given
+[32:24] a register, uh, we
+[32:25] can add
+[32:26] these three types of
+[32:27] shifts to it, and we also
+[32:28] have this type of shift ro.  So
+[32:33] we'll discuss what
+[32:34] ro is when we get
+[32:35] to this part of
+[32:36] the figure, the bottom
+[32:37] part of the figure.  And
+[32:41] then we can
+[32:42] shift the register either
+[32:43] by a certain
+[32:44] shift amount, which can be
+[32:45] between 0 and 31, or we
+[32:46] can shift it
+[32:48] by the amount written
+[32:49] in the register, written
+[32:50] in another register.
+[32:54] So basically, we
+[32:55] can put a
+[32:56] register here, or we
+[32:58] can consider
+[32:59] this immediate
+[33:00] register that encodes
+[33:01] the amount of shift that
+[33:02] we should
+[33:03] shift it by.  So let
+[33:05] 's take a simple
+[33:06] five-bit example,
+[33:07] and let's say we
+[33:09] want to logically
+[33:10] shift it left
+[33:11] one position.  So in
+[33:15] this case, it's going to be
+[33:17] 0 here. So we're going to have
+[33:18] 0 1 1 0, which essentially
+[33:20] means that this
+[33:21] part has moved over
+[33:23] here to 0 1 1 0, and we're
+[33:24] shifting the zero into the
+[33:25] MLB position.  This is a
+[33:29] logical shift
+[33:30] to the left.  So, in ARM, we'll
+[33:37] see in the
+[33:37] next few
+[33:39] slides that it's possible to
+[33:40] actually include
+[33:41] offset information
+[33:42] as part of the
+[33:44] operand specification.  Therefore, we do not
+[33:45] need a separate
+[33:46] shift instruction.  But
+[33:48] first, let's
+[33:49] look at the types of
+[33:50] shifts in ARM.  Afterwards,
+[33:53] we have LSR.  LSR if you
+[33:56] have 1011. So 1011
+[34:01] will be ignored again
+[34:02] here, in 1011, and in the
+[34:04] MSP position we will shift zero.
+[34:10] Similarly, for an
+[34:13] right shift, the bits 1 0 1 1
+[34:14] will be shifted
+[34:15] right, and in the
+[34:17] MSP position we will shift by
+[34:18] one.  The reason is that
+[34:21] we are
+[34:22] replicating the sign
+[34:23] bit.  The sign bit here
+[34:25] is equal to one.  So
+[34:26] we just replicate
+[34:27] it - it's an arithmetic
+[34:28] right shift.  Now let
+[34:32] 's insert the
+[34:33] right turn instruction.
+[34:35] So, ro is a
+[34:36] right turn.  What do we
+[34:50] do in this
+[34:51] case if we
+[34:52] need to rotate
+[34:53] it to the right one
+[34:54] position.  So, a
+[34:56] right turn is
+[34:58] essentially a
+[34:59] right shift, with
+[35:00] values ​​that fall
+[35:01] from the least significant
+[35:02] position falling
+[35:04] into the most significant
+[35:05] position.  So
+[35:07] let's look at 1011. If
+[35:09] we rotate it
+[35:10] to the right, the first thing we
+[35:12] do is shift
+[35:13] it to the right one place
+[35:15] .  So 1011
+[35:18] is displayed here.
+[35:21] What do we then record
+[35:23] in MSP?  We write in the MSB
+[35:25] what was shifted from
+[35:27] the least significant
+[35:28] position.  So in this
+[35:30] case, the zero was
+[35:31] shifted, it kind of
+[35:32] went down to the right.
+[35:33] So, essentially, zero
+[35:34] comes in and
+[35:35] is placed in the MSP.  So,
+[35:39] essentially, we take a
+[35:40] set of bits and just
+[35:41] rotate them.  So
+[35:48] another important point is
+[35:49] that in
+[35:51] these shift operations in
+[35:52] LSL, LSR, and ASR, we are actually
+[35:53] introducing new bits
+[35:55] that were not originally
+[35:56] in the bit set in either the
+[35:57] left or right
+[35:58] position.  Uh, for
+[36:06] comparison, in the case of the
+[36:08] rotate instruction, uh,
+[36:09] we don't do that.
+[36:13] So any bits that
+[36:14] fall out of the least
+[36:16] significant position
+[36:17] are added to the
+[36:18] most significant.  So,
+[36:21] now that
+[36:23] these four
+[36:24] shift operations are clear,
+[36:25] let's look at, uh
+[36:26] , an example of this.  So
+[36:30] let's, uh,
+[36:31] it wouldn't be
+[36:33] clear without an example.  So
+[36:35] let's look at the
+[36:36] following example.
+[36:38] So, write, uh,
+[36:40] ARM assembler code to
+[36:42] calculate R1
+[36:43] equals R2X4.  So,
+[36:49] essentially, dividing a number
+[36:50] by four, as
+[36:51] discussed in
+[36:52] Chapter 2, is the same as
+[36:53] shifting it to the right
+[36:54] two places.  Uh, but
+[36:57] that's not a logical shift to
+[36:59] the right.  This is an
+[37:00] to the right.  We'll call it
+[37:02] ASR.  And we move it
+[37:04] two positions.  So in the
+[37:10] case of the ARM ISA, we
+[37:11] don't really have, uh,
+[37:13] we don't really have
+[37:14] shift instructions.  So
+[37:19] , essentially, on the
+[37:20] previous slide,
+[37:21] we saw that LSL, LSR, ASR,
+[37:23] and RO are essentially
+[37:24] shift directives,
+[37:25] but they're not, uh,
+[37:26] so the important
+[37:27] distinction to
+[37:29] make is that they're
+[37:31] not separate instructions in and of themselves
+[37:33] .  So what
+[37:37] we're essentially doing is we're
+[37:39] using the
+[37:41] move instruction and
+[37:42] treating this whole
+[37:45] new expression that we have
+[37:46] n't seen before as
+[37:48] effectively a single
+[37:48] operand.  It's true that
+[37:53] there's a comma in the middle,
+[37:54] but it's actually
+[37:55] treated as a single
+[37:56] operand, and it's
+[37:57] moved here.
+[38:02] So what does it do?  This
+[38:07] expression takes
+[38:08] the value of R2 and shifts
+[38:09] it to the right.  So
+[38:13] write a shift to
+[38:14] the right, shifting
+[38:15] it two positions.
+[38:18] So I use
+[38:19] the standard
+[38:20] right shift operator.  So
+[38:25] we shift it to
+[38:26] the right two
+[38:28] places, which is
+[38:28] equivalent to dividing
+[38:30] the number by four, and
+[38:31] then, uh, this whole
+[38:33] is passed to R1.
+[38:38] So, as I said,
+[38:41] emphasize again that ARM, as
+[38:42] you know, most
+[38:44] ARM assembly code variants,
+[38:45] at least most of the
+[38:47] simple variants, do not
+[38:48] have special
+[38:49] shift instructions, and
+[38:50] the shift is included in the
+[38:51] definition of the
+[38:54] output operand itself.
+[38:56] So in the output
+[38:58] operand, we can
+[38:59] specify the output
+[39:00] operand as a register, and
+[39:01] you know that you
+[39:02] can't do that with an
+[39:04] operand, but as a
+[39:05] register, we can
+[39:07] operand and
+[39:08] optionally specify the
+[39:09] shift amount and the
+[39:10] shift type.  So, uh, there will be a
+[39:14] comma between the source
+[39:16] register, the
+[39:17] shift type, and the
+[39:18] shift amount.  But the entire
+[39:21] ensemble
+[39:22] is considered as a
+[39:23] single operant.
+[39:27] The hardware
+[39:28] will first evaluate
+[39:30] the value of this
+[39:31] expression, which essentially
+[39:32] means shifting R2 two
+[39:33] positions to the right, and
+[39:34] then pass it to
+[39:36] R1.  So let's now
+[39:41] look at a slightly more
+[39:42] complex example.
+[39:46] calculate R1 = R2 + R3*4.
+[39:50] So multiplying a number by
+[39:51] four is the same as
+[39:53] shifting it to the left by, uh
+[39:54] , sorry, uh,
+[39:56] two places.  So we'll
+[40:02] write add R1.
+[40:06] Since the first
+[40:07] operand is
+[40:08] the destination, uh, we'll
+[40:09] have R1, which is
+[40:10] set.  So
+[40:15] here the entire operand
+[40:16] is actually just
+[40:17] one output
+[40:17] operand on the right.
+[40:19] So we can
+[40:20] think of this as one
+[40:29] output operand.
+[40:31] So we will add R1 as R2
+[40:37] plus R3 shifted
+[40:38] left two places
+[40:40] or multiplied by
+[40:41] four.  It's the same.
+[40:46] So we will have R1 as R2
+[40:48] + 4*R3, which has been collapsed
+[40:50] into a single
+[40:51] assembly statement, and this will
+[40:52] make the execution of the
+[40:53] assembly statement
+[40:55] extremely
+[40:56] efficient.  So, it is
+[41:01] important to note that
+[41:03] ARM does not have separate
+[41:05] shift is collapsed into
+[41:06] the definition of the
+[41:08] operand itself to
+[41:08] the specification of the
+[41:10] operand itself.  Now
+[41:16] comparison instructions.  They
+[41:17] work very similarly
+[41:19] to a simple
+[41:20] comparison instruction.  So, the
+[41:24] comparison instruction performs the
+[41:25] comparison task
+[41:26] and then sets
+[41:27] the flags.  So let's
+[41:31] first look at a
+[41:33] comparison instruction with a
+[41:34] CMP instruction.  We
+[41:35] also had CMP in a
+[41:36] simple disk, and the
+[41:38] format was the same
+[41:39] .  The first
+[41:40] operand was a
+[41:41] register.  The second
+[41:43] operand was either a
+[41:45] register or an immediate
+[41:46] operand.  So, we
+[41:48] compare R1 and R2.  And
+[41:51] after that, so what does
+[41:53] comparing R1
+[41:55] and R2 mean?  This essentially
+[41:56] means that we
+[41:57] subtract R2 from R1.
+[41:59] So, we calculate R1
+[42:01] minus R2 and
+[42:01] check
+[42:02] the boxes after
+[42:04] calculating R1 minus R2.
+[42:06] So, in simple
+[42:07] risk, we are a register of
+[42:09] flags.  In ARM it
+[42:11] is called CPS, the
+[42:13] CPSR register is the same
+[42:14] as the flags in
+[42:18] , this is the CPSR register.    The
+[42:20] CPSR register
+[42:21] current
+[42:23] program status register, which does
+[42:24] not have one
+[42:25] flag, but has
+[42:26] four flags.  So
+[42:28] , the first flag is
+[42:29] negative.  Negative
+[42:32] means that when I
+[42:33] did R1-R2, R1 was
+[42:35] less than R2.  So in
+[42:40] this case, the
+[42:41] negative flag
+[42:42] is going to be equal to 1.
+[42:45] Then we have the
+[42:45] zero flag, which
+[42:47] means that if R1
+[42:48] was equal to, you know, the
+[42:49] same thing as R2, then the
+[42:50] zero flag is going to be equal to
+[42:51] 1, and the
+[42:54] is going to be equal to
+[42:55] zero.  In the system, the
+[42:57] carry flag is mainly
+[43:00] indicate that
+[43:01] I have performed an addition
+[43:03] and a carry has been generated after that
+[43:04] .
+[43:08] Similarly, the
+[43:09] overflow flag
+[43:10] is set to
+[43:11] indicate that the result
+[43:13] has exceeded the range of the
+[43:14] number system.  As
+[43:18] a result, it
+[43:19] cannot be saved,
+[43:20] so the programmer
+[43:21] should be informed that
+[43:22] the addition or
+[43:23] multiplication you
+[43:24] are trying to perform
+[43:27] number system,
+[43:28] resulting in an
+[43:29] overflow.  So,
+[43:33] here is an important point
+[43:34] that we should
+[43:35] note.  This is a bit
+[43:36] counterintuitive.  That's
+[43:38] why I put a big
+[43:39] arrow on the left.  If
+[43:42] we need to
+[43:43] borrow a bit when
+[43:44] subtracting, then
+[43:45] carry
+[43:46] is mainly used in the
+[43:47] context of addition.
+[43:49] But we need to
+[43:50] borrow a bit, just like in the
+[43:52] case of subtraction.
+[43:54] Then we set the
+[43:55] carry flag
+[43:56] to zero.  Right?
+[43:57] So at the moment
+[43:58] borrow, we
+[43:59] set the
+[44:00] to zero.  And if you don't
+[44:02] need to borrow a
+[44:03] bit, we set
+[44:04] it to one.  So,
+[44:05] it's a bit complicated and
+[44:06] counterintuitive.  So
+[44:08] repeat that again.    What
+[44:09] I just said, what
+[44:10] I said is that
+[44:12] if we need to
+[44:13] borrow a bit in
+[44:14] subtraction, so we're
+[44:15] subtracting two numbers,
+[44:16] and that's necessary, we
+[44:20] to zero.  For example,
+[44:22] if we subtract 0-5.
+[44:28] So, you know, if I
+[44:30] write in
+[44:31] binary, it means 0
+[44:32] minus.  Right?  So
+[44:37] in this case, when
+[44:39] I'm actually subtracting, I
+[44:40] need to actually
+[44:41] borrow bits.  So in
+[44:44] this case the
+[44:45] will be set to
+[44:46] zero, otherwise it will be
+[44:48] set to
+[44:48] one.  So,
+[44:51] compare instruction, we have CMN,
+[44:52] which is actually
+[44:53] called a
+[44:54] compare
+[44:55] negative.  The format is the
+[44:56] same, but
+[44:59] setting
+[45:00] the flags after
+[45:02] calculating R1 minus R2,
+[45:03] we calculate R1 + R2,
+[45:05] or it's the same thing as you
+[45:06] can imagine.  CMN
+[45:12] R1 R2 is essentially
+[45:13] equivalent to
+[45:15] comparing R1 to -1*R2,
+[45:21] right?  So, that's why it's
+[45:25] negative comparison, where
+[45:26] instead of comparing R1
+[45:28] to R2, we compare R1 to
+[45:30] min -1*R2.  Similarly,
+[45:34] we have the instruction test tst
+[45:36] .  So, we
+[45:38] set
+[45:41] calculating R1 and R2.
+[45:43] So if R1 and R2, uh,
+[45:45] if the final
+[45:46] result is
+[45:47] zero, we set the
+[45:48] zero flag or
+[45:50] essentially look at the
+[45:51] final result and
+[45:53] set the flags based on that.
+[45:55] Uh, let's say the
+[45:56] final MSP result
+[45:58] is one, we
+[46:00] negative flag,
+[46:01] etc.  TQ essentially
+[46:05] checks if uh, yes,
+[46:07] so we calculate XR
+[46:09] R1 and R2.  We
+[46:17] calculating R1 XR R2 and
+[46:26] look at the
+[46:26] result.  If
+[46:27] the result is
+[46:28] zero, we
+[46:30] zero flag.
+[46:31] Otherwise, if
+[46:32] the result has a
+[46:33] positive sign, we
+[46:35] negative flag.
+[46:37] So, tstq and cmn are
+[46:38] usually not used very
+[46:39] often
+[46:41] although you can
+[46:42] use them
+[46:43] if the situation requires it
+[46:44] and if you
+[46:45] think you can
+[46:47] reduce the number of
+[46:49] by using these
+[46:50] flags.  Therefore,
+[46:52] the best source of
+[46:53] information for
+[46:54] any type of
+[46:55] ARM instruction is the
+[46:57] ARM Instruction Manual, which
+[46:58] can be found on the
+[46:59] ARM website.  So, uh, here
+[47:03] you'll find a lot of
+[47:05] these concepts
+[47:06] explained in great
+[47:07] detail.  The reason
+[47:09] I don't go into
+[47:10] this in depth is because
+[47:11] some of them have
+[47:13] many cases and
+[47:14] subcases.  Therefore, it is
+[47:16] better to consider this in a
+[47:17] manual that
+[47:18] describes all cases in
+[47:19] great detail.  So
+[47:22] for most of
+[47:23] our work,
+[47:25] just going to follow the
+[47:26] comparison flag,
+[47:28] uh, sorry,
+[47:29] comparison instructions, and the
+[47:31] comparison instruction will tell
+[47:32] us using the
+[47:34] negative and
+[47:35] zero flags, which is very
+[47:36] similar to what we
+[47:37] had in Simple risk, uh,
+[47:39] essentially the zero flag
+[47:40] was an
+[47:41] equality flag, and, uh, if
+[47:43] R1 is greater than R2, we
+[47:45] GT flag.  So in
+[47:46] this case, uh, the
+[47:47] flags are different, but the
+[47:49] connotation is similar.  So
+[47:50] we will
+[47:51] mainly use the
+[47:52] comparison instruction to
+[47:53] do our
+[47:54] work.  So now, uh,
+[47:58] ARM has some more
+[47:59] interesting instructions.
+[48:02] So
+[48:03] comparison instructions aren't the
+[48:04] only instructions that
+[48:06] flags.  Right?
+[48:08] So in Simple risk cmp was the
+[48:09] only instruction
+[48:11] that set the
+[48:12] flags.  But in ARM this is
+[48:14] not the case.  So, you
+[48:16] can add a suffix
+[48:17] to regular
+[48:18] alou statements so that
+[48:19] they
+[48:20] set a
+[48:21] flag.
+[48:22] Thus, the suffix instruction
+[48:24] will set
+[48:25] the flags in the
+[48:26] CPSR register.  For example, if I'm,
+[48:28] say, adding two
+[48:29] numbers, then I can
+[48:30] replace the
+[48:31] addition instruction with the
+[48:32] addition instruction
+[48:33] .  So the
+[48:35] addition or
+[48:36] summation instructions
+[48:41] will actually set the
+[48:42] flags.  They
+[48:43] will perform
+[48:45] subtraction, and then,
+[48:46] based on the result,
+[48:48] flags, whether
+[48:49] the number is
+[48:50] negative or zero
+[48:51] , or whether the addition
+[48:52] resulted in an
+[48:54] all these conditions can
+[48:56] be established.  Now
+[48:59] let's look at a
+[49:00] set of very interesting
+[49:01] instructions that
+[49:03] flags.  So, the first
+[49:07] instruction we'll
+[49:08] look at is the ADC.
+[49:12] ADC is an
+[49:13] add-
+[49:14] carry instruction.  In this
+[49:16] case, we add with
+[49:18] carry when R1
+[49:19] is equal to R2 + R3 plus the
+[49:21] carry flag.
+[49:23] Right?  So if
+[49:24] there's some previous
+[49:26] carry, then this
+[49:27] ADC instruction, uh,
+[49:28] we...you'll find
+[49:29] an example in the book that
+[49:30] uses it, but
+[49:32] basically the idea is
+[49:33] that if there
+[49:35] was a
+[49:36] carry generated previously, then we can
+[49:37] use that
+[49:39] carry.  So, essentially
+[49:41] , we're going to add R2 and R3,
+[49:45] , and we're also going to add a
+[49:46] carry.  Similarly,
+[49:51] we have an SBC instruction
+[49:52] for subtraction with
+[49:53] carry that
+[49:54] first subtracts R2
+[49:56] and R3, and then subtracts
+[49:57] it with the
+[49:59] carry flag set to "not".  This is
+[50:02] a bit complicated.  What did we
+[50:04] say?  Let's go back
+[50:06] to this slide where the
+[50:09] borrowing bit was discussed.  So
+[50:10] if you need to
+[50:12] subtracting, we
+[50:13] set the carry
+[50:14] to zero.
+[50:15] Otherwise, we
+[50:16] set it to
+[50:17] one.  So, in this
+[50:18] case, in the
+[50:19] previous
+[50:19] subtraction, if it
+[50:20] resulted in
+[50:21] a borrowing, the
+[50:23] is zero.  So, the "
+[50:25] not" of the carry flag
+[50:27] is actually equal to one.
+[50:32] we
+[50:33] give the effect of
+[50:34] borrowing or we
+[50:35] implement
+[50:36] borrowing.  We
+[50:37] do a normal
+[50:39] subtraction and then
+[50:40] subtract the "not" of the
+[50:41] carry flag, and the
+[50:42] "not" bit can
+[50:44] be considered a borrow bit
+[50:45] because their
+[50:46] values ​​are completely
+[50:47] opposite.  So you'll
+[50:51] find an example in the
+[50:52] book where we
+[50:53] use ADCs
+[50:54] and SBC instructions to
+[50:56] subtract large 64-
+[50:58] bit or even
+[50:59] larger quantities.    The
+[51:04] RSC instruction is similar
+[51:06] to RSB where we do a
+[51:09] but in this case
+[51:10] we do a
+[51:13] which is R3-R2 R3-R2 uh, but we
+[51:14] also subtract the
+[51:16] borrow bit, which is the
+[51:17] carry flag node.  Here is
+[51:25] one example that
+[51:27] will show you the power of the
+[51:28] carry flag,
+[51:29] add instructions,
+[51:30] and ADCs.  I usually
+[51:35] posed this as an
+[51:36] exam
+[51:37] question and asked
+[51:38] students to do it
+[51:40] on a simple RISK.  It
+[51:43] was quite complicated and
+[51:45] took up a lot of
+[51:46] lines because,
+[51:47] you know, simple RISK didn't
+[51:48] have support for that
+[51:49] .  So what do we
+[51:51] want to do?  We
+[51:52] want to perform 64-
+[51:53] bit addition
+[51:55] using 32-
+[51:56] bit integers.
+[51:58] Consider the
+[51:59] smell and umal instructions.
+[52:01] They store their
+[52:02] result in a pair of
+[52:03] registers.
+[52:04] Let's assume that this is the case.
+[52:06] Suppose a 64-
+[52:08] bit value,
+[52:09] also called a
+[52:11] long value,
+[52:12] is stored in
+[52:13] registers R2 and R1.  So
+[52:17] , R1 contains the lower 32
+[52:19] bits, and R2 contains the
+[52:20] upper 32 bits.
+[52:23] Similarly, we have
+[52:25] another pair of registers R4
+[52:27] and R3, where R3 contains
+[52:29] the lower 32 bits and R4
+[52:30] contains the upper 32 bits
+[52:32] , and together they
+[52:33] form a large 64-
+[52:35] bit number.  So, we
+[52:38] want to add these pairs
+[52:39] of numbers, these long numbers,
+[52:41] and also store them in
+[52:42] two registers R5 and R6.
+[52:46] So, first we,
+[52:48] let's assume that the numbers
+[52:50] are of the form: R2,
+[52:52] R1 and R4, R3.  You want to
+[52:57] add them, so the first thing
+[52:59] you can do is
+[53:00] add R1 and R3 and
+[53:01] store the result in
+[53:03] R5, which is exactly what is done
+[53:05] here.  But pay
+[53:08] attention to the suffix of the
+[53:09] add instruction
+[53:11] : the suffix essentially
+[53:15] tells
+[53:16] the add instruction
+[53:17] that you are setting
+[53:18] flags.  So, which
+[53:20] flag are we
+[53:21] interested in?  We are
+[53:22] only interested in one
+[53:23] flag, which
+[53:24] is actually the
+[53:25] carry flag.  So what
+[53:29] happens is
+[53:29] this: if the
+[53:31] carry bit is set
+[53:32] , we need to
+[53:33] record that fact, and
+[53:34] that is recorded in
+[53:35] the flag that if there is
+[53:36] one carry bit, that
+[53:38] needs to be recorded.
+[53:40] Later we add R2
+[53:42] and R4.  But we
+[53:46] ADC instruction because
+[53:47] it adds R2 and R4
+[53:49] plus the carry.  So this is a
+[53:50] very important thing.
+[53:52] It also takes into account the
+[53:53] carryover that may have been
+[53:54] generated.
+[53:55] It adds R2, R4, and
+[53:57] the carry and stores
+[53:59] the result in R6.
+[54:01] Right?  So, it
+[54:02] is written that the
+[54:03] addis instruction adds
+[54:05] the values ​​in R1, R3.
+[54:06] ADC addition with
+[54:07] carry adds R2, R4,
+[54:08] and the carry flag value
+[54:10] , which is exactly the
+[54:11] same as
+[54:12] regular addition.
+[54:15] If addition and ADC
+[54:16] were not available, we would have a
+[54:17] rather difficult time
+[54:18] accomplishing this task.
+[54:24] So let's consider a
+[54:26] program that has
+[54:27] a lot of, you know,
+[54:28] smell or um,
+[54:29] instructions, and they
+[54:30] generate 64-bit
+[54:31] outputs to control
+[54:33] 64-bit outputs
+[54:34] by, uh,
+[54:35] you know, controlling
+[54:37] them, and addition and
+[54:38] subtraction would be
+[54:39] very complicated if
+[54:41] we didn't have this
+[54:42] particular
+[54:43] mechanism.  So,
+[54:48] given the fact
+[54:49] that we've seen this,
+[54:51] go back to the
+[54:51] previous slide.
+[54:54] Given the fact
+[54:56] that we have considered 64-
+[54:57] bit addition, I
+[54:58] ask readers
+[55:00] to also consider 64-bit
+[55:06] subtraction.  In the case of
+[55:09] 64-bit subtraction,
+[55:11] the idea is very simple.  We are
+[55:13] doing just that.  So
+[55:14] we'll have the same thing,
+[55:22] but instead of
+[55:23] addition we'll have
+[55:24] subtraction.  So
+[55:26] first, instead of
+[55:27] adding s, let
+[55:28] me just
+[55:29] give you a hint, but I won't
+[55:30] tell you the full
+[55:31] solution.  Instead of
+[55:33] adding s, we can
+[55:35] have a summary, we
+[55:36] can write something,
+[55:37] and then we need to
+[55:38] go back to
+[55:39] our
+[55:40] instruction set and
+[55:42] SBC instruction.    The
+[55:45] SBC instruction
+[55:46] will subtract with
+[55:47] a carry, which
+[55:48] will take into account the borrow
+[55:49] , and we can
+[55:51] do something and achieve a
+[55:52] 64-
+[55:53] bit subtraction
+[55:54] in two instructions.

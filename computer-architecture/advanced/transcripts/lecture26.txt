@@ -1,0 +1,1590 @@
+[00:00] [Music]
+[00:20] now we will discuss Trace
+[00:23] caches so Trace caches as I had
+[00:26] discussed in the last part of the last
+[00:28] lecture they caches that store an entire
+[00:31] sequence of
+[00:33] instructions which are a decoded
+[00:36] sequence of instructions such that we
+[00:39] can totally eliminate the overhead of
+[00:41] the decoder as well as the branch
+[00:46] predictor so how uh does the execution
+[00:49] of a typical program
+[00:51] proceed so we typically execute programs
+[00:54] a basic block after a basic block what
+[00:57] is a basic block a basic block is a
+[01:00] sequence of assembly
+[01:02] instructions that has one entry point in
+[01:05] the sense you can only enter it in the
+[01:08] beginning and it has only one exit point
+[01:11] which means you can only exit it at the
+[01:13] end which means that there is no branch
+[01:16] that points to the middle of a basic
+[01:18] block and there is no
+[01:21] branch that jumps from the middle of a
+[01:24] basic block so uh you always enter the
+[01:27] control from the beginning of the Bas
+[01:29] basic block and you always leave at the
+[01:33] end right so nothing happens at the
+[01:36] middle so uh as I said a basic block is
+[01:40] a set of instructions assembly
+[01:43] instructions machine instructions with a
+[01:46] single entry point and a single exit
+[01:49] point so we fetch a sequence of basic
+[01:52] blocks from the iash such a sequence is
+[01:56] called a
+[01:58] trace so if we store such traces so what
+[02:02] are we in essence
+[02:03] storing what we are in essence
+[02:07] storing is
+[02:10] basically uh an
+[02:12] unrolled execution right a segment of an
+[02:15] unrolled execution and furthermore we
+[02:18] can store the decoded
+[02:20] instructions so then all that we need to
+[02:22] do is we need to take a trace which is a
+[02:24] sequence of basic
+[02:25] blocks which most likely this will be
+[02:27] the sequence based on our previous
+[02:29] prediction and we feed this
+[02:32] directly into the rename
+[02:38] engine all right so what we can do is we
+[02:41] can have a cache that stores such traces
+[02:44] we have the option of sequentially
+[02:46] reading out a full Trace so this is
+[02:48] called a trace cache which uh Intel uh
+[02:52] used for the first time with PM 4 that
+[02:55] is around
+[02:56] 2,000 and the trace cache is by and
+[02:59] large very
+[03:01] accurate and
+[03:03] uh it stores
+[03:05] instructions in the most likely order in
+[03:08] which they will be accessed as opposed
+[03:10] to an iash which stores the most
+[03:12] frequently used addresses so we can
+[03:14] think of this as a
+[03:16] different method of storage right as
+[03:19] opposed to the iach this is a different
+[03:22] method of storing and we need not
+[03:25] predict branches or decode instructions
+[03:28] which as I have said is an advantage of
+[03:31] this mechanism so we can think of a
+[03:33] trace cache as like a box of noodles
+[03:36] where essentially every strand is a
+[03:38] trace right so it's a box of Chine right
+[03:43] so essentially what do we do we pick out
+[03:45] one such Strand and we kind of slurp it
+[03:48] out so the same way we read out an
+[03:50] entire trace and give it to the
+[03:55] pipeline so uh the trace cash was
+[03:58] broadly speaking of few Fusion of two
+[04:01] older
+[04:03] ideas uh so what are these older ideas
+[04:07] so of course the traditional approach
+[04:08] was that a cash cach
+[04:10] line contains contiguous cach blocks but
+[04:14] again not a very good idea so what pel
+[04:17] and wiser
+[04:19] did is that in a single cach
+[04:23] line they stored successive basic blocks
+[04:26] so what they would do is let's say that
+[04:27] if this is a cach line and let's say you
+[04:30] consider a long line a 128 by line so
+[04:33] you store one basic block then the one
+[04:35] that is most likely accessed after it
+[04:37] that's the way that they used to
+[04:40] store but one limitation of this
+[04:43] approach was that this Trace segment
+[04:46] which is a sequence of basic blocks
+[04:49] could not actually span multiple cach
+[04:51] lines so that became the problem to a
+[04:54] certain
+[04:55] extent so Melvin atal uh what they did
+[05:00] is that they proposed a different
+[05:03] idea where uh you know as we have seen
+[05:06] uh in CIS instructions we decode them
+[05:08] into Micro Ops so the idea is to store
+[05:11] decoded Micro Ops for each instruction
+[05:14] in a cach line so instead of storing
+[05:17] instructions as pel and visor were doing
+[05:20] in every cach line they were
+[05:22] storing decoded micro instructions
+[05:34] all
+[05:35] right so the idea here is that uh we
+[05:39] store the decoded micro instructions
+[05:41] such that the next time we don't have to
+[05:44] use the decoder so this is like an
+[05:46] advancement of a pre- decoding something
+[05:48] that we had studied way back in chapter
+[05:51] 3 so can we combine and augment these
+[05:54] Solutions well the answer is yes and
+[05:56] that is how the broad idea of the trace
+[05:59] cach was was
+[06:01] born so the structure of a solution is
+[06:05] like
+[06:06] this let us consider a trace and let's
+[06:09] assume that it consists of multiple cach
+[06:12] lines so in this case we are talking of
+[06:15] a long Trace that combines both the
+[06:17] approaches so in this case we can have
+[06:19] multiple cach
+[06:22] lines and we can say that a
+[06:25] trace kind of spans through all of them
+[06:31] so this is like a link list of cache
+[06:33] lines where each line is a trace segment
+[06:35] broadly speaking this is what we want to
+[06:38] construct so we need a new method to
+[06:41] place markers a single marker actually
+[06:44] to terminate a trace and start a trace
+[06:46] so any trace the way that we would see
+[06:48] it would consist of a trace head a a set
+[06:52] of Trace bodies and a trace
+[06:54] tail and uh they would essentially be a
+[06:57] sequence of cach lines in iach
+[07:00] because we are fundamentally not
+[07:01] changing the organization of the iash
+[07:04] right so that is not changing per se uh
+[07:08] that is not changing so because that is
+[07:11] not
+[07:12] changing we need to construct a link
+[07:15] list out of what we already
+[07:18] have so the basic structure of a trace
+[07:23] cache this is the way that it would
+[07:26] look uh that we will have the same data
+[07:28] array and tag array so let's not worry
+[07:31] about these terms for the time being all
+[07:34] right so Micro Ops of course this is
+[07:36] something that we know which comes out
+[07:38] of the data array but for the rest let's
+[07:40] not worry about nlip and micro IP for
+[07:43] the time being but we have a controller
+[07:46] in this case the controller is smart
+[07:48] because the controller is something that
+[07:50] needs to implement the trace cache so it
+[07:52] has to be smart and we have a fill
+[07:55] buffer that locally constructs a trace
+[07:58] segment and once the trace segment has
+[08:00] been
+[08:02] constructed the trace segment is
+[08:04] transferred to
+[08:07] the uh data array primarily but an entry
+[08:10] is also made in the tag array so this is
+[08:12] broadly speaking an overview of the
+[08:15] trace gache and let's uh get into the
+[08:18] details so now we will discuss what
+[08:20] exactly is stored
+[08:22] where so here is the broad idea right so
+[08:26] uh pretty much every cach line stores a
+[08:29] Trace
+[08:30] segment so let us divide the cache or
+[08:33] let us visualize the cache setwise so
+[08:37] let us assume that each row is a set and
+[08:40] within each set this is a four-way
+[08:42] associative cache so we have four lines
+[08:45] in each
+[08:53] set so in this case uh the four lines as
+[08:58] you can see are arranged horizont onally
+[09:00] and what we can visualize over here is
+[09:02] that we can visualize uh two uh traces
+[09:07] so one Trace starts from W 0 set one uh
+[09:11] this is the next Trace
+[09:13] segment uh then uh we have a sequence of
+[09:16] body Trace segments uh this is how the
+[09:19] entire Trace
+[09:21] flows and finally we have the trace
+[09:23] Steel on similar lines uh we have
+[09:26] another Trace that is stored like this
+[09:28] sorry I should have had an arrow here
+[09:30] and then uh it flows like this and
+[09:33] finally uh we have it uh over here so if
+[09:36] we have a large number of sets and a
+[09:39] large number of uh well not a large
+[09:41] number but four to eight Lines within
+[09:43] the set so we can organize them in this
+[09:46] fashion but there is some there are some
+[09:48] important patterns to note over here the
+[09:51] first is that Trace segments are stored
+[09:53] in consecutive sets right so that is
+[09:55] important for a trace cache this is very
+[09:58] important the trace segments are stor in
+[10:00] consecutive
+[10:03] sets each Trace
+[10:05] segment stores the number of the way in
+[10:08] the next
+[10:09] set so basically since they are stored
+[10:11] in consecutive sets and uh it is not
+[10:15] necessary to actually store the index of
+[10:18] the next line or the next set so that is
+[10:20] not required because if we are in set I
+[10:22] we know that the next segment is in
+[10:24] Trace I +1 so the only piece of
+[10:27] information that we need to store over
+[10:29] over here is the number of the way in
+[10:33] set and uh there are some uh limitations
+[10:37] on the number of decoded micro
+[10:40] instructions Micro Ops that can be
+[10:42] stored in each data line so limit of six
+[10:45] has been placed right uh so this Al also
+[10:49] the uh so this limit is basically
+[10:52] because number one a decoded micro
+[10:55] instruction requires some space that is
+[10:57] point number one and the second is that
+[11:00] you have a limited uh rename and decode
+[11:02] uh sorry not decode but a limited rename
+[11:05] bandwidth so that is why we have such a
+[11:07] limitation but broadly speaking this is
+[11:10] the structure so let us now look at the
+[11:13] rules for storing uh Trace segments in a
+[11:15] data line so the first rule is that we
+[11:18] never distribute Micro Ops of a micro
+[11:21] instruction across cach lines so it is
+[11:24] never the case that a single micro op is
+[11:26] partitioned a part of it is there in
+[11:28] cash line one and a part of it is there
+[11:30] in cach line two so that is never the
+[11:34] case the second is that we terminate a
+[11:37] data
+[11:38] line if you encounter more Branch
+[11:41] microbes than a threshold so this we
+[11:42] have already discussed the threshold is
+[11:44] six and of course this can vary with the
+[11:47] trace cache design but the important
+[11:49] point is we have a limit on the maximum
+[11:51] number of microps per line and also a
+[11:54] single micro op is never
+[11:56] split the other is that the trace
+[11:58] creation Pro process is
+[12:00] terminated upon the following conditions
+[12:04] when encounter an indirect Branch so
+[12:06] what is an indirect Branch it is where
+[12:08] the target is stored in the
+[12:18] register so when the target is stored in
+[12:20] a
+[12:21] register uh we terminate the trace uh
+[12:24] creation
+[12:26] process and uh
+[12:29] so uh this is primarily because you know
+[12:32] any branch misprediction either in the
+[12:35] outcome or in the Target will in any
+[12:37] case terminate the trace and since
+[12:40] indirect branches targets are hard to
+[12:43] predict it's a much better idea to
+[12:45] terminate the trace when you encounter
+[12:47] such an
+[12:48] instruction the other is that if there
+[12:50] is a branch misprediction or an
+[12:52] interrupt comes and also it is
+[12:54] terminated and also there is a maximum
+[12:56] length of a TR which is 64 sets if this
+[12:59] is reached uh we don't uh lengthen the
+[13:02] trace anymore so this puts a maximum
+[13:05] limit on the size of the trace which
+[13:07] anyway should be there because our
+[13:09] Branch
+[13:10] prediction methods have finite accuracy
+[13:14] have limited accuracy so this anyway
+[13:16] should be
+[13:19] there so now let's look at the tag array
+[13:22] so in the tag array we have the
+[13:24] following Fields let's look at uh one
+[13:26] after the other so one of course is the
+[13:28] tag is a regular tag then the valid bit
+[13:32] which means whether the entry is valid
+[13:34] or not so nothing no no s surprises in
+[13:36] this the next is a type so the type is
+[13:39] essentially the trace segment type it
+[13:42] can be a head a body or a tail so this
+[13:44] information is kept over here the next
+[13:48] is next way which is the index of the
+[13:51] way for the next Trace segment so we
+[13:53] know that Trace segments are stored in
+[13:55] consecutive sets and each set contains
+[13:58] multi ways so we want to find out the
+[14:01] index of the way in the next set next
+[14:04] set or previous set so it's a w link
+[14:07] list in the sense there is one pointer
+[14:09] to the next and one pointer to the
+[14:11] previous so we have a pointer to the
+[14:13] next way and the previous
+[14:16] way nlip is the address of the next cisk
+[14:21] instruction so uh this
+[14:24] is required internally because uh we
+[14:28] would like to know know uh which actual
+[14:31] CIS instruction you know the current one
+[14:33] is and the next one
+[14:34] is so so also this information is kept
+[14:38] because we also want to have address
+[14:39] information with uh the trace uh because
+[14:43] this is important when instructions such
+[14:45] as load effective address require it and
+[14:49] we also have Micro IP new IP which
+[14:53] indexes into the table of uh micro
+[14:57] instructions uh just in case we have
+[14:59] these complex instructions which cannot
+[15:01] be decoded but we need to need to read
+[15:05] the micr Code table so this is an index
+[15:07] into that table so as we see that when
+[15:10] we are looking at a practical system
+[15:14] which is Intel stay cache and by the way
+[15:16] most of you are I'm sorry all of you are
+[15:19] encouraged to read Intel's original
+[15:21] patent on Trace caches so this has all
+[15:24] the details so what is being presented
+[15:26] here is somewhat at high level so
+[15:30] nevertheless the key point is that we do
+[15:33] store decoded instructions but
+[15:36] occasionally uh there is a need to index
+[15:40] going to the table of micro instructions
+[15:42] hence we have this
+[15:45] pointer so let us look at a few State
+[15:47] diagrams of reading at Trace so we start
+[15:49] from the head lookup state where we are
+[15:52] trying to find a trace head so we search
+[15:54] for the head then we find the head uh of
+[15:57] the trace we go to the body lookup state
+[16:01] so in the body lookup State we keep
+[16:04] reading Trace bodies so let's say that
+[16:07] there is a Miss in the sense that you
+[16:09] know a trace segment is evicted so we
+[16:12] are not able to find the next body of a
+[16:15] trace we go to the body Miss state where
+[16:18] again uh we essentially start a new
+[16:20] Trace from there because the entire
+[16:21] Trace could not be
+[16:23] read however if that is not the case we
+[16:25] keep on reading the trace until we reach
+[16:28] the tail
+[16:30] another exception is possible at the
+[16:32] body lookup state which is if we read a
+[16:35] if you reach a complex instruction which
+[16:37] is something where we will not decode it
+[16:39] but we will rather read the micro code
+[16:42] uh from a micro Code table so in that in
+[16:45] that case we read the micro
+[16:48] instructions and then we return we come
+[16:51] back to the body lookup state so this is
+[16:53] where the micro I pointer is
+[16:55] useful and after reaching for the tail
+[16:58] we again search the next head of the
+[17:00] trace and we again read out the next
+[17:02] Trace all right so this is a simple idea
+[17:05] as I said let's look at it as a box of
+[17:07] chaomin where essentially these are the
+[17:09] traces and the way we have implemented
+[17:12] is it is that each row is essentially a
+[17:16] set and traces are stored in consecutive
+[17:18] sets so you just store the number of the
+[17:20] way in the next set so it's actually a w
+[17:23] link list so that you can know uh you
+[17:26] know about the current segment and
+[17:28] previous segment as
+[17:30] well for creating a trace so for
+[17:33] creating a trace what we do is that uh
+[17:37] we along with the trace cache we have a
+[17:38] regular I cache as well so the processor
+[17:42] diagram is that we have a trace cache
+[17:45] which we prefer right because it is
+[17:47] faster but we have a regular iach as
+[17:51] well right which is connected again to
+[17:54] the memory
+[17:55] system so we fetch instructions from the
+[17:58] iash we wait for their Micro Ops to come
+[18:02] and then the Micro Ops are temporarily
+[18:03] buffered in the fill buffer so if you
+[18:06] would recall uh several slides ago when
+[18:09] I had showed the system diagram I had
+[18:11] showed the fill buffer where the microbs
+[18:13] come and they are temporarily stored
+[18:17] there right so we reach the bypass micro
+[18:20] op
+[18:21] stage uh so then uh this is where we are
+[18:24] kind of buffering them in the fill
+[18:27] buffer from this state there are two
+[18:30] transitions so let's first take a look
+[18:32] at the normal transition where we
+[18:35] encounter a trace segment end condition
+[18:38] which is one of the conditions that I
+[18:39] showed earlier where let's say you know
+[18:41] we have filled up the line with a
+[18:43] sufficient number of
+[18:45] microps then we transfer it so we
+[18:47] transfer it to the trace
+[18:49] cache and if the trace has not ended
+[18:52] this process continues so this Loop over
+[18:54] here
+[18:56] continues the other
+[19:00] uh the other transition from this state
+[19:02] can be when we encounter a complex CIS
+[19:05] instruction so there what we do is that
+[19:09] uh we can have two options either we can
+[19:12] add a indirect there to the micro Code
+[19:15] table and we can come back or we can
+[19:17] read the micro instructions formulate
+[19:20] the trace segment and again come to this
+[19:23] point so this of course would depend and
+[19:25] Intel has not released a lot of details
+[19:27] of its patent uh in its patent but uh
+[19:31] what computer architecture sense would
+[19:33] tell me what should be done is that we
+[19:37] should take a look at the cisk
+[19:39] instruction if let's say it translates
+[19:41] to a few micro
+[19:43] instructions then they can be directly
+[19:45] put in the fill buffer and entered as a
+[19:48] trace segment otherwise there should be
+[19:50] an indirect into the micro Code
+[19:53] table and we should read out the trace
+[19:55] from there uh there are again uh two
+[19:58] exceptional conditions possible in the
+[20:00] transfer and read micro instructions
+[20:03] state so in the transfer state it could
+[20:06] be that we detect the condition for a
+[20:08] trace
+[20:09] ENT if that is the case well that is
+[20:12] fine then we terminate the trace and
+[20:14] again we search for a new head and we
+[20:17] always try to read existing traces if
+[20:20] they are there or we transition to the
+[20:22] trace creation condition and that was
+[20:25] shown on the previous slide similarly
+[20:28] when we reading the micro instructions
+[20:30] it could be that uh when we reading it
+[20:32] when we encounter a complex instruction
+[20:35] we could see that we have reached a
+[20:36] trace and condition so then again we end
+[20:38] that race and we come to this state
+[20:41] where we look up search for the next
+[20:45] head all right so now we have completed
+[20:48] Trace caches so uh an important point is
+[20:51] due here we need to explain uh why did
+[20:56] we go for Trace caches in the first
+[20:58] place is right what was the
+[21:00] need the
+[21:02] need basically was that we were not
+[21:06] happy with the throughput and speed that
+[21:08] the iash was giving us because after all
+[21:11] you know the iash does not it's kind of
+[21:13] like a dumb organization of data so we
+[21:16] looked at a much smarter organization
+[21:18] where we store data as traces and we
+[21:20] kind of read out these traces right so
+[21:23] that was the
+[21:25] broad idea of uh having a tra
+[21:29] cash uh that we have these traces and we
+[21:32] read out uh these traces correct but uh
+[21:37] I mean Trace caches are a worthy idea
+[21:39] but something that is much more popular
+[21:41] and you know I would say far more
+[21:43] popular and used uh are the prefetching
+[21:46] techniques where we try to guess the
+[21:48] addresses that we will access later in
+[21:50] the future and we try to fetch the data
+[21:52] corresponding to those addresses they
+[21:54] can either be instruction addresses as
+[21:56] you can see or regular data
+[22:01] addresses so let's look at misses in the
+[22:04] caches if there is a Miss in the iach
+[22:06] it's actually a very serious issue
+[22:09] because the first part of the pipeline
+[22:10] is the in ordered part and a miss is
+[22:13] expensive so the this misses cannot be
+[22:16] hidden so a Miss in the L1 cache well
+[22:19] then we'll have to go to the L2 cache
+[22:20] and the L2 cach access latencies as you
+[22:23] will see in the next chapter where we
+[22:25] will discuss the nooc they can be
+[22:27] reasonably large like 10 to 50 Cycles
+[22:29] right they can be large
+[22:31] latencies so because of that uh we would
+[22:34] like to avoid L1 misses as much as
+[22:38] possible and we would definitely like to
+[22:41] avoid L2 misses because an L2 Miss would
+[22:44] again lead to hundreds of cycle hundreds
+[22:46] of cycles of wasted work no work
+[22:48] basically IPC will
+[22:51] suffer what is the
+[22:53] solution prefetch memory addresses which
+[22:55] means predict memory addresses that will
+[22:57] be accessed to in the future fetch them
+[23:00] from the lower levels of the memory
+[23:02] hierarchy before they are actually
+[23:04] required so what we do is that at some
+[23:06] point we have a
+[23:09] prefetch instruction that sorry a
+[23:12] prefetch uh message that goes to the
+[23:15] memory system it comes over here and you
+[23:18] should come just in time not earlier not
+[23:20] later but maybe slightly earlier before
+[23:22] it is actually used because if it comes
+[23:26] in very early let's say if it comes in
+[23:28] over here here it means it'll displace
+[23:30] some useful data from the cache it will
+[23:32] increase the number of misses it if it
+[23:35] comes in too late it means we still have
+[23:37] to wait for this duration right so that
+[23:39] is not useful so it should come in just
+[23:42] before the first usage so the broad idea
+[23:45] is that we find patterns in the iash
+[23:48] access sequence we leverage this pattern
+[23:51] for prefetching right so we learn a
+[23:53] pattern and this pattern is
+[23:57] leveraged so as as I discuss what are
+[23:59] the two precautions that we need to bear
+[24:01] in mind that we do not prefetch too soon
+[24:05] and we do not prefetch too late right so
+[24:07] those are the
+[24:09] two mistakes or the two bad things that
+[24:12] can be done with prefetching which is
+[24:15] that we either prefetch too soon or we
+[24:17] prefetch too
+[24:19] late so let us look at one of the most
+[24:22] basic instruction prefetching algorithms
+[24:24] which surprisingly works very well uh
+[24:28] the pattern is spatial locality so if
+[24:31] cach line X is accessed there is a high
+[24:33] probability of accessing lines x +1 X+ 2
+[24:37] X+ 3 this is primarily because uh of
+[24:40] spatial locality that we access one line
+[24:43] then the next then the next then the
+[24:44] next and so on the code of most
+[24:48] functions typically spans multiple cach
+[24:51] lines and we have spatial locality so
+[24:54] because we have spatial locality this
+[24:56] works
+[24:58] how do we use or leverage uh this
+[25:01] pattern well the way that we use or
+[25:04] leverage this pattern is that if a cash
+[25:06] line X incurs and iash Miss then what we
+[25:10] would
+[25:11] do is that we would read X and the next
+[25:14] G lines from the L2
+[25:17] cache so then uh what will happen is
+[25:20] that uh we
+[25:22] always uh operate on the Miss sequence
+[25:25] not on the access sequence because if we
+[25:27] were operating on on the access
+[25:29] sequence uh what would happen
+[25:34] is that prefecture will be active almost
+[25:37] most of the
+[25:39] time so most of the time our prefecture
+[25:41] will always be churning the sequence and
+[25:44] understanding uh what the sequence is
+[25:46] doing trying to predict and that'll be a
+[25:48] lot of activity a lot of power so we
+[25:51] always operate on the Miss sequence and
+[25:52] if let's say there's a Miss to line X
+[25:55] then we prefetch line x +1 this can be
+[25:58] made smarter because typically uh this
+[26:01] might be too late so there are ofas of
+[26:04] this idea where if let's say we miss
+[26:06] with Miss on line with address X we
+[26:10] prefetch the line which is X+ K in the
+[26:14] hope that this will ultimately be
+[26:17] accessed similarly you know we miss on
+[26:20] X+1 we prefet X Plus k + one or maybe
+[26:23] fetch multiple lines at the same time or
+[26:25] you fetch the next G lines there are are
+[26:28] numerous uh variations of this
+[26:32] idea right so this idea has a lot of
+[26:35] variations and uh it needs to be found
+[26:39] out from simulation studies which one is
+[26:41] actually the best because in every
+[26:44] pattern we are trying to use Spa spatial
+[26:47] locality but the spatial locality across
+[26:50] programs May differ and we need to find
+[26:53] the
+[26:54] best possible way of doing it so there
+[26:57] are a lot of prefet that dynamically
+[26:59] tune these parameters K and so on such
+[27:02] that we are able to fetch the correct
+[27:03] data and the correct data also arrives
+[27:06] at the right time so clearly if K is too
+[27:09] high we'll prefetch a lot of useless
+[27:11] data not a good idea and the most
+[27:13] important point you need to keep in mind
+[27:17] is that almost all prefetching
+[27:19] algorithms operate on the Miss sequence
+[27:21] not on the access sequence right so the
+[27:24] sequence is always the Miss sequence
+[27:27] right you miss on one line you predict
+[27:29] that okay another line will miss so you
+[27:31] go and prefetch
+[27:34] it next line prefetching is still only
+[27:38] for the next line so in a sense it reach
+[27:40] is limited so it's not really that smart
+[27:42] a scheme a slightly smarter scheme is
+[27:46] marov
+[27:48] prefet in this
+[27:50] case we will
+[27:53] have iash Miss sequences that are not
+[27:56] necessarily to con lines and they will
+[27:59] have high
+[28:01] repeatability so the typical Miss
+[28:03] sequence of a core would look like this
+[28:04] that if you miss on line X most likely
+[28:08] the next Miss will be to Y again X then
+[28:11] Y and X and Y need not be con right so
+[28:14] this can be let's say one function call
+[28:16] over here it calls another function over
+[28:19] here there is one miss to a line over
+[28:21] here another Miss to a line over there
+[28:24] in that case there is high correlation
+[28:26] between consecutive myth
+[28:29] but the addresses of the consecutive
+[28:32] blocks where there's a Miss uh these
+[28:35] addresses are not necessarily contiguous
+[28:38] so one can be address X other can be
+[28:40] another address y but the moment that
+[28:43] the processor sees address X it can
+[28:45] immediately start the process of
+[28:47] prefetching Y because it remembers these
+[28:50] correlations so this is similar to the
+[28:52] idea of a mark of chain uh mathematical
+[28:55] construct that we have in probability so
+[28:58] Mark of chain can be used here also used
+[29:01] here as
+[29:03] well for recording these correlations
+[29:05] and for using these correlations for
+[29:08] instruction
+[29:10] prefetching so what do we do well we
+[29:12] record the iash Miss sequences in a
+[29:15] table given that line x incurs a we
+[29:18] predict the line which will incur a next
+[29:21] so what we do is we have a markof table
+[29:23] which says that look line X had a
+[29:26] Miss uh so then uh we'll have a set of
+[29:30] options so after X the next Miss was to
+[29:33] Y this was recorded three times the next
+[29:35] Miss was to Z this was recorded once we
+[29:38] could have a few more such columns and
+[29:41] pretty
+[29:43] much
+[29:45] the frequency will change may change
+[29:50] over time because the behavior of the
+[29:52] program may change but regardless of the
+[29:54] fact the table will capture this
+[29:56] Behavior now what we can do is that when
+[29:58] we see X we just need to access this
+[30:01] table and find the entry with the
+[30:03] largest count and prefetch that because
+[30:05] most
+[30:06] likely that line we will miss next of
+[30:10] course again variations of this are
+[30:12] possible in the sense we can prefet both
+[30:14] Y and both Zed
+[30:17] possible right uh so I'll not discuss
+[30:19] the variations but I think we are in a
+[30:21] position where we can appreciate the
+[30:24] pros and cons of each variation
+[30:30] right uh so I have a rectangle around
+[30:32] the higher probability Mist which is to
+[30:35] Y that has the higher probability in
+[30:38] this case but so these again these
+[30:40] counts will saturate we need to
+[30:42] periodically decrement them so we have
+[30:44] seen a similar pattern in other chapters
+[30:46] and sections as well so this is what is
+[30:49] uh going to be used here
+[30:53] also Mark of predictors uh part two uh
+[30:57] well instead of having a single history
+[30:59] predictor we can have an N history
+[31:01] predictor that takes the last n misses
+[31:04] into account so this will just
+[31:06] complicate our table so this will say
+[31:09] that look if misses are to x y and Zed
+[31:12] where X Y and Zed stand for three
+[31:14] different addresses then the next Miss
+[31:16] will be to line you so this is again uh
+[31:20] we can think of uh in probability as uh
+[31:23] you know we are looking at the Joint
+[31:25] distribution of this and uh so we are
+[31:28] looking at the conditional probability
+[31:30] that given what is the probability of a
+[31:32] Miss to line U given that we have seen
+[31:36] this
+[31:36] sequence and we will choose that line
+[31:40] which maximizes the conditional
+[31:43] probability so wherever there is a Miss
+[31:46] of course we access a prefetch table we
+[31:49] find the next few addresses to
+[31:51] prefetch and uh we update the
+[31:54] frequencies of the
+[31:56] entries uh for the last and minus one uh
+[32:03] misses we send all the prefet request to
+[32:06] a prefet queue the prefet queue stores
+[32:10] all the prefet requests that need to be
+[32:12] sent but clearly these are low priority
+[32:14] messages as compared to let's say an
+[32:17] actual Miss that happens nevertheless
+[32:19] gradually the prefet queue is drained
+[32:22] which means that requests are sent to
+[32:24] the memory system uh the requests are
+[32:27] serviced and then they come
+[32:30] back now let us look at uh a still more
+[32:34] advanced method of instruction
+[32:37] prefetching which is called call graph
+[32:40] prefetching so we can say that uh the
+[32:44] function call sequence is broadly
+[32:46] predictable the basic block sequence is
+[32:49] also predictable but the function call
+[32:51] sequence is even more predictable so if
+[32:54] we operate at the granularity of
+[32:56] functions we might might get a better
+[32:59] prefetching outcome so we can leverage
+[33:01] this pattern we can predict and prefetch
+[33:04] the function that may we call next and
+[33:07] then we can fetch all the basic blocks
+[33:09] that are a part of the function so
+[33:12] recall that we had studied basic blocks
+[33:14] when we were discussing Trace
+[33:16] caches so let me uh take a simple code
+[33:21] snippet uh
+[33:23] from the code of the Linux uh genome
+[33:26] toolkit
+[33:29] so what this does is that when we are
+[33:31] trying to show a screen right any any
+[33:33] screen in the genome toolkit Nome
+[33:36] toolkit uh we uh first call prepare
+[33:38] window which so so it's not exact code
+[33:42] but it is kind of inspired by what
+[33:44] happens so in prepare window we set the
+[33:47] buttons and text boxes which are
+[33:49] different functions in their own right
+[33:52] then we update the window with whatever
+[33:54] recent information that we have and
+[33:56] finally we clear it right finally we
+[33:58] clear it if we want to redraw something
+[34:01] else so there is clearly a call graph
+[34:04] where each node is a function and each
+[34:06] Edge is an invocation of a child
+[34:09] function so show screen first calls
+[34:11] prepare window then update and then
+[34:13] clear one two and three and prepare
+[34:15] window calls set buttons and calls set
+[34:18] text boxes first one and then
+[34:23] two so what we can do is that there are
+[34:26] two variants of of call graph
+[34:28] prefetching one is in software and one
+[34:30] is in
+[34:31] Hardware so we uh can do it in software
+[34:35] first so this would require compiler
+[34:38] intervention so what the compiler would
+[34:40] basically do is that it would add
+[34:43] instructions to the code where the
+[34:46] instructions will go to the memory
+[34:47] system and prefetch
+[34:50] instructions and prefetch the data for
+[34:53] instructions so almost all instruction
+[34:55] sets have such prefetch instructions
+[34:58] and uh so you can look at GCC intrinsics
+[35:01] Doh on Linux so it will show you a
+[35:05] built-in macros that can be used
+[35:09] to issue such kind of prefetch
+[35:12] instructions so broadly speaking what
+[35:15] the compiler would do is that when we
+[35:16] are entering the show screen function it
+[35:19] will prefetch the first
+[35:21] function after we return from the first
+[35:23] function it will prefetch the code of
+[35:25] the second function and after we return
+[35:28] from the second function it will
+[35:29] prefetch the code of the third function
+[35:32] so the compiler will essentially analyze
+[35:34] the code all the code and insert
+[35:36] prefetch
+[35:38] instructions for fetching the code of
+[35:40] functions that will be invoked next and
+[35:44] what this is going to do is that this
+[35:46] would really
+[35:48] reduce the time that we spend on
+[35:52] misses because uh recall that uh the
+[35:56] argument that we have been making
+[35:58] is that instruction misses are far more
+[36:01] expensive than data misses the reason is
+[36:04] that if there is a Miss if there's a
+[36:05] data Miss we'll always have other
+[36:08] instructions that can be executed this
+[36:11] is because of out of order execution
+[36:13] right and so we'll have other
+[36:15] instructions that can be executed so we
+[36:17] might not perceive the delay to that
+[36:19] extent but instructions since they are
+[36:22] an in order they enter the in order part
+[36:24] of the pipeline and remain there for a
+[36:27] large part of their execution
+[36:29] essentially fetch gets uh stalled right
+[36:33] uh so so that affects the rest of the
+[36:35] pipeline much more so we would like to
+[36:37] have a higher accuracy with instructions
+[36:41] preferably right so uh the key hardware
+[36:45] that is used to realize call graph
+[36:48] prefetching uses a tag array and a data
+[36:51] array so in the tag ARR
+[36:57] we have uh the function ID as the
+[37:02] tag in the sense that the function ID is
+[37:04] used to index the entry to find the
+[37:08] correct entry and the function ID can
+[37:10] very well be the address of the first
+[37:14] instruction of the function so this can
+[37:16] represent the function ID and the data
+[37:18] array basically contains the addresses
+[37:20] of all the functions that this function
+[37:23] is expected to call and the index would
+[37:26] first start with with let's say the
+[37:28] index to the fun one when it Returns the
+[37:31] index will point over here then when it
+[37:33] returns index will point over here so
+[37:35] the index always maintains a pointer to
+[37:37] a function in the data array entry that
+[37:40] is going to execute the
+[37:43] next so the index will initially be one
+[37:46] as I said then 2 3 4 and
+[37:49] five so how does this scheme work well
+[37:52] the way that this works is a function
+[37:54] called uh X calls y
+[37:59] we access the entry of Y in the cghc
+[38:02] which is the call graph history cache so
+[38:05] does it exist or not if it doesn't exist
+[38:07] we create an
+[38:09] entry if it exists what we do is we
+[38:12] prefetch the first function in y's call
+[38:15] sequence right so once you have entered
+[38:17] y so y will start calling some functions
+[38:20] so in that we prefet the first
+[38:22] function and in both cases we come to
+[38:25] this box where we put y Y in XS call
+[38:28] sequence the appropriate index if
+[38:30] required right so if it is not already
+[38:33] there then we put function y in function
+[38:36] XS called sequence if required and we
+[38:40] proceed what is the operation of a
+[38:43] function
+[38:44] return the operation of a function
+[38:47] return is like this that let's say that
+[38:50] y returns to X at that point the present
+[38:55] of the present life of Y is over so we
+[38:58] reset the index of Y to one all right so
+[39:01] the index of Y gets reset to one then we
+[39:05] access access call
+[39:09] sequence uh so we if we access uh the
+[39:12] call sequence of function x uh what we
+[39:15] do is that
+[39:16] we increment the index because let's say
+[39:19] x was calling y then after that it will
+[39:22] call some other function so we increment
+[39:24] the index and let's say that is fun fun
+[39:28] Zed so we prefetch the next function in
+[39:31] the call sequence so basically increment
+[39:32] the index and we
+[39:34] prefetch the code of function Z which is
+[39:38] what we had described uh two slides ago
+[39:42] so this is how a call graph history
+[39:44] cache Works where uh the code of one
+[39:47] function is prefetch then the next then
+[39:49] the next then the next and so on the key
+[39:52] Insight in all the three schemes has
+[39:55] been the following the first is next
+[39:57] line prefetching which is a
+[39:58] straightforward expression of spatial
+[40:02] locality then we did discuss the
+[40:05] shortcomings of just the next line or
+[40:07] the next K lines or the K line and we
+[40:11] discussed the idea of mar of prefetching
+[40:13] in this case the sequence has High
+[40:17] repeatability the Miss sequence but
+[40:19] these are not contiguous lines so these
+[40:22] are non-contiguous lines like x y z u v
+[40:25] w the the example that we gave
+[40:28] so what we do is we maintain the
+[40:29] frequency of pairs so it could also be
+[40:32] you know n previous misses
+[40:36] and uh the next miss or we can make it
+[40:40] generic we can make it more generic we
+[40:42] can say n previous misses and M
+[40:45] subsequent misses right where n and M
+[40:48] can both be greater than one so we can
+[40:51] make it generic different variations of
+[40:53] this idea are
+[40:55] possible uh but the important point over
+[40:58] here is that nevertheless it's a it's a
+[41:01] Marco of sequence which follows from the
+[41:03] idea of markco of chains in probability
+[41:06] Theory then we discussed the idea that
+[41:09] instead of having prefetching at the
+[41:11] level of instructions or basic
+[41:14] blogs can
+[41:16] we look at a higher granularity where we
+[41:19] fetch directly at the level of functions
+[41:21] that is where we started tracking
+[41:23] function calls and then we
+[41:27] uh prefetched entire functions in one
+[41:30] go so unfortunately uh this is still not
+[41:34] enough so we have seen higher
+[41:36] granularity where we have moved above
+[41:39] functions and we have looked at traces
+[41:41] so much of the recent work also moves to
+[41:45] One More Level above
+[41:46] traces and it tries to look at all kinds
+[41:50] of uh sophisticated ways of constructing
+[41:53] traces and maybe it can fetch an entire
+[41:56] page of memory or a sequence of pages or
+[41:59] a subset of a sequence of pages so there
+[42:01] are a lot of uh there's a lot of current
+[42:03] work and lot of current interest in this
+[42:06] area fa essentially instead of
+[42:08] functioning instead of fetching one
+[42:11] function at a time we fetch a group of
+[42:15] we prefetch a group of functions at the
+[42:17] same time so this helps increase the
+[42:20] efficiency
+[42:22] substantially of the entire processing
+[42:25] system and it reduces the Mis rates
+[42:27] quite a
+[42:28] bit so this is where uh I would like to
+[42:31] terminate uh as far as instruction
+[42:35] prefetching is
+[42:36] concerned let us now discuss data
+[42:41] prefetching so instead of instructions
+[42:44] the idea now is to prefetch data so the
+[42:47] important distinction that is being made
+[42:49] over
+[42:50] here is that instructions are fetched
+[42:52] into the in order part of the out of
+[42:55] order pipeline
+[42:58] so uh the things are more sensitive over
+[43:01] there because clearly if an instruction
+[43:03] is not
+[43:04] fetched we cannot fetch any instructions
+[43:08] after
+[43:09] that so as a result uh what happens is
+[43:13] that there is a
+[43:15] Slowdown but data on the other hand
+[43:17] because of the out of order nature of
+[43:20] execution the out of order pipeline is
+[43:23] more resilient to a data Miss as opposed
+[43:26] to an instruction
+[43:28] Miss and uh so this resilience is
+[43:31] primarily because that if let's say a
+[43:33] given load instruction misses we might
+[43:36] find sufficient a sufficient number of
+[43:39] independent instructions instructions
+[43:41] that are independent of the load which
+[43:43] can nevertheless
+[43:45] execute
+[43:47] and uh you know they can execute their
+[43:50] consumers can execute their entire
+[43:52] forward slice can execute and they can
+[43:54] keep the pipeline busy right right uh so
+[43:58] uh iash rates are traditionally very
+[44:01] high that is also because of the pattern
+[44:04] of the
+[44:05] code dcash rates are in comparison lower
+[44:08] so let's say the iash rate you would
+[44:10] find to be as high as you know 90 to
+[44:13] 95% maybe even more than 96 97
+[44:18] 98% L1 data cache uh hit rates will be
+[44:22] in 80 to 90% range right the local hit
+[44:26] rates and uh the local hit rates of the
+[44:28] L2 cach might be in the 50 60 70% range
+[44:33] so the margin for improvement is
+[44:35] significant right so the uh so the iash
+[44:39] Improvement was a more like a low margin
+[44:41] business but this is like a high margin
+[44:42] business where we can
+[44:45] do a lot to improve the hit rate but of
+[44:48] course here the sensitivity is lower
+[44:51] than uh than an iach so the same
+[44:54] Improvement in an iach will actually
+[44:56] give you more in terms of performance
+[44:58] nevertheless data prefetching is very
+[45:01] important and almost all processors have
+[45:04] an instruction cache prefetcher and a
+[45:06] data cache
+[45:08] prefetcher so let us look at uh the
+[45:11] simplest uh possible uh prefetching
+[45:14] scheme which is Tri based prefetching
+[45:16] this is a typical example of a for Loop
+[45:18] and an array
+[45:19] axis so if we consider arrays A and B
+[45:22] the addresses in each iteration differ
+[45:25] by four bytes where the assumption is
+[45:27] that the size of an integer is 4
+[45:30] bytes but if we consider array C uh
+[45:34] consecutive axises differ by 8 bytes
+[45:37] right because it's 2 into I this
+[45:40] instruction will translate into multiple
+[45:42] load store risk instructions right uh
+[45:45] sorry it should be an S over
+[45:47] here and there'll be only one memory
+[45:50] access per instruction so what will
+[45:52] happen is the hardware will always
+[45:54] observe the same PC but for the same PC
+[45:57] so let's say uh when we are loading AI
+[46:00] so I'm just writing it in an informal
+[46:02] way when we are loading AI into some
+[46:04] register when you're loading bi into
+[46:06] some register and then finally after an
+[46:09] a operation we will store a value into
+[46:12] C2 I so for each of these instructions
+[46:16] the PC is the
+[46:18] same right so the PC remains
+[46:21] constant but every subsequent axis you
+[46:25] you will find the addresses addresses
+[46:27] increasing by
+[46:28] four the addresses increasing by eight
+[46:32] so this four or eight is known as a
+[46:34] stride and if the stride can be
+[46:36] predicted well then uh we can predict
+[46:39] the addresses for an array axis very
+[46:42] well so we typically have what is called
+[46:44] a stride prediction table or a reference
+[46:47] prediction table let's just call it a
+[46:49] stride table
+[46:51] Cally where we will have the PC and the
+[46:54] PC will map to the instruction tag so
+[46:57] this we have seen before uh it'll have a
+[46:59] previous address the stride and the
+[47:02] state so let's see what they mean so we
+[47:06] keep track of the addresses so uh
+[47:08] basically for a given PC we keep a track
+[47:10] of the previous memory address we
+[47:13] subtract the current uh so whenever
+[47:15] there is a miss right uh what we do is
+[47:18] we
+[47:19] subtract the Miss from the previous
+[47:21] address and we see whether it is equal
+[47:24] to the stride or not
+[47:27] so if it is not equal to the stride well
+[47:29] we set the stride to this value but
+[47:32] let's say over two or three Cycles if
+[47:35] you find the St remaining the same the
+[47:38] state here can be a saturating counter
+[47:40] which you can say 0 0 means that it is
+[47:42] not a strided axis so gradually when it
+[47:46] becomes either 1 Z or 1 one we can infer
+[47:50] that for a given address the access
+[47:53] pattern does follow a stride and this
+[47:56] will be captured by the saturating
+[47:58] counter over here and once we are sure
+[48:01] that for a given address uh the access
+[48:04] pattern does indeed uh follow a stride
+[48:07] what we can do is that the next time
+[48:09] that we fetch the PC over
+[48:11] here we will know the previous address
+[48:14] we just add the stride to the previous
+[48:17] address so the predicted
+[48:24] address is equal to
+[48:27] the previous
+[48:30] address plus the
+[48:32] stride right so whenever we encounter
+[48:34] this program counter in the sense we
+[48:36] fetch it and we see that the state is
+[48:38] steady in the sense that we are
+[48:40] following a strided access pattern what
+[48:42] we do is well we just add so the state
+[48:45] is not added into the added but it only
+[48:47] determines whether we will add or not we
+[48:49] add the stride to the previous address
+[48:51] and that becomes the address we need to
+[48:53] prefetch all right uh so this basic
+[48:56] piece of Hardware will take care of most
+[48:59] strided access
+[49:02] patterns uh few extensions well how many
+[49:05] iterations do we prefetch in advance so
+[49:08] what we can do so we can make this
+[49:10] smarter what we can do is that look if
+[49:14] uh uh the previous address was something
+[49:17] X and the stride is s so instead of just
+[49:21] prefetching X Plus s we can fetch X Plus
+[49:24] KS right uh so then what will will
+[49:26] happen is that we can dynamically adjust
+[49:29] the distance between uh when we issue
+[49:33] the prefetch instruction and when we
+[49:35] receive it so this distance can be
+[49:37] dynamically
+[49:38] adjusted so one way of scientifically
+[49:42] doing this is to monitor the number of
+[49:45] Cycles between when a line is prefetched
+[49:48] and when it is
+[49:49] used uh so basically this uh and then
+[49:55] uh uh it is clear
+[49:58] that so it's it's not when a uh line is
+[50:01] being
+[50:03] prefetched uh it is when it is arriving
+[50:05] so if it is negative it is meaning that
+[50:07] this is being prefetched too late right
+[50:11] so so the way that we interpret this
+[50:13] phrase over here that when a line is
+[50:15] prefet means when the data arrives and
+[50:17] when it is used so if let's say it is
+[50:20] used at this point of
+[50:22] time and uh let us say that it arrives
+[50:25] over here and this distance is negative
+[50:29] right so essentially this time minus
+[50:31] this time it means that the prefet data
+[50:33] is arriving too late so we will not be
+[50:36] able to derive the desired
+[50:39] benefits so it ideally should be a small
+[50:41] positive number which means that if
+[50:43] let's say this is where we want to use
+[50:45] the data this is when the preface data
+[50:47] should
+[50:48] arrive it should not again arrive too
+[50:50] early because it would displace useful
+[50:52] data but it should arrive just before
+[50:55] the data is used so then we will be able
+[50:58] to do it so now the question is that if
+[51:00] I let's say have a given
+[51:02] PC and we know that this is a part of
+[51:04] the loop if I
+[51:07] fetch the address that is going to be
+[51:10] used in the next Loop
+[51:11] iteration it is possible that I might
+[51:14] reach the next Loop iteration first and
+[51:16] the data will come much later so what I
+[51:19] should do is actually I should fetch
+[51:21] something which is maybe several
+[51:22] iterations later right and this will
+[51:26] ensure that this distance is just about
+[51:28] Optimum and this is when the data
+[51:30] arrives so we have this scenario over
+[51:33] here so there is a fair amount let me go
+[51:36] back to the previous slide there is a
+[51:37] fair amount of research to actually
+[51:41] adjust uh the time between when we
+[51:45] actually issue the prefetch
+[51:48] instruction and uh when it is actually
+[51:52] used right so the point is that
+[51:57] this is the ideal scenario where we
+[51:58] issue it and just before it is used the
+[52:01] data arrives but we will never know when
+[52:04] to issue the prefetch instruction unless
+[52:05] we have a clearcut idea we're actually
+[52:08] monitoring the time it takes from a
+[52:10] prefetch to usage and based on that our
+[52:13] algorithm adjusts so what is the knob
+[52:16] that we have well the single knob that
+[52:18] we have is how many iterations do we
+[52:20] prefetch in advance and that can be
+[52:22] tailored
+[52:24] appropriately now from arrays let us
+[52:27] graduate to link lists so what I'm
+[52:29] showing over here is a typical code of a
+[52:32] link list where we start at a start node
+[52:35] and we just keep on iterating right so
+[52:38] we go so essentially temp is equal to
+[52:40] Temp next so we keep on
+[52:43] iterating uh so then we process a node
+[52:46] go to the next process that and so on so
+[52:49] what we can do in software is that we
+[52:51] can have a prefetch command that can
+[52:54] prefetch given a pointer to the next
+[52:56] node
+[52:57] it can prefetch the entire next node
+[53:00] itself so this prefetch uh instruction
+[53:04] or this prefetch function in this case
+[53:07] can do the
+[53:08] job I'll be it in a compiler assisted
+[53:10] way of actually prefetching the next
+[53:13] pointer so this is also called a pointer
+[53:17] chasing method where we're essentially
+[53:20] chasing the pointers of a link list and
+[53:22] what we can further do is instead of
+[53:24] fetching the next one we can just do
+[53:29] next so it can be the next one after
+[53:32] that next next but of course to find
+[53:34] next next we'll have to get the data so
+[53:36] there is no shortcut for doing it right
+[53:39] uh so that's the reason this is not a
+[53:41] practical idea as compared to Temp uh
+[53:43] Arrow next uh but the point is if we
+[53:46] have some data structure that just has
+[53:49] this pointer but does not have the data
+[53:51] some sort of an indexing data structure
+[53:54] then this can be done
+[53:57] and we can prefetch nodes of the link
+[54:00] list that we are going to access in the
+[54:02] future of course this cannot be used uh
+[54:05] with strides because link list accesses
+[54:08] cannot be characterized by strides
+[54:09] because typically in if you assume a
+[54:12] linear memory space uh then the objects
+[54:15] will be there everywhere right so the
+[54:17] link list will basically be formed like
+[54:19] this so there is no fixed strided access
+[54:22] pattern but with some compiler
+[54:25] intervention and by adding this prefetch
+[54:27] instructions these the prefetch data can
+[54:29] come
+[54:31] in what happens when we do incorrect
+[54:34] prefetching well we have discussed this
+[54:35] many many times prefetch too early
+[54:39] displays useful data prefetch too late
+[54:41] there is no
+[54:42] advantage and again uh data cache less
+[54:46] sensitive iach more sensitive L1 misses
+[54:51] well uh that is less of an issue L2
+[54:54] misses more of an issue because we go to
+[54:57] main memory the access time is large
+[54:59] very large 200 to 400 Cycles so our
+[55:04] entire pipeline stalls it fills up the
+[55:06] AR fills up and the work gets
+[55:09] stalled what can we do well a new novel
+[55:13] idea not that novel it's it's fairly old
+[55:16] but at least it's a different idea we
+[55:20] enter what is called The Run ahead
+[55:23] mode so in this case let's say we we
+[55:26] have a Miss in the L2
+[55:28] cache so clearly it'll go to memory and
+[55:31] that might take 300 Cycles so it returns
+[55:35] value which will be a junk value right
+[55:38] it will not be a it'll not be a you know
+[55:40] good value it'll be a junk value so we
+[55:43] restart execution with the junk value
+[55:45] all right so recall the idea with replay
+[55:49] where we had a poison bit so what we do
+[55:51] is that any instruction that forwards a
+[55:54] junk value to another one
+[55:56] that will also produce junk values so
+[55:59] this entire forward slice will
+[56:02] essentially produce junk values similar
+[56:05] to the idea of poison bits so why are we
+[56:07] doing this well uh we will see in a
+[56:10] second but the key idea is that if we
+[56:12] miss in the L2 cach it's a long latency
+[56:15] Miss no problem uh what we would do is
+[56:18] that we will simply get the
+[56:21] data set a bit say it is a junk value
+[56:24] propagate it to its forward SL
+[56:28] so we'll nevertheless still have a lot
+[56:30] of instructions in the pipeline that can
+[56:32] be executed correctly because they are
+[56:35] not in the forward slice of the
+[56:36] mispredicted load right so you'll have a
+[56:38] lot of instructions outside it if we
+[56:41] allow them to execute correctly in
+[56:43] effect what they will do is that they
+[56:46] will train all the predictors and also
+[56:49] they will prefetch data right so they
+[56:51] will Access Data accessing data means
+[56:53] that pulling it from the lower Reg aons
+[56:56] of the memory hierarchy to the upper
+[56:58] aons upper
+[57:00] levels and so effectively even if we
+[57:04] are running in this special mode so what
+[57:07] do we do we have regular execution we
+[57:09] encounter an L2 Miss then what we do is
+[57:12] we move in a different trajectory which
+[57:14] is a run ahead mode until our L2 data
+[57:18] comes back till that point of time we
+[57:21] don't do any useful work in the sense we
+[57:23] don't update architectural state but we
+[57:25] exec those instructions that are not
+[57:28] there in the forward slice of the load
+[57:31] that returned the junk
+[57:34] value they nevertheless do have an
+[57:37] advantage and the advantage is that they
+[57:39] do the job of training the predictors
+[57:41] and prefetching once the real data comes
+[57:43] we restart regular
+[57:45] execution so what do we do we flush the
+[57:47] instructions in the forward slice of the
+[57:49] L2
+[57:51] Miss so either we can flush the you know
+[57:53] large part of the pipeline or only those
+[57:55] instruction that are in the forward
+[57:57] slice we re-execute them using a replay
+[58:01] mechanism and we resume regular
+[58:03] execution so this was regular this was
+[58:05] run
+[58:07] ahead right regular run ahead and
+[58:10] regular so by doing this we prefetch
+[58:13] data and train our
+[58:16] predictors uh so uh a few more details
+[58:19] so before entering the runahead mode we
+[58:21] take a checkpoint of the architectural
+[58:23] register file the branch history
+[58:25] register return address stack such that
+[58:28] the Run Ahad execution doesn't
+[58:30] necessarily corrupt them right so we do
+[58:33] take a checkpoint of these things then
+[58:36] we enter the runahead
+[58:37] mode uh so whenever we read a junk value
+[58:40] we add an invalid
+[58:43] bit all the instructions in the forward
+[58:45] slice have an invalid bit the inv value
+[58:47] similar to the poison
+[58:49] bit so now there's the important
+[58:51] question that we ask that do we restrict
+[58:54] the invalid values to the pipeline what
+[58:56] if there is a store that is storing a
+[59:00] storing an invalid value storing a junk
+[59:02] value what do we
+[59:04] do so this is the typical architecture
+[59:07] where we have pipeline L1 and
+[59:10] L2 so if we restrict the changes to the
+[59:13] pipeline well then we nullify all the
+[59:14] stores we don't write anything to
+[59:16] architectural state if it is still the
+[59:19] L1 then that's okay we can have invalid
+[59:22] data in L1 and then it can be read back
+[59:24] from here but do not do not allow any
+[59:27] invalid data to go to
+[59:29] L2 right because that would involve a
+[59:32] massive amount of State Management and
+[59:35] once we return from the Run ahead mode
+[59:38] so we do uh have something called a
+[59:40] flash clear mechanism the details are
+[59:42] there in the book where all the invalid
+[59:45] lines can just be marked to be invalid
+[59:47] right you know I mean they're just not
+[59:49] valid right so we can simply ignore them
+[59:52] so uh both the options are possible in
+[59:55] the sense that we do not allow any
+[59:57] rights to the memory uh in the pipeline
+[60:02] we just absorb kill all the stores that
+[60:04] are
+[60:05] invalid or we allow some of some junk
+[60:09] data to come to the L1 cache
+[60:11] particularly if we are predicting the
+[60:12] value of the LT Miss and then we allow
+[60:15] it to proceed in the hope that maybe you
+[60:18] know some good would have come out of it
+[60:21] right at least and that good would be
+[60:23] seen in the enhanced Rees of predictors
+[60:27] and also in prefetching right so both
+[60:29] the options are possible and the
+[60:31] tradeoffs need to be well understood so
+[60:34] let me put it the trade-offs are
+[60:35] important of which one to
+[60:38] choose so uh there's a need for deeper
+[60:42] thinking over
+[60:44] here so if we take invalid values till
+[60:47] L1 cach if you use a traditional L1 cash
+[60:50] there'll be some problems we need to
+[60:51] maintain both in and nonin data together
+[60:55] the might be on the same line as well
+[60:58] right so it can be in a 64 byte line 4
+[61:00] bytes are valid four bytes are not
+[61:03] valid so one simple solution is that
+[61:07] don't have all of this
+[61:08] complexity have an additional run ahead
+[61:11] cache that contains only invalid data
+[61:14] right only invalid data is kept there
+[61:16] that kind of solve your problem to a
+[61:19] certain extent that uh this is the
+[61:22] pipeline we'll have a regular L1 and run
+[61:24] ahead L1 and and the Run ahead L1 will
+[61:27] be used in run ahead mode particularly
+[61:29] for invalid
+[61:31] data so run ahead L1 cache more details
+[61:34] a store might have the INF flag set for
+[61:37] two reasons its address is invalid then
+[61:40] you ignore so then you know it's wrong
+[61:42] and Let's ignore a stores data is
+[61:45] invalid but then we should not ignore
+[61:48] what we should do is we should access
+[61:50] the Run ahead
+[61:52] cash and we at the same time we should
+[61:54] also prefetch
+[61:56] because since the address is correct the
+[61:58] data is not correct at least we should
+[62:00] prefetch so the job of prefetching would
+[62:02] be to bring the block closer to the core
+[62:05] which means bring it to the L1 cache
+[62:08] this should definitely be done we should
+[62:10] perform the store we can keep additional
+[62:13] State per
+[62:14] line where we can Mark those uh invalid
+[62:18] stores as in so in a single cach line
+[62:20] it's possible parts of it might be
+[62:22] invalid parts of it might be valid
+[62:25] so then uh when the Run ahead mode
+[62:28] returns some State Management has to be
+[62:31] done loading a value well uh loading a
+[62:35] value will be the same uh first try
+[62:37] forwarding in lsq if it's not possible
+[62:40] we access the Run ahead cash and L1 cach
+[62:42] in parallel but of course the Run ahead
+[62:44] cache gets preference we load the data
+[62:48] if the data is invalid we Mark the load
+[62:50] data is
+[62:51] invalid right uh so otherwise we load
+[62:54] data from the L1 cache
+[62:57] and if there is a miss so so so by the
+[62:59] way there is an important point
+[63:01] to put over here that invalid data is
+[63:05] only restricted to the runahead cache it
+[63:08] never enters the regular L1 or L uh L2
+[63:13] cache right it's only restricted to uh
+[63:16] that point uh it's only restricted to
+[63:18] the Run ahead cache and if there is a
+[63:21] Miss then we uh is the same as
+[63:23] prefetching we'll load data from the L2
+[63:25] in a sense we'll bring it
+[63:28] up uh operation continued we keep
+[63:31] fetching and retiring in run ahead mode
+[63:34] instructions all the instructions before
+[63:37] the speculated load the one that missed
+[63:39] in the L2 cache they will
+[63:41] retire after that all instructions enter
+[63:44] the Run ahead mode which means they will
+[63:46] not retire they'll not commit as we
+[63:48] Fetch and execute more and more
+[63:50] instructions in a sense we are doing
+[63:53] prefetching along with that we are also
+[63:57] training the branch predictors by
+[63:58] treating runahead instructions as normal
+[64:01] instructions so definitely uh some
+[64:04] amount of Branch prediction training is
+[64:07] achieved once we return from the Run
+[64:09] ahead mode AK to a branch Miss
+[64:12] prediction we restore the checkpoint and
+[64:14] we start from there so correctness is
+[64:17] clearly not being sacrificed over
+[64:21] here but the additional Advantage we are
+[64:24] getting is that by running these
+[64:26] extra instructions when the pipeline
+[64:28] would have anyway idled so so what is
+[64:31] the key Insight well the key Insight is
+[64:33] that look if we have a Miss in the
+[64:35] L2 after that point for the next 3 400
+[64:40] Cycles the pipeline will basically idle
+[64:42] the RO will fill up and essentially
+[64:45] fetch will stall and the pipeline will
+[64:48] idle why not use this time to do
+[64:52] something productive what is it that we
+[64:54] can do productive
+[64:56] what we can do is that we
+[64:58] can execute a lot of
+[65:02] instructions
+[65:05] which can possibly the data might be
+[65:08] junk but the address will be correct and
+[65:11] also instructions that are not there in
+[65:12] the forward slice of the mispredicted
+[65:15] road so that would happen anyway and
+[65:18] simply uh just keep on executing them so
+[65:21] if the addresses are correct that would
+[65:23] do the job of prefetching
+[65:26] and all the data that we need will move
+[65:29] up to the caches which will save us a
+[65:32] lot of time after we exit the Run ahead
+[65:34] mode and enter normal mode so that's the
+[65:36] key uh basic the most important
+[65:40] idea something similar was proposed by
+[65:43] another group called helper threads so
+[65:46] here of course we have multiple codes
+[65:47] not simple not not a single one so in a
+[65:49] multicore processor when you have
+[65:51] multiple cores we can spawn threads or
+[65:54] lightweight processes and other course
+[65:56] if you have one thread over here we can
+[65:58] spawn another small thread over
+[66:00] there so let us assume in the program
+[66:03] there are some of these load
+[66:04] instructions that are kind of prone to
+[66:06] Misses right they often
+[66:08] miss so for this load instruction we can
+[66:11] store a we can have a backward slice the
+[66:14] backward slice is a set of instructions
+[66:16] that compute the address of this load
+[66:19] this backward slice can be moved to a
+[66:21] separate thread on a separate core right
+[66:24] so we can move the instructions and
+[66:25] their data this can be
+[66:28] moved the separate thread can then
+[66:31] execute the backward slice in parallel
+[66:33] so there is no correctness or
+[66:35] performance issue over here that's
+[66:36] happening
+[66:37] separately the computer address can then
+[66:40] be prefetched right so we can uh kind of
+[66:44] tag some of these critical loads might
+[66:47] require compiler support or might
+[66:49] require a profiling run which is an
+[66:52] earlier run to identify the loads that
+[66:55] were very hard to predict their
+[66:56] addresses were very hard to predict for
+[66:59] each of them we can store this small
+[67:01] backward slice where uh we can just
+[67:04] compute the address and prefetch it
+[67:06] right so for essentially for every load
+[67:08] we kind of run a small Nano program to
+[67:12] compute its address and it's prefaced in
+[67:15] parallel so the idea of helper threads
+[67:17] is pretty popular uh I am at least not
+[67:20] aware of any processor that directly
+[67:23] uses either uh run ahead execution or
+[67:26] helper threads uh but it's a pretty
+[67:29] promising idea and different avars of it
+[67:32] have influence different design
+[67:34] decisions over the years and they might
+[67:37] become uh far more much more
+[67:40] popular in the coming years and the
+[67:42] other thing is that many of the tricks
+[67:45] that are there in current processors uh
+[67:47] these are actually not disclosed to the
+[67:49] public so they may very well be there it
+[67:52] is just that we don't know
+[67:56] uh finally the conclusion so this is the
+[67:58] slide we all like to see this means it
+[68:00] ends a chapter so let's quickly conclude
+[68:02] and be
+[68:03] done caches are divided into a tag array
+[68:06] and a data array we discussed the three
+[68:10] most important kinds of caches fully
+[68:13] associative set associative and direct
+[68:15] mapped where set associative is by far
+[68:17] the most common because it has the
+[68:20] benefits of both the
+[68:22] designs we use the Elmore delay model uh
+[68:25] to estimate the latency and power
+[68:27] consumption of large structures within
+[68:30] the caches wires sense amplifiers data
+[68:32] arrays tag
+[68:34] array caches use a variety of
+[68:36] optimization techniques pipelining
+[68:38] non-blocking execution way prediction
+[68:41] tiling
+[68:43] Etc they have their limitations in terms
+[68:46] of their Mis rate so Trace caches are
+[68:50] used so it's kind of like a smart cache
+[68:53] that stores an entire trace of decoded
+[68:55] instruction uctions such that we can
+[68:57] bypass both the predictors as well as
+[69:00] decoders and finally you know regardless
+[69:03] of Trace caches we do need a instruction
+[69:05] prefecture and a data prefecture for the
+[69:08] prefet data has to arrive at the right
+[69:11] time which is just before it is used it
+[69:14] should not displace useful
+[69:17] data and instruction prefetching is
+[69:19] sensitive in the sense we expect High
+[69:21] hit rates data prefetching for l at
+[69:25] least the hit rates are low again
+[69:27] there's a huge margin for
+[69:29] improvement and we basically need to
+[69:32] predict the instructions in the
+[69:34] future and uh fetch
+[69:38] them for many access patterns like
+[69:40] arrays and so on it is easy but for link
+[69:43] lists and many other irregular data
+[69:45] structures even you know these doubly
+[69:47] indirect arrays right something like
+[69:50] this these are hard these are irregular
+[69:53] data accesses so these are hard to
+[69:56] uh prefetch but that said and done there
+[69:58] are a lot of these pointer chasing
+[70:00] techniques where we try to you know
+[70:03] Traverse a sequence of pointers either a
+[70:06] small program does it or the compiler
+[70:08] adds instructions to do it or we looked
+[70:10] at the Run ahead Moree we looked at
+[70:12] helper threads fe uh we somehow Traverse
+[70:16] such data structures and prefetch right
+[70:19] uh that's the broad idea so now we have
+[70:22] finished chapter 7 uh that's that should
+[70:26] give us a big smile uh the next chapter
+[70:28] would be the chapter on network on chip
+[70:31] no's

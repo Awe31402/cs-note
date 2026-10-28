@@ -1,0 +1,1853 @@
+[00:00] [Music]
+[00:00] n
+[00:35] let us now discuss the implementation of
+[00:37] forwarding so at every stage there is a
+[00:40] choice of inputs for that particular
+[00:42] functional unit we can either use the
+[00:45] default inputs from the previous stage
+[00:48] or we can use one of the forwarded
+[00:51] inputs so when there is a choice we
+[00:53] typically use a multiplexer to choose
+[00:56] between one of the
+[00:58] inputs and similar to our uh control
+[01:02] path that we had in the case of uh
+[01:06] simple hardwired processor as shown in
+[01:08] chapter
+[01:09] 8 uh we'll have a dedicated forwarding
+[01:12] unit that generates the signals for
+[01:14] these multiplexes which are called
+[01:16] forwarding multiplexes so this will be
+[01:19] clear when we discuss the
+[01:22] examples so uh before the discussion
+[01:24] let's take a look at our forwarding
+[01:26] paths once again uh so we have four four
+[01:30] forwarding paths we have one path from
+[01:32] RW to O which is a long three-stage
+[01:36] path we have uh two two stage paths
+[01:40] which are RW to ex and Ma to
+[01:43] oof sorry ma to is not required we don't
+[01:46] have it we have two one stage paths uh
+[01:49] which is RW to Ma and Ma to
+[01:53] ex right so basically o will have one
+[01:57] additional path into it ex will have two
+[01:59] two additional forwarding Parts one from
+[02:02] RW one from Ma and in the ma stage we'll
+[02:05] have one uh forwarding input from the RW
+[02:09] stage so we have a total of four
+[02:11] forwarding
+[02:16] paths so now let's now take a look at
+[02:19] the O stage with
+[02:21] forwarding so there is only one
+[02:23] forwarding path which is coming into the
+[02:25] O stage and this is coming from the RW
+[02:29] uh
+[02:30] stage so what we do is that let's first
+[02:34] consider uh the units of the O stage so
+[02:38] uh the inputs come from the ifo
+[02:41] register uh they are processed by the
+[02:44] functional units inside the O stage and
+[02:47] the outputs go to the oex
+[02:51] register so uh as we had
+[02:56] discussed uh in the previous
+[03:00] uh few slides and in the previous
+[03:03] chapter as well that there used to be
+[03:04] one
+[03:05] multiplexer to choose between the output
+[03:08] of the register file and the output of
+[03:10] the immediate unit uh this is for the
+[03:13] second operant whether the second
+[03:14] operant is a register or an
+[03:17] immediate so this was an original
+[03:19] multiplexer that we had so we still
+[03:21] maintain it in addition we add two new
+[03:25] multiplexes called forwarding
+[03:28] multiplexes so the first forwarding
+[03:30] multiplexer M1 multiplexer 1 takes as
+[03:34] its input op1 whiches uh the contents of
+[03:39] the first register so the contents in
+[03:41] the rs1 field or the First Source
+[03:43] register right its contents 32-bit
+[03:47] contents and also the forwarding input
+[03:51] from the RW stage right so we take both
+[03:54] of these values as inputs and we choose
+[03:57] one of them and how we choose one of
+[04:00] them we'll discuss the logic
+[04:02] later similarly at the end of uh the
+[04:07] other register file Port op2 which gives
+[04:12] us the value of the Second Source
+[04:14] register
+[04:15] rs2 we also do the same we have a
+[04:19] multiplexor that chooses between the
+[04:22] values uh between the value of the
+[04:24] register and the forwarded uh input from
+[04:28] the RW stage we choose choose between
+[04:30] them and uh so whatever we choose we
+[04:34] send
+[04:35] it to the original multiplexor m-h We
+[04:39] chooses between a registered input and
+[04:41] an immediate so the rest Remains the
+[04:44] Same and also we had discussed that in
+[04:46] the case of a store
+[04:49] instruction uh it is necessary to
+[04:54] uh uh essentially store the value of the
+[04:58] second uh s register that we read so
+[05:01] that was stored in the op2 field so that
+[05:04] is that is also there so the only two
+[05:08] additional changes that we make in this
+[05:12] uh particular aage diagram of the
+[05:14] pipeline stage is that we only add two
+[05:17] extra multiplexes M1
+[05:20] and
+[05:22] M2 so in M1 and M2 they help us choose
+[05:26] between what the register file is giving
+[05:28] us which we call the default input and
+[05:33] the forwarded input that is coming from
+[05:35] the RW stage we choose between them and
+[05:38] if forwarding needs to be done uh we
+[05:41] choose the input that coming from the RW
+[05:44] stage otherwise we choose what the
+[05:46] register file is giving
+[05:51] us uh let's now take a look at the ex
+[05:54] stage with
+[05:56] forwarding so in the ex stage what we do
+[05:59] is that we mostly maintain the structure
+[06:02] that we had and uh so in the ex stage
+[06:06] what we had is that we had so let's
+[06:09] first take what see what goes into the
+[06:12] ex stage so three values go into the ex
+[06:14] stage A op2 and B so a is uh the
+[06:19] contents of the First Source
+[06:21] register B is the contents of the Second
+[06:23] Source register or the immediate and op2
+[06:26] is the contents of the Second Source
+[06:28] register so the a b and op2 are what
+[06:31] going to the ex stage so we have been
+[06:33] seeing this diagram for quite some time
+[06:36] now now what we do is that we introduce
+[06:39] two additional multiplexes M3 and
+[06:43] M4 which are forwarding
+[06:46] multiplexes the forwarding multiplexes
+[06:48] choose between uh the values A and B and
+[06:53] the forwarded inputs that come from the
+[06:56] RW stage and the ma stage right so one
+[06:59] forwarding input comes from the ma stage
+[07:02] and one comes from the RW stage so both
+[07:05] of them are sent to these three input
+[07:08] multiplexes M3 and
+[07:10] M4 so both for M3 and M4 what are the
+[07:13] inputs again one input is that uh one
+[07:16] input comes from the previous stage
+[07:18] which is the O
+[07:20] stage two more inputs come from other
+[07:24] stages the ma and RW stage So based upon
+[07:27] the forwarding decision
+[07:30] we choose one of these inputs as the
+[07:32] output and they are sent to the Alo
+[07:35] unit also recall that the value of the
+[07:39] return address register needs to be sent
+[07:41] to the branch unit so the return address
+[07:44] register is a valid register so in its
+[07:48] inputs can also be
+[07:50] forwarded so uh we do that and uh so the
+[07:54] output of M3 is also sent to the branch
+[07:57] unit as should be the case and the
+[08:00] branch unit does its computation and
+[08:02] sends the results to the if
+[08:06] stage we add one more multiplexor
+[08:10] M5 uh to choose between
+[08:13] op2 which
+[08:16] is uh the register that the store
+[08:19] instruction will use and the forwarded
+[08:23] input from the RW
+[08:27] stage so one trick question that readers
+[08:30] can ask is that why are we not using the
+[08:33] forwarded input from the ma
+[08:36] stage so that is very simple to explain
+[08:40] the reason we are not doing this is
+[08:42] because we will actually require the op2
+[08:45] value in the ma stage right so instead
+[08:48] of doing an MA to ex
+[08:52] forwarding and uh it is much better to
+[08:56] follow our previous principle that we
+[08:58] forwarded as late as possible and we
+[09:01] forward it from RW to ma because the
+[09:04] instruction that is in MA in the current
+[09:06] cycle would reach the RW stage in the
+[09:09] next cycle and a current instruction
+[09:11] that's there in the exy ex
+[09:14] stage would re reach the ma stage in the
+[09:18] next cycle and in the ex Ma and RW
+[09:21] stages instructions don't get stalled so
+[09:24] just in case the value for op2 is being
+[09:28] produced by the immediately earlier
+[09:30] instruction we can get it from the
+[09:32] forwarding path in the next stage right
+[09:35] so we will reduce one input and also we
+[09:38] will go by our self declared principle
+[09:42] which is that we forward as late as
+[09:45] possible so that's the reason we add one
+[09:48] more multiplexer over here which is
+[09:51] M5 so what the reader would have noticed
+[09:55] by now is that adding forwarding to an
+[09:58] existing pipeline is actually very very
+[10:01] simple it's super simple and the idea
+[10:06] is uh very straightforward that for
+[10:09] every input to the functional unit we
+[10:13] add a multiplexer before it so let's
+[10:15] assume that this is the functional
+[10:20] unit we add a multiplexer before
+[10:27] it one of the inputs the multiplexer
+[10:30] comes from the previous stage which is
+[10:32] the default
+[10:33] input and the rest of the inputs come
+[10:36] from the forwarding
+[10:39] parts so if there is one forwarding path
+[10:41] there will be one additional input if
+[10:43] there are two forwarding paths there
+[10:45] will be two additional
+[10:48] inputs then we choose between one of
+[10:50] these inputs and we send it to the
+[10:52] functional unit so that is the simple
+[10:54] idea so since there are two forwarding
+[10:57] parts that come from the m and RW stages
+[11:00] to the ex stage every multiplexer to the
+[11:03] input of both the branch unit and the AL
+[11:06] unit we'll have to choose one input
+[11:09] among three one of them comes from the
+[11:12] previous stage and two come from
+[11:16] paths uh
+[11:18] op2 is an exception the reason it's an
+[11:21] exception is that it's not used in the
+[11:24] ex stage rather it is used in the ma
+[11:27] stage so we only need to consider one
+[11:30] forwarding path which is the RW
+[11:32] stage so just in case the correct value
+[11:35] is there in the RW stage we can forward
+[11:37] it at this point of time because we
+[11:40] can't forward it later the instruction
+[11:42] will leave the pipeline and just in case
+[11:45] the right value is there in the ma stage
+[11:48] instead of doing an MA to ex forwarding
+[11:50] we can do an RW to ma forwarding one
+[11:53] cycle later so this is according to our
+[11:56] principle that we forward as latest
+[11:59] possible Right One cycle
+[12:08] later so let's now move to the next
+[12:10] stage which is the ma stage in the ma
+[12:13] stage also
+[12:14] we uh maintain
+[12:18] everything uh that was there in our
+[12:20] previous
+[12:26] pipeline so we maintain all the
+[12:29] structures that were there in the ma
+[12:31] stage uh we maintain the memory unit and
+[12:34] the data memory we maintain everything
+[12:37] uh let's first uh focus on the inputs
+[12:40] and then we shall discuss the new
+[12:42] structures that we add so the input is
+[12:45] the ALU result which is the address so
+[12:48] for a load this is the only field that
+[12:49] is required and since this is
+[12:52] pre-computed by the AL unit it'll not be
+[12:56] affected with forwarding so it can go
+[12:58] directly to the the memory
+[13:00] unit in addition since it's the result
+[13:03] of the
+[13:04] ALU this is the beginning of a
+[13:06] forwarding path so when we are
+[13:08] forwarding from ma to ex it is this
+[13:12] value which needs to be sent to the ex
+[13:16] stage because this is the value that the
+[13:18] ALU has computed in the immediately
+[13:20] preceding cycle so we add a wire the
+[13:23] green wire which goes to the ex stage so
+[13:26] this is the forwarding path
+[13:30] all right so let me maybe uh write it uh
+[13:38] here okay uh now in the cons in the case
+[13:42] of a store uh we need to save the
+[13:44] contents of a register into
+[13:47] memory uh so this we have been referring
+[13:49] to the contents of this register as the
+[13:51] op2 field so the op2 field will be
+[13:55] affected by forwarding paths so what we
+[13:57] discussed in the last slide is that
+[14:02] for the op2 field we can do an RW to ma
+[14:05] forwarding because we want to forward as
+[14:08] late as
+[14:09] possible so we will use the forwarding
+[14:12] path which is coming from the RW stage
+[14:14] and going to the ex and O
+[14:17] stages
+[14:19] and what we shall do is
+[14:23] that uh we will add a set of wires
+[14:27] between the RW forwarding path and
+[14:30] choose the op2 field which is coming
+[14:32] from the previous stage which is the ex
+[14:35] stage and the op2 field which is coming
+[14:38] from the next
+[14:39] stage uh which is the RW stage so we'll
+[14:44] add a single multiplexor which is
+[14:46] multiplexor m6 it's our sixth
+[14:48] multiplexor which chooses between these
+[14:51] two inputs for the value that needs to
+[14:53] be stored this value is then sent to the
+[14:57] memory
+[14:58] unit and in the memory unit the load or
+[15:01] store happens and the result of the load
+[15:04] uh is sent to the MW register recall
+[15:09] that the store does not have a register
+[15:11] result so it will not produce any output
+[15:14] other than writing to
+[15:16] memory the RW stage is very simple we'll
+[15:19] have a register right unit and uh in the
+[15:23] case of
+[15:24] RW uh we for actually forward the RW
+[15:27] result to three stages so let me just go
+[15:29] back and show the forwarding paths once
+[15:33] again so forwarding paths are RW to
+[15:38] O RW to
+[15:42] ex RW to M RW is the biggest forwarder
+[15:47] in that sense it forwards to three
+[15:48] stages and ma2 ex ma2 ex we have already
+[15:52] seen the forwarding path we need to take
+[15:54] a look at these
+[15:57] three so let's go to this path so the
+[16:01] register right unit the value uh that it
+[16:04] receives uh from the previous stages the
+[16:07] value of that needs to be written into
+[16:09] the register the same value is forwarded
+[16:13] to the oex and Ma stages via a
+[16:18] path so this is fairly simple uh some
+[16:22] students might find it slightly
+[16:24] difficult to understand it for the first
+[16:27] time as the reason let's go back to the
+[16:29] aage diagram shown over
+[16:32] here so what we see is uh that
+[16:37] uh uh so so let's first uh the aage
+[16:41] diagram remains as it is I've have not
+[16:43] shown the interlock units uh for you
+[16:47] know reasons of Simplicity but the
+[16:49] interlock units will also be there so if
+[16:51] I have forwarding the only additional
+[16:54] structures that I shall have is these
+[16:57] blue multiplexes and if you will count
+[16:59] there are six of them 1 2 3 4 5 and six
+[17:04] we added two multiplexers in the O stage
+[17:07] the multiplexes choose between the value
+[17:09] that's coming from the RW stage right
+[17:13] the last stage and the inputs generated
+[17:16] by the register file so we have this
+[17:18] multiplexer and this
+[17:20] multiplexer in the ex stage we add three
+[17:23] multiplexes because ex receives
+[17:25] forwarded inputs from two stages from
+[17:28] the ma stage and the RW stage so each of
+[17:31] these two multiplexes chooses between
+[17:33] the default input coming from the
+[17:36] previous stage and inputs coming from
+[17:38] the ma and RW stages
+[17:41] respectively we need to add one more
+[17:43] multiplexer for the store value because
+[17:46] a store value might be coming from the
+[17:49] RW stage so uh this chooses between the
+[17:53] value the default value and the value
+[17:55] coming from the RW
+[17:57] stage then in the ma stage so ma stage
+[18:00] is both a consumer and a producer of
+[18:03] forwarded
+[18:04] information so the value it receives in
+[18:07] the previous cycle can be forwarded to
+[18:09] other stages namely the ex stage so we
+[18:12] add this green line over here which is a
+[18:17] path and the M stage at the same time
+[18:21] receives the forwarded input from the MS
+[18:24] uh from the RW stage so the RW stages
+[18:27] input goes here so we choose so in the
+[18:30] case of a store instruction not required
+[18:32] in the case of a load but in the case of
+[18:34] a store we choose between the default
+[18:37] input and the input coming from the RW
+[18:39] stage with the help of our sixth and
+[18:42] last
+[18:44] multiplexer the results go to the memory
+[18:46] system and we perform a load or store
+[18:50] finally we have a register right unit
+[18:53] and uh which does the work of the RW
+[18:56] stage we all also send the value that we
+[19:00] get from the previous
+[19:02] stages right uh so we we shall either
+[19:05] get a value from the ex stage or a value
+[19:07] from the memory unit in the case of a
+[19:09] load so whatever the value is we send it
+[19:12] to the rest of the three stages o ex and
+[19:16] Ma via the red forwarding path so that
+[19:20] is so let me remove The annotation on
+[19:23] this
+[19:24] slide so this is pretty much all the
+[19:27] changes that we need to do
+[19:29] to implement
+[19:31] forwarding and it's not much so if you
+[19:34] think about it we have added six
+[19:37] multiplexes uh to choose between the
+[19:39] default inputs and forwarded inputs the
+[19:41] six
+[19:42] multiplexes I can have laser pointer
+[19:46] here yeah so the six multiplexes are 1 2
+[19:50] 3 4 5 and six then we have a set of
+[19:55] wires that come from other stages and
+[19:58] depending upon the logic we choose
+[20:02] inputs and that input is the input for
+[20:05] the functional unit that's
+[20:10] all now let's take a look at forwarding
+[20:13] conditions so we need to determine if
+[20:16] there is a conflict between two
+[20:17] instructions in different stages so
+[20:20] conflict means a read after WR
+[20:22] dependency so we find if there is a
+[20:25] conflict for the first operant rs1 or ra
+[20:28] and we find if there is a conflict for
+[20:30] the second operant which is rs2 or Rd Rd
+[20:33] in the case of a store and for the first
+[20:35] case RA in the case of a r
+[20:38] instruction so we will always so let's
+[20:40] assume that there is an instruction in
+[20:42] the O
+[20:43] stage and it has a read after right kind
+[20:47] of dependence or a conflict with
+[20:49] instructions in all the three other
+[20:51] stages right in the ex stage in the ma
+[20:55] RW so basically for the same operant
+[20:58] we'll always choose the
+[21:03] earliest uh well uh we'll always uh this
+[21:07] statement is not actually correct we'll
+[21:10] always forward
+[21:14] from the latest
+[21:17] instruction so which basically means
+[21:20] that uh if the instruction is coming
+[21:23] from the ex stage so so so let's assume
+[21:26] that all the three instructions over
+[21:28] here
+[21:29] uh R so this instruction is of the type
+[21:31] add R1 R2 and R3 and all the three
+[21:36] instructions over here are generating a
+[21:37] value for
+[21:38] R2 so we'll essentially forward from the
+[21:42] ex stage because that is the latest
+[21:44] stage right so ex stage uh is
+[21:47] essentially overwriting the values of R2
+[21:50] produced by the two other stages so we
+[21:52] always forward from the latest
+[21:54] instruction that is before the current
+[21:57] instruction
+[22:01] so let's take a look at the forwarding
+[22:03] algorithm which is very similar to the
+[22:05] conflict detection
+[22:07] algorithm so let's look at the conflict
+[22:10] on the first operant which is rs1 or ra
+[22:13] so the input is the instructions A and B
+[22:18] and the possible forwarding is that
+[22:20] instruction B is coming before
+[22:22] instruction a so B can forward some uh
+[22:25] data to instruction a so if a conflict
+[22:29] ex sorry if a conflict exists on rs1 or
+[22:32] ra we return true otherwise if there is
+[22:35] no conflict we return
+[22:37] false so let's see so since a in this
+[22:40] case is a consumer instruction and it is
+[22:43] one of the following no b b BQ bgt call
+[22:47] not and move it means that it does not
+[22:50] use its First Source right it's so it
+[22:53] does not use the First Source operant it
+[22:56] does not use the rs1 field and since it
+[22:59] does not read from any register we
+[23:00] cannot have a conflict so we return
+[23:03] false similarly if B is a part of this
+[23:07] set which is noop CMP store BBQ bgt and
+[23:12] R it means that we are not writing to
+[23:15] any register so we cannot have a read
+[23:17] after write kind of dependency when
+[23:19] registers are involved so we also return
+[23:23] false otherwise we set the
+[23:26] sources so we say that Sr C1 is A's rs1
+[23:31] field however we take this special case
+[23:35] into account that if a is a return
+[23:38] instruction then we set SRC 1 as ra so
+[23:41] refer to chapter 8 we had discussed this
+[23:44] special case so refer to chapter 8 for
+[23:47] this similarly we set the destination so
+[23:51] in the case of a we take the consider
+[23:53] the destination variable so mind you
+[23:55] this entire algorithm needs to be
+[23:57] implemented in hard Hardware so we are
+[23:59] only showing the Pudo code over here so
+[24:03] the destination uh register should
+[24:05] ideally be the Rd field in instruction
+[24:08] B however if instruction B is a call
+[24:12] instruction then the call instruction
+[24:14] writes to the return address register so
+[24:17] D will be equal to
+[24:19] ra once we have set the source and the
+[24:22] destination we need to detect conflicts
+[24:26] so if SRC 1 is equal to T which means
+[24:29] that the source First Source of a is
+[24:32] equal to the destination of B then the
+[24:34] read after WR kind of conflict on
+[24:37] registers exists so we return true
+[24:39] otherwise we return
+[24:43] false so let's look at a similar uh
+[24:46] algorithm for the second uh Source
+[24:49] operant which is rs2 and RD in the case
+[24:52] of a
+[24:53] store so the inputs are instructions A
+[24:57] and B
+[24:59] and there's a possible forwarding path
+[25:01] from instruction B to instruction
+[25:04] a so a conflict will exist on the second
+[25:08] operant rs2 and RD if a conflict exists
+[25:11] we return true otherwise we return false
+[25:14] similar to the previous
+[25:16] algorithm so let's do one more thing
+[25:18] let's first look at instruction a so if
+[25:21] it's a part of this set noop B BQ bgt so
+[25:25] it's a branch instruction or it's a call
+[25:29] this means that it does not read from
+[25:31] any register in specific it does not use
+[25:34] the Second Source operant of the
+[25:37] register uh Source operant of the
+[25:40] instruction so since it does not read
+[25:42] from any register let's straight away
+[25:44] return
+[25:46] false
+[25:48] now let's consider instruction B so
+[25:51] again if instruction B is a part of this
+[25:54] step this set no op compare store Branch
+[25:59] different flavors of branches in return
+[26:02] it means that it does not write to any
+[26:05] register so we can also return false
+[26:08] because if we are not writing to any
+[26:10] register we can't have a raw dependence
+[26:13] on a register so we will also return
+[26:17] false now
+[26:19] let's see if the second operant is a
+[26:22] register or an immediate so let's do
+[26:25] this little check and we had done the
+[26:27] same check for interlocks so let's do it
+[26:30] right now so a is not a store
+[26:33] instruction so why do we again say that
+[26:36] a is not a store instruction because a
+[26:39] store instruction by default has a
+[26:41] Second Source right so store instruction
+[26:43] has two sources pretty much it does not
+[26:46] have a register
+[26:47] destination and the store instruction
+[26:49] has an immediate as well so again you
+[26:52] can see that this is a consequence of
+[26:54] the special case that was done for store
+[26:57] instructions so moment we have special
+[26:59] cases we require a lot of logic in the
+[27:02] pipeline to handle these special
+[27:04] cases so that's the reason special cases
+[27:07] should be avoided as far as possible but
+[27:10] when we did make an exception for the
+[27:12] stored instruction we didn't have a
+[27:15] choice so coming back if A's immediate
+[27:18] field is set to one this means that it
+[27:20] does not have a second register source
+[27:24] so we can happily return false so this
+[27:27] means that the second register Source
+[27:29] you know does not
+[27:53] exist now that we have at this point
+[27:56] assertain that a second register source
+[27:59] does exist we set src2 to a a. rs2 and
+[28:05] if it's a store instruction we set src2
+[28:08] to a.
+[28:10] Rd then uh we set the destination to b.
+[28:14] Rd and what we had done in the previous
+[28:18] slide which is that in the previous
+[28:20] algorithm right algorithm 6 is that if
+[28:23] B's op code is a call instruction then
+[28:26] we set the destination to the return
+[28:28] address
+[28:29] register this is because the call
+[28:31] instruction wrs to the return address
+[28:35] register henceforth detecting conflicts
+[28:38] is very very easy we say if SRC 2 is
+[28:41] equal to D then we return true means a
+[28:44] conflict exists there is a read after
+[28:47] write dependency with registers involved
+[28:53] false so this was the algorithm for the
+[28:56] Second Source register
+[28:59] let us now look at the relationship
+[29:01] between interlocks and
+[29:03] forwarding because we will still require
+[29:06] interlocks so we'll still require a data
+[29:08] lock uh so we'll require it to check for
+[29:12] the load use Hazard right so the load
+[29:14] use Hazard exists which means that in
+[29:17] consecutive stages we have a load first
+[29:21] and then an instruction that uses the
+[29:23] result of the load an ALU instruction in
+[29:26] ex stage which uses the result of the
+[29:28] load we'll have a load use Hazard so a
+[29:30] stall needs to be
+[29:32] introduced the way we shall do this is
+[29:35] that if the instruction in the ex stage
+[29:37] is a load and the instruction the OS
+[29:40] stage uses its loaded
+[29:42] value and it will use it also in the ex
+[29:45] stage right then we need to stall for
+[29:48] one cycle so this is the load use
+[29:50] Hazard and uh so this is very easy to
+[29:54] detect we can use our same uh conflict
+[29:56] detection circuitry
+[29:58] to find uh the existence of a load use
+[30:01] Hazard and then use the same circuitry
+[30:03] to stall for one cycle the branch lock
+[30:06] Remains the Same as before where we use
+[30:09] option number three and if the branch is
+[30:12] taken we
+[30:13] cancel nullify convert to Bubbles the
+[30:17] instructions in the if and O
+[30:21] stages so let's now take a look at the
+[30:23] Curious call of the call instruction I
+[30:25] have a burger over here because there is
+[30:28] some food for
+[30:31] thought so the call instruction
+[30:33] generates the value of RA the return
+[30:36] address in the RW stage right that's
+[30:39] when we add PC equals uh sorry ra is PC
+[30:43] +
+[30:44] 4 so any instruction that uses the value
+[30:47] of RA so you can always You Know Nothing
+[30:50] Stops us from writing an instruction of
+[30:52] this type add R1
+[30:56] R 4 right so any instruction that uses
+[31:00] the value of R such as r or you know an
+[31:03] instruction of this type I can always
+[31:06] Define uh a scote snippet of this type
+[31:08] call do Fu and
+[31:10] R so any such instruction still works
+[31:14] correctly why right you need to prove
+[31:17] it so uh I think
+[31:21] uh I'll give you an outline of the proof
+[31:23] so the call is a taken Branch so if call
+[31:27] is a taken branch and I just draw a
+[31:29] pipeline
+[31:30] diagram so uh what will
+[31:37] happen is that in a given cycle if the
+[31:41] call instruction is over here there will
+[31:43] be no instructions there'll be bubbles
+[31:45] in the previous two stages right bubbles
+[31:48] in ex and
+[31:50] ma uh the reason
+[31:53] being uh that
+[31:56] uh it's a taken bre Branch so basically
+[31:58] the two instructions immediately after
+[32:00] it will get converted to
+[32:02] Bubbles so the earliest Point uh sorry
+[32:08] the latest point at which instructions
+[32:11] can be there is at this point so here
+[32:14] you can have an
+[32:15] instruction which will use the value
+[32:18] that the call instruction will produce
+[32:20] and this can use the RW to O forwarding
+[32:24] path right no problem in that and since
+[32:27] you know we are only adding PC + 4
+[32:31] that's a very simple addition it's a
+[32:32] very fast addition then quickly do the
+[32:34] addition and we can forward it from RW
+[32:36] to O So any instruction which will be
+[32:40] there right the closest it can come to a
+[32:42] call instruction is it'll come into the
+[32:45] O stage so it can get the value from the
+[32:47] RW to O forwarding path as a result
+[32:51] it'll get the correct
+[32:53] value so let's take a look at the
+[32:55] complete data path again with forwarding
+[32:57] and you know our pipeline in full blown
+[33:00] Glory so this is the basic pipeline that
+[33:03] we had right uh so we have gradually
+[33:06] been building on it we added our
+[33:10] registers subsequently we added our
+[33:13] multiplexes right six of them so the
+[33:17] forwarding multiplexes have to be
+[33:18] controlled so the way we will do it is
+[33:20] that all the pipeline registers will
+[33:23] send information about their
+[33:25] instructions to the forwarding unit the
+[33:28] forwarding unit will compute the control
+[33:30] signals for all these multiplexes I've
+[33:33] not shown
+[33:34] them uh you know in the interest of
+[33:36] readability but pretty much there are
+[33:37] lines from this to each of the
+[33:39] multiplexes right to control
+[33:42] it similarly we'll have our data lock
+[33:44] and Branch lock circuitry exactly the
+[33:46] way we had before uh no difference in
+[33:49] that it is just that the data lock logic
+[33:52] changes it becomes slightly more simpler
+[33:55] that's the reason I've not taken inputs
+[33:58] from the other two stages into the data
+[34:00] lock unit it's only the ifos stage and
+[34:02] Ox stage because in this instruction and
+[34:05] this instruction these two
+[34:07] matter for computing if there is a load
+[34:10] use Hazard or not so that's the reason
+[34:13] inputs have been taken only from these
+[34:15] two registers and the stall and the
+[34:17] bubble circuitry Remains the Same so
+[34:20] just to summarize at this particular
+[34:22] point we have a fairly complicated
+[34:25] processor on our screen so it's a five
+[34:28] stage pipeline it's called a five stage
+[34:31] in order pipeline because instructions
+[34:33] are not overtaking each other they move
+[34:35] in program
+[34:37] order and we have pipelining we have
+[34:40] interlocks we have
+[34:42] forwarding almost everything that is
+[34:44] required to get a high performance in
+[34:47] order implementation right in order
+[34:49] processor
+[34:52] implementation so this is great it's
+[34:55] just that uh you know it's fairly
+[34:57] complicated
+[34:58] so you will see in the website of the
+[35:00] book that we uh at least are
+[35:04] Distributing the logisim and vhdl models
+[35:09] of the base processor so it does not
+[35:11] have pipelining and interlocks and
+[35:14] forwarding but normally as assignments
+[35:17] we ask students to create a pipeline
+[35:21] with interlocks pipeline stages and
+[35:23] forwarding and they able to do it it's
+[35:25] not a lot of work so in a month or two
+[35:27] it's possible to do it and it's a lot of
+[35:30] fun so I would advise all the readers
+[35:32] and listeners you know readers of the
+[35:35] book and listeners of this
+[35:36] video that you know the right way and
+[35:40] the most uh effective way of learning
+[35:44] how to design a pipeline processor is to
+[35:46] actually build one so you can take uh a
+[35:50] base processor that we have built in
+[35:52] vhdl uh that does not have pipelining
+[35:55] from the book's website and then add add
+[35:57] pip planning to it so it's a lot of
+[36:01] fun all right so now that we have seen
+[36:04] forwarding we can move on to the
+[36:06] performance metrics of how to find out
+[36:08] if a pipeline is fast or
+[36:11] slow so what do we typically mean by the
+[36:14] performance of a processor right you
+[36:16] know people will say One processor is
+[36:18] faster than the other so what do we mean
+[36:21] by that well the answer is almost
+[36:23] nothing so we should be asking a
+[36:25] different question because there was a
+[36:27] problem in our previous
+[36:28] question so we should be asking what is
+[36:31] the performance of the processor with
+[36:33] respect to a given program or set of
+[36:36] programs because it is possible that
+[36:38] processor a is fast for a certain
+[36:40] program and slow for another program and
+[36:43] vice versa right processor B is faster
+[36:46] is for some set of programs and slower
+[36:48] for other set of programs so we should
+[36:51] you know ask these questions in the
+[36:53] context of a you know set of programs
+[36:57] second how do we Define performance so
+[37:01] let us Define performance very simply as
+[37:06] a quantity that is inversely
+[37:08] proportional to the time it takes to
+[37:09] execute a program so what we do is that
+[37:13] we take a CPU we take a
+[37:18] processor and we give it a program
+[37:29] to
+[37:30] execute and simultaneously we start a
+[37:33] stopwatch
+[37:35] right so I'm a bad drawer so hopefully
+[37:38] you this is showing a watch so we start
+[37:41] a stopwatch and so the program starts
+[37:44] and the program ends and the total
+[37:47] amount of time it takes that is
+[37:49] indicative of the performance of a
+[37:51] processor So the faster is the processor
+[37:54] the
+[37:55] slower uh sorry the faster is the the
+[37:57] processor the less is the time it takes
+[38:00] to execute a program and uh we
+[38:03] essentially refer to Performance as a
+[38:05] quantity which is inversely proportional
+[38:08] the time it executes to takes to execute
+[38:11] a given program so you will typically
+[38:13] hear many other things clock frequency
+[38:16] and number of cores and so on so
+[38:19] performance is none of that performance
+[38:21] is simply a quantity that is inversely
+[38:25] proportional to to the time it takes a
+[38:27] execute a program so if you want to
+[38:29] compare processor a and processor B then
+[38:33] uh you take processor a and processor B
+[38:36] give both of them the same program to
+[38:38] execute the one that is faster has
+[38:41] higher performance the one that is
+[38:42] slower has lower
+[38:45] performance so let's do a little bit of
+[38:47] math and let's derive what is called the
+[38:49] performance equation which is very very
+[38:51] important is the Crux
+[38:54] of uh you know the entire pipeline math
+[38:58] so let us Define the time a program
+[39:00] takes as a number of seconds right so
+[39:04] then let's do a little bit of very very
+[39:06] simple
+[39:07] algebra so let us say number of seconds
+[39:09] divided by the number of clock Cycles
+[39:12] multiplied by the number of clock Cycles
+[39:14] divided by the number of instructions so
+[39:16] this is the number of instructions that
+[39:18] the program you know actually executes
+[39:20] on the pipeline right so let's assume
+[39:22] this is a number of dynamic instructions
+[39:25] so let me just quickly differentiate
+[39:27] with in static and dynamic instructions
+[39:29] so assume there's a for Loop
+[39:32] right so it is possible that the in the
+[39:34] body of the for Loop inside the binary
+[39:37] of the program there are only 10
+[39:39] instructions but if the for Loop is
+[39:41] running for a thousand times the number
+[39:43] of instructions of the processor is
+[39:44] seeing is 10,000 right 10 * th000 so
+[39:49] when we talk about number of
+[39:50] instructions we refer to this quantity
+[39:53] is the number of instructions that the
+[39:54] processor sees these are called Dynamic
+[39:56] instructions
+[39:58] and then we multiply it by the number of
+[39:59] instructions so what we see is uh that
+[40:03] uh so it's a simple
+[40:05] algebraic uh thing that we have done
+[40:07] here so number of Cycles will cancel out
+[40:10] and number of instructions will cancel
+[40:13] out uh oops sorry this should be a
+[40:15] multiplication over here so number of
+[40:18] seconds divided by number of Cycles is
+[40:21] actually one by the clock frequency
+[40:23] because the clock frequency is the
+[40:25] number of cycles per second so the this
+[40:27] is one by the clock frequency 1 by F so
+[40:30] F comes in the denominator here the
+[40:34] number of Cycles divided by the number
+[40:36] of instructions is called the CPI cycles
+[40:38] per instruction this is very
+[40:41] important and the number of instructions
+[40:43] will refer to as num insts so pretty
+[40:46] much the time that a program takes is
+[40:49] CPI the number of clock cycles per
+[40:52] instruction multiplied by the total
+[40:54] number of dynamic instructions in the
+[40:56] program
+[40:57] the processor sees divided by the
+[41:00] frequency so as you can see this is the
+[41:03] time a program takes it's not just the
+[41:05] frequency that are other
+[41:07] variables so let us Define performance
+[41:10] which is a quantity which is per
+[41:12] proportional to one by the time so
+[41:15] performance is is one by this right so
+[41:20] we will say so this will basically be F
+[41:22] divided by CPI time number of
+[41:26] instructions let us refer to 1 by CPI as
+[41:29] IPC IPC is instructions per cycle so the
+[41:33] performance will be proportional
+[41:35] to IPC instructions per cycle times the
+[41:39] frequency divided by the number of
+[41:42] instructions so this is a very very
+[41:45] important
+[41:47] equation it's very simple it's very
+[41:50] important and most of the students get
+[41:51] it wrong that makes it even more
+[41:54] important and uh still
+[41:58] uh we will appreciate this equation in
+[42:00] many of its forms but let's at least try
+[42:03] to memorize it for the time being so
+[42:05] this says that the performance of a
+[42:08] processor with respect to a given
+[42:10] program is the IPC the number of
+[42:14] instructions on an average that we
+[42:15] execute per cycle multiplied by the
+[42:21] dynamic instructions in the program so
+[42:23] it's three quantities determine the
+[42:26] performance not one by three that's
+[42:28] important to remember and what are the
+[42:31] units of performance well they are
+[42:33] arbitrary so you can think of it as 1 by
+[42:36] seconds but it's not important it's
+[42:38] arbitrary as long as the definition is
+[42:40] being
+[42:42] used in the same manner is being used
+[42:46] consistently all right so let's again
+[42:49] remember the performance equation which
+[42:51] is performance is proportional to IPC
+[42:54] instructions per cycle multiplied by the
+[43:00] instructions so the number of
+[43:02] instructions num inst let's see what
+[43:05] determines it so let us once again uh
+[43:09] for the benefit of The
+[43:11] Listener uh differentiate between static
+[43:15] instructions and uh Dynamic
+[43:19] instructions so a static instruction uh
+[43:23] is something like this so the binary or
+[43:24] the executable of a program will always
+[43:27] contain a list of static instructions so
+[43:30] as we had shown in a for
+[43:33] Loop if you have 10 instructions inside
+[43:36] the for Loop right then it's essentially
+[43:39] 10 but now if the for Loop runs for
+[43:42] th000 iterations the total number of
+[43:44] instructions that the processor sees is
+[43:47] 10,000 and each 10,000 of them are
+[43:49] Dynamic
+[43:50] instructions which is pretty much a
+[43:52] running instance of a static
+[43:56] instruction and this is created by the
+[43:58] processor when the instruction enters
+[44:00] the pipeline right so even if there are
+[44:02] 10
+[44:03] instructions in the code of the Fall
+[44:05] Loop the fall Loop executes a th000
+[44:08] times the 10,000 10 * th000 10,000
+[44:12] instructions are pretty much being
+[44:14] created by the processor so Dynamic
+[44:17] instruction which is exactly namin is
+[44:20] the number of instructions that the
+[44:22] processor actually
+[44:24] sees right so basically how do we you
+[44:27] know have exercise some degree of
+[44:30] control over
+[44:34] uh Dynamic
+[44:37] instructions well uh so the dynamic
+[44:40] instructions are pretty much a
+[44:43] function of so Dynamic instructions you
+[44:46] know with different kinds of pipelines
+[44:47] and so on will still remain the same is
+[44:50] a function of the code right so what do
+[44:53] we do we first write C code which which
+[44:57] is converted to assembly code and
+[44:59] assembly code has a one to one
+[45:01] correspondence with machine code I'll
+[45:04] just write MC to mean machine code so
+[45:07] smart compiler can essentially reduce
+[45:09] the number of dynamic instructions right
+[45:11] the number of executed
+[45:13] instructions by uh essentially
+[45:15] generating code which is more
+[45:18] compact instead
+[45:21] of generating code which requires a lot
+[45:23] of instructions a smart compiler can do
+[45:27] a lot of things to ensure that the
+[45:30] generating the generated code is fairly
+[45:32] Compact and we also do not have dead
+[45:34] code for example a lot of times in the
+[45:36] programmers would write some pieces of
+[45:39] code which are actually not used so the
+[45:42] compiler can remove all of that that is
+[45:44] one thing that the compiler can
+[45:47] do uh other things that the compiler can
+[45:50] do is if let's say at any point some
+[45:53] computation is being repeated it can
+[45:55] avoid that so in a similar manner uh
+[45:59] when we are generating assembly code
+[46:01] where the compiler needs to keep in mind
+[46:03] that reducing the number of instructions
+[46:05] will actually really help
+[46:09] us so uh let's look at some of these
+[46:12] schemes once again so dead code removal
+[46:15] means that programmers often write a lot
+[46:18] of code which does not determine the
+[46:20] final output so it can run but it has no
+[46:23] effect so this code is redundant so this
+[46:27] can be identified and removed by the
+[46:30] compiler often what programmers also do
+[46:33] is they will create very very small
+[46:35] functions and small functions have a lot
+[46:37] of
+[46:37] overhead we need to call the function we
+[46:40] need to return from the function we need
+[46:43] to spill registers and restore
+[46:45] registers instead of that so for example
+[46:48] I can define a function of this type
+[46:49] right
+[47:12] instead of that it's a much better idea
+[47:14] so we can you know write a piece of code
+[47:16] which says Y is equal to square of
+[47:20] X it is a much much better idea to
+[47:23] replace this with a code snippet which
+[47:25] says y = x * X so we will be saving a
+[47:29] call instruction a r instruction many of
+[47:31] these registers spill and restore
+[47:33] instructions and we'll be able to save a
+[47:36] fair amount of code uh if we sort of
+[47:39] remove this function and replace it with
+[47:41] the logic of the function so this is
+[47:43] called function inlining which means
+[47:46] that we paste the code of the Callie in
+[47:49] the code of the caller so uh compilers
+[47:52] will do function inlining by default and
+[47:55] function inlining CV
+[47:57] uh seriously helps us reduce the lines
+[48:00] of code especially lines of code which
+[48:03] in a sense are not required and
+[48:05] programmers nevertheless do declare very
+[48:08] very small functions and this has a
+[48:10] performance
+[48:11] overhead and inlining will reduce it to
+[48:14] some to a certain extent and this is
+[48:16] done automatically by
+[48:20] compilers let's now take a look at the
+[48:22] CPI so the CPI for a single cycle
+[48:25] processor is one because all
+[48:27] instructions take one cycle to
+[48:29] execute now let's consider the CPI for
+[48:32] an ideal pipeline which does not have
+[48:34] any
+[48:35] hazards so let's assume we have n
+[48:38] instructions and we have case
+[48:40] stages so the first instruction enters
+[48:42] the pipeline in cycle number one and
+[48:45] it'll leave the pipeline in cycle K
+[48:47] because there are no hazards and thus no
+[48:50] stalls the rest of the nus1 instructions
+[48:53] will leave in the next nus1 consecutive
+[48:56] cycle
+[48:58] so the total number of cycles that we
+[49:00] spend is nus1 + K because you know we
+[49:04] spend the first K minus1 Cycles not
+[49:06] doing anything right so for n
+[49:09] instructions to pass through a k stage
+[49:11] pipeline it'll take n n plus K minus1
+[49:16] cycles and since there are n
+[49:18] instructions the CPI will be n + kus1 /
+[49:23] n so this is also a very important
+[49:27] equation and should be uh appreciated
+[49:30] and understood to its full extent now
+[49:32] the CPI in this case if uh pipeline has
+[49:37] case
+[49:38] stages uh we will so let me maybe draw
+[49:41] it in one more sense and
+[49:51] show so in the first cycle if the first
+[49:54] instruction enters the first stage
+[49:57] then uh at the end of the K cycle it
+[50:01] will leave the pipeline subsequently in
+[50:04] every single Cycle One instruction will
+[50:07] leave the
+[50:08] pipeline so then the total amount of
+[50:10] time required will be n -1 + K same as n
+[50:16] + K - 1 so CPI will be n + K - 1 /
+[50:21] n let us now compute uh so we have
+[50:24] looked at the CPI so the what is the
+[50:27] third component it's the
+[50:32] frequency so let us uh let the maximum
+[50:37] amount of time that it takes to execute
+[50:40] any instruction within uh the processor
+[50:42] BT Max and let let us call this refer to
+[50:46] this as the amount of algorithmic
+[50:50] work so let us uh again assume that we
+[50:54] will not uh in the case of a single
+[50:56] cycle pipeline in the case of single
+[50:58] cycle processor which has only you know
+[51:00] pretty much one stage we'll not divide
+[51:03] the execution of an instruction into two
+[51:05] clock Cycles right because we don't have
+[51:07] a pipeline so in this case the minimum
+[51:11] clock cycle time that we can
+[51:13] afford uh is TMax because TMax is pretty
+[51:17] much the maximum time it takes to
+[51:19] process a single
+[51:21] instruction so what will be the
+[51:25] maximum uh possible frequency F Max will
+[51:28] be 1 /
+[51:33] TX in the case of a pipeline let us
+[51:36] assume that all the pipeline stages are
+[51:37] balanced which means that they do the
+[51:40] same amount of work it takes the same
+[51:41] amount of time to flow through them so
+[51:44] the time per stage and the total amount
+[51:46] of work you know that that you do the
+[51:48] total time it takes for an instruction
+[51:50] to finish his execution as
+[51:52] TMax if there are ke pipeline stages the
+[51:55] time per stage will be T Max ided
+[52:01] K furthermore so in pipelines we have
+[52:05] pipelines so so the typical structure is
+[52:07] like this that we have a pipeline
+[52:09] register SL
+[52:17] latch then we have some logic and then
+[52:21] again we have one more pipeline latch so
+[52:24] a pipeline resistor and a pipeline latch
+[52:26] latch is the same thing so pretty much
+[52:28] the delay is the time it takes to pass
+[52:31] through this logic right the logic can
+[52:33] be an add or multiplier ma stage o stage
+[52:36] does not matter and the delay of this
+[52:40] you know passing through the pipeline
+[52:41] register so let the latch delay be L as
+[52:44] I said in the case of pipeline a
+[52:46] pipeline register and a pipeline latch
+[52:48] are the same thing otherwise they're not
+[52:49] the same but we'll interchangeably use
+[52:52] the term pipeline register and pipeline
+[52:55] latch or just just a latch so let the
+[52:58] latch delay be l so the time per stage
+[53:02] is TX divided by K which is the amount
+[53:06] of work that you need to do in the logic
+[53:08] part right T Max by K plus
+[53:11] l so the minimum cycle time uh that you
+[53:15] can afford is T stage as a result if you
+[53:18] want to set the largest possible
+[53:20] frequency right run the processor as
+[53:22] fast as possible we shall thus have 1 by
+[53:25] f right T stage is equal to 1 by F where
+[53:30] f is the largest possible frequency at
+[53:35] which you want to run the
+[53:37] processor so 1 by F will be equal to TX
+[53:40] by k + L so let me explain uh this
+[53:43] formula once again so let us assume that
+[53:46] in a single cycle processor which is not
+[53:49] pipelined the maximum time it takes for
+[53:52] an instruction to go from the fetch part
+[53:55] to the register right part is
+[53:58] T-Max now if we divide this into K
+[54:01] Parts the time per stage will be TMax by
+[54:07] K also when uh we are dividing it into K
+[54:11] Parts the division is not always
+[54:13] perfect so the uh so basically the
+[54:16] signal also passes through a pipeline
+[54:21] latch the pipeline latch has a certain
+[54:24] delay associated with it so let's refer
+[54:26] to as l so the total delay is TMax by K
+[54:31] which is the amount of time uh it takes
+[54:34] for the instruction to pass through the
+[54:36] logic part of the pipeline and the latch
+[54:39] which is T-Max by k+ L so if we assume
+[54:42] so this is the minimum time you know
+[54:44] it'll take for one instruction to
+[54:46] complete one stage so we assume that
+[54:50] that frequency is the maximum possible
+[54:52] value as large as possible we'll have 1
+[54:55] by f
+[54:57] is equal to TX by k + L right so this
+[55:01] will give us the largest possible
+[55:03] highest possible
+[55:06] frequency so let us now work and find
+[55:09] the performance of an ideal pipeline so
+[55:12] let us assume that the number of
+[55:14] instructions uh is a constant right so
+[55:17] it's a grammatical mistake over here so
+[55:20] let's assume that this number is a
+[55:23] constant so the performance and let's
+[55:25] also
+[55:26] try to in a sense remove the
+[55:30] proportionality sign just for the
+[55:31] interest of readability the
+[55:33] proportionality sign is still there but
+[55:36] since we are removing number of insts
+[55:38] from the equation we are assuming that
+[55:40] it's a constant for all kinds of
+[55:42] pipelines because this is a function of
+[55:45] the program it has nothing to do with
+[55:48] pipeline uh we will have the performance
+[55:51] well equal to this is I'm sort of taking
+[55:53] a little bit of Liberty here it should
+[55:55] be proportional doesn't matter so it is
+[55:58] f divided by CPI or f * IPC so the F
+[56:01] that we have computed is 1 by TX by k +
+[56:04] L and the CPI that we had computed is n
+[56:07] + Kus 1 / by n a little bit of algebraic
+[56:11] manipulation gives us this
+[56:14] expression and a little bit of algebraic
+[56:16] manipulation then gives us this
+[56:20] expression let's keep going forward so
+[56:23] in this case what do we see we see that
+[56:26] latch delay is here n is the so let's
+[56:30] look at what these terms mean l is the
+[56:33] latch
+[56:40] delay uh T Max is the algorithmic work
+[56:44] or the total time it takes for an
+[56:45] instruction to go from one end of the
+[56:47] pipeline to the other let's call it the
+[56:49] algorithmic
+[56:53] work uh K is the number of St
+[57:05] uh that's all and N is the number of
+[57:15] instructions so let us do one thing
+[57:18] let's try to differentiate this equation
+[57:20] with respect to K to find the optimal
+[57:22] number of pipeline
+[57:24] stages so when we take a d dtive with
+[57:26] respect to K this is the equation that
+[57:28] we get and this is the final solution
+[57:31] that we get this is the optimal number
+[57:33] of pipeline stages so as you see in a
+[57:36] pipeline with no hazards the number of
+[57:39] optimal number of pipeline
+[57:41] stages is dependent on the number of
+[57:44] instructions so in fact as the number of
+[57:46] instructions tend to Infinity the number
+[57:48] of optimal pipeline stages will also
+[57:51] tend to
+[57:52] Infinity which
+[57:54] is uh not a very practical thing but
+[57:58] since we have assumed an absolutely
+[57:59] ideal pipeline we are getting you know
+[58:02] very ideal yet unrealistic
+[58:04] results also uh the number of optimal
+[58:09] pipeline stages in this case you know
+[58:11] the K I would say k opt right K optimal
+[58:17] is proportional to the square root of TX
+[58:19] square root of total amount of
+[58:20] algorithmic work and it is inversely
+[58:23] proportional to the latch DeLay So the
+[58:25] higher is the latch latch
+[58:27] delay right as a latch delay increases
+[58:30] the optimal pipeline stages actually
+[58:33] decrease right and lower is the latch
+[58:36] delay we can have more pipeline
+[58:38] stages so given the fact that we have
+[58:41] appreciated this let us move to the case
+[58:44] of a non ideal pipeline which actually
+[58:48] has hazards and interlocks and stalls
+[58:50] and Bubbles and everything that will
+[58:52] give us a much more realistic formula to
+[58:54] work with and we will will use exactly
+[58:57] the same methods of
+[59:01] analysis uh before moving to a non ideal
+[59:04] pipeline we'll just spend a quick half a
+[59:07] minute discussing the implications of
+[59:08] all the math that we did so the first
+[59:11] thing is that as we increase the latch
+[59:14] delay we should have you know lesser
+[59:18] pipeline stages right a lower number of
+[59:21] stages uh so this is because we need to
+[59:25] minimize the time w bed in passing
+[59:27] through latches accessing
+[59:29] latches as we increase the amount of
+[59:31] algorithmic work we require more
+[59:34] pipeline stages for ideal performance
+[59:37] this is because more pipeline stages
+[59:39] will help distribute the work better and
+[59:41] also consequently increase the overlap
+[59:44] across instructions between
+[59:48] instructions the second is that as the
+[59:50] number of instructions tends to Infinity
+[59:52] the number of Ideal pipeline stages also
+[59:54] tends to Infinity
+[59:56] and the highest startup time will get
+[59:58] amort will get in a sense amortized in
+[60:01] the long run but again this is for ideal
+[60:04] pipeline so let's quickly move to a non-
+[60:06] ideal scenario a real realistic scenario
+[60:10] so ideal CPI CP ideal is one when you
+[60:13] have no stalls in reality we do have
+[60:17] stalls right uh so ideal CPI is one you
+[60:21] know when number of instructions also
+[60:23] tends to Infinity but in in reality we
+[60:25] do have
+[60:27] stalls so the CPI the clock cycles per
+[60:31] instruction will be the clock CPI ideal
+[60:34] which in this case is one you know plus
+[60:36] the stall rate stall rate is a number of
+[60:39] stalls per instruction times the stall
+[60:42] penalty right it will simply be a
+[60:44] weighted mean and uh so so what so this
+[60:47] also this is also a very important
+[60:50] formula uh which should be appreciated
+[60:54] and uh in a sense remember remembered
+[60:56] for later use so this is trying to say
+[60:59] that in any non ideal processor the CPI
+[61:03] or the clock cycles per
+[61:05] instruction is equal to CPI IDL CP IDL
+[61:09] is basically the CPI on a pipeline with
+[61:12] no stalls so there every Cycle One
+[61:15] instruction will come out of the
+[61:17] pipeline so since every Cycle One
+[61:20] instruction is coming out this clock
+[61:22] cycles per instruction so assume that we
+[61:24] have a case stage pipeline line
+[61:27] right at the end of the pipeline we have
+[61:30] a person standing here in an ideal
+[61:33] pipeline he would see that every Cycle
+[61:36] One instruction is coming out so the
+[61:39] person would compute the CPI ideal to be
+[61:41] equal to
+[61:42] one now assume that there are some
+[61:45] stalls if there are some stalls the
+[61:47] person here can also find that given an
+[61:49] instruction what is the probability that
+[61:52] it'll suffer from a stall that's Point
+[61:54] number one and point number two is that
+[61:57] if it suppers from a stall for how many
+[61:59] cycles does it stall right so that's the
+[62:02] stall
+[62:03] penalty so we need to make some
+[62:05] assumptions here for a k stage pipeline
+[62:07] so let's make some standard assumptions
+[62:09] which have been made in other texts as
+[62:11] well so let us
+[62:14] assume that the stall rate is a function
+[62:16] of the program and its nature of
+[62:20] dependencies let us further assume that
+[62:22] the stall penalty is proportional to the
+[62:25] number of pip line stages this is a
+[62:27] reasonable assumption to
+[62:28] make uh the reason that we say that is
+[62:32] uh because you know if you have a 20
+[62:34] stage
+[62:36] pipeline uh for a load use Hazard we'll
+[62:39] not stall for one cycle we'll stall for
+[62:41] some number of Cycles which is
+[62:44] proportional to 20 right so we stall
+[62:46] from one cycle in a five stage
+[62:48] pipeline but if we divide each of these
+[62:51] single stages into four more stages
+[62:54] hopefully uh you know you know we
+[62:57] expect that instead of stalling for one
+[62:59] cycle in a 20 stage pipeline we might
+[63:01] stall for three four Cycles right it'll
+[63:05] scale so both these assumptions are
+[63:07] strictly not correct in the sense they
+[63:09] cannot be mathematically proven but they
+[63:11] are sort of empirically observed and
+[63:14] people think that it more or less
+[63:16] correlates with what they have seen in
+[63:19] real experiments and it also correlates
+[63:21] with their common
+[63:23] sense so we'll use this to make
+[63:25] mathematical model so we'll see that the
+[63:28] CPI is the CPI that we have observed
+[63:31] before which is n + Kus 1 by n so this
+[63:35] is pretty much the ideal CPI where we're
+[63:37] assuming that n is less than infinity
+[63:40] for a small value of n because this
+[63:42] number as n tends to Infinity this
+[63:44] number number you know as n tends to
+[63:47] Infinity n + Kus 1 by
+[63:50] n will tend to one right uh so let us
+[63:57] assume that for even for small values of
+[63:59] n this will be uh you know this does
+[64:02] capture our ideal
+[64:04] CPI furthermore let R be the stall rate
+[64:07] so we are seeing that the stall rate is
+[64:10] dependent on the instruction it is not
+[64:12] dependent on anything else and since
+[64:15] it's dependent on instruction it will
+[64:16] remain independent of the pipeline so
+[64:18] this is one
+[64:20] constant and we see that the stall
+[64:22] penalty is C * K where K is a number of
+[64:25] P pipeline stages and C is a constant of
+[64:30] proportionality so as a result the stall
+[64:32] rate which is again independent of the
+[64:35] number of pipeline stages and a stall
+[64:38] penalty which is proportional to the
+[64:40] number of pipeline stages CK so stall
+[64:43] rate time stall penalty is
+[64:46] rck so given this equation let us modify
+[64:50] our previous
+[64:52] equation so we are assuming p is equal
+[64:55] to or is proportional to so we're taking
+[64:57] a little bit of Liberty here and since
+[65:00] number of instructions remains constant
+[65:03] in the design space we have removed it
+[65:05] from our equation so f is still 1 by T
+[65:09] Max by k + L but the CPI equation has
+[65:12] changed so this is the additional factor
+[65:14] that has
+[65:15] come so let us further do some algebra
+[65:18] and simplify this expression so we come
+[65:22] here now let's again differentiate this
+[65:25] with respect to K if we differentiate
+[65:28] this expression with respect to K we
+[65:30] shall get the optimal number of pipeline
+[65:33] stages so then after differentiation we
+[65:36] come to this
+[65:37] expression as n tends to x
+[65:41] infinity we get the optimal number of
+[65:44] pipeline stages let's call it K
+[65:48] opt is equal to the square root of TX
+[65:52] TMax is the algorithmic work divided by
+[65:56] the latch delay multiplied by R which is
+[65:58] the stall rate and C which is the
+[66:01] constant of proportionality for the
+[66:03] stall penalty right square root of TX by
+[66:05] lrc so this is the result that we get
+[66:08] after all our algebra and let's quickly
+[66:12] try to appreciate what this equation is
+[66:14] trying to tell
+[66:16] us so for program so let's look at the
+[66:18] implications once again so let me just
+[66:20] write it once again K optimal is square
+[66:23] root of T Max
+[66:26] divided by
+[66:29] lrc right L is the latch delay R is the
+[66:33] stall rate and C is the constant of
+[66:36] proportionality for the stall
+[66:38] penalty so for programs with a lot of
+[66:41] dependencies massive number of
+[66:43] dependencies it have a high value of R
+[66:45] right High stall
+[66:47] rate we will need to
+[66:51] use a lesser use less pipeline stages
+[66:57] right why is this this case because we
+[67:00] don't uh you know so so let's consider
+[67:03] the pathological case for every
+[67:07] instruction is has a load use Hazard
+[67:10] with the instruction just before it
+[67:13] right that is
+[67:15] possible so in this
+[67:18] case uh we actually don't get gain much
+[67:22] by heavily pipelining the processor
+[67:24] right so so you know pipelining only
+[67:27] works when the number of dependencies
+[67:30] between instructions are limited such
+[67:32] that you know we can can take actual
+[67:34] value actual benefit of pipelining will
+[67:37] acre and the number of bubbles that
+[67:39] we'll introduce will be low so that's
+[67:43] the reason as we increase R increase the
+[67:45] stall rate it calls for a reduction in
+[67:48] the number of pipeline stages now for a
+[67:53] forwarding the stall penalty will be
+[67:55] lower much much lower so C is smaller
+[67:58] than a pipeline that uses
+[68:00] interlocks right because interlocks we
+[68:02] are stalling for more cycles for three
+[68:04] cycles for forwarding most of the time
+[68:06] we don't stall and even if we do stall
+[68:09] in the case of a load Hazard we stall
+[68:11] for only one cycle so C is
+[68:14] smaller so in this case for a pipelining
+[68:17] that is using forwarding since C is
+[68:19] smaller we'll uh we can the optimal
+[68:22] number of pipeline stages will actually
+[68:23] be more so for a pipeline with
+[68:25] forwarding it makes sense to make it
+[68:28] deeper deeper means add more stages so
+[68:31] it will require a larger number of
+[68:33] pipeline stages to get Optimal
+[68:35] Performance Let Me Maybe summarize this
+[68:42] implies have more
+[68:53] stages all right so let me once again
+[68:56] write
+[69:01] this expression so the optimal number of
+[69:04] pipeline stages is directly proportional
+[69:06] to square root of TX by
+[69:09] L so the
+[69:11] ratio of square root of TX by L which is
+[69:14] the total amount of work that needs to
+[69:16] be done to process a single
+[69:18] instruction divided by the latch
+[69:21] delay is not really changing across
+[69:25] technology see even as transistors get
+[69:27] smaller so look as transistors get
+[69:30] smaller T-Max will reduce because
+[69:32] smaller transistors are faster right so
+[69:36] for an instruction to go from the
+[69:37] beginning of the pipeline to the end of
+[69:39] the pipeline it'll take a lesser amount
+[69:42] time simultaneously latches are also
+[69:44] getting faster right roughly by a
+[69:46] similar Factor so TX by L will remain
+[69:49] the same as a result the number of
+[69:52] pipeline stages will not change very
+[69:54] significant
+[69:56] so this explains why the number of
+[69:58] pipeline stages has remained more or
+[69:59] less constant for the last 5 to 10 years
+[70:02] because TX by L remains more or less
+[70:05] constant R is any way dependent on the
+[70:07] nature of the
+[70:09] programs and C is a constant which also
+[70:12] Remains the Same so since over the years
+[70:16] as transistors get
+[70:17] smaller uh it's only TMax by L that we
+[70:20] expected to see some change in but that
+[70:22] is also not changing so it does not
+[70:25] really make
+[70:27] sense to increase the number of pipeline
+[70:33] stages so let us now do a little bit of
+[70:36] math so uh so hopefully we have
+[70:39] understood this so I need to make
+[70:42] another very very important point at
+[70:45] this point so what is the real advantage
+[70:50] pipelining the real advantage of
+[70:53] pipelining let's actually go back to
+[70:55] this equation over here so there are
+[70:58] three factors in performance one is the
+[71:00] frequency one is the IPC so the
+[71:03] performance equation can be thought of
+[71:05] like this as the performance is
+[71:06] proportional to the
+[71:07] frequency multiplied with the IPC
+[71:10] divided by the number of
+[71:13] instructions so what pipelining allows
+[71:17] us to do is it allows us to crank up the
+[71:20] frequency so it's TMax by K plus l so as
+[71:23] we increase k in a certain so we
+[71:26] decreasing the time per stage and so
+[71:30] then we can crank up the frequency if
+[71:33] the frequency increases hopefully the
+[71:35] performance will increase but
+[71:37] simultaneously as the frequency
+[71:39] increases and the number of stages
+[71:40] increase so this K over here is getting
+[71:43] offset by a K in a
+[71:46] denominator uh so the IPC there'll be an
+[71:48] effect on the IPC the IPC will most
+[71:50] likely come down but at one point you
+[71:53] know you'll have a maximum so so for a
+[71:55] lot of papers which have plotted the
+[71:57] performance in the y- AIS versus the
+[72:02] stages what they have actually found is
+[72:04] that at till one point we can increase
+[72:07] the frequency and we'll get higher
+[72:10] performance after that the performance
+[72:12] kind of decreases so they choose the
+[72:14] optimal point and the optimal Point
+[72:16] gives us the Optimal Performance as well
+[72:19] as the optimal number of pipeline
+[72:23] stages see anyway you can uh students
+[72:26] can plot this equation and see uh you
+[72:28] know for representative values and how
+[72:30] things
+[72:32] change so let's consider a typical math
+[72:35] so let's consider two programs where the
+[72:37] fraction of loads is4 40% loads 20%
+[72:42] branches and 50% of the branches are
+[72:45] taken branches another program which has
+[72:48] 30% loads 10% branches and 40% of the
+[72:52] branches are taken
+[72:53] branches the idea CPI is one for both
+[72:56] the programs and let 50% of the load
+[72:59] instructions suffer from a load use
+[73:02] Hazard assume that the frequency of P1
+[73:04] is 1 and the frequency of P2 is
+[73:07] 1.5 the units don't matter so compare
+[73:11] the performance of P1 and P2 so we will
+[73:14] see many many examples of this type
+[73:17] where you're given an instruction Miss
+[73:19] you're given the fraction of load use
+[73:21] hazards the frequencies of you know
+[73:24] process processor 1 and processor 2 and
+[73:27] let's compare the
+[73:29] performance so we know that the CPI new
+[73:34] right the CPI is CPI
+[73:37] ideal plus the stall rate times the
+[73:40] stall penalty so we will see the take
+[73:43] the ratio of
+[73:45] loads multiply them with 0.5 because
+[73:48] half of the loads suffer from a load use
+[73:50] Hazard so this is the ratio of loads
+[74:01] that have a load use
+[74:04] Hazard so this is pretty much the stall
+[74:08] rate multiplied by the stall penalty for
+[74:10] a load use Hazard is one Cycle Plus the
+[74:14] ratio of branches multipli by the ratio
+[74:17] of Taken branches within that so this is
+[74:20] the stall rate for branches
+[74:26] multiply it with the stall penalty and
+[74:28] the stall penalty for taken branches is
+[74:30] two
+[74:31] cycles so we compare compute the CPI by
+[74:34] taking values from the previous table we
+[74:37] find the CPI of P1 to be 1.4 and the CPI
+[74:40] of P2 to be
+[74:42] 1.23 so the performance can be expressed
+[74:45] as a quantity which is f divided by CPI
+[74:48] which is 71 for P1 units are
+[74:52] arbitrary similarly the performance of
+[74:54] P2 is equal to F / CPI which is 1.5 by
+[74:58] 1.23 which is
+[75:01] 1.22 since the performance of P2 is
+[75:03] higher we can say that P2 is faster than
+[75:06] P1 so we shall often use the term and
+[75:09] for arbitrary units we'll use a term Au
+[75:11] when the units don't matter right but
+[75:14] what is the most important takeaway
+[75:16] point from this slide is the way that we
+[75:19] compute the CPI so CPI is
+[75:26] CPI
+[75:29] IDL
+[75:47] plus stall rate time stall
+[75:51] penalty so the stall rate is that per
+[75:56] you'll have a
+[75:57] stall and so there can be multiple
+[76:00] reasons for a stall right so you can
+[76:02] have stalls because of loads you can
+[76:04] have stalls because of branches they are
+[76:06] disjoint events so we can put a
+[76:08] summation here so for the case of a load
+[76:11] we observe that given an
+[76:13] instruction let's say ratio loads tells
+[76:16] us that
+[76:18] for every instruction there's a
+[76:20] probability that probability of point4
+[76:22] that it's a load and for every load
+[76:25] there's a probability of 0.5 that it
+[76:27] will lead to a load use Hazard so the
+[76:30] total probability that given an
+[76:31] instruction it will lead to a load use
+[76:33] Hazard is4 * .5 which
+[76:36] is2 and the stall penalty for a load use
+[76:40] Hazard is 1 cycle so we get stall rate
+[76:43] time stall penalty for loads as this
+[76:46] expression similarly for branches we
+[76:48] need to find what percentage of the
+[76:50] instructions are branches and out of the
+[76:53] branches what what percentage are taken
+[76:56] branches that will give us the stall
+[76:58] rate because in for every taken Branch
+[77:00] we
+[77:01] stall and we'll get the stall penalty
+[77:04] the stall penalty is two cycles per
+[77:06] taken Branch so when we multiply both of
+[77:08] them we'll get the number of stall
+[77:11] cycles for taken
+[77:13] branches so when we add all of these
+[77:15] components we'll get the CPI new and
+[77:18] subsequently getting performance is very
+[77:20] simple because performance is
+[77:22] proportional to F / by CPI when the
+[77:25] number of dynamic instructions are the
+[77:29] same all right so let's take a look at
+[77:32] these factors once again we have in a
+[77:35] sense performance is equal to well we
+[77:37] have been slightly taking some Liberty
+[77:39] should technically be proportional but
+[77:42] we have been taking some Liberty let's
+[77:44] keep on taking it so performance is
+[77:46] pretty much f *
+[77:48] IPC divided by number of instructions
+[77:51] but number of instructions will is
+[77:54] completely Ely dependent on the compiler
+[77:56] so I have sort of taken it out of this
+[77:59] particular expression uh oops sorry so
+[78:03] frequency is
+[78:06] uh dependent on several things so what
+[78:10] is the frequency the frequency we said
+[78:13] is 1 / TX by
+[78:17] K plus l so it's dependent on the
+[78:20] algorithmic work which is a Time an
+[78:23] instruction takes to go from the
+[78:24] beginning of the pipeline till the end
+[78:28] divided by the number of pipeline stages
+[78:30] plus the latch DeLay So T-Max and L are
+[78:34] completely dependent on the way that the
+[78:36] circuit is made and the speed of
+[78:38] transistors right so this is pretty much
+[78:41] dependent on the transistor technology
+[78:43] and the circuit transistor
+[78:47] plus sorry transistor plus circuit
+[78:50] technology
+[79:01] the other factor in determining the
+[79:03] frequency is K which is the number of
+[79:05] pipeline stages and this is determined
+[79:07] by the architecture right the way we
+[79:09] design the chip the computer
+[79:10] architecture of the chip that determines
+[79:12] the factor K so as we see that the
+[79:15] frequency is determined by the
+[79:17] technology the transistor technology in
+[79:20] terms of T-Max and L and K is determined
+[79:24] by the the architecture right so T-Max
+[79:26] and L from the technology and K from the
+[79:29] architecture similarly when you talk
+[79:31] about IPC which is one by CPI it is of
+[79:35] course determined by the compiler
+[79:37] because you can order the code in such a
+[79:39] way that there are no load use hazards
+[79:42] right can be done so compiler has a role
+[79:44] to play the architecture definitely has
+[79:47] a role to play because look schemes like
+[79:51] forwarding are architectural schemes in
+[79:54] interlocks and forwarding are
+[79:56] architectural schemes there are many
+[79:57] many more architectural tricks that can
+[79:59] be done to ensure that our stalled rate
+[80:03] and a stall penalty go down so these
+[80:05] determine the IPC of the processor and
+[80:10] so the IPC is definitely deter
+[80:12] determined by the architecture and the
+[80:15] strongest uh you know the most potent
+[80:17] IPC increasing mechanism that we saw in
+[80:21] this lecture is forwarding so what does
+[80:23] forwarding do forwarding essentially
+[80:26] reduces the number of stalls it reduces
+[80:29] the CPI and it increases the
+[80:32] IPC we have the other factor which is
+[80:34] the number of instructions and the
+[80:36] number of
+[80:37] instructions is
+[80:39] dependent purely on the
+[80:42] compiler and so basically we have two
+[80:45] three things we have the
+[80:47] technology we have the architecture and
+[80:50] we have the
+[80:51] compiler and it's the interplay of these
+[80:53] three that deter mean the
+[80:56] performance and here again I'd like to
+[80:58] State the most important thing which
+[81:00] almost all students miss that where does
+[81:03] the benefit of pipelining come from so
+[81:05] it clearly does not come from the number
+[81:07] of instructions because this is a
+[81:10] function of the program right so the
+[81:11] benefit can't come from
+[81:13] here the
+[81:16] benefit cannot come from IPC I'll tell
+[81:19] you why because let us consider so what
+[81:22] is the IPC of an ideal single
+[81:25] ideal pipeline the IPC of an ideal
+[81:28] pipeline the number of instructions per
+[81:30] cycle of an ideal pipeline for a person
+[81:32] who's standing over
+[81:34] here you know assume that this is the
+[81:36] end of the five stage pipeline
+[81:39] right for an ideal pipeline one
+[81:41] instruction will be coming out every
+[81:43] cycle so this person will see the ideal
+[81:46] IPC to be one so I can say that the IPC
+[81:49] ideal is one
+[81:54] and what is the IPC of a single cycle
+[81:56] processor without any
+[81:58] pipelining well every instruction is
+[82:00] completed in a single cycle so the CPI
+[82:03] is one and consequently the IPC is one
+[82:07] but in any real pipeline which will have
+[82:09] hazards and stalls and Bubbles the IPC
+[82:12] is expected to be less than one right
+[82:15] because we will actually have stalls
+[82:17] right so we need to stop we can't
+[82:20] process every instruction in one cycle
+[82:22] we have dependencies
+[82:24] so the number of instructions Remains
+[82:26] the Same it cannot be a factor IPC
+[82:30] decreases so it definitely cannot be a
+[82:32] factor the only factor that is
+[82:35] responsible for increasing performance
+[82:37] is frequency right so let me uh
+[82:41] Delete the ink on this slide because I
+[82:45] want to make a very important
+[82:50] Point uh the only Factor uh which
+[82:55] uh one second yeah the only factor which
+[82:58] allows us right so basically we know
+[83:00] that you know in this
+[83:06] equation uh you know in in this
+[83:08] particular equation there is nothing
+[83:12] that is really helping the case of
+[83:14] pipelining number of instructions are in
+[83:16] IPC is not the only Advantage we are
+[83:19] getting from
+[83:21] pipelining is that
+[83:28] we can reduce TMax by K by increasing
+[83:31] the number of pipeline stages so if we
+[83:33] increase the number of pipeline stages
+[83:36] we can increase the frequency and it is
+[83:38] only this factor which is giving us the
+[83:40] benefit that if we increase the number
+[83:42] of pipeline stages we will reduce the
+[83:45] time per stage as a result we can
+[83:48] increase the
+[83:49] frequency and by increasing the
+[83:51] frequency we'll be increasing one term
+[83:54] in the performance equation the
+[83:57] IPC will maybe slightly decrease as we
+[84:00] have been seeing but that's okay as long
+[84:02] as the product increases we are just
+[84:05] fine and so that's the advantage the
+[84:08] advantage of a pipeline you know listen
+[84:11] to this very carefully the advantage of
+[84:13] a pipeline is that it allows us to
+[84:17] frequency when we increase the frequency
+[84:20] the numerator of the performance
+[84:22] equation one term of the numerator of
+[84:25] the performance equation
+[84:27] increases and as we increase the
+[84:29] frequency we need to increase the number
+[84:31] of pipeline stages also ultimately that
+[84:34] will have negative effects in terms of
+[84:37] IPC as a result you know we can't
+[84:39] increase the frequency arbitrarily high
+[84:42] but frequency will definitely from our
+[84:44] math the optimal frequency will be 1
+[84:49] ided by T Max divided by K optimal which
+[84:54] is the one square root of TMax by
+[84:58] lrc uh plus L right so we'll have an
+[85:01] optimal frequency at which the
+[85:03] performance Peaks so if let's say I plot
+[85:07] uh you know the number of pipeline
+[85:08] stages or the frequency versus
+[85:11] performance I will see you know
+[85:13] some uh graph like this where there is
+[85:16] an optimal frequency at which the
+[85:17] performance is highest and this is
+[85:21] exactly what pipeline pipelining allows
+[85:23] us to do we can can keep on increasing
+[85:25] the frequency till some point and we'll
+[85:27] get higher and higher and better and
+[85:29] better
+[85:30] performance and that's the advantage now
+[85:34] let's see that we are not allowed to
+[85:36] increase the frequency because somebody
+[85:38] will say that uh you know this is not
+[85:41] something that a transistor can support
+[85:44] or the power dissipation will become
+[85:45] very high so then the natural limits are
+[85:48] placed on increasing the
+[85:50] frequency but still if we are pipelining
+[85:54] a processor and we don't increase the
+[85:56] frequency we are not going to get any
+[85:58] performance benefit the performance
+[86:01] benefit only comes by increasing the
+[86:03] frequency and that's the most that's the
+[86:06] Crux of the pipelining idea that if you
+[86:08] don't increase the frequency after
+[86:10] pipelining a processor we get nothing in
+[86:12] terms of performance only when we
+[86:14] increase the frequency we get something
+[86:17] there are of course limits to how much
+[86:19] we can increase the frequency to even if
+[86:21] let's say from this expression it comes
+[86:24] out out that the optimal number of
+[86:25] pipelining stages is 20 there might be
+[86:28] other constraints on why we can't have
+[86:31] that deep a pipeline and also the
+[86:35] power that a processor dissipates is
+[86:37] actually proportional to v² which is V
+[86:40] is the supply voltage times
+[86:42] frequency right so as we increase the
+[86:44] frequency the power dissipation
+[86:46] increases so this is also a problem we
+[86:49] can't have processors that dissipate a
+[86:51] lot of power so this places limits on
+[86:54] the frequency and placing limits on the
+[86:57] frequency places limits on the number of
+[86:59] pipeline stages that we can support as
+[87:01] well that's one reason why at least over
+[87:04] the last 10 to 15 years the number of
+[87:08] pipeline stages have remained roughly
+[87:09] constant between 10 and 15 and the
+[87:12] frequency has also remained roughly
+[87:14] constant between 2 and let's say 3.5
+[87:19] GHz all right so let's finish this you
+[87:23] know very very instru
+[87:24] interesting discussion on pipelines so
+[87:26] this current lecture ends here the last
+[87:29] part the fourth part of this lecture
+[87:32] series we'll look at Advanced topics on
+[87:36] how to handle interrupts and exceptions
+[87:38] so that will be the last part of this
+[87:39] lecture series
