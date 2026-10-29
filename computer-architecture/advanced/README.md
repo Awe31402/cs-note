@@ -42,15 +42,15 @@ YouTube 播放清單「Advanced Computer Architecture -- Smruti R. Sarangi」的
 | 34 | [Multicore（三）：sequential consistency、PLSC、coherence 的兩個公理與 fence](lecture34_note.md) | Ch9 | 1:11:55 | Chapter 9: Multicore Systems (Part III) -- Sequential consistency, PLSC, Coherence |
 | 35 | [Multicore（四）：execution witness、access graph、causal graph 與 thin air read](lecture35_note.md) | Ch9 | 1:01:30 | Chapter 9: Multicore Systems (Part IV) -- Execution Witnesses |
 | 36 | [Multicore（五）：snoopy 協定（write-update、MSI、MESI、MOESI）與 directory 協定](lecture36_note.md) | Ch9 | 1:05:28 | Chapter 9: Multicore Systems (Part V) -- Coherence protocols, Snoopy and Directory based schemes |
-| 37 | 待寫 | Ch9 | 59:55 | Chapter 9: Multicore Systems (Part VI) -- Optimized directories and atomic instructions |
-| 38 | 待寫 | Ch9 | 1:16:37 | Chapter 9: Multicore Systems (Part VII) -- Memory Models and Data Races |
-| 39 | 待寫 | Ch9 | 46:37 | Chapter 9: Multicore Systems (Part VIII) -- Data Race Detection Algorithms |
-| 40 | 待寫 | Ch9 | 1:21:54 | Chapter 9: Multicore Systems (Part IX) -- Transactional Memory |
-| 41 | 待寫 | Ch10 | 1:01:50 | Chapter 10: Main Memory (DRAM devices, arrays and architectures) -- Part I |
-| 42 | 待寫 | Ch10 | 56:15 | Chapter 10: Main Memory (asynchronous, synchronous and buffered communication) -- Part II |
-| 43 | 待寫 | Ch10 | 1:07:58 | Chapter 10: Main Memory (DDR4 timing and the memory controller) -- Part III |
-| 44 | 待寫 | Ch10 | 57:56 | Chapter 10: Main Memory (Flash and FeRAM) -- Part IV |
-| 45 | 待寫 | Ch10 | 42:36 | Chapter 10: Main Memory (MRAMs, PCM, ReRAM, Roofline model) -- Part V |
+| 37 | [Multicore（六）：directory 的優化、false sharing、atomic 指令、spin lock 與 lock-free](lecture37_note.md) | Ch9 | 59:55 | Chapter 9: Multicore Systems (Part VI) -- Optimized directories and atomic instructions |
+| 38 | [Multicore（七）：memory model 的分類與 data race](lecture38_note.md) | Ch9 | 1:16:37 | Chapter 9: Multicore Systems (Part VII) -- Memory Models and Data Races |
+| 39 | [Multicore（八）：data race 偵測：lock set 演算法與 vector clock](lecture39_note.md) | Ch9 | 46:37 | Chapter 9: Multicore Systems (Part VIII) -- Data Race Detection Algorithms |
+| 40 | [Multicore（九）：transactional memory：ACID、版本管理、Bartok、TL2 與硬體 TM](lecture40_note.md) | Ch9 | 1:21:54 | Chapter 9: Multicore Systems (Part IX) -- Transactional Memory |
+| 41 | [主記憶體（一）：DRAM cell、bit line 架構、sense amplifier 與 channel／DIMM／rank／bank](lecture41_note.md) | Ch10 | 1:01:50 | Chapter 10: Main Memory (DRAM devices, arrays and architectures) -- Part I |
+| 42 | [主記憶體（二）：非同步、同步、DDR 的協定，prefetch length 與 buffered DIMM](lecture42_note.md) | Ch10 | 56:15 | Chapter 10: Main Memory (asynchronous, synchronous and buffered communication) -- Part II |
+| 43 | [主記憶體（三）：DDR4 的狀態圖、時序參數與 memory controller](lecture43_note.md) | Ch10 | 1:07:58 | Chapter 10: Main Memory (DDR4 timing and the memory controller) -- Part III |
+| 44 | [主記憶體（四）：非揮發記憶體、flash（NOR、NAND、P/E cycle、wear leveling）與 FeRAM](lecture44_note.md) | Ch10 | 57:56 | Chapter 10: Main Memory (Flash and FeRAM) -- Part IV |
+| 45 | [主記憶體（五）：STT-MRAM、PCM、ReRAM、3D 記憶體與 roofline model](lecture45_note.md) | Ch10 | 42:36 | Chapter 10: Main Memory (MRAMs, PCM, ReRAM, Roofline model) -- Part V |
 | 46 | 待寫 | Ch11 | 47:40 | Chapter 11:  Power and Temperature (dynamic and leakage power) --- Part I/III |
 | 47 | 待寫 | Ch11 | 52:00 | Chapter 11:  Power and Temperature (temperature modeling) --- Part II/III |
 | 48 | 待寫 | Ch11 | 42:23 | Chapter 11:  Power and Temperature (power and temperature management) --- Part III/III |

@@ -593,7 +593,8 @@ ARMv8.0 的 CAS（LL／SC 版）：
 | False sharing 的實測、Linux 的 padding | [第 36 支 §11、§12.2](lecture36_note.md#122-本機的-false-sharing) |
 | Fence、acquire、release | [第 34 支](lecture34_note.md) |
 | Synchronization 邊（so） | [第 35 支](lecture35_note.md) |
-| ROB、write buffer、MSHR | [第 12 支](lecture12_note.md)、[第 21 支](lecture21_note.md) |
+| ROB | [第 13 支](lecture13_note.md) |
+| MSHR（non-blocking cache） | [第 25 支](lecture25_note.md) |
 | Core 之間搬一個 line 要多久 | [第 27 支](lecture27_note.md) |
 | Memory model 的總結、data race | [第 38 支](lecture38_note.md) |
 | Data race 偵測 | [第 39 支](lecture39_note.md) |
