@@ -745,10 +745,10 @@ $ arm-none-eabi-as bad1.s          （預設架構）
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| x86 的 flags（ZF、CF、SF、OF）、jcc 條件跳躍、cmov | **第 11–14 支**：Ch5 x86 |
-| RISC-V 不用 flags，直接比較暫存器分支（beq rs1, rs2） | **第 16 支**：RISC-V 的分支 |
-| 條件執行為什麼能提升效能 | **第 30–33 支**：課本 Ch10 pipeline |
-| PC + 8 的原因 | **第 30–33 支**：課本 Ch10 pipeline |
+| x86 的 flags（ZF、CF、SF、OF）、jcc 條件跳躍、cmov | [第 11](lecture11_note.md)–[14 支](lecture14_note.md)：Ch5 x86 |
+| RISC-V 不用 flags，直接比較暫存器分支（beq rs1, rs2） | [第 16 支](lecture16_note.md)：RISC-V 的分支 |
+| 條件執行為什麼能提升效能 | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 pipeline |
+| PC + 8 的原因 | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 pipeline |
 | 真實的 ARM 處理器（Cortex-M3、A8、A15） | 課本 Appendix A |
 
 ---

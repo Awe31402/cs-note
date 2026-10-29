@@ -1,0 +1,440 @@
+[00:00] welcome to the chapter on the introduction to out-of-order pipelines so
+[00:21] in this chapter we will study everything about out-of-order pipelines which is a
+[00:26] very different kind of pipeline as compared to traditional in-order pipelines so since this is
+[00:34] an advanced book on computer architecture let us think of it as a second level course
+[00:42] so something that you are supposed to read in the final year of your undergraduate studies
+[00:47] or in your postgraduate studies so in this case we would require some background and the background
+[00:56] that is required to understand this chapter is the understanding of assembly languages
+[01:04] specifically risk assembly languages right so this is definitely required furthermore a student also
+[01:15] should know about basic processor design and finally the student should also know about basic pipeline
+[01:24] design of how to take a simple processor and pipeline it so these three basic concepts we require
+[01:32] before somebody can actually proceed further so i'm giving a pointer to my uh earlier book on computer
+[01:42] architecture which was published by McGraw-Hill in 2015 so this book is widely available and
+[01:50] also online versions are available on amazon kindle and google books so readers are advised to at least
+[01:59] go through these three chapters but again uh reading my book is not necessary any other text in computer
+[02:07] architecture is also sufficient as long as these three basic concepts are understood so all the videos
+[02:15] uh for these three basic concepts for my earlier book are also available on youtube so uh students can also go
+[02:25] through the powerpoint slides and videos so the links uh the link to these powerpoint slides and videos is
+[02:32] given below right over here so i would advise anybody listening to this video uh to kindly look at
+[02:40] the youtube videos at the youtube videos at least uh for these three topics before proceeding forward so this is a
+[02:48] think of this as a mandatory requirement so what we will do is that we will have we will divide this short
+[02:58] lecture into three sub lectures first we'll do a quick recap of in order pipelines so kindly note that the
+[03:06] description will be at a very high level and is by no means meant to be complete so this is a part of the prior
+[03:14] background that i was talking of uh then we will look at some performance considerations of how exactly do we
+[03:24] model the performance of an in order pipeline and what exactly are the metrics what should be considered and what
+[03:33] should not be considered and on the basis of that we will develop our motivation and also the key essential
+[03:41] features of what an out of order pipeline so out of order pipeline is something that we don't know but
+[03:47] almost all processors uh in laptops desktop servers even mobile phones these days use out of order pipelines
+[03:58] out of order is also called ooo triple o all right so this is so when we use this in the text uh it will refer
+[04:07] to an out of order pipeline so without further ado uh let us move to discussing uh basic in order pipelines
+[04:16] again as i said another the last disclaimer is due that this is just a very high level overview let us now go
+[04:25] through the structure of a typical processor with five processing stages so i will describe this somewhat
+[04:33] complicated slide if you are having any difficulty understanding you need to heed to my advice given
+[04:41] in the previous slide and go back and see the earlier videos such that this diagram is extremely easy to
+[04:49] understand nevertheless let me just provide a brief overview for viewers of this video who have seen
+[04:59] similar processors albeit designed slightly differently so what we will do is we will divide the entire
+[05:08] processing of an instruction into five stages
+[05:12] process so the processing starts uh here where we read an instruction from instruction memory
+[05:21] so uh in a in an actual processor this is actually an instruction cache so it's called an icache and what is
+[05:28] a cache well we will see that later but a cache is essentially a small memory that holds a subset of memory locations
+[05:37] this is called a cache and an icache has instructions and we have similarly we have a data memory called a dcache
+[05:47] that has data words so the icache instructions uh over here uh the instructions are read and they are read
+[05:57] by the fetch unit so the fetch unit of course reads the entire contents of the instruction after that uh it is
+[06:05] passed so here uh the green box just indicates uh for this diagram a bunch of wires uh we call it an
+[06:13] interconnection element and uh so it passes it to this unit which is the next unit so next unit does several
+[06:22] things the first is we have a control unit this we can also call the decoder so what the decoder does is
+[06:30] that it decodes the instruction which means that it understands the instruction so normally an
+[06:36] instruction is like a compressed bundle of uh a lot of things right a compressed bundle of the opcodes
+[06:45] the register files memory addresses all of that kind of you compress it and keep it so the decoder
+[06:50] essentially expands it and essentially generates what are called control signals which control the rest of
+[06:58] the elements in the data path which essentially determine the execution of the instruction the
+[07:04] way it will be executed we then have an immediate and branch unit so any constant within the processor
+[07:12] is called an immediate and we have an immediate and branch unit which extracts whatever constants are
+[07:19] embedded inside the instruction and expands it to a full 32-bit or 64-bit value
+[07:25] depending upon whether it's a 64-bit or a 32-bit processor right depending upon the width of the data
+[07:33] path uh this value is expanded then for all the register operands we read the values from the register file
+[07:45] recall that the register file is a set of named storage locations a typical processor has 15 to sorry 16
+[07:55] to 32 registers and they are used for different purposes as we shall see later so we read the registers from
+[08:04] the register file so we call them op1 call the values that are read as op1 and op2 operand 1 operand 2
+[08:12] and of course we have a choice so we will be using the simple risk instruction set this is provided as an
+[08:21] appendix in the book the first appendix appendix a in addition it is there in the previous book
+[08:28] and this is similar to any other risk instruction set broadly and it's extremely simple so in this case
+[08:38] in the simple risk instruction set the second operand can either be a register
+[08:44] register or an immediate so we have one multiplexer over here to choose whether it's a register or an
+[08:52] immediate so what do we get from the second stage which is operand fetch and decode well what we get is
+[09:01] that we get a set of control signals which determine the behavior of the instruction in the rest of the
+[09:08] processor we extract the constants or the branch target so the branch target is encoded as a fixed
+[09:19] offset from the current pc from the current program counter so essentially we take the current program
+[09:24] counter here we add the offset to get the branch target so whatever we compute we just take everything
+[09:31] along with us and whatever we take along with us is called the instruction packet all right
+[09:46] so the c got hidden behind the red line but nevertheless what i wanted to write is uh it's the
+[09:52] instruction packet so all of this information flows along with us in the third stage which is the execute
+[10:00] stage the ex stage we do the following uh so we can either process the branch which means see if a
+[10:08] branch is taken or not taken or we can perform an arithmetic or logical operation so let's look at the
+[10:15] latter first in the alu unit the arithmetic and logical unit uh what we do is that we take in the instruction
+[10:24] packet if let's say it's an add instruction we add if it's a multiply instruction
+[10:30] we multiply divide we divide logical or logical or and so on so uh one important internal register
+[10:39] is the flags register so whenever we see a compare instruction which is the same for almost all
+[10:48] instruction sets they work in a similar manner whenever we see a compare instruction we set the
+[10:55] flags register right we set certain bits within the flags register such that a later branch can look at
+[11:05] the bits of the flags instruction and find out if the latest comparison resulted in an equality or a greater
+[11:13] than or a less than and this can be used to decide the direction of the branch
+[11:19] branch after we have processed the arithmetic logical instructions and the branch instructions we move
+[11:32] to the fourth stage which is called the ma stage the memory access stage so uh look at the mnemonics over
+[11:38] here if of ex and now we are at ma well ma uh stage basically only processes the load and store instructions
+[11:47] so for both of them so load and store are actually multi-part instructions uh so we uh only support
+[11:55] the base offset addressing mode in simple risk which means that an address is of the form let's say you
+[12:03] know some constant and a base register so we read in the contents of r2 here from the register file we add
+[12:11] 4 to it so it becomes r2 plus 4 this is the address so this addition of r2 plus 4 is done in the alu unit
+[12:21] and subsequently the address is sent to the memory unit so the memory unit does either performs either
+[12:28] a load or a store depending upon what the instruction actually is and finally so store of course does not
+[12:36] produce an output it just writes to data memory in this case it's the data cache so uh in a modern memory
+[12:44] system we typically have an instruction cache at the top a data cache a d cache
+[12:54] both of them are connected to a much larger piece of memory called the l2 cache which is again connected
+[13:00] to an even larger piece of memory called the l3 cache so well why it is the case uh we will look
+[13:06] at that when we discuss the hierarchy of the memory unit but we will not uh focus on that issue right
+[13:17] now but as far as we are concerned there are two separate memories the instruction memory and the data
+[13:22] memory so once the load is done we have read something so we need to either write that to the
+[13:29] register file or write the value computed by the alu to the register file which of course is passed
+[13:35] uh directly via this stage and so whatever be the case we have a register write unit or a register
+[13:44] write back unit so this unit again writes the results back to the register file so this is a simple
+[13:51] processor it does not have pipelining of any kind right and uh this is it we have logically divided it into
+[14:00] five stages because if you take a look at it we have five distinct
+[14:06] parts of the processor that do rather different things so that's the reason we divided it into
+[14:14] five parts and then as we see there is some amount of information flow between stages so of course you
+[14:23] you know the second stage uh produces something that the third stage reads the third stage produces
+[14:30] something that the fourth stage reads but however there is a back connection so both the back connections
+[14:36] are shown with uh this magenta color sorry i'm not very good with colors so the color that i see over
+[14:43] here is somewhere uh between red and pink that's the best that my eyes can tell me but you know if any of
+[14:52] you have an exact name for this color kindly write it in the comment section and so whatever this color is
+[14:59] a flavor of red uh so uh from the branch unit to the fetch unit uh what we do is we have a back connection
+[15:10] so this back connection essentially indicates the direction of the branch so branch is like an if
+[15:16] statement right so whether it is entering the body of the if statement or exiting it so this information
+[15:22] is being conveyed and similarly in the register write unit also uh we are writing from the fifth to the
+[15:32] second stage with the results that have been computed by either the alu unit or the memory unit or or the
+[15:41] load right so that is being used to write back all right so we have discussed this complex diagram so
+[15:51] this is actually simple but again as i said any difficulty go back to the videos of the previous book
+[15:59] this is explained in full detail in fact there is one full chapter that discusses this diagram
+[16:05] something that we finished in 10 minutes uh several hours are devoted to describing just this so i would
+[16:12] advise that before we move to the next slide at least this part is completely totally fully understood
+[16:21] now let's come to pipeline well uh so if we take a look at this diagram
+[16:26] uh there is a source of inefficiency so uh i uh sorry i yeah let me show the source of inefficiency
+[16:39] over here that let's say uh you know uh this unit is active the rest of the four units are not active
+[16:48] so at any point of time only one unit is active
+[16:51] and eighty percent of the chip is not active which does not uh convey a very uh efficient solution
+[16:59] right which is not a very efficient solution it doesn't convey a good message
+[17:04] uh so ideally we want the entire pipeline to be busy right that's what we so sorry the entire processor to
+[17:10] be busy so in pipelining what we do is that uh we send one instruction down the pipeline so instruction one
+[17:20] so when instruction one is over here so we uh given the fetch unit is idle we bring an instruction two
+[17:28] in the next cycle instruction one moves here instruction two uh sorry instruction two moves here to this
+[17:34] stage and instruction three is fetched so on and so forth so there will be a time when instruction one
+[17:42] will be here two will be here three is here four is here and five is here see if you
+[17:50] take a look at it uh a pipeline uh manages to keep the entire processor busy uh so of course uh this
+[18:00] will uh increase the throughput and the performance but we will see but this is it's not that straightforward
+[18:07] so we will see uh when it will increase the performance and when it will not
+[18:14] so if i were to create a pipeline version of the processor well i just make a simple change
+[18:21] so look at this diagram and just look at the previous one so the previous one we just had a bundle
+[18:27] of wires that we call the interconnection elements now what we do is we remove this
+[18:34] and we replace this by a pipeline register as you can see right here
+[18:40] so the pipeline registers are regular edge triggered negative edge trigger flip-flops
+[18:54] so uh if they are negative edge triggered at the end of a cycle when there is a negative edge
+[19:02] from the left side whatever is being written that is written
+[19:07] and in the beginning of the next cycle which is after the negative edge
+[19:12] the data over here gets transferred to the next stage the next stage does its processing
+[19:18] so it is expected to complete its processing within one clock cycle which means from within one
+[19:25] you know between two of these registers if of and of ex
+[19:29] so the signal is supposed to take a maximum of one clock cycle to propagate via these units
+[19:36] which means that the latencies of these units is limited to one clock cycle similarly the latency
+[19:44] between these two units is limited to one clock cycle and so what does this allow us to do well what
+[19:51] it allows us to do is that we can have five separate instructions in five of these stages and we can
+[20:03] process them in parallel so of course this does introduce complexities to the design
+[20:10] so pretty much an instruction has to move along with all of its data it's an entire instruction packet
+[20:16] and hop across the stages that is one and we will see there are some other problems as well known as
+[20:24] hazards in the next few slides so uh just to repeat the only change that we did is that we added a
+[20:33] register called a pipeline register which of course is not does not store one bit or one byte but it
+[20:40] stores the entire instruction packet which can be tens of bytes right the entire instruction packet is stored
+[20:47] and uh every cycle one of these so each stage reads the input computes the output by the end of the
+[20:58] cycle and writes it to the uh this writes it to the pipeline register at its end so of course the register
+[21:06] write unit does not have a pipeline register at the end because it's the last stage but by the end of the clock cycle it is expected to write
+[21:16] the values uh to the register file and finish off the work so because so see that if we have five stages we need four
+[21:29] pipeline latches so more so there is so five is no hard and fast rule if we want
+[21:35] we can further split this into one more stage so create two stages and so we'll have one more pipeline
+[21:41] latch over here and if we want we can further split this down or maybe we can take it into three stages
+[21:47] so we'll have one more pipeline latch here one pipeline latch here so if there are n stages in the pipeline we
+[21:54] will need n minus one the end stages we will need n minus one latches
+[22:07] right so that is uh easy all right so given that we have seen this let us go forward and discuss
+[22:17] what is it that can happen or what is it that can go wrong if we were to pipeline our instruction processing
+[22:26] in this manner
+[22:28] so we need to understand that in a pipeline which of course i have shown it over here
+[22:40] it has been made far simpler of course so the five stages are shown like if of
+[22:45] so now uh given that we'll have five instructions residing here at the same time
+[23:02] there can be numerous issues numerous collisions between them
+[23:06] so uh we can have structural hazards where two instructions can vie for the same resource
+[23:13] so this will not happen in the inorder pipeline that was just shown
+[23:18] but it is possible if we take a look at this pipeline we i we always can have an instruction
+[23:26] that tries to access the data memory so we always can add an instruction that a new instruction of course
+[23:35] that can access the data memory in the alu unit right so the alu unit will also access it
+[23:42] so in this case if the data memory can support only one access per cycle
+[23:48] there will be a conflict between an instruction over here and an instruction over here
+[23:53] if the instruction in the ma stage is accessing the data memory right because it need not because
+[24:00] all instructions have to pass through the same route see even an alu instruction that does not access
+[24:06] memory still has to go through this route and uh so that's the reason there may be a conflict
+[24:15] there may not be a conflict if there is a conflict it would be a structural hazard
+[24:20] which means that both the instructions cannot access the data memory at the same time
+[24:26] one will have to wait this will not happen in what in the you know the simple version that we are using
+[24:33] but if i extend the instruction set with one more instruction that accesses data memory
+[24:38] uh of and is and it is of this type we can very well have a conflict and the other important point is
+[24:46] that instructions never skip stages right so i can i should you know this is an important concept many
+[24:52] people often make a mistake so it's let me just write it so they never skip stages right
+[25:01] so even an alu instruction that does not access memory has to go via this step
+[25:10] right so so even instructions that don't accept don't
+[25:16] have an alu component or a memory component still go via this step so so they always go from one stage
+[25:22] to the next and they never jump right at least in our basic in order pipeline they never jump right so
+[25:29] they never skip stages now coming back we also can have a data hazard something that we will see in the next
+[25:38] few slides where of course there is a read and write dependency so there is a read after a write
+[25:44] so it is possible as we shall show in the next few slides that the read can miss a value that is being
+[25:51] written can happen and we can also have what are called control hazards which means that if a branch is taken
+[25:59] then there will be some problems all right so we will discuss both of these structural hazards since
+[26:06] they will not happen unless we extend our instruction set architecture unless we do that since they will
+[26:13] not happen we will not discuss it henceforth
+[26:19] so let us create a mathematical tool called a pipeline diagram
+[26:23] so a pipeline diagram uh the rows are the pipeline stages as we can see since we have five stages
+[26:33] the rows are if of ex ma r w these are the rows and the columns are the cycles now consider these two
+[26:43] instructions add r1 r2 r3 and add r4 r1 r3 so here r1 is the destination it is being written to
+[26:55] in this case r1 is a source given the fact that this is a write this is a read we have a read after write
+[27:05] hazard right or a read after write dependency over here a dependence and uh let's see what will be
+[27:14] the problem so instruction one will be fetched in cycle one and as we have said earlier instructions never
+[27:22] skip stages so from if stage it will go to of in the next cycle ex in the next cycle ma and rw
+[27:29] say it goes on fine so let's consider instruction 2 this is very important so instruction 2 will get fetched no
+[27:37] problem in cycle number three instruction 2 will enter the rf stage right in this case it will try
+[27:47] to read the value of r1 but where is the value of r1 the value of r1 will be computed by instruction one
+[27:55] and that too at the end of cycle 5 which is pretty much at this point right and so this this is when
+[28:04] it will be computed and written to the register file right so computing is not enough you have to write
+[28:09] it to the register file and in cycle 3 somewhere in the middle of cycle 3 instruction 2 wants the value
+[28:17] of r1 from the register file which it is not going to get right it's going to get an old value a stale
+[28:23] value a wrong value so it's going to read a wrong value and of course it will continue so the execution of the program
+[28:31] will be incorrect so if you see this is a very unique situation that has arisen primarily because
+[28:39] we have parallel processing going on in a pipeline system where we have different instructions with
+[28:47] dependencies between them they cannot proceed at the same time because we write at the end of in this
+[28:57] case at the end of the fifth cycle whereas in the third cycle we need the data from the register file
+[29:02] the data is not there hence if we read the register file we stand to read a wrong value and our program
+[29:10] will be incorrect so what do we do well what we do is we allow instruction one to keep going
+[29:22] then instruction two when we enter the os stage we realize look there is a there is trouble in the air
+[29:29] in the sense that the value that instruction one was going to produce that value has not been produced
+[29:37] hence what i do is that i keep instruction two in the of stage in the fourth cycle in the ex stage i
+[29:46] introduce what's called a bubble so the logic that in inserts the bubble is called an interlock logic
+[29:53] so in this case we are talking of a data interlock because of course we have a data dependency
+[29:57] so what do we do what is a bubble well a bubble is a no-op instruction what's a no-op instruction
+[30:10] it's a no operation instruction it's an instruction that precisely does nothing so no-op instruction
+[30:17] simply flows through the pipeline without doing anything whatsoever so this is a bubble and this
+[30:24] instruction simply goes through the pipeline does nothing and gets up
+[30:28] in the fourth cycle also we introduce one more bubble that does nothing and gets out
+[30:34] finally in the fifth cycle also sorry the fifth cycle we do this in the sixth cycle also
+[30:41] we introduce a bubble that does nothing however there is something interesting going on so the end of
+[30:50] cycle five instruction one has produced the value of r1 as you can see over here
+[30:57] this value has been produced and this value can then be written to the register file and in the sixth cycle
+[31:05] instruction two can read the value of r1 from the register file so as you can see the arrow indicates a
+[31:12] dependency and it is going ahead in time so it's fine so the value of r1 is read by instruction two
+[31:19] and after the value of r1 is read instruction two can proceed and in the meanwhile instruction three has
+[31:30] also been fetched right we have not shown instruction three in the previous slide but assume there is an
+[31:35] instruction three so instruction three at that time is fetched so basically since we have in order processing
+[31:42] instructions do not overtake each other so once instruction two gets the value moves from of to ex
+[31:50] three moves from if to of so the data interlock logic what does it do what it does is its job is to
+[31:58] have a full global view of all the instructions in the pipeline be looking at all of them and
+[32:08] it figures out dependencies if and it sees whether it should allow an instruction to move to the next
+[32:21] stage or insert a bubble in its place in this case three bubbles were inserted
+[32:27] in the place of instruction two and finally when the data was available it allowed instruction two to
+[32:33] progress so it kind of put a lock on the pipeline until the data was available once the data was
+[32:39] available it released the lock that's where the word interlock comes from all right so this is an
+[32:45] important concept so introducing bubbles essentially what it does is that it stalls the pipeline
+[32:51] so for an external observer so assume that you know this is the instructions are going in this is our
+[33:00] processor over here that has a pipeline and we have an external observer sitting here so the external
+[33:09] observer sees that for three cycles nothing is coming out of the pipeline right so no instruction is
+[33:17] completing its execution this process is known as a stall all right so this process is known as a stall
+[33:27] and a stall means a cycle in which no useful work is being done from the point of view of an external
+[33:33] observer sitting at the end one way to fix this problem of adding too many interlocks is via forwarding
+[33:42] the problem so what is the problem well the problem is that a read after write dependency is not
+[33:54] all that rare right so read after write dependency can happen and what we further saw you know in this
+[34:03] slide that if there is a read after write dependency we need to add three bubbles in fact
+[34:12] if there is a read after write dependency within a window of these four instructions right so so let
+[34:21] us say after one instruction within a window of these three instructions rather if there is a read after
+[34:27] write dependency we need to add a stall cycle at least one and if it is just after it we need to add three
+[34:35] three otherwise two or one so this severely constrains the way in which compilers can generate code and
+[34:48] it also
+[34:52] makes it rather hard for the programmer to write efficient code that can run on such pipelines
+[34:59] because after all stall cycles are wasted cycles and they waste computational throughput so then let
+[35:05] us look at the same example once again a similar example where we write to r1 and the second instruction
+[35:13] reads from r1 so in this case uh the first instruction which is instruction one this seamlessly goes to the
+[35:22] pipeline no problem and as we had uh discussed before for instruction number two uh it tries to read the
+[35:33] value of r1 in cycle three we happily allow it to read the wrong value it doesn't matter because after all
+[35:40] it will not use it in cycle three it will use it in its ex stage which it will enter in cycle four right
+[35:48] so at that point of time if we take a look at where instruction one is instruction one has already computed
+[35:56] the result which means it has already added r2 plus r3 right it has done the addition and the result is
+[36:07] there in its instruction packet however the result has not been written back to the register it doesn't
+[36:12] matter the result is still present in the instruction packet of instruction one which is what we need
+[36:20] so what we can do is given that the result is present here in the ma stage we can simply what is called
+[36:26] forward it to the ex stage so this is being done right at the beginning of the fourth cycle such that
+[36:34] the data will reach and uh once the data the computed data the data for r1 reaches the ex stage
+[36:42] the addition can happen which is r1 plus r4 this addition can happen and the result will be available
+[36:51] at this point which is the end of cycle four so what we can see over here is that by doing a forwarding
+[36:59] of this nature we are avoiding stall cycles altogether there is no reason to add stalls there is no reason to
+[37:09] add any kind of bubbles or pipeline delays and the reason for that is essentially because we have the
+[37:18] result in the pipeline it is just being forwarded to another stage internally right internally we are
+[37:25] just forwarding it not via the register file because if we were to forward it via the register file
+[37:32] we would have to wait for the end of the fifth cycle and then we would forward it and then instruction 2
+[37:42] will have to read it over here and that of course would be a delay right that of course would be a big and
+[37:54] major delay something that we don't want hence to stop this delay from happening what we do is we
+[38:03] internally forward the data from the ma stage to the ex stage and as you can see the instruction can
+[38:12] execute correctly both the instructions instruction 1 as well as instruction 2 and instruction 2
+[38:19] can get the value and it can then compute its result which is r5 correctly right so r5 can be computed
+[38:29] correctly we can add r1 and r4 and we can compute r5 so how would we exactly implement this in practice
+[38:42] well this is very easy so look at the two inputs of the alu so we have input 1 and input 2 inputs 1 and 2
+[38:52] come from the previous stage which is the of stage but what we do is instead of directly giving them
+[38:59] to the alu we add a multiplexer and the other input of the multiplexer is the forwarded input
+[39:06] the forwarded input comes from comes from the next stage comes from the ma stage so if this were
+[39:16] instructions 1 and 2 so instruction 1 would be over here instruction 2 will be over here and you can
+[39:25] see the destination is r1 so r1 the value of r1 will be there in instruction packet of instruction 1
+[39:33] this will flow sorry this will flow this way and it will come here alright so this is the value of r1
+[39:45] the value of r1 will flow this way and it will come here and you know we can use it so in this case
+[39:53] sorry r1 was the first input so r1 instead of coming here will actually come here and r1 can then be used
+[40:07] so what you can then see is what this multiplexer will do is that it will discard input 1 because input
+[40:14] 1 which is coming from the of stage is not correct instead it will use the forwarded input which is
+[40:20] essentially the temporary result computed by instruction 1 which is resident over here in the ma stage
+[40:29] it will use that as the first input
+[40:34] of the alu and as you can see it is correct because r1 is the first input r4 is the second input
+[40:40] and r1 in this case is being forwarded from the next stage which is the ma stage or the
+[40:47] memory access stage so this is where r1 comes from and similarly if we can give the forward input to
+[40:55] the second multiplexer for a different instruction combination so we have a dedicated forwarding unit
+[41:03] so the forwarding unit computes the control signals of these multiplexers and figures out which input
+[41:20] should be selected the forwarded input or the default input that is coming from the previous stage
+[41:25] so if we are to affect a forwarding then the forwarding multiplexer chooses the forwarded input
+[41:38] so this is explained in a lot of detail in the previous book so I will not go into the exact
+[41:46] derivation of this but I will just state the result somewhat without proof that for the simple pipeline
+[41:53] that we have described we will actually need four forwarding paths not more than that so what is
+[42:01] our so we will follow two axioms one is obvious I'm not and I'm not mentioning that so that is that we
+[42:08] always forward from a later stage to a to an earlier stage which if you see uh this diagram so we can
+[42:16] always forward from here to here or forward from here to here right from always from a later stage to an
+[42:22] earlier stage right depends on how you define so so let's say later I'm defining something to the right
+[42:29] right and earlier is something to the left uh the other uh is that we try to forward as late as possible
+[42:37] so this is a design choice that we make such that we can reduce the number of forwarding paths
+[42:42] and also we forward data only when it is just about immediately required so that is the other principle
+[42:48] that we use and this does not tamper with correctness because in any case before a value is being used
+[42:55] by a functional unit it's it is there so we need four forwarding paths so one is rw to ma one example
+[43:05] of rw to ma would be a consecutive load store instruction pair where we load a value into register r1
+[43:14] and in the next instruction the instruction just after that in program order what again is program
+[43:21] order it is the order of instructions the dynamic order of instructions in the program right and
+[43:28] so basically the same order that will be seen by a non-pipeline processor that is program order right
+[43:35] so we will use this so it's the same order of instructions as they appear to execute
+[43:44] right by a single cycle non-pipeline processor right
+[43:52] so a processor that just picks one instruction and executes it picks one executes it so it will see a
+[43:58] dynamic stream of instructions which are set to be in program order so assume that it is the case that
+[44:04] after a load we have a store we load to register r1 and then we store r1 to another memory location
+[44:14] so in this case uh what we have is that uh we uh need rw to ma forwarding to execute this piece of code
+[44:25] correctly similarly we need to add the second uh forwarding path which is rw to ex
+[44:32] uh so in this case uh so in this case uh we load into register r1 then we have another instruction we
+[44:40] don't care and finally we have a instruction that reads from r1 as you see this is another read after
+[44:49] write dependency this is this will use the rw to ex forwarding path then the third one is rw to of well
+[44:58] again here uh we load to r1 we have two the subsequent two instructions are totally independent can be
+[45:08] totally independent doesn't matter but we need another forwarding path here from rw to of if the
+[45:17] third instruction reads from r1 again a read after write instruction so as we can see from the last stage
+[45:25] the rw stage the register write stage write back stage we need three forwarding paths to the three
+[45:32] earlier stages and then comes the forwarding path an example of which we just saw the ma to ex forwarding
+[45:40] path so we have just seen this where we have consecutive alu instructions where the earlier instruction writes
+[45:47] to one register the later instruction reads from it so this is a read after write dependence pattern
+[45:55] where we write to r1 and then we read from r1 so uh so with so so essentially uh in the previous book it has
+[46:08] been proven that these are the only four forwarding paths that are required all right so only these four
+[46:19] paths are required no other path is required right so we will not get into the proof as i mentioned but again
+[46:26] of course given a longer pipeline we will have many many more such forwarding paths and that is why we
+[46:37] often avoid having very long in order pipeline because they would necessitate extremely complicated
+[46:44] forwarding logic right lot of multiplexes lot of paths so how uh so let me again show you a bird's eye view
+[46:53] of the entire pipeline so recall that this processor we have seen with the pipeline version what is extra
+[47:00] what is extra are these blue multiplexes there are total of six of them one two three four five and six
+[47:08] six these are the forwarding multiplexes which are controlled by a dedicated forwarding unit
+[47:17] what is the role of the forwarding unit well the forwarding unit has a complete global view of the
+[47:23] pipeline it has a view of all the instructions in the pipeline so it decides which instruction moves
+[47:30] which stops which stalls and it also decides uh who forwards where so from the register write unit
+[47:42] whatever is written we can clearly see this is the rw to ma forwarding path this is rw to ma forwarding
+[47:50] multiplexer this is the rw to ex forwarding path as you can see the input goes to both the multiplexes
+[47:59] and this is the rw to of forwarding path similarly we have an ma to ex forwarding path which is this
+[48:06] green line over here the one that i am taking you through so this goes to both the multiplexes so the
+[48:13] multiplexes here have a choice of three inputs two of these are forwarding paths and one is a default
+[48:20] input that comes from the previous stage right so as i said if we have a longer pipeline with more units
+[48:28] we will add more multiplexes that will make our forwarding logic more complicated but
+[48:38] we have well whether we will derive whether it's an advantageous thing or not we will see but this to
+[48:44] you is an entire functional working and also commercially viable in order pipeline that has
+[48:53] all the forwarding multiplexes that are needed which are the multiplexes with a blue color all right
+[49:00] so this is pretty much where a traditional course in computer architecture would stop
+[49:06] in so far as pipeline designing is concerned there are a few corner cases which we will discuss in the
+[49:14] rest of the chapter but this is pretty much the meat and bones of pipelining
+[49:21] so now let us look at one hazard which forwarding cannot take care of so this is a very celebrated
+[49:32] example it's called a load use hazard so here we will see that a one cycle stall is required
+[49:40] and this will also motivate us to think further and this has implication
+[49:44] important implications in the design of out of order pipelines as well
+[49:55] so consider these two instructions add r5 r41 which is a later instruction
+[50:01] instruction and consider this instruction load r4 r0 which is the earlier instruction appears earlier in
+[50:10] program order so there is a dependency so r4 is being written to r4 is being read from
+[50:20] so there is a read after write dependency that we can see
+[50:24] so consider a clock cycle so in this clock cycle the earliest of the value of r4 can be generated
+[50:34] is essentially at the end of the clock cycle when the memory access is finished
+[50:39] consider the earlier instruction when do we need the value of r4 well we need it
+[50:44] at the beginning of the clock cycle because after that we need to add 1 to r4 and produce r5
+[50:51] so r4 is needed at the beginning of the so mind you these are the same clock cycles so at the beginning
+[50:57] of a clock cycle we need r4 whether whereas the earliest that the forwarding path can give us the
+[51:04] value of r4 is at the end of the clock cycle right so in this case this is called a load and a use hazard
+[51:12] because this is a load and this is its use so the load use hazard does not have a solution with forwarding
+[51:18] we have to have a one cycle stall there is no choice otherwise right there is absolutely no choice
+[51:28] we need a stall needs to be done
+[51:33] so what do we do we have a small animation over here that shows you the picture
+[51:40] so this picture over here tells you that look at the operand fetch stage sorry at cycle n we allow
+[51:52] we detect that look there is a load use hazard nothing can be done we need to stall so we stall
+[51:58] that instruction we make the load instruction move in cycle n plus 1 both the instructions move and cycle
+[52:04] n plus 2 this is the situation and this is where a forwarding can be done where the r4 can be supplied
+[52:15] and since we need the value of r4 now well the value of r4 can be happily supplied to the
+[52:20] ex stage right so this is an example of a load use hazard as you just saw where a combination of
+[52:28] interlocks and forwarding both actually solve the problem
+[52:35] now we have looked at data issues right so with data issues we have seen forwarding is mostly fine
+[52:43] the only point at which it does not work is when we have uh issues with uh the load use hazard that's
+[52:55] the only exception now let us look at control hazards right control hazards are branches
+[53:02] particularly conditional branches which can be taken or not taken so here i am showing one example of
+[53:07] the beq instruction branch if equal which means that if the earlier comparison resulted in equality the
+[53:15] branch is taken otherwise it is not
+[53:17] so the branch instruction keeps moving so as it moves other instructions keep getting added
+[53:26] to the pipeline so of course these are in program order say the branch is not taken these instructions
+[53:33] will be on the correct path right so they will be on the correct path which means that they should
+[53:40] be executed they are logically speaking in program order so they will be in the correct path but
+[53:47] we get to know the status of the branch in execute stage assume it is taken in this case these
+[53:54] instructions are on the wrong path because they should not have been fetched in the first place
+[54:01] we should have instead fetched instructions from the branches target and of course we didn't know that
+[54:08] the branch will be taken we didn't know its target so we could not have fetched hence we ended up with
+[54:13] two instructions which are on the wrong path so they need to be cancelled what this means is that we
+[54:18] convert them into bubbles or noops right essentially we may convert them dynamically into dummy instructions
+[54:26] right so these two instruction slots get wasted which is a bad thing which means that every time
+[54:33] there is a taken branch effectively we stall for two cycles it's a it's a really bad thing this is something
+[54:41] that we will have to look at all right so given that we have looked at in order pipelines given that we
+[54:50] have looked at their limitations what are the limitations well the limitations are several the first is that
+[55:01] well assuming even if we have stalls sorry even if we are forwarding
+[55:07] one limitation is that the load use hazard well we can't take care of it and also we have made a big
+[55:16] assumption that the memory access stage takes one cycle that's not true so in general we can have
+[55:27] multi-cycle ma stages that's in in fact that's the norm because modern caches and memories are
+[55:34] rather slow so it can take tens of cycles for us to actually get data back the second is that we can
+[55:43] have what is called head of the line blocking which means that let's say we have a stream of instructions
+[55:49] one instruction is blocked even though the rest of the instructions don't have any dependencies with it
+[55:56] just because they made the crime of being after it in program order all of them are stopped so this is
+[56:02] called you know the convoy effect you know consider a convoy of cars right so consider a set of cars
+[56:10] moving in a very narrow road with a single lane if there is a car breakdown all the cars behind it
+[56:18] just stall over there so in order pipelines will have this convoy effect right and of course branches
+[56:26] are not dealt with correctly so taken branches
+[56:37] have two stalls well there are other problems as well the other is that the number of cycles
+[56:45] sorry the number of instructions that we can process per cycle that is
+[56:49] typically not one it's less than one we'll take a look at it which is why the next section is titled
+[56:58] performance considerations right so we will take a look at the performance but essentially what we
+[57:07] will show is that in a pipeline processor the ipc the instructions per cycle is typically less than one
+[57:15] right so we process for an outside observer the number of
+[57:20] uh instructions that are being processed per cycle will appear to be less than one
+[57:25] this is again a bad thing right we want to process as many instructions in parallel as possible
+[57:30] so clearly inside the processor there is no parallel processing
+[57:34] so this is why in order pipelines are by and large
+[57:37] not used for you know large processors in industry they are not considered practical
+[57:46] so now we will kind of quantify the performance issues and move towards motivate gradually motivate
+[57:54] ourselves towards out of order pipelines that will solve all of these issues pretty much to a very large extent
+[58:07] do

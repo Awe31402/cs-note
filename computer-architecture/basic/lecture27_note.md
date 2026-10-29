@@ -522,10 +522,10 @@ pc= 24 inst=7C380000 op1=65528 op2=10 immx=0 aluResult=65528 isBranchTaken=0 bra
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| hardwired 不夠彈性 → microprogram、microassembly | **第 28–29 支**：Processor Design Part 2–3（課本 §9.4–9.8） |
-| mar、mdr、shared bus | **第 28 支**：microprogrammed data path |
-| 五個階段同時處理不同指令、nop 的用處 | **第 30–33 支**：Pipelining（課本 Ch10） |
-| 指令記憶體、資料記憶體的真面目 | **第 34–37 支**：The Memory System（課本 Ch11） |
+| hardwired 不夠彈性 → microprogram、microassembly | [第 28](lecture28_note.md)–[29 支](lecture29_note.md)：Processor Design Part 2–3（課本 §9.4–9.8） |
+| mar、mdr、shared bus | [第 28 支](lecture28_note.md)：microprogrammed data path |
+| 五個階段同時處理不同指令、nop 的用處 | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：Pipelining（課本 Ch10） |
+| 指令記憶體、資料記憶體的真面目 | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：The Memory System（課本 Ch11） |
 | ALU 裡的加法器、乘法器、除法器 | [第 21 支](lecture21_note.md)、[第 22 支](lecture22_note.md)、[第 23 支](lecture23_note.md)、第 24 支 |
 | SimpleRisc 指令與編碼 | [第 7 支](lecture07_note.md)、[第 8 支](lecture08_note.md#17-格式總整理) |
 

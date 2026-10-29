@@ -748,12 +748,12 @@ $ gcc -m32 -O0 -fno-omit-frame-pointer -S -masm=intel fr.c     （-O2 也一樣�
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| si／di、rep、字串指令、lea | **第 13 支**：x86 進階記憶體指令 |
-| 浮點的 fld、fadd… | **第 13–14 支**：x86 浮點指令 |
-| 指令怎麼編碼成 1～15 byte | **第 14 支**：x86 編碼 |
-| RISC-V 的 jal／jalr、用暫存器存 return address | **第 15–16 支**：Ch6 RISC-V |
-| 乘法、除法的硬體為什麼慢 | **第 21–26 支**：課本 Ch8 計算機算術 |
-| xchg 與 lock、原子指令 | **第 38–40 支**：課本 Ch12 多處理器 |
+| si／di、rep、字串指令、lea | [第 13 支](lecture13_note.md)：x86 進階記憶體指令 |
+| 浮點的 fld、fadd… | [第 13](lecture13_note.md)–[14 支](lecture14_note.md)：x86 浮點指令 |
+| 指令怎麼編碼成 1～15 byte | [第 14 支](lecture14_note.md)：x86 編碼 |
+| RISC-V 的 jal／jalr、用暫存器存 return address | [第 15](lecture15_note.md)–[16 支](lecture16_note.md)：Ch6 RISC-V |
+| 乘法、除法的硬體為什麼慢 | [第 21](lecture21_note.md)–[26 支](lecture26_note.md)：課本 Ch8 計算機算術 |
+| xchg 與 lock、原子指令 | [第 38](lecture38_note.md)–[40 支](lecture40_note.md)：課本 Ch12 多處理器 |
 | 64 位元 Linux 的呼叫慣例（暫存器傳參數） | [第 8 支 §19.3](lecture08_note.md#193-x86-64-linux-的-stack-與呼叫慣例) |
 
 ---

@@ -1,0 +1,374 @@
+[00:00] welcome to the fifth lecture in this series on the main memory so we will
+[00:26] start our discussion with more non-volatile memory devices notably magneto-resistive rams or MRAMs
+[00:35] so MRAM memories are interesting so we have two layers of magnetic material with an insulating
+[00:43] layer in the middle so we have a pin layer whose direction of magnetization where you know
+[00:49] direction magnetization is that you know let's say south to north you can say the direction is
+[00:55] like this note that magnetic monopoles don't exist or at least are not known to exist they
+[01:00] always exist in pairs and there is a direction so any iron based material or any magnetic material
+[01:09] that has a natural dipole moment as you can see like this is known as a ferromagnet so you have
+[01:16] a pinned layer which has a fixed direction of magnetization and then you have a free layer
+[01:22] whose direction of magnetization can be changed so the direction for the other layer can be reversed
+[01:30] based on the current that you pass we'll see in a second how and the insulating layer in between is
+[01:35] actually very very thin and this is the trick that it is very thin maybe one to two nanometers
+[01:42] made of something like magnesium oxide which is an insulator but the point is that this has to be
+[01:50] very thin because of what i'm just about to tell you in the next two slides so as you can immediately
+[01:56] see there are two states for this cell one state is where the direction of the magnetization in the
+[02:03] free layer is same as that of the pin layer that's the parallel state when it is the opposite it is known
+[02:10] as the anti parallel state so there are two states and these two states are different physical properties
+[02:16] as we shall just see
+[02:23] so in the parallel state
+[02:26] it turns out that it's a low resistance state because current can pass through this even the tiny
+[02:32] insulating layer is good enough to pass some current through it current can tunnel through that's a low
+[02:37] resistance state so all our low resistance states will be logical one if it's anti parallel it turns
+[02:45] out that it's a high resistance state which is a logical zero how do we change the magnetization now
+[02:51] that we have two states finding whether it's logical one or zero is very easy we just pass for a given
+[02:57] potential we just look at the amount of current and that would tell us
+[03:02] whether it's in the high resistance or low resistance state or we can pass a known amount of current
+[03:10] and look at the voltage that would also tell us what is the resistance state of the cell but the
+[03:15] question is how do we change it so along with an mram we need some mechanism to change it where the spin
+[03:22] transfer torque mechanism which is one of the variants of mram devices comes becomes important
+[03:28] because we are discussing stt mrams here so the idea here is that we pass current through the pin layer
+[03:37] so we actually pass current through the entire device the entire sandwich like device
+[03:42] but the idea is that if it goes to the pin layer first
+[03:47] then something happens we'll see so what happens is that when you pass current and
+[03:52] let's say the electrons are going like this if they reach the pin layer first
+[03:58] then what will happen is that you will produce what is called spin polarized current
+[04:04] mainly because the magnetic field is oriented in one direction so that will ensure that most of
+[04:09] the electrons that are traversing this layer right so you know electrons move where they move towards the
+[04:15] positive terminal so when electrons move like this they could have equal spins so recall that spins take two
+[04:25] values in quantum mechanics plus half and minus half so the spin itself has two states but the point is that
+[04:33] the moment they pass through the pin layer most of them have the same state
+[04:38] so then when the current passes when the electrons pass through the free layer most of the momentum
+[04:46] of the electrons the spin gets transferred to the electrons in the free layer
+[04:53] and their direction of magnetization gets changed that is the most important thing that their direction
+[05:00] of magnetization kind of responds to the spins that the electrons have acquired in the pinned layer
+[05:07] and then their direction of magnetization can get flipped or it can get changed
+[05:12] and as a result this can move between the parallel and anti-parallel states which is tantamount to
+[05:21] programming the cell to store either a logical zero or a logical one and the key thing here is that
+[05:28] as electrons traverse this they develop a their spins
+[05:34] are not 50 50 50 anymore maybe they are 90 10 95 5 but their spins for most of the electrons become the same
+[05:46] and the spins then when they interact with electrons in the free layer the spin is transferred to them
+[05:55] and then their direction of magnetization can change and because most of the electrons are the same spin
+[06:00] uh almost all the electrons in the free layer will also have the same spin and that will determine the
+[06:06] reduction of magnetization
+[06:10] so let's now look at the read and write operations the cell is shown over here so this is kind of
+[06:16] presenting to you like a capacitor pretty much but it's not a capacitor it's more like a resistance here
+[06:24] it's not a capacitor in the traditional sense
+[06:27] but you have a free layer a pin layer the free layer is connected to the bit line
+[06:31] a little bit of insulation here and then a pin layer so hence as i said it's much better to think
+[06:36] of this as a resistor as opposed to a capacitor so that is why this is known as a magneto resistive ram
+[06:45] not a magneto capacitive ram and the word line will basically connect the bit line with this what is
+[06:52] known as the select line this is a new line that we are introducing here the reading is trivial for
+[06:58] a given voltage measure the current that is what i said you will ultimately measure the resistance
+[07:02] and figure out low resistance state logical one high resistance state logical zero
+[07:12] writing let's say you want to move from anti-parallel to parallel right so there are two ways you can
+[07:17] write anti-parallel to parallel or parallel to anti-parallel let's look at them separately
+[07:23] so when electrons move from the pin layer to the free layer then what will happen electrons are already
+[07:33] polarized in the direction of the pin layer that will be transferred to the pin layer
+[07:38] so the free layers magnetization's direction will match the same direction as the pin layer because
+[07:43] that is the way that electrons are flowed all right so this is simple that whatever they kind of learn
+[07:52] from here they transfer it there parallel to anti-parallel is when you have a reverse transfer of electrons
+[08:01] from the free layer to the pin layers electrons get reverse transferred this way
+[08:05] so what will happen is that some of the electrons that don't have the right spin will sort of bounce
+[08:16] back from the pin layer and accumulate in the free layer right so basically the electrons that are not
+[08:22] aligning with the spin of all the electrons in the pin layer so where you're assuming that in the pin
+[08:27] layer electrons have the same spin so let us say it is plus half the electrons that don't have plus half
+[08:33] but a minus half will not be able to kind of make progress so they will all get accumulated here
+[08:40] the moment they get accumulated here they will transfer their spin which is not the same as the
+[08:45] spin here but the reverse one two electrons in the free layer gradually they will acquire the momentum
+[08:53] and their magnetization will change and it will become opposite so if this is oriented in this way this
+[08:59] will get oriented in this way only because some of the immigrant electrons which wanted to get into
+[09:06] the pin layer the pin layer didn't allow so you'll have too many of these you know wrong spin electrons
+[09:12] which are rejected from the pin layer they'll accumulate in the free layer and then they will
+[09:18] change the magnetization there so this will be kind of a self-feedback process
+[09:23] and ultimately the magnet magnetization will flip
+[09:31] so this completes our discussion of stt ram where the idea was simple two states hrs lrs now let's discuss
+[09:39] phase change memory or pcm which uses different kinds of physics so what happens is that a chalcogenite
+[09:48] glass so there are a lot of you know materials that would qualify to be chalcogenite glass a popular
+[09:55] material is known as gst right so gst is germanium antimony tellurium again as you can see rare earth
+[10:06] materials are making an entry here also so there are two states crystalline crystalline states always
+[10:13] transfer current very easily they are low resistance states and lrs states for us represent logical one
+[10:21] a logical one but an amorphous state which is kind of like mixed up is a high resistance state which
+[10:27] for us represents logical zero again the idea is very simple that to read the value just apply a
+[10:34] voltage measure the current but the key point in all of these devices of course feram was little bit
+[10:40] of an exception where we measured the amount of current not the resistance but for the rest
+[10:46] resistance plays a key role what we need to do is we need to see how do we transition between these
+[10:53] states because otherwise hrs lrs division is quite clear so reading is simple right reading the process
+[11:00] is simple and reading and reads are fast right reading is simple and for all of these cases other
+[11:07] than feram where reading was somewhat slow but flash reads are well like moderately fast because in
+[11:15] nand flash or multi-level flash getting the value is kind of tough but let's say the last two ones
+[11:21] mram and pcm reads are fast for the sole reason that all that you have to do is pass a current and
+[11:31] in the measure its amplitude writing is slow it's uniformly slow it was very slow for flash writing
+[11:39] was slow for f ram as well because you have to raise the voltage to a point but it was at least
+[11:45] faster than flash because you didn't have to do that much of work for mram writing again was slow
+[11:52] because you have to wait for the direction of magnetization to change in this case also we will
+[11:58] see that writes are slow in general for non-volatile memory reads are on the faster side and writes
+[12:04] are slow which is one of their drawbacks so what we do is to implement a pcm phase change memory cell
+[12:13] where phase change is phase changing between crystalline and amorphous what you do is if you apply a short
+[12:19] high amplitude current pulse it will generate a lot of heat it will kind of melt the material and then
+[12:24] change its structure that would lead to a highly disorganized amorphous state as opposed to a
+[12:32] sustained low amplitude current pulse which will lead to a more organized state that would be a crystalline
+[12:41] state and of course this would take more time so this would be i would say time plus plus but we will
+[12:47] get a much better result with a crystalline state as opposed to an amorphous state which you can enter
+[12:53] very quickly so then the idea is very simple you have two electrodes a top electrode a bottom electrode
+[13:02] and then the then the gst material sorry this should be crystalline right so then there is a small
+[13:10] programmable region whose structure changes if i heat it as i said if i heat it very quickly
+[13:17] then its structure will become amorphous if i do provide a sustained heating it will remain
+[13:24] crystalline the writes in this case are slow and similar to flash i can have a multi-level
+[13:32] pcm cell where of course you know i can heat it to different levels change the amorphous crystalline
+[13:38] combination or the degree of amorphousness can be changed based on the heat that i applied so here is
+[13:46] the structure of a pcm cell so no surprises here we have an access word line transistor and the pcm cell
+[13:55] itself presents itself as a resistor so measuring the resistance to find out if it is in the low
+[14:04] resistance state or the high resistance state is easy all that you have to do is basically apply a
+[14:12] voltage and measure the current writing is easy essentially a current pulse is sent via the bit
+[14:18] line to the cell so in many of these designs what you will find is that the access transistor
+[14:25] is between the cell and ground and not between the bit line and the cell
+[14:30] so there are many reasons but one of the key reasons is that
+[14:35] often to program them you need high voltage or high current
+[14:39] and you don't want this transistor to attenuate some of that you kind of need direct access
+[14:44] to the cell and also the stimulus that is being applied is somewhat
+[14:49] more than what a small transistor can handle in very informal terms
+[14:54] so that is why it's the better idea to expose it directly to the current pulse
+[15:00] and writing to a pcm cell is easy just expose the cell to different kinds of current pulses
+[15:08] so again here there is an issue with slow writes and reliability also because pcm cells are similar
+[15:18] to flash in terms of reliability that writes are slow and also reliability is definitely an issue
+[15:26] so a standard approach is implement a write cache or some sort of a write buffer similar to dram similar to
+[15:32] flash to absorb a continuous sequence of writes
+[15:37] furthermore given that writes are slow there are several neat things that you can do with pcm
+[15:43] the main reason being that you know it's kind of like an additive process where you stop something
+[15:47] in the middle do something else and start from where you stopped
+[15:51] so the write operation is midway right so write basically means you're applying a current pulse and changing the structure of the material
+[15:58] and let's say read arrives the read is on the critical path and it has to be immediately serviced
+[16:03] so what you do is you kind of stop the write in the middle do the read come back and then finish the write
+[16:09] interesting use of the technology the technology allows this
+[16:14] sometimes what happens is well all the time that happens as a cell ages so it is possible that
+[16:21] you know you apply a current pulse for some time but it does not fully change to the crystalline state
+[16:31] so what you can do is that you can apply the current pulse for some time verify if the write is done or
+[16:39] not if let's say the cell has aged and is just taking a longer time to respond you can then keep on applying
+[16:45] the current pulse until you are sure that you have written what you intended to write in the middle
+[16:51] of course if there is a read then you can shift to the read finish the read and come back so uh this
+[16:57] is clearly an advantage of pcm it kind of allows you to pause a right in the middle so the key idea is
+[17:03] right pausing where you are pausing a right in the middle and you're going and doing a read and then
+[17:11] coming back where leveling is required no doubt like flash right absolutely no doubt then uh one
+[17:21] common approach of where leveling is called start gap where leveling which is you periodically you move
+[17:27] a block at location l to l plus one so this moves over here then l plus one moves over there so it can
+[17:34] sort of be like semi mathematically proven that this is a good approach where pretty much you know all
+[17:41] the blocks in the storage device move which is you know not a light operation but if this is
+[17:47] periodically you know these movements keep on happening then in a certain sense the overall
+[17:53] wear and tear is roughly homogeneous right it's not really as smart as something that uh you know
+[18:02] relies on an exact count and prediction but this is a very simple and low overhead way
+[18:09] of implementing wear leveling with some guarantees where every block ith block moves to the i plus
+[18:14] one ith so on and so forth so next let us come to resistive ramp so resistive ramps are nowadays very
+[18:23] important because they have found uses in neural networks so here again the low resistance state is
+[18:30] logical one high resistance logical zero absolutely no surprises in that so the resistance it turns out
+[18:39] is a function of the history of the voltage that is applied across the material right so this is
+[18:44] clearly in a potential sensitive not current sensitive and there are two kinds of resistive ramps or re-ramps
+[18:51] redox re-ramps and cb rams cb rams so we will look at them one after the other so in the case of redox
+[19:01] re-ramps you have two electrodes and a metal oxide layer in between kind of like a sandwich which we
+[19:06] have seen before so the metal oxide is basically a transition metal oxide so v o2 where v is the
+[19:15] generic name of a metal so it's some oxide of a transition metal nickel titanium etc so there are
+[19:21] pretty much two kinds of charge carriers right so if you think about this so then the o2 will
+[19:28] the the oxygen charge carrier can basically move out of vanadium dioxide so one of them can be like
+[19:44] a freely floating oxygen ion and the other would kind of be an oxygen vacancy or pretty much a positive
+[19:50] charge carrier similar to electrons and holes but let's refer to them as oxygen ions and oxygen vacancies
+[19:56] the same way that a hole is in electron vacancy so what happens is that whenever i apply a high
+[20:03] potential the oxide layer kind of breaks down into an oxygen ion and and an oxygen vacancy similar very
+[20:13] very similar to doped silicon no surprises over here so what happens is that i if i have
+[20:20] an anode and a cathode and anode cathode combination over here where these are the two electrodes
+[20:30] and this is the oxide layer so what will happen is the oxygen ions will move towards the anode and
+[20:35] kind of accumulate over there and the vacancies will pretty much stay back furthermore what could
+[20:42] happen is the oxygen ions could react to the material of the anode and kind of
+[20:46] get deposited over there form an oxide layer over there and the oxygen vacancies kind of tend to
+[20:53] align themselves between the anode and cathode and they form a conductive filament as you can see as
+[20:59] the structure suggests it sort of creates a natural pathway for charge to flow because of the fact that
+[21:10] you have these vacancies so they kind of electrons can jump jump jump and jump and then they can go
+[21:15] from the cathode to the anode so that's the way that this would work uh where uh basically the key
+[21:23] idea is that electrons travel on the oxygen vacancies and this is what kind of forms a conductive path or
+[21:30] a conductive filament and this creates a so several such filaments form not just one but this creates a low
+[21:37] resistance state so then uh we have kind of seen that how do you program it so unprogrammed is high
+[21:46] resistance programmed is low resistance where a conductive filament forms like this there are two
+[21:53] kinds of switching unipolar switching and bipolar switching and this is not just common to re-ramps
+[21:58] but it's kind of common to all devices in this family in a certain sense
+[22:06] so the process of kind of breaking the filament and kind of converting the device to an unto an
+[22:13] unprogrammed or high resistance state can be done two ways one is that we send a high reset current
+[22:20] through the device so this would kind of cause a lot of localized heating quite similar to PCM
+[22:26] and whatever are the oxygen ions that are trapped in the anode they will kind of get released so
+[22:31] they will come back into the oxide layer they will combine with the oxygen vacancies and pretty
+[22:38] much kill the filament so this is basically you kind of thermally agitate the entire device you
+[22:44] just make it very hot with a high current pulse and then you let the ions combine with the vacancy
+[22:50] the other is bipolar switching where if this is the anode this is the oxide layer and this is the cathode
+[22:58] what you do is you have a negative voltage here so the negative voltage would push the oxygen ions
+[23:04] into the oxide layer then they would combine with the filament and rupture it and break it
+[23:11] so the cell would kind of return to the high resistance state so these are two ways
+[23:16] clearly bipolar switching you have more control and in a certain sense is faster and more controlled
+[23:23] as opposed to unipolar switching because unipolar switching relies on heating and heating is a slow
+[23:28] process bipolar is faster but it needs more electronics
+[23:35] the other option is to use CB ram or conductive bridging ram
+[23:39] so there are two electrodes one of the electrodes is kind of an electrochemically active electrode in the
+[23:46] sense that parts of the electrode move into the intervening layer and so on we will see
+[23:52] so it can be made of silver typically the best choice copper or nickel
+[23:57] the other electrode is not electrochemically active so one of them is either you know let's say a silver
+[24:03] electrode the other one is not active so it is made of more like an inert metal with like platinum
+[24:09] or iridium again expensive ones but as you can see we are using a lot of elements here which are not
+[24:16] commonly or readily available platinum is a jewelry material in between we have an electrolyte layer
+[24:24] which can either be a germanium sulfur compound silicon dioxide titanium dioxide tantalum oxide
+[24:31] so we have seen we have seen similar chemical compositions earlier also PZT and SBT and so on
+[24:41] again same kind of elements of course not the same compound but that is the intervening electrolyte layer
+[24:48] which is over here so there are two electrodes in the earlier case in the in the redox case we did not
+[24:56] have an active set of electrodes but in this case you will see that the silver ions
+[25:02] will play a role so what happens is that we have an inert electrode and an active electrode
+[25:10] so whenever a highly positive voltage is applied over here highly positive right so many of these require
+[25:16] high voltage so we will break down the material here we will produce Ag plus silver plus ions and an
+[25:23] electron and the silver ions will move towards the inert electrode something like this and this will
+[25:31] create a filament of the same way we had oxygen vacancies in the earlier case in this case we'll
+[25:37] have a filament of Ag plus or silver ions and the moment we have a filament it can conduct or carry
+[25:43] current like the previous case again to reset the cell so this is exactly like the previous case
+[25:50] I am not discussing this a whole lot but to reset the cell we can basically use bipolar switching
+[25:59] unipolar is again possible but bipolar is quite effective so in this case instead of a positive
+[26:05] voltage what I do is I apply a negative voltage to active electrode so all the silver ions would kind
+[26:12] of move back so that would break the filament and it would rupture the filament the cell would go back
+[26:21] to a high resistance state and the silver would get deposited in the silver electrode so this electrode
+[26:27] as you can see the electrode itself is breaking down right so that's why we call it an active electrode
+[26:32] electrode breaks down and it sort of forms a conductive filament quite unlike the earlier case where
+[26:38] the oxide layer itself breaks down but in this case the electrode breaks down and makes a bridge
+[26:47] so this finishes our short discussion on non-volatile memories as you can see there is a lot of chemistry
+[26:54] happening here all kinds of materials are being used and a fair amount of filament creation rupturing
+[27:00] etc is happening based on thermal effects electrochemical effects magnetic effects and so on
+[27:06] so here is a short slide about perhaps the future of DRAM which is to increase its capacity
+[27:16] so some of the ideas that have gained some traction are hybrid memory cubes and high bandwidth memory
+[27:22] which is nothing but a 3d stack of DRAM memory arrays so what we have is we have memory arrays but we
+[27:29] have multiple VLSI layers so in a certain sense like different floors of a building we have
+[27:37] three different floors and three different arrays and they are of course connected to each other either
+[27:42] via silicon connections known as trans silicon vias or what is called a micro bump in the sense you have a
+[27:48] bump like copper connector here the other one has a bump like copper connector there and they make contact
+[27:54] that so what we do is that we divide each layer into a set of blocks so let's say this is a block
+[28:03] this is a block this is a block so if I consider this 3d column of blocks in the sense if I consider this
+[28:10] right so this 3d column of blocks is known as a vault and a vault is pretty much an atomic unit of this
+[28:17] overall 3d structure then this 3d DRAM array is connected to the CPU via a very very high bandwidth
+[28:28] channel this is known as an interposer and how high bandwidth it is well it's roughly twice the
+[28:34] bandwidth of a regular DDR channel something that you would expect 128 bits so of course you could
+[28:42] divide it into two sub channels that option is always there but here again you know it's a
+[28:47] very close connection you don't have long copper wires you have something similar to these micro bumps
+[28:52] via which this can be connected to the CPU so a very fast and very low latency yet high bandwidth
+[28:58] connection then we have embedded DRAM ED RAM so in this case so this is of course a separate structure
+[29:07] right that you buy and you put on your motherboard but in the case of embedded DRAM we have one
+[29:13] silicon layer which has your transistors and everything then a bunch of metal layers in a VLSI chip
+[29:20] and finally you have on top of that another DRAM layer sort of on the chip so in general it was quite
+[29:29] difficult to fabricate this mainly because the silicon the fabrication process for chips and the
+[29:37] fabrication process for DRAM was different but in this case they can sort of be fabricated separately
+[29:43] and put in the same package or you could have an advanced fabrication technology that can sort
+[29:48] of take care of both but in general they are done separately put on top of each other in the same
+[29:53] package and then there are these connections that are made so in a certain sense this is embedded into
+[29:59] the chip it's embedded DRAM you don't have to go outside so this becomes a ultra high bandwidth connection
+[30:06] between the transistors and the DRAM chip and this is kind of there it's I would whether it's a future or
+[30:16] not would depend because you also need to take power and temperature issues into account so
+[30:21] previously the DRAM was separate so whatever power is generated remain within itself
+[30:27] but in this case the CPU is in a sense heating up the DRAM and the DRAM is heating up the CPU there's a
+[30:36] lot of power that is internally being generated that is one issue but if that can somehow be taken care
+[30:42] of then you'll have a very high bandwidth connection between the transistors and the DRAM
+[30:48] So now we have finally finished our discussion on memory systems on memory devices emerging memory
+[30:56] devices non-volatile memory devices we have actually covered a lot of ground so what is remaining is
+[31:02] a very very small section known as the roof line model the roof line model is a performance model
+[31:09] sort of like back of the envelope performance model it basically says how do you compare two different
+[31:18] computer systems right use a simple graphical tool or a simple graphical diagram but I want to compare
+[31:25] them on three things one is performance which is number of operations per second integer or floating
+[31:30] point operations you choose but operations per second memory bandwidth which is basically bytes per second
+[31:37] so let me write it here bytes per second and the operational intensity which is for every byte that you read
+[31:44] from memory how many operations you perform so clearly you can see that performance divided by memory bandwidth
+[31:52] is equal to the operational intensity all right so basically that or let's say performance divided by operational
+[32:03] intensity is equal to memory bandwidth either way that you want to put it
+[32:08] right so basically these are not three independent quantities but two
+[32:12] operational intensity is a new thing that we are kind of introducing over here
+[32:17] which basically says that if I read a byte from memory how effectively do I use it
+[32:22] right the moment you know do I like to take a look at it once or do I do 10 operations on it
+[32:28] this is another way of presenting the same data so we have performance over here
+[32:37] performance in this case is defined as the number of flops or floating point operations that we do per
+[32:42] second that is the performance which is nothing but the memory bandwidth multiplied with the operational
+[32:49] intensity the bandwidth is a number of bytes per second the realized memory bandwidth and the operational
+[32:57] intensity is the number of flops or floating point operations per byte so byte byte get cancelled
+[33:03] and the LHS and RHS become the same the key innovation of the roofline diagram is that it puts the
+[33:12] operational intensity at the center that is the key that's the center of the entire discussion that
+[33:18] is the x-axis which is basically how effectively do you utilize something that is read from memory
+[33:25] so pretty much if you increase the cache size you definitely utilize memory data much better
+[33:31] better programming so the roofline diagram is not not just for the hardware is for the hardware software combo
+[33:38] pretty much with better programming we utilize the data far better right so which means that if I am able to
+[33:46] increase cache locality and basically keep the data with me for a longer amount of time
+[33:51] I can use it better so it's also it's also captures the way that software utilizes memory data then given an
+[34:00] operational intensity the maximum performance that I can get is limited to the bandwidth peak bandwidth
+[34:07] that is which is the performance here if I increase the peak bandwidth then of course I can get a higher
+[34:13] performance as you can see over here this equation if this is y this is x and this is the slope
+[34:22] this equation would come to something like this in this case as you can see the value of the intercept
+[34:27] is zero so basically all the lines start here and the slope is the bandwidth
+[34:31] I can do a little bit of algebra and move terms around so what I can do is that I can set y is equal to
+[34:43] capital B x and log y is equal to log x plus log b just take the log on both sides
+[34:50] so the idea here is that if I take a log on both sides
+[34:56] then this becomes my new y-axis which is the log of the performance of course plotted
+[35:01] on a log log scale log x becomes the log of the operational intensity which again gets plotted
+[35:08] like that I'm not showing the log for readability but the bandwidth in this case becomes the intercept
+[35:13] because in this case the slope is one so all lines are 45 degrees
+[35:18] but the bandwidth becomes the intercept so clearly higher is my intercept higher is the bandwidth
+[35:25] so the bandwidth forms a 45 degree line and if this is the peak bandwidth
+[35:29] I can never operate in any region which is this way similarly I have a peak performance because the
+[35:37] performance is not just dependent on memory alone is dependent on ilp number of values and so on
+[35:42] so I clearly cannot operate in this zone the same way I can't operate in this zone
+[35:49] and also for operational intensity there is a limit
+[35:53] which basically you know says that I can't operate in this zone this zone is not feasible
+[35:58] so what remains is this trapezoidal region well it's not trapezoidal one two three four five sides
+[36:04] this pentagonal region which is my feasible region of operation because I am below my peak
+[36:10] performance below my operational intensity and I have sufficient memory bandwidth so this is my
+[36:15] feasible region within the feasible region I would like to achieve peak performance which means
+[36:23] basically be here and use my data as efficiently as possible if I am over here I can maybe slightly
+[36:30] increase my operational density such that I can go like that
+[36:36] so the log log plot that we have we have different bandwidth ceilings as you can see
+[36:42] because now the bandwidth is basically the intercept on the y-axis
+[36:46] so we have three different bandwidths here b1 b2 b3 where b3 is greater than b2 greater than b1
+[36:53] and as you can see points p and q are within a feasible range so even if the bandwidth is b1 or b2 or b3 I can
+[37:03] operate at these points but these two points are in the infeasible range so it cannot operate over here
+[37:11] so you have different bandwidth ceilings you could have you could have also different computational ceilings
+[37:17] why how well one bandwidth could be just without prefetching with prefetching can increase my
+[37:24] bandwidth even more it would appear that I'm kind of getting more data because I'm also utilizing the
+[37:31] system when it's not meant to be utilized and I could have a theoretical maximum so mind you the bandwidth
+[37:37] here is the realized bandwidth right so b3 could be the maximum theoretical bandwidth b1 could be what
+[37:44] I'm doing naively and b2 could be the fact that I'm fetching more data even when it's not required
+[37:49] so those would be three different realized bandwidths similarly for performance ceiling I could have a
+[37:55] default I could have a system with simd right vector instructions and a peak performance similar to
+[38:02] this based on where I am at I could have different possible feasible regions with and this diagram
+[38:09] clearly tells you that different architectural techniques lead to very different performance
+[38:15] and bandwidth ceilings and correspondingly different feasible regions where I can operate so let's say
+[38:21] I'm operating here and let's say I'm within b1 and b2 so you know how far I can go right so this is my
+[38:29] range then I may and let's see if I'm operating over here and you realize that there is not much of
+[38:36] a space I may want to increase my bandwidth by implementing let's say prefetching so based on
+[38:42] where you are it would give you an idea of what is required to improve the performance
+[38:49] and in this case you can clearly see that if I go higher I can perhaps increase my peak performance
+[38:57] right so if I go can go higher I can kind of move in this direction so so so assume let me just clear
+[39:03] off the ink and let me explain again so if I am over here I am clearly limited by the bandwidth
+[39:13] unless the operational intensity is something that I cannot increase then I'm going to hit
+[39:17] this bandwidth ceiling over here but if I can move to the bandwidth b2 with the same operational
+[39:24] intensity I can go up up up up and I can be at b2 with prefetching and this would be more beneficial
+[39:31] for me if at if I can implement prefetchings I can then operate at this point as opposed to this point
+[39:38] so this is a very nice tool which basically tells you what hardware software optimizations need to be
+[39:44] done such that I can operate at a point which is more favorable for me and it clearly tells you the
+[39:51] bottlenecks so the roof line diagram as you can see the way that you would kind of interpret this
+[39:58] in terms of points p q and r is that p is very close to the bandwidth ceiling so with the same
+[40:04] operational intensity I can't do much q on the other hand is very close to the performance ceiling
+[40:12] so clearly even if I change the operational intensity and so on I can't do much unless I
+[40:17] somehow increase my peak performance by doing something let's say the peak performance is dominated
+[40:23] by power I would like to reduce my power and similarly point r means that you are totally
+[40:30] under optimized you have a lot of space you can do a lot to improve your performance improve the
+[40:37] operational intensity improve the performance
+[40:42] so this is our last slide this is the slide that we always love to look at which is the concluding slide
+[40:48] so this basically said that even though a DRAM cell looks to be very simple which it actually is
+[40:53] it's actually not that simple because there are too many complexities in terms of array design
+[41:00] in terms of channel rank bank group bank array row column there is a full hierarchy it's a world out
+[41:06] there and to manage DRAM devices you have to learn the DDR protocol all the asynchronous and synchronous
+[41:13] protocol state diagrams timings there's a lot of stuff you'll be really happy that we have completed all
+[41:19] of that and we have come here the memory controller also which used to be a separate chip as you know
+[41:27] let's say a decade and a half ago came within the chip so that needs to be totally aware of the state
+[41:33] of the DRAM device and it needs to be controlling each and every aspect of it and the memory controller
+[41:39] is kind of like a small processor on its own it maintains a small write cache and its job is to
+[41:45] schedule transactions commands as optimally as possible non-volatile memory again many say is the
+[41:53] future and many see it as the building block of neural networks mainly because of the fact that their
+[41:59] resistance is tunable they typically have two physical states but you could clearly have more
+[42:05] right and they are definitely fast storage devices if not more so now we conclude basically the second part of
+[42:14] the book so the third part will look at much more advanced topics reliability power temperature secure
+[42:22] architectures and architectures for machine learning

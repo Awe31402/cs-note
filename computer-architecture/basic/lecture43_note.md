@@ -552,8 +552,8 @@ $ python3 -I encode.py
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | Data link（frame、錯誤偵測與修正、仲裁）、network（I/O port、memory-mapped）、protocol（polling、interrupt、DMA） | [第 44 支](lecture44_note.md)：Data Link, Network, and Protocol Layers |
-| PCI Express、SATA、SCSI、USB（反過來的 NRZI、塞 0）、FireWire、硬碟 | **第 45 支**：PCI-X, USB, and hard disks |
-| 光碟、SSD | **第 46 支** |
+| PCI Express、SATA、SCSI、USB（反過來的 NRZI、塞 0）、FireWire、硬碟 | [第 45 支](lecture45_note.md)：PCI-X, USB, and hard disks |
+| 光碟、SSD | [第 46 支](lecture46_note.md) |
 | D flip-flop、setup／hold time | [第 18–20 支](lecture20_note.md)：Digital Logic（課本 Ch7） |
 | SRAM 的兩條 bit line（差動） | [第 20 支](lecture20_note.md#5-解法pre-charge--sense-amplifier) |
 | 匯流排、interconnect | [第 42 支](lecture42_note.md) |

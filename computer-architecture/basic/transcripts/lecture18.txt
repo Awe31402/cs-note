@@ -1,0 +1,705 @@
+[00:00] We'll be right back.
+[00:30] Hello everybody, welcome to chapter 6 where we'll be discussing about the basic hardware
+[00:41] components that are needed to build a processor from scratch.
+[00:46] So what we have done up till now in the last few chapters is that we have looked at what
+[00:52] bits can do, how do we use bits to represent integers, numbers, pieces of text.
+[00:58] Then we have looked at three kinds of assembly languages in chapters 3, 4 and 5, the basic
+[01:03] simple RISC assembly language, ARM assembly and x86 assembly.
+[01:10] Now given the fact that we have a decent idea of what assembly languages are, we want to
+[01:16] build an actual processor.
+[01:19] So to build an actual processor, what we would be discussing in this chapter is essentially
+[01:25] the building blocks of actual processors.
+[01:30] So I want to repeat once again that this is chapter 6 of the book Computer Organization and
+[01:36] Architecture.
+[01:38] This has been published by McGraw-Hill in 2015.
+[01:43] So let me start with an outline of this chapter.
+[01:45] So this chapter is divided into four sections.
+[01:48] The first section discusses the most basic building blocks of circuits which are transistors
+[01:54] and logic gates.
+[01:56] Then we discuss combinational logic which basically creates larger circuits by combining these basic
+[02:04] elements which are logic gates.
+[02:07] Finally we shall discuss sequential logic.
+[02:10] So in sequential logic we save, we store individual bits and then we use these individual bits
+[02:21] in circuits.
+[02:23] Finally we'll discuss SRAM and DRAM cells.
+[02:26] So these are the memory elements inside a processor.
+[02:29] We can store data here, we can store bits and bytes.
+[02:32] So SRAMs and DRAMs are two very different technologies, so we'll discuss both of these in the last part of
+[02:38] this chapter.
+[02:40] Alright, so let me start with a disclaimer that this chapter we are providing a very high
+[02:46] level overview.
+[02:49] So pretty much the entire digital logic course is being covered in this one single chapter.
+[02:56] Although it might be difficult for some readers or listeners to follow exactly all of that
+[03:03] is being said, so the assumption is that at least students have some background in logic
+[03:09] gates, transistors, combinational and sequential logic.
+[03:13] So then this chapter you can recapitulate all of those concepts and also get a high level
+[03:18] picture of all the elements that we need from the point of view of designing a processor.
+[03:25] So for a deeper understanding, if it is required, the students can consult any of the classic
+[03:30] textbooks on digital logic.
+[03:33] Alright, so let's take a look at the basic atom of a circuit, right?
+[03:38] The most simplest and it's like an atom and molecule of a circuit.
+[03:42] So the most basic element is a transistor.
+[03:46] So the transistor in common man's words is basically a switch.
+[03:51] So it's the same as a light switch and it's any kind of switch.
+[03:55] So when the switch is open, current is not flowing and when the switch closes, there is
+[04:04] a flow of current.
+[04:06] So this is as simple as that.
+[04:08] When the switch is on, the current can flow from this terminal to this terminal and if the
+[04:14] switch is off, there is no current flow.
+[04:16] So the transistor works like an open circuit.
+[04:22] So this is the most basic element of a circuit, it's just a simple switch.
+[04:26] And how is the transistor made?
+[04:29] So transistor previously was being made with different technologies but for the last 40-50
+[04:34] years it is being made of silicon.
+[04:38] So silicon is a basic element of sand.
+[04:40] It's a brownish, grayish material.
+[04:45] It is a semiconductor which means that it's not a conductor and it's not an insulator.
+[04:49] It lies in the middle.
+[04:52] It is, so the fantastic thing about silicon is that it is possible to change its properties.
+[04:58] We can add a little bit of impurities to silicon and this process is called doping.
+[05:04] So what is doping again?
+[05:06] It is the process of adding a little bit of impurities to silicon.
+[05:11] Once this is done, we can change its properties.
+[05:14] For example, if we dope it with group 3 elements of the periodic table such that boron, aluminum
+[05:21] or gallium, so then it will become a p-type semiconductor, p for positive in that sense.
+[05:29] And so then in this case, conductivity of the semiconductor will actually increase.
+[05:35] So we will discuss how.
+[05:37] But the basic idea here is that if we dope silicon with another element, in this case a
+[05:44] group 3 element of the periodic table, its conductivity will increase.
+[05:50] And so there are ways to control that.
+[05:53] Similarly, if we dope it with group 5 elements of the periodic table which are like phosphorous
+[05:58] and arsenic, it is called an n-type semiconductor.
+[06:02] So recall that in the periodic table, in the outermost band, silicon has 4 electrons.
+[06:12] Group 3 elements will have 3 electrons and group 5 elements will have 5 electrons.
+[06:19] So how is silicon, so how is a typical silicon, you know, a piece of silicon organized in terms
+[06:29] of its basic atoms?
+[06:31] So well, so silicon is a group 4 element, so it has 4 electrons in its outermost layer.
+[06:40] Similarly other silicon atoms also have 4 electrons.
+[06:44] So essentially 4 plus 4 becomes 8, and so they form these covalent kind of bonds here,
+[06:51] and so they arrange themselves in a lattice.
+[06:54] So this is a 2D view of what is otherwise a 3D lattice, but you can sort of think that
+[06:59] each silicon, conceptually you can think that each silicon atom is connected to 4 other silicon
+[07:07] atoms, and so they form covalent bonds of the way that is shown to ensure that they have a stable structure.
+[07:21] Now, what we can do is that let us assume that we replace a silicon atom with a boron atom.
+[07:29] So a boron atom is a group 3 atom, right, so it has 3 electrons in its outermost layer or orbit,
+[07:39] and so basically there is 1 electron missing, so whereas silicon has 4 electrons.
+[07:46] So what happens is that inside the lattice, there is a hole over here, so what does a hole mean?
+[07:52] A hole essentially means a lack of an electron, right, so basically an electron is not present.
+[07:58] So this is called a hole, so this is essentially a lack of an electron or one less electron being
+[08:06] is a hole, and the reason the hole is there because we have a small boron atom.
+[08:11] So the interesting thing is that in this case, holes can actually flow in the sense that this electron
+[08:24] can get transferred over here, and the hole can get transferred over here.
+[08:29] Similarly, holes can also flow like this, that the hole gets transferred over here and the
+[08:35] electron from there comes here.
+[08:37] So the reason that this happens is that inside the atomic world, things are fairly complicated.
+[08:44] So atoms are connected to each other, and so actually, you know, one reason that metals
+[08:50] are very heavy conductors is basically because the electrons form what is called an electron
+[08:55] glass, electrons form what is called an electron gas or an electron cloud, in the sense that
+[09:01] all of the electrons are available to sort of carry charge or carry current.
+[09:05] So in this case, the electrons, it is true that they are associated with atoms, but they
+[09:10] are also somewhat mobile in the sense that they can flow.
+[09:15] So if an electron flows in one direction to cover up a hole, conceptually we can think
+[09:21] that the hole is flowing in the other direction.
+[09:24] So the hole per se is not a physical quantity, it is a lack of an electron.
+[09:29] But we can conceptually think of a hole as a charge carrier, where it is associated with positive charge,
+[09:36] and the fact that the hole moves, let's say in this case, from the right to the left, essentially
+[09:44] means that an electron moves to fill up the hole from the left to the right.
+[09:51] So the holes are considered as charge carriers.
+[09:53] If you take a course on device physics, you will study a lot about electrons and holes
+[09:59] and compute effective masses of holes and so on.
+[10:03] But for the sake of an overview, these advanced concepts are not required.
+[10:08] The only thing that needs to be understood is that a hole indicates the lack of an electron,
+[10:15] and the hole itself can flow.
+[10:17] For example, if I apply, let's say a strong negative charge, that will essentially repel electrons
+[10:24] away from it.
+[10:27] So basically, the hole can then flow towards the negative terminal, which essentially means
+[10:33] electrons are flowing in the other direction and the hole is flowing towards the negative terminal.
+[10:38] So the hole, we can think is that it is conceptually associated with positive charge.
+[10:46] Similarly, we can have another kind of doping.
+[10:51] There is this animation over here, so let me show this once again.
+[10:56] Let us consider the hole that was created by adding the boron atom and let's consider an electron.
+[11:03] So if we apply a strong negative potential over here, then electrons will get repelled from
+[11:10] the negative potential and thus an electron will take over a hole and the holes can migrate
+[11:17] towards the negative terminal.
+[11:19] So we are thinking of a hole as a net carrier of positive charge and it essentially can move.
+[11:26] So it is associated with current.
+[11:29] So let us now look at a similar kind of doping called n-type doping, which is actually the
+[11:35] reverse of doping with group 3 elements.
+[11:38] In this case, we are doping with group 5 elements.
+[11:41] So let us assume that there is a phosphorous atom in the lattice.
+[11:45] So it will create bonds with the rest of the atoms, which is fine, but it will have one extra electron.
+[11:52] So this extra electron that is there can essentially migrate and carry current.
+[12:01] So these electrons will flow.
+[12:03] It is associated with a net negative charge.
+[12:06] So let us show a similar example that electrons on the application of an electric field, which
+[12:13] is essentially a potential difference, electrons can flow from the negative end to the positive terminal.
+[12:23] Alright?
+[12:24] So at this point, what are the two important concepts that we have read?
+[12:28] We have read the concept of a hole, which is a lack of an electron, but conceptually it
+[12:33] can be thought to carry positive charge.
+[12:36] And then we have studied about an electron.
+[12:43] An electron carries negative charge.
+[12:47] So how is a hole introduced?
+[12:49] A hole is introduced when it dopes silicon with a group 3 element.
+[12:53] So in that case, one electron is missing.
+[12:56] As you can see from the previous slide, one electron is missing from the lattice.
+[13:01] So that creates a hole, and the hole can migrate and electrons can come and fill it up.
+[13:07] So basically the hole in this case is thus associated with positive charge.
+[13:13] Similarly in this case, we will have an extra electron, which can migrate within the lattice.
+[13:20] And it will migrate towards the positive terminal as is shown in the animation over here.
+[13:26] And thus it can carry current.
+[13:29] So this is precisely the reason why if we dope silicon with either a group 3 element or a group 5 element,
+[13:40] we have extra charge carriers.
+[13:42] And what are the extra charge carriers?
+[13:44] They are either holes or they are electrons.
+[13:47] And thus the net conductivity increases.
+[13:50] So let us now make a transistor.
+[13:54] So making a transistor is very simple.
+[13:56] Once we have seen how to make a silicon lattice and how to dope it with dopants,
+[14:01] which are either n-type or p-type, we can use these basic elements to create a transistor.
+[14:08] So in this particular case, we create two n-type wells.
+[14:15] So these are sorry, two n-type regions.
+[14:19] So an n-type region is basically a small region inside silicon,
+[14:25] where we introduce a group 5 element atom.
+[14:30] Group 5 element atoms are typically phosphorus or arsenic.
+[14:34] So they contribute an extra electron.
+[14:36] So we have two such n-type regions in a broad p-type substrate.
+[14:42] So the entire green box here is called a substrate.
+[14:45] And this contains these n-type regions.
+[14:48] So the p-type substrate is made of p-type silicon,
+[14:54] which is doped with a group 3 periodic table element.
+[14:57] In this case, it can be either boron or gallium.
+[15:02] And so basically these are the three basic regions that we have.
+[15:08] And in addition, we have three terminals that are used to control the transistor.
+[15:15] The transistor being a basic switch,
+[15:18] the current flows from the drain to the source.
+[15:23] So the direction of the current flow is from the drain to the source.
+[15:28] Of course, it flows via the transistor, which we shall show in some time.
+[15:33] And the gate, which is basically the controller,
+[15:38] decides if the current flows or not.
+[15:41] So let's take a look at the gate in some detail.
+[15:44] So the gate has actually two elements.
+[15:48] So the black rectangle that we see over here
+[15:52] is basically a silicon dioxide slab.
+[15:55] So silicon dioxide is essentially sand.
+[15:58] And the good thing about silicon dioxide is that it is an electrical insulator.
+[16:02] So we have a very, very thin layer, which is of the order of nanometers.
+[16:07] We have a silicon dioxide layer, which is an insulator.
+[16:11] And on the other side of it, we typically have another semiconductor called polysilicon.
+[16:23] So then the polysilicon is connected to the gate.
+[16:27] So the gate is a terminal and there is a small metallic contact over here,
+[16:31] which we are not showing.
+[16:33] And so via a small metallic contact, the gate wire, which is a copper wire,
+[16:39] is connected to this polysilicon layer.
+[16:42] And so this controls the transistor.
+[16:46] So recall that any transistor is a switch.
+[16:49] Either the switch is open, which means the current from the drain to the source is not flowing,
+[16:55] or the gate is closed.
+[16:57] So in this case, the circuit is closed and the current is flowing.
+[17:03] So what we see here is that we have three terminals in this transistor,
+[17:09] the drain, the source, and the gate.
+[17:12] The drain and the source are connected to the n-type regions.
+[17:16] And the gate is used as a controller.
+[17:18] So the way that the gate works in an nMOS transistor.
+[17:23] So why nMOS?
+[17:24] So basically because we have two n-type regions,
+[17:28] which are also called n-type wells embedded in a p-type substrate.
+[17:33] So now if we apply a positive charge to the gate,
+[17:38] what will happen is that a channel will form,
+[17:41] which means that all the electrons will get attracted towards the positive potential.
+[17:47] And all the holes will get repelled in the other direction.
+[17:53] So since we will have excess electrons in this region,
+[17:56] it will form a conducting region known as a channel.
+[18:00] And if the voltage here is high enough,
+[18:03] then current can flow via the n-type well into the channel out of the n-type well via the source.
+[18:12] And if the voltage here is 0 volts, the channel will not form.
+[18:15] Hence the transistor is basically an open switch.
+[18:19] If the voltage is beyond a certain threshold,
+[18:22] which is defined as the threshold voltage,
+[18:27] then a channel will form.
+[18:30] And we can, the transistor will become a closed circuit.
+[18:36] So as we write over here, the channel,
+[18:40] this forms because electrons move towards the positive charge.
+[18:44] And they form a conductive layer such that the current can flow from the drain to the source.
+[18:51] And typically we define a threshold voltage.
+[18:54] If the gate voltage is, if the gate to source voltage is more than the threshold voltage,
+[19:00] then the channel can form.
+[19:06] So what we have seen is a basic transistor.
+[19:09] So when we use this transistor in a circuit,
+[19:12] this is the typical diagram that is used,
+[19:16] where we have a gate.
+[19:18] And recall that the gate is not connected to the drain and source.
+[19:21] The gate simply controls the direction of the current flow from the drain to the source.
+[19:27] So when we apply a positive voltage at the gate,
+[19:31] the transistor conducts.
+[19:33] And if the voltage here is negative or zero,
+[19:35] the transistor is off,
+[19:37] which means that no current flows across it.
+[19:40] So basically one way of ensuring that no current flows is,
+[19:54] of course, if the voltage is zero or negative.
+[19:56] So what we shall see later is that the transistor being in the ON state
+[20:01] as well as in the OFF state,
+[20:03] this fact can be leveraged to create a variety of circuits,
+[20:08] notably logic gates.
+[20:11] So let us now define an analogous structure,
+[20:14] which is a PMOS transistor.
+[20:16] So here we have two P-type wells inside an N-type substrate.
+[20:22] And the way that this works is exactly the reverse of how an NMOS works.
+[20:29] So for traditional and conventional reasons,
+[20:33] the flow of current in a PMOS transistor
+[20:36] is actually from the source to the drain.
+[20:39] And so this is just a matter of convention.
+[20:41] It's otherwise a symmetric device.
+[20:43] So here if the gate voltage is zero or it is negative,
+[20:49] so what happens is that we basically have the holes moving towards the channel.
+[20:57] And thus a channel is formed over here,
+[21:00] which is the conducting layer.
+[21:02] And current can flow.
+[21:05] So the logic...
+[21:07] So we are not explaining this anymore
+[21:09] because the logic here that we use
+[21:12] is exactly reverse of the logic that we had in an NMOS transistor.
+[21:17] And exactly a similar reasoning can be applied for the channel and for the operation as well.
+[21:28] So the symbol of a PMOS transistor is this,
+[21:31] where we have a gate, a source and a drain.
+[21:34] The only difference in the symbol is that we have a circle over here
+[21:39] which indicates that this is a PMOS transistor.
+[21:44] And of course the way that this operates is that
+[21:46] if we apply a positive voltage at the gate,
+[21:49] the transistor is off, there is no current.
+[21:52] And if we apply a negative or a zero voltage,
+[21:56] then of course there is a current flow.
+[22:00] And the current flow's direction is from the source to the drain.
+[22:10] So let's use this transistor.
+[22:12] What good is knowledge without actually using it?
+[22:15] So let's use it to make an inverter.
+[22:17] So this is the sign of an inverter.
+[22:20] So what it does is that if I apply a logical zero,
+[22:24] then the output is a logical one.
+[22:27] And so logical zero might physically correspond to zero volts.
+[22:31] And a logical one might correspond to one volts or two volts or three volts.
+[22:35] That is immaterial.
+[22:37] Then if I apply a logical one,
+[22:40] then at the end I get a logical zero.
+[22:42] So it pretty much computes the complement of a bit.
+[22:46] So how do we do it?
+[22:47] So let's assume that I send in a logical variable A,
+[22:51] which can be zero or one.
+[22:53] And I have an NMOS transistor T1 and a PMOS transistor T2.
+[22:58] The PMOS transistor is connected to the supply voltage VCC at the top.
+[23:03] And the NMOS transistor at the bottom is connected to ground.
+[23:08] And the output is basically at this terminal in the middle of the diagram.
+[23:16] So let's first see if I apply, if A is equal to one,
+[23:19] if it's a positive voltage, what happens?
+[23:22] In this case, if it's positive, T1 will conduct, right?
+[23:26] T1 will conduct and T2 will not conduct.
+[23:29] So effectively, this terminal will get connected to ground.
+[23:33] So if the value here is one, the value here, since it's connected to ground, will become zero.
+[23:39] So it effectively works in an inverter.
+[23:42] Similarly, let's take a look at the other case, where A is equal to zero or zero voltage.
+[23:50] So in the other case, what will happen is that the transistor at the bottom T1 will not conduct, right?
+[23:57] But the transistor T2 will conduct and this output will be connected to VCC.
+[24:03] So then it will become a logical one, alright?
+[24:08] So if I have a logical one here, the output is a logical zero.
+[24:11] And if I have a logical zero as the input, the output is a logical one.
+[24:16] So this acts as an inverter.
+[24:18] So this kind of a circuit is a, you know, combined NMOS PMOS circuit.
+[24:22] So it's a, it's called a CMOS circuit.
+[24:26] And so it's a combined circuit, right?
+[24:29] It has both NMOS elements and PMOS elements.
+[24:32] But the important thing is that we put NMOS and PMOS in series.
+[24:36] And one end of NMOS is at the ground and one is at VCC.
+[24:41] And all that you need to do to understand the operation of such circuits is basically considered pairs of inputs.
+[24:48] So if the input is a logical one, then you need to find out which transistors are on and which are off.
+[24:54] So in the case of logical one, this T1 is on and T2 is off.
+[24:58] So the output gets connected to ground, hence it is zero.
+[25:02] So let's see more examples of a similar logic.
+[25:06] So let's consider a NOR gate, which is of the same type at least.
+[25:12] So it looks similar, but we have twice the number of transistors.
+[25:16] So let's find out what it does.
+[25:19] So NOR gate is actually, so let's first take a look at the NOR function.
+[25:24] So we know an OR function, which is A or B.
+[25:29] So NOR function is essentially the logical complement of A or B.
+[25:33] So let's consider the combinations of values.
+[25:35] So for 0 and 0, 0 or 0 is 0.
+[25:38] So the NOR of 0 and 0 is the NOR of 0, which is the logical one.
+[25:45] For all the other combinations of A and B, which are 1, 0, 0, 1 and 1, 1,
+[25:51] A or B is equal to 1 and its complement is 0.
+[25:55] So that's the reason all three of these values are zeros.
+[26:00] So this is exactly what we want to compute via these four transistors.
+[26:05] So let's see the organization.
+[26:07] So we have four transistors named T1, T2, T3 and T4.
+[26:11] The input A is connected to T1 and T3.
+[26:16] The input B is connected to T2 and T4.
+[26:21] So T1 and T2 are connected in parallel and T3 and T4 are connected in series.
+[26:27] So T1 and T2 are NMOS transistors and T3 and T4 are PMOS transistors.
+[26:33] So let us first consider the simple case where A is 0 and B is 0.
+[26:39] So in this case, both the NMOS transistors are off.
+[26:42] So T1 and T2 are off.
+[26:44] And both the PMOS transistors T3 and T4 are on.
+[26:49] So the transistors are on.
+[26:52] This basically means that T3 and T4 form a conducting path.
+[26:57] So the voltage at the output terminal out will be the same as VCC or the supply voltage.
+[27:05] Right?
+[27:06] So the voltage at the out terminal will be the same as VCC the supply voltage
+[27:10] because T3 and T4 are conducting.
+[27:13] So hence that will be a logical one.
+[27:15] Now let us consider the next situation where A is 1 and B is 0.
+[27:22] So if A is 1, the transistor T1 will conduct.
+[27:26] So as a result it is ON.
+[27:28] Since B is 0, T2 will be OFF.
+[27:30] So as a result it is OFF.
+[27:32] Similarly, let us take a look at T3 and T4.
+[27:36] So since A is 1, a logical one, it's a high voltage, T3 is turned OFF.
+[27:43] And T4 will be turned ON but it doesn't matter.
+[27:46] So the reason it doesn't matter is because when transistors are connected in series,
+[27:50] if one of them is OFF, the entire line is OFF.
+[27:54] But what we have over here for this, for the second input, is that the transistor T1 is conducting.
+[28:02] So the output terminal is directly connected to GND.
+[28:06] Because this transistor T1 is conducting, so essentially we can sort of add a straight line over here.
+[28:12] That it is directly connected to GND.
+[28:15] As a result, the voltage at the output terminal is equal to the GND voltage which is 0.
+[28:22] And thus the output is a logical 0.
+[28:25] Similarly, we can consider the other pair.
+[28:28] It's an absolutely symmetric argument here for 0, 1.
+[28:34] So in this case when A is 0 and B is 1, you can see that, so this is basically T1 is OFF, T2 is ON, T3 is ON and T4 is OFF.
+[28:44] The important point to note that in this T3, T4 pair, in this case T4 is OFF.
+[28:51] So as a result, you know the supply is not connected with the output line.
+[28:57] But out of T1 and T2, T2 is ON.
+[29:01] So in this case, this has become a closed circuit.
+[29:04] So as a result, the output terminal is connected to the GND via T2 and its voltage is 0.
+[29:10] Similarly, both A and B are 1 and 1, then both T1 and T2 are conducting.
+[29:17] So both of these lines, you know the outputs are connected to the inputs.
+[29:22] So the output terminal is connected to the GND and since the GND represents 0V, the voltage at the output terminal is 0.
+[29:32] So what we get to see over here is that using a CMOS logic, we can create with NMOS and PMOS transistors a structure via which we can compute A NORB,
+[29:47] which is essentially AORB complement and this is the symbol of the NOR gate.
+[29:51] So this which is a regular OR gate and a circle.
+[29:53] So the circle denotes inversion.
+[29:55] So a regular OR gate would be a gate like this, right?
+[30:00] A and B, two terminals.
+[30:02] So if we add a circle, it becomes A NORB, which is the complement of AORB.
+[30:10] So let us now take a look at the NAND gate.
+[30:13] The NAND gate is the same thing as NOR, essentially conceptually the same thing,
+[30:19] where we compute A and B and we take a logical complement of this.
+[30:23] So this becomes A NANDB.
+[30:26] So here what we have is that we have a similar looking design, very different though if we start taking a look at the details.
+[30:36] So we have the NMOS transistors in series T1 and T2 and we have the PMOS transistors in parallel.
+[30:44] So the input A is connected to T1 as well as to T3 and the input B is connected to T2 as well as to T4.
+[30:56] Alright.
+[30:57] And this is the symbol of an AND gate.
+[31:00] So which is basically an AND gate plus a circuit.
+[31:03] So had I drawn the gate symbol as this, this would have indicated A AND B.
+[31:09] But if I draw a circle over here, it indicates A NANDB.
+[31:14] NAND basically means I compute the logical AND between A and B and then I take the complement.
+[31:20] So that is A and B complement.
+[31:24] So what I can do now is that let's take a look at all combinations of A and B and how this circuit works.
+[31:33] So if A is 0 and B is 0, both T1 and T2 are OFF.
+[31:39] But T3 and T4 both of them are connected, are ON.
+[31:43] So basically the voltage at the output terminal will be the same as that in VCC.
+[31:49] So as you see the output voltage is 1.
+[31:52] So let's consider the case where A is 1 and B is 0.
+[31:56] So if A is 1, then transistor T1 is conducting but transistor T2 is OFF.
+[32:02] So as we had mentioned in the last slide, when two transistors are connected in series,
+[32:08] if one of them is turned OFF, essentially current is not going to flow via that line.
+[32:14] So basically we can sort of assume that the output terminal is disconnected from the ground.
+[32:20] But let's take a look at T3 and T4.
+[32:22] That's more interesting.
+[32:23] Since A is 1, T3 is turned OFF.
+[32:28] But since B is 0, T4 is turned ON.
+[32:31] Hence we have a connecting path, conducting path, between the supply voltage via T4 to the output terminal.
+[32:39] Right?
+[32:40] So basically current can flow like this.
+[32:46] As a result, what can happen is that the voltage here will get set to the same voltage, similar, roughly similar voltage as the supply voltage.
+[32:58] And we can assume that it's a logical one.
+[33:01] So I will not be describing the other symmetric case here where A is 0 and B is 1.
+[33:06] But the logic is very, very similar.
+[33:09] So in this case also the output is a logical one.
+[33:12] Let us now consider the case where A is 1 and B is 1.
+[33:16] That's important.
+[33:17] Because that's when A and B is 1.
+[33:18] So A9B has to be 0.
+[33:20] So if A is 1 and B is 1, the transistor T1 conducts.
+[33:25] And transistor T2 also conducts.
+[33:28] So essentially you have a straight path between the output to the ground.
+[33:33] What about T3 and T4?
+[33:36] Both of them are turned OFF because the voltages at A and B are 1 each.
+[33:41] So what we see is that in this case the output will be driven to a logical 0.
+[33:47] Because it is directly connected to ground which is assumed to be at 0 volts.
+[33:52] So this is the operation of the NAND gate which is very different from that of the OR gate.
+[33:58] I'm sorry the NOR gate.
+[34:00] But the important take home point is that we are connecting.
+[34:06] In the previous case we connected the NMOS transistors in parallel the PMOS in series.
+[34:12] And for this case we are conducting the NMOS transistors in series and the PMOS in parallel.
+[34:19] So how do we analyze such circuits?
+[34:23] We basically analyze for all pairs of inputs.
+[34:26] So in this case there are 4 pairs of inputs, 4 possible pairs of inputs.
+[34:31] We just need to make a table of the form that I have shown of which transistor is ON and which transistor is OFF.
+[34:37] And then you will quickly see that according to the design the output will either get directly connected to the supply voltage which will give it a logical 1 or get directly connected to the ground which will assign it a logical 0.
+[34:59] So here is the summary of logic gates all our learning up till now that we have done.
+[35:04] So we built all of these with basic transistors with NMOS and PMOS transistors.
+[35:09] So we can build a...
+[35:11] So we first built an inverter.
+[35:12] So I am starting from bottom up.
+[35:14] So we first built an inverter that complements a single bit.
+[35:18] Then we built a NAND gate.
+[35:20] So how did we build a NAND gate?
+[35:22] What we basically did is that we had NMOS and PMOS transistors, some in series and some in parallel.
+[35:28] This is the symbol for a NAND gate.
+[35:32] We also built a NOR gate.
+[35:35] Sorry, I should add this.
+[35:37] So we also built a NOR gate where we take A and B and we compute A NORB.
+[35:43] So using...
+[35:44] So basically a NAND and a NOR are actually called universal gates in the sense that we can realize any logic function with only NAND gates and NOR gates.
+[35:55] So the description of why this is the case is somewhat difficult.
+[36:00] So I will not discuss it now, but it should be kept in mind.
+[36:04] So now we can easily construct an AND gate with at least all the basic gates that we have created.
+[36:10] So what we can do is that we can take a regular NAND gate, add an inverter to it.
+[36:19] Then it becomes an AND gate.
+[36:22] Similarly, we can create an OR gate.
+[36:24] So what is the idea?
+[36:25] We can take an OR gate that we have made with our transistors.
+[36:29] Then connect the output to an inverter.
+[36:33] So we have A or B.
+[36:36] So the symbol for an OR gate is like this.
+[36:39] So the only difference between an AND gate symbol and an OR gate symbol is that in this case this line is straight and this line is curved.
+[36:49] And also in an OR gate you can see an additional curvature like this.
+[36:53] It looks like an arrow.
+[36:54] Right?
+[36:55] Pretty much.
+[36:56] So these are called basic logic gates and AND, OR, NAND, NOR and the inverter of course.
+[37:07] Right?
+[37:08] So let me maybe write an inverter over here.
+[37:11] So these are called the basic set of logic gates that we have in our arsenal.
+[37:18] And these basic logic gates we can use to build far more complex and complicated circuits.
+[37:25] So I'll discuss that in the next few lectures.
+[37:29] But let's just keep this basic figure in mind that these are the basic logic gates that we have created from pretty much bare and simple transistors.
+[37:40] Let us now discuss combinational logic.
+[37:47] So what is combinational logic?
+[37:50] It's essentially creating a complex logic function.
+[37:54] So let me see what is a logic function.
+[37:57] So logic function takes multiple Boolean variables as arguments and returns an output which is a Boolean variable or it can return a series of outputs as well.
+[38:09] So it can also return a set of Boolean variables b1 to bn.
+[38:14] Right?
+[38:15] So this is made of logic gates and so the final output is essentially one of the possible.
+[38:21] So if let's say that there are n outputs.
+[38:26] So there are 2 to the power n possible values.
+[38:29] Some of these values are allowed and some are not allowed for a given set of inputs.
+[38:34] So typically for a given set of inputs only one value out of this set is allowed.
+[38:38] So that's the reason we call it of a combinational logic where essentially we take a combination of Boolean bits and we determine the output.
+[38:51] So let's first discuss, so what we want to do in this part is essentially discuss some of the most important combinational logic blocks that are used typically in modern processors.
+[39:10] And the multiplexer is probably the most important logic block.
+[39:13] So let's discuss that first.
+[39:14] So mind you in combinational logic we just take combinations of variables and then we decide the output.
+[39:23] So there is no storage per se.
+[39:28] So let's consider a multiplexer.
+[39:31] So in multiplexer we are given n inputs.
+[39:34] We choose one of the inputs as the output based on the select bits.
+[39:39] For example, if there are 8 inputs over here, then we'll choose one of the inputs, for example, let's say this input, to get reflected in the output based on the values of the select bits.
+[39:55] So let's say this is input number 4 and if the values of the select bits are 1, 0, 0, then we'll choose this input to get reflected at the output.
+[40:07] Similarly, if this is the last, if let's say the last one, the last line, we want the value of this to get reflected at the output, then the value of the select bits should be 1, 1, 1.
+[40:22] Right?
+[40:23] Where we are assuming that they are numbered from 0 till 7.
+[40:28] So this is a very, very important element in the design of processors.
+[40:35] So we'll see why this is the case when we go to chapter 8, mainly chapter 8 and chapter 9.
+[40:41] But nevertheless, let's try to understand how to actually build one such circuit to implement a multiplexer.
+[40:47] So let's consider a 2-bit multiplexer where there are 4 inputs and there are 2 select bits, A and B.
+[40:59] So if A and B are 0, 0, we want to choose the first input, 0, 1 the second input, 1, 0 the third input and 1, 1 the fourth input.
+[41:08] So what we do is that we generate all the combinations of the select bits.
+[41:13] And so the 4 combinations are A bar and B bar.
+[41:17] A and B bar.
+[41:19] So B bar means the complement of B.
+[41:21] And A complement ended with B, A bar dot B.
+[41:25] And AB.
+[41:26] So we are generating all the combinations of select bits.
+[41:29] So only one of the combinations will actually be true for any value of A and B.
+[41:37] For example, if A is 1 and B is 1, only this combination will be true.
+[41:43] If A is 1 and B is 0, then only A dot B complement will be true.
+[41:49] So only one of these combinations is true.
+[41:52] So for this combination, so what we do is, so the way we design the circuit is that we take each combination of the select bits,
+[42:04] either the original bit or its complemented form, and we AND it with the input in an AND gate.
+[42:10] Since only one of the combinations is true, the output of the rest of the AND gates will actually be 0.
+[42:17] So let's assume that the output of this AND gate is 0, this is 0, and this is 0.
+[42:22] And in this case, let's assume that this combination is equal to 1.
+[42:27] So if x10, if the input is 1, then output is 1.
+[42:31] If the input is 0, the output is 0.
+[42:34] So in a sense, the output is reflecting the input if the select bits, if let's say this particular combination over here is equal to 1.
+[42:45] So since in this case, the output is reflecting the input, this is x10.
+[42:51] So let me explain this once again.
+[42:53] Since A AND B bar is equal to 1, pretty much their value does not matter.
+[42:58] The output of the AND gate will be equal to whatever is the value of x10, right?
+[43:04] Because what is the output?
+[43:06] A, let me use the AND symbol AND, sorry, is A AND B bar AND x10, which is equal to A AND B bar x10.
+[43:25] Since A AND B bar in this case is 1, it is 1 AND x10, which is equal to x of 10.
+[43:35] So the output here will get, the output here will get reflected on the basis of the input.
+[43:42] So now let's consider the OR gate that we have over here.
+[43:46] Since all the rest of the values are 0, the output will also reflect the input.
+[43:53] Because anything OR with any Boolean variable, OR with 0 is the Boolean variable itself.
+[43:59] So what we are effectively computing is x10 or 0 or 0 or 0 or 0.
+[44:10] So 0 or 0 or 0, this entire thing is 0.
+[44:14] So essentially this is x10 or 0, which is x10.
+[44:20] So what we can see is that in this particular case, where A is 1 and B is 0, only this combination is true.
+[44:36] The rest of the combinations are false.
+[44:38] As a result, at this point, the output is the same as the input, the chosen input x10.
+[44:43] And similarly at the output of the OR gate, the output is equal to the chosen input.
+[44:49] So for the entire circuit, the output is equal to the input that we chose, which is x10.
+[44:57] So one more note regarding these equations, I could have used a different terminology as well.
+[45:02] So typically for the AND, typically for the AND operation, we will typically use the dot operator.
+[45:08] We might use the AND operator sometimes to make the explanation easy.
+[45:15] We might write AND also to make the explanation easy.
+[45:19] Similarly for OR, we would use the plus operator.
+[45:24] We can use the OR operator which is like a single vertical bar or we can just write OR.
+[45:32] So we will use these symbols interchangeably depending upon the context.
+[45:37] But the meaning is the same.
+[45:39] So now coming back to a multiplexer with the help of these equations, what we essentially showed
+[45:46] is that depending upon the values of the select bits, only one combination is true.
+[45:51] And for the input corresponding to that combination, it gets reflected at the output of the multiplexer.
+[45:58] So on a whole, what do we have?
+[46:01] What we have is that we have four inputs coming in and we have two select bits.
+[46:08] Based on the value of the select bits, only one of the inputs gets reflected at the output.
+[46:14] So let us design a demultiplexer which is the reverse of a multiplexer.
+[46:20] So here what we have is we have a single input which is a single bit input that we have over here.
+[46:28] And we need to make it appear on one of these N outputs.
+[46:32] So in this particular case, N is equal to four outputs.
+[46:36] So in one of these four outputs, let us say it is this output.
+[46:40] We want this input to appear over here and the rest of the outputs will be zero.
+[46:46] To do that, as we have seen in the slide on multiplexers, we need to number the outputs with binary bits.
+[46:54] Since we have four outputs, it will take us log four to the base two bits to number them,
+[47:02] which is basically two bits.
+[47:04] So we can number these 00, then 10, then 01, and 11.
+[47:17] So there is a reason why I numbered them in this fashion.
+[47:21] So similar to what we did in multiplexers, we have four AND gates.
+[47:25] So we are considering that the first bit is for A and the other is for B.
+[47:30] That's the way we have numbered them.
+[47:32] And so the two bits, one we are calling A and one we are calling B.
+[47:36] So if we have specified that bit number 00 is where the input needs to show,
+[47:42] then we need to set A bar and B bar or A complement and B complement.
+[47:48] So this becomes one and one and this AND gate gets enabled.
+[47:52] So in this particular case, since we want the input to come via this output,
+[47:57] so we set A to 1 and we set B to 0.
+[48:02] So B complement becomes 1.
+[48:04] So in any AND gate, once an input is 1, the rest of the inputs decide the output of the AND gate.
+[48:11] Since both of these are 1, the output of the AND gate over here is the same as the input here.
+[48:17] So the input here is 0, the output here is 0, can be easily verified.
+[48:22] And if the input here is 1, the output here is 1, that also can be easily verified.
+[48:28] Similarly, we have the rest of the inputs to the AND gates, which in this case is A complement and B.
+[48:36] And in this case it is A and B.
+[48:39] So only one of these conditions will be true.
+[48:42] And for the AND gate for which these conditions are true, that AND gate is enabled
+[48:48] and that is where the input will appear at the output.
+[48:52] So this particular circuit is just the reverse of what a multiplexer does.
+[48:57] That's the reason it is called a demultiplexer.
+[49:01] So the working of a demultiplexer is something that we described in the previous slide.
+[49:07] So let us just go through it once again.
+[49:11] So we generate all combinations of A, B, A complement and B complement as we just saw over here.
+[49:18] We generate all combinations.
+[49:20] If we have n select bits, well then we generate all 2 raised to the n combinations.
+[49:27] Only one of the combinations will be true.
+[49:31] And the output of that AND gate is equal to x which is the input AND gate with 1 because the rest of all the inputs are 1.
+[49:39] So if x is the input, x will also be the output.
+[49:42] And the outputs for the rest of the AND gates are 0.
+[49:45] Which will be the case because these combinations that we see over here,
+[49:49] these combinations will be false for the rest of the AND gates.
+[49:54] Let us look at a decoder whose operation is very similar to a demultiplexer.
+[50:00] It is albeit much more simpler.
+[50:03] So in this particular case, we have n outputs.
+[50:07] And we want to choose one of the n outputs using log n to the base 2 bits.
+[50:16] So if n is 4, log 4 to the base 2 is 2.
+[50:20] So that's the reason we have two select bits which are A and B.
+[50:23] A and B can take four possible values.
+[50:26] So as we did in the case of a decoder, something very similar can be done here.
+[50:31] Where we take all four combinations.
+[50:35] And depending on the values of A and B, only one of the AND gates will produce one as the output.
+[50:43] Let's say it's the second AND gate.
+[50:46] And the rest of the AND gates will produce 0 as the output.
+[50:50] So in this case, only one of the AND gates in that sense is enabled, whereas the rest are disabled.
+[50:58] So as compared to a demultiplexer, the main difference here is that the demultiplexer had a separate input for every AND gate.
+[51:06] Which was the input that we wanted to see reflected at the output.
+[51:11] Which means we had an input here and the input was expected to reflect over here.
+[51:16] In this case, that is not happening.
+[51:18] We just want to set one of the n outputs to 1.
+[51:23] And as we shall see later while designing memory arrays, this particular circuit will prove to be extremely useful.
+[51:32] So I am not explaining further because we have already understood the operation of a demultiplexer.
+[51:38] This is something very similar.
+[51:41] Now, let us consider one more circuit called an encoder.
+[51:47] So the encoder is also very important.
+[51:49] It's also very useful in memories.
+[51:52] Particularly a certain kind of memory is called content associative memories or CAM memories.
+[51:59] So an encoder works like this, that given n inputs, assume that only one of them is 1.
+[52:06] Right?
+[52:07] So this is a normal encoder.
+[52:08] There is something called priority encoder, which I will tell you what it is, but we will not discuss its design.
+[52:15] So let's assume there are n inputs and one of the inputs is equal to 1, the rest are 0.
+[52:21] So then the output is, we will find the id of the input, that which input is 1.
+[52:28] Right?
+[52:29] So for example, let's say that the inputs are numbered from 0 till 7.
+[52:35] And the sixth input is equal to 1, the rest are 0.
+[52:39] So output should indicate which particular input is 1.
+[52:43] So the output should be 1, 1, 0, which is the binary for 6.
+[52:50] So what happens when multiple inputs are 1?
+[52:53] When multiple inputs are 1, we need to choose one of them based on the priority.
+[52:58] So this is called a priority encoder.
+[53:00] So priority encoders can be of many different types depending upon the priority.
+[53:05] So we will not discuss that.
+[53:07] But readers who are interested in priority encoders can consult any other classic texts on digital logic.
+[53:14] So you will find many different kinds of priority encoders.
+[53:19] Let us look at designing a 3-bit encoder.
+[53:22] So if I want to draw the circuit of encoder, this is what it would look like.
+[53:27] I'm sorry, not a circuit, a high-level diagram.
+[53:30] So I have, in the case of a 3-bit encoder, I have 8 inputs and I have 3 outputs.
+[53:43] So one of the inputs is equal to 1 and I need to find out which input it is.
+[53:49] And then encode the number of that input in binary.
+[53:53] So if you think about it, let the input bits be numbered b0 to b7.
+[53:59] And let us consider the 3 output bits.
+[54:01] So let's call them bit 2, bit 1 and bit 0.
+[54:13] So as we can see, if bit 0 is equal to 1, the output needs to be 0, 0, 0.
+[54:20] Similarly for b1, the output needs to be 0, 0, 1.
+[54:24] So essentially the binary encoding is 1.
+[54:27] Similarly for b5, it will be 1, 0, 1.
+[54:30] And b7, it will be 1, 1, 1.
+[54:33] So what we can do is that for bit 2, we can write a boolean equation to denote that when
+[54:39] the bit is true, depending upon the values of the input bits.
+[54:44] So let's use the plus symbol to stand for OR.
+[54:47] Recall that we will use plus for OR and dot for AND.
+[54:52] So in this particular case, the second bit is equal to...
+[54:57] Because the second bit, when is it true?
+[55:00] When either b4 or b5 or b6 or b7 is true.
+[55:04] So this is the logical expression for when bit 2 is true.
+[55:10] Similarly, if we take a look at bit 1, when is it true?
+[55:13] It is true when b2 and b3, sorry, b2 or b3 are 1 or b6 or b7 are 1.
+[55:23] So we can say it is b2 or b3 or b6 or b7.
+[55:26] That is when bit 1 is 1.
+[55:28] In the rest of the cases, the default reveals which is 0.
+[55:32] Similarly, for bit 0, so bit 0 denotes the least significant position of the binary number.
+[55:41] So bit 0 is true if either b1 is true or b3 is true or b5 or b7.
+[55:48] So this is the boolean equation of bit 0.
+[55:53] So all that we need to do is that the boolean equations that we have over here,
+[55:58] we need to implement them with logic gates and we are all done.
+[56:02] And for a 4-bit or a 5-bit encoder, the logic will change in a similar manner.
+[56:09] So we need to make a table as shown over here.
+[56:12] So we need to make this table once again.
+[56:15] And for each output bit, we need to find out for which inputs it's set to 1.
+[56:21] Write appropriate boolean equations and implement them.
+[56:24] So let's consider the circuit of a 3-bit encoder.
+[56:29] It just has 3 OR gates.
+[56:31] And so if you see the equations here,
+[56:35] the equations here show that we are taking an OR of 4 quantities of 4 bits.
+[56:42] So each OR gate has 4 inputs.
+[56:45] And the inputs vary depending upon which output bit it corresponds to.
+[56:50] So bit 2 is B4 or B5 or B6 or B7.
+[56:54] Similarly, bit 1 and bit 0, the circuits are determined by the equations on the previous slide.
+[57:00] So this is a fairly simple circuit.
+[57:02] All that we need is 3, 4 input OR gates.
+[57:05] So 4-bit and a 5-bit encoder are slightly more complicated in the sense we need OR gates with even more inputs.
+[57:12] So this is the basic idea.
+[57:17] Subsequently, we'll take a look at sequential logic.
+[57:20] So that will be there in the next lecture.
+[57:24] So in the next lecture, the idea is to cover sequential logic and memory cells.
+[57:31] Here we talk with you here.
+[57:32] You don't have to read it now.
+[57:33] That's the reason this conversation is that.
+[57:34] I feel fully right.
+[57:36] Okay, really not.
+[57:37] If you ever did for this presentation,
+[57:43] I will consistently record them some JESUS period in the sense that I haveès and Mau Fallen now as up here,
+[57:52] of course.
+[57:53] So that I was considering nothing of the Prep tradicional lass,

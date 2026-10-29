@@ -1,0 +1,797 @@
+[00:00] Welcome to the third lecture on hardware security.
+[00:27] So, recall that in the previous two lectures we discussed the fundamentals of cryptography
+[00:34] and security and then we discussed the Intel SGX design in great detail.
+[00:40] So now we want to kind of conclude the chapter, so we will finish whatever we have of the SGX
+[00:46] part and we will talk about side channel attacks.
+[00:52] So let us come to creating and managing an enclave.
+[00:55] Recall that enclave is a secure region where an application runs, it is normally created
+[01:01] at boot time.
+[01:03] So what you do is you take your entire memory space and you partition it into two parts.
+[01:10] So you have a regular or unsecure region, that is what it is called, it is not non-secure,
+[01:15] it is unsecure and then you have a secure region which is reserved for your secure programs.
+[01:24] So, in general this was SGX v1 which was there in the Intel processors, the 9th and 10th generation
+[01:33] processors.
+[01:34] But now of course the size of the secure region is much larger and they have also done away
+[01:39] with many of the slower optimizations like the Muggle tree and so on.
+[01:45] But let us look at the classical enclave creation mechanism.
+[01:50] So here what you do is you partition this reserved memory into two sub parts.
+[01:55] One part stores the metadata for the secure region, other one stores the secure data, secure data
+[02:00] and secure instructions.
+[02:01] So, I am counting instructions as data.
+[02:05] So in the older version, the size of this processor reserved memory is 128 MB and the usable space
+[02:12] was only 92 MB.
+[02:14] So that really limited the size of the enclave.
+[02:18] And furthermore, new instructions were added to the ISA such that an enclave can be created,
+[02:24] deleted, restored, you can go into an enclave, you can come out so on and so forth.
+[02:29] So a typical SGX program had the portions that used to execute in an unsecure fashion.
+[02:36] And then it had portions that it used to execute in a secure fashion, so on and so forth.
+[02:41] So you had a way to come in and you had a way to come out.
+[02:47] So let us first look at setting up the enclave.
+[02:49] So we look at three instructions eCreate, eAdd and eInit.
+[02:54] So eCreate would essentially initialize the data structures corresponding to the enclave
+[02:59] and all of those data structures would be stored in the metadata area.
+[03:08] So what SGX does is that it literally partitions the physical address space as well as the virtual
+[03:14] address space.
+[03:16] Between the secure and non-secure regions, essentially given an address, be it physical or virtual,
+[03:21] you know whether it is in the unsecure region or in the secure region.
+[03:27] And also, the nice thing is that you also know whether it is a secure page or unsecure
+[03:32] page and these pages are treated differently.
+[03:37] But that said and done, the paging hardware etc is all managed by the OS, but we will see
+[03:42] there are some small things that ensure the security, but the OS primarily manages the page
+[03:49] tables and the TLBs.
+[03:51] So, even though it is not trusted, but we will see a little bit of additional hardware can
+[03:57] ensure that the OS cannot actually do any malicious modifications over here.
+[04:04] Then we come to the eadd, enclave add instruction, which basically adds the code and data of
+[04:11] the program, the secure program to the secure enclave.
+[04:15] So what it does is that it copies data from the unsecure part to the secure part, that it
+[04:21] does.
+[04:22] So, it will copy the data into the secured pages and then initialize the enclave.
+[04:29] Running the enclave is not as simple as you think, because before running the enclave,
+[04:35] you will have to ensure that everything that is running is secure.
+[04:43] So this is where we will compute a hash.
+[04:45] The hash is known as a measurement.
+[04:48] Digitally sign the measurement to ensure that the processor is indeed generating the measurement
+[04:52] or the measurement has not been tampered with.
+[04:57] Then we could also use the help of another sister enclave known as the coating enclave
+[05:02] to sign the measurement.
+[05:05] Then we send it for verification.
+[05:07] So this can be done verified locally or you can send it to a remote machine.
+[05:11] And only when the verification comes, of course, appropriately cryptographically signed, we can then launch the enclave.
+[05:18] So that is the overall idea, that is how it works, that we create an instruction, we add pages
+[05:24] to it and we initialize it.
+[05:29] So in terms of memory management, as we said, this is by far the most important when it comes
+[05:35] to security.
+[05:38] The OS manages the page tables, it manages the TLBs, it manages everything.
+[05:45] The OS can of course, deliberately induce TLB and page falls for regularly clearing them.
+[05:50] So, this will give it the page access sequence.
+[05:53] So, once you see the page access sequence, you would think about it, this is a source of
+[05:58] information.
+[05:59] So, this is a source of information for us in the sense we are getting the page access sequence.
+[06:10] But one nice thing that SDX does is that this, you know, it is not a perfect source of information.
+[06:17] So what it does is that whenever there is a page fault, normally you will also give the
+[06:21] address at which there was a page fault.
+[06:24] But in the case of a secure page, what you do is that you only give the page number the,
+[06:29] let say the 12 bits that correspond to the offset, they are all zeroed out.
+[06:34] So this in a sense stops the flow of information at least to some extent.
+[06:38] In a sense, you do not get the exact byte address or word address within the page that actually
+[06:45] caused the fault.
+[06:46] So, many such information leaks are actually stopped.
+[06:50] So, now the question is how do you stop the OS from redirecting writes to the non-secure
+[06:58] or unsecure region?
+[07:00] Well, so what the OS can do is that if you want to write to a secure page, then it can
+[07:08] simply change the mapping of the secure page such that the program is writing to the secure
+[07:12] page instead of going to the real address.
+[07:15] It can actually go to a fake address which the OS can read.
+[07:19] Why is this possible?
+[07:21] Because the TLB mapping and the page table mapping is there in the OS's hands.
+[07:26] And this is why it is possible.
+[07:29] But here again the designers of SGX have done something quite smart.
+[07:34] So whenever you try to kind of add a new TLB mapping or you try to, you know, populate
+[07:42] the TLB from the page table, if it is a secure page, the OS will not, sorry, the hardware,
+[07:49] the dedicated SGX hardware will not allow you to do it.
+[07:53] What it will instead do is that in secure memory, it maintains an inverted page table which means
+[08:01] given a physical address, it kind of points to all the virtual addresses that point to
+[08:10] it.
+[08:11] And all of these should be secure or should be validated in some sense.
+[08:16] So what we do is that the moment we want to access something, we go to the virtual address
+[08:24] and we check the IPT.
+[08:26] If the IPT has an entry where the OS is saying that this is some other entry, it means that
+[08:31] the OS has tampered with the mapping which is not allowed.
+[08:36] So this is where the inverted page table comes in very handy.
+[08:39] Furthermore, if we have a secure physical address, it gives us a list of all the virtual addresses,
+[08:48] which hold data for this physical address.
+[08:51] So this is again a way of checking the security of the program.
+[08:55] But if you were to ask me the takeaway points, the takeaway point is that the OS cannot arbitrarily
+[09:03] assign a mapping, but every time a mapping for a secure page enters the TLB, it is validated
+[09:11] using the IPT to ensure that it is what it should be, it is not something else.
+[09:18] And the IPT is a copy of the page table which is kept in the metadata region.
+[09:22] So the enclave add instruction adds code and data to the secure enclave and copies the secure
+[09:28] pages.
+[09:30] So what we do is that after all the instructions have been added, the IPT is created.
+[09:39] But before you launch the enclave, you just check the validity of the IPT, which is not
+[09:44] very hard to do.
+[09:47] So the idea basically is that you just go through your list of pages.
+[09:51] Any secure page in the IPT should not be pointing to a non-secure memory region, page in a region
+[10:02] of the memory that is not secure or something which is accessible to the OS, that should
+[10:06] not be happening.
+[10:08] Furthermore, how do we ensure that the IPT is continuously updated?
+[10:12] Well, that is easy.
+[10:15] So we allow the software to manage the page table, no problem.
+[10:19] But the page table as it is is not usable.
+[10:22] Mappings have to come to the TLB and these mappings are monitored.
+[10:28] So monitored means what?
+[10:30] Any time that there is a change in the mapping, a copy is sent to the IPT, right?
+[10:45] So this ensures that at all points of time, whatever change happens to the TLB, IPT gets
+[10:52] to know and it sees that no illegal mapping is created in the sense that a secure page,
+[10:58] a secure virtual page is not mapped to an unsecured physical page.
+[11:04] Let the OS maintain the page table, no problem because the page table as it is, the processor
+[11:09] does not directly use, it uses it via the TLB only, right?
+[11:15] And the thing is that the OS can furthermore move out pages from, you know, the secure region
+[11:25] to the unsecured region albeit in an encrypted form.
+[11:28] But here again, the ASIF guarantees, which is authenticity, confidentiality, integrity and
+[11:35] freshness guarantees are maintained, which basically means that, you know, any time, you know,
+[11:45] any time that we would like to read the data in this page, it needs to come back to the
+[11:49] secure region and then all the regular checks happen.
+[11:54] SDX additionally has something called an eviction tree or a waiting tree, which is again done
+[12:00] by the hardware, right?
+[12:02] Managed by the hardware.
+[12:04] So what happens is in the earlier version of SDX, now of course, this size is much more,
+[12:10] the number of usable pages, etc., everything had to fit within 92 megabytes.
+[12:16] So the moment that you wanted to use more memory, the hardware will automatically move
+[12:22] this with the OS support to another region of the unsecured memory.
+[12:30] So the idea was that again, if any of these pages are required, they would come back.
+[12:36] Similar to a Merkle tree, an eviction tree was maintained again for the integrity and freshness
+[12:41] of all the data, which has moved from the secure to the unsecured region.
+[12:46] So that is the broad idea over here, same idea of the Merkle tree, albeit in a somewhat different
+[12:53] setting.
+[12:54] So, let us now look at the way that a secure program runs, as I said, there is an unsecured
+[13:03] region, there is a secured region, unsecured, secured, so on and so forth.
+[13:11] So let us first look at what happens if an external interrupt comes.
+[13:15] So, the code is running in the secure context, then we have what is called an asynchronous
+[13:24] enclave exit, where basically the context of the secure program needs to be stored.
+[13:29] So context would include the register state, the state of the functional units, all of that.
+[13:37] So when all of that context is stored, that cannot be stored in an area that is accessible
+[13:42] to the OS.
+[13:43] So that cannot be stored within the process control block as is typically done, instead
+[13:49] something like that has to be provided by the SDX hardware in its metadata region to store
+[13:55] the secure context.
+[13:58] That is done.
+[13:59] So every secure program that kind of needs to context switch, its context is stored in a
+[14:04] secure region within the overall metadata, so that is that additional 28 plus 8, 36% is
+[14:12] in the earlier version of SDX.
+[14:16] Then of course, we flush the TLB, why do we flush the TLB?
+[14:19] Because we do not want any of the mappings, which means the secure page mappings accessible
+[14:25] to the OS, it should not be accessible, so the TLB in this case has to be flushed and this
+[14:31] is a significant source of overheads.
+[14:34] Then we enter the enclave, sorry, then we enter the OS and we do our job and we come back.
+[14:41] Any time what happens is that we would like to do a bunch of actions in unsecure part, process
+[14:47] a secure function like a cryptographic function and come back.
+[14:51] So to enter the enclave, we have an ENTER instruction, which is wrapped inside a secure function called
+[14:57] an E-call.
+[14:58] So you can think of E-call as an entry call, like getting into the enclave kind of call.
+[15:04] So this is a regular context switch in so far as the OS is concerned because it is essentially
+[15:10] turning on the secure mode and you are pretty much going into a new memory area, executing
+[15:17] its code and then you are coming back.
+[15:18] So you are calling a secure function.
+[15:21] And again when you exit, this is again treated as a special event called an O-call, where you
+[15:27] would like to come back to the unsecure region.
+[15:33] So all the arguments and so some arguments, there is some data transfer that is allowed
+[15:37] of course, in a highly regulated fashion.
+[15:40] But the most important thing is that we flush the TLB, so the TLB is flushed, which is something
+[15:47] that does not happen while entry, because while entry, we are entering the secure region.
+[15:54] So, we would still like to keep the same mappings because we would like to read or write, you
+[15:59] know, whatever we had earlier, we would like to access that.
+[16:03] But anything new that is created, that is something that the secure region should only have access
+[16:09] to and the unsecure region should not have access.
+[16:12] That is why the TLB is flushed and this is a source of significant arguments.
+[16:24] Now how do I remove an enclave?
+[16:26] Well, we have an eRemove instruction, which is used to break down or tear down an enclave.
+[16:34] So, which means that all the state is removed in the memory and disk, which includes zeroing
+[16:40] out pages.
+[16:41] So, all of that is done.
+[16:44] Furthermore, we cannot invoke any system calls or do any other privileged actions in a secure
+[16:53] mode.
+[16:54] That is basically because the OS will get to see what you are doing, it will get to take
+[17:00] a look at your source, at your state.
+[17:04] So, any such action which an enclave does not allow, what we do is we exit the enclave,
+[17:10] we do an O call or we send and then we kind of start a proxy thread which will execute the
+[17:18] system call and then we take its data and we come back to the enclave using an eCall and
+[17:24] then we resume from there.
+[17:27] So, the idea is that in any SGX application we have a bunch of these O calls and recalls
+[17:32] mainly because a lot of actions are not possible, are not doable in SGX mode.
+[17:39] So that is the reason it is important to sort of come out, either do the action yourself or
+[17:45] give it to another thread to do it on your behalf, collect the results and come back in.
+[17:52] So, now that we have discussed the software aspect of SGX, let us discuss one more idea.
+[17:58] It is called Obligious RAM, it is also called ORAM.
+[18:01] So, ORAM is a theoretical concept by and large, but it is seeing a lot of practical applications.
+[18:09] So, the idea is quite simple that the memory address stream.
+[18:16] So, what happens?
+[18:17] The moment there is the LLC miss, a memory address is sent to the main memory, then the
+[18:21] main memory does a read or write.
+[18:24] In the case of a write, it actually returns data.
+[18:28] In the case of a write, it may or may not return an acknowledgement, depending on the protocol,
+[18:39] most of the time it does not.
+[18:40] So, the memory controller would return one, but that is seated in the CPU.
+[18:45] But the addresses are visible and that could be a significant source of information.
+[18:50] So there is a fair amount of work which leaks cryptographic secrets and keys from the address
+[18:55] sequence.
+[18:56] So, a simple idea that you may want to argue is why not encrypt the address?
+[19:02] It is just that then we need some chip on the DRAM side to decrypt it, free management and
+[19:07] so on.
+[19:08] And the DRAM industry for decades has resisted all such kind of change, right?
+[19:14] It has totally resisted this.
+[19:18] So, the only idea to still kind of obfuscate the sequence of addresses is to follow two
+[19:27] strategies.
+[19:28] These are expensive, very expensive and original DRAM paper had huge overheads.
+[19:34] So the idea was that you keep some sort of a mapping within the CPU, where what you do
+[19:41] is the moment you access some location in main memory, you kind of migrate that to another
+[19:47] location.
+[19:48] So, this is like some sort of a further virtualization of physical memory, where you would have this
+[19:54] massive lookup table inside the CPU or perhaps some of it overflowing to the DRAM.
+[19:59] Well, the idea would be this would be the physical address that would go or let us call it the
+[20:05] logical address that is typically what it is called.
+[20:08] And what comes out is the physical address.
+[20:11] So what goes in is the logical address, what comes out is the physical address.
+[20:16] So previously, your job with the TLB and the page table is to convert from VA to LA.
+[20:23] And then had we not had ORAM, the logical address would be the same as the physical address.
+[20:30] But in the case of ORAM, we will further kind of obfuscate it and kind of mapping, map it
+[20:36] somewhere else.
+[20:37] And the moment we have done that, our data in the DRAM would also be jumping between locations.
+[20:43] We access it here, then we kind of copy it and put it here, next time access it from here.
+[20:48] Then we copy it, put it here, next time access it from here.
+[20:52] So this of course confuses the attacker somewhat.
+[20:56] Also the other idea is that if we want to access one location, we actually access K locations.
+[21:02] And one of those K locations contains the actual data.
+[21:06] This further confuses.
+[21:09] So and which location stores the actual data is there within the CPU, which is within the
+[21:14] TCP.
+[21:17] So with both these strategies, it has been shown that we can somewhat create an oblivious RAM,
+[21:22] where it will become very hard for an attacker to actually extract secrets from the NAMB address
+[21:31] stream.
+[21:32] So this is very slow, it has significant overheads.
+[21:37] So what you do is that you first discard the simplest or the most naive solution, which
+[21:45] is that for every memory access, you access the entire memory.
+[21:48] If you do that, it will work.
+[21:50] If you access the entire memory for every memory access, then the adversary is no way of knowing
+[21:55] which location you actually wanted to access.
+[21:59] So this is secure.
+[22:01] But the point with this approach is that its overhead is very, very, very high.
+[22:09] So basically accessing all the locations to access just one is not a good idea.
+[22:14] Instead we should, so this idea is permutation, where you permute.
+[22:19] And this idea of accessing more locations and kind of, let us say in the case of a read, choosing
+[22:27] only one of the values, this is known as redundancy.
+[22:33] So any combination of permutation and redundancy would do or choose.
+[22:40] So a new approach was designed a couple of years ago known as path ORAM, which is a far more
+[22:48] efficient version of ORAM, where if we consider that we have capital N memory blocks, then
+[22:54] of course we will have N mapped addresses and the local cache or the stash, that is what
+[23:00] it is called, is where most of the magic happens.
+[23:05] So what we do is that we kind of divide our memory space into buckets, where each bucket
+[23:15] has B blocks, then we create a tree of these buckets with 2 raised to the power L leaves.
+[23:23] So, pretty much you know, if you think about it, we are assuming that we have L plus 1 levels.
+[23:28] Where a level is like this that let us see if I were to just consider this free, I would
+[23:33] say it has 1 level.
+[23:35] So we have 2 leaves.
+[23:36] So we have L plus 1 levels and L is log N to the pixel.
+[23:40] So this is a standard construction of a tree.
+[23:45] So what we do is that if we want to let us say read a block in the kth leaf, which is
+[23:51] the kth bucket.
+[23:53] Then we will return the contents of all the blocks from the root to the kth leaf.
+[23:58] So basically when we read, we will go through the tree and then we will just go down this
+[24:03] path.
+[24:04] We will read the contents of all the buckets and return all of it.
+[24:11] Then what will happen is that the data for any single address could be present in basically
+[24:17] in any block in the path.
+[24:19] So if this is the path, then basically this could be present anywhere.
+[24:27] So basically if I consider an address A, so we will just see what post map A is in a second.
+[24:35] But post map is essentially the position map.
+[24:37] So it is essentially telling you that for an address A, which leaf am I referring to.
+[24:45] So then you kind of look at the path.
+[24:47] So as you can see, this is pk, pk means this is the kth leaf and this is the path to the
+[24:52] kth leaf.
+[24:53] So what I do is given an address, it gives me the number of the post map A gives me the
+[25:00] number of the leaf and then what I do is I find the path from the root to that leaf.
+[25:06] I read all the blocks on the path and the actual block is there somewhere in this path.
+[25:15] So it is important to go through this argument several times and also read the relevant part
+[25:20] of the book to kind of gain a better understanding or a more superior superlative understanding
+[25:26] of what is it that I am trying to say.
+[25:29] But the key point is that given an address, you first map it to a leaf.
+[25:37] Given a leaf, you find the path from the root.
+[25:42] Given the path, you find all the buckets and from there you find all the blocks and basically
+[25:52] in any one block, these are all the blocks in any one block, our data is there.
+[25:58] So let us look at a few more definitions.
+[26:02] So we have already seen the definition of post map.
+[26:06] So what that does is that that takes an address and maps it to a given leaf, right, given leaf
+[26:14] of the tree or given block.
+[26:16] So the blocks themselves are arranged as a tree as you can see.
+[26:21] The tree has 2 raised to the power L leaves at this point.
+[26:25] So it has L plus 1 levels, where the definition is that if you have one level, you have two
+[26:31] nodes at the leaf level.
+[26:34] So there are a total of log n to the base 2 levels, that is easy to see.
+[26:40] So what is the main aim of doing this?
+[26:41] The main aim is to define a function called get cousins, right.
+[26:46] So that is the main aim, where we will get you know, W addresses as the output.
+[26:53] So let us understand what is there in this get cousins.
+[26:57] So the idea is that you want to find, you know, you want to find a set W for every address
+[27:06] that is a part of the set W, this condition, these two conditions have to hold true.
+[27:12] So essentially the output is a set of addresses which are part of a set called W and there you
+[27:19] want something to hold true.
+[27:21] What is it that you want to hold true?
+[27:24] So what you want is that if you consider the kth leaf and consider the path pk, which is
+[27:30] the path from the root to the kth leaf, this is the path pk.
+[27:36] Then what you do is that you consider the lth node in this path, right.
+[27:44] So if I let us say give you k and l, then what you do is that you look at pk, the path pk,
+[27:52] find the lth node and that should be equal to, for a given address, you find its postmap,
+[28:00] find its path and in this path as you can see in the lth node, right.
+[28:06] This is there in this path, right.
+[28:08] So postmap a, l, this is actually the same bucket over here.
+[28:14] And furthermore, this address has to be present in an on-chip cache known as the stash.
+[28:20] So there are essentially two requirements for a cousin.
+[28:24] It is basically all the addresses that are there in the stash.
+[28:29] Then for a given k and l, essentially the path has to diverge only at the lth point or at
+[28:36] some point after that, but not before that.
+[28:40] So this basically means that everything within the subtree will be considered for the first
+[28:45] condition.
+[28:47] For the second condition, we will essentially pick out the subset that is a part of the stash
+[28:52] and that would comprise the set w.
+[28:56] So the get cousins function basically finds, well, first it finds a subtree, right.
+[29:05] And then what it does is within the subtree, it just filters out those nodes that are a
+[29:09] part of the stash.
+[29:13] So now if I look at the algorithm in its full detail, it is not very hard to understand.
+[29:19] So let op be the operation, be it a read or a write.
+[29:22] Let a be the address.
+[29:25] And if this operation is a write, let new data be the data that I am writing to.
+[29:31] So the function that I want to do is I want to define a function called access where I am
+[29:37] either reading or writing to a given address.
+[29:40] And if I am writing, then I will write something if I am reading, I will return something.
+[29:46] So what I do is I access the post map and then I figure out basically where is this there
+[29:57] in the position map in which leaf.
+[29:59] So this essentially gives me the leaf address of the post map.
+[30:03] Essentially it tells me where is it over here, right.
+[30:08] So this is what post map is, sorry, this is what the post variable does.
+[30:14] Then what I do is I randomly do the permutation in the sense I say that look henceforth.
+[30:20] I will set a new location for the address a, which will be one of the leaves from 0 to n
+[30:27] minus 1, some place I will put it, alright.
+[30:31] And basically, you know, one out of those n leaves I will put it.
+[30:36] So this basically means that if you have access something at some location, the next time you
+[30:41] go to access, it will be there in a different location.
+[30:45] So this permutation will be done.
+[30:47] So we will compute it.
+[30:49] Then what we do is that we look at the path from the root of the tree to the leaf.
+[30:58] So from the position that I computed to the root, I find all the nodes.
+[31:04] Then in all the nodes, all the blocks that I find, which means blocks and the contents of
+[31:09] all the blocks, everything, all of that I add to the stash.
+[31:13] So stash is an on-chip cache.
+[31:16] So as I said, you know, our algorithm is such that the data can be found in any block that
+[31:22] is on the path.
+[31:24] So what I do is the moment I access something, then I go and I pick everything on the path
+[31:30] and I put it in the stash.
+[31:32] Then I implement the read or write whatsoever may be the operation.
+[31:36] If it's a write, then what I will do is I will add, so in all cases I will add it to the stash.
+[31:46] So as you can see, it is added to the stash right here.
+[31:49] If it's being read, I will read it.
+[31:51] If it's being written, I will write to it.
+[31:54] So let us now look at the second part of the algorithm where we do the permutation.
+[31:59] So what we do is we have a for loop where we move up the levels from level L to level 0,
+[32:07] which is still the root.
+[32:09] So the idea is simple, at every point we consider this location pos, which was defined here as
+[32:18] the position, original position, leaf position of the address.
+[32:23] Then what we do is we find the path where this being the root and this being what we have mapped
+[32:31] pos to.
+[32:33] So this being pos actually, the position.
+[32:37] So once we have done that and we have found the path and let us say the level is L, then
+[32:43] we kind of look at the cousins.
+[32:45] So the cousins would be essentially every node here, which is a part of the stash.
+[32:52] So then let this set be W.
+[32:55] What we do is we trim W, trimming W basically means that we only keep that many entries that
+[33:03] can fit within a block.
+[33:05] So that is what we do, we trim it.
+[33:09] And then for every address within W, what we do is that we create a new block because
+[33:14] as you can see the size of W is one block, so because it has been trimmed.
+[33:19] So we create a new block and we kind of replace this entry here, which is P pos L, as you can
+[33:25] see it is this entry over here in the tree.
+[33:28] We replace it with the address in every address.
+[33:31] So it is for all A dash, where A dash is an address.
+[33:35] For every such address, we are adding the address as well as the data.
+[33:40] And where will you find the data?
+[33:42] You will find the data in the stash, right?
+[33:46] And you are guaranteed to find it because that is the way get cousins is defined.
+[33:50] So any A dash comma SA dash is something that is there in the stash.
+[33:57] This is the address.
+[33:58] This is the data.
+[33:59] Both we will add and we will replace this bucket over here.
+[34:03] So this is essentially showing you the permutations, the way we are moving things around.
+[34:08] And finally, once this has been moved here, we can remove these entries from the stash.
+[34:13] So this ensures that even the size of the stash is limited.
+[34:17] So what is the idea?
+[34:18] We read the path, we locate the node L here, we find the cousins, we then pick a subset of
+[34:26] them that will fit in one block, create a new block over here by kind of replacing the
+[34:32] earlier block.
+[34:33] And finally, whatever we put in here, we remove that from the stash.
+[34:37] So as I said, this is just a way of mangling data around and kind of permuting.
+[34:42] So there is a formal proof for why this works, but let us not get into that.
+[34:46] It is well beyond the scope of our current discussion.
+[34:50] But this should be enough to understand that this is a path ORAM algorithm which we have seen
+[34:55] in full glory pretty much.
+[34:58] It is impractical because for every memory access, we will have to do this.
+[35:05] That is why it is quite impractical.
+[35:08] Even if you argue that this is a far more efficient version of the ORAM protocol, in spite of that
+[35:16] it is quite impractical.
+[35:18] But that said and done, there are improvements and approximations to this.
+[35:22] This is the hot area of research.
+[35:25] So let us now come to the last part which is side channel attacks, where the idea is
+[35:30] that you do not directly take the data, but you look at some other artifact or aspect of
+[35:36] the execution.
+[35:38] And from there, you infer some data via which it is possible to infer, let us say the value
+[35:43] of a private key.
+[35:46] So one of the culprits that is often implicated in any side channel attack is the high resolution
+[35:53] timer, which is, you know, a nanosecond level timer that most processors have.
+[35:58] And it is needed.
+[35:59] Why is it needed?
+[36:00] Well, you need it for device drivers, particularly high throughput network device drivers, computer
+[36:08] games and so on.
+[36:10] So what happens is that the basic, this is the basic principle that an L2 miss takes a
+[36:15] long time to service.
+[36:17] Because you go to main memory, so it takes hundreds of cycles.
+[36:21] On the other hand, misses at the L1 level etcetera are very fast, right.
+[36:25] So it is a very small penalty.
+[36:30] So in either case, either it is an L2 miss or an L1 miss, in both cases if you have high
+[36:35] resolution timer, these small misses are detectable.
+[36:42] And we can use the misinformation or rather the timing information, which is a proxy for
+[36:47] the misinformation to figure out the addresses that your program is accessing.
+[36:55] And the address sequence can give you some idea of the data that you are trying to predict.
+[37:03] Because in many cases, you know, the depending upon the data, we would access one sequence
+[37:07] of addresses, otherwise some other sequence of addresses.
+[37:11] And it is further possible for an adversary to kind of actively increase the information
+[37:17] content of the address sequence.
+[37:19] So with that, we can exfiltrate credit card numbers, private keys and everything.
+[37:26] So the key question is that looking at this hit miss behavior and this address sequences
+[37:30] and timings and so on, can we get some idea, well yes, if we can kind of finally craft a destructive
+[37:39] interference in such a way, that information is leaking out, right.
+[37:44] There is information leakage.
+[37:46] So let us now explain the space of side channel attacks, but before I do that, let me explain
+[37:51] how the RSC algorithm works, the key part of it.
+[37:56] So let C be the ciphertext and P be the plaintext.
+[38:00] Then the key approach that RSA follows is that C is P raised to the power E mod N where
+[38:08] E and N are very large prime numbers.
+[38:11] And we can easily see that the plaintext is C to the power D mod N subject to E and D and
+[38:17] N mutually satisfying some properties.
+[38:21] But the key point is that E, D and N are very large prime numbers.
+[38:25] And furthermore, we are relying on the fact that for integer factorization, we do not
+[38:33] have a very efficient algorithm, a polynomial time algorithm as of now.
+[38:39] So the entire proof relies on the hardness of that.
+[38:42] So the key thing is that how do you do this?
+[38:44] How do you perform this operation?
+[38:47] A naive approach would suggest that you kind of exponentiate this E times, which will take
+[38:52] a long, long time and then compute mod N.
+[38:56] But a faster approach would be to kind of break it down in a tree and roughly use log level steps.
+[39:05] And that would basically mean, that simple, it would rely basically on this fact that let
+[39:13] me perhaps explain with an example, 5 percentage 3 is equal to 2.
+[39:21] Similarly, let me write it twice, I will tell you why.
+[39:25] So what is 25 percentage 3?
+[39:29] So this is nothing but, because 25 is 5 square, 25 percentage 3 is nothing but 2 into 2 4 percentage
+[39:39] 3, which is actually 1, alright.
+[39:44] Now let me maybe multiply this once again.
+[39:47] What is 125 percentage 3?
+[39:50] So 125 percentage 3 is basically, you know this number 2 cube percentage 3, which is 8 percentage
+[40:04] 3, which is 2 and you can readily verify that that is indeed the answer.
+[40:10] So using this of course, you know in this case I used an example, I could have used algebra,
+[40:15] my job would have been easier but for understanding your job would have been tougher.
+[40:20] But basically the idea is that if I have computed something kind of partially and I multiply them,
+[40:28] then there you know the percentage 3s also get multiplied with each other.
+[40:32] So that is the reason there is no need to exponentiate.
+[40:35] Instead what we do is, we look at this exponent e, if it is an odd number, then let us say the
+[40:42] final output is z, so I will temporarily compute z as z times x percentage n.
+[40:48] This essentially converts it from odd to even in a certain sense.
+[40:52] Right, this is easy to prove, I am not going through the proof.
+[40:56] And then what I do is, I divide e by 2, but we all know shift is more efficient than division.
+[41:02] And then we kind of square x in a modular fashion.
+[41:08] So essentially what you are trying to do is, you are trying to create a bigger and bigger
+[41:12] and bigger x, and such that it approaches this number in some sense.
+[41:20] So you are essentially squaring it with itself, so it will approach it very quickly.
+[41:26] So this is the broad idea.
+[41:28] So let us not focus on the mathematical correctness that you can prove using the insight over here.
+[41:33] But let us look at the security vulnerability or the side channel which is far more important
+[41:39] in this case.
+[41:41] So in this case, what you do is that depending upon this exponent e, this test will sometimes
+[41:51] be positive, sometimes be negative because it all depends upon which bit of e you are seeing.
+[41:58] So you are essentially traversing e bitwise as you can see because every time e percentage
+[42:03] 2 is nothing but looking at the least significant bit of e.
+[42:08] And so you are looking at the lowest bit of e, the e percentage 2.
+[42:12] If the least significant bit is 1, you are doing this else you are not doing it.
+[42:18] Then you are again right shifting it, taking a look at the second least significant bit
+[42:22] which is now the least significant bit.
+[42:25] Again looking at it, again looking at it.
+[42:28] And wherever, whenever it is 1, this line is being executed.
+[42:33] All that I need to do is that if I am able to track accesses to this line, I can, lo and
+[42:40] behold, figure out all the bits in exponent e which is nothing but my key.
+[42:46] And why would that be the case?
+[42:47] Well, what I would do is I would run a timer and I would basically see how frequently this
+[42:52] line is being accessed or what is the access pattern of this memory line.
+[42:58] So let's say it's not being accessed, so it will be 0 if it's being accessed, it's 1,
+[43:02] then 0, then 1 and so on.
+[43:04] That is nothing but the bit pattern in e, which is nothing but e.
+[43:09] So all that I have to do is I will take the memory, the cache line that corresponds to this.
+[43:16] I will somehow evict it from the cache, we will see how.
+[43:20] And then I will just see if this was accessed, then I will try to do a dummy access and I
+[43:26] can figure out whether the code accessed it or not.
+[43:29] If it did, well, then I will register a hit, otherwise I will register a miss.
+[43:35] That information will tell me whether the code took this path or not.
+[43:41] If it took this path, even though you know the code is a different process, I don't have
+[43:44] access to it, I just know this address, all I have to do is somehow indirectly find if
+[43:51] this address, the instruction address, that is not data address, instruction address, is
+[43:57] it there in the caches or not?
+[44:01] If it's there in the caches and I had last time cleared it, it means that it has been accessed,
+[44:07] it means that the corresponding bit is 1.
+[44:11] So all that I need to do as an adversary is essentially monitor accesses to this line
+[44:17] in a very indirect fashion.
+[44:20] So what I can do is that I can, if let's say it's a set associative cache and assume it's
+[44:25] a 4 way set associative cache, then what I can do is I can fill all these 4 ways with my data.
+[44:33] Then I run this RSA code, see if the RSA code is accessing this particular address, it's
+[44:44] going to map to this set and you will have to evict some data, some line that I had added.
+[44:52] Next time what I would do, I will pause this program, again I will access all the lines in
+[44:57] a set to see if my data is there or not.
+[45:01] If it is there, it means that this access was not made.
+[45:05] If it is not there, it means that this access was made and this access threw my line out.
+[45:11] So of course, I am making some simplistic assumptions here, but this is the broad idea
+[45:16] that if let's say I don't find my data here, I can implicate this line that it was brought
+[45:21] into the cache, which means that I have some idea what this bit is.
+[45:26] If I run this experiment many, many, many, many times, I will have a reasonably sure idea
+[45:31] what the bits in the key are.
+[45:33] So recall the fact that a side channel attack is not a direct attack, it's an indirect attack
+[45:39] where I just observe some facets of the behaviour.
+[45:43] In this case, I am only trying to figure out hits and misses of my own process, but it is just
+[45:49] so accurately crafted that in case there is a destructive interference, using my nanometer
+[45:57] level timers, I am able to detect it.
+[46:00] And that is giving me an idea and that idea is good enough.
+[46:05] So what I can do is, I can create a space of side channel attacks, where I can have two
+[46:11] kinds of attackers.
+[46:13] In this case, the attacker is observing its own execution, it is not really modifying the
+[46:18] execution of the secure process.
+[46:21] So that would be self.
+[46:23] Other would be, where the attacker has some way of directly observing the execution of the
+[46:30] secure process and making modifications to it perhaps.
+[46:34] So that would be the other class.
+[46:36] So if I am looking at myself, then I can look at the contention in functional units or in the
+[46:44] memory system or somehow, some way in which the secure program is affecting me, based on
+[46:51] how it is affecting me, I can figure out.
+[46:55] So here again, you know, there are not a lot of attacks in this space, we have kept it empty.
+[47:00] But if I am observing the other program, I can look at the timing of different functions.
+[47:05] For example, by the time that the algorithm takes, I can figure out roughly how many hits were
+[47:11] there, how many misses were there.
+[47:14] I can look at performance counters, that is a great source of data.
+[47:17] I can look at the memory access patterns, because as we just discussed in the ORAM part,
+[47:24] that the memory addresses that are sent to main memory are sent unencrypted and that can
+[47:29] give me some idea with regards to whether this line is being accessed or not.
+[47:35] So all of these are logical in the sense that, all of this is sensed by the program, that
+[47:40] is logical.
+[47:42] But then of course, you can have physical where you can look at the power.
+[47:46] So if let us say memory access is made here, the power signature will be different.
+[47:51] You can look at electromagnetic radiation in the sense, if let us say, I am making memory
+[47:56] accesses here, I will generate different kinds of EM waves which can be detected.
+[48:00] Temperature, well not that much, but still to a certain extent and anything else that
+[48:07] I can externally measure, including looking at the memory address sequence.
+[48:14] So this again with the physical agent, I can put a probe on the memory bus and I can measure.
+[48:19] So essentially using an artifact of the system which is measurable, that is a side channel.
+[48:27] And depending upon information that leaks out, what I can do is that I can collect a lot
+[48:33] of this information, I can analyze it and that can give me a little, sorry a fair idea with
+[48:40] regards to what the exponent is.
+[48:42] Then I will use a little bit of trial and error and there are many many successful attacks
+[48:49] where I can figure out the exponent.
+[48:52] So let us look at the prime probe attack which is arguably one of the most popular attacks
+[48:59] and let us discuss it.
+[49:02] So what the idea here is that the attacker thread accesses all the lines of the cache,
+[49:07] so the priming phase.
+[49:10] Then you run the scheduler, you yield the processor for the victim process where the victim thread
+[49:15] executes.
+[49:16] The victim thread is a secure one, the one that is running RSA.
+[49:19] So clearly if it accesses a certain cache block, code or data, there will be a miss and something
+[49:27] has to be fetched from the lower level because you have overwritten the full cache.
+[49:33] Then what the attacker would do is that it would resume control, it would again try to access
+[49:39] each and every cache line.
+[49:42] For the lines that are not being touched, there will be a hit which can easily be detected using
+[49:46] the timer.
+[49:49] For the lines that have been touched, there will be a miss, so you can figure out what
+[49:53] are those addresses.
+[49:56] Because RSA has data dependent instruction accesses, because of this single if statement
+[50:04] check over here, you can see if this instruction, which is just one instruction, that is all that
+[50:11] it takes.
+[50:12] If this instruction was fetched or not, if it was fetched, well, lo and behold, you have
+[50:17] the ith bit of the key.
+[50:20] So, we can have a similar attack known as the flush reload attack, the basic principle remains
+[50:28] the same always.
+[50:29] So, in this case, what you do is assume that you have a secure library such as OpenSSL.
+[50:36] So, in this case, the secure code is implemented in a library function and the library function,
+[50:46] the code itself is mapped to two different processes, let us say process 1 and process 2.
+[50:52] So, in this case, code pages are shared which is often the case with shared libraries that
+[50:58] you share your code pages to avoid redundancy in the memory system to use less space.
+[51:06] So, what the attacker can do is that it can flush a set of cache lines which correspond
+[51:11] to the lines of the shared code.
+[51:16] Again, you allow the victim to run for some time, same idea, access the same set of lines,
+[51:24] see if they are bad.
+[51:25] So, in this case, it is not a different process, well, but, well, it is a different process,
+[51:30] but you are sharing the code pages, but instead of accessing everything, you are just flushing
+[51:36] a given set of cache lines.
+[51:39] The first one is priming, so priming was accessing, but in this case, you are flushing, so flushing
+[51:46] means removing.
+[51:48] So, what you do is that you take these things and you remove them and then you wait for them
+[51:53] to access and because both of them are mapped into your virtual address space, you know
+[51:58] that they are the same set of lines in the physical address space.
+[52:02] So then you go there, you access them once again, then based on the hit miss times, you
+[52:07] will have a fairly accurate idea with regards to what was accessed.
+[52:12] Again this is a side channel, slightly different from prime and probe, but very similar.
+[52:17] In the prime case, prime probe case, you access every line and see what happened to them.
+[52:23] In this case, you flush them and you see what happened to them.
+[52:28] These are not the only side channels, there are a bunch of bunch of many, many side channels.
+[52:33] Essentially, wherever, you know, let us look at the key ideas of a side channel.
+[52:38] So first is that there has to be some data dependent access, depending upon the data, your access
+[52:44] pattern or some behaviour, there has to be some data dependent behaviour.
+[52:49] If the behaviour, be it an access pattern or anything else is independent of the data,
+[52:57] then it is not a side channel.
+[53:01] And the other is that there has to be some contention, somehow it should be possible using
+[53:07] by measuring the contention and shared resources to see if you are getting any hints or not.
+[53:14] There is a lot of contention in a multi-threaded processor, you have contention on functional
+[53:19] units, architectural structures, DRAM rows and so on, so let us see.
+[53:24] So very common idea is this idea of this read disturbance or what is called a row hammer attack.
+[53:32] So what happens is that if you read a row repeatedly, you just keep on reading, reading, reading, reading,
+[53:36] reading.
+[53:37] Sooner or later, it will disturb the contents of the adjoining rows, alright.
+[53:46] That is because, you know, you will have a lot of charge, discharge and so on.
+[53:50] So adjoining rows will start losing charge and they may develop faults and if they develop
+[53:55] faults, then the error checking code, the ECC will be invoked when it is accessed to fix
+[53:59] them.
+[54:00] So that is going to take a higher latency, that is how you can figure out whether a line
+[54:05] was accessed or not.
+[54:08] So what you can, what an attacker can do is it can deliberately perturb a nearby row.
+[54:15] After the victim accesses its row a sufficient number of times, the attacker's row will have
+[54:22] a bit flip.
+[54:23] So what you do is that if you have, let us say this row that is being perturbed.
+[54:28] This is the row that the attacker is using.
+[54:32] This is the row that the victim is using.
+[54:35] So what happens is that you keep on perturbing this row.
+[54:42] So this row will develop, start developing faults, but you kind of keep it below a threshold.
+[54:48] But if the victim starts using its row, then you will breach the threshold and you will
+[54:53] start seeing problems here.
+[54:55] You start seeing problems here, then you can figure out that look, I was below a threshold.
+[55:01] So who took it above the threshold?
+[55:02] It must have been the secure process or the victim process.
+[55:05] Well, this means that it has been accessing a certain address which is there in this row and
+[55:13] you can get an idea of the access pattern.
+[55:15] All of this is easily detectable by a high resolution timer.
+[55:20] So as I said, there are many, many variants of this attack.
+[55:24] This is known as a classical row hammer attack where essentially you are hammering a row.
+[55:29] What does hammering a row mean?
+[55:32] What hammering a row means is that you are accessing it so many times that you are perturbing the
+[55:42] values of the nearby rows.
+[55:45] So this can be a side channel, this can be a source of information.
+[55:49] So as I said, this is not the only sacrosanct way of doing it, there are other methods which
+[55:59] are simpler as well.
+[56:00] For instance, you can, using the row hammer technique, you can create a fault in the victim
+[56:11] processes row which is supposedly secure.
+[56:16] And then what you can do is, you can see that the next time it is accessed, is the ECC hardware
+[56:21] busy or not.
+[56:22] If the ECC hardware is busy, that could give you a hint that, you know, a certain address
+[56:32] has been accessed and hence a certain bit has a certain value.
+[56:37] Then there are a few more attacks.
+[56:40] Again, they follow the same principle.
+[56:43] This is the evict and time attack.
+[56:46] So what happens is that in this case, the attacker deliberately evicts a few cache lines, you run
+[56:52] the victim.
+[56:54] Then you carefully measure how much time the victim took.
+[56:58] See if the victim is accessing the cache line, which is that, you know, which is essentially
+[57:06] this line over here, if this line is being accessed, it will suffer a miss and it will take more
+[57:12] time.
+[57:14] And then if you have, you know, a cache miss counter, that would give us accurate information.
+[57:20] Even otherwise, the time is a good proxy.
+[57:24] So the victim will take more time.
+[57:26] Again you can infer the address sequence.
+[57:29] So as I said, you can take a look at any other kind of data, performance counter data, page
+[57:34] fault data, right, power, EM, temperature, everything.
+[57:39] But broadly speaking, you have to have these two properties that the side channel has to
+[57:46] carry some information about the data.
+[57:49] So there has to be some data dependent behavior.
+[57:52] If for all kinds of data behavior is the same, it is not a side channel.
+[57:56] The other is, the other thing is that whatever you are trying to measure should be affected
+[58:02] by the secure process.
+[58:04] In the sense, if you are trying to measure, let us say, your cache access times, the secure
+[58:10] process should have modified your cache access times, right?
+[58:15] Or if you are trying to measure the power, then the secure process should have somehow modified
+[58:20] the power consumption.
+[58:23] So basically, you know, you need to see the effects of the data at the final output.
+[58:32] So that is a side channel and as I said, it does not matter, flush, reload, prime, probe,
+[58:37] evict time.
+[58:38] The reason I am not going into a great amount of depth is because they all are different
+[58:42] aspects of the same idea, which is either you access something, you wait for the victim
+[58:48] to evict it such that the next time I access it, it is much slower because there is a miss.
+[58:53] Or you evict something, you wait for the victim to add it, next time I access it, if the victim
+[58:59] has indeed added it, you will get a hit.
+[59:02] So basically, it does not matter, you can either throw it out, which means evict it, flush it,
+[59:09] wait for the victim again to add it or you can add it and then you can wait for the victim
+[59:14] to remove it.
+[59:15] So, someone has to add, someone has to remove and that is how you will, by measuring the time
+[59:20] you can figure out whether it has happened or not.
+[59:25] So then there is another class of attacks, spectre, meltdown, foreshadow etc, which are
+[59:30] known as transient execution attacks.
+[59:33] So this kind of attack is reasonably interesting, so consider this piece of code.
+[59:40] So let us say that if a certain value is less than a threshold, we get into this if statement.
+[59:46] So normally what happens is that in an out of order processor, you predict branches.
+[59:55] So because you predict branches, what happens is that you will speculatively execute, which
+[60:02] means you will speculatively access memory also.
+[60:06] And then later on you will realize, oh my, our branch prediction, so then you will flush
+[60:12] all of those instructions.
+[60:14] But the fact that you are accessing memory in a speculative path could be a side channel
+[60:20] using again the same flush, reload, evict, time, prime, probe techniques.
+[60:25] So this is a side channel even during your speculative access.
+[60:30] So all transient execution attacks are by and large based on this.
+[60:35] So let us consider an example.
+[60:39] So speculatively, you will access, you will find array 2x and then you will, so let us
+[60:46] say the size of this is, it is an integer is 4 bytes, so you will multiply this with 4 and
+[60:51] you will add a, you will add it to array 1 space.
+[60:56] So essentially the address that you are accessing is this.
+[61:04] So this address can easily be detected using the prime probe attack.
+[61:10] If array 1's base is known, then array 2x can be found out.
+[61:18] Because why?
+[61:19] Because you know this address using prime probe.
+[61:24] This is known.
+[61:25] So, this component can easily be found out.
+[61:28] Now, here is the thing.
+[61:29] If we can control x, so let us say x is controllable, it is an input or something or you know x varies
+[61:37] so much and we know what is x, that it can, it is giving us a lot of data.
+[61:44] So let us assume for the case of simplicity that we can control x, so you can control x
+[61:50] and then we can set in anything from minus infinity to plus infinity.
+[61:55] Then pretty much since we are getting the contents of array 2x which is nothing but the memory
+[62:02] address would be array 2 base plus x, so you are getting the contents of this.
+[62:09] You are getting the contents of this and you can set x, then essentially you can get the
+[62:14] content of any location in memory, you can get the content of the entire memory which means
+[62:19] that all passwords, private keys, public keys, credit card numbers, everything is accessible
+[62:26] to you, if in this case the value of x can be controlled and you can use this, you can
+[62:37] kind of destructively interfere into the branch predictor such that this branch is wrongly
+[62:44] predicted and then it goes ahead and speculatively accesses this address and then using the trick
+[62:51] that x can be controlled, you can pretty much access any memory location as per this formula
+[62:59] and you can extract any data that you want because in this case, the address that you are accessing
+[63:06] is actually containing the memory location, so the contents of the memory location is a part
+[63:12] of the address that you are accessing and this address can be found out using prime probe.
+[63:19] So the key point is that the prime probe attack finds an address, but if that address is generated
+[63:26] based on some data, essentially you are revealing this data alright and sorry, so essentially this
+[63:35] data is what you are revealing and as you can see it is quite easy to mount this attack as
+[63:40] long as, as I said, you have some controllability or visibility into x, then essentially the contents
+[63:47] of the data, the data contents of memory are getting, are going to get leaked quite easily, of course
+[63:56] via an address, but the address was generated on the basis of data which you can now see.
+[64:01] So this class of executions are quite, this class of attacks are quite powerful and most modern
+[64:08] processors have some checks and balances against such kind of attacks.
+[64:13] So what are the countermeasures?
+[64:15] So the countermeasures for the first class of attacks, prime probe and so on, is that
+[64:20] it strictly partition the resources such as cache sets between processes.
+[64:25] So no process can destructively interfere with another.
+[64:29] So this is a criteria.
+[64:31] This is one of our basic criteria where we said that destructive interference is not allowed.
+[64:38] So if that is not allowed then one process possibly cannot affect another process.
+[64:44] So you can't, so there is no side jam.
+[64:47] So of course if you do it then your system will become inefficient, resources will be used
+[64:51] sub optimally, but you don't have a choice.
+[64:55] The other is that it deliberately adds some noise, in a sense go and access a few dummy addresses
+[64:59] and so on, it will cause a slowdown.
+[65:05] But it may make it harder, make the job with the attacker much harder.
+[65:11] Before you ask the obvious why don't you turn off the timer, well the timer is there for
+[65:14] a reason.
+[65:15] It's useful.
+[65:16] It's useful for device drivers, network cards, games.
+[65:20] So turning it off is not practical, but kind of capping the side channel is more practical.
+[65:26] So I, with your author, I have been involved in some information theory based work, where
+[65:33] it has been shown theoretically, that there are limits to what you can achieve in the form
+[65:40] of a countermeasure.
+[65:42] And for timing based countermeasures, the only realistic option is that you kind of assume
+[65:51] that every, your hardware, if it knows that, you know, it's accessing a secure region, at
+[65:57] least for the addresses of any great interest, you basically declare those certain addresses
+[66:04] to be sensitive and essentially assume that all of them are amiss in the sense that if the
+[66:09] maximum time to access any such addresses, let's say n cycles, then all the sensitive addresses,
+[66:15] which would be all the addresses in that cache line for instance, should take n cycles to
+[66:20] access.
+[66:21] It will slow down things, but it will cut off a side channel.
+[66:25] So finally, you know, this is the best slide, that is the slide that we love to look at,
+[66:30] is the concluding conclusion slide.
+[66:33] So we talked a lot about encryption, block ciphers, stream ciphers, counter mode encryption,
+[66:40] the most relevant mode for here, authenticity, confidentiality, integrity, freshness, the ASIF guarantees.
+[66:49] Then of course, the way SGX works, the market trees, how we create, destroy, work with enclaves.
+[66:54] And finally, this exciting and intriguing area of side channel attacks, whereby seeing just
+[67:00] as some indirect facet of the execution, you can actually figure out a lot of information
+[67:07] including the value of, let's say a private key which you are trying to protect.

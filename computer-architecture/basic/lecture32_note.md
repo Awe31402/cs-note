@@ -46,7 +46,7 @@
 
 ## 0. 本講地圖
 
-這講接著上一講（第 31 支，逐字稿「待補」）講到一半的 forwarding。
+這講接著上一講（[第 31 支](lecture31_note.md)）講到一半的 forwarding。
 
 ```
 Forwarding 的實作：
@@ -211,7 +211,7 @@ MA 既是 forwarding 的**消費者**（收 RW 的值）也是**生產者**（�
 有了 forwarding 還是需要 interlock：
 
 - **Data-lock**：只剩 **load-use hazard**。EX 裡是 ld、OF 裡的指令要用它載入的值（而且在 EX 就要用）→ **停 1 個週期**。可以用同一套衝突偵測電路。
-- **Branch-lock**：和之前一樣（影片說用「option number three」，細節在第 31 支，「待補」）。分支 taken → 把 IF、OF 裡的兩條變成 **bubble**。
+- **Branch-lock**：和之前一樣（影片說用「option number three」，細節在 [第 31 支 §11](lecture31_note.md#11-branch-lockpredict-not-taken)）。分支 taken → 把 IF、OF 裡的兩條變成 **bubble**。
 
 【課本補充】p.450：
 - 唯一**不用停**的 load 相依：ld 寫的暫存器剛好是後面 st **要存的值** → 用 RW → MA forward。
@@ -475,7 +475,7 @@ P = f × IPC ／ #insts 的三個量由誰決定：
 
 ⚠️ 本機 i7-13650HX 的 `lscpu` 顯示 **CPU max MHz: 4900**，比影片說的 3.5 GHz 高（影片 2015 年錄製；現代 CPU 只在少數核心、短時間用 turbo 衝到這麼高）。
 
-下一講（第 33 支，逐字稿「待補」）：interrupt 和 exception。
+下一講（[第 33 支](lecture33_note.md)）：interrupt 和 exception。
 
 ---
 
@@ -587,10 +587,10 @@ P2: CPI = 1.23，performance = f/CPI = 1.22 a.u.
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| interlock、stall、bubble、branch-lock 的三種做法 | **第 31 支**：Pipelining Part 2（課本 §10.6–10.7.3，逐字稿待補） |
-| Interrupt、exception、precise exception | **第 33 支**：Pipelining Part 4（課本 §10.8） |
-| 功耗與溫度、power wall | 課本 §10.10；**第 38 支**：多處理器概論 |
-| 記憶體延遲讓 stall 更嚴重（cache miss） | **第 34–37 支**：The Memory System |
+| interlock、stall、bubble、branch-lock 的三種做法 | [第 31 支](lecture31_note.md)：Pipelining Part 2（課本 §10.6–10.7.3） |
+| Interrupt、exception、precise exception | [第 33 支](lecture33_note.md)：Pipelining Part 4（課本 §10.8） |
+| 功耗與溫度、power wall | 課本 §10.10；[第 38 支](lecture38_note.md)：多處理器概論 |
+| 記憶體延遲讓 stall 更嚴重（cache miss） | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：The Memory System |
 | Pipeline、hazard 的基本概念 | [第 30 支](lecture30_note.md) |
 | 單週期處理器（IPC = 1） | [第 27 支](lecture27_note.md) |
 | Out-of-order、register renaming、超純量 | Advanced Computer Architecture 課程 |

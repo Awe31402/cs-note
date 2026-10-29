@@ -521,13 +521,13 @@ add64:
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| CPSR 的 N、Z、C、V 怎麼被分支用 | **第 10 支**：16 種條件碼 |
-| lr、pc 看得到 → 用 mov pc, lr 回傳 | **第 10 支**：bl、bx |
-| Shifter operand 用在 ldr／str 的定址 | **第 10 支**：base-scaled-index |
-| 12 位元立即值、shifter operand 的編碼 | **第 10 支**：ARM 編碼 |
-| x86 的 eflags（OF、CF、ZF、SF）、adc／sbb | **第 11–12 支**：Ch5 x86 |
-| 乘法、乘加的硬體 | **第 21–26 支**：課本 Ch8 計算機算術 |
-| ARM 的向量擴充（NEON） | **第 41 支**：Ch12 向量處理 |
+| CPSR 的 N、Z、C、V 怎麼被分支用 | [第 10 支](lecture10_note.md)：16 種條件碼 |
+| lr、pc 看得到 → 用 mov pc, lr 回傳 | [第 10 支](lecture10_note.md)：bl、bx |
+| Shifter operand 用在 ldr／str 的定址 | [第 10 支](lecture10_note.md)：base-scaled-index |
+| 12 位元立即值、shifter operand 的編碼 | [第 10 支](lecture10_note.md)：ARM 編碼 |
+| x86 的 eflags（OF、CF、ZF、SF）、adc／sbb | [第 11](lecture11_note.md)–[12 支](lecture12_note.md)：Ch5 x86 |
+| 乘法、乘加的硬體 | [第 21](lecture21_note.md)–[26 支](lecture26_note.md)：課本 Ch8 計算機算術 |
+| ARM 的向量擴充（NEON） | [第 41 支](lecture41_note.md)：Ch12 向量處理 |
 | 真實的 ARM 處理器（Cortex-M3、A8、A15） | 課本 Appendix A |
 
 ---

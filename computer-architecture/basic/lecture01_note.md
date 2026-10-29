@@ -218,13 +218,13 @@ October 8, 2025
 
 | 本講提到 | 在哪一講 |
 |---|---|
-| 計算機結構是什麼、ISA | **第 2 支**：Ch1 導論 |
-| ARM／x86 組合語言 | **第 9–14 支**（課本 Ch4、Ch5） |
-| RISC-V（影片版沒有的章） | **第 15–17 支**（課本 Ch6） |
-| 從零設計處理器 | **第 18–29 支**（課本 Ch7–Ch9） |
-| Pipelining | **第 30–33 支**（課本 Ch10） |
-| 多核心、平行程式 | **第 38–42 支**（課本 Ch12） |
-| USB、儲存裝置 | **第 43–46 支**（課本 Ch13） |
+| 計算機結構是什麼、ISA | [第 2 支](lecture02_note.md)：Ch1 導論 |
+| ARM／x86 組合語言 | [第 9](lecture09_note.md)–[14 支](lecture14_note.md)（課本 Ch4、Ch5） |
+| RISC-V（影片版沒有的章） | [第 15](lecture15_note.md)–[17 支](lecture17_note.md)（課本 Ch6） |
+| 從零設計處理器 | [第 18](lecture18_note.md)–[29 支](lecture29_note.md)（課本 Ch7–Ch9） |
+| Pipelining | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)（課本 Ch10） |
+| 多核心、平行程式 | [第 38](lecture38_note.md)–[42 支](lecture42_note.md)（課本 Ch12） |
+| USB、儲存裝置 | [第 43](lecture43_note.md)–[46 支](lecture46_note.md)（課本 Ch13） |
 
 ---
 

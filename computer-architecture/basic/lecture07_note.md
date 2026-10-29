@@ -649,13 +649,13 @@ $ gcc -O2 -c shift.c && objdump -d shift.o
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| sp（r14）、ra（r15） | **第 8 支**：函式、call、ret、stack |
-| 指令怎麼編成 32 位元 | **第 8 支**：SimpleRisc 的編碼 |
-| ARM 的 cmp、條件分支、位移 | **第 9–10 支**：Ch4 ARM |
-| x86 的 flags 暫存器 | **第 11–14 支**：Ch5 x86 |
-| RISC-V 用 lui＋addi 載入 32 位元常數（和 movh＋addu 一樣的想法） | **第 15–17 支**：Ch6 RISC-V |
-| 硬體乘除法為什麼慢 | **第 21–26 支**：課本 Ch8 計算機算術 |
-| 實作 SimpleRisc 的處理器 | **第 27–29 支**：課本 Ch9 處理器設計 |
+| sp（r14）、ra（r15） | [第 8 支](lecture08_note.md)：函式、call、ret、stack |
+| 指令怎麼編成 32 位元 | [第 8 支](lecture08_note.md)：SimpleRisc 的編碼 |
+| ARM 的 cmp、條件分支、位移 | [第 9](lecture09_note.md)–[10 支](lecture10_note.md)：Ch4 ARM |
+| x86 的 flags 暫存器 | [第 11](lecture11_note.md)–[14 支](lecture14_note.md)：Ch5 x86 |
+| RISC-V 用 lui＋addi 載入 32 位元常數（和 movh＋addu 一樣的想法） | [第 15](lecture15_note.md)–[17 支](lecture17_note.md)：Ch6 RISC-V |
+| 硬體乘除法為什麼慢 | [第 21](lecture21_note.md)–[26 支](lecture26_note.md)：課本 Ch8 計算機算術 |
+| 實作 SimpleRisc 的處理器 | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
 
 ---
 

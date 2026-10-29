@@ -1,0 +1,457 @@
+[00:00] We'll be right back.
+[00:30] Welcome to Chapter 2, The Language of Bits.
+[00:41] So in this chapter, we'll study everything about bits, which is a basic 0 or 1, and what
+[00:49] they can achieve.
+[00:52] Again these slides are part of the book, Computer Organization Architecture, published by McGraw
+[00:57] Hill in 2015.
+[01:01] So here are the five main points that we'll cover.
+[01:07] Boolean algebra.
+[01:08] So Boolean algebra is the algebra of basic bits.
+[01:12] How to represent positive integers with 0s and 1s.
+[01:19] How to represent negative integers with 0s and 1s.
+[01:24] How to represent numbers with a decimal point called floating point numbers with 0s and 1s.
+[01:31] And how to represent pieces of text, namely strings, with 0s and 1s.
+[01:38] So what does a computer understand?
+[01:41] The computer is not smart enough to understand languages that we human beings can understand,
+[01:47] and that is languages such as English or Arabic or French.
+[01:52] Computers are not even smart enough to understand programming languages such as Java and C++.
+[01:58] That's the reason it is typically necessary to use a compiler which can convert a Java program
+[02:09] or a C++ or a C program into a sequence of basic 0s and 1s which the computer can understand.
+[02:20] So this process as we have discussed in chapter 1 is known as compilation and this is typically
+[02:27] done by a compiler.
+[02:30] So let's define the terms with regards to 0s and 1s.
+[02:35] So a bit means a basic variable which can take only two values which is a 0 or a 1.
+[02:44] A byte is a sequence of 8 bits which means 8 numbers where each number can either be 0 or
+[02:51] 1.
+[02:52] A word is a sequence of 4 bytes or 32 bits.
+[02:57] And a kilobyte, so kilo here means 1000, is defined as 1024 bytes.
+[03:03] Why 1024 is interesting?
+[03:07] So as we shall see 1024 is an interesting number in the sense that 2 raised to the power 10 is
+[03:14] equal to 1024 and this gives us some interesting properties to reason about such systems.
+[03:21] So typically you know when to use the word kilo you will find mixed references.
+[03:30] In the sense in some places it is used for 1000, in some cases it is used for 1024.
+[03:37] Typically in computer science we would use kilo, the term kilo as in kilobyte as 1024 bytes
+[03:45] because 1024 is 2 raised to the power 10 and as we shall see in the later half of this chapter
+[03:52] that this gives us some interesting properties.
+[03:55] Similarly we can define mega, so mega is kilo times a kilo which is roughly 1000 times 1000
+[04:03] or a million and in computer science mega is typically 2 raised to the power 10 multiplied
+[04:11] by 2 raised to the power 10 which is 2 raised to the power 20.
+[04:20] So this is what a million is a megabyte and this is close to 1 million 10 to the power 6.
+[04:29] So as a result you will find both the numbers being used and which variant is being used needs
+[04:37] to be inferred from the context.
+[04:42] So now let's take a look at some basic logical operations on bits.
+[04:47] So a bit is also called a boolean variable in honor of George Boole.
+[04:55] So a bit is also called a boolean variable.
+[04:59] So a boolean variable can only take values 0 or 1.
+[05:06] So let's define some simple operations.
+[05:10] So let's first define the OR operation.
+[05:13] The OR operation means either, so before that let me define the context.
+[05:20] So a can take only two values 0 or 1.
+[05:24] So typically 0 is also called false which means that a statement is not correct and 1 also means
+[05:33] true.
+[05:34] So in the context of this we can interpret the OR operation.
+[05:39] The OR operation says either A or B which means that either one of them is true.
+[05:45] So let's take a look at what this means in this table over here which is also called a
+[05:51] truth table because a truth table typically has all combinations of the input values and
+[05:58] the final function.
+[06:00] So as we can see from here if A and B both are 0, which basically means if both the values
+[06:07] are false, say A or B.
+[06:10] So also a mathematical symbol for OR is plus, say A or B is also 0.
+[06:16] So in terms of common sense it can say that look if two friends, the name of one friend
+[06:24] is A and the name of a second friend is B, if both of them are saying something which
+[06:29] is false, then we can say that the combination of A and B, both of them together are also saying
+[06:36] something that is false or nobody is telling the truth.
+[06:41] Now, if it is possible that A is saying something that is true and B is saying something that
+[06:47] is false, we can say that you know the combination of A and B, at least one of them is speaking
+[06:57] the truth.
+[06:59] And this logic is this OR logic which means either A is true or B is true is actually correct,
+[07:07] it is true because one of them is 1, so the final output is also 1 over here.
+[07:14] Similarly, a symmetric situation holds over here that if A is 0 and B is 1, at least one
+[07:21] of them is 1 is correct, so the final output is 1, so this is the OR logic.
+[07:37] The OR logic basically says that only if A is equal to 0 and B is equal to 0, is the final
+[07:46] output equal to 0, otherwise it is equal to 1 in all cases.
+[07:52] Similarly, let's define the AND operator on boolean variables or boolean bits and typically
+[07:59] the symbol for AND is a dot as I have shown over here, so let's take a look.
+[08:07] So let's again assume two friends A and B, we want only if both of them are speaking the
+[08:15] truth which means 1, do we want to make A and B equal to 1, otherwise it is 0 in all cases.
+[08:22] So we can see, in a sense this is similar to multiplication as well.
+[08:26] So if A is 0 and B is 0, we say that A and B is 0, because in let's say in the example
+[08:35] of speaking the truth, both of them are definitely not speaking the truth.
+[08:41] If A is 1 and B is 0, both of them are also not speaking the truth, because in this case
+[08:46] B is saying something that is false.
+[08:50] So you can see that 1 AND 0 is equal to 0.
+[08:54] Similarly, a symmetric situation holds over here, where 0 AND 1 is equal to 0.
+[09:03] So when is an AND function positive?
+[09:06] It is positive in only one case, which is the last case that I am showing over here,
+[09:13] where A is equal to 1 and B is equal to 1.
+[09:18] This is when both are speaking the truth.
+[09:21] So let me give an example, let's assume that you have two friends, right?
+[09:25] For simplicity, their names are A and B. And let's assume that they go and you want to
+[09:34] ask A that have you had an ice cream?
+[09:37] If A speaks the truth, then you give A 1 point, otherwise you give A 0 points.
+[09:43] Similarly, we ask the same question to B. And if B speaks the truth, B gets 1 point, otherwise
+[09:52] B gets 0 points.
+[09:55] So in the case of, you know, in this particular case, we have, if you want to have an AND logic,
+[10:04] you say that the function A AND B, the function A AND B is true, if both A AND B individually
+[10:12] are speaking the truth, which means that A is equal to 1 and B is equal to 1, then A AND
+[10:18] B is equal to 1. Otherwise, in all the other cases, the output is equal to 0 as we can see
+[10:24] over here.
+[10:26] So we will be using these two basic functions, the OR AND the AND function in detail.
+[10:34] So you can take a look at the book for more details or another book on Boolean logic and
+[10:41] Boolean algebra to get a slightly deeper perspective on the OR and AND functions.
+[10:46] We can have a similar function, a NAND function. So a NAND function is actually the Boolean inverse.
+[10:59] So let's first define this complement operator of an AND. So what is a complement? A complement
+[11:07] is very simple. The complement of 0 is equal to 1. It essentially inverts. So if you have
+[11:13] a 0, the complement of this is 1 and the complement of 1 is equal to 0. So an AND function, whenever
+[11:20] the AND function yields a 1, NAND yields a 0. And when AND yields a 0, NAND yields a 1.
+[11:29] So it is like an inverse of it. So as we can see, take a look at the truth table over here.
+[11:35] Let me just show you the previous one. We have 0, 0, 0 and 1. So this is the exact inverse
+[11:42] of it where we have 1, 1, 1 and 0. So this is the exact inverse of the NAND is just a complement
+[11:53] or NOT of the AND function. Similarly, the OR function has an inverse also which is the
+[12:01] NOR function over here. And if I show you the OR function, if you take a look, you have 0,
+[12:08] 1, 1, 1, 1. Here you have a reverse, you have 1 over here and the remaining 3 entries are 0s.
+[12:18] So it turns out that both NAND as well as NOR are universal operations in the sense that they
+[12:24] can be used to implement any Boolean function. We are not at the point where we can prove
+[12:32] this result. But this will be an interesting result for students to remember that NAND and
+[12:37] NOR operations, you can implement any kind of logic, any kind of function. So you can take
+[12:44] a look at the book. You can try proving yourself or look at sources on the web or other books
+[12:49] for a very detailed proof of this result. Let us now discuss the ZOR operation or the
+[12:57] exclusive OR operation. So it has a different truth table. So one thing the readers might
+[13:03] have realized up till now that if I have two variables, I can create a lot of different
+[13:09] kinds of truth tables. So how many truth tables that I can create? Actually I can create 16 truth
+[13:19] tables. The reason is like this that every truth table that I have over here will have precisely
+[13:27] four rows. As you can see over here it will have precisely four rows, row 1, 2, 3 and 4.
+[13:36] Each row will have a combination of, a unique combination of the different variables. So it will have 00,
+[13:45] 00, 01 and 11. And for each combination we will store what is the output that this function is supposed to give.
+[13:54] So in this case we have two variables. So for two variables we have four rows. And for each row we have a choice
+[14:05] that the output can either be 0 or 1. So essentially we have two choices per row. So how many total choices do we have?
+[14:14] We have two to the power 4 choices or 16 possible truth tables we can build or 16 possible functions we can build if you have two variables.
+[14:23] And the XOR function is one such function. So let's take a look at its properties. So the XOR or XOR, that's how it is called. The X stands for exclusive OR.
+[14:36] Exclusive OR basically means that it is true only when one of the variables A is 1 and B is 0 or A is 0 and B is 1. In the rest of the cases it is equal to false. So as we can see in the first row both A and B are 0 and 0. So A is OR B is 0.
+[14:43] Similarly in the last row both A and B are 1 and 1. So A is OR B is 0.
+[14:52] So A is OR B is 1 and 1. So A is OR B is 1 and 1. So A is OR B is also 0. But in the middle two rows the second row and the third row A is equal to 1 and B is equal to 0.
+[14:59] Or alternatively in the third row A is 0 and B is 1 and B is 1. So A is OR B is 1 and B is 1. So A is OR B is also 0.
+[15:14] But in the middle two rows the second row and the third row A is equal to 1 and B is equal to 0. Or alternatively in the third row A is 0 and B is 1.
+[15:28] So as a result in these two rows A is OR B is equal to 1. And in the rest of the two cases A is OR B is equal to 0.
+[15:37] So this is one more kind of function as we have seen. So just to make a review we saw the basic NOT operator.
+[15:45] So NOT operator or so NOT is also called the complement operator. So what this does is that given a boolean variable
+[15:56] you just place a bar on top of it. So if it is value is equal to 0 after a NOT the combination will become 1 and 1 bar or NOT of 1 will become 0.
+[16:09] So one property of the NOT operator is that with a double negation in the sense of NOT of a NOT will essentially reduce it to the same variable.
+[16:19] So NOT of NOT of a is equal to a itself. Then we saw the OR and AND operators. So the OR and AND operators the truth table basically for the OR says
+[16:32] if one of the variables is equal to 1 the output is equal to 1 and the truth table for AND says that all the variables need to be 1.
+[16:42] So let's take a look at some of their basic properties. So we have the property of identity. The property of identity is like this that A or 0 is equal to A.
+[16:57] This is very easy to verify. If A is equal to 0 then the output here is 0. If A is equal to 1 then the output here is 1.
+[17:07] Similarly, we can verify the same property for the AND operator. If A is 0, 0 and 1 is 0. If A is 1, 1 and 1 is 1.
+[17:25] So this is called identity which basically means that any Boolean variable ORd with 0 is equal to the variable itself.
+[17:35] And any Boolean variable AND 1 is equal to the variable itself. We have a similar property in the same vein called annulment which basically says that A OR 1 is equal to 1.
+[17:51] So let's see why. If A is 0, 0 or 1 is 1. If A is 1, 1 or 1 is 1. We can similarly verify the property of annulment for this.
+[18:05] Any number ANDed with 0 is 0. So any Boolean number. So in this case if A is 0, 0 and 0 is 0. Even if A is 1, 1 and 0 is 0.
+[18:18] So as we see, we can use a similar logic to prove properties for all kinds of Boolean formulae.
+[18:27] So let's take a look at some more. I'll be discussing some of these properties. I put it on the reader to actually consider a more detailed text.
+[18:38] So it can be this book or it can be other books that are fully devoted to Boolean algebra to take a look at these properties.
+[18:47] But they are simple properties. So it's not necessary to consult a lot of text for this. If you just sit down and work it out, it's good enough.
+[19:02] So let's take a look at this property called idempotence. It says that any number OR with itself is the same number.
+[19:09] You can easily verify 0 or 0 is 0, 1 or 1 is 1. Similarly, any number ANDed with itself is equal to the number itself. This also can be easily verified.
+[19:23] The property of complementarity is interesting. It says that any number ORed with its complement is equal to 1. Easy to verify. Consider 0.
+[19:34] Then you OR it. So the NOT of 0 is 1. 0 OR 1 is 1. Then you consider 1 and 1 will get 1 complement is 0. So 1 OR 0 is also equal to 1.
+[19:50] And similarly, we have this property over here which is A and A bar is equal to 0 can easily be verified in the same fashion.
+[20:03] The next property of interest is commutativity. Here A or B is equal to B or A means that the order of variables does not matter.
+[20:13] Similarly, A and B is equal to B and A. The order again does not matter.
+[20:18] We also have similar to normal decimal addition and multiplication. We have associativity which is A or B or C.
+[20:30] You know B or C being here in brackets is same as A or B or C. So it does not matter where you place the brackets. You can place them here and here or you can place them here and here.
+[20:44] Here for Boolean logic, it does not matter. We have a similar set of rules for the AND operation as well.
+[20:53] For example, here we can place B and C inside a bracket or we can place A and B inside the bracket. It does not matter.
+[21:02] So you can, readers can manually put in different values of A, B and C and verify. But the results will be as it is.
+[21:12] Then we have distributivity. So in distributivity, what this means, it is similar to what we have in regular arithmetic.
+[21:21] Like x multiplied with y plus z is equal to xy, x multiplied by y plus xz. So this is the law of distributivity that we get to see in regular math.
+[21:40] Exactly the same thing holds for Boolean algebra as well. So what we see over here is that A and B or C is exactly the same as A and B or A and C.
+[21:57] So this particular formula over here should be verified by the students. A nice way of doing it is just create a simple truth table.
+[22:09] Have A, B, C and then consider the results. Consider the result of A and B or C.
+[22:21] And then consider this expression over here. Just bring it here and compute it. So you will see that for each and every row, the values match.
+[22:31] So the values match for all the rows. It means that both the formulae are the same.
+[22:37] So exactly a similar formula holds if I interchange AND and OR.
+[22:42] Say A or B and C in brackets is equal to A or B and A or C.
+[22:48] So many such rules can be used. These are all the basic rules that we have.
+[22:54] And with that we can construct complex formulae.
+[22:58] So I request the readers to go to the book, read all the rules of handling bits of Boolean algebra.
+[23:06] What is Boolean algebra? It is the rules for handling bits and operations with bits.
+[23:12] What are the basic operations? Well, it is the NOT operation.
+[23:16] As an example, this is A NOT. It is the OR operation, something like A or B.
+[23:23] When is A or B true? When at least 1 of A or B is equal to true or equal to 1.
+[23:30] Similarly, we have the AND operation.
+[23:38] When is A and B equal to true? When both A is true and B is true.
+[23:45] So here are two very useful rules. They are called the De Morgan's laws.
+[23:49] So some of the students would be familiar with De Morgan's laws.
+[23:53] They were there in said theory.
+[23:55] So what they say, this is exactly the formula that was there in said theory.
+[24:01] It has essentially come to Boolean logic via said theory.
+[24:06] So this says that A or B complement is A complement and B complement.
+[24:14] So let's verify this.
+[24:16] Let's see if this De Morgan's rule is actually correct or not.
+[24:21] So let's verify this by, so let's have A or B complement and A complement and B complement.
+[24:39] So let's consider all possible values.
+[24:49] So 0 and 0, A or B, when both are 0, this is 0.
+[24:53] So complement of 0 is equal to 1.
+[24:57] So A complement is 1, B complement is 1.
+[25:02] So 1 and 1 is equal to 1.
+[25:05] So both of them match, which is fantastic.
+[25:08] Now let's consider A to be 1 and B to be 0.
+[25:12] So A or B is 1 and 1 complement is 0.
+[25:16] Similarly, here 1 complement is 0.
+[25:19] So any number and it with 0 is 0.
+[25:22] So here also the numbers match.
+[25:25] And since this case is exactly symmetric to the case above and the expressions here are symmetric,
+[25:31] we can also write 0 and 0.
+[25:34] But if you don't trust me, let's work it out.
+[25:37] So A is 0, B is 1, A or B is 1, 1 complement is 0.
+[25:44] A is 0, 0 complement is 1 and B is 1, the complement of 1 is 0.
+[25:50] Any number and it with 0 is 0.
+[25:53] So we write it over here.
+[25:55] Now let's consider the last row.
+[25:58] A is 1, B is 1, A or B is 1, 1 complement is 0.
+[26:05] Similarly, here we have the complement of A is 0.
+[26:10] So it doesn't matter what the value of B is, the result is 0.
+[26:14] So one thing that we can see is that all our rows match.
+[26:18] Since all our rows match, both the formulae are absolutely equivalent.
+[26:23] They are the same formulae, they are equivalent.
+[26:26] So what we have done is that by the truth table, we have verified this result.
+[26:32] It is a very, very important result that the complement of A or B is equal to A complement and of B complement.
+[26:40] We have a similar result where we just replace the OR by the AND and the AND by the OR.
+[26:47] So A and B complement is A complement or B complement.
+[26:51] So I will not be proving this.
+[26:53] So this is left to a student that you need to prove this with a very similar approach that we have used.
+[27:03] Now it's time to take a look at a Boolean relationship which is slightly difficult, but we can work this out.
+[27:14] So this is called the consensus theorem.
+[27:17] And this is the statement of the theorem.
+[27:20] This is the LHS and this is the RHS.
+[27:23] And you will see many of such burger icons throughout the presentation.
+[27:27] So a burger means food for thought.
+[27:30] So you are supposed to think.
+[27:32] So in this case what you are supposed to do is prove that this expression on the left-hand side is equal to the expression on the right-hand side.
+[27:41] So if you want to try, you can always pause the video and think what the solution will be.
+[27:48] But let me nevertheless work out the solution.
+[27:52] So the first thing that you need to see is you need to take a look at this term.
+[27:57] This term is present on the left side and is not present on the right side.
+[28:03] So this basically means we need to find a way of eliminating this term from the expression.
+[28:11] So how would we do that?
+[28:13] The way that we would do that is something like this.
+[28:16] Now we expand this term something like this.
+[28:38] That any number ANDed with itself is equal to itself.
+[28:42] So what we essentially do over here is that we ANDed with 1.
+[28:50] So let me just expand the LHS side.
+[28:53] I will ignore the RHS side.
+[28:55] So basically we still have the same terms.
+[28:59] So in this case, the term 1 can be replaced with x or x bar.
+[29:21] So we are essentially doing this to ensure that y and z can be eliminated.
+[29:28] So what have we done?
+[29:30] We have essentially said that any number ANDed with 1 is itself.
+[29:34] Any number meaning any Boolean number.
+[29:36] And now we have replaced the term 1 with x or x bar.
+[29:42] So now we can open up the expression slightly and use the distributive rule to open it up.
+[29:51] So keeping the rest of the terms, we can have…
+[30:07] So now what we need to do is we need to rearrange the terms.
+[30:10] So let me rearrange them.
+[30:13] So let me consider the first and the third term.
+[30:17] So since any number ANDed with 1 is itself, so we can write…
+[30:24] Now let me consider the third term over here.
+[30:39] So I am using the commutative rule to infer that z and x bar is the same as x bar and z.
+[30:53] So now we can go up.
+[30:58] So any number ORed with 1 is 1.
+[31:01] So we can replace this with…
+[31:14] which is exactly what is there in the right hand side or the RHS.
+[31:24] So this term is the same as this term and this term is the same as this term.
+[31:31] So essentially we have proven our first complex Boolean relationship or Boolean equation using
+[31:37] the simple formulae that we have learnt up till now.
+[31:40] So mind you, this is a very short presentation of Boolean logic.
+[31:44] It is possible to work out much more complex formulae.
+[31:50] But for that I would request the readers to consult the textbook.
+[31:56] And if they want more information, they can look at the book by Z Kohavi on switching theory.
+[32:03] So let's move forward.
+[32:06] So we have covered some amount of Boolean algebra.
+[32:10] What have we learnt?
+[32:11] We have learnt of Boolean variables.
+[32:13] So a Boolean variable let's say B can take only two values.
+[32:18] And so it's a part of the set 0 or 1.
+[32:24] And the basic operations that we defined on Boolean variables is NOT, AND and OR.
+[32:33] Then we had some complicated operations like NAND and NOR.
+[32:37] We also had the XOR, exclusive OR operation.
+[32:41] So these are, maybe these four operations can be considered to be basic.
+[32:45] And we looked at some simple rules of manipulating Boolean variables.
+[32:50] So now the question arises, why did we learn Boolean algebra?
+[32:55] This is something that I didn't tell you.
+[32:57] But it clearly has some implication for the rest of the four topics.
+[33:01] So let's see.
+[33:02] So let me slightly digress at this point.
+[33:09] And then we will stitch everything together.
+[33:12] So let's take a look at the ancient Roman system of how they were representing numbers.
+[33:18] So they had Roman numbers of the form 1 was a single I.
+[33:24] 5 was represented with a V-type symbol, 10 by X, 50 by L, 100 by C, 500 by D, 1000 by M.
+[33:34] So they did not follow a place value system the way that modern numbers are made.
+[33:40] So it was very difficult to represent large numbers.
+[33:44] And addition and subtraction was fairly difficult in this system.
+[33:49] But in an ancient civilization, they didn't also have the requirement of representing very large numbers.
+[33:54] So this is something that went in their favor.
+[33:58] So in comparison, the Indian system, which later on became the Indo-Arabic numeral system,
+[34:06] had the number 0, which is the crux of the idea, right?
+[34:10] So this is an old script recovered from Bakshali, which is in modern day Pakistan actually, from the 7th century AD.
+[34:21] So it uses the place value system.
+[34:24] So what is the place value system?
+[34:26] Any number of this form is 5 times 10 to the power 3 plus 3 times 10 square, 0 times 10 to the power 1 plus 1 times 10 to the power 0.
+[34:38] So the number 10 over here can be considered to be the base.
+[34:42] So this particular example is an example in base 10.
+[34:51] So why do we use base 10?
+[34:53] Well, simple, we have 10 fingers.
+[34:55] So that's how we learnt counting in the first place, that we count with our fingers from 1 to 10.
+[35:05] So what if we go to another planet, in a planet which is far, far away, where people have only two fingers, right?
+[35:12] So the entire planet, all the people there are very intelligent, but they have only two fingers.
+[35:18] So instead of base 10, they would actually use base 2.
+[35:23] So in base 2, how would you represent a number?
+[35:27] The way we would do that is if we consider 5, 5 would be represented as 1 times 2 square plus 0 times 2 to the power 1 plus 1 multiplied by 2 to the power 0.
+[35:46] So in a sense, the number would be 1, which is exactly what we get to see over here.
+[35:53] So similarly, what would the number 3 be?
+[35:58] The number 3 would be 2 to the power 1 plus 2 to the power 0, which can be represented as 1, 1.
+[36:07] In let's say base 2, we'll use the subscript for the base.
+[36:11] So this is also called the binary notation or the base 2 notation.
+[36:17] So what we see over here is that it is not necessary to use a base of 10 to represent a number.
+[36:25] We can use a different base as well.
+[36:29] And we use 10 because we have 10 fingers, but you can use base 2 if you have just 2 fingers.
+[36:37] And any numbers, I have shown many examples, can be represented in a base 2 notation.
+[36:42] Let me give one more example.
+[36:44] Let's say number 19.
+[36:45] How would you represent that?
+[36:47] So now it's very simple.
+[36:49] It's 1 times 2 to the power 4, which is 16, plus 0 times 2 to the power 3, plus 0 times
+[37:02] 2 square, plus 1 times 2 to the power 1, plus 1 times 2 to the power 0.
+[37:12] So this would be equal to 1, 0, 0, 1, 1 in base 2.
+[37:23] So this is, so 1, 0, 0, 1, 1 is the way that we would represent the number 19 in the base
+[37:32] 2 system or the binary system.
+[37:37] So now let's define two terms.
+[37:39] MSP the most significant bit and the least significant bit.
+[37:43] So the leftmost bit of a binary number, for example, the number 1110, the number shown
+[37:49] over here, the most significant bit is 1.
+[37:53] And the least significant bit is the rightmost bit.
+[37:56] And in this case, it is 0.
+[38:00] So similarly, we can define numbers in other bases as well.
+[38:04] So it is very common in computer science and computer design to represent numbers in base
+[38:11] 16.
+[38:12] So these are called hexadecimal numbers.
+[38:14] So what is the problem in representing numbers in base 16?
+[38:18] So let's first take a look at base 10.
+[38:21] So in base 10, what are our digits?
+[38:24] Our digits are 0 till 9.
+[38:26] So we have 10 digits.
+[38:28] In base 2, how many digits do we have?
+[38:31] We have two digits, 0 and 1.
+[38:33] So in base 16, we need to have 16 digits from 0 to 15.
+[38:42] But the problem is that till 9, we have digits defined.
+[38:46] But beyond 10, right, we don't have our digits defined.
+[38:49] So that's the reason what we do is we use the set from 0 to 9.
+[38:54] And then we say that A represents 10 in decimal.
+[38:57] Of course, B represents 11.
+[39:00] And in the same vein, F represents 15.
+[39:03] So ABCDF are the six extra digits that we create to represent a number in base 16 or an
+[39:13] hexadecimal number.
+[39:14] And these six extra digits represent the numbers 10 to 15.
+[39:19] So the way we represent a hex number is that we typically add 0x before it.
+[39:25] For example, 0x9 is actually 9 in base 10.
+[39:32] Similarly, 0x32 is equal to 3 times 16 plus 2 times 1 which is actually equal to 50 in base
+[39:49] 10.
+[39:50] So I would like to request the reader at this point of time to take as many numbers as he
+[39:56] or she wants and convert them to base 16 and convert them to any base of their choice.
+[40:02] And just see how this works out.
+[40:04] So similarly, we can have octal numbers.
+[40:10] So an octal number is in base 8.
+[40:15] And here we will have 8 digits 0 to 7.
+[40:18] So which is fine.
+[40:19] We don't need to introduce any new digit.
+[40:22] And octal numbers start with a 0.
+[40:25] So maybe the number 0, 4, 2 will be equivalent to 4 times 8 plus 2.
+[40:38] So this is equal to 34 in base 10.
+[40:43] So we can work through many more examples.
+[40:47] But I would suggest that, you know, we move forward and the reader spends some time at
+[40:56] this particular, you know, at this slide, which is slide 19, to convert numbers between
+[41:02] arbitrary bases.
+[41:04] Let us now discuss why we chose the binary, the octal and the hex formats.
+[41:10] Well, the binary is very straightforward.
+[41:13] Computers understand the language of only zeros and ones.
+[41:16] So as a result, if you have a number system that represents everything in terms of zeros
+[41:22] and ones, which is a binary or a base 2 number system, this is information that the computers
+[41:29] can process.
+[41:30] So what about base 8 and base 16?
+[41:33] Well, base 8 and base 16 will turn out to be shortcuts for the binary form.
+[41:41] But how that's the case, that is slightly more complicated.
+[41:45] So let's work it out.
+[41:48] So consider any number, right?
+[41:50] Let the number be n.
+[41:51] So we can say that the number is of the form.
+[42:16] So we can sort of break it down into sums of powers of 2.
+[42:21] And each of these numbers, a0 to ak, can be a binary number in 0 and 1, which is exactly
+[42:27] our binary representation.
+[42:28] So the binary number would essentially be, so this is something that we already know.
+[42:45] Now, we can alternatively say that this is equal to.
+[42:50] Absolutely.
+[42:51] So that's the conclusion.
+[42:57] If we can add, this is automatically A T network based on.
+[43:03] Theentes set have out the titles and books of CWC last week, T events that have not
+[43:06] käyt وب IRR in the Olhaii Surels.
+[43:09] Thetes are, of course, and exciting.
+[43:11] The numbers of people have lived in 110 per unit over 3.
+[43:14] So that's what we need to do is take that down.
+[43:16] So that's what we need to contribute.
+[43:17] So that is something that there is turning taste across sides.
+[43:19] So, what we have essentially done is that we have grouped the terms into groups
+[43:49] of three terms, and the way that we have grouped them is something like this, that we take
+[43:54] three terms, so the first term is clearly a0, and 2 to the power 0 is 1, then we take
+[44:02] 2 times a1 and 4 times a2, which is also 2 to the power 1 and 2 to the power 2.
+[44:08] Similarly, when we come to the next term, so we again group the terms, so the third term
+[44:20] over here is a3 multiplied by 2 to the power 3, so what I have done is that I have brought
+[44:26] 2 to the power 3 outside the bracket, and similarly, we have something similar, sorry, this is
+[44:34] a plus, a3 plus 2 times a4 plus 4 times a5 and so on.
+[44:41] So the interesting thing is that if we consider each of these numbers, a0, a1, a2, all of these
+[44:47] numbers still ak, are essentially all of these numbers are either 0 or 1, they are boolean
+[44:54] bits.
+[44:55] So if I consider this term, the maximum value of this term is 4 times 1 plus 2 times 1 plus
+[45:04] 1, which is 7, and the minimum value for each of these terms, this one or this one or this
+[45:11] one is 0, when all three other coefficients are 0. So alternatively, the way that I can
+[45:18] calculate is that this entire coefficient, I can think of this as b0, so I can write this
+[45:25] as b0, so I can write this as b0, so I can write this as b0, so what we have essentially
+[45:54] done is that we have expanded this number in terms of powers of 2, then grouped together
+[46:00] three terms, and then essentially we have expanded the number in powers of 8.
+[46:07] So for those who have not been, who have not had that magical bulb light inside you up till
+[46:13] now, the magical bulb is like this, that we have essentially broken down n into a sum
+[46:19] of powers of powers of 8, which is nothing but a number in the octal notation.
+[46:25] So let us assume that the last number in this series is k dash times 8 to the power k dash,
+[46:36] so essentially the octal number will be equal to, so this is the number in base 8.
+[46:53] So what is the important thing that we learn over here?
+[46:58] The important thing that we learn over here is that if we group terms into groups of 3 and
+[47:06] each of them is essentially an octal digit, right?
+[47:10] So basically if we, let us say group them into 4, each of them is a hexadecimal digit.
+[47:17] So this gives us a very nice and short form of writing binary numbers in other bases that
+[47:24] are a power of 2, for example, if we have this number over here, we can group it into blocks
+[47:30] of 3 and each such block, we can convert it into an octal digit.
+[47:39] So this number, I am sorry, this is a mistake over here, it should be 7.
+[47:44] So this number is a 7, this is a 2, and this is a 6.
+[47:51] So this is 0, 6, 2, 7.
+[47:54] Similarly, we can take this number over here, and if you want to convert it to base 16, that
+[48:00] is also very easy.
+[48:02] We group 4 binary digits.
+[48:05] So we 1111 is an F, 0010 is 2, and 1110 is, well, so 1110 is 12, which is the hex digit C.
+[48:18] So what we have is that we have a very compact representation for 12 binary bits using 3 hexadecimal
+[48:26] digits.
+[48:27] Hexadecimal is abbreviated as hex.
+[48:30] So what do we see over here?
+[48:32] What we see is that the binary, the octal, and the hex formats are essentially the same.
+[48:39] The binary format is very sparse.
+[48:43] The other formats are slightly more dense.
+[48:47] So this, in a sense, is desirable if you want to represent binary bits.
+[48:53] Instead of representing them as 1s and 0s, we can, at least while writing or while programming,
+[48:59] we can represent them as hexadecimal digits, where we group digits into blocks of 4, and
+[49:06] each block is replaced by a hexadecimal digit.
+[49:11] Similarly, when we need to expand a number in the hexadecimal notation to a number in the
+[49:18] binary notation, all that we need to do is take each of these digits and replace them with
+[49:23] 4 binary numbers, and we will have the binary notation.
+[49:26] Let meève you the hexadecimal-pasião.
+[49:27] Let me demonstrate the binary notation.
+[49:28] Let me conclude.
+[49:29] So Part 5 Here we rode.
+[49:30] to see if you have

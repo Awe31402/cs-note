@@ -776,13 +776,13 @@ $ objdump -d stored | sed -n '/<add>:/,/^$/p'
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| bit、byte、用 0 和 1 表示資訊 | **第 3–5 支**：Ch2 位元的語言 |
-| 組合語言、暫存器、load／store | **第 6–8 支**：Ch3 SimpleRisc |
-| RISC（ARM）與 CISC（x86） | **第 9–14 支**：Ch4 ARM、Ch5 x86 |
-| 規律的 RISC 指令編碼 | **第 15–17 支**：Ch6 RISC-V |
-| ALU、暫存器、記憶體的電路 | **第 18–20 支**：課本 Ch7 |
-| CPU 的控制單元、PC、取指令 | **第 27–29 支**：課本 Ch9 處理器設計 |
-| 「大就是慢」、locality | **第 34–37 支**：課本 Ch11 記憶體系統 |
+| bit、byte、用 0 和 1 表示資訊 | [第 3](lecture03_note.md)–[5 支](lecture05_note.md)：Ch2 位元的語言 |
+| 組合語言、暫存器、load／store | [第 6](lecture06_note.md)–[8 支](lecture08_note.md)：Ch3 SimpleRisc |
+| RISC（ARM）與 CISC（x86） | [第 9](lecture09_note.md)–[14 支](lecture14_note.md)：Ch4 ARM、Ch5 x86 |
+| 規律的 RISC 指令編碼 | [第 15](lecture15_note.md)–[17 支](lecture17_note.md)：Ch6 RISC-V |
+| ALU、暫存器、記憶體的電路 | [第 18](lecture18_note.md)–[20 支](lecture20_note.md)：課本 Ch7 |
+| CPU 的控制單元、PC、取指令 | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
+| 「大就是慢」、locality | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：課本 Ch11 記憶體系統 |
 | 特權暫存器、ring level（OS 怎麼用 ISA） | [`os/linux-os` 第 2 支](../../os/linux-os/lecture02_note.md) |
 
 ---

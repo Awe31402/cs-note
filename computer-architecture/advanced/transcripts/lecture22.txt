@@ -1,0 +1,584 @@
+[00:00] Now that we have seen the design of the cache, let us do a little bit of mathematical analysis
+[00:26] of the functioning of the memory system.
+[00:30] So let us define the average memory access time, the AMAT.
+[00:35] So the average memory access time is basically defined like this.
+[00:42] It is the L1 hit time.
+[00:45] So regardless of a hit or miss, you will always do a lookup, right?
+[00:49] So only then you will get to know whether it's a hit or miss.
+[00:51] So the hit time is something you have to pay plus the L1 miss rate times the L1 miss penalty.
+[00:56] Alright?
+[00:58] So this is simple math, comes from the formula of expectation.
+[01:05] Now the L1 miss penalty is roughly the same as the L2 access time.
+[01:11] Of course there might be a little bit of a delay in terms of communication from L1 to the L2,
+[01:17] but let us ignore that for the time being.
+[01:20] The L2 access time is essentially the L2 hit time for the same reason.
+[01:24] Plus the L2 miss rate times the L2 miss penalty.
+[01:27] The L2 miss penalty if there is an L3 is again L3 hit time plus L3 miss rate plus times L3 miss penalty.
+[01:37] And finally the L3 miss penalty will go to the main memory.
+[01:41] So in the main memory you assume that you will always have a hit.
+[01:46] So there is no miss time or miss penalty with the main memory, right?
+[01:52] So this will be the main memory access time.
+[01:54] Alright?
+[01:55] So this is the formula for the average memory access time or the AMAT.
+[02:02] And the way that the AMAT is related to the CPI is that the CPI log cycles per instruction
+[02:13] is basically the CPI with an ideal memory, right?
+[02:21] So let us call it CPI base times the fraction of memory instructions times AMAT minus 1.
+[02:38] Or let us call it AMAT, I mean I would not call it AMAT minus 1 but AMAT minus the L1 hit time.
+[02:49] So let us analyze this for a second.
+[02:51] So let us assume that the L1 miss rate is 0, right?
+[02:53] So you never miss in the L1.
+[02:55] So you never miss in the L1, the AMAT is equal to the L1 hit time and the CPI is equal to
+[03:01] the CPI base.
+[03:03] So which is what I was defining as the ideal CPI, which means that you always hit in the
+[03:07] L1 cache.
+[03:08] Let us define this as the CPI base.
+[03:11] Now consider the practical scenario where we have L1 misses.
+[03:19] So in this scenario with L1 misses, the AMAT will not be equal to the L1 hit time.
+[03:24] It will be more than that.
+[03:26] So that's why we need to change the CPI.
+[03:31] So by the simple formula of expectation, this will get multiplied with the fraction of memory
+[03:37] instructions.
+[03:38] So fraction of memory instructions which are on the critical path.
+[03:42] So of course this formula is more relevant for in-order pipelines and out-of-order pipelines
+[03:48] because there is a fair amount of overlap in terms of the miss times of different memory
+[03:53] instructions.
+[03:54] That is also one advantage of an out-of-order pipeline.
+[03:57] Nevertheless, we will multiply the fraction of memory instructions fMEM into AMAT minus
+[04:04] the L1 hit time.
+[04:06] So for us this is the math of computing the CPI.
+[04:10] Again this is a primarily in-order processor formula for you know the hit time, miss rates
+[04:19] and miss penalties.
+[04:24] A few simple optimizations, so simple ones.
+[04:29] So what is the basic strategy of having an efficient cash?
+[04:34] We either reduce the hit time, we either reduce the miss penalty, sorry the miss rate or we reduce
+[04:40] the miss penalty, any one of them or any combination thereof.
+[04:47] There are three kinds of misses.
+[04:50] We can have, right, so regardless of the optimization strategy, there are three kinds of misses.
+[04:58] So they are called as three C's because all of the misses start with a C.
+[05:03] So the first category of misses are cold or compulsory misses.
+[05:08] So these misses happen the first time we read in data.
+[05:12] So the first time that we read a block and it is not there in a cache this miss will happen.
+[05:17] This is called a cold miss or a compulsory miss because you know this had to happen it was
+[05:21] not there.
+[05:24] Capacity miss happens when because of the limited size of the cache.
+[05:28] So let us say that we frequently access 100 kilobytes of data but our cache is only 64 kilobytes.
+[05:36] Then for the remaining 36 kilobytes we will have a capacity miss.
+[05:41] So the way to solve capacity misses is to actually have a bigger cache but this has its shortcomings.
+[05:50] Finally we will have conflict misses.
+[05:52] So conflict misses happen because of the limited associativity of the cache which are caused
+[05:57] because of destructive interference.
+[06:00] So consider let us say 4 way set associative cache.
+[06:05] There might be 5 blocks that map to the same set.
+[06:10] If 5 blocks map to the same set then there is a problem.
+[06:14] Because all 5 cannot be stored so continuously they will be displacing 1 and that will lead
+[06:19] to a performance loss.
+[06:21] So such kind of misses are known as conflict misses.
+[06:24] So as you can see these are 3 C's cold capacity conflict or compulsory capacity and conflict.
+[06:32] So these 3 types of misses are what we have to optimize for.
+[06:42] So some simple optimizations for reducing the hit time we can have small and simple caches.
+[06:50] So basically with small and simple caches the hit time will get reduced but the negative
+[06:55] aspect is it will increase the miss rate.
+[06:59] Smaller is the cache higher is the miss rate.
+[07:01] So we probably don't want this.
+[07:03] So some trade off has to be struck between these two factors.
+[07:08] To reduce compulsory misses one thing that we can do is we can increase the block size.
+[07:13] If we increase the block size so then instead of fetching let's say 64 bytes in one go if
+[07:20] we fetch 128 bytes in one go.
+[07:23] This will ensure that because of spatial locality we can reduce the number of misses that would
+[07:29] have happened because of a compulsory nature.
+[07:33] And recall that spatial locality means that we will access nearby addresses with a very
+[07:41] high likelihood.
+[07:43] So let's say we access some byte.
+[07:46] The nearby bytes we will access.
+[07:48] So if our block size is small we will fetch this much.
+[07:51] If our block size is large we will fetch this much.
+[07:54] So larger block size is clearly beneficial.
+[07:57] But again a large block size reduces the number of blocks that we can store in a cache which
+[08:02] is also a problem.
+[08:04] Right?
+[08:05] So basically if we store few blocks then we are not covering a large part of the address
+[08:13] space which is an issue.
+[08:16] To reduce capacity misses well you can have a bigger cache but a bigger cache is slower.
+[08:22] We can do what is called prefetching which means that we can predict the addresses that
+[08:27] we will fetch in the future or the addresses that we will send to the memory system in the
+[08:34] future.
+[08:36] And then we can solve this problem either in software or in hardware.
+[08:40] So in software we can insert dedicated prefetch instructions.
+[08:48] So dedicated prefetch instructions can be inserted in software.
+[08:59] So they are going to prefetch data for us.
+[09:03] And otherwise we can have a hardware unit called a prefetcher which we will study in great detail
+[09:15] towards the later part of this chapter.
+[09:22] So the prefetcher is a unit similar to a branch predictor.
+[09:27] It predicts the addresses that we will request from the memory system in the future.
+[09:34] And it tries to fetch them in advance such that they are already there in the cache before
+[09:40] we actually access the memory addresses.
+[09:44] Conflict misses well the simple idea is to increase the associativity but again increasing
+[09:49] the associativity has issues with latency and power consumption.
+[09:54] So here also prefetching helps right it is definitely beneficial.
+[09:59] Another approach to reduce conflict misses is to use a victim cache.
+[10:06] So the key insight is so in architecture we always need a key program level insight.
+[10:13] The key program level insight is that there are only a few sets that are heavily contended.
+[10:35] So only a few sets will have a lot of contention.
+[10:38] And so then there will be some of these unfortunate blocks that will keep on getting evicted repeatedly.
+[10:44] So instead of storing them in the L2 cache why not have a small fully associative cache.
+[10:50] So you know one of the rare examples of fully associative caches, a small fully associative
+[10:55] cache which may be let's say has 8 or 16 entries.
+[11:01] So then here we store some of those blocks that account for a disproportionate number of misses
+[11:08] which are like one of those unfortunate blocks in heavily contended sets which get repeatedly
+[11:14] evicted.
+[11:16] So they can be stored in the victim cache.
+[11:20] So whenever a block is not found in L1 cache it is searched for in both the L1 cache as
+[11:26] well as the victim cache associated with the L1 so we search in both.
+[11:31] Only when we don't find the block in both do we actually access the L2 cache.
+[11:36] So there are many many algorithms to manage the victim cache or manage you know which lines
+[11:42] actually go to the victim cache right.
+[11:45] So there are many such algorithms.
+[11:50] So we will not discuss all of them here and we will you know leave many of that for the
+[11:58] later sections of this chapter.
+[12:01] Another simple optimization which I am not mentioning but might be worth talking about
+[12:06] is the write buffer.
+[12:12] So in the L1 cache what happens is that let's say there is a miss okay.
+[12:20] So what will happen is that whenever we are doing a and then so let's say there is a miss
+[12:28] for a line and then a lot of write requests start coming.
+[12:32] Say a lot of write requests start coming what we can do is that we can have a small buffer
+[12:39] over here where let's say if the writes are to different addresses within the same block
+[12:45] we can just you know keep collating those writes over here.
+[12:54] So consider a 64 byte line.
+[13:01] And let's say that we write to the first 4 bytes, middle 4 bytes, later 4 bytes.
+[13:07] So why have separate write requests right.
+[13:11] And why separately access the cache instead what we can do is that we can maybe transfer
+[13:16] the line to a small write buffer or without transferring the line what we can do is we can have a small
+[13:24] separate structure where we simply take all of these writes and we expect that these writes
+[13:31] will come together in a small window of time because of spatial locality.
+[13:36] So we can simply record the fact that look these are the bits that are being written right.
+[13:41] And then we can collate all of those writes and then make one consolidated write in a sense
+[13:49] merge this with the contents of the line to get the final contents of the line.
+[13:56] So the write buffer is one way of actually kind of absorbing different writes issued to the
+[14:01] same block in the same window of time.
+[14:05] The advantage of this is that we reduce the number of cache requests and this helps us
+[14:13] save power primarily right this is primarily a power and also helps us reduce the traffic
+[14:18] to caches so both the reduction of traffic as well as saving of power by kind of locally
+[14:24] collating the writes within a small window small window of time.
+[14:28] So this structure is known as the write buffer which can again be implemented as a small
+[14:33] fully associative cache.
+[14:37] How do we reduce the miss penalty well another way of reducing the miss penalty along with
+[14:42] the write buffer is that we typically request for so the insight is that we typically request
+[14:50] for 4 bytes in a 64 byte block.
+[14:54] So the question is that how are they actually transferred if this is the L1 cache and let's
+[15:00] say this is the L2 cache and let's say it takes you know 10 cycles for the data to come.
+[15:07] And let's say the data comes in chunks of 4 bytes from the L2 to the L1 then the transfer
+[15:13] itself will take 16 cycles so it will take 10 cycles for the first chunk to come but subsequent
+[15:21] chunks will gradually come later.
+[15:23] But we typically have instead of 4 bytes we can even transfer 8 or 16 bytes per cycle.
+[15:29] But then also the entire transfer will take somewhere between 4 to 8 cycles.
+[15:35] So the question is that how do we order the bytes within the block while we are transferring
+[15:42] from the L2 to the L1.
+[15:44] If we transfer those 4 bytes first that are required by the processor which missed in the
+[15:49] first place and then transfer the remaining 60 bytes subsequently then what will happen
+[15:55] is that we can get the useful information earlier right.
+[16:00] So what I am saying over here is that don't transfer the contents of the block in order like from
+[16:08] byte 0 till byte 63.
+[16:10] Instead send the data that was required by the processor first and the remaining bytes after
+[16:15] that.
+[16:17] Once the 4 bytes arrives the processor can do what is called an early restart which means
+[16:22] start the job of processing even before the entire block has arrived.
+[16:28] So this optimization is known as the critical word first early restart optimization.
+[16:36] And this helps us in improving performance by slightly reordering the way in which blocks are transferred.
+[16:46] So we transfer the slightly reordering the bytes in a block right the way it is transferred.
+[16:52] So we transfer those 4 bytes that are required first.
+[16:56] And we transfer the remaining bytes later right in later cycles.
+[17:02] Alright so our discussion of caches has ended over here.
+[17:08] So we have a you know kind of a basic overall bare bones understanding of the way that caches
+[17:15] actually work.
+[17:17] So there are two parts to the undergraduate study of the memory system in caches.
+[17:22] So one is of course caches and their design which is what we have looked at.
+[17:28] We haven't looked at from a thorough electrical point of view but we have looked at it from
+[17:32] an architecture point of view.
+[17:35] The other important concept which I would say is important with a double plus is virtual
+[17:41] memory.
+[17:42] The reason is that most people actually get it wrong.
+[17:45] Even though it's very simple but nevertheless 99% of the people don't seem to understand it.
+[17:52] So let's try to unpeel the layers of virtual memory over here.
+[17:58] So before understanding what is virtual memory, we should understand what is a process.
+[18:05] And what does the process assume about the memory system.
+[18:09] So a process is nothing but the running instance of a program in the sense it is a program in
+[18:14] execution.
+[18:15] Right?
+[18:16] We furthermore assume that the process owns a large contiguous chunk of the memory space.
+[18:23] Sorry, there should be a comma here.
+[18:27] So if not the entire memory space but at least a very very large fraction of the memory space
+[18:32] it owns, it exclusively owns.
+[18:35] Within this chunk it can access and modify any location at will without permission.
+[18:43] So let us look at a simple memory map of Linux.
+[18:48] So consider a 32-bit memory system.
+[18:51] So of course we don't have many 32-bit memory systems as of today.
+[18:56] Most memory systems are 64-bits.
+[19:00] And but nevertheless let's go back to the era of 32-bits, it will be kind of simpler to explain.
+[19:07] So 32-bits is basically can be represented as 8-hex digits.
+[19:12] So the addresses would go from 0 to 0-x-ff-ff-ff-8-f's, right?
+[19:20] So this would be the largest address and this would be the smallest address.
+[19:25] So what Linux assumes is that it gives the upper 25%, upper 1-gigabyte of the address space
+[19:33] to the OS kernel, right?
+[19:36] So we are not in a position now to say why.
+[19:40] But the entire address range which is from 0x-c-0000 all the way down to 0, which is a good 3 gigabytes
+[19:51] is entirely with a process.
+[19:55] And a process is what?
+[19:56] It's a running instance of the program.
+[19:58] So we assume that it is the undisputed, irrefutable owner of this entire address space and it can
+[20:14] access any location and do anything it wants with this address space.
+[20:20] So in this address space, since we have a downward growing stack, the stack starts at the highest
+[20:25] address, which is the highest address for the process, of course.
+[20:29] And the stack starts to grow downwards and as you can see, the stack itself can be huge.
+[20:35] So the sum of the stacks of all the functions can be huge.
+[20:40] So the, well, I mean, it's not that different functions have a different stack.
+[20:45] They all share the same stack region.
+[20:48] But let's say that even if I have very deep recursion, my stack can grow and there is a lot of space
+[20:55] for it to grow.
+[20:56] So this diagram is clearly not up to scale.
+[20:59] And the stack can keep growing downwards, downwards, downwards for gigabytes.
+[21:04] Now let me start from the bottom.
+[21:07] So actually the first few bytes store what is called the header of the process, right?
+[21:12] So it has some data about the process, contains something called a magic number and other information
+[21:18] about the layout of the memory map.
+[21:22] So I will not discuss that, that's for a separate course.
+[21:26] So but you can see that the first few bytes, maybe the first 100, 200 bytes are for storing
+[21:31] the header information and then storing pointers to the different sections, of course.
+[21:36] But the important region for us of interest is the text region.
+[21:42] So the text region contains the instructions of the program, right?
+[21:50] So the text contains all the instructions of the program.
+[21:53] And then we have two regions, data and BSS.
+[22:03] So the data section contains initialized global and static variables.
+[22:08] And the BSS section contains uninitialized global and static variables.
+[22:14] So let us call it uninitialized and this is initialized.
+[22:21] The heap section of the memory map contains all the data structures that are allocated via the
+[22:30] new or malloc calls in C++ or Java where we dynamically create objects.
+[22:37] So this is for dynamic creation of objects.
+[22:40] And these objects remain alive across function call invocations as opposed to objects that
+[22:47] are allocated on the stack, right?
+[22:50] So these heap based objects are allocated once.
+[22:55] So they are allocated and freed using malloc and free or new and delete as is the case
+[23:01] in languages such as C++ and Java.
+[23:06] And so the memory map is holds for every process.
+[23:13] Every process assumes that it can write to the location 0 to 0xC 0 0 0 0 0 0 0 0 at will.
+[23:21] And all of these sections are accessible to it.
+[23:27] So there are two problems.
+[23:29] Now that you have seen the memory map, you can easily appreciate what I am going to say.
+[23:34] So there are two problems.
+[23:35] So just do Ctrl Alt Delete on a Windows system.
+[23:41] You will see, just go to task manager.
+[23:44] You will see that there are hundreds of processes running on your machine.
+[23:50] Like ps on Linux, ps-ef for more details, or just ps, but do ps-ef.
+[23:56] It will show you everything that's running on your system.
+[24:00] You will also see a lot of processes that are running in parallel on your system.
+[24:05] So how is this happening?
+[24:06] Well, we have discussed this in the past.
+[24:09] The way that this is happening is that one process executes for some time.
+[24:14] Then a timer interrupt comes.
+[24:16] Then another process executes.
+[24:18] Then a timer interrupt comes.
+[24:20] So on and so forth.
+[24:23] But then the question is that there will be a problem of overlaps.
+[24:30] So it is possible that different processes, multiple processes can write to each other's
+[24:37] data region, right?
+[24:38] So they can read and write to each other's regions of data, because after all, all the
+[24:43] processes see the same memory map, right?
+[24:45] So what stops one process from writing to data structures that belong to another process?
+[24:50] So there is an overlap.
+[24:52] So we are calling an overlap problem or an overwrite problem.
+[24:55] Doesn't matter.
+[24:56] It's the same thing.
+[24:58] And what we are saying is that look, the memory system has to be separate for each process.
+[25:05] Otherwise what will happen is that one process can either maliciously or unknowingly write
+[25:14] in the region of another process.
+[25:17] And since all the processes are the same memory map, as you can see, all of the stacks start
+[25:22] from the same point.
+[25:24] So then it's very easy, right, for one write to actually corrupt the state of another process.
+[25:29] So this has to be stopped, right?
+[25:32] So unless the processes actually write to different regions in memory, we will not be able to stop
+[25:38] this problem.
+[25:39] The other is a size problem, which means that, can we access memory, physical memory in this
+[25:46] case, which is larger than the size of the actual physical memory, which is, which you
+[25:53] know, we have limited to three gigabytes, but you know, in, in reality, let's say I only
+[25:58] have 512 MB of RAM, right?
+[26:02] And my entire memory map maximum is three gigabytes, but let's say I'm using two gigabytes of it.
+[26:09] How will such a process run with so little main memory, right, which is half GB of main
+[26:14] memory.
+[26:15] So can we not run such processes that would be really sad in the sense that we are limited
+[26:21] by our resources, and even if we exceed them by a little bit, we will still not be able
+[26:27] to run them.
+[26:28] So this is the size problem, right?
+[26:30] So let me call this the overlap slash override problem, we will refer to it interchangeably.
+[26:38] And the size problem, both of these need to be fixed to create a computer system out of
+[26:44] just a processor, right, a computer system, as you would recall, runs multiple processes
+[26:51] concurrently at the same time.
+[26:55] So what solves both the problems, virtual memory.
+[27:00] So the key idea is that the processor generates addresses, which are virtual addresses.
+[27:08] The virtual addresses preserve the abstraction, that the process owns the entire memory map
+[27:26] at least from 0 to 3 GB it entirely owns.
+[27:30] Then we have a translation module, which has traditionally we have been referring to it as
+[27:35] the memory management unit.
+[27:40] The translation module generates physical addresses, alright?
+[27:50] And these physical addresses are generated in such a way that we solve both the problems
+[27:55] of the overlap and the size.
+[28:00] So what am I saying?
+[28:01] What I am saying is that the program, the compiler and the processor, they all see the virtual
+[28:06] address, which is 32 bits, right?
+[28:10] Then the addresses go through a process of translation, where the virtual address is converted to a
+[28:16] physical address.
+[28:18] This process of translation ensures two things.
+[28:23] What does it ensure?
+[28:25] It ensures that unless intended, sometimes we may intend though, but unless intended, two
+[28:30] processes never access the same physical address, right?
+[28:35] So the same physical address is never accessed by two processes, right?
+[28:42] Unless we intend to do so, and most of the time we do not intend to do so.
+[28:46] So there is no overlap, right?
+[28:56] Furthermore, we might be limited by the size of the main memory, in the sense, the virtual
+[29:02] address space is essentially 2 raised to the power 32 in this case, 2 raised to power 32 bytes.
+[29:10] If you are using a 64-bit memory system, the virtual address space is 2 raised to power 64
+[29:15] bytes.
+[29:16] So the virtual address space is huge.
+[29:19] So within this, of course, in our entire memory map, we might be using some parts of it.
+[29:28] But let's say even the parts that we are using, let's say they sum up to 2 gigabytes, and our
+[29:33] actual memory is 1 gigabyte.
+[29:36] Then clearly our program will not run, because we have said that we will never have misses
+[29:40] in main memory, right?
+[29:42] So let us slightly relax this assumption.
+[29:46] So let us also use other forms of storage, which are much slower, much more inefficient,
+[29:51] such as the hard disk, to expand the size of our physical address space, or the space
+[29:58] of physical locations.
+[30:01] So this will ensure that even if we need 2 gigabytes of memory, the system will not stop
+[30:07] our program, our program can still run.
+[30:10] It will use the off-chip main memory, which is 1 gigabyte, plus an additional region on
+[30:16] the hard disk called the swap space.
+[30:18] So that will provide the additional space to store the remaining 1 gigabyte.
+[30:23] So this solves the size problem for us.
+[30:26] And the translation mechanism will essentially say if the address is there in the main memory,
+[30:33] or is the address there in the swap space, alright?
+[30:38] So the process of translation is important to solve both the problems, the overlap and the
+[30:43] size problem.
+[30:45] So here is how we propose to do it.
+[30:48] We will divide the virtual memory space, right?
+[30:51] So what is virtual memory is the addresses that the programmers and the compilers see, right?
+[30:57] So it is the addresses that your program works with, the addresses we have been working with
+[31:01] till this time.
+[31:03] So that is the virtual memory space, where we assume that we own the memory map.
+[31:08] We divide this into 4 kb pages, like 4 kb contiguous region of addresses, right?
+[31:28] So we divide this into 4 kb pages.
+[31:30] Similarly, we divide the physical memory space into 4 kilobyte frames, alright?
+[31:36] So the entire physical memory space is divided into 4 kb frames.
+[31:44] And so virtual memory divided into pages, physical memory into frames.
+[31:51] We just need to map pages to frames.
+[31:54] So basically the program is using a 4 kb region of memory.
+[32:00] This via a process of translation is mapped to a 4 kb frame.
+[32:14] So we ensure that the mapping solves the size problem and the overlap problem, override problem,
+[32:21] right?
+[32:22] So the size and override problems are solved.
+[32:27] How do we do it?
+[32:29] Oops, sorry, there is a small problem here.
+[32:33] This is over...
+[32:38] So we map it in such a way that there are no overlaps.
+[32:42] So let's take a look at it.
+[32:43] So let's consider process 1 and process 2.
+[32:46] So of course we can extend this diagram to multiple processes.
+[32:50] But let us just consider two processes for the time being.
+[32:54] So let us say that in the entire memory map, we have mapped these three pages.
+[32:59] So in the process of translation, what you can see is these pages can be mapped to any three
+[33:05] frames in main memory, right?
+[33:07] So they need not be contiguous.
+[33:09] What is the key point?
+[33:10] They are contiguous over here.
+[33:12] Sorry.
+[33:16] They are contiguous over here.
+[33:19] But this continuity is not seen in the physical address space.
+[33:25] In a sense they are mapped to different frames in main memory which are not necessarily close
+[33:29] by.
+[33:30] Similarly, for process 2, we have three pages.
+[33:34] They are mapped to three different frames in the physical address space.
+[33:39] These are not necessarily close by.
+[33:42] So they are spread across the entire physical address space, right?
+[33:48] So they are spread across everywhere.
+[33:51] And so it doesn't matter, it doesn't matter where they actually are.
+[33:56] What matters is that they are essentially mapped.
+[34:00] And what also matters is that the same frame is not mapped to two pages, right, across processes.
+[34:08] Because we have no intention of creating an overlap.
+[34:11] So that's the reason what you can see over here is that the same frame is not mapped to
+[34:15] two pages.
+[34:16] There is no overlap, which also means that even if one process has a very malicious intent
+[34:22] and it will even try to access the data of another process, which can be a password or
+[34:27] a credit card number, the virtual memory mechanism will prevent it from doing so.
+[34:33] So it, in a sense, enforces the security of the system as well.
+[34:39] The virtual memory prevents pretty much unauthorized access.
+[34:49] So all that the program can do is that it can access any virtual address in its virtual
+[34:55] memory space or in its memory map.
+[34:59] But the final mapping from virtual to physical is in the hands of the processor.
+[35:04] And the processor, the processor and the OS also.
+[35:08] So we will see how the OS comes into play.
+[35:10] But the processor will essentially guarantee that the same physical frame is never mapped
+[35:17] to two processes.
+[35:18] So there is no way that one process can see another process's data, right.
+[35:24] So the virtual memory mechanism enforces it.
+[35:27] Also sometimes we might desire to create an overlap in the sense sometimes we might want to have
+[35:34] inter-process communication, IPC, right.
+[35:38] It's another definition of IPC, not the one that we are using.
+[35:42] So in that case, well there is something called the shmem call on Linux, the shared memory call.
+[35:48] If we can map one virtual page of one process and another virtual page of another process to
+[35:55] the same physical frame.
+[35:57] So in this case, if the process writes to any byte over here, this will reflect over here,
+[36:03] which is going to also reflect over here.
+[36:05] So they become the same.
+[36:07] So this is an example where we deliberately create an overlap to create a shared memory
+[36:13] communication channel.
+[36:15] And this is not a security flaw because this is being created with the explicit consent of
+[36:40] both processes, but in general, we don't avoid, in general, we avoid creating such an overlap.
+[36:48] The again, the reason being security and also the fact that processes will not be able to run
+[36:53] correctly if let's say their values are overwritten by other processes.
+[36:59] Let us now solve the size problem.
+[37:02] So what we do is that along with the physical main memory, we create another region in the hard disk
+[37:09] disk or any other form of stable storage can be a flash drive as well.
+[37:15] So there we take a region such that the combined size of the main memory and the swap space is
+[37:25] equal to the actual memory requirement of all the processes.
+[37:29] This ensures that even if we are short of actual main memory, which is made of DRAM cells, we will
+[37:38] still have enough space, but of course, the swap space is much slower and it is significantly slower rather.
+[37:47] So we need to do some optimizations.
+[37:50] Nevertheless, what the mapping scheme will do for us is that given a virtual page, given a page in the
+[37:59] virtual address space, it will map it to either a frame in main memory or to a frame in the swap space.
+[38:08] And the mapping will indicate if the frame is in the main memory or in the swap space.
+[38:17] Secondly, before using the frame, right, so before accessing bytes in the frame, we need to bring the
+[38:27] frame from the swap space to main memory and put it somewhere and then update the mapping.
+[38:33] So let's say for example, we want to access this page, then we would learn that this page is currently
+[38:40] there in the swap space.
+[38:41] So what we need to do is that we need to bring in the frame, right, we meaning what the operating
+[38:47] system needs to do, right, in collaboration with the hardware is bring in the frame from
+[38:53] the swap space to main memory and then update the mapping such that this points to this position.
+[39:01] Of course, if we don't have free frames in memory, it is similar to not having free ways in a set.
+[39:10] So in that case, what is needed is that we need to again, take one frame from main memory,
+[39:17] put it in swap space, like do a page replacement, create space for a frame and bring a frame in.
+[39:23] All right.
+[39:24] So that needs to be done.
+[39:26] And this process of replacement, which is called page replacement is done by the operating system.
+[39:32] So this is also where the operating system plays a key role as a memory manager.
+[39:37] But otherwise, the operating system's role is not required if the mapping, if the frame is coming from main memory.
+[39:48] But to manage the swap space, the operating system is required.
+[39:55] So where are these mappings stored?
+[39:58] The mappings are stored in a dedicated data structure called a page table.
+[40:02] So what is the page table?
+[40:05] The page table, given a virtual page, it just maps it to a physical frame.
+[40:24] All right.
+[40:25] So unfortunately, the page table is a rather elaborate data structure and the process of
+[40:35] doing the mapping takes several cycles.
+[40:38] So we can reason at it from common sense that the CPI will actually become very low if every
+[40:46] memory access actually takes several cycles to access the page table and do the translation.
+[40:52] So this would indeed be a very slow process.
+[40:55] And this slow process will reduce our CPI significantly.
+[41:00] So assume that our program has no dependencies, right?
+[41:04] Then in an inorder pipeline, the IPC will be 1.
+[41:08] But in this case, sorry, I stand corrected.
+[41:11] I had said the CPI will decrease.
+[41:13] It will actually increase.
+[41:14] So what will decrease is the IPC.
+[41:16] So if we do a little bit of math, then we can see that if, let's say,
+[41:21] a third of the instructions are memory instructions, so we can use our CPI formula.
+[41:28] So CPI will be 1 plus the fraction of memory instructions, which is 0.3.
+[41:33] Let's again make an assumption that all the accesses hit in the L1 cache, right?
+[41:39] So if I just consider the overhead that is required for translation, and let's assume that it takes 3 cycles to translate, right?
+[41:52] So then the CPI actually becomes 1.9.
+[41:56] So the IPC will then become 1 by 1.9, which is roughly half.
+[42:00] So this is a massive hit in the IPC.
+[42:03] This is not something that we can tolerate, right?
+[42:06] So what we have is that we use the same logic as the cache.
+[42:11] We create a small cache for the mappings.
+[42:15] The cache for the mappings is known as the TLB.
+[42:19] I should have expanded.
+[42:20] It is called the translation look-aside buffer.
+[42:23] It is basically a cache for the most frequent mappings, right?
+[42:27] So because of temporal locality or TLB is extremely effective, the TLB hit rates are very high, the order of 99.5%.
+[42:36] So we have an extremely fast hardware structure called the TLB to cache the most frequent mappings.
+[42:43] And the TLBs are typically very, very fast.
+[42:46] So they typically have 32 to 64 entries.
+[42:49] They often are, they are either fully associative or they are 4-way set associative, 4 to 8-way set associative.
+[42:57] In a lot of modern designs, they also have a 2-level TLB.
+[43:01] In a sense, they have a fast L1 level TLB and then a slightly slower L2 level TLB.
+[43:08] Sometimes also to further optimize, we have a separate instruction TLB called an ITLB and a separate data TLB called a DTLB.
+[43:17] So regardless of what is the configuration, the processor accesses the TLB first.
+[43:24] And the TLB access is typically very fast.
+[43:26] It is typically a fraction of a cycle or maybe one cycle at the most.
+[43:32] It uses the mapping that is there in the TLB to translate the virtual to the physical address.
+[43:39] If it does not find, right?
+[43:41] If it does not find the entry in the TLB, if there is a miss in the TLB, then the processor accesses the page table.
+[43:49] So the question is, how do you access the page table?
+[43:52] This itself is a rather elaborate operation.
+[43:55] So there are two, so there are broadly speaking, there are two methods.
+[44:00] So accessing the page table to find a mapping and populating the TLB, right?
+[44:05] That is what we are looking at.
+[44:07] Because even if the mapping is there in the page table, the processor cannot use it unless it comes to the TLB.
+[44:13] So now accessing the page table can either be done in software or in hardware.
+[44:20] If it is done in hardware, which is typically the case in most Intel processors, this is known as a hardware page work.
+[44:29] So Intel processors provide a machine-specific register called an MSR register.
+[44:41] The name of this register is typically CR3.
+[44:44] So here we store the base address of the page table.
+[44:47] So a small routine which is stored in firmware, in a set of instructions that the hardware already has,
+[44:54] it uses it to access the CR3 register, the page table register.
+[44:59] And it automatically walks the page table, traverses the page table, finds the mapping and then updates the TLB.
+[45:10] So this is a hardware page work and this is efficient.
+[45:13] In many other systems, if we do not find an entry in TLB, an interrupt is raised,
+[45:17] then the operating system does the software page work and there the operating system, this is a privileged operation.
+[45:24] So the operating system then finds the mapping and populates the TLB.
+[45:29] So regardless of how it is done, it can be done either by the hardware or it can be done by software.
+[45:36] It does not matter how it is done, but ultimately the mapping has to come from the page table.
+[45:41] If there is no mapping, one such mapping has to be created and then the TLB has to be populated.
+[45:48] And the TLB is a fast structure.
+[45:50] It's a cache for the page table.
+[45:52] It's an entirely hardware structure.
+[45:54] It typically contains 32 to 64 entries, at least the level one TLB.
+[46:00] And it's normally a four-way set associative structure.
+[46:05] It can be a fully associative structure as well, given the fact that its size is small and it has few entries, not much, not many.
+[46:14] A fully associative cache is good enough for storing the entries of the TLB.
+[46:25] So this is our final flowchart for a memory access.
+[46:28] This figure is extremely, extremely, extremely important.
+[46:32] So we should understand it.
+[46:37] So here, if we have a memory access, right, over here, if we have a TLB hit, right, then there is no problem.
+[46:49] We just send the mapping to the processor and there is absolutely no problem at all.
+[46:55] If we do not have a TLB hit, if there is no TLB hit, then what we do is we try to see if the frame is in memory or not.
+[47:08] So how do we do that?
+[47:10] Well, we walk the page table and we see whether the frame is there in the memory, right?
+[47:18] So the walking the page table is done either by software or hardware.
+[47:22] And if the frame exists in main memory, then the software or the hardware populates the TLB and sends the mapping to the processor.
+[47:30] Otherwise, let's say that, you know, we are trying to allocate new memory.
+[47:38] So different operating systems will manage this differently.
+[47:42] So some operating systems will simply not allow you to access an unmapped frame.
+[47:46] And some might say that, look, okay, if you are accessing an unmapped frame, that's fine.
+[47:51] But then the first time you access, we will create space for the frame, right?
+[47:58] So different policies can be there.
+[48:00] But what is important is that if new space needs to be created, we need to see if space is there or not.
+[48:07] So is a free frame available?
+[48:09] If it is not there, then we have a page replacement policy, which follows the same methods of cache replacement, FIFO, LRU and so on.
+[48:19] So we evict a frame to the swap space.
+[48:23] We update its page table entry of that to now indicate, right?
+[48:28] So we need to update the TLBs and the page table to indicate that this frame no longer exists in main memory, but it has been sent to swap space.
+[48:37] Now that a free frame is available, we read in the contents of the new frame from the swap space if possible, or we create a new empty frame.
+[48:45] If a new empty frame is created, we typically zero out the entire region.
+[48:51] Why do we fill the entire region with zeros?
+[48:54] Well, the reason is that it could have contained some previous data written by some other process.
+[48:59] And that data could be a password or a credit card number, which clearly we want to delete.
+[49:05] So we typically zero out the region, we create a new frame, create a mapping in the page table, populate the TLB and send the mapping to the processor.
+[49:15] So this is again the typical flow chart, the typical way that we process pages and frames.
+[49:22] And the most important concept here is the TLB and the page table.
+[49:26] So a book on, so my previous book on computer architecture has a detailed description of how the page table is designed.
+[49:36] So it is typically a two level structure.
+[49:43] I mean, two or a multi level structure, because the point is that we cannot have an entry for every single virtual page.
+[49:49] It will be huge.
+[49:50] So we will use some patterns to optimize the design.
+[49:54] And also a book on operating systems will also have the design of the page table.
+[49:59] But the page table is the key mechanism by which the operating system fulfills its role as a memory manager.
+[50:08] Alright, so we are now done with a basic overview of memory systems.
+[50:14] So we are in a good position now.
+[50:17] So we have picked up the basics.
+[50:20] In the next part, we will discuss the cacti tool.
+[50:24] In the cacti tool, we will look at the electrical aspects of designing a cache, right?
+[50:35] So all the details of the SRAM cells, the CAM cells and so on, we will look at all of those in the design of the cacti tool.
+[50:48] Thank you.
+[50:49] Thank you.
+[50:50] Thank you.
+[50:51] Thank you.
+[50:52] Bye.
+[50:53] äch

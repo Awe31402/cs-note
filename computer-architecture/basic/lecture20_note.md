@@ -39,7 +39,7 @@
 
 ## 0. 本講地圖
 
-數位邏輯這章的最後一部分。前兩支（第 18、19 支）講了電晶體、邏輯閘、組合邏輯、latch 和 flip-flop；這一講講**存大量位元**的記憶體單元：
+數位邏輯這章的最後一部分。前兩支（[第 18 支](lecture18_note.md)、[第 19 支](lecture19_note.md)）講了電晶體、邏輯閘、組合邏輯、latch 和 flip-flop；這一講講**存大量位元**的記憶體單元：
 
 | 單元 | 電晶體數 | 核心 | bit line | 特色 |
 |---|---|---|---|---|
@@ -453,10 +453,11 @@ speed-up (0.99 V vs 0.1 V) = 44x
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 加法器、乘法器的電路 | **第 21–26 支**：課本 Ch8 計算機算術 |
-| Register file（用 SRAM 陣列做） | **第 27–29 支**：課本 Ch9 處理器設計 |
-| Cache（SRAM）、主記憶體（DRAM）、TLB（CAM） | **第 34–37 支**：課本 Ch11 記憶體系統 |
-| Flash、SSD、DRAM 的時序 | **第 46 支**：課本 Ch13 儲存裝置 |
+| 加法器、乘法器的電路 | [第 21](lecture21_note.md)–[26 支](lecture26_note.md)：課本 Ch8 計算機算術 |
+| Register file（用 SRAM 陣列做） | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
+| Cache（SRAM）、主記憶體（DRAM）、TLB（CAM） | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：課本 Ch11 記憶體系統 |
+| Flash、SSD | [第 46 支](lecture46_note.md)：課本 Ch13 儲存裝置 |
+| DRAM 的時序、memory controller | [Advanced 第 43 支](../advanced/lecture43_note.md)：Ch10 Main Memory |
 | SRAM 陣列、CAM、Cacti 模型、Elmore delay | Advanced 課程 Ch7 Caches（Part III、IV） |
 | DRAM 的裝置、陣列、DDR4 時序、記憶體控制器 | Advanced 課程 Ch10 Main Memory |
 

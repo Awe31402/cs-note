@@ -1,0 +1,450 @@
+[00:00] Welcome to the second video on GPUs. So in this video we will study the CUDA 10 language and
+[00:27] figure out how to program GPGPUs. So we will mainly be confined to the software
+[00:33] interface. So the CUDA language was introduced way back in 2006-2007. CUDA stands for Compute
+[00:43] Unified Device Architecture which was Nvidia's CUDA toolkit. It was primarily designed as an
+[00:50] extension of C++ because C++ used to be the most popular language those days and even if
+[00:57] this were to be done now C++ would not be a bad choice because a lot of pointers are used in GPU
+[01:04] programming. So that is where the use of C++ is required. So this allows the user to write codes
+[01:13] especially for GPUs and again this is primarily an Nvidia GPU language. So the GPU component of the
+[01:23] FAT binary which we have discussed in the previous lecture. Just to recap a FAT binary has both CPU code
+[01:31] as well as GPU code. So the GPU component is compiled into a virtual instruction set called PTX. PTX is
+[01:44] basically a RISC like instruction set and it just assumes that there is an infinite number of registers.
+[01:53] So one advantage of this is that let's say if there is a piece of code
+[01:58] and clearly there is a lot of intellectual property in the piece of code we don't want to release the
+[02:04] piece of code right. So what we would like to do is we would like to compile it to an intermediate
+[02:08] language such that the original code is not recoverable and then we release right. So then
+[02:15] what we do is we release the piece of code such that you know users can run them but the point is
+[02:22] that you know there are different kinds of GPUs with different sizes right. So there are GPUs, small
+[02:28] GPUs, bigger GPUs, less cores, more cores and so on. So there is a need for dynamic recompilation.
+[02:33] So dynamically let's say at runtime we have a JIT compiler. JIT means just in time which means
+[02:42] that whenever there is a requirement the code is compiled and it is compiled to a binary known as
+[02:48] shader assembly or SAS. So this is specific to a GPU so every GPU has its own low level instruction set
+[02:56] which is SAS. So the dynamic PTS to SAS conversion happens at runtime. So CUDA has a dedicated compiler
+[03:05] called NVCC. So you can think of NVCC kind of released on the same lines as ECC. So NVCC basically compiles
+[03:15] the CPU code and the GPU code all right. So it produces a fat binary which contains both the CPU code as well as
+[03:24] the GPU code. It has both. So here is the flow of the compilation of a typical CUDA program.
+[03:35] So we create a .cu file. So the .cu file is sent in both directions towards the C compiler and towards
+[03:43] the CPU compiler and towards the GPU compiler. So let's look at the CPU side first. So we have the regular
+[03:51] compilation stages. So we have the C++ preprocessor over here. So the C++ preprocessor creates a file
+[04:01] with this extension .cpp4.ii. Then we have a regular C++ compiler called CUDA FE++ which
+[04:13] creates the extracts the C++ code and we will see that here there's a connection with the GPU so we
+[04:22] will come back to it. But basically what happens is that in the C++ code it will generate kind of special
+[04:28] code. The reason is that a lot of the C++ code what that would do is that would invoke a function within
+[04:36] the GPU and get back its results. So the way that CUDA works is that we have a regular C++ program which
+[04:44] is the entry point. Then what we do is that we invoke a function within the GPU. So we transfer data
+[04:52] first to the GPU then we invoke a function within the GPU and then we come back. So after executing
+[05:02] something on the GPU we come back and then we get the data back. So this is the typical process. So what
+[05:12] is done is that when the user is writing the code the user simply writes C++ code for the CPU and the GPU
+[05:22] but all of this internal plumbing which means set up the arguments, set up the data, actually call the
+[05:29] function on the GPU which involves many low level calls and again get the data back. So all of these
+[05:37] all of this code also has to be injected automatically into the C++ code. So that is what this file stands
+[05:45] for and also of course a bunch of files are generated so it's important to understand what is a stub function.
+[05:53] A stub function basically means that if let's say in the C++ code I'm calling a function to be run in the GPU
+[06:01] then instead of calling the real function which I cannot because it's written in a separate ISA and so on
+[06:07] I actually call a stub function. The job of the stub function is to do a bunch of things for me. So these
+[06:15] include setting up the arguments right then basically set the state of the GPU essentially initialize
+[06:24] the GPU send the arguments to it say that a new function will execute. So there are a lot of
+[06:29] commands which need to be sent to the GPU to just initialize it then basically execute the function
+[06:36] right. So all of these things are managed by the stub function and and this is kind of library code
+[06:45] API code which is automatically generated and once that is done then the C++ compiler compiles the
+[06:52] program and we generate a dot or object file. On the same lines if we go to the GPU side again we have
+[06:59] a pre-processor and as we know a pre-processor's job is just to replace macros right is just to replace
+[07:08] the contents of macros. Then we have the compiler CICC which takes the C++ code that is to be executed
+[07:19] on a GPU and converts it to PTX. Then the PTX code we have a PTX assembler so the PTX
+[07:29] assembler basically runs so this is something which typically runs at runtime now I'm sorry I stand
+[07:39] corrected so the PTX assembler's job is to take the PTX instructions and kind of generate the machine
+[07:45] code which is PTX machine code and generate a dot qbin file which is essentially a GPU binary file
+[07:53] but of course the ISA is PTX. So then the object file and the PTX they are combined into what is
+[08:01] what we have been calling a FAT binary and along with that once the GPU code has been generated
+[08:07] references to it via stub functions are passed to the C++ code such that it can link to the GPU functions
+[08:16] it knows how to call them right and all the additional internal plumbing that's what we call in programming
+[08:22] language parlance is automatically added. So the key point is that there are two parts there is a C++
+[08:28] compilation part which primarily incorporates the effect of stub functions and there is a GPU path
+[08:36] where what we do is that we take the pre-processed macros generate PTX generate PTX binaries
+[08:44] and combine both into a FAT binary and that is kind of what is distributed right so these dotted lines
+[08:53] are kind of references which we have discussed. So once a FAT binary is generated we are ready to
+[09:01] execute it when we execute it the runtime will basically figure out what to run on the CPU what to run on the
+[09:08] GPU and furthermore some JIT compilation is done to convert from PTX to SAS and do many GPU specific
+[09:15] optimizations these are very important many of these GPU specific optimizations have to be done.
+[09:23] So now let us come to the code that runs on the GPU so we will gradually work on this example
+[09:29] and keep on expanding it. So the aim over here is to define a function that will execute on the GPU
+[09:40] a function that executes on the GPU is known as a kernel right so this is known as a GPU kernel
+[09:46] it is a very it's a basic function that is executed on the GPU if there are n GPU threads n versions of
+[09:56] the kernel are run all right
+[10:00] so basically this is something that is meant to execute in parallel so think of it as a parallel function
+[10:07] so I am showing the example code to add to arrays
+[10:12] so let us look at this step by step piece by piece
+[10:15] so whenever we have the identifier underscore underscore global underscore underscore this basically refers
+[10:25] to a directive which tells the Cura compiler that this is basically a kernel and this is supposed
+[10:31] to execute within the GPU and that too in parallel so the name of my function is where cat and it doesn't
+[10:38] return anything so it takes three floating point arrays as input a b and c so these are pointers
+[10:47] so these are pointers to which memory space we will discuss that later but if it's in if it's running
+[10:52] in the GPU think of it as a pointer to the GPU memory space right but all of this will be described later
+[10:59] in a reasonable amount of detail so what we do over here
+[11:06] is that let's say in this case but we are arranging all the threads in a one dimensional axis
+[11:15] so let's say if there are n threads so we are assuming a simple case where there are n threads
+[11:19] and each of these arrays have n elements that's the simplest case right so we are assuming that all
+[11:25] the n threads are conceptually arranged or numbered along a single x-axis and each of them has a number
+[11:33] from zero to n minus one so this is a standard
+[11:39] technique that is used in almost all parallel programming where every thread has a number
+[11:46] so in almost all other frameworks every thread has a uni-dimensional number but in the case of
+[11:51] GPUs every thread is assigned a multi-dimensional number or id so we are first looking at the
+[11:58] unidimensional case where the id can be between zero and n minus one so in this case what we do is we
+[12:05] get the id of the thread by reading the variable thread idx dot x so I have already indicated to you
+[12:13] that we can have a multi-dimensional id for a thread which means that there could be three components x y and
+[12:20] z so we will maximum go till three dimensions so in this case we don't have any y and z component so
+[12:26] we will see you know in a couple of minutes how that is ensured but let's assume we have no y and z
+[12:32] components you only have the x component so the x component varies from zero to n minus one so every
+[12:40] thread gets its number and once it does that it just does the addition that is assigned to it because
+[12:47] what is the task the task is to take two arrays and add them element by element so this is the problem
+[12:53] of adding two arrays element by element we simply take the index all right and we find
+[13:06] the relevant index right so we find a idx the the value from the idx index
+[13:18] for a similarly for b we add them and assign them to the corresponding entry for c
+[13:24] see if the array has let's say a thousand elements and we run a thousand such threads in parallel
+[13:28] then of course we are done
+[13:33] so as we have discussed the global directive makes it run on the gpu and the rest we have discussed in
+[13:39] fair detail so as i discussed in the last slide threads gpu threads have an arrangement so if we
+[13:51] want we can arrange them linearly on a single axis as we just saw in the last slide we can have a two
+[13:58] dimensional arrangement where every thread will have an x coordinate and a y coordinate or we could have a 3d
+[14:03] arrangement where the threads could have x y and z coordinate so all these three arrangements are
+[14:10] possible with their advantages but an advantage is that look if you are working on volumes right so
+[14:17] let's say we are looking at airplane wing which is a volume then it then this arrangement kind of
+[14:22] naturally makes sense if you are working on a 2d plane like solving the heat equation on a 2d plane
+[14:28] then maybe this arrangement makes sense and for our simple example of adding two arrays this arrangement
+[14:35] makes more sense so what we have done is that here we create this arrangement is a thread block
+[14:45] so we have a 1d 2d and 3d organization for a thread block and thread blocks themselves can be arranged
+[14:52] in a 1d 2d or 3d fashion so that is known as a grid so where did we go we had
+[14:58] a thread threads are grouped into what are called thread blocks
+[15:08] and thread blocks are again arranged in a grid so again for thread blocks we have 1d 2d and 3d
+[15:19] for a grid we have the same thing 1d 2d and 3d same thing exactly the same thing
+[15:25] threads have two types of coordinates so the first coordinate is the coordinate of the thread within
+[15:31] the thread block and the second coordinate is the coordinate of the thread block within the grid
+[15:36] right so thread within the block and block within the grid so if you can think about it
+[15:42] the universal coordinate of a thread is actually six numbers so first x y and z is the coordinate within
+[15:50] the thread block and a second x dash y dash z dash is the coordinate of the thread block within the
+[15:55] grid so now let's come to the coordinates of a thread once again right so this is an important
+[16:04] concept and this is where the CUDA language differed somewhat significantly from its predecessors
+[16:12] which were traditional parallel programming languages such as open MPI and
+[16:19] open MP and MPI so which is that every thread was assigned at least a 3d coordinate within its thread
+[16:25] block and of course we may choose to ignore a few of these coordinates in a sense set them to zero
+[16:32] for example in our in our array addition example x and y were set to zero they can have defaulted to
+[16:39] zero likewise we can have a 2d organization so this is possible to do in a 1d arrangement our
+[16:47] thread was fetching thread idx dot x but it could have also fetched thread index thread idx dot y or
+[16:53] z as well the addition needless to say is happening in parallel and this is where the power of the GPU
+[17:01] comes in the sense we create a lot of threads and the GPU does a fantastic job in scheduling and
+[17:08] managing time so let us now look at a 2d thread block and we will add some more code right so we
+[17:17] have kind of been stingy in showing our code but in this case we will add a little bit more code and
+[17:24] show you more of it right so in this case we will consider a 2d thread block so the two coordinates are
+[17:36] idx and jdx idx is the x coordinate and jdx is the y coordinate so what we are doing so we will discuss
+[17:45] the main function later so incidentally now we have also gone into the c++ part but we will discuss
+[17:50] that later so let's again take a look at the kernel which is this part
+[17:57] so in the kernel we have the underscore global directive which again tells you that it's a GPU kernel
+[18:06] matrix addition so in this case what we want to do is we can we want to take two 2d matrices
+[18:21] and we want to add the 2d matrices
+[18:28] okay so we want to do a mat add a matrix addition of both of them
+[18:34] so let's say we want to add matrix a and matrix b and produce matrix c
+[18:40] so since we are arranging the threads in the 2d block and for the sake of simplicity let us assume
+[18:47] that there are n cross n threads the size of the thread block is n cross n and the size of the
+[18:53] matrix is also n cross n well then there is no problem we get the x coordinate we get the y coordinate
+[19:00] so we read thread idx dot x thread idx dot y and then what we do is we just add corresponding elements
+[19:07] of both the matrices similar to what we had done for arrays so as you can see it is a idx jdx b idx jdx we add
+[19:15] them and we get c idx jdx as simple as that so of course in this case we have n square parallel threads
+[19:23] and they are transparently managed by the gpu so of course you can argue that there are limits to the
+[19:31] number of threads in fact there are so there is a limit to the number of threads you can have in a
+[19:36] thread block but n can be very large of course that is fine but then for a large n that's not a
+[19:43] problem we can take a large matrix and kind of break it into small tiles and assign each tile to a
+[19:48] thread so that is easy to do now let's come to the main function we have seen the c++ part first so
+[19:56] the dot dot dot indicates the code that we are not showing so gradually these dot dot dots will start
+[20:01] opening up but let's take a look at some data structures at this point so we want to create a
+[20:11] data structure that will tell us the threads per block so we will define a variable threads per
+[20:17] block this is of type dim 3 dim 3 means dimension 3 which means at the most it can contain three
+[20:23] numbers even though it is not restricted to you know it's not limited to containing only three numbers
+[20:32] it can contain one two or three numbers so the number that is not initialized will default to zero
+[20:37] so in this case we are the z coordinate is defaulting to zero that's the reason we are passing on the two
+[20:43] arguments right and so the argument that's not passed is assumed that axis is assumed to not exist
+[20:50] so passing two arguments which means n coordinates on the x-axis n coordinates on the y-axis so total n
+[20:56] squared threads so this is of object dim 3 and of course it has many constructors we can take a single
+[21:03] argument this would mean just n threads on x-axis n comma n would mean n threads on x-axis i mean n cross
+[21:12] n threads basically on x on x and y axis and n n n would mean n cube threads x y and z axis so now what we
+[21:22] do is we call we invoke the mat add kernel over here and invoking the kernel has a special syntax so to
+[21:30] highlight the special syntax i will erase all the ink on the slide so we will have these two markers kindly
+[21:37] pay great attention to these two markers so these markers are essentially indicating the configuration
+[21:45] in which we are executing so the first is the structure for the arrangement of thread blocks within
+[21:53] a grid if this is one it means that look there is only one thread block per grid so you need not
+[21:57] want it no problem and the second one is the data structure that we just initialized which is this
+[22:03] one which is saying we have n cross n thread threads per thread block so a single thread block with an n
+[22:10] cross n arrangement so this arrangement is very important and this is how the gpu initializes the
+[22:16] kernels and the threads once that has been passed then we send the arguments so the arguments in this case
+[22:24] well the cpu basically has to pass pointers to gpu memory we will see that that is possible to do
+[22:31] but we have not shown the code but the code is coming but the important take home point over here is that
+[22:40] you need to understand that the arrangement has to be specified within the three less than and three
+[22:45] greater than the first is the arrangement of thread blocks per grid which in this case
+[22:51] is defaulting to one and threads per block
+[22:58] right and we are creating basically an n cross n matrix
+[23:04] okay and one block per grid
+[23:10] let us now
+[23:13] look at a 2d matrix of threads and 2d matrix of blocks so we will look at something quite similar
+[23:20] so we will start with the main initialization the main function again we are not showing the code over
+[23:26] here so we will define two data structures two dim three data structures the first one is the dimensions
+[23:34] of the grid because in this case what we want to do is we want to arrange the thread blocks themselves
+[23:40] in a grid and we want to do it in a 2d grid
+[23:48] so we will have n by 16 where n is a parameter that we have defined
+[23:53] earlier right within these three dots so the dimensions of the grid are n by 16
+[24:00] cross n by 16 so so we have n square by 16 square thread blocks within the two-dimensional grid
+[24:12] so this goes as the first parameter to the kernel invocation so as you can see the kernel is over
+[24:20] here its name is matadd and the first parameter to matadd that is boeing is actually the dimensions of the
+[24:27] grid after that we define the arrangement of the blocks within the thread block
+[24:34] so the threads per block are arranged as 16 cross 16 so we have 16 cross 16 threads per block so if
+[24:43] you actually look at it it's a two-dimensional 16 cross 16 structure and there are n by 16 such
+[24:49] structures and again n by 16 such structures so the total is still n squared but in this case we have
+[24:56] divided it in a different manner we have arranged them first as separate tiles kind of think about
+[25:02] this as separate thread blocks within a grid and within each thread block of course they are arranged in
+[25:07] a square fashion so with this we give two dimensions or two dim three data structures no defaults over here
+[25:17] and the three arrays a b and c so it is interesting to see how this information is processed within the matadd kernel
+[25:27] so within the kernel we compute two indices idx and jdx but idx is of course computed in a special way
+[25:36] the same holds for jdx as well so to understand let us draw the grid in a better fashion
+[25:46] each of these squares here is a thread block so what we do is that we first take a look at this
+[26:10] parameter which is the block dim.x so the block dimension so it essentially says
+[26:19] that what is the size of a thread block in its x-axis so the block dim.x
+[26:27] is basically this quantity over here
+[26:37] okay so it is basically this quantity over here
+[26:40] so if let's say the block index is 2 then this would be the first block this would be the second
+[26:46] block this would be the second uh sorry zeroes block first block and second block
+[26:51] so the block index is 2 what we do is we multiply two times block dim.x which is exactly what you see
+[26:59] here block idx.x times block dim.x so we multiply two times the block dimensions right and so then we
+[27:08] get the starting point of this and then we add the thread index.x which is this quantity over here
+[27:15] so this quantity over here is the thread idx dot x
+[27:27] okay so so this quantity here is a thread index
+[27:33] and so this is how we get the x coordinate we are assuming the x-axis goes this way so this is how we
+[27:40] are getting the x coordinate of the thread which is exactly you know this point right so the x
+[27:45] coordinate is coming how we take the block dimension multiply with with the block index
+[27:51] of course the x coordinates of them and we add the thread index so this is how we exactly come here
+[27:57] and let's say the actual thread is over here we do the same this time we go down the y-axis we are
+[28:03] assuming the origin is over here and again these are
+[28:06] number 0 1 2 3 and so on so we do the same for y also we multiply with the y-axis component of the block
+[28:15] index multiplied with the block dimensions and then what we do is that we arrive at the starting and then
+[28:25] this displacement right this displacement is thread idx dot y
+[28:35] okay so this displacement over here that you are seeing is thread idx dot y so that is how
+[28:44] we get the coordinates of this thread over here on the grid which is basically idx and gdx
+[28:52] okay so the computation of the coordinates of the thread is slightly more difficult over here
+[28:59] as compared to what we have seen earlier but that's okay because in this case we have a hierarchical
+[29:07] organization we have we are organizing or arranging threads within a block and we are also arranging
+[29:14] blocks within a grid so because of that we have this two level thing right and so what we are doing now
+[29:23] is that we simply take the components of a and we take the components of b and we add them and the moment
+[29:36] we add them we get the equivalent component of c all right so this is CUDA programming in all of its glory
+[29:47] so of course here we have considered a 2d matrix of threads and a 2d matrix of blocks so we could
+[29:52] always make it 3d and 3d so this would slightly become you know this would become slightly complicated
+[29:59] but you know to a certain extent that's okay right so so we will then know what is to be done
+[30:07] so what we will do in that case is that we will also have to take care of the third component which is
+[30:13] also the z axis we will have a similar formula and we can work out
+[30:21] so then if you have so many threads how do they operate right so how are they synchronized
+[30:26] so so that is an important question because the point is that you know if let's say that this is
+[30:31] a small computation in a large computation we would want all the threads to arrive at a barrier which
+[30:37] is basically a common point so all the threads arrive over here and once all the threads have
+[30:43] arrived over here so here you can see one thread is fast it has arrived quickly but the other threads
+[30:48] are lagging but once all of them arrive at the barrier all of them can be released at once and they
+[30:54] can go so this ensures that if a thread is over here it has some information about the rest of the
+[30:59] threads that they have actually crossed the barrier so the barrier can be thought of as a rendezvous
+[31:06] or a synchronization point and all the threads must reach it before any of the other threads can
+[31:12] proceed and there is a CUDA function called the sync threads underscore underscore sync threads function
+[31:19] so in fact you will find a lot of CUDA functions with underscore underscore sync threads and
+[31:26] so this is this can be used to implement a barrier all right so the idea over here is that blocks
+[31:36] thread blocks are meant to execute completely independently so the way that we take a computation
+[31:42] is that of course we divide the entire computation as a grid we divide the grid as we have seen into
+[31:48] thread blocks each thread block is meant to be completely independent of the other thread blocks
+[31:54] so most of the functions of CUDA sharing synchronization most of them of course there are global ones which
+[32:01] hold for the entire grid but most of them hold within a thread block because the idea is that a thread
+[32:10] block works independently of other thread blocks and within a thread block you do as much of fine-grained
+[32:16] synchronization as you want right so also the this has you know key implications with the hardware
+[32:23] and because that's the way the hardware will schedule threads so in an interesting divergence is due here
+[32:32] so what i am the way i'm recording this video is that i'm using camtasia studio
+[32:39] and so then i record the raw video but when the final video is produced it actually uses my nvidia gpu
+[32:46] and the nvidia gpu's usage you know you you can see the entire laptop like becoming really hot
+[32:54] and the gpu is used the usage is between 80 and 90 percent but if i don't use a gpu it actually takes
+[33:03] hours the reason that this completes so soon is only because of my gpu all right so after that we
+[33:10] reconverged here so we have discussed the computation part to a large extent of course we have not
+[33:18] discussed most of the nitty-gritties but at least the basic idea has been provided now let us look at
+[33:24] the memories so gpus have many types of memories so we have been primarily looking at the device memory
+[33:32] so again you know note these underscores at the beginning and end so this is a constant feature you
+[33:38] know it will be a recurring theme of the coda language so the device here memory means it resides
+[33:44] in the gpu or the device the constant means it resides in the gpu's constant caches shared means
+[33:53] it resides in shared memory so shared memory is something that is there per block which is per thread
+[33:59] block we assign a we assign some memory which is shared only by the threads within a thread block this
+[34:05] is also within the gpu all all three of these are within a gpu we have managed so the managed is an
+[34:12] interesting memory so it's not really high performance memory space all of these are memory spaces but of
+[34:19] course this memory space is both a virtual space and a physical space but both are within a gpu
+[34:27] the managed is a space both virtual right and it has a physical connotation but let's look at it from
+[34:34] the programmer's point of view this is shared between the cpu and gpu in the sense a gpu pointer
+[34:42] can be used in the c to access cpu memory and vice versa as long as it's there within the managed space
+[34:49] so you can think of this as kind of like a shared memory between cpu and gpu so there's a general flow
+[34:55] of computation where we transfer data from the cpu to gpu right perform the computation on the gpu
+[35:04] and the results come back
+[35:08] so let us now look at the full code for vector addition so we have already seen the kernel over
+[35:14] here where we take the arrays and we add them so given the fact that i've seen this i'm not discussing
+[35:20] this but in the main function i will still have these three dots but i will still have i'll show you more
+[35:29] so what we can do is that let us first initialize the arrays a b and c on the cpu
+[35:37] so these are floating point arrays with n entries
+[35:42] so we just use three malloc calls and then we initialize them and we have three arrays a b and c so
+[35:50] mind you they are in the cpu's memory space i'm sorry cpu memory space
+[36:05] then we initialize the eyes right so sorry i'll just uh it is the ink here so we allocate memory on the
+[36:14] cpu we initialize the cpu we initialize the arrays now here is the fun part the fun begins here that we
+[36:20] allocate memory on the gpu and we get a pointer which is as such useless on the cpu but it is
+[36:27] essentially appointed in the gpu's memory space so instead of the malloc function we use the cuda malloc function
+[36:34] the cuda malloc function that we have over here uh what that basically does
+[36:44] is that it allocates an array on the gpu okay and so so basically it's again of type float star
+[36:54] and the size is specified over here so recall that we computed the size over here
+[36:59] so we create three such arrays on the gpu and once these arrays are there on the gpu
+[37:11] we get the pointers but of course as i said they're useless on the cpu but they can be used to copy
+[37:17] these vectors from the host to the device what is the host the cpu the device is the gpu
+[37:24] so what we do is that we do a mem copy so you first give the gpu pointer then the cpu pointer
+[37:30] we then provide this flag right to which function to the cuda mem copy function whose job is to
+[37:37] transfer data between the cpu and gpu we provide this flag cuda mem copy host to device which computes
+[37:44] data like sorry which copies data like this and then we launch the kernel we have already seen this
+[37:50] right previously this entire part was under dot dot dot so now we provide the pointers which are the gpu
+[37:59] pointers of course they can't be the cpu pointer so we had done a little bit of cheating over there
+[38:05] so now we are not doing it i promise so now we are sending the gpu pointers to the arrays and we are
+[38:11] launching the kernel
+[38:12] the kernel once the kernel is done it will finish its execution so this is the only gpu part and
+[38:19] this is what exactly the stub function will refer to in the compilation process finally we transfer from
+[38:27] the device to the host no problem we do that so from the device we transfer it back to the host
+[38:36] so which means the host the cpu has the contents in the array c then we free space on the gpu so we
+[38:43] do cuda free ga gb and gc which basically so whenever we have a malloc we should be doing a free this is
+[38:49] good programming practice and we do that in the sense we free the three arrays on the gpu ga gb and gc
+[39:01] all right so just a quick recap allocate memory on the gpu copy the inputs run the computation free them memory
+[39:10] so what we have seen is that there are three phases in every computation
+[39:15] which is that we transfer data to the gpu perform the computation on the gpu and transfer the results
+[39:22] back to the cpu so you think about it this transfer time over here is kind of a waste
+[39:28] in the sense that we are not doing any active computation
+[39:34] so the solution is that we create different streams of computation and we overlap them in time so at least
+[39:42] you know gpu can be used so what we can do is instead of transferring all the data at once
+[39:47] we transfer small chunks of the data and then we perform a computation on them at the same time in
+[39:54] a pipeline fashion we transfer the next chunk right so instead of like you know transferring all the data
+[40:00] we pipeline the computation so of course we can do pipeline at the level pipelining at the level of bytes
+[40:07] so what we do is that we have a bigger granularity we create a stream as a queue of work items
+[40:14] operations in the same stream are executed in program model
+[40:19] other operations across streams may overlap so there is no synchronization across streams per se
+[40:24] so what i want to see is clearly visible over here let's say that this is the original computation
+[40:36] so the original computation we transfer data to the gpu all right we do the computation it goes back to
+[40:48] the cpu so instead of that let's do one thing let's transfer half the data to the gpu
+[40:55] and then let's do the computation at the same time we transfer the other half so you can clearly see
+[40:59] the overlap here then we transfer the results back to the cpu at the same time the competition
+[41:07] happens for the second stream so this is stream one this is stream two and then we transfer it back to
+[41:12] the cpu so what we can see is that because of the higher degree of overlap instead of three time units
+[41:20] it takes two time units so we have a straightforward speedup of one third right so this is quite
+[41:27] amazing because we didn't do anything all that we did is we divided each of these into like 50 percent
+[41:34] okay and uh what we basically did is that after dividing them into 50 percent
+[41:46] uh we achieved an overlap all right so once we achieved an overlap we were able to reduce idleness
+[41:56] or wastage of time and this was done by having two streams right by having two separate streams
+[42:05] uh this was achieved so this is an illustration of parallelism with streams
+[42:14] needless to say streams are a method for
+[42:17] improving the performance i'll now show you the cuda code for streams but of course
+[42:26] you know uh i'll not go to the level of detail that i went in the previous case
+[42:31] and but you can uh refer to nvidia's official documentation shown here in fact the code is from
+[42:37] there so the code is not mine okay i'm not claiming origin originality for this the code is theirs and i in
+[42:43] good faith i'm explaining it so uh how do we create streams well that's simple so we have this cuda
+[42:52] stream underscore t type so kindly note uh this nomenclature that nvidia is using so every
+[43:04] consecutive word let's say cuda starts with a small c but then s starts with a capital letter
+[43:09] and underscore t denounce a type so cuda stream t is a stream type so you create two streams
+[43:15] then what we do is that we have a for loop doesn't go very far just two so we create two streams
+[43:25] and also what we do is that we create two floating point arrays and uh so sorry we create one uh
+[43:33] uh sorry uh we create one floating point array and we just do a cuda malloc on the host
+[43:42] now what we do is that for both the streams if you can see the for loop this goes from zero to two
+[43:47] which is for both the streams we do it cuda mem copy async so cuda mem copy async is just an asynchronous
+[43:56] memory copy which means that this is not tied to other actions so this is essentially what gives the
+[44:03] streams the independence so i'm not showing the rest of the code because the rest of the code is shown
+[44:08] over here but basically what i'm trying to tell you is that we are doing a mem copy from the host
+[44:18] to the device so this is the device pointer and the offset on the device pointer is i times size
+[44:25] so i initially i is zero so this is just going into device pointer so recall that we have the host
+[44:31] pointer we have already malloc it and its size is two times size so the first chunk gets transferred like
+[44:40] this the first set of size bytes get transferred from the host to the device but of course in this
+[44:47] case the operation of transferring data from the host to the device is assigned to stream i right
+[44:56] so stream i initially will be zero and one but let's call it stream i so this is a part of the stream
+[45:01] so as you can see over here these transfer operations have to be explicitly assigned to streams
+[45:07] so this is being done right at the time of function invocation that we are seeing that look
+[45:12] you transfer it but transfer it as a part of this stream then what we do is we invoke the kernel
+[45:20] and in the kernel we is just a simple one dimensional kernel but what we are doing
+[45:25] is that we are also assigning the kernel to a stream so every call basically is getting the stream id along
+[45:33] with it and then of course we are sending other arguments which are specific to the kernel so we are
+[45:39] not worried about that but the important point is that the kernel function is taking the stream id as an
+[45:45] argument and slightly reduce the clutter and then what we have over here is again we have a copy which
+[45:55] is the copy from the device to the host and again as you can see we have the host pointer and output device pointer
+[46:03] but the most important thing is that even this operation is being assigned to the stream over
+[46:09] here so we are assigning all three operations to this stream and these are not synchronous in the sense
+[46:14] that they are not tying up the gpu and it is just that we are telling the stream that look these are the
+[46:23] three operations you need to perform within the stream as you have seen as we have just defined over
+[46:29] here that operations in the same stream have a program model
+[46:34] which means that within the stream will have a program model
+[46:37] but across streams of course we can relax the order so this is captured by the async directive over here
+[46:49] let us now introduce an even more elaborate construct known as the CUDA graph
+[46:54] so what we realize is that the cost of launching the kernel
+[47:01] and performing the data transfers is high that's the reason it's a good idea to divide let's say large tasks
+[47:10] into smaller ones and schedule them so if there are a large number of kernels we group them into streams
+[47:20] which did give us some benefits but that is sadly not good enough right we can do better
+[47:28] so an alternative solution particularly if you have a large number of tasks with a fair amount of heterogeneity
+[47:34] is to use a CUDA graph so this will be used or is typically used to specify the nature of the data transfer
+[47:45] the details of all the kernels and the dependencies between them so we basically specify everything
+[47:51] the same way we did in a stream but of course a stream is like a linked list and a graph is more
+[47:56] like a DAG or a directed acyclic graph so then we have an automatic engine which does all of this that
+[48:04] validates the graph pre-computes the schedule for it schedules all the activities in the GPU
+[48:10] on the GPU and if let's say there is a dependency between one task and the next then needless to say
+[48:18] the first task executes first and the dependent task executes after it
+[48:23] so unlike program order we have a task dependence order and that is respected it does more it's way more
+[48:31] intelligent than that so basically it adds code to prefetch data so when the previous task is running
+[48:37] some code is added to prefetch the data for the next task and of course allocate resources
+[48:44] particularly if we have multiple such graphs running or multiple applications running
+[48:49] as is possible in modern GPUs that we schedule resources appropriately
+[48:58] visualization of a graph well we can have a graph like this each of them as a task and each note in
+[49:05] fact can be a sub graph on its own it can be a sub graph so an arrow from a to b indicates that a
+[49:13] executes first and b executes later right so an arrow from let's say task k to task b indicates the
+[49:21] dependence so more about CUDA graphs well CUDA graphs can have all kinds of events
+[49:30] functions so we can have different kinds of nodes so we can have kernels of course
+[49:37] along with kernels which are GPU functions we can also have CPU functions
+[49:45] we can wait or record an event so what is an event I'll discuss in the next slide but an event is
+[49:51] basically something like a timing event or something like a performance counter
+[49:55] where we say that look start recording the time from this point and end over here so we can
+[50:01] understand how long an execution took then of course signaling a semaphore
+[50:09] so signaling a semaphore is basically a signaling mechanism where it's a more sophisticated version
+[50:15] of locks and unlocks where the idea is that if one thread is kind of waiting here on a lock
+[50:21] another thread can come here it can signal it to unlock and this thread will start
+[50:28] so that is signaling a semaphore so of course logs can have two states locked and unlocked but a semaphore
+[50:34] can have multiple states it is a generalization of a lock where a lock is called a binary semaphore
+[50:40] but semaphores need not be binary for example we can have a counting semaphore where let's say
+[50:48] anytime we signal it we increment it anytime we wait on it we decrement it and we always want that
+[50:57] the count of the semaphore will be more than one to release a thread
+[51:03] so this is an OS concept but you know this can be looked at so you can think of this as a generalization
+[51:08] of a lock and of course a node can contain another subgraph so these are the main functions that we have
+[51:16] cuda graph create see the same naming scheme add kernel node similarly we can add other kinds of
+[51:23] nodes and add dependencies so we can add other we can add dependencies between all of these nodes so
+[51:31] that will create a complex graph and as we have discussed it is a hierarchical recursive structure
+[51:38] where one graph can be subsumed within a node it is also possible to create a graph out of a stream
+[51:45] so this is known as stream capture functionality where we take an existing stream and we create
+[51:50] a graph out of it then we get the additional advantages of a graph but given the fact that a
+[51:56] graph is a heavy weight thing in the sense that a lot of additional code including prefetching and
+[52:02] validation etc is added along with a graph it is typically preferred when we have a fair amount of
+[52:08] computation which is reasonably heterogeneous and unstructured right so finally as we had promised we
+[52:17] come to events so cuda programs have to be profiled for performance so we need to insert events in the code
+[52:28] find the time between elapsed events so that will tell us for example how long a kernel took or how long let's say
+[52:33] a piece of code took so we have the cuda event elapsed time function
+[52:41] so then this will tell you how long it took so i'll explain with an example so let's say we have
+[52:48] this function cuda event create where the start event is created and similarly we have another event
+[52:55] that we create called stop we create these two events start and stop and we pass their pointers
+[53:00] we start recording so we start the timer for the start event and of course this can be associated
+[53:07] with the stream id so for that stream we start recording the computation keeps going
+[53:13] then we again record one more event which is called stop and so of course again for that stream id
+[53:23] so at this point what happens is that we need to synchronize which basically means wait until
+[53:30] all the work associated with the event stop is completed so what can happen is the event itself
+[53:35] processing the event is a multi-stage operation and so we would at least want
+[53:44] that all the work associated with the stop event which is recording exactly at what point the stream is at
+[53:50] that completes so that is why we do we call the synchronize function which is highly recommended
+[53:57] if you want to get an accurate time which is also capturing a point in the stream a relevant point
+[54:03] in the stream and then all that we can do is that we can call the function cuda event elapsed time
+[54:10] between the start and stop functions so that will be stored in the
+[54:15] variable e time e time is for elapsed time so that will tell us between the start and stop functions
+[54:23] which captures all of this computation how much time did it take this information is basically profiling
+[54:30] information which can be used by programmers and application developers to tune and make their code more
+[54:36] efficient good so we have finished the video on programming gpg views so we have completed the
+[54:48] first two parts we have a reasonably good understanding of the cuda 10 language so as we speak in 2021 the
+[54:55] latest version of cuda is cuda 11 that
+[55:00] that viewers are most welcome to look at in the next video we look at the design aspect of gpgpus in
+[55:10] the sense how are the gpgpus designed right and what are the design choices and also look at the design
+[55:17] of popular nvidia gqs in this space

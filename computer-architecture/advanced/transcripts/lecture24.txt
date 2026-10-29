@@ -1,0 +1,919 @@
+[00:00] In this lecture, we will discuss the cacti tool which is used to model caches and we
+[00:29] will also discuss the ELMO delay model that is used by the cacti tool to model timing and
+[00:38] power.
+[00:41] So let us start by asking a simple question.
+[00:46] Any architect will always be confounded with such dilemmas.
+[00:53] For example, should I use a 4kb 2-way associative cache or an 8kb 1-way associative cache, right?
+[01:01] So well then, this is not a very clear-cut question, right?
+[01:06] Well, it does not have a clear-cut answer.
+[01:09] The reason is it could be that the access time of this is 2 cycles and the access time of
+[01:16] this is 1 cycle, right, because it has a lower associativity.
+[01:21] It could be the reverse.
+[01:23] Furthermore, the miss rates could also be different.
+[01:28] Hence, unless we perform a thorough simulation where we find out the access times of these
+[01:35] two designs and then we simulate them for a large number of workloads, we will not be in
+[01:42] a position to say which design is actually better because they are sort of in the same
+[01:49] range and without a lot of simulation studies, it is hard to say which one is better.
+[01:56] But what we definitely do need is given the design of a cache, we should be in a position
+[02:03] to find out how long it takes to access for a read and write and secondly, what is the average
+[02:10] power dissipation, how much energy is required for making a single access.
+[02:17] The other important question is how many concurrent accesses should we allow?
+[02:22] Should we allow one access per cycle, should we allow two accesses per cycle, right?
+[02:28] And so this of course has a cost in the sense if we have a multi-issue pipeline, then having
+[02:33] multiple accesses per cycle is a good idea, alright?
+[02:39] But this has a cost, so we will see what is the cost and how to do it because the SRAM
+[02:45] array that we have presented allows a single access, right?
+[02:48] It doesn't allow concurrent accesses, so we need to do something more, we will see what
+[02:52] we need to do.
+[02:54] But what we need to do is that the basic three steps have to be understood first before we
+[03:01] go into more advanced designs.
+[03:03] And the three basic steps are that we need to find the access times.
+[03:08] Of course, under a model of how many accesses we will allow per cycle, one or two.
+[03:15] The access time will then be converted to clock cycles.
+[03:19] Then we perform detailed architectural simulations of both the configurations and then we find
+[03:25] the faster one, right?
+[03:26] Whichever one is faster, that design is chosen.
+[03:33] So the Cacti tool which was designed by HP Labs, it's very popular.
+[03:37] It used to have a web interface at least till two years ago.
+[03:44] But now the tool is freely downloadable.
+[03:47] It can be downloaded and modified.
+[03:51] So this will tell us the access time, the timing, power, and area.
+[03:56] Essentially it gives three statistics and so the latest version will also give leakage
+[04:03] power.
+[04:04] So in chapter 11, we will discuss what leakage power is.
+[04:07] But for the time being, let us say that it is the static power dissipation, which is the
+[04:12] power consumed even though there is no active access, right?
+[04:17] So to actually model a cache and see how long it takes, we need to see how it is constructed.
+[04:22] So we will actually find that it is at its heart, at its core, an optimization problem,
+[04:29] right?
+[04:30] So we need to solve an optimization problem.
+[04:32] We can either use brute force, that's a bad idea.
+[04:36] So what I would suggest is that you should devise AI based techniques to actually solve the problem.
+[04:44] So I will discuss what are the norms, what is the optimization problem like, and how it
+[04:49] can be solved with AI based techniques, right?
+[04:51] So you never thought that you can use AI to design a cache.
+[04:55] It turns out that you can.
+[04:59] So first let us look at how to do multiple concurrent accesses.
+[05:21] So one simple solution, one simple idea, which will work, work in a sense and not work in
+[05:28] a sense.
+[05:29] So it will work from an electrical sense, it will work.
+[05:33] But from an computer architecture sense, it's a bad idea, which is that we modify the basic
+[05:38] SRAM cell.
+[05:39] So the inverter pair is over here.
+[05:41] So the basic SRAM cell that has six transistors would have consisted of this inverter pair, this
+[05:49] word line transistor and this word line transistor.
+[05:53] What we do is that we add two additional transistors, which means we add an additional word line,
+[05:59] word line one and word line two.
+[06:02] And along with that we add two additional access transistors and two more bit lines.
+[06:08] So one more bit line pair basically.
+[06:11] So we have two bit line pairs and we have two word lines.
+[06:16] See we do this for every single cell in the array, right?
+[06:21] So basically in the entire array, what we do is that we have two decoders, right?
+[06:27] So we have a decoder one and we have a decoder two.
+[06:30] Decoder one drives the word line one, decoder two drives the word line two for every cell.
+[06:41] So it is possible to in parallel access two different rows of the SRAM array.
+[06:46] So we can still access the same row, but we can access two different rows because row,
+[06:52] the first row we can activate word line one and bit line pair one.
+[06:58] So then we can read or write this row and the second row we can do the same.
+[07:02] We can activate word line two and bit line pair two and we can access that row.
+[07:07] So let's say it is one row is this one and the other row is this one.
+[07:14] So this one can, so the top one can use word line one, bit line pair one and the bottom row
+[07:20] can use word line two and bit line pair two.
+[07:24] So as far as we are concerned, they are separate accesses because they have that separate word
+[07:30] lines and bit lines.
+[07:32] And we can have concurrent accesses in this way.
+[07:36] So in this case the SRAM actually has two ports.
+[07:39] Each port allows a read or a write.
+[07:42] So we say we have two read write ports.
+[07:45] So we say we have two read write ports.
+[07:49] We can instead design the SRAM in such a way that we have one read write port and just one
+[07:54] read port.
+[07:55] So the other read port will not have a write driver, will not have the facility for writing,
+[08:00] but it will have the facility for reading.
+[08:03] Similarly, we can say that look instead of a generic read write port, we can have just
+[08:08] a read port or just a write port.
+[08:11] So this will reduce the amount of hardware.
+[08:15] But its architectural implication needs to be understood.
+[08:20] So what we need to understand is that we need to solve an optimization problem.
+[08:26] So there is a trade-off, right?
+[08:27] So wherever there is a trade-off, there is an optimization problem at its heart.
+[08:33] So let us understand what is good and bad about the design.
+[08:36] So let us consider this design that we have an option.
+[08:39] Either we have an SRAM cell with six transistors that allows a single access per cycle or we have
+[08:46] an SRAM cell with, as you can see, eight transistors that allows two accesses per cycle.
+[08:53] So we will see whether these are read write or just read just write, that's a later decision.
+[08:59] But the important point is that since we are doubling the number of word lines and we are
+[09:05] doubling the number of bit lines, what actually happens when we lay out this circuit is that
+[09:11] the area of the circuit will increase by four times because the y-axis is, you know, having
+[09:18] double the number of word lines and the x-axis is also having double the number of bit lines
+[09:24] intersecting it and because we need to maintain a minimum distance between two bit lines known as
+[09:30] the pitch, so it will turn out that the area will increase by roughly four times.
+[09:35] So on similar lines, if we have k-ports, right, the port is an interface for a read or write,
+[09:42] if you have k-ports, the area will increase k-square times.
+[09:47] So of course one of the negative factors is the additional area, right, so we of course need
+[09:57] more area for the transistors, but the more important thing is we need more area for the
+[10:01] wires and the latter dominates.
+[10:05] The other thing is, of course, this is slower, right, slower and more power because it is
+[10:13] a bigger circuit, bigger the circuit, more power.
+[10:16] So these are all negative.
+[10:18] But the positive is that it allows concurrent accesses.
+[10:22] Let's say it allows parallel, that's the big, big positive over here, that it does allow,
+[10:33] it does allow parallel accesses, alright.
+[10:37] So this can be used to increase our IPC because let's say that one in three instructions is
+[10:42] a memory instruction and we are issuing six instructions per cycle, we expect to have two
+[10:49] memory instructions, in that case our IPC will undoubtedly increase.
+[10:55] So of course here the question is that can we do two read-write ports or just one read-write
+[11:01] and one read or one read-write and one write, right, so of course there will pay an area penalty
+[11:07] but we can slightly reduce the amount of hardware, there are a lot of choices, how do we resolve
+[11:12] them?
+[11:13] Well, so the gold standard is we do architectural simulation where we take a wide variety of programs
+[11:19] and we just simulate the different configurations and of course we analyze all the data.
+[11:25] So we decide, you know, complicated trade-offs, that's actually the job of a computer architect
+[11:32] that you know, different sides pull him from different directions.
+[11:37] So somebody might be saying that look, let's have a bigger cache with cells like this that
+[11:41] allow multiple ports.
+[11:44] Others would say that look, we don't have enough area for the cache, right.
+[11:47] So keep the cache as small as possible because we need to fit other elements on the chip.
+[11:53] So there is a lot of push and pull.
+[11:54] So this creates a very fertile space for trade-offs and optimizations.
+[12:01] But the main problem, one reason why such designs didn't really take off, right, is mainly because
+[12:09] if we increase the number of ports k times, the area increases k square times.
+[12:15] So ultimately the area becomes the most dominating concern, right.
+[12:22] So we will look at how it is done, how this problem is solved in a slightly different manner.
+[12:30] And for that we will have to go through details of the cacti tool and then of course I will
+[12:34] discuss the optimizations that are involved.
+[12:38] So the cacti tool famously takes three inputs primarily.
+[12:44] They are called the ABC inputs.
+[12:46] So the order in which they are given to the tool is reverse, C, B and A.
+[12:50] C is the cache size in bytes, B is the block size in bytes and A is the associativity.
+[12:59] So then there is another parameter that can be provided.
+[13:04] It is the number of banks, where a bank we can think of as a subcache but we will discuss
+[13:09] more later.
+[13:11] And there are two more inputs which are hidden but you can always change the code of cacti
+[13:17] and change them.
+[13:18] So one is that what is the output width in the sense how many bits or bytes do we read
+[13:25] out in one go.
+[13:26] So it could be 4 bytes, could be 8 bytes, can be configured.
+[13:32] And the other is what is the width of the memory address.
+[13:36] So that can also be 4 bytes or 8 bytes, 32 or 64 bits, again can be configured.
+[13:45] So we give it the inputs and the output.
+[13:49] So the inputs are the ABC inputs with a few implicit ones and the output is of course the
+[13:53] area, timing and power.
+[13:55] But of course there are many many ways of physically designing the cache as we shall see.
+[14:02] So cacti will choose the most optimal design based on what you tell it to optimize it for,
+[14:06] minimum area, minimum time, minimum power, any combination thereof.
+[14:11] And then it will give you the specs of the final design.
+[14:15] So cacti is both an estimator of area, time and power as well as it also computes the most
+[14:23] optimal design of the cache given your parameters.
+[14:27] So a sample input output of how it works.
+[14:32] So we provide the cache size over here in bytes, it is a 16 KB cache.
+[14:37] Line size, the block size is 64 bytes.
+[14:41] The associativity is 4, maybe you cannot see that, 4 is written.
+[14:45] The number of banks, well we will take a look at the bank issue later.
+[14:50] But let us assume it is 1 for now.
+[14:52] And the technology node, that is very important.
+[14:55] The technology node here is set to 32 nanometers.
+[14:59] So as you know, every 1 to 2 years, used to be 1 is 2 now.
+[15:05] The technology node reduces by a square root of 2, factor of square root of 2.
+[15:12] So given that each dimension reduces by square root of 2, the area of a transistor reduces by
+[15:20] a factor of half.
+[15:23] So this is how the technology nodes have been progressing, we are currently at 7.
+[15:28] So what is the technology node, well the technology node or the feature size is the minimum, is
+[15:35] the size of the smallest structure that can be fabricated on silicon reliably.
+[15:42] So traditionally it is the DRAM half pitch.
+[15:48] So when we discuss DRAM, I can tell you more about what is DRAM half pitch and that is going
+[15:52] to come in chapter 10.
+[15:55] But essentially if let us say what happens is that in DRAM we have pretty much a single capacitor
+[16:05] like this.
+[16:06] So if we have let us say these parallel copper wires primarily right with MOS based capacitors,
+[16:15] so the pitch is essentially the distance between two parallel wires and half pitch is half of
+[16:22] that.
+[16:24] So the output is shown over here.
+[16:26] So the output shows the input first, the number of banks, cache size, size in bytes.
+[16:32] It computes the number of sets and so on.
+[16:34] And of course the read-write ports, read-write ports, so we have a single read-write port.
+[16:39] So CACTI also has an advanced interface where these things can be configured.
+[16:43] So the most important output is the access time, which is 0.61 nanoseconds.
+[16:50] And then a couple of more energy and power and area statistics.
+[16:55] So the area is 0.326 mm square, alright.
+[17:01] So most tools like CACTI will maybe end at 32 nanometers.
+[17:06] But if we want to use it for 7 nanometers, then we apply what are called scaling rules
+[17:12] that take this data that CACTI has produced and multiply them with a set of well-accepted
+[17:18] factors derived empirically of course, such that these values can be scaled to let us say
+[17:23] a 7 nanometer process, alright, a 7 nanometer feature size.
+[17:28] So you will find a lot of IEEE papers that have different scaling rules.
+[17:33] Some of the papers are well-accepted.
+[17:35] Any of those scaling rules can be used to convert numbers generated for a 32 nanometer technology
+[17:43] to let us say a 10 or 7 nanometer technology, alright.
+[17:49] So how does CACTI work?
+[17:50] Well, as we have discussed, given the inputs, it tries to create the most optimal design.
+[17:57] So what can happen?
+[17:58] Well, if you don't create an optimal design, you will come up with bad designs like this.
+[18:04] Where, you know, it can be very long, let's say in one axis.
+[18:08] One problem is physically constructing such a cache is hard because, you know, you will
+[18:13] have to unnecessarily displace other elements in the chip and it just might be very hard to
+[18:21] place it, alright.
+[18:22] So it's placement will become very hard.
+[18:25] And also, if you have too many rows and too few columns, your row decoder will become huge
+[18:30] and very slow.
+[18:31] Similarly, if I have my caches like this, well, first, it will be hard to place.
+[18:39] Second, we will have too many columns, so the column mux, demux will become very slow, alright.
+[18:45] So, a fast design is typically squarish.
+[18:48] It's not fully squarish, but typically looks somewhat like a square, right, subject to optimization,
+[18:55] of course.
+[18:57] So, how do we do it, right?
+[19:01] So, here is the idea that how do we actually design a cache, right, what exactly are the
+[19:11] steps, the optimization processes.
+[19:15] So, let me now talk about the broad space of optimization.
+[19:20] So, what are our inputs?
+[19:22] The input is the cache size in bytes, block size in bytes, and the associativity.
+[19:29] So, from this, we can calculate a couple of things, right.
+[19:34] So, we can actually calculate everything.
+[19:36] And we also know the memory address and all of that.
+[19:40] So, we know the number of bytes we want to read out.
+[19:43] And let's say, let's call it bin or b width, which is the size of the input address.
+[19:50] So, on the basis of that, we can say that the number of blocks in the cache is equal to c
+[20:00] by b, right.
+[20:03] The number of sets in the cache is equal to the number of blocks divided by the associativity,
+[20:12] of course, alright.
+[20:17] And then what we can do is, that the first question that needs to be answered is, we need
+[20:23] to find out the aspect ratio of the cache, where we can say the aspect ratio is, let's
+[20:29] say the height divided by the width.
+[20:31] So, the aspect ratio.
+[20:39] So, when we buy a TV, right.
+[20:40] So, let's define the width divided by the height, because that is traditionally the way
+[20:47] that it is used.
+[20:50] So, the aspect ratio basically says whether the cache looks like this or the cache is squarish,
+[20:55] because as you can see, the aspect ratios are different.
+[20:58] So, in a square, the aspect ratio will be 1.
+[21:01] So, we need to figure out, what is the width by height, right.
+[21:05] So, this in itself is a hard thing to figure out.
+[21:10] But let us say this is one of the parameters that we will optimize.
+[21:14] So, let us say that, let this be the parameter, let's say n spd, for the data array, d for the
+[21:21] data array, sets per row of the data array, right, let that be spd.
+[21:27] So, let this be a parameter.
+[21:29] So, if this is a parameter, say every row of, let's say the data array, will have n spd sets.
+[21:42] So, if it has n spd sets, it will have multiplied by the associativity, these many blocks.
+[21:50] Then, let us multiply it by the block size, these many bytes, multiply it by 8, these many
+[21:57] bits.
+[21:58] So, it will essentially have these many columns, alright.
+[22:03] So, this is clear that n spd is a number of sets per row, multiplied with the number of
+[22:12] blocks per set, multiplied with the number of bytes per block, multiplied with the number
+[22:18] of bits per byte.
+[22:19] So, we will have these many columns.
+[22:23] Now, the next question is to figure out the number of rows.
+[22:30] So, the number of rows is not hard to find.
+[22:33] So, the number of rows, so this is the number of columns, right.
+[22:38] So, the number of rows is basically equal to the number of sets divided by the number of
+[22:53] sets per row.
+[22:55] So, we check that the product is correct, all that we have to do is we will have to multiply
+[23:02] both and the final result is c into 8, which is c into 8 bits, alright.
+[23:08] So, this is equal to the number of rows.
+[23:10] So, this is one of the parameters that our optimizer needs to find out that what is n spd.
+[23:16] So, in earlier versions of cacti, this had to be an integer, but now even fractional values
+[23:21] are allowed, which means that part of a set can be in one row and the other part can be
+[23:27] in the next row.
+[23:29] So, this will clearly give us the aspect ratio of the cache that whether it is more rectangular,
+[23:35] whether it is squarish, it will clearly tell us.
+[23:39] Once, so this is an unknown, okay, this needs to be found out.
+[23:44] So, once let's say that, you know, we know this, then what?
+[23:50] Then what we will have is that we will have a large array, where we know the number of
+[23:55] rows, where we know the number of columns.
+[24:07] But the problem with such large arrays is that they are very slow to access.
+[24:15] Why are they slow to access?
+[24:16] Bit lines are very long, word lines are very long.
+[24:19] So, the signal propagation time on the bit and word lines is very high.
+[24:23] If there are many rows, the decoder needs to be very big, many columns, the column mux,
+[24:29] dmux has to be very big.
+[24:31] So, what we can do is we can partition this big array into several sub-arrays.
+[24:38] So, what I have done is that I have partitioned it on the vertical axis basically, right?
+[24:46] So, I have essentially partitioned it.
+[24:49] Then again I can partition it this way, right?
+[24:52] I can, this is like a horizontal partition.
+[24:55] So, what I have done is that I have partitioned it into 16 sub-arrays, alright?
+[25:06] For sub, each sub-array contains a part of the data.
+[25:10] So, we can of course partition it in different ways.
+[25:13] But let us say that each sub-array, in this case, so let's start with a simple design.
+[25:22] Let us start with a simple two-level hierarchy and later on I will break some of these assumptions.
+[25:27] So, let's say a simple two-level hierarchy has an array, okay?
+[25:34] So, let's say that a block is entirely contained in a sub-array.
+[25:47] Then there is absolutely no problem.
+[25:49] What we need to do is that we are essentially breaking a big cache into like this 16, sorry,
+[25:56] this big SRAM array into these 16 mini-arrays, so to speak, right?
+[26:04] And these 16 mini-arrays where each one of them is called a sub-array contains a block.
+[26:10] So, what we do is we go there and we read it.
+[26:13] So, what is the time that is required?
+[26:15] Well, the time that is required is that first we need to figure out in which of these sub-arrays
+[26:22] the block resides.
+[26:23] So, let's say if there are 16 of those, so we will need some sort of a circuit to figure
+[26:31] out where we need to go.
+[26:33] So, this will essentially be a circuit that uses a decoder where we will use some of the
+[26:39] address bits and then we will find out where we exactly need to go, which specific sub-array
+[26:48] we need to access.
+[26:49] So, we go to that sub-array, right?
+[26:52] And then we read in the block from there.
+[26:55] And so, since this is a smaller sub-array, right?
+[26:58] Smaller than the entire array, its access time is expected to be faster.
+[27:03] So, let us now draw a simple trade-off graph.
+[27:07] So, on one side, we have the access time of the entire array, right?
+[27:16] We need to compare that with, let's say, the time required for finding out which sub-array,
+[27:24] right?
+[27:25] And then routing the address bits to that.
+[27:28] So, this will require a demultiplexer.
+[27:30] So, let us say that this is broadly decoding and routing.
+[27:36] So, you need to find out which sub-array to go to and send the address bits over there.
+[27:43] This is this overhead plus the access time of the sub-array, right?
+[27:50] So, this is essentially the trade-off that we are looking at.
+[27:53] We cannot have too many sub-arrays, like we cannot have a hundred sub-arrays, right?
+[27:58] You know, maybe we cannot have a thousand.
+[28:00] Number one, because this overhead will become too much.
+[28:03] And number two is that now a block will be split across sub-arrays.
+[28:07] So, we need to read multiple sub-arrays, right?
+[28:10] Because each one of them would be containing a part of a block, right?
+[28:14] So, even if, let's say, we are reading not a full block, we typically don't read 64 bytes.
+[28:22] But, let's say, even if you are reading 4 bytes or 8 bytes, even that needs to come from
+[28:28] a single sub-array, alright?
+[28:30] And if that's not the case, then multiple accesses need to be made.
+[28:35] So, all of this has to be kept into account.
+[28:39] But, pretty much, you know, sub-arrays don't come for free.
+[28:43] Sub-arrays have a decoding and, there is a decoding and routing overhead.
+[28:48] And also, the additional wires are required.
+[28:51] And each sub-array also has its own logic.
+[28:54] So, they don't come for free.
+[28:56] But, keeping these costs in mind, we need to basically see whether we have the original array
+[29:02] or whether we split it.
+[29:04] So, large arrays are typically split into smaller sub-arrays.
+[29:08] And that would make it a two-level hierarchy, alright?
+[29:11] So, fine, the two-level hierarchy makes sense.
+[29:15] And this is what cacti used to do for a long, long time.
+[29:19] Now, of course, things have changed.
+[29:22] And things have moved towards a multi-level hierarchy, alright?
+[29:27] So, let me at least describe some slides of the two-level hierarchy and then I'll come to the multi-level.
+[29:34] So, as I have described, let me just go back to the two-level part.
+[29:40] So, the number of sets that are mapped to a word line, in this case, is nsbd, as we said.
+[29:49] Higher nsbd, there are issues.
+[29:51] Lower nsbd, there are issues.
+[29:53] So, we are basically changing the aspect ratio of the cache.
+[30:00] When we create sub-arrays, let us say we have ndwl, vertical cut lines, vertical partitions.
+[30:08] And ndbl, horizontal partitions.
+[30:11] So, the total number of sub-arrays we create is this much.
+[30:14] ndwl.
+[30:15] dwl is, wl is for word line, bl is for bit line, d is for data, data array.
+[30:20] So, similarly, we will have t for tag array like ntwl and so on.
+[30:25] So, pretty much our optimizer needs to find these three parameters if you are doing a two-level partition.
+[30:31] Alright?
+[30:32] So, it's a three-dimensional optimization.
+[30:36] So, just to tell you when the bit lines are being snapped, we just snap, snap, snap.
+[30:42] So, in this case, ndbl is equal to four because as you can see, we make four partitions.
+[30:48] Alright?
+[30:49] And each of these rows, it contains nsbd times a times b bytes.
+[30:56] ndwl is where we do snap, snap, snap on the word lines.
+[31:01] So, here again we create four partitions, 1, 2, 3 and 4.
+[31:06] So, then we create four partitions and we make 16 sub-arrays.
+[31:11] So, in early versions of cacti, each sub-array used to have its own decoder, its own sense
+[31:18] amplifier.
+[31:19] It was a separate kind of a mini cache on its own, but this idea has changed, right?
+[31:24] As we will see, current cache designs don't use this, they don't use a two-level hierarchy.
+[31:33] So, current cache designs are smarter.
+[31:38] So, what they do is that they use a multi-level hierarchy.
+[31:42] So, large cache is split into multiple banks, right?
+[31:48] So, I shouldn't be using the word cache to be more accurate.
+[31:52] It is much better to say that a large array is split into multiple banks.
+[31:58] A bank is pretty much an independent array, right?
+[32:01] So, a bank is an independent array.
+[32:03] It has its own address and data lines and, of course, its own circuitry.
+[32:07] Here is the wonderful idea.
+[32:11] The idea is that they do allow concurrent access, right?
+[32:17] So, basically, one is that because they are smaller, they are faster.
+[32:21] But that's not the key point.
+[32:23] The key point is we can access different banks in parallel.
+[32:27] So, what do we do?
+[32:28] We take the address.
+[32:29] From the physical address, we find the block address.
+[32:36] From the block address, let's say we take the two LSP bits.
+[32:40] We use them to find the ID of the bank.
+[32:44] And the address is sent over there.
+[32:46] So, as long as two addresses don't map to the same bank, which is also called a bank conflict,
+[32:52] as long as there is no bank conflict, we can support four parallel accesses very easily.
+[32:59] Alright?
+[33:00] So, this is, of course, bank conflicts is an issue.
+[33:04] But let's say that there is a three-fourth chance of not having a bank conflict.
+[33:08] In this case, parallel accesses can be supported rather easily.
+[33:13] And this is an advantage of the multi-banked design.
+[33:17] Where essentially a large array is just split into four smaller arrays.
+[33:22] Of course, there is a disadvantage as we have talked about, more area, routing overhead, decoding overhead.
+[33:29] There are disadvantages, right?
+[33:31] Now, what do we do for a bank?
+[33:34] So, what did we do?
+[33:35] So, a large array, well, we are not happy with that.
+[33:38] We made four banks.
+[33:39] Banks gave us two advantages at the same time.
+[33:42] They are faster, but the bigger thing is that they allow parallel access.
+[33:46] So, that solved our problem.
+[33:48] So, then what we do?
+[33:51] So, in this, this is easy.
+[33:53] So, deciding the number of banks is purely based on how many parallel accesses we would
+[34:00] like to support.
+[34:01] So, let's say that we can have eight banks.
+[34:04] Well, we just take out three bits from the block address and just have eight banks, right?
+[34:09] So, we have still not designed them.
+[34:11] Now, each bank needs to be designed by cacti and this is what needs to be broken into the
+[34:19] subarrays.
+[34:20] So, a bank in this case is an array and each of the banks need to be broken into subarrays.
+[34:25] So, we need to compute these three parameters and since all the banks have the same size,
+[34:31] that's most often the case.
+[34:33] Well, if we optimize one bank, we optimize all, which means that for each bank, we need
+[34:38] to compare, sorry, compute these three parameters.
+[34:42] Computing these parameters can be done by brute force in the sense you consider all possible
+[34:48] values, which is what cacti does, not a good idea.
+[34:51] So, this is slow, right, very slow.
+[34:55] What you should do is that you should use an AI-based heuristic, right, to quickly find
+[35:03] out the combination of these three values that gives you the best value of the objective
+[35:09] function.
+[35:10] The objective function could be minimum time, could be minimum area, minimum power or any
+[35:15] combination thereof, right?
+[35:17] That should be done.
+[35:20] Now, what do we do?
+[35:22] What we do is, here is the fun part.
+[35:26] So, let me go back to our, the bamboo paper software that I use and then I will show you
+[35:37] what exactly I intend to say in this slide.
+[35:40] So, this slide is very loaded.
+[35:42] So, now we are talking of a multi-level hierarchy.
+[35:45] So, we are talking, we are talking of a single bank.
+[36:01] And let's say we have computed NSPD, NDWL, NDPL.
+[36:05] So, we have essentially broken it into a large number of small, small, small, small subarays.
+[36:10] Right?
+[36:11] So, the question is that how do we organize them?
+[36:16] One simple organization would be that we just break a bank into a two-level hierarchy,
+[36:21] a bank and a subaray.
+[36:23] But this is typically not what is done.
+[36:27] The main reason being that the routing overhead is high.
+[36:30] And also, modern processors have complex access patterns.
+[36:34] So, I will tell you one access pattern which is important.
+[36:38] And which is why the cache has to be, cache design needs to be re-looked at.
+[36:43] So, most modern processors, inclusive of Intel and AMD, ARM also has these features, have
+[36:50] what are called SSE instruction sets or broadly speaking SIMD instruction sets, where we read,
+[37:01] let's say an entire block of 512 bits at the same time.
+[37:06] How much is 512 bits?
+[37:09] 512 bits, just do your math, it's 64 bytes.
+[37:12] Alright?
+[37:13] 2 raised to the power 6 times 2 raised to the power 3 is 2 raised to the power 9, which is
+[37:18] 512.
+[37:19] So, many do 128, 256 and 512.
+[37:22] AVX instruction sets do 512.
+[37:25] But it doesn't matter.
+[37:26] Right?
+[37:27] 256, 512, all of them are large numbers as far as we are concerned.
+[37:31] So, let's say they are read at the same time, we need to bear this in mind that this is
+[37:38] done.
+[37:39] So, we don't always read 4 bytes.
+[37:40] So, 4 bytes is the case when you are reading an integer.
+[37:44] But, let's say even we are talking of a 128 bit access which SSE does allow.
+[37:52] Even the earlier MMX instruction set also used to allow.
+[37:55] In that case, we actually pack 4 integers.
+[37:59] Right?
+[38:00] So, this is a packed instruction format where we are packing 4 instructions.
+[38:05] So, they are kind of placed side by side.
+[38:10] And we read these 128 bits together in one go.
+[38:14] The advantage is that we put them into a 128 bit register.
+[38:18] And we add, take another 128 bit register and we add them.
+[38:24] So, what this does is that this is like a packed addition.
+[38:28] In the sense that it adds corresponding integers and the final result is also packed.
+[38:35] So, this is very good for all AI kind of algorithms, matrix multiplication and so on.
+[38:41] In the sense that it is kind of an intra-instruction parallelism where one add instruction adds 4 pairs
+[38:50] of numbers in one go.
+[38:52] This is also called SIMD, single instruction multiple data paradigm.
+[38:57] And SIMD is heavily used in numerical computing.
+[39:01] That is why most modern processors provide instruction sets for SIMD.
+[39:06] Hence, it is necessary to read large chunks of data in one go from the memory system.
+[39:12] So, if we bear that in mind, what will happen is that if we break it into very very small
+[39:18] small, small, small sub-arrays, it is possible that let's say if we want to read 64 bytes,
+[39:23] it might be split across multiple sub-arrays.
+[39:27] That will cause some problems, right?
+[39:29] So, this is not easy to manage.
+[39:32] Furthermore, from this point of view of power efficiency, we need not have a large routing
+[39:45] and decoding logic that you go here and then you finally locate which sub-arrays or which
+[39:51] set of sub-arrays, read them and merge them.
+[39:54] That's a lot of work.
+[39:55] We should break this into several more levels.
+[40:00] So, the first level that we have seen, of course, is the entire array.
+[40:04] The entire array did not allow parallel access, so banks allowed.
+[40:08] Next, what we do is we divide banks into sub-banks.
+[40:12] So, within a bank, we cannot access different sub-banks in parallel.
+[40:17] So, let's say we do a horizontal split.
+[40:20] Let me change the color if I can.
+[40:23] Yes, I can.
+[40:26] So, let me do a horizontal split over here.
+[40:29] Okay?
+[40:30] So, let's say the top part is sub-bank 1 and the bottom part is sub-bank 2.
+[40:37] So, then this kind of simplifies the circuit a little bit in the sense immediately from
+[40:44] the address we know where to go.
+[40:47] Now, within a sub-bank, we further divide it.
+[40:52] So, what cacti does is that cacti further divides a sub-bank into mats.
+[40:59] Alright?
+[41:00] So, what is the advantage?
+[41:03] The advantage of dividing a sub-bank into mats is like this.
+[41:08] Let's say we divide it into two mats.
+[41:10] Right?
+[41:11] So, consider a sub-bank and let's divide it into two mats.
+[41:14] What we can do is that let's say we want to do an SSE access and we want to read 64 bytes
+[41:28] in one go.
+[41:29] One mat can provide 32 bytes and the second mat can provide 32 bytes and then we can merge
+[41:35] them.
+[41:36] So, here we are essentially having a parallel access and we are splitting a block between
+[41:45] the two mats.
+[41:46] So, this is giving us a faster access time because the mats are smaller and also we have
+[41:51] parallel access.
+[41:52] In the sense, we have these smaller arrays, we read 32 bytes from each and we merge them
+[41:57] and this is much faster than having a larger array that has 64 bytes stored in one go.
+[42:06] Alright?
+[42:07] And so, basically from an electronics point of view, when you read the Elmore delay model,
+[42:12] you will realize that the latency of a wire like a word line or a bit line is proportional
+[42:19] to the square of the length of the wire.
+[42:22] So we typically don't want long word lines and bit lines.
+[42:26] That is why we would like to have small arrays and where small arrays can provide a part
+[42:33] of the data and we can merge it.
+[42:35] Alright?
+[42:36] Sounds good.
+[42:37] So we then unfortunately mats are further divided into our sub-arrays.
+[42:43] So you recall that we had originally divided a bank into a sub-array, right?
+[42:49] But then we forgot about it.
+[42:51] But now the entire picture starts to make sense.
+[42:55] So what did we do?
+[42:56] Let's start again.
+[42:57] We take a bank.
+[42:58] We divide it into many, many small sub-arrays.
+[43:00] We arrange the sub-arrays broadly into two sub-banks or four sub-banks.
+[43:06] So it depends on how we would like to do.
+[43:08] So cacti, of course, has some hard-coded values, but in industry they run extensive simulations.
+[43:16] Sub-banks are divided into mats where different mats are activated in parallel and they provide
+[43:21] a part of the data if there is a need.
+[43:24] And then the mats are divided into the sub-arrays, which is the ones that we had originally computed
+[43:29] from NSPD, NDWL and NDBL.
+[43:33] So these sub-arrays within a mat are also activated in parallel.
+[43:39] Same idea.
+[43:40] So let's say the mat has to supply 32 bytes.
+[43:43] Then each of these sub-arrays will supply a fourth of it, like 8 bytes each.
+[43:56] Each of them will supply 8 bytes each.
+[43:58] So this is also fast.
+[44:00] So there is one more thing.
+[44:02] So then somebody could easily argue what was the need for having mats in the first place.
+[44:07] Why not have a sub-bank and a sub-array?
+[44:09] Why did you have a mat?
+[44:11] Well, the answer is that different sub-arrays can actually share resources.
+[44:18] So mats didn't share resources, but different sub-arrays within a mat, so let's say we have
+[44:24] a row, they actually can share resources, which will make the design more area efficient.
+[44:35] So what is the resource that they can share?
+[44:38] They can share the decoder, for example, the row decoder, sorry, this is meant to look like
+[44:42] a D. So the row decoder, what it can do is, it can take the address bits and then the decoded
+[44:49] outputs, right, so let's say there are k-bit decoded outputs, they can be sent to each
+[44:55] of the sub-arrays within the mat and the sub-arrays need not have their own decoders.
+[45:03] So we are saving a lot of area over here.
+[45:06] So this sharing of resources and even sharing of other circuits and buffers and so on can be
+[45:12] done.
+[45:13] So the sharing of resources is something that is unique to sub-arrays within a mat.
+[45:19] But not, resources are typically not shared between mats in the same sub-bank, alright.
+[45:27] So this is a complicated hierarchy we are looking at, it's not two levels, it is one, two, three,
+[45:31] four, five levels.
+[45:34] But different hierarchies play different roles.
+[45:36] The reason we broke it into banks is for parallelism, right.
+[45:42] The reason we broke banks into sub-banks is for efficiency.
+[45:49] The reason we broke sub-banks into mats is basically because of intra-block parallelism.
+[45:57] Intra-block parallelism as well as faster access.
+[46:06] And the reason we have different sub-arrays within a mat is basically for sharing resources
+[46:11] notably the decoder, right.
+[46:17] So that's the reason we broke it.
+[46:20] See if you think about it, this is a complex hierarchy and we have a few more optimization
+[46:25] terms.
+[46:26] So these things cacti-6 hardwires but need not be hardwired.
+[46:29] So one optimization term is the number of banks.
+[46:33] So this would of course require architectural simulations.
+[46:37] The number of sub-banks within a bank, right.
+[46:41] Number of mats within a sub-bank, right.
+[46:47] And the number of sub-arrays within a mat, I mean that's not an optimization term because
+[46:50] the number of sub-arrays is known in advance.
+[46:53] It is essentially NDWL times NDBL, alright.
+[46:59] So if I were to summarize this entire complicated picture, we have a multi-level hierarchy where
+[47:06] every hierarchy is made with different things in mind.
+[47:10] And if we go back to our PowerPoint, what we see is the same thing that sub-arrays, sorry,
+[47:17] sub-banks do not allow concurrent access.
+[47:20] However, a sub-bank stores a full block but then the mats and sub-arrays supply portions
+[47:28] of the full block and sub-arrays share resources.
+[47:31] You can see an array, a bank, a sub-bank, a mat and a sub-array, alright.
+[47:38] So this to us is a complicated design of a cache and as you can see there are many, many knobs
+[47:44] that need to be turned for effectively and efficiently optimizing a cache.
+[47:50] And architectural decisions, the pattern of your program, etc. play a very strong role.
+[47:56] All of these things have to be taken into account while actually designing a cache.
+[48:00] It's not simple.
+[48:02] And there are complicated computer science problems in simply doing the optimization.
+[48:07] It's a multi-level optimization space.
+[48:10] Brute force is not a good idea.
+[48:11] It is slow.
+[48:14] Many a time it is not possible because of the fact that it's so slow.
+[48:19] Nevertheless, AI-based heuristics work well and they have traditionally not been used but
+[48:26] they are increasingly being used in architectural design for solving problems of this kind.
+[48:33] The summary of this part before we move to the Elmore delay part is that look first decide
+[48:41] the number of banks which is parallelism but for each bank first compute the aspect ratio
+[48:46] then NDW and NDBL and these three parameters can be used.
+[48:51] So essentially these three parameters are what our optimizer has to give.
+[49:01] So fine, fair enough.
+[49:05] And so then dividing a cache into equal size banks, well we have to keep in mind the probability
+[49:10] of bank conflicts but the bank will at least allow for parallelism.
+[49:17] And each bank is split into a sub-bank mat and sub-array.
+[49:21] And as we have discussed sub-banks are separate, they do not allow independent accesses but they
+[49:27] still store an entire block and we have enhanced intra-block parallelism because of mats and
+[49:32] sub-arrays and sub-arrays additionally share resources such as decoders.
+[49:39] So given this we need to now go one more level down and figure out that let's say given a sub-array,
+[49:47] how do we find its timing and power, so given this how do we find its timing and power.
+[49:54] So finding the power is simpler given a proper model of the circuit, the timing is much harder.
+[50:01] So we will discuss the Elmore delay model that will teach us how to compute the timing of such
+[50:09] complicated circuits.
+[50:14] So a few experimental results are due.
+[50:19] So let us consider a running example of a two-way associative cache.
+[50:24] Single bank of course, 64 byte line size, 32 nanometer technology.
+[50:29] So let us plot the access time versus the cache size, where the cache size is varying from
+[50:35] a few kilobytes till 128 KB.
+[50:38] So as you can see the access time is not really increasing that much and that is mainly because
+[50:44] of our optimizations.
+[50:47] Because of the fact that we ultimately end up accessing a small sub-array and the sub-array
+[50:55] is fast.
+[50:57] That is why even if we increase the size let's say by 64 times, nothing big seems to be happening.
+[51:04] So the access time is increasing from 0.4243 nanoseconds to 0.55 nanoseconds.
+[51:12] And this increase is mainly because of the additional wire routing and decoding overhead of finding
+[51:18] the right sub-array and merging data and so on.
+[51:22] But this is minimal as compared to what you would otherwise expect.
+[51:25] And this is only because of the optimizations that cacti has.
+[51:30] In comparison, the area does not increase linearly, it increases super-linearly as you can see.
+[51:39] And super-linear increase is of course because as we add more sub-arrays, we add more wires,
+[51:46] more decoders, more routing logic.
+[51:48] So this increases with the size of the cache.
+[51:54] So that is why we see the super-linear increase in the area, right.
+[52:00] But we did not see that with the access time and you will also not see that with the power.
+[52:04] So even the power that is used assuming that we have an access every cycle, right, at the
+[52:09] maximum frequency is still going up from 0.15 to 0.25 watts, which is again not much and
+[52:16] this is also because of cacti's optimizations.
+[52:23] Now we will come to the final question of cache design, which is that given a sub-array, how
+[52:31] do we find the time, area and power, right?
+[52:35] So the area is easy to find, the area, we know the area of each transistor, we can multiply,
+[52:41] that's easy to find.
+[52:43] The power and the timing are the important questions.
+[52:47] So the time and power of a sub-array, right, howsoever you get it.
+[52:51] So essentially, we take a large array, then we split, split, split, and then we take a
+[52:57] small one, we further split, split, split.
+[53:00] So regardless of that, let's say that we come at this particular sub-array.
+[53:04] What is the time that is required to access it, how do we compute it, right?
+[53:08] So this will be given to us by the Elmore delay model.
+[53:15] So what we can do to compute the delay of a cache or for that matter, any electronic circuit
+[53:22] is that we replace it with a simple model, something that we can actually work with, right?
+[53:27] Because a wire or a transistor, these are very complicated things to work with.
+[53:32] So we don't really know how to model them quickly, right?
+[53:37] We can model them, but modeling them quickly is the issue.
+[53:41] So we replace a wire with an equivalent RC model that only consists of resistors and capacitors.
+[53:48] So we have resistors.
+[53:50] So resistor indicates the resistance of a short sequence of the wire.
+[53:57] This is the capacitance, capacitance with respect to ground, the reason being that the wire is
+[54:02] a metal conductor.
+[54:04] And every metal conductor can accumulate some charge, it's like a parallel plate.
+[54:11] And there are a lot of parallel plates in the chip in the sense that there are a lot of
+[54:15] other wires.
+[54:17] So whenever there is a potential difference across two parallel plates, we essentially have
+[54:22] a capacitor.
+[54:24] And the way that this is modeled is that this is modeled as a finite capacitance to ground,
+[54:29] which you exactly see over here.
+[54:32] Then we consider a small chunk and we have a capacitance to ground, so on and so forth.
+[54:37] So this is the RC model of a wire.
+[54:40] Similarly, we can have RC models for a bunch of different elements such as transistors, sense
+[54:48] amplifiers, bit lines, word lines, SRAM cells, everything.
+[54:55] So what we will do is we will proceed with two assumptions that in our circuit, we will only
+[55:01] consider RC trees.
+[55:04] So we all know what is a tree data structure.
+[55:06] So an RC tree is essentially an RC circuit that does not have a cycle, all right?
+[55:14] And so that is number one.
+[55:16] And the second is that we never have a cross path in the sense we have one path and another
+[55:20] path reaching it like that.
+[55:22] So we don't have this kind of a path.
+[55:24] So we will limit our discussion to RC trees.
+[55:27] And a tree is the same as the data structure tree.
+[55:31] Furthermore, we will consider only kinds of two only step inputs as voltage sources, which
+[55:37] means the voltage abruptly goes from 0 to 1 or falls from 1 to 0.
+[55:43] So we will in our basic model not consider a gradual transition, right?
+[55:48] So this for example is not okay for us.
+[55:52] So the Elmore relay model for such kind of a voltage source will help us compute the time
+[56:00] that is required for let's say charging a bit line or changing the state of an SRAM cell
+[56:07] or a CAM cell.
+[56:11] So let us look at a typical RC circuit, which is also an RC tree by the way.
+[56:16] Note the positions of all the resistors and the capacitors.
+[56:21] And also the terminals 0, 1, 2, 3, 4 and 5.
+[56:26] So we have voltage source connected.
+[56:28] So we will only consider the 1 to 0 transition in this lecture.
+[56:32] The 0 to 1 transition is also easy to handle.
+[56:35] So that is left as an exercise for the viewers.
+[56:39] But we will mainly talk about the 1 to 0 transition.
+[56:45] In the 1 to 0 transition, what we need to find is that let's see if the voltage source
+[56:52] was connected, right?
+[56:53] So we connect the voltage source and then it suddenly drops from 1 volt to 0 volt.
+[57:01] Then what would be the voltage at each of these terminals, right?
+[57:06] Particularly the output terminals 3 and 5.
+[57:09] That is what we would like to know, right?
+[57:12] You know what it would be across time, over time.
+[57:17] So what we do is that we replace all the capacitors, so just go back.
+[57:21] We replace all the capacitors with current sources, right?
+[57:26] So these capacitors are all replaced with equivalent current sources.
+[57:35] Each current source, if you recall your discussion on capacitors, the current that it would actually
+[57:43] provide is minus C3 dv3t by dt.
+[57:49] So why is this?
+[57:50] Well, because Q is equal to Vc dq by dt, which is the current, is essentially C times dv by dt.
+[58:01] So the current that C3, for example, will provide, so of course given that it is flowing in this
+[58:07] direction, the minus sign comes down because the voltage is decreasing.
+[58:11] So it is minus C3 dv3t by dt.
+[58:16] So the aim is to compute the voltage at node vx at time t.
+[58:21] What is the methodology?
+[58:24] So what we would like to find is, we would like to find this quantity vij, which is the
+[58:30] voltage at terminal i because of the current source placed at terminal j, alright?
+[58:40] So what we want to do if you go back, I'm sorry, if you go back to this slide, you would
+[58:45] maybe want to find the voltage at terminal i, which is let's say v1, because of the current
+[58:52] source placed at terminal j, which is, in this case j is 3.
+[58:59] If we add up all the components, so since it's a linear system superposition holds, so if we
+[59:05] add up all the components, we will then get the voltage at terminal 1, which is v1, right?
+[59:12] So v1, we will get it over time as a function of time.
+[59:17] So while considering one current source, let us disconnect the rest of the current sources,
+[59:22] so replace them by an open circuit.
+[59:24] So this is a quintessential method of analyzing such linear systems.
+[59:30] So let's say I am interested in v34.
+[59:34] So v34, I'll tell you in a second what it is.
+[59:38] It is essentially the voltage at terminal 3 because of the contribution of the current
+[59:45] source placed over here, right?
+[59:48] Because of the current source placed over here, what is the voltage over here?
+[59:55] So what will happen is that since we have disconnected the rest of the current sources, all of them
+[59:59] will get disconnected.
+[60:01] The current here is going to flow this way, this way, this way, and go down to ground.
+[60:08] So if the current is here is equal to i, then the voltage will actually be equal to i r1.
+[60:15] And since there is no current flow along this route, because everything is disconnected,
+[60:19] v3 will be equal to i times r1.
+[60:24] So this is exactly what we see over here, that the current that flows out of the capacitor,
+[60:31] the current source at terminal 4 is given by minus c4 dv44 dt, right?
+[60:40] So this is basically the current that flows out of this current source over here, which
+[60:46] is this capacitance divided by the voltage.
+[60:52] So this voltage is primarily because of this capacitance by dt.
+[61:01] So this is the current that is flowing.
+[61:03] This is the current i.
+[61:05] And i times r1 is essentially the voltage that will be there at terminal 3, because there
+[61:10] is no current flow along this branch.
+[61:14] Hence, v34 is equal to minus r1.
+[61:18] Why r1?
+[61:19] Because r1 is the only resistance from this path to the ground, right?
+[61:24] So that is why we will have r1 minus r1 times the current, which is given by this value.
+[61:33] So what we can do is we can generalize the circuit.
+[61:36] So let us say if you have two terminals i and j, and then of course, this stands for an
+[61:41] RC circuit.
+[61:43] Then let us say that we want to find out what will be the effect of the current source placed
+[61:51] at j on terminal i.
+[61:54] To do that, what we do is that we model the RC tree in this fashion.
+[61:58] Of course, they will have their separate branches, but at some point they will merge.
+[62:04] So let pij denote the RC circuit in the shared path from 0 to i and 0 to j.
+[62:14] So the shared path is actually this path.
+[62:18] So this path is shared.
+[62:20] So let pij be the shared path from 0 to i and 0 to j.
+[62:25] So then what we can do is we can define the term rij as the sum of resistances in the shared
+[62:32] path, right?
+[62:33] So this is the sum of all the resistances that are a part of the shared path.
+[62:38] Where does this basic notion of the shared path come from?
+[62:42] Well, this will be amply clear if we take a look at this slide that let's say we were
+[62:48] interested in the voltage over here because of the current source placed over here.
+[62:54] So then we will have one current that is flowing in this direction because the rest of the currents
+[62:59] are disconnected and then the voltage over here will be I times R1, right?
+[63:08] So that will exactly be the same voltage over here because there is no current flow along
+[63:14] this branch.
+[63:15] And the important point to bear in mind is that the shared path is only this much.
+[63:22] And this shared path in this case contains only the resistor R1.
+[63:27] Now let me consider one more example.
+[63:32] If let us say I want to find the voltage over here because of the current source placed at
+[63:39] terminal 2.
+[63:41] In this case, the shared path will actually comprise these two resistors R1 and R2.
+[63:48] So I will then say that Pij which is P23 comprising of these two resistors R1 and R2, alright?
+[63:58] So if I were to multiply the current that is emanating out of here I, then the voltage will actually
+[64:05] be I times R1 plus R2, which is exactly what that formula with the summation is capturing.
+[64:13] And the voltage over here will be the same voltage over here because there is no current
+[64:17] flow along this resistor.
+[64:19] So if I were to incorporate this formula into the next one, what I can say is Vij is equal
+[64:27] to minus Rij, which is again the sum of resistances on the shared path, multiplied with this quantity
+[64:35] which we have seen before.
+[64:37] This is essentially the amplitude of the current source.
+[64:42] Since we have superposition in a linear circuit, we say Vi is equal to sum of
+[64:49] Vij's.
+[64:50] Why?
+[64:51] Because it is essentially the sum of each of the current sources, right?
+[64:55] Sum of the effects of each of the current sources.
+[64:58] So when I add that, I come up with this formula, which is essentially a generalization of this
+[65:05] minus summation of Rij Cj dVjj by dt.
+[65:12] So this formula is relatively hard to compute, right?
+[65:17] So if you take a look at this formula, it is not that easy to compute it.
+[65:24] And that is why prior to Elmore.
+[65:26] So incidentally, the Elmore delay model is very old.
+[65:29] I believe it was proposed in the late forties or early fifties.
+[65:34] But prior to that, it was hard to analyze such kind of circuits.
+[65:39] So Elmore made an assumption.
+[65:41] So you will find more justifications of the assumption in the book that why this was made.
+[65:46] But Elmore's assumption was basically, it's also called the single pole approximation,
+[65:51] right?
+[65:52] So the single pole approximation says that let us approximate dVjj by dt is equal to dVi
+[65:59] by dt.
+[66:00] So this basically says that the rate of fall of the voltage or rise of the voltage is essentially
+[66:09] the same across all the terminals and across all the terminals when we only consider one
+[66:16] current source at a time.
+[66:17] So it's essentially the same.
+[66:20] If I were to put in this assumption, this approximation, then you will see that this formula will suddenly
+[66:27] become very well behaved.
+[66:30] This formula will start looking like this minus Rijcj dVi by dt, which is a very simple differential
+[66:41] equation.
+[66:43] So what I would do is that this summation of j minus Rijcj, this I will represent by tau y.
+[66:56] So tau y is essentially a time constant.
+[66:59] So what I will do is that Rij is of course the sum of resistances on the shared path.
+[67:06] So for each Cj in the circuit, I can compute this.
+[67:11] The summation of this is like a time constant of the entire system.
+[67:16] So this differential equation is reasonably easy to solve.
+[67:19] So if I solve it and put in the boundary conditions, then the solution will come out to this, where
+[67:25] V0 was the voltage before this.
+[67:28] So before we set it to 0.
+[67:32] So we can put t equal to 0 over here, so then Vi will become equal to V0 at t equal to 0.
+[67:39] And if you put t equal to infinity over here, then Vi will be equal to 0.
+[67:44] So this is essentially the solution of the RC tree.
+[67:49] And the solution of the RC tree does rely on the Elmore's approximation to a large extent.
+[67:55] And Elmore's approximation again uses this formula over here, tau y is equal to summation
+[68:02] of Rijcj, which comes out from our basic analysis of the shared path in the tree.
+[68:11] The shared path in the tree, just to recall, if let's say this is the tree, and let's assume
+[68:15] that every edge has a resistance and a capacitance to ground, right?
+[68:21] So let's say this was the tree, and this is essentially the ground node, right?
+[68:27] And let's say this is node j, and this is node i.
+[68:33] So Rij will basically be the sum of resistances of the shared path, which is this.
+[68:40] So we can say that we move towards the root, and we will always have, so wherever both of
+[68:46] them meet, after that this is the shared path.
+[68:49] And if I sum up the resistances in the shared path, right?
+[68:55] If I sum up the resistances over this shared path, then I come across, then I come to Rij.
+[69:05] And if I sum this up for all the capacitors, then I arrive at the time constant of the
+[69:10] entire system.
+[69:12] So what did Elmore do?
+[69:13] Well, Elmore had nothing to do with caches, okay?
+[69:15] So Elmore, at the time of Elmore, caches had not been invented.
+[69:21] Elmore essentially gave a general approximation to solve for the timing of an Rc tree.
+[69:27] That's all that he did.
+[69:29] And once you can solve for the timing of an Rc tree, well, then you can use subsequent analysis
+[69:34] to find the power that an Rc tree would actually consume.
+[69:39] And that can be done very easily.
+[69:41] But Elmore's main contribution was just to find the time constant of an Rc tree.
+[69:49] So what are the results that can be derived by using the Elmore delay model?
+[69:54] So one of the key important results, so there is an example in the book of where this is derived
+[70:01] in a great amount of rigour.
+[70:03] But essentially the key idea is that if let's say consider a wire, a long wire, like a bit
+[70:08] line or a word line, and I'm sorry I was supposed to represent this with a triangle, I replace
+[70:22] this with its equivalent Rc circuit.
+[70:26] So what I can do is that I need to take a look at the time constant, which as you have seen
+[70:31] over here is summation of rijcj.
+[70:40] So i can be the end of the wire.
+[70:43] So rijcj will basically be, you know, if I consider one capacitor at a time, let's say if it is this
+[70:51] capacitor, it is the sum of these resistances, if it is this capacitor, it is the sum of these
+[70:55] resistances.
+[70:56] So if you work it out, we will have a series of the form 1 plus 2 plus 3 all the way till
+[71:02] n, which is an order n square term.
+[71:07] So that is why the most important result is that the latency of a wire is proportional to
+[71:12] the square of its length, sorry, its length, okay?
+[71:17] So the latency of a wire is proportional to the square of its length, and this can be directly
+[71:24] derived from the Elmore delay model, all right?
+[71:30] So the Elmore delay model will essentially replace the wire with an Rc tree.
+[71:35] We know how to analyze Rc trees.
+[71:37] If we do that, if we consider any capacitor, we will just sum up the resistances.
+[71:41] And if we number the capacitors from 1 to n, then the summation of rijcj, for cj of course
+[71:47] is a constant, so it will come out, the summation of rij will essentially be the baseline resistance
+[71:54] R times 1 plus 2, 2 because these two, 3, 4, 5, 6 up till n.
+[72:00] If you are assuming that we divide a wire into n wire segments, so this is clearly n times
+[72:08] n plus 1 by 2, we are not interested in the constants, it is order of n square.
+[72:15] So this is bad news for us in the sense we should never have long wires in our circuit,
+[72:20] because if we double the length of our wire, the latency will increase by 4 times.
+[72:27] This result allows us to model long wires like the bit line and the word line very easily.
+[72:32] And if we couple this with simple models for the decoder, for the transistors, for the
+[72:38] mux-demux and the sense amplifier, which again can be modeled in this simple fashion, we can
+[72:45] model a full SRAM bank and as a sequence of simple elements, we can easily find the time
+[72:51] that it will take. And also this analysis will help us find the power as well, in the sense that once
+[73:01] we know the time, we will know the individual transitions, so we can model the power as well.
+[73:07] And it will be extremely easy to quickly model a large SRAM.
+[73:14] So what cacti does is that whenever we want to, let's say, split an array, we need to compute
+[73:22] these three quantities, right?
+[73:27] So of course then we will split it and then after a split we can do further splits, right?
+[73:35] So we are not limited to one split, but we can split it once and then we can split it once
+[73:41] more, once more, once more, once more and so on, right?
+[73:44] So as we had seen, we split a array into a bank, a bank into a subbank, a mat, a subarray
+[73:50] and so on. So it doesn't matter. It can even be a 10 level hierarchy, but essentially at every
+[73:56] level this is what we need to compute. And then, so this is just a way of splitting.
+[74:03] So we keep on splitting. And how do we compute these? Well, what we do is that one is that
+[74:11] cacti adopts a brute force approach in the sense it looks at all combinations of these
+[74:17] and then it essentially chooses the best one. But of course, AI based techniques can be used
+[74:23] like hill climbing and so on to find the best configuration. So for every configuration,
+[74:28] we use the Elmore delay model. We find the time. If we want the fastest design, we simply
+[74:34] choose the best.
+[74:35] Alright, so we have spent a lot of time and effort in going over memory systems and in
+[74:43] how to model and design caches. So we'll leave the core electronics part now and we will move
+[74:50] to the algorithmic part. So the next four subsections, sections of this book actually, we will discuss
+[74:59] advanced aspects of cache design, a new idea called a trace cache. So it's not that new,
+[75:07] but at least it's a very, it's a non trivial and novel idea, which has been adapted in many
+[75:13] different settings. And finally, we will discuss prefetching. So next we will get into advanced aspects
+[75:21] of cache design and discuss the six or seven most common advanced optimizations.

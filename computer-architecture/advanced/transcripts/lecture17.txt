@@ -1,0 +1,762 @@
+[00:00] Welcome to the section on EPIC and VLiW processors.
+[00:23] So, in this video, we will look at an important class of processors that actually use the
+[00:32] compiler for most of their optimizations.
+[00:35] So much of the hardware that we have seen is actually replaced by the compiler.
+[00:43] So we'll start with a provocative question, which is that can we outsource the work of
+[00:47] renaming and scheduling to the compiler?
+[00:50] So I'll use the term scheduling and scheduling together.
+[00:55] So the key question is that two important functions that we were doing in hardware, namely renaming
+[01:02] and scheduling the instructions, can they be somehow offloaded or outsourced to the compiler?
+[01:08] So this will basically save hardware, right?
+[01:11] So the key idea over here is that it's going to save hardware resources.
+[01:16] And this may be extremely beneficial.
+[01:20] So undoubtedly, this sounds like a very promising idea because the moment we have less hardware,
+[01:27] we have less power and less complexity, right?
+[01:30] So less hardware is always good.
+[01:33] Also modern software is quite fast.
+[01:36] It is quite intelligent as well.
+[01:39] And given that we can do a lot of analysis kind of offline before the program has run,
+[01:48] we can possibly generate a highly efficient piece of code and also give directions to hardware
+[01:54] on how to rename and schedule instructions.
+[01:56] So what is the basic idea?
+[01:58] So the basic idea, this kind of extends from what we have studied in in-order pipelines, right?
+[02:03] Multi-issue in-order pipelines.
+[02:05] So you may want to go back and take a look at that way back in chapter two.
+[02:10] But I would say that we start from here, conceptually at least, from this point.
+[02:28] So what we do is we create bundles of several instructions using the compiler.
+[02:35] And the expectation is that we do not have dependencies within a bundle.
+[02:43] And the entire bundle is scheduled in one go at one time.
+[02:47] And let's assume that for the timing, all the dependencies are handled.
+[02:50] So we'll take a look at them later.
+[02:54] So in this space, there are two ideas.
+[02:56] So the first idea, which is actually quite old, dates way back to the mid 80s, is known
+[03:01] as VLIW.
+[03:03] So modern avatar of VLIW is called EPIC.
+[03:06] So let's discuss VLIW first and then we will go to EPIC.
+[03:10] So VLIW stands for Very Long Instruction Word.
+[03:14] These were the first designs in this space.
+[03:17] So what we do is that we take an instruction or we take a set of consecutive instructions.
+[03:23] And we add more information such that they can direct the hardware to do different things
+[03:29] at a low level.
+[03:30] So this also is kind of a conceptual successor to microprogramming.
+[03:35] So we bundle these instructions into long words.
+[03:37] So let's say if we have a long memory word like this, then we can bundle the instructions.
+[03:44] So let's say this is instruction one, two, three, so on and so forth.
+[03:52] So when instruction is four bytes and we create a bundle of four instructions, then we'll essentially
+[03:56] have a 16 byte word.
+[03:58] All right.
+[04:00] So we schedule and execute all the instructions together in a word and it is assumed that the
+[04:05] instructions are so designed or so arranged that there is no problem whatsoever.
+[04:10] But you know, problems will always be there.
+[04:14] So what we will do here is that we will look at some of the patterns which can cause problems
+[04:20] or the problematic patterns.
+[04:23] So one of the patterns is conditional if statements.
+[04:26] So in the case of a conditional if statement, the control flow is not predictable.
+[04:34] So we don't know at compile time whether the if part or the else part will actually be executed.
+[04:43] So this will only be clear at runtime.
+[04:46] So the control flow is consequently not predictable.
+[04:50] And furthermore, we can have memory instructions whose addresses are computer at runtime.
+[04:55] And as we have seen earlier in this chapter, there can be complex dependencies, mainly because
+[05:03] we are computing the addresses of memory instructions at runtime.
+[05:10] So what is the basic philosophy of many of these VLIW processors?
+[05:15] The basic philosophy is that it is the compiler's job to actually ensure correctness.
+[05:21] So VLIW processors don't really take upon themselves the job of ensuring correct execution.
+[05:27] You assume that the programs are simple, the compilers have enough visibility to ensure correctness.
+[05:33] This being the most important and the most crucial.
+[05:38] So let's take a look at some of the ways in which if statements are handled.
+[05:43] So if you remember GPUs, so we use predicated execution over there.
+[05:50] So we can do something very similar here.
+[05:53] So let's assume that there is a bundle of four instructions.
+[05:56] One of them is a branch, an if statement.
+[06:00] So if it is taken, the rest of the instructions in the bundle are invalid, which means this instruction
+[06:04] is invalid.
+[06:06] So what we do is that instead of dynamically doing more changes, we allow the rest of the
+[06:13] instructions in the bundle to pass through the pipeline as if they were normal instructions.
+[06:19] It is just that they are kind of marked with a bit, something similar to the poison bit
+[06:23] that we have seen.
+[06:24] They are marked with a bit, which means that the instruction is invalid.
+[06:29] So what we do is we still maintain the semantics of the bundle.
+[06:33] And if there is an if statement over here, which is a taken branch, then the rest of the instructions
+[06:38] in the bundle are just marked to be invalid.
+[06:41] And they simply pass through the pipeline, but they don't change the architectural state.
+[06:48] Memory instructions, well, we have seen that memory instructions would be quite problematic
+[06:55] in the sense that we could have two memory instructions.
+[07:05] And if you take a look at these memory instructions, their addresses are being computed at one time.
+[07:23] So we can have multiple memory instructions in a bundle.
+[07:38] The addresses needless to see our computer at runtime and we could have hazards and dependencies.
+[07:43] And so regardless of the memory instructions, unless there are two loads, because we never
+[07:47] have a read-read problem, but otherwise there could be issues.
+[07:52] So we have to avoid such situations in either software or hardware.
+[07:56] So we will take a look at very elaborate mechanisms to take this issue into account.
+[08:06] So these were all about VLIW processors where what we do is that we create a large group of instructions
+[08:14] in software.
+[08:15] We refer to the large group as a bundle.
+[08:19] All right.
+[08:21] The entire bundle of instructions is executed at the same time.
+[08:27] It is just that VLIW processors do not guarantee correctness and consequently their usability is
+[08:34] limited.
+[08:37] As of today, they are mostly used in DSPs, digital signal processors and multimedia processors.
+[08:51] Okay.
+[08:52] So they never saw a generic use.
+[08:55] So, but let's say if you want to bring VLIW processors into the mainstream, which is an effort
+[09:02] that was tried in the early part of the 2000 to 2010 decade by Intel and HP.
+[09:09] So they made a very popular processor called Itanium, which was also called an Epic processor.
+[09:16] So Epic is like the second generation of VLIW.
+[09:19] It is explicitly parallel instruction computing.
+[09:23] So in Epic, the idea is that regardless of whatever the programmer or the compiler does,
+[09:28] the hardware always ensures or guarantees correctness.
+[09:31] This increases the load on the hardware, but it also improves the acceptability and the
+[09:37] portability of the processor.
+[09:39] Right.
+[09:40] So basically it fares better in the market, mainly because more programs can run on it.
+[09:45] And also compiler support can be slightly lacks.
+[09:50] So this is where VLIW ends and our journey of Epic begins.
+[09:55] So the Intel Itanium processor was a very unique collaboration between Intel and HP.
+[10:06] The aim here was to design the first commercially successful and available Epic processor.
+[10:14] So one thing we need to understand that at the time that this processor was being designed,
+[10:20] roughly the late 90s and early 2000s, compiler technology was already quite mature.
+[10:27] So that's the reason the best of software was already there.
+[10:31] And also hardware technology also quite mature, but instead of investing the hardware resources
+[10:36] in out-of-order execution, it was thought that it's a better idea to actually use the hardware
+[10:43] for implementing an Epic-like server.
+[10:47] But the main idea was to target the server market, unlike VLIW processors that target specific
+[10:54] applications.
+[10:55] That was not the aim.
+[10:56] That was not the aim.
+[10:57] All right.
+[10:58] So the main aim was primarily server owned.
+[11:02] So what was supposed to be removed was the scheduler, notably the instruction window, the
+[11:12] wake up, select and broadcast mechanisms.
+[11:16] But we still needed some units from traditional processors, such as the branch predictor, the
+[11:23] decode unit, execute unit, and also advanced load store handling units.
+[11:28] So those are still required because branches are something that you need to predict and advanced
+[11:33] load store handling is also required because memory addresses are resolved at runtime.
+[11:45] So we'll look at the different stages of the Itanium processor.
+[11:48] And of course, the best reference are the papers by Sharangpani and Arora on the Itanium processor.
+[11:57] So Itanium had a high bandwidth fetch unit for those days.
+[12:02] So we could read 32 bytes from the instruction cache in one code.
+[12:07] 32 bytes are enough to fit six instructions.
+[12:10] So it is possible to create two bundles of three instructions each.
+[12:15] Given that the fetch rate is very high and the rest of the pipeline may not be able to
+[12:21] process instructions at that rate.
+[12:23] It is necessary to have a queue between the fetch state and the rest of the pipeline.
+[12:28] This was known as a decoupling buffer where the decoupling buffer could hold eight such bundles.
+[12:37] So it was possible to hold eight such bundles in a decoupling buffer.
+[12:49] All right.
+[12:50] So one advantage of this is that even if there is a slight mismatch in the rates of fetching
+[12:58] and the rates of processing, the decoupling buffer can sort of ensure that when we enter
+[13:03] a high IPC phase, enough instructions are available.
+[13:08] Branch predictors needless to say are required.
+[13:10] Even if we do not have the elaborate broadcast wake-up schedule units, branch predictors are
+[13:16] required.
+[13:17] We can't kind of wish away branch predictors.
+[13:19] So Itanium has four types of branch predictors.
+[13:23] So let's look at them.
+[13:26] So we'll look at two types in this slide.
+[13:28] We'll look at the compiler-directed predictors and the traditional predictor.
+[13:33] So for the compiler-directed predictors are those predictors where the compiler has more information.
+[13:39] It figures out the direction of the branch and the target as well.
+[13:44] And that is populated somewhere.
+[13:46] So we have four special registers known as the target address registers or the TARs.
+[13:52] The compiler populates them.
+[13:54] So what does a TAR have?
+[13:56] It has a PC and a target.
+[13:58] Of course, it is assumed that the branch is taken.
+[14:01] So the moment that the program countered the PC matches the PC stored in the TAR, we jump
+[14:08] to the target.
+[14:09] We predict it taken and jump to the target.
+[14:11] So this would happen, let's say, in cases where something like an exception handling code
+[14:18] or something where most of the time we'll kind of jump out.
+[14:21] In that case, it is a much better idea for the compiler to do some analysis and directly
+[14:27] give a hint to hardware that a given branch is taken and also it will jump to a given target.
+[14:35] Here is the target.
+[14:36] You take it.
+[14:37] There is no need to actually do additional branch prediction or use a BTV because I am giving
+[14:42] you all the information that you need.
+[14:44] So this is useful.
+[14:45] This is useful.
+[14:46] This is useful.
+[14:47] This is clearly the first priority.
+[14:49] And it is useful in cases where it is possible for the compiler to come up with such information.
+[14:56] Otherwise, we will use a traditional predictor.
+[14:59] So the traditional predictor is a large PAP predictor, which we have seen in chapter 3,
+[15:09] which basically means that the branch history register, PC bits go into that, which is the
+[15:15] first level.
+[15:16] And they also go into the second level that has the pattern is treated.
+[15:20] So in both the PC bits are used.
+[15:23] So we have two more kinds of specialized branch predictors in Itanium.
+[15:27] The reason being that fetch was seen to be a massive bottleneck.
+[15:32] So if you think about it, Itanium is a very high IPC guarantee processor.
+[15:38] So that's the reason you don't want the fetch to be the bottleneck.
+[15:42] And given the fact that we are doing the best possible compiler analysis that we can,
+[15:46] including profiling, we can do our best in ensuring that the rest of the pipeline doesn't
+[15:52] face an issue because of the fetch state.
+[15:56] So here is the third kind of predictor, multi-way branch predictor and a fourth,
+[16:00] which is a loop exit predictor.
+[16:03] So normally what happens is that a compiler would ensure that the last instruction in
+[16:08] the bundle is a branch.
+[16:09] So if this is a bundle, the last instruction in the bundle is a branch, such that taken
+[16:16] or not taken, it doesn't matter.
+[16:18] The bundle at least is correctly executed.
+[16:21] But sometimes it can so happen that if there are too many branches, we can have two branches.
+[16:28] So in this case, let's say after this bundle, there can be many targets.
+[16:33] One can be the default where both are not taken.
+[16:36] One can be the bundle when the first branch is taken.
+[16:41] One can be the bundle when the second branch is taken.
+[16:45] All right.
+[16:46] So we clearly, as you can see, we can have multiple targets.
+[16:50] If there are multiple targets for a bundle, then what we need to predict is that let's
+[16:56] say out of the branches that are there, which of them is taken that we want to find the earliest
+[17:01] branch that is taken and its target.
+[17:04] So this is a multi-way branch predictor.
+[17:07] So multi-way branch predictor is there in Itanium.
+[17:11] It's kind of constructed in a similar manner as the rest of the predictors that we have
+[17:17] seen.
+[17:18] But the broad idea is that out of all the possible options, it kind of gives you the most probable
+[17:27] option size that we can start predicting from that point.
+[17:30] Then we have a loop exit predictor.
+[17:33] So normally what happens is in many scientific codes, we have a loop.
+[17:38] And the number of iterations of the loop, this is known beforehand, the compiler knows it.
+[17:44] So in this case, what it can do is that it can have a small loop iteration registered
+[17:49] or a loop count registered.
+[17:52] It can be populated with the initial value of the loop count.
+[17:55] And we can always, of course, given a piece of code, find the branch that leads to the loop.
+[18:01] That is easy to find.
+[18:02] Okay.
+[18:03] So this can be, in this case, this is marked by the compiler.
+[18:06] So even otherwise, any branch that normally has a negative offset within a small range,
+[18:12] we can think of that as a loop branch.
+[18:15] So the key point over here is that the predictor will keep on decrementing.
+[18:23] So we'll have a register for the initial value of the count will be loaded, which is the number
+[18:27] of iterations of the loop.
+[18:28] Every time we arrive at this loop instruction, this will get decremented until it reaches zero.
+[18:34] So when it reaches zero, what we have seen in our discussion in chapter three is that we
+[18:39] normally make a misprediction.
+[18:41] But in this case, we will not make a misprediction.
+[18:44] Instead, we will make the correct prediction primarily because the loop count has become
+[18:48] zero.
+[18:49] So now we know that at some point, wherever we do the check, we are actually exiting the
+[18:53] loop.
+[18:54] And that loop exit can be predicted correctly.
+[18:56] So one of those one odd errors that happen when we either enter a loop or when we are exiting
+[19:01] a loop, they will also not happen.
+[19:03] So we are removing those sources of errors as well.
+[19:07] All right.
+[19:08] So now just a quick summary.
+[19:11] We have four branch predictors, compiler-directed, a traditional large BAP predictor, a multi-way
+[19:17] branch predictor to figure out which branch in the bundle is taken, the first one, and
+[19:23] a loop exit predictor dedicated to loops.
+[19:28] So now let's look at this part of the pipeline.
+[19:30] So we have looked at the fetch stage.
+[19:33] Then we have instruction dispersal.
+[19:35] So instruction dispersal is kind of like dispatching instructions to different functional units.
+[19:42] So you can think of it as a combination of dispatch and issue, but it's called dispersal
+[19:47] over here in epic literature.
+[19:49] And then register remapping, which is something conceptually similar to the renaming that we
+[19:55] do, of course, with major differences.
+[19:59] So let's look at the details of the hardware first.
+[20:04] Itanium has nine issue ports, two for memory, memory instructions, that is two for integer,
+[20:11] two for floating point, and three for branch, right, to find whether a branch condition evaluates
+[20:18] to two or not.
+[20:20] So you can see the disproportionate amount of resources that have been dedicated just
+[20:25] for branches.
+[20:27] The reason is that the designers of Itanium took the fetch bottleneck quite seriously.
+[20:33] Dispersal of the instructions, as we have just discussed, is mapping the instructions to
+[20:37] the issue ports such that they can be sent to their functional units.
+[20:43] Of course, here we need to be mindful of data hazards.
+[20:47] A data hazard in a bundle of three instructions can be there.
+[20:51] So we would try our best not to have them.
+[20:54] But the code might be such that we would still have data hazards, right?
+[20:58] So there is no going around it.
+[21:00] So the code might be such that there is nothing that we can do to avoid data hazards.
+[21:06] In this case, we have the traditional option to fall back to, which is noop instructions.
+[21:11] Or, of course, we can forward.
+[21:13] So there is an ample amount of forwarding within Itanium's pipeline.
+[21:17] So that is not something that should worry us.
+[21:19] But in some cases, like the load use hazard and so on, what we have seen, there are, of
+[21:24] course, many more specialized cases in Itanium, where forwarding is not really possible.
+[21:29] So in this case, we use stop bits.
+[21:32] So what happens is that with every instruction, we have a stop bit.
+[21:36] So we look at the instructions across bundles, the stop bits could be something like this.
+[21:42] So what this is, this pattern is essentially trying to tell us that if let's say all of
+[21:48] the instructions between two consecutive ones, we are independent of each other.
+[21:53] So the hardware can take all of these and schedule them in any way that it wants because there
+[21:58] are no, there is no dependency between any pair of instructions.
+[22:02] Stop means that it is like, it's like a dependent stop.
+[22:07] Okay.
+[22:08] A stop because of a dependence, which essentially means that we, it sequentializes the execution.
+[22:15] So as long as there are a bunch of zeros, we execute them in parallel, then we stop.
+[22:20] We execute this instruction, then we execute this.
+[22:23] Then again, the next four we execute in parallel.
+[22:26] Again, we execute this instruction, so on and so forth.
+[22:30] So it is the job of the compiler to insert these stop bits.
+[22:34] And it is the job of the hardware to interpret the stop bits, find all the consecutive zeros
+[22:41] or instructions with consecutive zeros as their stop bits and execute them in parallel.
+[22:47] Along with that, Itanium also annotates each bundle with the resource requirements.
+[22:52] So for every bundle, it is annotated with the resource requirements, what it would require.
+[23:06] So anytime that the scheduling happens, the hardware checks that, figures out the resource requirements.
+[23:15] And then on the basis of that, it does the process of issuing the instructions.
+[23:20] So essentially the resource requirements help us avoid structural hazards.
+[23:25] Finally, we come to the register remapping stage.
+[23:31] The register entry in Itanium is quite special.
+[23:34] It's quite different.
+[23:35] So first is we have a large number of registers similar to GPUs.
+[23:39] Of course, GPU registers were truly virtual in the sense we assume that there are a very large number of registers.
+[23:46] Here we are not making that assumption, even though we are making something quite similar.
+[23:52] So the first is that we divide these 128 registers into two parts, 32 static registers and 96 stacked registers.
+[24:03] The static registers are visible to all functions.
+[24:06] So all the functions can see and access these static registers.
+[24:11] Whereas the stacked registers are pretty much meant to have the state of a single function.
+[24:18] So they are not really visible.
+[24:20] And they are also managed in a special way, which we will shortly discuss.
+[24:25] All right, so here there is a very, very limited visibility across functions, very limited.
+[24:38] So what we do is that we allocate different sets of these virtual registers in the stacked region to each function.
+[24:46] And then because we avoid different sets, we have a large number of registers, right?
+[24:51] So we can, even if you have multiple functions that are alive at the same time, they can be assigned different registers.
+[24:58] So because they are assigned different registers, we don't have spilling, register spilling into memory the normal way that we have.
+[25:08] That is because first we have too many registers and second different functions are given different registers within these set of stacked registers.
+[25:17] So this idea is also known as a register window, which means that every function is given a set of private registers to work with.
+[25:24] So Spark calls it a register window.
+[25:28] So we will also do that.
+[25:31] So let's take a look at an example.
+[25:33] So the example will make it quite clear.
+[25:36] Assume that the function foo is calling the function bar.
+[25:42] So what we do is that we take a set of registers, right?
+[25:49] And we map them like this, that we divide them into three sets.
+[25:57] The in registers are the ones in which the parameters are passed into the function.
+[26:04] The local registers are the ones that are used to store internal variables and do computations and so on.
+[26:13] And the out registers are the ones that are used to essentially send parameters to functions that this function invokes, the callee functions.
+[26:25] So since foo calls bar, what we actually do, so what you are seeing over here, these are the virtual register numbers.
+[26:35] So what we actually do similar to virtual memory, we map this register over here to this register over here.
+[26:42] So we just map them.
+[26:44] So one advantage of mapping them in this fashion is like this, that basically similar to sharing a virtual memory page, both of these registers actually become the same.
+[26:57] So the moment the foo function writes something over here, this automatically is visible to the bar function, which is of course invoked at some point of time by foo.
+[27:09] But bar automatically finds its input argument over here in this register.
+[27:16] So what you can see is that the same, so these are virtual registers, but two different virtual registers are mapped to the same physical register.
+[27:25] So as a result, one write is automatically visible to the call function.
+[27:30] And then the callee over here, which is bar, it again has a set of local registers and out registers.
+[27:37] So what is being done over here is that we are deliberately creating an overlap in the virtual register set of two functions to pass parameters.
+[27:46] And there is similar to virtual memory, there is a manager, manager in hardware and software to manage the set of registers, right?
+[27:58] To ensure that these mappings are created, right?
+[28:01] To manage that, we have a management mechanism, we'll talk about that later.
+[28:05] But the key idea is that passing parameters and functions and passing function parameters is quite easy.
+[28:13] Basically, we take the set of virtual registers, partition them into three types in local and out.
+[28:19] And out registers are mapped to the in of the callee function and that's how values are passed.
+[28:26] So we have a register stack frame.
+[28:30] So what happens is that the in and the local registers are preserved across the function calls.
+[28:36] As you have just seen, out registers are used to send parameters to callee functions.
+[28:42] We have an alloc instruction in Itanium.
+[28:47] It automatically creates a register stack frame for a function, right?
+[28:52] So that is how the stack frames are allotted or allocated.
+[28:56] So currently, let's not talk about overflows because recall that we have only 128 registers.
+[29:02] Out of 128, we have 32 registers called static.
+[29:05] And we have 96 registers called stacked which are precisely being used for this purpose.
+[29:11] Coming to return values, I would first like to motivate the mechanism by showing the code of a binary search program.
+[29:22] So if you see the binary search program over here, so what does it do?
+[29:26] What it does is that it takes in an array.
+[29:29] It takes a left pointer, a right pointer.
+[29:33] It searches for the value within it.
+[29:37] So after doing some sanity checks, it finds the midpoint.
+[29:41] It compares the value with the midpoint.
+[29:45] If let's say the value is less than array mid,
+[29:48] then we basically run binary search over this half and return the value that it returns.
+[29:54] So if you look at this function, it invokes the binary search routine for the left half.
+[30:00] Whatever that returns, it also returns.
+[30:02] So the return value is not further processed.
+[30:05] Similarly, if the value is greater than mid, then we focus on the right half.
+[30:12] And once there is a match, whatever the right half returns, this function also returns.
+[30:23] So if you think about it, in the calling path, of course, a lot of computation is happening.
+[30:29] But in the return path, whatever the poly function is returning, which is essentially the same function, albeit with smaller arguments,
+[30:36] the value is just being transparently passed through.
+[30:41] So let's now understand some critical aspects of the register stat frame.
+[30:46] The in and local registers are clearly preserved across function calls.
+[30:53] The out registers are used to basically send parameters to poly functions.
+[30:57] So once the poly function has used them, we don't really care.
+[31:00] And what we have discussed in the past is an alloc instruction is used to create a register stat frame.
+[31:07] Communicating return values is slightly tricky.
+[31:10] But if we let's say take the previous example as a representative,
+[31:15] it is a much better idea for let's say whoever produces the value.
+[31:20] Let's say that this instruction over here.
+[31:22] So you have to see where the recursion is terminating.
+[31:25] The recursion is terminating at these two statements.
+[31:32] So since the recursion is terminating over here,
+[31:35] either at return minus one or return mid,
+[31:38] then we can think of these as the final return statements.
+[31:42] And then whatever they are returning, it just comes coming back, back, back, back until this point.
+[31:47] So it is much better if we directly have a shortcut from here to let's say over here
+[31:52] and we can completely skip the rest of the functions.
+[31:55] So what we will do is that we will store the return values in a static register.
+[32:09] So recall that this is a register in a static area which is the first 32 register.
+[32:13] So the return value can be stored at any point over here.
+[32:16] In this case, we can directly jump to the return address in the main function,
+[32:20] which is basically directly jump over here.
+[32:23] And whatever is the result of the binary search will directly be assigned to the variable result.
+[32:30] So that's the reason it is good to have the return value in an area,
+[32:34] which is not within the register stack frame, but it is within the static region.
+[32:39] And then, well, we can quickly resume processing the return value of binary search.
+[32:46] So that's the reason we allocate a separate area.
+[32:50] So I'm not saying that for all function calls, the binary search example is representative.
+[32:55] In fact, there's a very famous pattern.
+[32:57] It is called tail recursion.
+[32:59] So this pattern is known as tail recursion.
+[33:02] And if we directly jump from let's say this point and then set the value of result,
+[33:06] this will be known as tail recursion elimination.
+[33:09] So it may appear that this scheme is kind of disproportionately biased towards tail recursion.
+[33:16] But there are many similar patterns kind of throughout codes.
+[33:20] And of course, a lot of analysis was done.
+[33:22] So it was found out that for return values, we can safely keep it in a space which is not in the stack.
+[33:30] Such that it can be processed, not just by this function, but by other functions as well.
+[33:36] And then we can return back quickly.
+[33:38] So in that case, we don't really have to copy values across registers or restore from memory or do anything of that type.
+[33:45] So that is why a separate storage region was provided for return values.
+[33:51] Let us now look at some more issues.
+[33:54] So let's first take a look at the first problem.
+[33:57] Let's say we run out of registers.
+[34:00] So the reason we run out of registers is because as I have discussed, we have a stacked register storage area.
+[34:07] And the local state of all the functions, at least that are currently active, is going in there.
+[34:15] And since we only have 96 registers in this area, we might run out of registers.
+[34:20] So the fun part over here is that Itanium has a register stack engine and RSE,
+[34:25] which automatically handles the spilling of registers to memory and restoring them, which is actually great.
+[34:31] So this means that the compiler or the user don't really have to be bothered with this aspect of writing code.
+[34:38] So they can happily write code.
+[34:40] And then a dedicated engine will just manage the communication of registers to and from memory.
+[34:46] So this is, let's say, a major assistance that is being provided to the assembly language programmers and the compiler,
+[34:55] that this is being done automatically.
+[34:57] So basically handling the function state to a large extent is being done quite easily and quite automatically.
+[35:04] Now coming to software pipeline.
+[35:07] So in software pipelining, if you would go back a few slides, you would see that we use separate registers for the same variable across different iterations.
+[35:16] The reason is that we are essentially taking instructions from different iterations, executing them together.
+[35:22] So for the loop variable particularly, we use separate registers such that its value is updated correctly.
+[35:29] This issue in Itanium is taken care of automatically.
+[35:35] So we have a rotating register set.
+[35:37] So this is the key innovation over here, which is the rotating register set.
+[35:47] So we assign registers based on the loop iteration number.
+[35:54] So as we have discussed earlier in the case of the loop exit predictor, we can very easily predict what is the current iteration number.
+[36:03] Well, why?
+[36:04] That is because the compiler annotates the loops.
+[36:07] So you can also find it ourselves by looking at backward branches.
+[36:12] But in this case, the compiler annotates.
+[36:14] So at least a loop iteration number is always known.
+[36:17] Depending upon the loop iteration number, we can use the appropriate register from the rotating register set.
+[36:24] We just think of it as exactly the same thing that we were doing in software pipelining.
+[36:29] It is just that at that point, we were using more registers.
+[36:32] Compiler was generating all this extra code.
+[36:35] All of that goes away because the hardware takes care of it.
+[36:38] So this makes it significantly easier to write software pipeline loops because the key problem, which was to assign different registers to different iterations, is being taken care of.
+[36:54] Next comes the high performance execution engine.
+[36:56] So in this case, we don't have an instruction window.
+[36:59] We don't have a wake up select broadcast mechanism.
+[37:02] So these are things that we do not have.
+[37:04] These are things that we don't have.
+[37:22] Instead, what we have is we have a scoreboard.
+[37:24] A scoreboard is something which was kind of in vogue in the late seventies.
+[37:30] After that, it was not used, but it's a very fast and it's a very power efficient mechanism of scheduling instructions.
+[37:37] In this case, a scoreboard was found to be a good solution.
+[37:41] So I'll tell you quickly what a scoreboard is.
+[37:43] It's clearly much simpler than the regular out of order execution mechanism.
+[37:49] All that it does is they consider it as a queue where instructions are entered like this.
+[37:54] It makes an instruction wait until it is safe to execute.
+[37:59] So we store its source registers, destination register, the functional unit that it is going
+[38:06] to use and whether it has completed or not.
+[38:08] Right?
+[38:09] Zero or a one.
+[38:10] That's all.
+[38:11] We just store these five fields for the instruction and this is implemented as a queue.
+[38:16] All right.
+[38:20] So now if we look at this, what we do is we allow an instruction to go through or we allow
+[38:26] an instruction to execute.
+[38:28] Only if certain conditions fold.
+[38:32] What are the conditions that we check all the earlier entries.
+[38:36] For each earlier entry e, the following expression should be false.
+[38:40] All right.
+[38:41] So first is, so, so, so what should be false e dot finished equal to zero, which means that
+[38:48] it is unfinished, not finished.
+[38:53] And e dot rd is destination is same as the destination of the current instruction, which
+[38:58] is I.
+[38:59] So I is always the current instruction.
+[39:01] So this means that we can have a write after write hazard because there exists an earlier
+[39:06] instruction that is writing to the same register and that earlier instruction is not finished.
+[39:11] So this condition over here, which is e dot finished equal to zero and e dot rd is equal to i dot rd.
+[39:19] So this condition has to hold false.
+[39:20] This condition has to hold false.
+[39:22] Fair enough.
+[39:23] We can create a similar set of conditions for the rest of the hazard types.
+[39:32] So like write after read hazard, same thing, check the earlier entries for each earlier entry
+[39:37] e.
+[39:38] The following expression should be false.
+[39:40] So e dot finished is equal to zero, which means it's unfinished.
+[39:43] And either the source of RS1, I mean, its source is equal to i's destination.
+[39:54] RS1 is equal to i's destination or RS2 is equal to i's destination.
+[39:59] So this is a typical write after a read kind of scenario.
+[40:04] So in this case, we just need to create a circuit to verify all of these Boolean equations or Boolean
+[40:11] expressions.
+[40:12] And on the basis of this, we need to figure out if there are any earlier entries with which
+[40:22] we can have a war hazard or not.
+[40:24] If there are, then we don't schedule and we wait.
+[40:28] A similar expression for an RAW hazard, the rest remaining the same.
+[40:34] The instruction should be unfinished.
+[40:36] And in this case, e dot rd should be equal to i dot RS1 or e dot rd or e's destination
+[40:43] should be equal to the current instruction second source.
+[40:46] So either it's equal to the current instructions first source or second source.
+[40:51] So this is a typical read after write scenario.
+[40:54] And on a similar, on, on similar lines, a structural hazard is again when the instruction is unfinished,
+[41:00] not finished.
+[41:01] And the functional units are the same, right?
+[41:08] So instructions wait in the scoreboard until they are safe.
+[41:13] I'm sorry.
+[41:14] They should be, they are safe.
+[41:16] And there are no hazards.
+[41:18] Okay.
+[41:19] So they wait in the scoreboard until there's complete safety.
+[41:24] There are no hazards.
+[41:25] So there's a parallel scoreboard unit that keeps on checking this.
+[41:28] And once an instruction is safe, it is executed.
+[41:35] So now let's take a look at a few more aspects of the itaniums execution pipeline.
+[41:40] So consider the following piece of code.
+[41:42] We kind of flip a random point.
+[41:45] If it is zero, then we set execute this instruction, x equal to y.
+[41:50] Otherwise we execute this instruction.
+[41:54] So in this case, the probability of a branch misprediction is very high.
+[41:57] It's close to 50% because the output is from a random process.
+[42:03] So if you flush the pipeline after every branch misprediction, it would be quite unfair.
+[42:10] Why would it be quite unfair?
+[42:13] Well, the reason is that this is a very high overhead, heavy duty operation where the entire
+[42:20] ROB is flush.
+[42:21] The entire state is flush.
+[42:22] We'll lose a lot of data.
+[42:24] We'll lose a lot of information, a lot of work.
+[42:29] So what we can do is we can let the if statement just be used to mark an instruction with the
+[42:35] result of the comparison in the sense that we can simply mark an instruction and say that,
+[42:40] look, you know, either the comparison succeeded or it didn't.
+[42:47] And we store the result in a flags register as we typically do.
+[42:52] The rest of the instructions, which means in this case, this instruction and this instruction,
+[42:57] both are processed regardless of the branch outcome.
+[43:01] But it is just that this instruction is marked with basically,
+[43:10] the output of the if statements.
+[43:11] We'll take a look at an example.
+[43:13] So what we normally do is that this is known as a conditional or a predicated instruction.
+[43:18] So in this case, if let's say we will use a move instruction to move this value over
+[43:23] here, then we can say move equality in the sense if there was an equality in the last comparison,
+[43:31] then only this move will happen.
+[43:33] Otherwise it will not happen.
+[43:34] And on a similar note, here we can say move any.
+[43:39] This would basically mean that, well, we'll move the value of Z to X only if the previous
+[43:45] comparison over here was not successful.
+[43:48] So in this case, if you see, we are processing both the instructions.
+[43:52] But both the instructions have an additional flag or let's say have some additional information
+[43:57] where we go and check the result of this comparison.
+[44:00] In a sense, there is a degree of annotation which goes and checks.
+[44:04] And only if the result has gone in a certain way is the instruction actually executed.
+[44:10] All right.
+[44:11] So some may modify the architectural state, some may not.
+[44:14] But the key idea is that we will use these conditional instructions such that we can process
+[44:21] these instructions.
+[44:22] So one advantage is that just in case there is a branch misprediction, there is no need
+[44:28] to flush the pipeline.
+[44:29] In fact, what we do is that we just store the result of this in a flags register.
+[44:34] Right.
+[44:35] So then we don't use branches.
+[44:37] The subsequent instructions which use the two outputs move eq and move any simply check
+[44:43] the flags instruction.
+[44:44] And in this case, since the flags will say that look, it resulted in an equality.
+[44:50] If it actually did, the move will happen.
+[44:53] In other case, if it didn't result in an equality, the move will happen.
+[44:58] So I'm showing a small piece of code over here, which is the code without predication.
+[45:07] So in this case, what we do is that we take the value input value at R0.
+[45:15] We compute this expression R0 percentage 2, which means we take its modulo with respect
+[45:22] to 2.
+[45:24] If it's then we compare it with 0.
+[45:25] So if it's an even number, we jump over here.
+[45:28] Just note the extra instructions and the branches.
+[45:30] Right.
+[45:31] So they cause trouble.
+[45:32] If it's an even number, we move the value in R2.
+[45:35] So we assume Y is stored in R2 into R1 and we exit.
+[45:38] So note the fact that we have an unconditional branch over here.
+[45:51] So that has a set of problems.
+[45:53] And we have a conditional branch over here, which has major problems in the sense that
+[45:57] if we mispredict it, then the entire pipeline has to be flushed.
+[46:02] So the code that you're overseeing over here is exactly the implementation of the code over
+[46:09] here.
+[46:10] So I'll just maybe clear off the ink.
+[46:11] So what you can see is that the code over here is very similar with the value of RAND
+[46:16] is stored in the register R0.
+[46:18] So here we compute the modulo, compare and do a bunch of jumps to implement the logic.
+[46:25] What we can do, which is actually much simpler, and this is something exactly on the lines
+[46:31] of what many processors, not just titanium, but even ARM processors are also doing it these
+[46:36] days, is that, well, we first compute the modulo.
+[46:42] So we first compute R0 percentage 2 and store it over here.
+[46:47] Then we compare the result with 0.
+[46:54] Then what we do is that we store these two, these are called predicates.
+[46:57] We have also been calling them flags.
+[46:59] So they are stored in the dedicated registers.
+[47:03] So these predicates are stored in two registers PO and PE, where if it is odd PO is set, where
+[47:09] if it is even PE is set.
+[47:12] Then what we do is that in the odd case, or let's say for the odd case, which as you can
+[47:18] see is this case, right?
+[47:19] Where we set it.
+[47:21] If I were to just go back, this is the even case over here.
+[47:27] This is the odd case over here, where X is set to Z.
+[47:30] And so then we come here and then come here.
+[47:34] So if the odd predicate is set, we move R3 to R1, which is essentially the value of Z.
+[47:41] And this is set over here.
+[47:44] And then we have the even case, where the even predicate is set.
+[47:48] So note that only one of these predicates can be set.
+[47:51] So the even case is set.
+[47:53] Then we move R2 to R1.
+[47:55] So in this case, there are no branches.
+[47:57] There is nothing.
+[47:58] So there is no possibility of flushing the pipeline.
+[48:01] And as you can see, the predicate is correct.
+[48:03] The instruction will get executed.
+[48:05] Otherwise it will not.
+[48:06] So this is similar to the previous example that we showed with moveEQ and moveME, which
+[48:11] is similar to the ARM terminology that was explained in the first part of the book.
+[48:18] Not this book, but the previous one on the undergraduate computer architecture.
+[48:23] But the key point over here is that the predicate registers capture the outcome of the prediction.
+[48:30] And if let's say the given predicate register, if its value is one as set by the CMP, then
+[48:37] only this instruction will execute.
+[48:39] Otherwise it will just flow and pass through the pipeline without changing the architectural
+[48:43] state.
+[48:44] We can also have nested branches, an if and then an if within it and so on.
+[48:51] There could be multiple predicate registers.
+[48:55] So an instruction will get executed and it will change the architectural state only if,
+[49:01] if and only if, all the predicate registers associated with it are one.
+[49:05] So it would take an and of them.
+[49:08] And if all of them are one, then only it will get executed.
+[49:12] So here is a summary of the pipeline as far as we have seen up till now.
+[49:18] So in this case we have our iCache and fetch engine.
+[49:25] We have a decode unit.
+[49:27] We also have a decoupling buffer whose main job is to separate the fetch unit from it.
+[49:33] And we have a branch predictor.
+[49:34] We have seen that we have four kinds of branch predictors.
+[49:37] Compiler directed, a large PAP branch predictor.
+[49:41] A multi-way branch predictor and a loop exit predictor.
+[49:45] Then we have the instruction dispersal and register remapping logic.
+[49:50] So dispersal essentially assigns it to the issue port.
+[49:53] So we have a fair amount of support and also resources for the branch and predicate units.
+[50:00] So the branch units compute the result of branches and predicates as well.
+[50:04] We have 128 integer registers divided into 32 plus 96, right, general, sorry, static and stacked.
+[50:13] Something similar with the FP registers, floating point registers.
+[50:17] So the itanium processor also has SIMD units.
+[50:21] And then along with integer ALUs and FPALUs, we connect the integer registers to an L1 cache.
+[50:28] So we will discuss the advanced load address table mechanism.
+[50:31] So this is something that we have not discussed up till now.
+[50:34] But we have discussed the rest.
+[50:36] We have discussed the scoreboard which schedules and orchestrates the execution.
+[50:44] We have discussed predicated execution.
+[50:47] So what we will not discuss is the exception handler.
+[50:49] So the exception handler happens if there is an interrupt from the keyboard or something.
+[50:54] And finally, the processor over here, the epic processor interfaces with the memory system
+[51:00] via the L2, L3 caches and the bus controller.
+[51:04] So the only major part, the only major chunk or the only major component that is remaining is the load store mechanism.
+[51:14] So this is quite intricate.
+[51:17] So what we do is that if we, let's say, take the value of a load, we boost it up in the program.
+[51:23] In the sense of the program, the load appears over here, we move it up.
+[51:30] And along with that, we also maybe move up some instructions that may use its value.
+[51:36] Because a good reason is that loads are almost always on the critical path.
+[51:41] Hence, if we boost them up and we kind of get their data early and then, you know, if you are ready with the output of the load,
+[51:49] many more instructions which are dependent on the load, they can begin to execute.
+[51:55] And so we will basically have a higher degree of ILP.
+[51:59] So that is the reason a lot of loads whose, let's say, value either we can predict or we can predict that there are no dependencies,
+[52:07] we boost them up.
+[52:09] Once they are boosted up in the sense that they are in a point of the program where they should not be,
+[52:14] there could be several problems in the sense if they are boosted over here,
+[52:18] there could be stores in this region that right to the same address.
+[52:22] And in that case, there will be an error.
+[52:25] So what are we doing?
+[52:27] We have a regular program over here.
+[52:29] We have a load over here.
+[52:30] The load is being boosted up over here.
+[52:33] Why?
+[52:34] Such that the value of the load comes in early and all the instructions are dependent on the load.
+[52:40] They can get their value.
+[52:42] So they can start execution early.
+[52:45] The only spoiler could be if there are other store instructions that appear over here.
+[52:50] In this case, this will be incorrect.
+[52:55] So what we do is that any load that is boosted, we put it in the advanced load address table or the ALAT.
+[53:03] Subsequently, whenever there is a store, it checks for the ALAT for an address match.
+[53:08] If it finds it, it will kind of mark that entry as dirty.
+[53:12] In the original position of the load, which is much later, instead of the load, we will have a load check instruction,
+[53:19] which will check the ALAT and find if the load is still valid or not.
+[53:23] Why will it not be valid?
+[53:24] It will not be valid if there has been some intervening store to the same address,
+[53:29] which will signal an error basically.
+[53:32] In this case, if there is no error, we are fine.
+[53:36] Then, you know, boosting up the load has been a successful operation.
+[53:39] Otherwise, what we do is all the instructions of the load and its forward slice that we took up.
+[53:46] At this point, which is the original point, we again re-execute the load and its forward slice.
+[53:52] All right.
+[53:53] So this is the basic idea of boosting up a load, which means kind of do it early.
+[53:59] This is something conceptually quite similar to, let's say, latency speculation or dependent speculation in the LSQ.
+[54:12] But of course, in that case, we had a dedicated hardware.
+[54:15] We had an LSQ and all of that.
+[54:18] In this case, we don't.
+[54:19] But at least the idea is quite similar conceptually, at least if you see that the compiler is kind of boosting up the load.
+[54:27] But it's not completely forgetting it.
+[54:29] It's putting it in an ALAT and any subsequent store to the same address.
+[54:34] That will also check the ALAT and basically indicate that there has been an error.
+[54:40] But the error will be fixed.
+[54:42] In the sense, when we reach the original point, we will again check for the load.
+[54:46] It is still valid.
+[54:47] If it hasn't been invalidated by a store, then we will fix the error by re-issuing the instructions.
+[54:53] All right.
+[54:56] So this brings us to the conclusion of this chapter.
+[54:59] So I'll quickly go through the five most important points.
+[55:03] So there are four kinds of aggressive speculation.
+[55:07] We have discussed all four in great detail.
+[55:10] First is we can speculate on the load address, no doubt.
+[55:14] Dependencies in the load store queue.
+[55:17] Load latencies in the sense we can predict it will hit an L1 cache and then do something about it.
+[55:22] And finally, value prediction, right?
+[55:26] So these are the four major mechanisms.
+[55:32] If there is a mistake, we need not flush the entire ROB.
+[55:37] There are three methods of replay that we looked at.
+[55:40] Non-selective replay, kind of shooting machines with an AK-47.
+[55:44] Relate selective, slightly more selective, reduces the amount of wasted work.
+[55:50] And token-based replay, where we have an exact idea of the forward slices.
+[55:55] So this minimizes the wasted work.
+[55:58] After increasing the complexity, we reduced it.
+[56:01] So we first looked at hardware solutions, which is the ARF-based design, where we use the
+[56:06] ROB as the physical register to buffer temporary values.
+[56:10] So we found that, you know, it's simpler.
+[56:12] But of course, in this case, values are much larger.
+[56:17] And we are communicating values, whereas in the PRF-based design, we never communicated values.
+[56:23] Values are quite wide.
+[56:24] As opposed to a 7-bit physical register, a value can be 64 bits, which is quite wide.
+[56:32] We further simplified, we went down to the compiler level.
+[56:35] We looked at a large number of optimizations, starting from common sub-expression elimination,
+[56:41] constant folding, strength reduction, to software pipelining.
+[56:47] So these ideas were conceptualized in an epic process when we discussed Titanium, where we
+[56:52] kind of saw everything come together.
+[56:55] So we saw a piece of hardware that supports quite advanced concepts.
+[57:00] It supports register windows, for example, right and tail recursion elimination, which comes
+[57:07] as a part of that.
+[57:09] It supports the idea of rotating register sets for automatically supporting software pipelining.
+[57:15] It supports load boosting and a bunch of other things, a bunch of other, you know, really
+[57:22] cool features that it has.
+[57:24] So epic processors like Titanium did have their heyday.
+[57:28] They survived for quite some time.
+[57:30] And there was a lot of buzz around them.
+[57:32] But gradually they fell out of favor.
+[57:35] And one reason could be, well, I can only conjecture at this point because I don't have the information.
+[57:43] By 2005 or so, the hardware technology was quite mature.
+[57:48] And it did not really require advanced compiler support.
+[57:53] So the hardware technology, even with decent open source GCC like compiler support, was
+[58:00] able to give very good performance and that too had a very good, let's say, performance
+[58:06] per watt or performance per dollar kind of price point.
+[58:09] So the industry really didn't see the value of moving to a technology or a platform, which
+[58:15] was totally new.
+[58:16] So you can see that, you know, you can think about this, that any industry has a fair amount
+[58:22] of inertia.
+[58:23] And whenever any revolutionary technology comes such as Titanium, even Titanium to a large
+[58:28] extent was made compatible with existing ISAs and so on.
+[58:32] It's not that like that effort was not done.
+[58:35] But as I said, many times, many good and revolutionary ideas get stuck up in this inertia where the
+[58:41] industry as a whole doesn't want to move.
+[58:44] So something similar happened, but this is clearly not the end of processors like this.
+[58:49] So we will see many more such efforts in the processor design space.
+[58:53] We just need to look out for great new ideas that will keep coming.
+[59:00] So this finishes chapter five.
+[59:03] So our entire discussion on processor design is over now.
+[59:08] So we will next move to GPUs, graphics processors.

@@ -259,9 +259,9 @@ imul / add = 3.0   (x=0)
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 除法：restoring、non-restoring | **第 24 支**：Computer Arithmetic Part 4 |
-| 浮點數乘法要把兩個 mantissa 相乘 | **第 25–26 支** |
-| 乘法單元在 pipeline 裡占好幾個 stage | **第 30–33 支**：課本 Ch10 pipeline |
+| 除法：restoring、non-restoring | [第 24 支](lecture24_note.md)：Computer Arithmetic Part 4 |
+| 浮點數乘法要把兩個 mantissa 相乘 | [第 25](lecture25_note.md)–[26 支](lecture26_note.md) |
+| 乘法單元在 pipeline 裡占好幾個 stage | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 pipeline |
 | 硬體裡的 latency 和 throughput | Advanced 課程 Ch2 out-of-order pipeline |
 | 機器學習加速器的乘加（MAC）陣列 | Advanced 課程 Ch14 |
 

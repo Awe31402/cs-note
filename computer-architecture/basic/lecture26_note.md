@@ -142,7 +142,7 @@ E = E_A − E_B + bias                                    ← 加回 bias，結�
 - 【口頭】這三步在**所有**浮點數演算法裡都一樣，不只加減法，乘法、除法和其他運算都是。
 - 【口頭】書裡有證明：**再正規化一次就夠了**，不需要做兩次。
 
-**時間**：由最慢的 significand 除法決定。用整數除法（restoring、non-restoring，第 24 支）要 **O(n log n)**，很慢。
+**時間**：由最慢的 significand 除法決定。用整數除法（restoring、non-restoring，[第 24 支](lecture24_note.md)）要 **O(n log n)**，很慢。
 
 ---
 
@@ -439,10 +439,10 @@ addsd 1.20, mulsd 2.40, divsd 8.37 ticks;  mul/add = 2.0, div/add = 7.0  (x=2e+0
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 處理器設計：ALU、乘法／除法單元放在哪裡 | **第 27–29 支**：課本 Ch9 處理器設計 |
-| 多週期的乘除法單元在 pipeline 裡 | **第 30–33 支**：課本 Ch10 |
-| 整數除法（restoring、non-restoring） | **第 24 支**：Computer Arithmetic Part 4 |
-| GPU、向量單元的浮點運算 | **第 41–42 支**：課本 Ch12 |
+| 處理器設計：ALU、乘法／除法單元放在哪裡 | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
+| 多週期的乘除法單元在 pipeline 裡 | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 |
+| 整數除法（restoring、non-restoring） | [第 24 支](lecture24_note.md)：Computer Arithmetic Part 4 |
+| GPU、向量單元的浮點運算 | [第 41](lecture41_note.md)–[42 支](lecture42_note.md)：課本 Ch12 |
 | RISC-V 的 fdiv.s、fsqrt.s | [第 17 支](lecture17_note.md#5-浮點算術指令) |
 
 ---

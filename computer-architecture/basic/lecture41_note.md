@@ -517,7 +517,7 @@ if (x<10) x+=10, random  data: scalar   26.5 ms | SSE compare+mask   0.6 ms  x46
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | GPU 當成運算引擎、interconnection network | [第 42 支](lecture42_note.md)：GPUs and Interconnects |
-| 計算機架構的未來 | **第 47 支** |
+| 計算機架構的未來 | [第 47 支](lecture47_note.md) |
 | Forwarding、interlock | [第 32 支](lecture32_note.md) |
 | 乘法器的 pipeline、延遲 3 週期 | [第 30 支 §13.4](lecture30_note.md#134-真的-cpu乘法器本身也是-pipeline) |
 | ARM 的條件執行（addeq） | [第 10 支](lecture10_note.md) |

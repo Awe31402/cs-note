@@ -1,0 +1,490 @@
+[00:00] Welcome to the chapter on the issue, execute and commit stages.
+[00:19] So this chapter will introduce the core of the out of order pipeline, it will introduce
+[00:24] all of its most important structures and how they work.
+[00:30] So, what is the background that we require for this chapter, we require the knowledge
+[00:36] of in-order pipelines.
+[00:39] So this was there in a previous chapter and also this is a part of the basic computer architecture
+[00:44] course which you can find in my previous book, Computer Organization and Architecture published
+[00:50] by McGraw-Hill in 2015, it is available worldwide.
+[00:55] So along with in-order pipelines, we need to understand what exactly are precise exceptions.
+[01:03] So this was also there in the lecture for the previous chapter.
+[01:05] So this is another important background concept.
+[01:10] And finally, the reader, the viewer in this case should appreciate the basic idea of out-of-order
+[01:18] pipelines.
+[01:19] In a certain sense, the idea that needs to be understood is that we need a large pool
+[01:24] of instructions such that we can issue enough independent instructions that can be issued
+[01:33] in data dependence order and we need not follow program order.
+[01:38] So, we will proceed as follows in this set of lecture videos.
+[01:45] We will start with instruction renaming.
+[01:48] Recall that renaming is a method to get rid of WAR and WAW hazards.
+[01:52] So, of course, read after write hazards will remain.
+[01:56] Nothing can be done about those.
+[01:59] And we will see what to do about them in a later chapter but not now.
+[02:03] Then we will discuss the key features of an out-of-order pipeline, which are instruction, dispatch,
+[02:08] wake up and select.
+[02:11] The third topic will be discussion of loads and stores.
+[02:15] So, we have not discussed memory dependencies up till now, we have only discussed register
+[02:21] dependencies.
+[02:22] So, discussing memory dependencies will be a part of the third part of this slide set.
+[02:32] And lecture set also.
+[02:34] And finally, the last part will talk about instruction commit.
+[02:39] So, recall that the basic abstraction that we had was out of order inside, in order outside.
+[02:55] So, this helps us preserve the notion of intuitive in order execution and also we can guarantee
+[03:05] precise exceptions using this.
+[03:08] So this requires a novel mechanism called instruction commit or instruction retirement.
+[03:13] So we will look at this in the last part of the lecture.
+[03:18] So let us now start with renaming.
+[03:20] Recall that renaming is a process that converts architectural registers to code with architectural
+[03:28] registers to code with physical registers.
+[03:31] So consider a four issue processor.
+[03:33] So in this case four instructions need to be renamed each cycle.
+[03:38] So we can have a maximum of eight read operands in our instruction set, which all eight can
+[03:44] be registers.
+[03:45] And we can have a maximum of four write operands, where all four of them could be registers.
+[03:53] Each read operand needs to read its value from a physical register.
+[03:57] And similarly, each write operand also needs to write its assigned value to a physical register.
+[04:05] And dependencies will be there, three kinds of dependencies up till now have broadly been
+[04:11] concerning us.
+[04:12] There are RAW dependencies, WAR dependencies, write after read and write after write.
+[04:20] So the write after read and write after write dependencies are what we are after.
+[04:26] So we will try to solve these issues with renaming.
+[04:31] There are two main approaches, renaming with a physical register file and renaming with reservation
+[04:37] stations.
+[04:38] So renaming with physical register files is typically what is used in modern high performance processors.
+[04:46] So renaming with reservation stations and other approaches we will look at in the next chapter
+[04:51] not here, not now.
+[04:53] We will look at the basic idea first and at least describe the basic simple solution first.
+[05:01] So if I were to consider a physical register file, this is what I need to do.
+[05:11] So every ISA, every instruction set architecture will have a set of registers that are visible
+[05:18] to software.
+[05:19] These set of registers will be known as architectural registers.
+[05:23] And these architectural registers are what your assembly code is going to use.
+[05:31] So these architectural registers are very important in the sense that the compiler maps them
+[05:46] to variables in high level programming languages.
+[05:50] And we have already seen when we write assembly code that these registers have to be dealt with
+[05:56] while calling a function and returning from it.
+[06:01] So the basic x86 instruction set that is used by Intel and AMD has 8 such registers.
+[06:08] The newer variant, the x86, I stand corrected, this should be x86-64 has 16 registers.
+[06:18] So even the basic version of the ARM ISA has 16 registers and the MIPS ISA has 32 registers.
+[06:27] So to ensure precise exceptions as we have discussed earlier, it should appear as if these architectural
+[06:35] registers are being updated in program order even though inside the processor out of order
+[06:42] execution is happening.
+[06:45] So that is the basic idea.
+[06:47] So let us now look at the first major out of order construct which is renaming, which
+[06:52] is primarily aimed towards eliminating output and anti-dependencies.
+[06:58] Recall that output dependencies are write after write WAW dependencies and anti-dependencies
+[07:04] a write after read WAW dependencies.
+[07:12] So let us discuss how exactly we achieve renaming in a practical out of order pipeline.
+[07:23] So what we actually do is that any software program that is written with architectural registers
+[07:29] R1, R2 to R16, every single register is automatically mapped by the hardware.
+[07:38] So it is important to note here that this process is not visible.
+[07:56] So this process is not visible to software, it is happening totally within the processor and
+[08:04] the processor renames, the processor has a hardware engine to rename, software is not involved
+[08:09] in the process of renaming at all.
+[08:12] So what the hardware does is that it maps each of these architectural registers to a set of
+[08:19] unique and distinct physical registers.
+[08:26] So let us now explain renaming in the context of an example.
+[08:32] So let us consider a system with 16 architectural registers and 128 physical registers.
+[08:40] So in this case the architectural registers exist only in principle in the sense that they
+[08:46] are not associated with permanent storage locations, so they exist kind of conceptually.
+[08:54] In the sense that software sees them but the hardware does not have separate space for the architectural
+[08:59] registers, it just has a mapping.
+[09:02] So there is no separate architectural register file, there is a single register file which is
+[09:07] the physical register file which of course contains far more registers than the number of architectural
+[09:17] registers, 128 in this case.
+[09:21] Each architectural register is mapped to one and only one physical register at any point in
+[09:27] time.
+[09:28] So let us say let us consider register number R4, it is mapped to let us say the physical register
+[09:39] P5 which means that at that point of time R4 is not mapped to any other physical register
+[09:46] and also at that point of time no other architectural register maps to physical register P5.
+[09:54] So this means that at any instant, 112 which is 128 minus 16, 112 physical registers are unmapped.
+[10:05] So they are simply not mapped.
+[10:08] They either are empty in the sense that they do not contain a value or they contain a value
+[10:14] in the sense they contain a previous mapping.
+[10:16] So let us say R4 was mapped to P5, then we have a new instruction that writes to R4.
+[10:23] So in this case R4 might get mapped to P6.
+[10:27] So until P5 is freed, so we will discuss when exactly it is freed, what we actually see is
+[10:34] that the value of P5 might still be used by instructions in flight and so P5 the register will still contain
+[10:43] valid data till a certain point.
+[10:45] But the most recent mapping will still be R4 to P6.
+[10:51] So food for thought over here, our typical burger that keeps on appearing.
+[10:56] So why are 112 registers unmapped?
+[10:58] Well this has been discussed two points you know at this point.
+[11:07] So they are unmapped primarily because we establish a one-to-one mapping between the architectural
+[11:13] registers and a subset of physical registers.
+[11:16] So if 16 architectural registers are mapped to 16 physical registers, we are left with 112
+[11:26] physical registers that are currently not mapped.
+[11:29] So let us now discuss renaming in the context of an example.
+[11:36] This will provide clarity to much of the discussion that we have been having up till now.
+[11:43] So let us look at two pieces of code.
+[11:46] The first piece of code is written using architectural registers.
+[12:02] The second piece of code is written using physical registers.
+[12:07] So the terminology that we shall adopt is that the R series will be used with architectural
+[12:17] registers.
+[12:18] So registers R0, R1, R2, R3, etc. will all be architectural and the P series will be physical.
+[12:29] So recall our assumptions, we are assuming we have 16 architectural registers in our system
+[12:34] and 128 physical registers.
+[12:37] At the beginning let us assume, so which is the default state, that architectural register
+[12:44] Ri where Ri can be let us say R2, i equal to 2, is mapped to physical register Pi which
+[12:50] is let us say P2.
+[12:57] So R2 is mapped to P2, R4 is mapped to P4 and so on.
+[13:03] So of course with time the mapping will change.
+[13:06] So with time as we keep on getting new values from the free list and we keep on updating
+[13:13] the value of a register, the mapping will change.
+[13:16] It will continue to change.
+[13:18] So this of course will get captured in the names of our renamed registers.
+[13:26] So it is important to understand that the idea of renaming is basically to split the timeline
+[13:34] into versions or avatars of a register.
+[13:38] So the specific convention that we shall use is that for physical registers, we will use a,
+[13:46] after it has been written to once, it will essentially be of the form Pij where i is essentially the
+[13:55] number of the architectural register it corresponds to and j is essentially the avatar or version
+[14:01] number.
+[14:02] So for example when you overwrite R1 for the first time it will be P11 and then it will
+[14:07] be P12, P13 and so on.
+[14:11] So it is important to understand that this is just a convention that we are using only
+[14:16] for this slide and maybe a few additional slides.
+[14:19] Only for the purpose of explanation, right?
+[14:22] This is not the scheme used by a hardware renamer.
+[14:28] This is not the scheme used in the modern processor.
+[14:31] This is only being used for better and easier explanation.
+[14:36] So what we do is that let's say for P11, let this be the instruction that writes to this
+[14:42] register.
+[14:43] We will then have a few more instructions which I am showing like this on the timeline.
+[14:49] That will be using P11, the current avatar and then of course we will again create one
+[14:54] more avatar of R1 which is P12, again a few more instructions that will use it.
+[15:00] So this can be considered as the lifetime of avatar P11 and then this can be considered the
+[15:07] lifetime of avatar P12.
+[15:10] So clearly we can mix instructions from these avtars, it does not matter.
+[15:15] Primarily because they use different physical registers.
+[15:18] Only thing that matters is that these three instructions should execute after this instruction,
+[15:24] the writing instruction has executed, where this is the only two dependents.
+[15:28] The rest can be mixed.
+[15:31] Once this is clear, let's go to the fourth point.
+[15:35] The fourth point basically says that, let's consider P12.
+[15:41] It contains the value of R1, the second avatar and it will contain the latest value of R1 till
+[15:46] it is overwritten.
+[15:48] Once it is, P13 will contain the new value.
+[15:52] But note that at this point, so let's say P13 is written to over here.
+[15:56] At this point, there will still be, there might still be several instructions that will be using
+[16:01] the interim value which is P12 and these instructions might not have completed.
+[16:08] So these instructions are nevertheless, you know, in flight and we will have to wait for
+[16:16] P12 and all the instructions that use the value of P12 to complete before we release P12.
+[16:23] So that is one aspect of this discussion.
+[16:26] The other aspect is that for every architectural register, we will always have a physical register
+[16:32] that contains its latest value.
+[16:36] And we will also have other interim values like P11, P12, etc.
+[16:40] But we cannot really remove them, the reason being or release the physical registers because
+[16:46] there might be other instructions in the pipeline that are also said to be in flight that would
+[16:52] require these values.
+[16:55] And because we are executing out of order, there will, there is a very high probability of such
+[17:01] instructions being there.
+[17:04] So given this basic cursory discussion, let us proceed with understanding the example.
+[17:12] So let me remove some of the clutter on this slide by clearing off the ink, then we can proceed
+[17:18] to understand this example.
+[17:29] So let us follow this instruction by instruction.
+[17:35] So the first instruction is move1 to R1.
+[17:39] So move1 to R1 will pretty much create the first avatar of R1 which is P11.
+[17:53] So since we are creating the first avatar, what we need to do is we need to go to the entry
+[18:00] for R1 in the RAD table and that needs to be overwritten with P11.
+[18:11] So recall that in this case, architectural registers only exist conceptually, they only exist in
+[18:16] principle, they exist implicitly.
+[18:19] They do not have a dedicated storage location.
+[18:24] Now let us come to the second instruction, add R1, R2, R3.
+[18:28] So in this case, we have a write-after-write hazard but that is not a problem.
+[18:34] We simply allocate this version of R1 a new physical register which is P12.
+[18:40] 2 captures the second avatar of R1 and of course since R2 and R3 have not been modified before
+[18:47] in this piece of code, we assume that they come from the initial state, hence we read them
+[18:55] from P2 and P3.
+[18:58] Now, we see our first read-after-write hazard which is that we use the value of R1.
+[19:06] Well, which value do we use?
+[19:08] We use the latest value, so by the way, when we modify the value of R1, when we create a
+[19:14] new avatar of R1, we replace P11 over here with P12.
+[19:20] So we use the latest value which is P12.
+[19:23] So we see that there is a read-after-write dependence over here and there is a read-after-write dependence
+[19:28] over here as well.
+[19:31] Then since we are modifying the value of R4, we are creating a new physical register, a new
+[19:40] avatar of it, a new version of it and this becomes physical register P41.
+[19:46] Alright, and so this becomes a new version of this and so where does this come from?
+[19:55] This comes from a free list.
+[19:57] Again, we move forward, so we write a new value to R2, again we create a new version of it.
+[20:07] The time has come to use R2.
+[20:09] So similar to R1, what we do is we look up its latest value in the RAD table entry for
+[20:16] R2.
+[20:17] So the RAD table entry for R2 would basically contain P21.
+[20:22] So we read P21 over here and since we are reading R8 for the first time, we have not written
+[20:28] to it, it comes from P8, we are modifying R6 for the first time.
+[20:35] So this would be the physical register P61.
+[20:40] Here again, we are creating the third avatar of R1, we are writing to it for a third time.
+[20:46] So what was the first avatar, it was P11, then P12, so this was P11, this was P12 and this
+[20:54] is P13.
+[20:55] So in this case, we assign it P13 and then again, we read P13 in the next instruction where
+[21:06] we have a read-after-write dependency and R9 you are writing to the first time is P91.
+[21:11] So here is the fun part, what do we do about P21, well P21 is the mapping for R2, so you just
+[21:20] walk back in the sequence, see the last time that we wrote to R2 and at that point of time,
+[21:26] we had actually assigned it the physical register P21, hence we use P21 over here and this becomes
+[21:33] our transformed renamed sequence with physical registers.
+[21:41] So let me now erase the ink on the slide and focus on a critical aspect.
+[21:52] So let me just annotate all the accesses to R1 and similarly annotate them over here in the
+[22:05] renamed sequence.
+[22:10] So what do we see?
+[22:12] What we see is we have read-after-write dependencies that we have.
+[22:18] We have them over here also because renaming does not remove them.
+[22:22] But renaming has very effectively removed write-after-write dependencies, they are over here but they
+[22:31] are not here, there is no write-after-write, there is a write-after-read dependency as you
+[22:36] can see, oh I am sorry, there is a write-after-read dependency as you can see over here, between
+[22:46] this write of R1 and this read of R1, nothing of that sort is visible over here.
+[22:52] So the write-after-read problem is also gone.
+[22:55] Furthermore, what we have done is we have divided the timeline into different avatars of R1.
+[23:02] So this is the first avatars, this is the second, this is the third.
+[23:09] So as far as we are concerned, these are actually three separate registers, that is the way that
+[23:15] we see it in the physical register sequence, that it is actually three separate registers
+[23:20] conceptually and nothing stops us from taking instructions in kind of one avatar's instructions
+[23:27] and intermingling them with instructions of another avatar subject to data dependency constraints
+[23:33] of course, right, with respect to the other operands, but if the other operands are not an issue,
+[23:38] then we can happily intermingle them, there is not an issue.
+[23:43] Why, so this gives us more ILP and why did we do it?
+[23:47] Well, the reason we did it is to enable out-of-order execution because read-after-write and read-after-read-wow
+[24:01] and war hazards would have been a tremendous problem.
+[24:07] So that is the reason to enable out-of-order execution.
+[24:10] What we do is that we have effectively transformed this into a sequence that has only R-A-W hazards
+[24:20] and then you can clearly see the increase in ILP and you know one example, one noteworthy
+[24:27] example would be that this instruction for example can be moved anywhere, right, so this
+[24:32] instruction can be moved anywhere.
+[24:34] So, this is by the way this is dead code, this is dynamically dead code in the sense that
+[24:38] even statically also, you can see that a lot of compilers would remove them, but assuming
+[24:43] it did not, we can happily move this instruction anywhere we want.
+[24:48] It will not cause any correctness issue.
+[24:51] So this is the main aim of renaming, that renaming helps us enhance the amount of ILP, right, enhanced
+[24:59] ILP.
+[25:02] So what was the entire crux of our discussion?
+[25:08] The entire crux of our discussion was that architectural registers exist only in principle, at any point
+[25:15] of time, so let us prefix this with at any point in time.
+[25:30] We need 16 physical registers that will contain the latest values of architectural registers,
+[25:35] something like a latest instantaneous snapshot.
+[25:39] The remaining 112 physical registers either may be empty or can possibly contain interim values
+[25:47] that other in-flight instructions will require.
+[25:50] For the moment an in-flight instruction is defined as something, as defined as an instruction
+[25:58] that is still there in the pipeline, okay.
+[26:01] So, we will kind of enhance this definition later, but let us say that this is something
+[26:11] there in the pipeline.
+[26:13] And clearly more is the number of physical registers, well higher is the number of instructions
+[26:18] that can simultaneously be in-flight, right, because the number of physical registers is in
+[26:26] a sense connected with how many elements we can have in our instruction window, right, because
+[26:39] at one time if we run out of physical registers, we simply cannot rename new instructions or rename
+[26:46] will stall or decode will stall or fetch will stall, so the front part of the pipeline, so this
+[26:50] part is actually called the front end.
+[26:53] So, the front end of the pipeline will actually stall, so and we have also seen that the number
+[26:59] of elements in the instruction window is related to the branch predictor accuracy, so you nicely
+[27:04] see how everything is kind of connecting together and falling in place, right, so they are all
+[27:10] kind of intertwined, interconnected and the number of physical registers is also important, so any
+[27:16] designer has to look at all three of these factors before deciding, before sizing up
+[27:23] the processor or the pipeline.
+[27:25] So, in this case, clearly all of them together determine the amount of visible and exploitable
+[27:34] parallelism, the amount of ILP and this is something that we will use in the subsequent slides to
+[27:43] analyze the performance of an out-of-order machine.
+[27:46] So, for the purpose of doing renaming, we need three hardware structures, which are as follows,
+[27:58] so the first is the register alias table, also called the RAT table, so what is the job, its
+[28:04] job is to translate architectural register IDs to physical register IDs.
+[28:11] Then we have another hardware structure, so it is called a dependency check logic, so the
+[28:16] idea here is like this, that we might be renaming multiple instructions per cycle, so let us say
+[28:23] we are renaming four instructions per cycle, so what can happen is that there might be dependencies
+[28:30] between these instructions and if there are dependencies between these instructions, it will be rather difficult
+[28:38] to take care of them, so clearly since they are in, since they are getting renamed in parallel, the rename
+[28:46] table or also called the register alias table, so we will also call it the rename table by the way,
+[28:52] is something that cannot be used, we will see why it cannot be used, so we will need this piece of hardware.
+[28:57] And when we are renaming an instruction of this type, add R1, R2, R3, what can happen, I am sorry,
+[29:13] what will happen is that for register R1, we need to access a free list or a free queue and get one of
+[29:21] the unassigned physical register IDs and assign it to R1. So, of course, we had a very simple convention
+[29:28] in the last slide, right, in the, I think slide before the last one, but this convention is only
+[29:34] for explanation, this is not what a hardware would actually use, what a hardware would actually do is
+[29:39] that it would have a free list or a free queue and this would maintain a list of unmapped physical
+[29:45] registers, so whenever we need one, we just pluck one from there, right, we just fetch one from there.
+[29:51] So, I will repeat this several times, that this entire process happens in software,
+[30:00] completely without, sorry, I am sorry, the entire process happens in hardware, right, entire process
+[30:06] happens in hardware,
+[30:20] completely without the knowledge of software. So, software is not aware that renaming is happening,
+[30:29] renaming is completely internal to the processor. So, let me write it, renaming,
+[30:42] renaming is achieved in hardware by hardware using these three structures. So, we will use
+[31:11] a circular queue for doing many things. So, the free list is one example of using a circular queue.
+[31:20] So, the circular queue is a data structure which, you know, all of you should brush up.
+[31:27] So, essentially, what is it? Well, circular queue conceptually looks something like this,
+[31:33] where we basically have a circle and we have entries, right. So, some of these will be filled,
+[31:41] some of these will be unfilled, but let us say these entries are filled, right,
+[31:50] okay. So, these are all the filled entries. So, then every queue will have a head and a tail.
+[31:55] So, we always enqueue at the tail and we always dequeue at the head. So, let us say this can be
+[32:04] the tail and this can be the head, right. So, whenever we want to add new entries,
+[32:15] what we do is that we keep adding here and whenever we want to decrement, what do we do?
+[32:22] We keep removing them from here. So, how is the, so, what we can think of is a circular queue can be
+[32:29] thought of, thought of as something conceptually like this. So, well, how is this actually implemented?
+[32:37] Well, the way that this is actually implemented is something like this, that we take an array,
+[32:44] a regular array, alright. So, array is of course, software concept, but we have a similar hardware
+[32:49] concept where we can just think of it as an array of flip-flops and array of registers.
+[32:58] So, then what we do is that we have two pointers, two instantaneous pointers. So, let us say one of
+[33:06] them can be head, one of them can be tail.
+[33:14] So, let us say that the entire, this part of the array is full, right. So, which means that this is
+[33:20] the queue. So, this index can be head, this index can be tail. So, when we add a new entry, we will add
+[33:28] it over here and of course, the tail pointer will move to here and when we, when we dequeue an entry,
+[33:35] then the head pointer will move here and this will be the entry that is dequeued.
+[33:41] So, now the question comes up is what if we reach the end of the array? Well, if we reach the end of
+[33:46] the array, we kind of wrap around and this is why this functions as a circular queue because of the
+[33:52] notion of wrap around. So, the enqueue operation where essentially we add an entry
+[34:03] can simply be said as, so we of course add an entry. So, when we add an entry, this is what we do.
+[34:09] I am assuming that the size of the array is n. So, we increment in, but then I also
+[34:28] take care of the wrap around issue. See, if I add one, I also compute this modulo n, the size of the
+[34:36] array and then let us say if the name of the array is array, then at this point,
+[34:44] I add the entry, right? Whatever entry I want to add, I add it over here. So, this is the simple
+[34:51] pseudo code for n, for enqueue. So, let me also write the pseudo code for dequeue. So, dequeue, I am
+[34:58] assuming that there is at least one entry in the array, right? So, if there is no entry, if it is empty,
+[35:03] that is easy to check. I can always have a small counter that maintains a count of the number of
+[35:08] entries in the array. So, in this case, what I do? So, I do this exactly this logic in hardware,
+[35:13] right? It is not a software logic, it is a hardware logic. So, I take a look at the current head. So,
+[35:21] the current head is the entry that I would like to dequeue. So, I store it over here and then this is what
+[35:27] I do. Alright? And then, of course, I return the entry. So, there is no return in hardware,
+[35:41] but this is essentially the entry that I use. So, this is a very simple logic in hardware that can
+[35:47] easily be done and typically, the size of the array here is the power of 2. So, computing this
+[35:54] operation, the modulo operation is very easy and also incrementing is easy. So, this is a simple
+[36:00] way of implementing a circular queue in hardware. So, we will see that a lot of structures, a lot of
+[36:06] hardware structures in architecture particularly are made of circular queues and the logic for
+[36:13] a circular queue is like this which is rather simple. Alright? And it is supposed two simple
+[36:21] operations NQ and DQ and of course, we can add another operation if you wish to say if the circular
+[36:27] queue is empty or not. We can either one option is we can compare the head and tail pointers
+[36:33] but a far simpler option is we have a some simple counter that maintains a count of the number of
+[36:39] entries in the queue. So, that is a far easier, far simple, far more straightforward option.
+[36:44] So, the register alias table or the RAD table essentially takes in a set of architectural
+[36:52] register IDs. So, if we are renaming four instructions per cycle, so they can have a maximum
+[36:59] of eight register source operands. So, we will actually have eight. So, here I am assuming that we
+[37:05] have a total of four register source operands. So, which means that we are renaming two instructions
+[37:12] per cycle. So, then the number of inputs is equal to the number of outputs. So, outcome for physical
+[37:20] register IDs. So, essentially what are we doing? We are getting a stream of physical register IDs
+[37:27] with implicitly the WOW and WAR hazards removed. How does this work? Well, the way that this works is
+[37:36] that this is a simple table, the RAD table is a simple table, right? So, the structure is like this. It's a
+[37:45] simple table where we basically have if there are 16 architectural registers, we have 16 rows. For the
+[37:55] ith architectural register, we just access the ith row and here we will have the ID of a physical register,
+[38:03] the one it is mapped to. We just need to read that and that is done. So, let us explain with an example.
+[38:10] So, let us say that I want to rename the instruction add r1, r2, r3. So, what I do is that I go to the
+[38:19] RAD table. So, of course, R1 is a destination. I am not concerned but what I am concerned is about R2 and R3.
+[38:26] So, I go to the RAD table. So, RAD table by the way is also called the rename table.
+[38:31] So, then I access the entries for R2 and R3, right? And how many entries are there? If there are 16
+[38:38] architectural registers, then there will be 16 entries, one for each architectural register.
+[38:44] So, as we have discussed earlier also, architectural registers in this case exist only in principle,
+[38:53] only implicitly, only conceptually. So, the mapping is to 29 and 34. So, what I do is that I note these
+[39:06] two and in addition, I fetch from the free list register number 32 which let us say was the head
+[39:14] of the queue and I map it to R1. So, the register 32 was unmapped, right? It was free. So, the renamed
+[39:22] instruction becomes add P32, right? Physical register 32. This was just assigned to the instruction.
+[39:30] It came from the free list and then P29 and P34. Why P29? Well, that is because my rename table says
+[39:37] that R2 is mapped to P29 and my RAD table says that R3 is mapped to P34. Hence, this instruction gets
+[39:47] renamed internally, right? Internally within the core, done by hardware, unbeknownst to software.
+[39:55] This is what the instruction becomes.
+[39:57] So, now let us proceed. So, let us say the next instruction is move R1 into R3.
+[40:15] So, first for R3, we try to fetch a free register from the free list. So, let us say this is 28.
+[40:26] For R1, all that we need to do is we need to read its value and its value would already be written to
+[40:31] the RAD table. Recall that in the, for the previous instruction, we got it from the free list.
+[40:37] So, this becomes the renamed instruction, move P28 comma P32.
+[40:45] So, what again is a free list? Well, a free list is essentially a queue. As we have seen,
+[40:53] it is not a normal queue, it is a circular queue of unmapped physical register IDs.
+[40:58] When we need to assign it, we dequeue an entry. When is an entry added to it? Well, this is a very
+[41:05] tricky question. It is an important question. Yet, at the same time, it is a tricky question. So,
+[41:10] when do we add it? Well, we will see later. And then, of course, we update the RAT with the new
+[41:16] mapping. As we did over here, that when we got the new mapping for R1, we updated the RAT with 32.
+[41:24] And when we got the mapping for R3, we updated it with 28. So, the free list conceptually is
+[41:31] essentially like a queue. But internally, it is implemented like a circular queue to take,
+[41:36] because you know, we have to take into account issue of the wraparound.
+[41:42] So, let us now take a look at the dependence check logic. So, assume that we are renaming these
+[41:48] two instructions together at the same time. So, we have, we are renaming add r1, r2, r3 and add r4, r11.
+[42:00] So, in this case, what we have is, we have a read after write dependency on the register r1.
+[42:11] So, if register r1 is mapped to register p11, then the second instruction will have to read the mapping
+[42:19] of r1 as p11. But what is the problem? Well, the problem is both are being sent to the renaming
+[42:25] process, the renaming stage, the RAT table at the same time. So, when we will actually read the value
+[42:32] of r1, it will not be the value, the latest value that is being written in r1's entry, which is p11.
+[42:42] It might be something else, right? So, there is a chance, a probability that we might actually miss
+[42:48] the value, which means that instead of p11, the second instruction might actually get some other
+[42:54] physical register, which r1 was mapped to in some previous cycle, right? So, this is actually going
+[43:01] to be a problem because both of them have to be renamed simultaneously. Hence, we need what is called
+[43:08] dependence check logic to take care of this. So, let us look at a slightly more complicated example,
+[43:20] where we are actually renaming three instructions at the same time. So, we have a read after write issue
+[43:28] over here. And we also have a write after read, renaming issue over here. So, given all of these
+[43:39] dependencies, they need to be handled correctly. So, first, let us assume that for all the destinations,
+[43:50] we have three destinations here, r1, r4 and r3. So, we access the free list. So, of course,
+[43:56] we access the free list in parallel. So, let us assume that the entries that we get from the free
+[44:03] list are px, py and pz. So, if they are px, py and pz, let px be mapped to r1, I am sorry,
+[44:13] let r1 be mapped to px, r4 be mapped to py and r3 to pz. So, all the mappings from the RAT, which is the
+[44:22] mappings for r2 and r3 will be used by instruction 1 because it is the first instruction in this three
+[44:29] instruction bundle. So, renaming the first instruction in that sense is very easy because
+[44:38] we just read the values that we get from the RAT table. But renaming the second instruction is hard.
+[44:45] The reason being that its source operands can come from the output of renaming the first instruction.
+[44:54] So, let us consider the first source operand of instruction 2 which is r1. So, we actually have
+[45:01] two choices. So, the first choice is that we can take in the value from the RAT table entry of r1,
+[45:09] which we know that for at least this case will give us a stale value, it will give us a wrong value
+[45:14] because that has not been populated as of now, which is basically because the first instruction,
+[45:22] instruction 1 at r1, r2, r3 is still being renamed, is being renamed in parallel simultaneously.
+[45:29] But nevertheless, this is one of the options that we have. The other option that we have is we actually
+[45:35] take the value px which has been given to us by the free list. So, that option we also have. So,
+[45:45] what we need to do is we need to choose between px and the value from the RAT. So, whenever we have a
+[45:54] choice of two values, we need a multiplexer in hardware. And how do we exercise this choice? Well,
+[46:00] what we do is that we essentially compare if the destination of instruction 1 is equal to.
+[46:11] So, let us say the source. So, in this case, it is the first source, right? If this is the first
+[46:17] source of instruction 2. If this comparison is successful, which means that they are actually
+[46:23] the same register, then we use the value that was assigned to the destination of instruction 1,
+[46:32] alright? So, this is what we use.
+[46:38] So, this is a kind of simple logic. So, when we are actually renaming these three instructions
+[46:45] at the same time, at runtime, we do not know what those instructions will actually be.
+[46:51] But that is the reason we need to fabricate these multiplexers in hardware and keep them ready.
+[46:57] And this multiplexer clearly has a choice between px. So, what is px? In this case, px is the physical
+[47:05] register that has been assigned to the destination of instruction 1. So, that is one option. And the
+[47:10] other is of course, what we read from the RAT. So, we need to keep the multiplexer ready.
+[47:14] Which one we actually take in runtime depends on the result of this comparison. And this will be the
+[47:23] one that is that R1 is mapped to. So, in this case, of course, the other entry over here is an immediate,
+[47:31] we do not have to rename it. But let us assume this was some other register, right? Rx. So, we would
+[47:37] need to fabricate a similar multiplexer based design for the second source operant. And here also the
+[47:46] comparison function will be something like this. Source, right? The second source of the second
+[47:55] instruction, alright? So, this was a simple case. So, let us now look at instruction number 3, where it
+[48:02] gets more complicated. So, for instruction number 3, which is this instruction, for let us say for R4,
+[48:13] we have a choice between the values that were assigned in the previous two instructions of the bundle,
+[48:21] px and py. So, note that we have still, so they are also getting renamed. So, in nevertheless,
+[48:27] we have a choice. And of course, we have a choice from the rename tables. You have three options.
+[48:33] This is exactly what you get to see. So, what we have is, we have three options. One is the entry from
+[48:39] the rename table. One is py, which is the destination of instruction 2. And we have px, which is the destination of
+[48:50] instruction 1. Alright? So, so we will have two multiplexers. We can have a multiplexer with three
+[48:57] inputs. But I have drawn two multiplexers here. So, we have, we will have this for, of course,
+[49:02] the second source of instruction 3. So, what we are doing is, if this is instruction 3,
+[49:08] and this is the second source. So, this is what we get. And so, what is py? Well, the py is the
+[49:15] destination of instruction 2 and px is a destination of instruction 1. So, the multiplexers will have
+[49:25] control signals. And the control signal in this case is rather simple. All that we need to do is,
+[49:30] we need to check, if these two are equal, which means, if the destination of instruction 2 is equal
+[49:38] to the first source of instruction 3. Oh, I am sorry. I am sorry. This is the first source. The first source
+[49:53] of instruction 3. Similarly, here, what we need to do is, we need to check, if the destination of
+[50:00] instruction 1 is equal to the first source of instruction 3. That is what we need to check.
+[50:13] Once we have done these checks, and of course, these checks, these checks can happen in parallel,
+[50:19] then the appropriate value from the multiplexers will kind of flow out. And that will be the final
+[50:24] output of the dependency check stage, right, which will either take the entry from the rename table
+[50:31] or one of the destinations of the previous two instructions, if there is a match, that is. And
+[50:36] that will be the final rename value for R4. We will have a similar circuit for the second source
+[50:42] of instruction 3, which is for R6. So, what do we have to do? Well, we will have to create such multiplexers
+[50:52] for each of the sources, other than the sources for the first instruction in the bundle. And then,
+[50:57] make a choice based on these comparisons. Of course, if you are renaming 4, 5 or 6 instructions,
+[51:04] then we will have more multiplexers. And of course, passing a signal through so many multiplexers is
+[51:10] a slow operation. This places a natural limit on the number of simultaneous instructions that we can
+[51:17] rename per cycle. We need something more. At this point, at this point, we are done with the rename
+[51:27] stage. We have talked about the rename table, also called the RAD table. We have talked about the free list
+[51:33] and we have talked about the dependence check logic. So, we also need to add one bit to each entry,
+[51:42] called the available bit. This indicates whether the result can be found in the physical register file
+[51:50] and the rest of the pipeline, whether the result is ready or it is not ready. So, this is a single bit,
+[51:58] which is there along with the physical register ID, which you read from the rename table entry.
+[52:04] And essentially, what this says is, that if let us say, I proceed through the pipeline, the instruction
+[52:12] proceeds to the pipeline. Can it just go to the register file and read the value? Or does it have
+[52:18] to wait? If it has to wait for this particular source operand, it is going to wait for it in the
+[52:24] instruction window. So, we will see more uses of this available bit in the subsequent slides.
+[52:31] But what is clear is that this information needs to be available at this very point, this very moment,
+[52:39] because it will tell the instruction that look, if an instruction has two source operands, right,
+[52:45] source 1 and source 2, are they ready or not? In the sense, have their values been computed or not?
+[52:54] If they have been well and good, this instruction can just enter the pipeline and execute. The pipeline
+[53:00] means the rest of the pipeline and execute. If it is not ready, then the instruction needs to wait in
+[53:06] the instruction window. And it needs to wait for its operands to become available, which means whoever
+[53:12] is producing those operand registers needs to complete. So, we have reached a very interesting
+[53:20] juncture over here. So, we have finished renaming. So, we have finished renaming with a very important
+[53:28] concept, which currently is like a thorn in the eye. That is the available bit with every entry. This
+[53:34] essentially tells the entry, tells the instruction whether its source operands are ready or not,
+[53:42] which will be used by the subsequent stage big time for making instructions wait.
+[53:50] So, they will wait. Once they get all their operands, they will wake up, which means they are ready to
+[53:56] execute. If multiple instructions wake up at the same time, but let's say we have a finite number of
+[54:04] resources. We need to select a subset and they need to be executed.

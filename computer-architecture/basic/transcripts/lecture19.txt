@@ -1,0 +1,581 @@
+[00:00] We'll be right back.
+[00:30] Let's now take a look at sequential logic.
+[00:38] So sequential logic is slightly different from combinational logic.
+[00:43] So here the idea is that we save a value in a structure, and then we do some amount
+[00:55] of computation on it.
+[00:57] So it's called a logic cloud, right?
+[00:59] We have a lot of gates and so on.
+[01:02] And then again, the output of this is again stored in another storage element.
+[01:09] So the first question that we need to answer is that how do we store a single bit, right?
+[01:16] How do we ensure that we are able to store a single bit and the value sort of remains
+[01:23] for as long as we want to keep it?
+[01:26] So the idea is that to store a bit, we use a cross-coupled pair of NAND gates, and that
+[01:33] will store a stable value.
+[01:35] So this particular structure over here is called an SR latch, and so S stands for set.
+[01:47] So what does set mean?
+[01:49] Set means set the value, the value of the output, which in this case is Q, to 1, and R means
+[01:56] reset.
+[01:57] Reset means set Q to 0.
+[01:59] So the SR latch has two inputs, which is basically the complement of S and the complement of R,
+[02:08] and the output, and there are two outputs.
+[02:10] One output is Q and the other is the complement of Q.
+[02:13] So in a sense, it's a single output, but available in its normal form as well as its complemented
+[02:20] form.
+[02:21] As simple as that.
+[02:23] And why do we say it is cross-coupled?
+[02:25] The reason being that the output of the first NAND gate is an input to the second NAND gate,
+[02:32] right?
+[02:33] Let's maybe call this N1 and let's call it N2.
+[02:37] So the output of N1 is an input to N2, and the output of N2 is an input to N1.
+[02:46] So that's the reason we call it a cross-coupled NAND gate.
+[02:50] So let's see how it works.
+[02:53] The way that it works is something like this.
+[02:56] So let us assume that S is equal to 1, so we're trying to set the value of Q to 1.
+[03:03] We are setting R to be equal to, so we have R as 0.
+[03:09] So what happens?
+[03:10] If S is 1, so this particular value over here is 0, because it's a complement of S, and since
+[03:17] R is 0, the value here is 1.
+[03:20] So in any NAND gate, whenever one of the inputs is equal to 1, then the output, sorry, in any
+[03:29] NAND gate, when one of the inputs is equal to 0, then the output is equal to 1, right?
+[03:37] Because it is not possible that the AND condition will be true.
+[03:44] So as a result, if one of the inputs is 0, we can happily write the output to be equal to
+[03:49] 1.
+[03:51] So since this is 1, 1 comes over here, and the NAND of 1 and 1, so AND of 1 and 1 is 1,
+[04:00] so the NAND of 1 and 1 is 0.
+[04:03] So again 0 goes there, and 0 and 0, its NAND is 1.
+[04:07] So this is a stable system.
+[04:09] One more thing that we get to see is that in this case, the value of Q is equal to 1, and
+[04:16] Q bar, or the complement of Q is the complement of 1, which is 0.
+[04:22] So the first value, in a sense, we have verified.
+[04:27] Now let's take a look at the second combination, which is the value of S is 0, the value of R
+[04:38] is 1.
+[04:39] So we are trying to reset it.
+[04:41] So we expect Q to be 0, but let's verify if this is the case.
+[04:45] So let me just, you know, erase these, such that the reader doesn't get confused.
+[04:53] Do I have an, yeah, I have an eraser, so there is no reason to adopt a low-tech solution.
+[05:02] We can adopt a high-tech solution.
+[05:05] Alright.
+[05:07] So now what can be done, so in this case, the value of S is 0, so S complement is 1, and
+[05:20] the value of R, we are setting it to 1, so the complement of R is 0.
+[05:25] So the same logic holds, that in any NAND gate, if one of the inputs is 0, then the output
+[05:32] gets automatically set to 1.
+[05:34] That is the logic of a NAND gate.
+[05:37] Fine.
+[05:38] So in this case, 1 travels all the way up here, 1 and 1, the NAND of that is 0, and 0 and 0,
+[05:49] the NAND is 1.
+[05:51] So what we see is that in this case, if the reset signal is 1, the value of Q is set to
+[05:57] 0, and Q bar is its complement, which is 1.
+[06:01] Alright.
+[06:02] So these two values we have verified, so what is the connotation again?
+[06:08] The connotation here is that S stands for the set signal, and if S is equal to true, then
+[06:17] Q gets set to 1, and R is equal to the reset signal, so if R is equal to 1 and S is equal
+[06:25] to 0, then Q gets set to 0.
+[06:33] So now let's take a look at the rest of the two combinations.
+[06:38] So the rest of the two combinations are like this.
+[06:40] Let me again erase the ink on this slide, alright.
+[06:55] So let's assume that S is 0 and R is 0.
+[07:00] So if S is 0, then 0 complement is equal to 1, and if R is 0, R complement is equal to 1.
+[07:08] Right.
+[07:09] So as a result, we will not be sure about the output of the NAND gate.
+[07:14] So it depends on what we have.
+[07:15] So let's consider the first NAND gate.
+[07:19] So in this case, the input is equal to Q bar, and in this case, the input is Q.
+[07:27] So let's, essentially the question is, what is 1 and Q bar, right?
+[07:37] And the entire thing complement it, right?
+[07:39] So this is the NAND of 1 and Q bar.
+[07:43] So one thing that we can see is that in a NAND gate, or maybe, you know, let's do one
+[07:49] more thing using the De Morgan's laws that hopefully we all know.
+[07:55] So De Morgan's laws basically say that A and B NAND is A bar or B bar, A complement or B complement.
+[08:08] So using this, if you open it up, this will be 1 complement or, right, so which is equal
+[08:20] to, so 1 complement is 0 or, so 0 or Q is equal to Q, alright?
+[08:33] So basically, the output of N1 is equal to Q.
+[08:40] And similarly, what I can do over here is that I can, for the case, so this is for N1.
+[08:52] For the case of N2, what I can do is something very similar, and, oops, sorry, so this value
+[09:00] here is supposed to be Q, and for some reason, it's Q bar, which is not correct, yeah, that
+[09:11] fixes it.
+[09:13] So, what we are doing here is we are computing 1 AND it with Q, the entire thing complement.
+[09:21] So 1 AND Q is Q, so this is equal to Q bar, right?
+[09:26] So basically, what happens is that if we set S as 0 and R as 0, which means we are not trying
+[09:32] to set the value, neither are we trying to reset the value, then the old values of Q and
+[09:37] Q bar, in a sense, continue.
+[09:41] This is a fantastic idea, so I'll tell you why.
+[09:45] So the way that this latch works is that we set, we have a way of setting the value, which
+[09:51] means setting Q to 1.
+[09:53] We have a way of resetting the value, which means setting Q to 0 using these two combinations.
+[10:01] And we have a way of maintaining the value, which means whatever value is there in the latch,
+[10:05] that remains, that can be done by setting S as 0 and R as 0.
+[10:10] So both S and R are grounded, the latch will maintain its value essentially forever, which
+[10:16] is exactly what we wanted to do.
+[10:20] So naturally, readers will ask what happens if we set S as 1 and R as 1.
+[10:27] Well, so let's take a look at this.
+[10:31] This is somewhat a tricky case, and this is a typical question that is asked in exams.
+[10:40] So if we set S as 1 and R as 1, so S complement will be equal to 0 and R complement will be equal
+[10:47] to 0.
+[10:48] So moment 0 is one of the inputs of the NAND gate, the output is equal to 1.
+[10:57] And so both Q and complement of Q will be equal to 1.
+[11:01] So in a sense, this is an invalid input, right?
+[11:04] It sort of produces something that we don't like.
+[11:08] It's invalid as an input.
+[11:10] So you cannot set and reset the latch at the same time.
+[11:13] So we will not consider this input at all.
+[11:16] We'll only consider the top three inputs.
+[11:21] So essentially, what are the top three inputs telling us?
+[11:26] What the top three inputs are telling us is that we have a way of setting the latch, resetting
+[11:32] the latch and maintaining the value.
+[11:35] So mind you, these are very, very important points, so it is necessary to understand these
+[11:39] points very nicely, very clearly.
+[11:42] And what I would advise the reader to do, the listener of this video, is to basically look
+[11:52] at all of these combinations.
+[11:53] There are only four combinations.
+[11:55] For S and R, there are only four combinations, 0, 0, 0, 1, 1, 0 and 1, 1.
+[12:02] For all of these four combinations, work out the results the same way that I did and convince
+[12:07] yourself that if S is 1, then essentially we set the value.
+[12:14] If R is 1 and S is 0, we reset.
+[12:18] Otherwise, we maintain, all right?
+[12:21] Okay, let's move forward.
+[12:25] So let's now consider the idea of having a clock.
+[12:31] So what is a clock?
+[12:33] So basically you consider, maybe for explaining a clock, the best would be to actually go out
+[12:43] of this PowerPoint window and basically look at, draw a slightly larger diagram.
+[12:57] So consider a digital system.
+[12:58] So typical digital system would have millions and, not millions, but billions of components,
+[13:05] right?
+[13:06] In today's world.
+[13:07] Maybe lots and lots of components, right?
+[13:10] So I'm drawing these as blocks.
+[13:12] So we'll have a lot of blocks, right?
+[13:16] Maybe you know, this is an adder and this thing stores, there are some SR latches here,
+[13:23] there's a multiplier, there's an encoder over here.
+[13:30] So let's assume that we want some data to come from the SR latch, get, you know, from a series
+[13:37] of set of SR latches, get added.
+[13:41] Similarly, we want, then we want a multiplier to take that data.
+[13:48] So we want some data coming out of the multiplier, some from the adder, we want to add it once
+[13:52] again, right?
+[13:54] And then we want some of these bits to choose one of, we then want to input these bits into
+[14:05] the encoder and finally we are interested in the output of the encoder.
+[14:09] So let's assume we have a circuit of this form.
+[14:13] So clearly there is a lot that is happening, right?
+[14:16] So when designers will design it, they need to ensure that the right input reaches the
+[14:21] right circuit block at the same time.
+[14:25] And with billions of transistors, this is very, very difficult.
+[14:28] So some degree of scheduling is actually required.
+[14:33] And if this amount of scheduling is not provided, then essentially the entire thing will go haywire.
+[14:38] So let's, because the latencies of these units will actually be very different.
+[14:43] So it is possible that the SR latch takes one nanosecond, the adder takes 1.6 nanoseconds,
+[14:50] the multiplier takes 2.9 nanoseconds.
+[14:53] So actually, if you see at this, at this adder, the first input is ready at t plus 2.6 nanoseconds
+[15:01] and the same, and the other one is ready at 2.9.
+[15:06] And finally, you know, some data then again comes out.
+[15:09] So managing the timing of all of this would actually be very difficult.
+[15:16] So what do we do?
+[15:17] So what do we do in school?
+[15:19] What we do in school is that we have a timetable.
+[15:22] And so a typical timetable, at least in an Indian school, the way it looks like is something
+[15:29] like this, that we divide the entire school day into multiple blocks.
+[15:37] So in India, they are essentially called, at least the part of India that I am from, they
+[15:42] are called periods, so essentially, oops, sorry, so in my school, we used to divide the entire
+[15:59] school day into seven periods, right?
+[16:06] So the way that the weekly timetable was made is that, so we actually had a six-day school.
+[16:13] So from essentially Monday till Friday and Saturday, the way the timetable was made is
+[16:18] that we used to have a matrix.
+[16:20] And each matrix at this point was a period, and so then maybe the first period had maths,
+[16:27] the second had physics, the third had chemistry, then maybe we used to go out and play football,
+[16:33] right?
+[16:34] So this is the way that the entire day was divided.
+[16:37] So this made scheduling very, very easy.
+[16:39] For example, a physics teacher could finish her second period in my class, and then go
+[16:45] and teach the third period, so let's say this is the first, second, and third, could go
+[16:49] and teach the third period in another class, so it made scheduling really, really easy.
+[16:54] Then maybe go and teach the fifth period in another class.
+[16:58] So how were periods demarcated?
+[17:00] So in my school, people, you know, they were the good old days of the late nineties, so
+[17:07] not all the students, you know, used to have watches and even the watches were not in order
+[17:13] sometimes.
+[17:14] So what was done is that we used to have a big bell.
+[17:17] And the bell used to sound at the end of every period.
+[17:23] So after that, students used to rearrange themselves, teachers used to go to another classroom.
+[17:28] So the entire, the signaling was done on the basis of a bell that used to ring at the end
+[17:35] of every period, right?
+[17:36] So then something used to happen, the new class used to start, again the bell, again the bell, and so on.
+[17:43] So can we have a similar bell in a digital circuit?
+[17:47] That is pretty much, you know, that will be really, really useful if we have something
+[17:54] of this nature akin to a bell, so basically what happens in the digital circuit is that
+[18:05] we have a signal called a clock which reaches all parts of the chip.
+[18:13] So all the logic elements will get a clock.
+[18:15] So a clock is basically a signal which is a square wave, and so basically this is 0 and
+[18:23] 1, so it's a square wave between 0 and 1.
+[18:26] The duration of the 0 and 1 is equal, it's a wave of this kind.
+[18:32] So typically the negative edge, so we will discuss why, so when there is a transition from
+[18:36] 1 to 0 is thought of as the bell.
+[18:39] So all the elements inside a digital circuit coordinate themselves to the end of the clock
+[18:50] period.
+[18:51] So the clock period is measured from one negative edge to one more negative edge.
+[18:55] So negative edge is when there is a transition from a 1 to a 0.
+[19:00] So the time between one negative edge to the other is called the clock period, right?
+[19:14] So this time, you know, can be 2 nanoseconds, 5 nanoseconds and so on, and the number of clock
+[19:20] periods, 1 divided by the clock period, which is the number of clock periods that you have
+[19:25] per second, this is known as the frequency, right?
+[19:30] So let me call this the frequency, alright?
+[19:36] So the number of clock periods per second, so let's say number of clock periods per second,
+[19:43] right?
+[19:44] So this is called the frequency.
+[19:50] So for, sorry, I'll just change the definition of the frequency, since the frequency is 1 divided
+[20:05] by the clock period, it's not the number of clock periods, I'm sorry.
+[20:09] Let me just quickly change the definition over here.
+[20:16] What I want to write is something, sorry, so the frequency is the number of clock periods
+[20:24] that you see per second, which is 1 divided by the clock period.
+[20:34] So for example, if the clock period is, let's say 10 milliseconds, then what is the frequency?
+[20:41] It is 1 divided by 10 milliseconds, and that is 100, 100 times per second, which is called
+[20:50] 100 hertz.
+[20:51] So this is exactly the same frequency that when you go and buy a laptop or a desktop, they say
+[20:56] that we are having a 3 gigahertz processor.
+[20:59] So what this means is that 3 billion times a second, you have a negative edge inside the
+[21:06] chip.
+[21:07] So this is exactly what frequency means.
+[21:08] A frequency is the inverse of the clock period.
+[21:11] So let's say if I buy a new machine or a laptop or a desktop, and the frequency is let's
+[21:16] say 2 gigahertz.
+[21:18] What this means is that every half nanosecond or 500 picoseconds, we have a negative edge of
+[21:27] the clock.
+[21:28] And all digital elements inside a processor, and including all the designers who are designing
+[21:35] them, coordinate all their actions with respect to the negative edge of the clock.
+[21:40] For example, let's say if there is an adder, and the adder is providing its output to the
+[21:46] multiplier, the designer of the adder will tell the multiplier instead of, you know, specifying
+[21:51] time in terms of nanoseconds, which will just make life hard, they say that, look, the data,
+[21:59] the output of the adder will be given to the multiplier in 5 clock periods or 5 clock cycles.
+[22:05] Right?
+[22:06] Clock period or clock cycle, that's okay.
+[22:08] Both are interchangeable.
+[22:10] So in 5 clock cycles, the data from the adder will be there with the multiplier.
+[22:16] Similarly, if this data is going somewhere else, and the data from the multiplier is also going
+[22:23] to the same place, again the coordination is done in terms of the clock period.
+[22:30] So this makes the life of designing a digital circuit very, very simple.
+[22:36] So almost all digital circuits will have a clock.
+[22:41] So let's take a look at what exactly happens if I have an SR latch with a clock.
+[22:48] So when the clock is equal to 1, right, when the clock is equal to 1, see, in a NAND gate,
+[22:54] if any of the inputs is equal to 1, in this case, what will happen?
+[22:58] The output over here is 1 ANDed with S complement, which is equal to S complement.
+[23:06] Similarly, when the clock is 1, the output here is R bar.
+[23:12] So this is the, if I just go back to the previous slide, this is exactly the inputs that were
+[23:16] given to an SR latch.
+[23:19] So pretty much here, the same inputs are being given.
+[23:24] After that, if you want to set the value, we can set it.
+[23:27] S needs to be 1, so Q will be 1.
+[23:30] If you want to reset the value, we can do that.
+[23:33] So in this case, R needs to be 1 and S needs to be 0, so Q will get set to 0, all right?
+[23:40] Now let's assume that the clock is 0.
+[23:44] If the clock is 0, then what will happen?
+[23:49] Let's take a look at that.
+[23:55] If the clock is equal to 0, then the output of both the NAND gates are 1, and if the outputs
+[24:07] of both the NAND gates are 1, so let's go back to the previous slide and see what happened.
+[24:10] If the outputs of both the NAND gates are 1, it means that S is 0 and R is 0, which is
+[24:16] this case, and we maintain the old values, right?
+[24:20] So basically, what we can say, for a clocked SR latch, if the clock is equal to 0, we maintain
+[24:28] the old values of Q and Q complement.
+[24:32] If the clock is equal to 1, then this works as a regular SR latch, so we can either set
+[24:40] the value or we can reset the value, all right?
+[24:49] So let's now take a look at a different kind of a latch.
+[24:55] So typically a latch with a clock, so at least that's the convention that we would be adopting,
+[25:01] that a latch with a clock will also call it a flip-flop, right?
+[25:05] So basically, the previous one can also be called an SR flip-flop.
+[25:10] So whenever there is a clock, we would like to call it a flip-flop.
+[25:13] So let's take a look at a D flip-flop.
+[25:16] So what was the basic problem in an SR latch?
+[25:19] There were two inputs, S and R. So typically, what we were doing is that we were setting S
+[25:26] to 1 and R to 0 to set the value, and S to 0 and R to 1 to reset the value.
+[25:33] That was kind of complicated, so let's try to unify S and R. So let's consider a single
+[25:39] input D and modify the clock SR latch appropriately, all right?
+[25:45] So let's take a look at it.
+[25:46] The D flip-flop is very, very important, so that's the reason I have this important tag.
+[25:52] The reason it is important is that it is very, very heavily used.
+[25:56] The SR latch is a good latch to explain to a learner for the first time, but what is actually
+[26:03] used much, much more frequently is the D flip-flop.
+[26:08] So here is how it works.
+[26:09] So let's consider the case when the clock is 1 and the clock is 0.
+[26:14] So let us first consider the case, the simpler case, when the clock is 1.
+[26:22] Well, simple and not simple depends.
+[26:25] So let's find, if you have always considered the clock to be 1, let's consider the clock
+[26:29] to be 1 now as well for the first, for starting to explain how this circuit works.
+[26:37] So the clock is 1, so by this time you would have realized that we are computing 1, the output
+[26:46] as 1 and D, so this will be, this is same as D bar.
+[26:52] So I1 is equal to D bar, if the clock is equal to 1.
+[26:58] And if this is equal to D bar, so D bar will come over here.
+[27:03] So what we will compute here is 1 and which is equal to, right?
+[27:14] So this is equal to, I2 is equal to D, all right?
+[27:20] So in the SR latch, so then after that we have a typical SR latch.
+[27:25] So here we can say that the value of S is essentially equal to the complement of this, which is D,
+[27:32] and the value of R is equal to the complement of this, which is D complement.
+[27:38] So I want to make one important point here, because a lot of students make a mistake.
+[27:43] So let's look at the SR latch once again, the basic SR latch with a cross-coupled pair
+[27:50] of NAND gates.
+[27:51] So the inputs are not SNR, okay?
+[27:53] Let me repeat it once again, it's very, very important, so let me circle this.
+[27:58] The inputs are not SNR, the inputs are S complement and R complement, all right?
+[28:05] So in the, we are reasoning in terms of SNR, the inputs are not SNR, they are S complement
+[28:12] and R complement, okay?
+[28:15] So what is going in is S complement and R complement.
+[28:20] Armed with this knowledge, what is going in?
+[28:22] S complement is D complement, S is equal to D, and R complement is equal to D, so R is equal
+[28:29] to D complement, fine?
+[28:32] So what will be the output?
+[28:35] Well, if D is 1, S will be 1, so Q will be 1, if D is 0, then S is 0 and Q is 0.
+[28:43] So what we can essentially say is that Q is being set to D, all right?
+[28:52] So when the clock is 1, what we are doing is that we are transferring the input, which
+[28:59] is D, to Q, and with a delay, of course, so that's the reason it's called D for delay,
+[29:06] D flip-flop, and the delay is the signal passing through the logic gates, but finally when the
+[29:12] clock is 1, the flip-flop is enabled, so the input is getting reflected at the output,
+[29:19] okay?
+[29:20] And the most important point to remember is that the inputs of this SR latch, at this
+[29:27] point, so this is the SR latch, the inputs are pretty much S complement and R complement,
+[29:33] right?
+[29:34] Okay, so now let me take a look at what happens if the clock is 0, well, if the clock is 0,
+[29:47] then 0 goes to both the NAND gates, so we have 1 and 1, so essentially S bar is 1 and R bar
+[29:56] is 1, so the inputs are, the set signal is 0 and the reset signal is 0.
+[30:08] So in this case, if we go back to our basic SR latch, if S is 0 and R is 0, we maintain the
+[30:13] old values, so we'll do exactly the same, I1 and I2 will be 1, and which means set and
+[30:21] reset both are 0 and 0, so we maintain the old values.
+[30:26] So the working of this is exactly similar to the SR latch, it's just that we have this
+[30:34] structure over here to ensure that we can manage with a single input.
+[30:41] So basically what we are doing is that this is storing one bit for us, we have one input
+[30:46] D and we have two outputs, one is Q and the other is Q complement, essentially logically
+[30:53] at least a single output and we are saving D, so when the clock is 1, the value of D is
+[31:01] getting stored and it is reflecting here, then at the time of the negative edge, the value
+[31:06] remains stable, right?
+[31:08] So once it reaches 0, we will maintain the value of Q and Q bar that was set and as long
+[31:14] as the clock is 0, the flip-flop will maintain its value.
+[31:19] Alright, so now let's create a, we still haven't exploited the negative edge to the fullest extent,
+[31:32] but let's do it by proposing a slightly more complicated structure called a master-slave D flip-flop.
+[31:38] So let's consider this circuit, it looks complicated, it's not that complicated, so let's break
+[31:48] it down into two parts, so let's consider the master, so what is the master, it's exactly
+[31:53] the same circuit as this, right?
+[31:55] So exactly a D flip-flop is the master, exactly the same and the slave is also exactly the same,
+[32:03] so you can consider two D flip-flops where the D value goes in, there is the first flip-flop
+[32:10] and there is the second one, so let's call the first one the master, second one the slave
+[32:15] and then the output Q.
+[32:18] The catch is that the regular clock goes into the master and the complement of the clock goes
+[32:29] into the slave, that's all, right?
+[32:31] So the diagram is very very simple, we have two D flip-flops connected to each other, one,
+[32:38] the first D flip-flop is called the master, it takes the clock as input, the second D flip-flop
+[32:46] is called the slave, it takes the complement of the clock as input.
+[32:51] So let's see what happens.
+[32:54] So when the clock is equal to one, the value of D will get transferred to the output, right?
+[33:01] So whatever is the value of D, it will get transferred to this intermediate point because
+[33:06] here the clock is zero, so then we'll have D dash here, D dash is equal to D, right?
+[33:14] So the value of D moves from here to here, right?
+[33:23] Then when the clock turns zero, the value of D moves from the intermediate point to the
+[33:33] output which is Q, because when the clock turns zero, clock bar actually turns one, right?
+[33:40] So when the clock suddenly becomes zero, when there is a negative edge, from one you move
+[33:44] to zero, the complement of the clock, from, moves in the other direction, so since the
+[33:52] clock here that is going in, this signal becomes one at this particular point, the value here
+[34:01] between the master and the slave gets transferred to the output of the slave with some small delay
+[34:06] of course, so we have Q is equal to D dash, right?
+[34:12] So what is exactly happening?
+[34:14] If I consider this complicated circuit and I just look in the vicinity of the negative
+[34:19] edge of the clock, initially here the clock is one, say the value here is let's say D,
+[34:27] then just after the negative edge, the value of Q which is the output of the master-slave
+[34:32] D flip-flop will get set to D, right?
+[34:35] So that is the only time in which the value will move from one side to the other side and
+[34:42] so that is the significance of the negative edge that you can sort of think of the negative
+[34:48] edge as the bell that I had in my school.
+[34:50] The moment the clock transitions from one to zero, essentially whatever is there at the
+[34:57] input of a master-slave structure gets reflected at the output, alright?
+[35:06] So that's the idea and then of course if I disable the clock, then what will happen is
+[35:13] that this value that is there will be maintained.
+[35:19] So what is the advantage of having such a structure, a master-slave D flip-flop, well the advantage
+[35:25] is like this, so it will be clearer actually in chapter 9, but I can give a little bit
+[35:30] of a preview.
+[35:32] So the advantage is something like this that we can create a structure, so typically what
+[35:36] will happen while designing a large processor is that we will have to save some values in
+[35:48] D flip-flops, so let me call this an FF, and then at the beginning of a clock cycle which
+[35:56] means at a negative edge, the data will come at the outputs of the set of flip-flops, we'll
+[36:03] then have a set of logic gates, so it's typically represented as a cloud like this of logic gates,
+[36:09] we'll compute their value within the clock cycle, and before the next negative edge, the
+[36:15] values will be ready, and they will then be stored in the flip-flop, right, in one more
+[36:22] flip-flop, right, because they'll be ready just before the negative edge, so then they'll
+[36:27] be stored, and then in the subsequent clock cycle, they will be available at the outer
+[36:33] outputs of this flip-flop, so this is a very-very important design strategy of digital circuits,
+[36:39] it is called pipelining, and we'll discuss all the advantages of pipelining in chapter
+[36:47] 9, but the only thing that the reader or the person who is listening, watching this video,
+[36:55] needs to appreciate is the following, so let me again go back actually to my journal, so
+[37:06] the only thing that the reader needs to appreciate is that if this is a master-slave D flip-flop,
+[37:18] this is the input, and this is the output, and this is pretty much the clock, right, so basically
+[37:30] at the negative edge of the clock, the output gets set equal to the input, so the input needs
+[37:39] to sort of become stable slightly before the negative edge, so let's assume that at this
+[37:43] point the input becomes stable, then the clock transitions from 1 to 0, and that's when the
+[37:49] output of the flip-flop reflects the input, and the value in the flip-flop can stay for
+[37:55] as long as we want, we can disable the clocks, in this case the value will remain, or we can
+[38:03] set, no, I think the only way is by disabling the clock, otherwise the input will always reflect
+[38:10] at the output, right, for a D flip-flop there is no other way, for a SR flip-flop we can set
+[38:15] S and R to 0 and 0, so that would maintain the value, but in the case of D flip-flop we can
+[38:21] disable the clock, and the value will be maintained, right, so we can store the value, that's the
+[38:27] basic idea of what a D flip-flop does, this is a very very important logic element that
+[38:35] we'll be using, we'll be using in chapter 9 mostly, but at least we should take note of
+[38:40] it now, alright, so let's move, let us now consider a similar circuit as the master-slave
+[38:49] D flip-flop, it's called the master-slave JK flip-flop, it's slightly more complicated than
+[38:55] that, so let us first decompose the design into parts that we already know, so as we
+[39:04] see let's divide the design into two halves, the master and the slave, so the first part
+[39:12] is a regular SR latch, a clocked SR latch with a little bit extra, but the second part is exactly
+[39:19] a clocked SR latch, right, there is no difference, right, so the second part is completely a clocked
+[39:24] SR latch with the complement of the clock going in, and the first part is also a clocked SR
+[39:30] latch, the only difference is that in this first AND gate, instead of two inputs, there
+[39:38] are three inputs, that's the only difference, the same is true of the second AND gate over
+[39:43] here, so the interesting part is that this input is actually Q, complement of Q which is
+[39:50] coming in, Q bar, this is what is coming in, and similarly here, the complement of Q is coming
+[39:58] in, sorry, the value of Q is coming in, which is Q itself, so that is the only difference,
+[40:07] the only difference is that this is exactly the same as a master-slave SR flip-flop, the
+[40:14] only difference being that the first two NAND gates actually take three inputs, ok, the first
+[40:23] two NAND gates take three inputs, the inputs are Q bar for the first NAND gate that takes
+[40:31] an input J, and so the inputs here are called J and K, not SNR but J and K, so the input where
+[40:39] the J is coming, the other input is Q bar, and for K, the other input is Q, that's all,
+[40:47] and the third input is the clock, so let us, so this is also a negative edge triggered system,
+[40:54] so there is a positive edge and then a negative, let's consider the case when the clock is one,
+[41:00] so when the clock is one, the master is active and the slave is not active, the slave is maintaining
+[41:05] its values, so we will not consider the slave, so let us consider all the cases when the clock
+[41:10] is one, which means that we only need to consider the master, so let us consider each of these
+[41:18] cases, the cases are simple, so the first case is when J is zero and K is zero, right,
+[41:24] zero and zero, so this is a very simple case, so if J is zero and K is zero, then if one of
+[41:35] the inputs of a NAND gate is zero, then the output is set to one, so with no difficulty we can
+[41:45] set I1 to one and we can set I2 to one, no difficulty at all, so if I1 and I2 are one, what we have,
+[41:59] what we will have is essentially this is S bar, so set and reset both are zero, so the values,
+[42:06] whatever values were there, they will be maintained, so what value was there, the old value of T1,
+[42:12] so T1 is essentially we are using T1 to label the value at this wire, it's not a separate
+[42:18] structure, so what was the old value of T1, the old value of T1 was the same as Q, right,
+[42:28] so basically whatever was in Q was in T1, because, so let's just consider what happened
+[42:35] before this clock cycle, so before this particular clock cycle, we had a positive edge, so at
+[42:44] the time of the positive edge when this, when the clock was zero, the value of T1 was reflecting
+[42:50] in Q and once the clock became one, the slave got disabled, so the old value of T1 that we
+[42:58] have over here is essentially the same as the value of Q, so as a result since we are maintaining
+[43:05] the value of T1 that we have is the same as the value of Q, alright, so this is when the
+[43:14] clock is equal to 1, just prior to the negative edge, whatever, so just prior to the negative
+[43:20] edge, essentially we are considering let's say this instant of time, so let me maybe draw
+[43:25] a slightly bigger figure, so we are essentially considering let's say this instant of time
+[43:31] slightly before the negative edge, so what we are saying is that if J and K both of them
+[43:36] are zero, then the value at this point which we call T1 will be the same as Q, why do we
+[43:44] say that, we say that because the value of I1 and I2 are 1 each, so the latch will maintain
+[43:51] its value, so T1 will be the same as the old value of T1, what was the old value of T1,
+[43:57] let us consider this point of time, so what was there in T1 got reflected in Q, so basically
+[44:04] T1 is the same as Q, alright, okay, so we have considered this case, which tells us that
+[44:13] if J and K are zero, both of them are zero, then the value of T1 will be the value of Q,
+[44:19] and what point of time are we considering just before the negative edge, now let's consider
+[44:25] one more combination, let us consider the next combination in which J is equal to one and
+[44:35] K is equal to zero, so if J is one and K is equal to zero, so let's consider what we can
+[44:44] do very quickly, and the clock is one of course, what we can do very quickly is that we can set
+[44:50] the output of this NAND gate to one, because the moment we have a zero as an input, the
+[44:55] output of the NAND becomes one, so I2 is equal to one, so what's happening over here, so what's
+[45:02] happening over here is that we are getting Q bar here, right, so the output I1 is equal
+[45:11] to one and one and Q bar, entire thing complemented, which is equal to Q, right, so I1 here is equal
+[45:22] to Q, okay, so basically what we see is that I1 is equal to Q, and I2 is equal to one, so
+[45:36] how do we solve this, so how do we solve this, the way that we solve this is that we consider
+[45:40] two values, we consider for both cases, Q being zero and Q being one, so let us consider the,
+[45:48] so this value over here is one, so let us consider the first case when the value of Q is zero,
+[45:55] if the value of Q is zero, then the output here, because since this is a NAND gate is equal
+[46:01] to one, so T1 is equal to one, alright, so when Q is zero, T1 is equal to one, okay, so we consider
+[46:09] this case Q is zero, now let us consider the next case, which is Q is one, so let me just
+[46:17] maybe erase, let us consider the next case, where Q is equal to one, so here Q will be equal
+[46:29] to one, so if you have one and one, so essentially both set and reset are zero, so the value will
+[46:35] be maintained, so the value that will be maintained, so what will we have, is the same as this case,
+[46:44] which means T1 is equal to the value of Q, and what is the point of time that we are looking
+[46:49] at, just before the negative edge, so whatever is the value of Q, T1 must have been equal to
+[46:54] that, and since the value of Q is equal to one, T1 is equal to one, so we see that in
+[47:00] both cases, T1 is equal to one, alright, so what is happening, in the J terminal, if it
+[47:09] is set to one, and if K is set to zero, then irrespective of the value of Q, in all cases,
+[47:18] the value at this point T1 is being set to one, now let us consider the next combination,
+[47:35] so let us consider the next combination in which J is equal to zero and K is equal to
+[47:43] one, so if J is equal to zero and K is equal to one, so what this allows is that we can
+[47:52] nicely set the value of I1 to be equal to one, right, so this case is covered, what is then
+[48:00] not covered is basically this, that what is the value of I2, so since the clock is equal
+[48:08] to one, and we are getting Q over here, value of I2 is Q, and one and one, entire thing complemented,
+[48:17] which is Q bar, alright, so basically the value at this point is the complement of Q, and the
+[48:31] value at this point is one, so let us do the same thing, let us follow the same logic as we
+[48:37] did before, let us consider two cases, let us consider the case where Q bar is equal to
+[48:42] one, and when Q bar is equal to zero, so if Q bar is equal to one, so we will have one and
+[48:50] one as both the inputs, the value will be maintained, so whatever is the old value of T1 and T1 bar,
+[48:58] the same value will be maintained, so what is the old value of T1, it is the value of Q, so
+[49:04] since Q bar is equal to one, so in this case, when Q bar is equal to one, T1 is equal to zero,
+[49:18] which is the value of Q, so let us now consider the other case, so let me just erase some of
+[49:26] the temporary values, and let us consider the other case, when Q bar is equal to zero, so
+[49:41] if Q bar is equal to zero, then this particular point is zero, and so nicely we can figure out
+[49:49] the output of the AND gate, which is one, so one and one here is zero, so we see that for
+[49:56] both the cases, irrespective of the value of Q, the value of T1 is zero in this case, so
+[50:03] we write zero, so we can think of J and K as pretty much as S and R, if J is one and K is
+[50:09] zero, the value of, value at the middle between the master and the slave is set to one, similarly,
+[50:15] if J is zero and K is one, the value of, at the point T1 is set to zero, so mind you, I1,
+[50:22] I2, T1 and T1 bar are essentially points, you know, we are just referring to the values on
+[50:29] certain wires, so let us now consider the last case, the last case is very interesting, so
+[50:37] in this case, J is one and K is one, so if J is one and K is one, what do we have, we have
+[50:49] the clock to be one, J is one and K is one, alright, so the value at this point is Q complement,
+[51:01] and the value at this point is Q, so the value of I1 is essentially Q complement and one and
+[51:10] one, entire thing complemented, which is equal to Q, right, so the value of I1 is equal to
+[51:16] Q, and the value of I2 is essentially Q complement, which is Q1. Given the fact that we have Q over
+[51:30] here, and we have Q bar over there, so essentially what is the set symbol, the set is, so mind
+[51:39] you, S bar is equal to Q, which essentially tells us that S is equal to Q bar, and R bar
+[51:46] is same as Q bar, so R is equal to Q. So taking both of these in our SR large condition, what
+[51:56] we can say is that the value of T1 is the same value of the set, is the same as S, which is
+[52:04] Q complement, and the value at this point is Q. So what we have effectively done is that
+[52:13] we have replaced this with Q complement, at what point? At the point which is just before
+[52:20] the negative edge, we have the value of T1 as Q complement, so we can think of it as a
+[52:25] toggle, as like a bit flip, right? So let me explain the logic once again. So what happened
+[52:32] is since all the values were 1, so Q complement was coming here, Q was coming here, so basically
+[52:39] this can, if you think of the SR large, this particular point is actually the S bit, and
+[52:46] this particular signal here is the R bit, so the S is being set to Q bar and R to Q. So
+[52:53] the outputs at this, at the end of the SR large will essentially be Q complement and Q. So we
+[52:59] are effectively toggling, doing a bit flip of whatever is Q, we are setting T1 to be the
+[53:08] complement of Q. Fair enough. So now let's again clean the screen. So what is it that we have
+[53:18] here? What we have over here is that we have looked at the point of time which is just before
+[53:28] the negative edge. And at this particular point of time, for the four combinations of J and K. When
+[53:39] J and K are 0, 0, we have essentially we maintain the value. If J is 1, K is 0, we set the value. If
+[53:48] J is 0, K is 1, we reset the value. The interesting case which we have not seen up till now is when
+[53:58] J is 1 and K is 1. In this case, what we do is that we essentially toggle the value of Q or we have a, we
+[54:14] essentially flip the value of the bit. After this, we have the negative edge, the clock becomes 0. So
+[54:23] the master becomes disabled and the slave becomes active. Once the slave becomes active, we enter a
+[54:30] new clock cycle, right? Because it's after the negative edge, we enter a new clock cycle. So in
+[54:36] this case, what we need? So this is a regular SR latch, no problems. And since the clock is 0,
+[54:42] so basically we are considering clock bar. So clock bar is equal to 1. So the slave is enabled.
+[54:50] So let's consider the value of T1, which is T1 and T1 bar. So essentially, this is we are either
+[54:59] trying to set or reset the SR latch. So in this case, what did we have when J and K were 0? The value
+[55:10] of T1 as Q, but that was in the previous clock cycle. So let's refer to it in the current clock
+[55:15] cycle as old Q, which is which point of time are we considering? It is just after the negative edge,
+[55:23] right? Just after the transition. So now we are considering that the negative edge has happened
+[55:28] just after the transition in a new clock cycle. The value of T1 is the old value of Q.
+[55:34] T1 when J is 1 and K is 0 is 1. When J is 0 and K is 1, the value of T1 is 0. An interesting case,
+[55:45] when it's 1 and 1, it is the complement of old Q. So what does the SR latch do in this case? Well,
+[55:53] what it does is very simple. It just transfers the values at its input to the output, because it's
+[56:00] enabled. So that will take some time, but the time is minimal. So all the values at the input will get
+[56:06] transferred to the output. So what is it that we get to see? What we get to see is that when J
+[56:13] and K both are, let me maybe clean the screen. So what we get to see after the negative edge,
+[56:27] when the new clock cycle begins is that if J and K are 0, the JK flip flop maintains its value. The value
+[56:34] of Q is the same as old Q. So what do we mean by old Q? At the end of the negative edge, the new cycle
+[56:40] starts. So at this point and this point, so this is where we'll have old Q and this is where we'll
+[56:48] have new Q. So new value of Q is same as the old value of Q. If J is 1 and K is 0, we are setting the
+[56:55] value, setting Q to 1. If J is 0 and K is 1, we are setting Q to 0. If J is 1 and K is 1, so this is the
+[57:06] interesting case, there we toggle it. So the value of the output is the inverse is the bit complement
+[57:13] of the previous output. So we are essentially doing a toggle over here a toggle. All right. So this
+[57:24] ends our discussion on flip flops. The important points that should be remembered are as follows.
+[57:32] So the important points are that we have the notion of a clock. Why do we need a clock? Well,
+[57:41] we need a clock the same reason because I had a bell in my school. It is essentially to synchronize
+[57:47] different logical elements such that if all the inputs are ready by the time that we have the
+[57:54] negative edge of the clock, right? So we are assuming a negative edge triggered system where at the time
+[58:00] of the negative edge and new clock cycle starts. So by this time, all the inputs are ready.
+[58:06] The moment a new cycle starts, if you consider this to be a flip flop and this is the input
+[58:14] inputs rather and this is the output. So the moment we have a negative edge, the inputs get transferred
+[58:20] to the output and we have a way of maintaining the value, storing the value in the flip flop even across
+[58:27] clock cycles. For example, in JK flip flop, we set J and K to zero, then the value will get maintained
+[58:34] across clock cycles. So this is essentially a storage structure where the inputs get reflected at the
+[58:41] output for at the time that there is a negative edge and in a general condition, the value is saved
+[58:49] in the structure till the next negative edge. So with this, we can create a lot of sequential logic.
+[58:56] We can create counters and we can create frequency dividers. We can create a host of digital circuits.
+[59:03] So I would like to ask the reader to look at any classic text on digital logic. So they'll find lots
+[59:11] and lots of examples with, you know, flip flops. You can also take a look at books on switching theories,
+[59:20] such as such that, you know, you have a slightly deeper understanding. So the book by Zeke Ohavi is
+[59:27] one such reference, where we discuss switching theory and a lot of applications of sequential circuits
+[59:35] for doing in a fairly complicated logic. So for example, you want to make a traffic light
+[59:40] controller. How would you do it? You'll essentially have a set of flip flops and you'll have a clock
+[59:47] and then pretty much will be a set of inputs and there will be data moving between the flip flops.
+[59:52] And you can sort of realize complex logic with the help of that. So I will not, I will not discuss this
+[59:58] more. So our main aim in this chapter is to provide an overview. So then we will move to the next part of
+[60:05] the lecture, which is memory cells. So what is the memory cells? In the memory cell, we can essentially
+[60:13] store a lot more data in a, you know, in a fairly compact form.
+[60:22] And so the flip flop actually requires a lot of transistors, a very nice and fast structure,
+[60:28] but it requires a lot of transistors. As compared to that a memory design is far more compact.
+[60:33] So for the same area, it allows us to save far more data. So we'll take a look at memory cells next.
+[60:41] So we'll do this in the next lecture.

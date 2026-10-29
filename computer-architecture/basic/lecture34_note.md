@@ -510,8 +510,8 @@ stride  512 B :   5.57 ns per read   (1 reads per 64-B block)
 |---|---|
 | Cache 怎麼找資料（tag、set、way）、寫入、替換 | [第 35 支](lecture35_note.md)：Memory System Part 2（課本 §11.2） |
 | 平均延遲的數學模型、miss 的種類 | [第 36 支](lecture36_note.md)：Memory System Part 3（課本 §11.3） |
-| 很多程式同時跑、程式比實體記憶體大 → virtual memory | **第 37 支**（課本 §11.4） |
-| 多核心共用 cache、coherence | **第 39–40 支**（課本 Ch12） |
+| 很多程式同時跑、程式比實體記憶體大 → virtual memory | [第 37 支](lecture37_note.md)（課本 §11.4） |
+| 多核心共用 cache、coherence | [第 39 支](lecture39_note.md)、[第 40 支](lecture40_note.md)（課本 Ch12） |
 | SRAM、DRAM、sense amplifier 的電路與延遲實測 | [第 20 支](lecture20_note.md) |
 | 單週期處理器假設記憶體 1 週期 | [第 27 支](lecture27_note.md#11-memory-accessma) |
 | 記憶體慢會讓 pipeline 停頓 | [第 32 支](lecture32_note.md#15-真實-pipelinecpi--cpi_ideal--stall-rate--stall-penalty) |

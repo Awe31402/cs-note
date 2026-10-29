@@ -1,0 +1,578 @@
+[00:00] Welcome to chapter 13. This chapter is on secure processors. So we will discuss secure
+[00:22] architectures and the background that is required is like this. So we will need some of the concepts
+[00:32] that have been taught in chapter 4 on out of order pipelines namely issue execute and commit.
+[00:40] Caches of course because protecting memory is one of the most important things that are done
+[00:47] and then simple data structures we will mostly be restricted to linked lists and trees.
+[00:55] That is all that is required no cryptographic background as such is required even though
+[00:59] if someone has it it's better whatever background that is required will be provided.
+[01:06] So this chapter has four parts data encryption hashing and data integrity
+[01:13] secure architectures so which is the main part and of course a new class of attacks that is emerging
+[01:22] known as side channel attacks.
+[01:26] So let's first look at the classic problem of data encryption.
+[01:32] We have two characters Alice and Bob. So Alice sends an encrypted message to Bob and Bob sends
+[01:38] an encrypted message to Alice. So what does encryption exactly actually mean?
+[01:46] So encryption in this case basically means that if there is an eavesdropper if there is someone over
+[01:52] here who is taking a look at the contents of the message then that person will not be able to figure
+[01:58] out what the original message was by taking a look at the contents of the encrypted message.
+[02:05] So this is also known as confidentiality which means that the data is encrypted and the original data
+[02:13] cannot be inferred or recovered from the encrypted test but of course Bob can recover it right and
+[02:19] similarly something that Bob sends Alice can recover. So there is one more attack that is possible that
+[02:27] is called tampering and the property that protects against tampering is known as integrity.
+[02:32] This basically means that let's say whatever Alice sent no bit has been flipped changed tampered by
+[02:43] someone in the middle. So whatever Alice has sent okay so let's say the Alice sent 100 bytes or 100
+[02:49] gigabytes it doesn't matter every single bit as it was sent is received by Bob.
+[02:55] So broadly speaking the basic two simple properties of any encryption system are confidentiality and
+[03:05] integrity and a simple black box here shows that that we have an encryption box so what goes in is
+[03:13] the original text which is known as the plain text so mind you the way it is written there is no space
+[03:18] between plain and text and what comes out is known as the cipher text encrypted text. So there are two
+[03:27] key concepts in data encryption so this is basically something we will be alluding to several times so
+[03:34] I couldn't find a better way of explaining them hence the plain text is here. So we have two properties
+[03:41] confusion and diffusion. Confusion basically says that even if we change or let's say if we change a
+[03:48] single bit of the key right so basically of course so what is the key well a key is something that
+[03:55] parameterizes the encryption algorithm in the sense that what is the rule that changes the plain text to
+[04:03] the ciphertext of course you have an algorithm but then the algorithm is known then it will be very easy
+[04:09] or quite easy to break it by going in reverse so what is actually hidden is the key so key is a secret
+[04:15] number that parameterizes or that directs the encryption and this is the actual secret so the point is that
+[04:22] in the key if we change a single bit what should happen is that most of the ciphertext bit should actually
+[04:29] be affected so this will in a sense ensure that the key and the ciphertext are not correlated in a statistical
+[04:36] sense and given the ciphertext it is hard to guess the key right so confusion essentially means that if
+[04:43] let's say I have an encryption system over here so what goes in as kind of a hidden input is the key
+[04:52] and then what we can clearly perceive as the input and the output of the algorithms are the plain text
+[04:59] and the ciphertext
+[05:06] so even if I change a single bit of the key most of the ciphertext bits should be affected
+[05:13] in a statistical sense so what this basically the relationship that we are establishing
+[05:21] is that the key genuinely determines the ciphertext because if let's say I change a bit of the key and
+[05:26] no bit of the ciphertext is being affected this would basically mean that the key has no role to play
+[05:32] and then the algorithm is absolutely deterministic it is not affected by the key at all right so the other
+[05:43] property is something that establishes the relationship between the plain text and the ciphertext
+[05:50] this states that if we change a single bit in the plain text and statistically half the bits in the ciphertext
+[05:57] should change right so again this is something quite similar to what confusion says but diffusion
+[06:05] says something slightly different so confusion is between let's say the key and the ciphertext but this
+[06:11] is let's say this is between the plain text and the ciphertext this is basically saying
+[06:17] that half the bits of the ciphertext are kind of determined by one bit of the plain text and vice versa
+[06:27] also so this ensures a very high degree of statistical correlation as such between the plain text and the
+[06:38] ciphertext fair you know changing one bit can actually cause havoc in the ciphertext in the sense
+[06:45] clip half the bits in the ciphertext so the key advantage over here is
+[06:50] that with small perturbations of the plain text the ciphertext can actually be quite different
+[06:57] which means if if I look at look at this problem from the other side that two ciphertext which
+[07:03] looks similar their plain text actually can be quite different so from the similarity of ciphertext
+[07:09] I cannot infer anything at all about the similarity of the corresponding plaintext
+[07:15] so this is something that diffusion would ensure and what confusion would basically ensure if I let's
+[07:22] say you give me a chance to again come back to confusion is that if let's say you know for the same plain text
+[07:33] two ciphertexts are more or less the same right so let's say you know I have two encryption algorithms
+[07:39] same algorithm keys are different two ciphertexts are more or less the same that will not
+[07:44] tell me that the keys are the same the keys are more or less the same because in a key also if I change
+[07:52] one bit here also statistically half the bits in the ciphertext should change
+[07:56] so this basically increases the distance between the key space and the ciphertext space
+[08:03] so keeping these two properties in mind namely confusion and diffusion let us proceed
+[08:08] so there are two kinds of ciphers so what is a cipher a cipher is an encryption algorithm so the two most
+[08:17] common kinds are block ciphers and stream ciphers if I take a large message what I can do is I can divide
+[08:25] it into blocks of 128 to 256 bits which alternatively is 16 bytes 16 to 32 bytes so I divide them into blocks
+[08:35] and each block I encrypt it separately so I encrypt the data block by block the other approach which is
+[08:43] known as a stream cipher is basically I typically consider data byte by byte and what I do is based
+[08:51] on the key which in this case is like a seed of a random number I generate an infinite sequence of
+[08:57] pseudorandom numbers so the ciphertext is a XOR of the nth plaintext byte and the nth random number that is
+[09:06] generated so you can think of this so as the name suggests it is a stream cipher in the sense that we
+[09:13] have our plaintext bytes and we have the bytes that our pseudorandom number is generating
+[09:23] we just compute a XOR of them and out comes the ciphertext bytes alright so let's say at the other
+[09:32] end which is when we were when we are decrypting we can again generate the same sequence of pseudorandom
+[09:38] numbers XOR them compute an exclusive OR with the ciphertext bytes to get the corresponding plaintext bytes
+[09:46] all right so we will discuss one algorithm each from the space of both block ciphers as well as stream
+[09:55] ciphers so one of the block cipher algorithms that we will discuss it is called AES and AES is extremely
+[10:06] popular so AES takes three key sizes 128 bits 192 bits and 256 bits and
+[10:17] so what we do is of course we take the plaintext divided into sizes equal to the key size that is
+[10:22] the block size and of course for
+[10:28] different key sizes the algorithm in this case runs in rounds and the number of rounds is actually
+[10:34] different so we will consider this as a running example in the rest of the lecture so this takes 10
+[10:39] rounds and then with 192 bits we use more rounds 12 and with 256 we use 14 rounds
+[10:49] so what are the key steps in AES so as i said in the previous slide our running example
+[10:56] will consider a key with 128 bits and let us also consider a piece of text or the block with the same
+[11:04] length so then 128 bits is nothing but 16 bytes
+[11:14] we divide it into 16 blocks one byte each all right so given the fact that we have 16 bytes we
+[11:21] divide them into you know 16 so so of course i'm slightly playing around with the terminology of block
+[11:26] over here so in this case block is one of those you know one bytes each and here what i do is i
+[11:35] arrange these bytes these 16 bytes in the form of a four cross four matrix
+[11:40] all right so i uh number them from 0 to 15 the 16 bytes so this is just a plain text that is going to
+[11:50] be encrypted so i arrange it like this b 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 this is known as
+[12:00] the state of the algorithm all right and so the state of the algorithm is something that will change
+[12:11] over the rounds and the final state will actually become the ciphertext which can be read out very
+[12:16] easily we will just read out the bytes you know 0 1 2 3 4 5 6 7 in that order and that will become the
+[12:22] ciphertext so in each round so recall that for 128 bit aes we have four sorry we have 10 rounds in each
+[12:32] round we'll have four operations with some exceptions you know the last round is slightly different but
+[12:38] let's say more or less we'll have four operations per round so operation one is sub bytes sub bytes is
+[12:47] nothing but substitute bytes so let's look at it from a common sensical point of view if we just
+[12:54] mangle the bits and let's say my plain text is all zeros even after permuting and mangling the bits it
+[13:00] will still be zero so i need to introduce some more ones to do that what i do is i read each byte bi
+[13:08] in the state which is this matrix over here i access a table known as the s box the substitution box
+[13:17] where given the value of this byte and of course how many values can a byte take it can take 256 values
+[13:23] so based on the value of the byte i access the sub box i find out what is written for the entry
+[13:29] corresponding to this byte and let's say you know ci is written then i just replace so this is known as
+[13:38] the substitution operation so this basically ensures that you have a lot of zeros in the plain text
+[13:44] then we statistically at the end we want to have 50 percent zeros 50 percent ones and this is how we
+[13:50] will get there then we will do some shift operations so what we will do is we left rotate the ith row by
+[13:57] i positions so let's say that this is the ith row and we want to left rotate it by two positions and
+[14:05] both of them will come here so what we will have is we'll have four and five because they come to the
+[14:11] end and then we'll have two and three so we just do the left rotation which is nothing but left shift
+[14:17] and move the byte that was shifted out into the right most position or the least significant position
+[14:23] so this is known as shift rows second operation there are two more the third operation is mix columns
+[14:32] so the previous operation was row wise of course the first operation was substitution where we are changing
+[14:38] the content itself the second operation was when we do some amount of movement row wise this third
+[14:46] operation is where we do some amount of movement column wise so we take the four bytes in each column
+[14:53] right and we modulate multiply it with a matrix all right so well that's not very hard
+[15:03] and essentially this is a matrix vector product so a matrix vectors a matrix vector product
+[15:11] leads to a vector only so in this case we will essentially have a new column so let's say this
+[15:19] is the old column we multiply it with the matrix it's not a normal multiplication it's a modular multiplication
+[15:25] and so in modular multiplication all the results are in a mod with respect to some number that's not
+[15:30] important but from the old column we have a new column so the last two operations essentially diffuse bits
+[15:38] in the sense that they just move the bits here and there right so basically they just move the bits
+[15:46] um all over the place you know they kind of scatter the bits then the last operation is add round key
+[15:54] so in this case what we do is that i'll show a separate set of slides where we will for every round we'll
+[16:01] compute a separate round key but the key idea of add round key is we compute a bitwise or with the round key for the entire 128 bit block or for the entire state
+[16:12] right so for this entire state what do what we do so so mind you i'm just kind of abusing misusing the term block over here which i should not be doing but
+[16:22] uh so in this in this case of course the 16 bytes are over here and these 16 bytes we have been referring
+[16:33] to as a block in the algorithm which i'll keep on doing occasionally we may take the liberty to
+[16:39] use the block for some other term but broadly speaking the block in the case of aes will always refer
+[16:45] to the 16 byte chunk that we create right so that's the 16 byte block so what we do is once it has been
+[16:52] arranged in this fashion the add round key operation will compute a dedicated 16 byte number
+[16:58] for a given block and we will compute a xor so essentially this is the state of the algorithm
+[17:08] let's say the beginning of a round then it goes through the first three operations so then let's
+[17:14] say it becomes state s dash and then we compute a xor operation with let's say the round key for the
+[17:20] current round how the round key is generated is a separate matter we'll discuss that later
+[17:26] and then we arrive at a new state so this becomes a new state after these four operations the current
+[17:32] round is finished then we will go to the next round so as you have seen in the previous aes protocol
+[17:43] you know the protocol that was presented in the last two slides it's kind of simple so we take clean text
+[17:55] in a long chunk of data and then we divide it into 16 byte blocks these 16 bytes are arranged as a 4
+[18:03] cross 4 matrix of bytes okay and this matrix of bytes
+[18:12] is processed over 10 rounds in each round we have four operations more or less we'll make some exceptions
+[18:18] for that but later and the rounds what do you do well first you substitute the bytes then you do some
+[18:26] permutation in a row and then across a column and finally the last operation over here is to basically
+[18:35] compute a xor of the state with a round key and the round key is something that varies over the rounds
+[18:42] so let's look at so basically even for the round key something needs to be done so round key is not
+[18:51] the same so of course the starting position of the round key is the original key that was supplied which
+[18:56] is the same size for our running example which is 16 bytes but then the original key itself
+[19:03] goes to many avtars so every round so let's say this was the original key after the first round it will
+[19:09] become k1 then k2 and so on but the starting position is of course the original key that was provided
+[19:16] so every round it also undergoes transformations so these transformations can again be
+[19:23] divided into a sequence of basic operations so the operations are like this
+[19:28] the first operation is rot word or rotate word so in this case if you would see if the original word
+[19:35] is b0 b1 b2 b3 then this will become b1 b2 b3 b0 in the sense b0 goes over here a rotate operation
+[19:47] then we have a substitute operation subword which where we use the same old subbytes function if you
+[19:54] would see this one we use this for a substitute operation so this is done then we have a xor word
+[20:02] so which basically does the following for a word of the form b0 b1 b2 b3 where we are we are computing
+[20:09] four bytes sorry we are considering four bytes in one go what we basically do is that we have an array
+[20:18] of round constants all right and for the array of round constants for the zeroth byte that's a simple solve
+[20:28] okay and so what we basically do is we take this byte over here and this byte is modified by a zor
+[20:36] operation and the round constant array is then modified after that so the round constants for the first
+[20:43] round the round constant is one else for subsequent rounds when i is greater than one essentially we keep
+[20:51] on multiplying the round constant with a factor of two so rci is equal to two times rci i minus one so
+[20:59] this multiplies the round constant in every round by a factor of two all right so the zor word what
+[21:05] it basically does is that it does a minor perturbation to this block of four and where the first byte is
+[21:13] perturbed with a round constant which is doubled once every round all right so now we have seen the
+[21:20] basic operations of uh what is done in every round to modify the round key so let's see how the round
+[21:29] keys are generated because we have already seen the existing aes algorithm so we know what that looks
+[21:36] like so just in case you have forgotten let me quickly remind you so the key idea was in aes
+[21:46] let's say if i'm considering a 128 bit key we have 10 rounds in each round we have four operations the four
+[21:56] operations were like this substitute the bytes shift the rows mix the columns and add the round key so this
+[22:03] add round key business was not simple because you have to generate a round key and we again said that
+[22:08] round the round key is generated across different rounds but every round is a different round key
+[22:14] but the basic operations as we had defined for aes are shown over here for your three operations rotate
+[22:22] word substitute word and zor word now let's look at the how to generate the round key uh in a global view
+[22:30] using the operations that we have created so what you what do you need to remember before that just
+[22:35] remember x s and r x is for zor word s is for substitute word and r is for rotate word okay
+[22:46] so when we begin the process of generating the round keys at the zeroth level at the baseline initialization
+[22:55] we take the 16 byte key which the user has supplied this is this is what parameterizes the encryption
+[23:02] algorithm and you can now clearly see how it does that because this determines all the round keys and
+[23:07] the round keys also determine what ciphertext you are generating so here again we can uh represent this
+[23:16] as a four cross four array of bytes so they will be number zero one two three column wise four five six
+[23:24] seven eight to eleven twelve to fifteen so the idea is to convert keep converting the key matrices to the
+[23:33] round keys and what is shown over here is the key matrix for round zero so now is the time for a little
+[23:40] little bit of algebra let kij be the jth key in the matrix for round i all right so kig over here
+[23:50] let it be the jth key wherever j goes from 0 to 15 of course in the matrix for round number i
+[23:58] for every subsequent round it will change according to this logic given over here which is known as the
+[24:04] key schedule so the key schedule basically says that look okay fine you initialize the key matrix with
+[24:11] the key that was provided but how does this key change over time so it changes as per the key schedule
+[24:18] so kij is equal to okay so let's first look at the value of j if j is between 4 and 15 so 4 and 15
+[24:28] these are essentially these are essentially these guys over here so this is simple so if i take any kij it
+[24:36] is ki minus 1 j which is basically the same its previous value plus kij minus 4 so if let's say i'm
+[24:44] considering k8 it will be the old value of ki k8 okay and the current value for the current round of k4
+[24:56] okay so 8 minus 4 is 4. so essentially what you do is you take a look at your own old value at that
+[25:03] position and the current value for the current round of your leftmost neighbor sorry not leftmost neighbor
+[25:11] left neighbor k13 will look at k9 for instance now what do we do when uh for the other case so for the
+[25:21] other case we are talking about the first column over here which is k0 k1 k2 k3 so if you look at
+[25:28] these k0 for the ith round k0 1 2 3 which is essentially the first column over here that is a
+[25:36] complicated function of the following so let's first look at the bottom so the bottom is the value
+[25:42] 0 1 2 3 in the previous round so given the fact that we have initialized our rounds varying from 1 to
+[25:48] 10 and this is the status of the key matrix the original key is initialized to be the key matrix
+[25:55] for round 0 so of course we always have everything defined over here so in the first round this 0 1
+[26:02] 2 3 are just the first column of the key matrix for round 0 but subsequently it will change
+[26:08] and then we will also take a look at the last column in the previous round so just look at these
+[26:13] things k i minus 1 all of them 12 13 14 so this is the last column in the previous round if we take
+[26:21] this we just use our three operations r is rotate s is substitute x is or just x s are all of these
+[26:31] things so pretty much what we do is we take the last column in the previous round and we have some
+[26:39] complicated bit manipulation mangling and substitution operations for that and we use that along with
+[26:47] the previous value of the first column to initialize the first column of the key matrix for the current
+[26:52] round which is exactly what these two lines show so now that we have actually seen this our life is
+[27:01] substantially better in the sense that we have an algorithm to generate the round keys for every round
+[27:07] but every you know round after that we have a way of doing it okay so basically that doesn't sound
+[27:15] to be that difficult so here is a full aes algorithm uh so if you assume n rounds right so let me generalize
+[27:25] it see even if we have 16 bytes let us assume n is equal to 10 so for the 0th round only the add round
+[27:34] key operation is performed nothing else right so basically you take the plain text and just do the
+[27:40] add round key operation which is nothing but a xor with the key that's all for the next 10 minus 1 rounds
+[27:47] in the case of our example for the next nine rounds all four operations are performed and then for the
+[27:53] last round which in our running example is a 10th round the mixed column operations is skipped so we don't
+[27:59] we don't do the mix columns operation that is skipped the rest of course remains the same and the final
+[28:05] state of the algorithm is the final ciphertext okay so at the end after doing all of these things
+[28:11] we will have the ending state right that is just the ciphertext which we can read out so as you can see
+[28:17] the entire process is fairly elaborate and slow so even though i would say that aes is one of the faster
+[28:26] encryption algorithms but you can simply see the sheer amount of computation that is required
+[28:32] to orchestrate all of this all right so this was of course to encrypt 16 bytes but what if we have a
+[28:41] large piece of text let's say a megabyte gigabyte in a very large right what do we do
+[28:49] so let's first take a look at the simplest possible approach which is called the electronic codebook method
+[28:56] so of course what we are discussing here over here are encryption modes which basically means that
+[29:02] if you have been given a large piece of text and let's say you have simple 16 byte aes what do you do
+[29:12] right so the simplest idea is that we break the text into 128 bit 16 byte size blocks and we just encode
+[29:21] each one separately with the same same key well the issue is that fine it will lead to high confusion
+[29:30] which is like very low diffusion so so what's the idea the idea is that look if two pieces if two
+[29:36] plain text blocks are the same then the ciphertext blocks will be the same so of course you will know
+[29:43] what you will not know what it is but at least you will know that you know this region of the message and
+[29:49] this region of the message are the same you still don't know you know what is their exact value but
+[29:54] at least you would know they are the same because their ciphertext would be the same so the main aim
+[30:02] would be the increase diffusion in the sense a little bit of a change here and there in the plain text
+[30:07] most of the ciphertext bits should change and such that you know this problem doesn't happen
+[30:15] so to avoid this problem we should have some sort of a linked list kind of thing where you know one
+[30:20] small change in the plain text or even one small text in the key kind of propagates till the end so
+[30:26] it actually ends up having a big effect so we would like to link the encryption of one block to the next
+[30:32] one in a sense chain them somehow so this will ensure that a large part of the ciphertext will
+[30:39] ultimately change so let us look at a few ways a few methods of chaining together these encryptions
+[30:47] so the first is known as cipher block chaining which is i would which i would say is the simplest
+[30:56] algorithm in this space
+[30:57] so the idea of the chaining algorithm is like this that we divide the plain text again into blocks of
+[31:07] 16 bytes for the first block we compute a XOR with a known initialization vector this doesn't have to
+[31:16] be a secret then the AES block encrypts it with the help of the key the key is a secret this provides the
+[31:23] first ciphertext block but here is the fun part the ciphertext is also channeled to the next
+[31:30] encryption sub block which again computes as OR an exclusive OR with the plain text that is again
+[31:37] encrypted as a ciphertext and so on and so forth all right so because of this the cipher block chaining
+[31:45] algorithm is also known as a cbc algorithm as opposed to the previous electronic codebook method has
+[31:52] beautiful properties wonderful properties the first is of course see the first is the confusion
+[31:58] property still holds that a small change in the key will lead to a big change in the ciphertext fine
+[32:05] but also a small change in the plain text let's say over here will lead to a massive change in the
+[32:11] ciphertext particularly in the blocks that succeeded because of this chaining behavior as you can see
+[32:18] over here like this so the encryption is sequential right so that we can clearly see and this is one of
+[32:27] the known problems of the algorithm right that the encryption is sequential in fact this is the biggest
+[32:33] shortcoming the decryption is parallel of course because given the ciphertext we can we don't have to
+[32:39] do anything we can decrypt it and then of course since all the decryptions can happen in parallel the
+[32:46] decrypted values will also be there with us and also we can just xor it with the ciphertext to get
+[32:52] the plain text so that is anyway available also one more thing that is typically considered in
+[32:59] cryptography is that just in case there is some error in the plain text if we have very high diffusion
+[33:05] well then the entire document will kind of go so it may be a good idea to maybe not have so much of
+[33:12] diffusion slightly reduce it such that the errors in the plain text can be kind of contained
+[33:21] so now we come to another idea which is known as the output feedback mode also known as the OFP mode
+[33:28] here again something similar we have similar encryption blocks but here the idea is slightly different so
+[33:35] let's go through that here again we have a known initialization vector need not be a secret this
+[33:41] is encrypted and then this is zord with the plain text to provide the ciphertext as well as this encryption
+[33:50] is again sent over here again re-encrypted and then again re-encrypted so on and so forth so what you
+[33:58] see over here is that this plain text per se is not being encrypted all right what we are doing is we
+[34:06] are encrypting the initialization vector generating a 16 byte block so the advantage of AES one of the
+[34:13] hidden properties is that a 16 byte plain text leads to a 16 byte ciphertext so in this case basically
+[34:20] what we are doing is that we are taking the initialization vector encrypting it once once more once more once
+[34:26] and so on and what we get we just zord with the plain text to get the ciphertext okay so that's pretty
+[34:32] much the idea so here well we can do error checking of the plain text because that's not on the critical
+[34:46] path over here so even one bit errors will also not propagate far they will only be limited to this
+[34:52] ciphertext over here which is something that we wanted to do by deliberately reducing diffusion
+[35:01] but again the key point is that both encryption as well as decryption become sequential
+[35:08] which is not really a good idea so we want parallel encryption and decryption but of course we are
+[35:14] looking at multiple things we are still kind of in a dilemma so we are not be able to make up our mind
+[35:20] what exactly we need and what we don't need but clearly the factors we have considered are the
+[35:25] sequentiality or parallelism of encryption decryption how much of diffusion do we actually need in the
+[35:33] sense that it would be good idea to have you know as much of diffusion as possible but also you know
+[35:38] plain text by its nature may have errors and it may be necessary to either contain the errors or to
+[35:46] simultaneous error checking on the plain text so that would be difficult otherwise in the previous
+[35:52] two modes but in this case given the fact that we are computing all of these encrypted results
+[35:59] essentially the encrypted value of the iv its encryption its encryption so on and so forth while
+[36:07] this process is going we can in parallel check the correctness of the plain text assuming there is
+[36:12] a way to do so but here of course what we are not happy with is that both encryption as well as
+[36:19] decryption are sequential operations and we are not comfortable with that so well what do we do
+[36:29] so we sorry so we go for counter mode encryption and the counter mode encryption over here
+[36:37] what we do is that this is a slightly different idea we have a major counter which is specific to an
+[36:48] encryption task all right so for every encryption task we have a randomly generated number which is known
+[36:58] as the major counter then we have a minor counter which as you can see can be initialized to any value
+[37:06] but the minor counter increases for every encryption block plus one plus two plus three plus four and so
+[37:12] on just focus on these right so what do we have we have major minor counter pair major counter and minor
+[37:19] counter unlike the previous example of the output feedback mode where we encrypt the initialization
+[37:25] vector and keep encrypting it in this case we just encrypt the counters with the key and of course the key
+[37:32] itself can be a complicated thing so we will discuss that more when we discuss secure architectures but
+[37:38] the key idea is that we do something quite similar to what we did in the output feedback mode
+[37:45] so we encrypt them and this output over here is known as the OTP or one-time pad so the one-time pad
+[37:52] is then XORed with the plain text to generate the ciphertext right so the key advantage over here if you would see
+[38:05] is that we have parallel encryption and decryption in the sense that these encryption blocks are totally
+[38:12] different from each other their only dependence is of course the minor counter value but that given the
+[38:17] position of the block within the full piece of text that is very easy to guess that it will be minor
+[38:24] counter plus k where k is basically a function of where the block appears in the piece of text
+[38:32] so with that we can do all of these operations in parallel right so this is something we really like
+[38:38] and of course there are good confusion properties as well as error tolerance properties okay fantastic
+[38:49] confusion properties are there because again we are using AES and error the error tolerance is great
+[38:57] so that is why counter mode encryption is typically what is used
+[39:01] so now we have finished describing AES so AES is the advanced encryption standard that's what AES stands for
+[39:15] so now we will discuss the RC4 stream cipher algorithm which is arguably the most popular stream cipher
+[39:21] algorithm so RC4 is known after cryptographic pioneers so it's called rivest cipher 4.
+[39:28] so that's the kind of a technical name but the key idea is quite simple so the idea
+[39:38] is similar to the output feedback mode and counter mode encryption where we have a stream of sudo random
+[39:44] bytes so let's we used to refer to that as the OTP over there so let's maybe still refer to it as the OTP
+[39:52] but it's OTP byte and then we have the plain text byte
+[40:00] we XOR them that produces the ciphertext byte
+[40:08] all right so here we generate an infinite sequence of sudo random numbers based on the input seed
+[40:14] and then the infinite sequences is just zord with the input bytes so that is encryption
+[40:22] decryption is pretty much the same like encryption is just that instead of the ciphertext byte we use the
+[40:28] sorry instead of the plain text byte we use the ciphertext byte
+[40:32] and then an XOR operation basically gives us the plain text byte back
+[40:36] so this algorithm again has two phases initialization and
+[40:45] pseudo random number generation so the initialization is where
+[40:49] the key comes in so all algorithms have a key so the key is helps us set the initial state and once
+[40:57] the initial state has been set the rest of the algorithm is the same regardless of the key
+[41:02] so the key data structures are so of course this is not the same as key the most important data structures
+[41:09] is the s array so the s array has 256 bytes so we will discuss that
+[41:13] it is initialized with a known initialization vector and then we do something we do some perturbations
+[41:19] with the help of a key and the key in this case is somewhere between 5 and 16 bytes
+[41:25] and unlike aes the key need not be the same size as the text or need not even be a you know predetermined
+[41:33] fixed size so here the phases of the rc4 algorithm so what you see on top is the s array so of course it
+[41:40] doesn't have 256 entries it's not drawn to scale but broadly speaking it shows the basic structure
+[41:47] the basic structure is that we have 256 bytes
+[41:51] so initialization the brief pseudocode so the pseudocode is we set j equals to 0 we iterate
+[41:57] through all the locations from 0 till 255 in the s array and then what we do
+[42:06] is that we treat j as the state variable so we compute j plus si si is the contents of what i is pointing to
+[42:15] at that point right and this was initially set to the initialization vector so
+[42:21] si would come from there and then we read a byte from the key so we treat the key as an array
+[42:28] and we take i which is the current index i percentage key length
+[42:33] ensures that we are taking the
+[42:36] the modulo with respect to the key length so this is essentially some key byte
+[42:40] and so then what we are doing over here is we are computing a function of the current value of j
+[42:47] which is the state the value that i is seen in the s array and we are adding a byte to it from the key
+[42:56] so this is this step is essentially increasing the confusion so this is the confusion addition step
+[43:01] and after that we do a percentage 256 a modulo 256 the idea is that we want the final index whatever
+[43:10] is computed to remain within 0 and 255 so what do we have we have two indices now we have i which is
+[43:17] iteration number and we have j which we have computed using this complex confusion adding step so we just
+[43:27] swap si and sj that is all that we do we just simply swap si and sj and so then this
+[43:37] helps us propagate the confusion or increase it even further
+[43:41] by basically mangling the bits and permuting the bits in such a way that the effect of the key comes in
+[43:47] so as you can see the key which is the secret pretty much its effect comes in via this method where we just
+[43:55] compute the new value of j and we swap si and sj once si and sj are swapped we just keep on doing it we
+[44:03] just keep on doing this process 256 times till the entire array is kind of mixed up right so note that we
+[44:10] are not changing any value all right so the values are just being permuted and this is one way of computing
+[44:16] a random permutation just mixing up the entries which is exactly what we are doing over here
+[44:21] now for pseudo random number generation what we do is that we run this in an infinite loop
+[44:29] we have two state variables i and j so i of course keeps on getting incremented in the modular fashion
+[44:36] with j we incremented something like this step but of course the key doesn't come in so j is equal to j
+[44:44] plus si which is currently what you are pointing to right so the contents over here are si
+[44:50] okay and so with this again we do a modular addition and then we do a swap so we have done a similar
+[44:58] swap over here we do a similar swap over here and after doing the swap whatever were the values of si and sj
+[45:06] that i read i add them up in a modular fashion and after i add them up it will point to a new third
+[45:14] location and the contents from the third location are essentially the random number that i'm generating
+[45:21] so there is a fair amount of theory to this why this works and why it's a good cipher and so on but
+[45:27] all of that is not important at the moment what is important at the moment is you need to understand
+[45:32] how exactly we are permuting the bits bits or even the fact that we actually are permuting the bits
+[45:40] so in the initialization phase what we are essentially doing right uh what we are essentially doing is
+[45:51] uh that we are just uh you know permuting the bits right and also taking the key into account but in
+[45:58] the pseudo random number generation phase we are not taking the key into account we are doing swaps
+[46:04] and then we are reporting one of the values in the s array as the final output so this is shown
+[46:11] graphically so if you would see the first step is we do the swap which is step one right this swap over
+[46:18] here the second step is we add si plus sj right so this is a modular addition of si and sj whatever is the
+[46:26] content over here that is our final output right for this specific uh run of the stream cipher so for
+[46:35] the next iteration of course we'll have a different output so these are the three steps so now let's look
+[46:42] at the hardware implementation because ultimately when you are talking about computer architecture you're
+[46:47] talking about hardware so aes as such had 10 rounds in our running example fair what we can do is we can
+[46:59] simply just unroll the loop and we can pipeline it so the first could be just the initialization code
+[47:06] the second stage could be the first three iterations next three iterations next three and then the last round
+[47:12] where we do the you know the last iteration which is different so recall that the mix columns operation
+[47:18] was not there and also you know reporting the final output the final cipher text so all of that could be
+[47:27] done so in that sense pipelining aes which is the default you always have a pipeline version of aes
+[47:34] so this is what is reported
+[47:36] it it actually makes very little sense to have an implementation of aes which is not pipelined
+[47:49] because you know that would increase latency substantially and increase it and decrease the throughput as well
+[47:55] so in this case what we do is that uh we create a pipeline version of it but we don't have to
+[48:01] necessarily have a pipeline stage for every iteration but of course this can be balanced depending upon
+[48:09] the latencies that are involved but pipelining aes is essentially easy hence it should always be
+[48:16] considered the benefits of rc4 with pipelining are not there primarily because you know by nature it is
+[48:24] very sequential right so it is sequential by nature in the sense we do something the next state totally
+[48:29] depends on this state so pipelining is hard so now we will discuss both the rc4 as well as aes for
+[48:39] symmetric cryptographic algorithms which basically means that the key remains the same for either side
+[48:46] but in this case we'll have an asymmetric encryption which is known as rsa rsa is again named after its
+[48:53] three uh founders cryptographic pioneers river shamir and adelman and here the idea is that we have two
+[49:00] keys we have a public key and a private key so they are mutually you know interchangeable but the idea
+[49:06] typically conventionally we say that encryption is done by encrypting with the public key and decryption is
+[49:14] done by decrypting with the private key but again as we shall see this is kind of more about convention
+[49:21] because rsa does not define a separate encrypt or decrypt algorithm for rsa we basically encrypt with
+[49:28] the public key and we encrypt with the private key as well but for let's say that encryption with the
+[49:34] private key is also called decryption so you know the little bit of a confusion between actual math and
+[49:40] tradition is there but that will be resolved when the time comes but let but let's explain this with a
+[49:47] simple example so let us convert any message to a number m and this can be done quite easily there is
+[49:55] you know no difficulty in that we can just consider let's say you know the first 50 bits 48 bits
+[50:02] and we can convert that into a number or we can just consider the first 64 bits and convert that into a
+[50:08] 64 bit number not an issue at all once you know a chunk of the message has been converted to a number
+[50:17] then we can do some number theoretic operations on it to essentially encrypt it so what we will do over
+[50:25] here is that we will look at an example we will not derive the theory so for computing the key pairs
+[50:34] for doing encryption and decryption here is what we do so we start out so of course so let's at the
+[50:41] for the time being forget the fact that we converted the message to a number and that number is m
+[50:46] we'll discuss this later but let's first to see how we create the public and private key
+[50:53] so to create it well it's not very hard what we do is we first find two prime numbers
+[50:58] which should be fairly large so let's say the p and q they are 59 and 67 respectively
+[51:05] so then we compute a number n which is the product of these prime numbers in this case it is 3953
+[51:13] now what we do is that so here is the fun part we compute p minus 1 so p minus 1 will be an even
+[51:22] number right so we are considering large primes and similarly q minus 1 will also be an even number
+[51:29] with a large prime assumption so we compute their lcm and so the lcm in this case is clearly not their
+[51:36] product because at least they have a common factor which is 2 but that's okay whatever it is in this case
+[51:42] it's lcm of 58 and 66 so let lambda n denote the lcm the the lcm is the lowest common multiple
+[51:50] okay so uh let's compute the lowest common multiple which in this case is 1914 1914.
+[52:00] now here is where we have to do some amount so this is a time consuming operation but not that much
+[52:06] there are fairly efficient algorithms for this as well we choose another number e such that
+[52:15] e and lambda n are co-prime in the sense other than one they don't have a common factor
+[52:22] so what i did is for this i wrote a program but of course more efficient methods exist so in this case
+[52:28] what i did is i wrote a program and that said that look e is 31 31 and 1914 do not have a common factor
+[52:36] so now we compute another number d such that d times c minus 1 modulo 1914 is equal to 0 in the sense
+[52:50] that e times c minus 1 is divisible by 1914 so for this what you need to do is you need to
+[52:56] consider a fair number of combinations but so i get anyway written a program to do that so once i did
+[53:08] that the value of d that comes out is 247 so 247 times 31 minus 1 is divisible by 1914 which is the lcm of p
+[53:19] minus 1 and q minus 1 and q minus 1. now let us forget about the original p and q it doesn't matter
+[53:26] let us say that the public key is a pair of two numbers n and e okay and the private key
+[53:35] oops sorry this should be t this should be d it's my mistake and the private key should be a pair of two
+[53:42] numbers n and d which is 39 53 and 247 all right so the public key is not one number but it is a
+[53:49] pair of two numbers n and d and in this case the private key is a pair of two numbers n and d
+[53:57] okay uh 39 53 31 and 39 53 247 and the combined key which of course will never disclose so i'll again
+[54:10] you know i'll come to the point why we call the public key public and the private key private
+[54:14] but the combined key is basically all these three numbers n e and d it's a triplet
+[54:20] so let's look at encryption so encryption is again i come back to the message the fact that i converted
+[54:27] it to a number encryption is just m to the power e mod n and there are very efficient algorithms to do it
+[54:35] for modular exponentiation there are extremely efficient algorithms to do it so let's not talk into the let's
+[54:43] not get into that that is number theory and similarly for decryption this will be m to the power d mod n
+[54:53] so recall we have three numbers right n e and d so n and e are used for encryption and n and d are used for
+[55:01] decryption the decryption is the same m to m to the power d mod n so decryption can be thought of
+[55:07] as encryption with the private key right so no issues in that and that is actually the way that
+[55:14] we should look at it so if i uh so let me give a name to these operations so the first operation i'm
+[55:21] calling e the other operation is d so what we will see is that encryption and decryption are commutative
+[55:29] so this is the first and most important property in fact the heart of rsa lies over here e d of m so
+[55:37] what i can do is i can encrypt it with the private key and then i can kind of decrypt it which is the
+[55:44] same as encrypting with the public key so i will come to this message which is m and similarly what
+[55:51] i can do is i can encrypt it with the public key and then you can decrypt it with the private key and
+[55:57] you'll again come back to the original message which is m all right so just so that the slide is
+[56:02] not cluttered let me erase all the ink and go through this once again so in this case encryption and
+[56:09] decryption are symmetric operations so edm of course is the original message which is the same as dem okay
+[56:17] very important very important so don't go beyond this unless you understand all the implications of
+[56:23] this equation so now why is the public key called public well it is called public because the idea
+[56:29] is very simple that well if you want to send a secure message to me then i just advertise my public key
+[56:42] then what you do is you encrypt the message with my public key the moment i get it i
+[56:49] decrypt that with my private key but as i said here encryption decryption is the same but d basically
+[56:57] means for private and e means for public so i use my private key to open up the message and i get back
+[57:03] the original message and clearly private means only i have it and nobody has it so with this mechanism
+[57:10] anybody can send a secure message to me and i will be able to read it so this is exactly the way email
+[57:16] sites work so what your browser does is the moment you type an email your browser encrypts the email
+[57:24] with the public key of the email site whatever it may be gmail hotmail and since gmail has the private
+[57:30] key gmail can happily decrypt it the advantage is that if anybody is sitting in the middle that person
+[57:36] can't see the contents of your email so we can either encrypt and then decrypt or same as decrypt and
+[57:43] encrypt but as i said encryption decryption are terms which are borrowed from the aes terminology but
+[57:50] essentially what we should say is encryption means encrypt with the public key and decryption means
+[57:56] encrypt with the private key all right as simple as that now there are there is there is more to it
+[58:04] so we can there is a very important property so we can have something called a digital signature which is
+[58:11] a digital analog of a manual signature so assume that alice encrypts a message with her private key
+[58:19] then bob can use alice's public key to verify that the message has indeed come from alice if he already
+[58:26] knows the contents of the message that is so what is the idea key idea of a signature the idea of a
+[58:31] signature is that i write something and then i sign below it the moment i sign below it anybody who's
+[58:39] reading the document gets convinced that i have written i means me write your author who's in the
+[58:47] writing i have written this message and i attest its contents so some this is something that can be
+[58:56] done in a digital world as as well where alice will simply encrypt it with a private key and since the
+[59:03] private key alice's private key is only there with alice nobody else has it there is no reason to
+[59:10] be suspicious and anybody can verify that this message has indeed come from alice
+[59:16] because they can alice's public key is visible it's public so then all that you need to do is you
+[59:24] need to do this operation all right you will get back the original message and if you know what this message
+[59:34] is in a sense if let's say the message is supposed to contain just alice then fine uh this will
+[59:40] basically tell you that alice is the one who had signed it so this message or messages of such type
+[59:49] contain or are said to be alice's digital signature in a sense they clearly verify to the whole world that
+[59:56] nobody else could have sent it other than alice because nobody else has the position of alice's
+[60:03] private key so let's look more at digital signatures so what is the aim of a signature well it's to prove
+[60:11] to the world the signer was aware of the contents of the document and wholeheartedly endorses it and
+[60:17] the signer is whoever he or she says right they actually are so what are the properties the property
+[60:26] is that it should be verifiable in the sense if bob has signed it the entire world should be able to
+[60:30] verify that bob has indeed signed it and the way to do that is that the bob signs it with his private key
+[60:37] or rather takes the message and encrypts it with his private key
+[60:41] so whoever has a doubt can pull bob's public key from the internet and then
+[60:47] uh use it to open up the message and let's see if you know the contents if there is an agreement
+[60:53] that any signature should have it has been signed by bob written at the end if that is written then
+[60:59] you are more or less sure that you know bob has done it right why did i say more or less sure well the
+[61:05] reason is that all of these are not 100 accurate there is a minuscule tiny tiny tiny tiny tiny chance
+[61:13] that somebody else could have done it but that is a abysmally small number which should not be
+[61:19] considered in any practical use case so this of course should be able to cover protect arbitrarily
+[61:26] large pieces of text which it does okay and it should also be clear that bob has read and processed
+[61:33] it which in this case it is actually doing because the entire message is being signed or let's say a part of
+[61:38] it is being signed and the part that is being signed clearly indicates the message that bob has attached
+[61:48] along with it and you know that you know for sure bob is the originator of this message
+[61:57] so this is the same thing uh this figure over here basically says we have the original message so we
+[62:05] encrypted bob's private key this becomes the digital signature and again use the public key to open up
+[62:11] the message and then if you see the original message and so one thing that is implicit which is typically
+[62:17] not explained but i would like to kind of make that explicit is that the moment you open up a digital
+[62:24] signature you should know for sure what exactly is contained there right see there is no point in me
+[62:32] verifying a verifying a signature unless i know what the original signature actually is
+[62:37] so the digital world is quite similar you should know what to expect in the sense after opening up
+[62:46] the digital signature with the public key you should know what to expect and in this case it could just
+[62:53] be that this message has been signed by bob and this and let's say you know this format is something
+[62:58] that has been agreed to in the past and where does this message get its veracity or validity or correctness
+[63:06] from it gets its correctness from a simple fact that nobody other than bob could be in possession of
+[63:12] his private key all right and needless to say the contents of the public key are publicly known anyway right
+[63:20] so now we will discuss one more idea so the idea is also what have we done we have discussed AES
+[63:30] right AES and RC4 which were symmetric key algorithms in the sense we had a single key
+[63:36] then we have discussed RAC. RAC is a very advanced and flexible algorithm which actually has two keys
+[63:48] that operate in a commutative fashion the advantage of AES is that it is a very simple algorithm which
+[63:54] can be implemented in hardware quite easily and quite quickly as well we can have a pipeline implementation
+[64:01] whereas in the case of RSA it is very slow very very slow because we have these large numbers and then
+[64:08] you know you need to compute primes and do a bunch of these things right so this of course has to be done
+[64:13] once at the time of key generation fine even if I don't include that as a part of the overhead
+[64:19] but still given a large piece of text I'll have to convert it into a sequence of large numbers
+[64:26] and for each number I need to do modular exponentiation right and this modular exponentiation
+[64:32] is what takes time that is exactly why RSA is always deemed to be very slow and is considered unfit
+[64:38] for hardware level security even though it's a fantastic idea for the internet so even for the
+[64:48] internet also occasionally or let's say even for a smaller use case like a data center or a bunch of
+[64:55] machines just connected on the same rack RSA is still very slow but RSA can be used to bootstrap the
+[65:02] process initiate the process and after RSA you can decide on a session key so session key is like
+[65:09] one key that the sender receiver agree on and this was not known in the past but after a connection
+[65:15] based on RSA was established there were some rounds of negotiation and a session key got decided
+[65:22] once that has been decided we can use the faster AES algorithm to do all the encryptions and decryptions
+[65:29] based on the session key and then we can forget about RSA sorry we can then forget about RSA all right
+[65:39] so the key point is that how do you decide on a session key so deciding on the session key can be
+[65:47] done in one way that with RSA you establish a session and then let's say one person proposes and other
+[65:52] accepts and that's how you set it up there is also an algorithm called Diffie-Hellman key exchange
+[66:01] where even if there is an eavesdropper who can just listen but not tamper with the message
+[66:08] it is perfectly possible to set up a shared session key unbeknownst to the which is unbeknownst to the
+[66:13] unknown to the eavesdropper so the idea is very simple for this Alice and Bob have to pre-decide
+[66:20] in the sense decide in advance two shared numbers P and Q all right they're typically prime numbers
+[66:28] so basically these two numbers P and Q have to be decided and shared in advance once that is done
+[66:34] you don't even have to go through this complicated RSA mechanism to rely on a shared
+[66:42] to create a shared session key here is what you can do
+[66:44] Alice generates a secret number A Bob generates a secret number B which are their individual secrets
+[66:54] Alice computes Q raise to the power A mod B and we will call this message capital A and this is sent
+[67:01] to Bob Bob does the same computes Q raise to the power B mod B all right so of course note that you know
+[67:10] A and B change so Bob computes capital B which is Q raise to the power B mod B and that is sent to Alice
+[67:19] okay so once that is done well then Alice gets the message that Bob has sent which is capital B
+[67:29] and then computes this expression capital B to the power A mod B which is nothing but if I do some
+[67:36] algebra it is some algebra it is Q to the power B mod B to the power A which is Q to the power AB mod B
+[67:42] and similarly Bob computes whatever Alice has given him
+[67:49] to the power B mod B so this is A to the power B mod B and recall that this is what Alice had sent
+[67:56] so this becomes Q to the power AB mod B and lo and behold they are actually the same numbers
+[68:02] so what did Alice and Bob actually transmit what Alice transmitted was A what Bob transmitted was B
+[68:11] which of course has nothing to do with the shared key that was ultimately decided so even if somebody
+[68:17] in the middle actually snoops the values there is no problem at all right the main reason being that P
+[68:23] and Q have been pre-decided and shared right henceforth there is no problem so then
+[68:29] even without bothering what the attacker is seeing they can simply send these values capital A and
+[68:36] capital B and then both of them can do this algebra at their end and after that they can
+[68:42] come to a common number which is Q to the power AB mod B and this common number can be thought of
+[68:50] as the shared session key so this is how you can establish a shared session key without actually relying on a
+[68:59] complicated and time consuming RSA based
+[69:02] mechanism instead what you can do is that just with three sharing two numbers
+[69:10] it is possible to establish a shared session key
+[69:14] so both essentially compute a key without sending any secrets over the channel and they can do this
+[69:20] as many times as they want subsequently once a shared session key has been computed
+[69:27] AES or RC4 can be used to exchange regular encrypted traffic
+[69:35] so we have finished the first part here that will also complete the first lecture so then we will move
+[69:40] to the second lecture so in this lecture we essentially looked at data encryption and fundamentals of
+[69:46] cryptography in the next lecture we will look at hashing and data integrity finally all of these concepts
+[69:55] should be used to build and secure a practical trustworthy and secure architecture
+[70:11] to build and Lubaina Bent walking and use theVER
+[70:12] to build?
+[70:18] so
+[70:18] so

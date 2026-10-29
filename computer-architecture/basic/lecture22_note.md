@@ -499,10 +499,10 @@ multiplier 0xFFFFFFFF: iterative 32 ops, Booth  1 ops
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| O(log² n) 的乘法器、Wallace tree | **第 23 支**：Computer Arithmetic Part 3 |
-| 除法：restoring、non-restoring（也用 UV 和位移） | **第 24 支** |
-| 浮點數乘法（mantissa 相乘） | **第 25–26 支** |
-| 處理器的 ALU 和乘法單元 | **第 27–29 支**：課本 Ch9 |
+| O(log² n) 的乘法器、Wallace tree | [第 23 支](lecture23_note.md)：Computer Arithmetic Part 3 |
+| 除法：restoring、non-restoring（也用 UV 和位移） | [第 24 支](lecture24_note.md) |
+| 浮點數乘法（mantissa 相乘） | [第 25](lecture25_note.md)–[26 支](lecture26_note.md) |
+| 處理器的 ALU 和乘法單元 | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 |
 | MSB 權重為 −2ⁿ⁻¹ | [第 4 支 §11](lecture04_note.md#11-課本補充另一種解讀msb-的權重是-2ⁿ¹) |
 
 ---

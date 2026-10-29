@@ -496,10 +496,10 @@ dep / indep = 3.0
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| RAW、control hazard 的軟體解法（nop、重排、delay slot） | **第 31 支**：Pipelining Part 2（課本 §10.5） |
-| 硬體解法：interlock、stall、bubble | **第 31–32 支**（課本 §10.6） |
+| RAW、control hazard 的軟體解法（nop、重排、delay slot） | [第 31 支](lecture31_note.md)：Pipelining Part 2（課本 §10.5） |
+| 硬體解法：interlock、stall、bubble | [第 31](lecture31_note.md)–[32 支](lecture32_note.md)（課本 §10.6） |
 | Forwarding | [第 32 支](lecture32_note.md)（課本 §10.7） |
-| Interrupt、exception、效能公式、級數的極限 | **第 32–33 支**（課本 §10.8–10.9） |
+| Interrupt、exception、效能公式、級數的極限 | [第 32](lecture32_note.md)–[33 支](lecture33_note.md)（課本 §10.8–10.9） |
 | 單週期處理器的五級電路 | [第 27 支](lecture27_note.md#13-整個-data-path) |
 | nop 為什麼有用 | [第 8 支](lecture08_note.md#11-nop) 埋的伏筆 |
 | 乘法器延遲 | [第 23 支](lecture23_note.md) |

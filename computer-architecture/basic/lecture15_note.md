@@ -46,7 +46,7 @@ RISC-V 這章分五部分（[02:58]）：
 
 1. **機器模型** ← 本講
 2. **整數指令** ← 本講
-3. 記憶體與控制轉移指令 ← 第 16 支
+3. 記憶體與控制轉移指令 ← [第 16 支](lecture16_note.md)
 4. 浮點指令 ← 第 17 支
 5. 編碼 ← 第 17 支
 
@@ -591,12 +591,12 @@ $ llvm-mc -triple=riscv32 -show-encoding <<< 'addi a0, a0, 1'
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 分支（beq、blt…）：不用 flags，直接比較兩個暫存器 | **第 16 支**：RISC-V 控制轉移指令 |
-| ra、jal／jalr、函式呼叫 | **第 16 支** |
-| lw、sw、lb… 與 base-offset 定址 | **第 16 支**：RISC-V load／store |
-| F、D 擴充：浮點暫存器 f0–f31 | **第 17 支**：RISC-V 浮點指令 |
-| R／I／S／B／U／J 六種格式 | **第 17 支**：RISC-V 編碼 |
-| A 擴充、原子指令 | **第 38–40 支**：課本 Ch12 多處理器 |
+| 分支（beq、blt…）：不用 flags，直接比較兩個暫存器 | [第 16 支](lecture16_note.md)：RISC-V 控制轉移指令 |
+| ra、jal／jalr、函式呼叫 | [第 16 支](lecture16_note.md) |
+| lw、sw、lb… 與 base-offset 定址 | [第 16 支](lecture16_note.md)：RISC-V load／store |
+| F、D 擴充：浮點暫存器 f0–f31 | [第 17 支](lecture17_note.md)：RISC-V 浮點指令 |
+| R／I／S／B／U／J 六種格式 | [第 17 支](lecture17_note.md)：RISC-V 編碼 |
+| A 擴充、原子指令 | [第 38](lecture38_note.md)–[40 支](lecture40_note.md)：課本 Ch12 多處理器 |
 | 硬體融合（macro-op fusion） | Advanced 課程的 pipeline |
 | 比較：SimpleRisc 的 movh＋addu、ARM 的 movw／movt | [第 7 支 §15](lecture07_note.md#15-modifieru-與-h)、[第 10 支 §18.2](lecture10_note.md#182-12-位元立即值rot--payload) |
 

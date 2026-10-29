@@ -1,0 +1,253 @@
+[00:00] We'll be right back.
+[00:30] All right, let's move forward.
+[00:36] Let's look at the last part of this lecture set on x86, which is encoding the x86 ISA.
+[00:44] Right, how do we encode it in bits?
+[00:47] So since our...
+[00:49] We are looking at...
+[00:53] You know, we are looking at 32-bit ISA.
+[00:56] So my main discussion would be on 32-bits.
+[00:59] But definitely, this part will also keep it more generic.
+[01:02] So we'll also talk about how to encode instructions in other sizes, right?
+[01:09] So let us first take a look at the general overview of every x86 instruction.
+[01:14] Because, you know, x86 has been around for a long time.
+[01:17] So there, a lot has been done to ensure compatibility in the sense that today's code runs on yesterday's processors, and yesterday's code runs on today's processors.
+[01:27] Does not happen 100% of the time.
+[01:29] For example, if today I take a code with MMX registers, and it will definitely not run on an older processor.
+[01:39] But at least what we want is that all the code which runs on, let's say, processors 10 years ago, will still run on today's processors.
+[01:47] Right?
+[01:47] So that compatibility needs to be there.
+[01:50] Otherwise, it's sort of a bad business decision otherwise.
+[01:55] So let's take a look at the overview of instruction encoding.
+[01:57] So since this is a CISC instruction set, instructions can have different lengths.
+[02:03] Sorry, they should be CISC, CISC, they can, instructions can have different lengths, and the lengths can really, really vary.
+[02:17] Right?
+[02:17] So the lengths can be different.
+[02:20] Different instructions can have very, very different lengths and sizes.
+[02:23] So this will make processor design difficult, but we'll decide this.
+[02:27] We'll talk about this later.
+[02:28] Let's take a look at the broad overview of the instruction encoding scheme.
+[02:35] The first 1 to 4 bytes, which are optional, have a prefix.
+[02:41] So what is the prefix?
+[02:43] The 1 to 4 byte prefix specifies, you know, this prefix field specifies the prefix.
+[02:50] So for example, we have taken a look at the rep prefix in instructions.
+[02:53] Right?
+[02:54] That we can have an instruction in the form rep.
+[02:58] So this will essentially execute move st several times, similar to a loop.
+[03:08] So there are many, many other prefixes.
+[03:11] So the prefixes are typically also used to encode the data size.
+[03:16] For example, the data size of the ISA, for example, in a 64-bit instruction set, we can use the prefixes to indicate normal registers and 64-bit registers and so on.
+[03:28] So the prefixes, and also in a lot of extensions of the ISA, the prefixes come very, very handy.
+[03:36] So that's the reason they can be anywhere between 1 to 4 bytes.
+[03:39] So they can encode a fair amount of information.
+[03:43] Another commonly used prefix is a lock prefix, which is used to specify that an instruction will execute atomically in a multiprocessor system.
+[03:50] So we will discuss more about this when we go to chapter 11.
+[03:56] What I mean by atomically is that it executes as if it's executing in an instant.
+[04:04] Right?
+[04:04] So nobody can see an intermediate state of the instruction's execution.
+[04:10] So we will discuss in chapter 11.
+[04:12] It's far more complicated than that.
+[04:14] But the important point of the prefix field that should not be lost is that a lot of optional, well, I won't call it optional information.
+[04:24] The field is optional, but the information is definitely not.
+[04:27] A lot of information, which sort of specifies the behavior of an instruction, that is part of the prefix field, like whether instruction needs to be repeated or whether an instruction needs to execute in a particular manner.
+[04:43] All of these fields are incorporated over here.
+[04:47] The next is the opcode.
+[04:48] The opcode can be anywhere between 1 to 3 bytes.
+[04:52] Then we have four optional fields.
+[04:54] One is the mod r by m bit, which specifies what are the registers that are used in the instruction.
+[05:04] And does the instruction use a memory operand or not?
+[05:07] Right?
+[05:08] And since the CISC instruction set supports fairly complex memory operands with a possible scale index and byte,
+[05:17] we have a special SIP byte, SIP scale index byte, byte to encode this information.
+[05:25] Subsequently, to encode the offset, which is also called the displacement, in x86, we have 1 to 4 bytes.
+[05:32] Mainly because in this case we are considering 32 bits.
+[05:35] In a 64-bit ISA, the displacement can even be larger.
+[05:38] So, this can be 1 to 4 bytes.
+[05:43] And then, additionally, we can also encode an immediate in an instruction like an ADD instruction or something.
+[05:50] So, displacement and immediate are separate fields.
+[05:52] So, if we take a look at this, the smallest size of an instruction can be 1 byte.
+[05:59] Because it will just have a 1 byte opcode.
+[06:02] The largest size, theoretically, can be 4 plus 3, 7, 8, 9, plus 4, 13, plus 4, 17.
+[06:11] Right?
+[06:12] So, from anywhere to 1 to 17 bytes, we can have an instruction.
+[06:18] So, this basically says, this sort of should convince the listener that the span of instructions in x86 is very, very large.
+[06:32] We can have a lot of instructions between 1 byte and 17 bytes.
+[06:38] Instructions can really, really, you know, have very, very different kinds of encodings.
+[06:43] So, let's take a look.
+[06:45] So, the opcode is specific to each and every, you know, type of add and sub and multiply and divide will have different opcodes.
+[06:56] So, we'll also see the opcode encodes some other information.
+[06:59] But, we'll discuss that when we discuss the mod r by m byte.
+[07:03] So, the important thing is, let's discuss the mod r by m byte.
+[07:06] R stands for register and M for memory.
+[07:08] So, this is a single byte and a single byte is divided into three fields.
+[07:14] Right?
+[07:14] So, a single 8-bit field is divided into three fields.
+[07:18] So, the first two fields are called the mod bits or the mode bits.
+[07:24] So, the mode bits over here determine the addressing modes of the rest of the operands.
+[07:29] Right?
+[07:29] What is the addressing mode of the instruction?
+[07:31] So, let us call the first ones as source 1 and other as source 2.
+[07:41] So, if the mod bits are 0, 0, it means that the register indirect addressing mode is being used without a displacement.
+[07:49] Right?
+[07:49] So, basically, let me see.
+[07:51] Displacement is same as the offset.
+[07:53] So, no displacement.
+[07:54] Displacement is not being used and 0, 0 indicates that the register indirect addressing mode is being used.
+[08:08] So, basically, this would be an instruction of the form.
+[08:13] Let's say, add EAX.
+[08:18] So, in this case, there is no displacement.
+[08:20] A registered indirect addressing mode is being used.
+[08:25] So, pretty much the first source would encode EBX.
+[08:30] And the second source would encode EAX.
+[08:33] So, recall that we can have two kinds of instructions.
+[08:38] We can also have this.
+[08:42] Right?
+[08:44] So, both of them will actually have the same mod R by M byte.
+[08:47] But, there will be one additional field in the opcode.
+[08:51] So, if you consider the opcode, the opcode will have one additional field called the D field or the direction field.
+[08:58] And the direction field is essentially a single bit which can either be 0 or 1.
+[09:04] And this indicates whether, you know, depending upon the direction field, we will distinguish between these two scenarios.
+[09:12] So, whether the transfer is this way or the transfer is that way, this is indicated by the direction field.
+[09:21] Alright.
+[09:22] So, now, let's consider other modes.
+[09:25] So, if the mode is 0, 1, it indicates an indirect addressing which has a displacement, you know, same register indirect addressing.
+[09:32] Pretty much in a base offset kind of mode with a 1-byte displacement.
+[09:39] 1-0 indicates that it's the same thing.
+[09:42] It's, you know, a memory is being accessed.
+[09:45] So, in R by M, it's essentially the memory that is being accessed.
+[09:49] But the displacement is 4 bytes.
+[09:51] And if the mode bits are 1, 1, it means that the register direct addressing mode is being used.
+[09:57] In a sense, the instruction is of this type.
+[10:02] Right.
+[10:02] So, there is absolutely no memory.
+[10:05] And the operand S1 is actually a register.
+[10:10] Right.
+[10:10] So, no memory is being used.
+[10:12] That is what the mode 1, 1 says.
+[10:13] It's only an operation on registers.
+[10:15] And the first three indicate that one of the source operands is a memory.
+[10:21] So, now you probably understand very well that why only one of the source operands, you know, one of the two operands that are specified can be a memory address.
+[10:31] Mainly because we otherwise will run short of bits.
+[10:36] So, typically the base register will be saved in this field S1.
+[10:40] And the other register will be saved in S2.
+[10:44] And the direction of transfer will be specified by the d-bit in the opcode.
+[10:49] So, what are the three modes for?
+[10:51] The three modes are basically to specify the size of the displacement.
+[10:56] 00 says that there is no displacement.
+[10:59] 01 means that there is a 1 byte displacement.
+[11:01] 10 means there is a 4 byte displacement.
+[11:04] And 11 means it's not, you know, memory is not involved.
+[11:08] Both the operands are registers.
+[11:09] If we have an instruction, let's say of the form inc-ecx, right?
+[11:20] So, in this case there is no memory, but the value of ecx is saved in S1, right?
+[11:27] Or if we have another thing of, let's say, not edx.
+[11:32] So, here also edx is stored in source 1.
+[11:35] So, source 1 is considered as the primary source, especially if there is only one operand.
+[11:41] If there are two operands, then at most one of them can be memory.
+[11:44] And the memory operand needs to be encoded via source 1.
+[11:48] And S2 needs to be a register, has to be a register, right?
+[11:52] So, that's the general idea.
+[11:54] Now, let's discuss the mod r by m byte in some more detail.
+[12:01] So, as I mentioned in the previous slide, the reg field specifies the register operand, if necessary.
+[12:08] The mod bit, in consonance with the r by m bits, determines the format of...
+[12:15] So, both of them, both the bits, determine the format of the memory operand, if it exists.
+[12:20] So, let us now discuss some special cases.
+[12:24] So, if r by m is equal to 1, 0, 0, which is essentially the encoding for the stack pointer.
+[12:34] This tells the hardware that, look, let us use the scale index byte, scale index based, the scale index and based on the SIB byte,
+[12:45] to encode the instruction, to look for the encoding of the instruction, right?
+[12:51] So, let me repeat.
+[12:52] And, if the r by m bits over here, so, if the r by m bits contain 1, 0, 0, so, 1, 0, 0 corresponds to the encoding of the stack pointer.
+[13:08] This tells the hardware that an SIB byte follows.
+[13:11] So, let us ignore this part and look at the contents of the SIB byte.
+[13:15] And, the SIB byte should encode a memory address of the form, you know, with a scale, an index, and a base.
+[13:26] So, something like, AX plus 2 times EBX.
+[13:31] So, let us take a look at the SIB byte, so, let us take a look at the SIB byte, the scale index and base.
+[13:41] So, in this case, this is an 8-bit field.
+[13:44] So, there are 2 bits for the scale.
+[13:46] So, there are 4 values of the scale.
+[13:48] 0, 0, 0, 1, 1, 0, and 1, 1.
+[13:51] So, 0, 0, 0, so, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0. 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0. 0, 0, 0, 0, 0,
+[14:21] so they follow the register encoding scheme so we have 8 registers right so
+[14:29] we have 8 registers in our repertoire so the register encoding scheme encodes
+[14:39] these 8 registers and so this will be there on the next slide so basically for
+[14:47] 8 registers how many bits we require we require pretty much 3 bits so there are
+[14:52] some important rules that need to be kept in mind the first is that ESP cannot
+[14:58] be an index all right so so basically the ESP field cannot be an index over here
+[15:08] this invalid index this also makes sense why would anybody make the stack pointer
+[15:12] an index you might want to make it a base register but making it an index is not
+[15:16] right the other is that the offset in the memory address needs to be specified in
+[15:22] the displacement field all right so so that is the second point that needs needs
+[15:28] to be kept in mind let us now take a look at the register encoding so as was
+[15:37] promised in the previous slide so the code of 0 0 0 is the register we start with
+[15:44] EX then we have ECX and EDX with codes of 0 0 1 and 2 then we have EBX with a code of 0 1 1 ESP is
+[15:55] the stack pointer 1 0 0 EBP is the base pointer 1 0 1 then we have ESI and EDI with
+[16:03] codes of 1 1 0 and 1 1 1 respectively right so these are the 8 registers now you want to make two points
+[16:13] regarding two special cases so the first special case as we have discussed is that if the R by M bits are 1 0 0 which in
+[16:24] this case actually point to the stack pointer then what we do is that we
+[16:29] essentially discard that information will discard it in the sense we don't use it in
+[16:33] the addressing and in we use the SIP byte instead so let's go back to the slide so in this case if
+[16:42] the R by M bits are 1 0 0 this basically means so this register remains as is will not touch this
+[16:52] but this tells the processor that an additional SIP byte follows and read the scale index and base
+[16:58] registers from the SIP byte and depending of the mod there can be a displacement as well
+[17:04] let us discuss the second special case the second special case is when mod is equal to
+[17:11] the mode is equal to 0 0 and R by M is equal to 1 0 1 1 0 1 in this case is equal to EBP
+[17:21] right so we have not discussed this but let me discuss it now
+[17:24] so let's go back to that field so in this case let us assume that the mode is 0 0 means it's register
+[17:32] direct and let me just delete this and are the R by M bits are 1 0 1 right so 1 0 1 as we see from
+[17:43] this points to EBP so the mode is 0 0 and R by M is 1 0 1 so in this case what should we do what we should
+[17:51] do is use register indirect but we will not do that so we will treat the mode bits being 0 0 and R by M
+[17:59] being 1 0 1 as a special case and this special case corresponds to so now that you have seen this
+[18:05] let me again go back I'm sorry so this special case corresponds to memory direct addressing so in
+[18:12] this case we don't use any registers in the addressing instead the 32 bit displacement is
+[18:19] is inferred as a memory address so we directly use that as the memory address for example nothing
+[18:26] stops us from writing we can always write an instruction of this form
+[18:32] right so this is a valid memory address so basically it's a valid hex you know 32 bit address
+[18:49] and so we can always write an instruction of this form
+[18:52] and so in this case we are specifying the address directly without any registers so this is called
+[19:01] a memory direct addressing mode and this can be achieved by the means of the special case
+[19:06] where the mode bits are 0 0 and R by M is equal to 1 0 1 so that is where we can achieve this
+[19:15] right as a special case so now the question that most students ask at this point
+[19:20] is that how would we then you know write an instruction encode an instruction of this form EAX and EBP
+[19:29] well so in this case what we would do is that we will actually use the first option and we will
+[19:35] set the R by M bits to 1 0 0 and the scale index base so in the scale index base we will essentially
+[19:44] have EBP as the base and we will have ESP as the index so in this case since ESP is an invalid index the
+[19:55] hardware will ignore it so as a result what will only remain is the base right so this is something that can be done
+[20:05] and so as I said you know sometimes in x86 instructions some such special cases need to be
+[20:16] you know needs to be done to basically ensure that we are able to encode everything that we want to
+[20:24] right and some cases such that disallowing the stack pointer to be an index is fair because you know
+[20:34] there will hardly ever be any reason to actually have the index as the stack pointer there's also one
+[20:41] more correction I'd like to make I had said that in a 64-bit instruction set the displacements and
+[20:47] the immediates can be larger that's not correct the displacement in a 64-bit instruction set if you
+[20:55] take a look at the latest intel manual the x86 64 instruction set the displacements the and the
+[21:05] immediates are still limited to 4 bytes only right this is the correction that I want to make and the
+[21:12] hardware extends the sign from 4 bytes to 8 bytes that's all now let's consider an example so let
+[21:22] us encode the instruction add ebx edx plus 2 times ecx plus 32 so let us assume that the opcode for the
+[21:33] add instruction is 0x03 so now that we know the opcode let us calculate the value of the mod r by m byte
+[21:42] so in this case our displacement fits within 8 bits hence we can set the mod bits equal to 0 1
+[21:51] corresponding to an 8-bit displacement all right so the first two bits are 0 and 1 then we understand
+[22:00] that we need to use the sib byte because we have a scale as well as an index thus we set the r by m bits
+[22:08] to 1 0 0 at the end the destination register is ebx its code is 0 1 1 so the destination register comes at
+[22:18] the middle so this is ebx these are the mod bits 0 1 corresponding to an 8-bit displacement
+[22:27] and 1 0 0 indicates that look go and take a look at the sib byte so the encoding of the mod r by m byte is 0 1
+[22:35] 0 1 1 1 1 0 0 which can be seen as 0 1 0 1 as 5 and c is 1 1 0 0 now let us calculate the value of the sib byte
+[22:47] so in this case the scale the scale is equal to 2 so we encode this as 0 1 and encoding comes over here
+[22:53] as the scale
+[22:57] the index is ecx which is 0 0 1 so this is the next field
+[23:02] and the base is edx which is 0 1 0 that is the next field
+[23:12] hence the sib byte is 0 1 0 0 1 0 1 0 which is 4 a 0 x 4 a
+[23:20] the last byte is a displacement which is equal to 32 or 0 x 2 0
+[23:25] thus the encoding of the instruction will be 0 3 for the opcode byte right so this is the opcode
+[23:36] 5c this is the mod r by m mod rm
+[23:44] byte 4a is the sib byte scale index space byte
+[23:50] 20 is the displacement
+[23:58] all right so this is the encoding is the 4 byte encoding of the instruction in hexadecimal
+[24:05] okay this was a long chapter so we have come to the end of the x86 chapter
+[24:11] so now we have a fair understanding of the different variants of x86 instruction set 16 bits 32 bits 64 bits
+[24:19] so the x86 instruction set is very large and it has a lot of extra features
+[24:27] so one large set of features that we have not covered in this
+[24:31] lecture is basically the other extensions of the instruction set particularly what are called the
+[24:37] vector instruction sets which we'll discuss in chapter 11 so that contains mainly the mmx
+[24:44] and the ssc instruction sets so we will need to you know discuss that at a later point
+[24:54] but in any case the coverage of mmx and ssc is very limited in this book
+[24:59] so readers need to take a look at sources on the web or intel manuals to get a better understanding of
+[25:05] these two isa's but other than that the basic kernel of the x86 isa has been covered in this chapter
+[25:14] all right so now i will see you in chapter 6 where we discuss the fundamentals of digital electronics

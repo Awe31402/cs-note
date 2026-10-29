@@ -557,7 +557,7 @@ t1 = y         t2 = x
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | 用 fence 改寫平行加總（Example 154）、cache coherence protocol（snoopy、MSI、directory） | [第 40 支](lecture40_note.md)：Cache Coherence Protocols |
-| SIMD、vector processor | **第 41 支** |
+| SIMD、vector processor | [第 41 支](lecture41_note.md) |
 | write buffer | [第 36 支](lecture36_note.md#13-降低-miss-penaltywrite-buffer) |
 | false sharing（coherence 的效能代價） | [第 38 支](lecture38_note.md#144-false-sharing-的影子) |
 | 共享記憶體的 OS 機制 | [第 37 支](lecture37_note.md#15-進階功能shared-memory-與-protection) |

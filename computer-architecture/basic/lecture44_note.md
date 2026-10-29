@@ -342,7 +342,7 @@ addu r0, r0, 0xBEEF
 
 [70:28]–[71:44]　課本 §13.6.2（p.686–687）
 
-CPU 告訴裝置「狀態改變時通知我」，然後就**不管**了，去做別的事。印表機空了，送一個 **interrupt** 給 CPU（經過 I/O 訊息的路，但當成 interrupt 交付），CPU 處理 interrupt（第 33 支，逐字稿待補；課本 §10.8），再把列印工作送出去。
+CPU 告訴裝置「狀態改變時通知我」，然後就**不管**了，去做別的事。印表機空了，送一個 **interrupt** 給 CPU（經過 I/O 訊息的路，但當成 interrupt 交付），CPU 處理 interrupt（[第 33 支](lecture33_note.md)；課本 §10.8），再把列印工作送出去。
 
 【口頭】[71:44] 借錢的比喻：
 - **polling**：每隔一天就問欠錢的人「什麼時候還？還錢！還錢！」
@@ -507,9 +507,9 @@ CRC 偵測 burst error： 長度1: 100%  長度2: 100%  長度3: 100%  長度4: 
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| PCI Express、USB（split transaction、CRC、塞位元）、硬碟 | **第 45 支**：PCI-X, USB, and hard disks |
-| 光碟、SSD（SSD 也用 ECC） | **第 46 支** |
-| Interrupt 的處理流程 | 第 33 支（課本 §10.8，逐字稿待補） |
+| PCI Express、USB（split transaction、CRC、塞位元）、硬碟 | [第 45 支](lecture45_note.md)：PCI-X, USB, and hard disks |
+| 光碟、SSD（SSD 也用 ECC） | [第 46 支](lecture46_note.md) |
+| Interrupt 的處理流程 | [第 33 支](lecture33_note.md)（課本 §10.8） |
 | TLB、paging（memory-mapped I/O 靠它） | [第 37 支](lecture37_note.md) |
 | Snoopy 協定（DMA snoop 同一個想法）、bus 仲裁 | [第 40 支](lecture40_note.md) |
 | DRAM 陣列 | [第 20 支](lecture20_note.md#8-dram-陣列與-refresh) |

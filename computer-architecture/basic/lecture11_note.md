@@ -43,9 +43,9 @@ Chapter 5 的大綱（[07:11]）：
 
 1. **機器模型** ← 本講
 2. 簡單的整數和分支指令 ← 第 12 支
-3. 進階記憶體指令 ← 第 13 支
+3. 進階記憶體指令 ← [第 13 支](lecture13_note.md)
 4. 浮點指令 ← 第 13–14 支
-5. 編碼 ← 第 14 支
+5. 編碼 ← [第 14 支](lecture14_note.md)
 
 這一講只講 x86「看到的機器長什麼樣」：
 
@@ -621,11 +621,11 @@ f:
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| mov、算術、分支、call／ret、stack 的指令 | **第 12 支**：x86 整數與分支指令 |
-| si／di 與 rep、進階記憶體指令 | **第 13 支**：x86 進階記憶體指令 |
-| FP stack 的指令（fld、fst、fadd…） | **第 13–14 支**：x86 浮點指令 |
-| 長度不固定的編碼、prefix、ModR/M、SIB | **第 14 支**：x86 編碼 |
-| Segmentation 與分頁、安全 | **第 34–37 支**：課本 Ch11 記憶體系統（§11.4.6） |
+| mov、算術、分支、call／ret、stack 的指令 | [第 12 支](lecture12_note.md)：x86 整數與分支指令 |
+| si／di 與 rep、進階記憶體指令 | [第 13 支](lecture13_note.md)：x86 進階記憶體指令 |
+| FP stack 的指令（fld、fst、fadd…） | [第 13](lecture13_note.md)–[14 支](lecture14_note.md)：x86 浮點指令 |
+| 長度不固定的編碼、prefix、ModR/M、SIB | [第 14 支](lecture14_note.md)：x86 編碼 |
+| Segmentation 與分頁、安全 | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：課本 Ch11 記憶體系統（§11.4.6） |
 | x86 在內部翻成 RISC 式的微指令 | Advanced 課程 |
 | 真實的 Intel、AMD 處理器 | 課本 Appendix A |
 | Ring level、segmentation、GDT 在 OS 的用法 | [`os/linux-os` 第 2 支](../../os/linux-os/lecture02_note.md)、[第 6 支](../../os/linux-os/lecture06_note.md) |

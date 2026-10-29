@@ -635,8 +635,8 @@ $ gcc -O2 -o tlb tlb.c && taskset -c 2 ./tlb
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | 多處理器、平行程式（shared memory 的硬體版） | [第 38 支](lecture38_note.md)：Multiprocessor Systems Part 1（課本 Ch12） |
-| 多個 cache 裡同一份資料的一致性 | **第 39–40 支**：Coherence and Consistency |
-| 硬碟、memory-mapped file、I/O | **第 43–46 支**：I/O System（課本 Ch13） |
+| 多個 cache 裡同一份資料的一致性 | [第 39](lecture39_note.md)–[40 支](lecture40_note.md)：Coherence and Consistency |
+| 硬碟、memory-mapped file、I/O | [第 43](lecture43_note.md)–[46 支](lecture46_note.md)：I/O System（課本 Ch13） |
 | cache 的結構、LRU、modified bit（對照 TLB、PTE 的 accessed／dirty） | [第 35 支](lecture35_note.md) |
 | AMAT（TLB miss 也算進去） | [第 36 支](lecture36_note.md) |
 | x86 的 segment register | [第 11 支](lecture11_note.md) |

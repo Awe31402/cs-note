@@ -465,7 +465,7 @@ invalidate：2667 次讀，每次都讀到最後一次寫的值 → True
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | Multithreaded processor（一個核心兩個 hardware thread，共用 L1） | [第 41 支](lecture41_note.md)：Multithreading and Vector Processing |
-| Interconnection network（bus 不夠用時，用什麼把 bank 和核心接起來） | **第 42 支**：GPUs and Interconnects |
+| Interconnection network（bus 不夠用時，用什麼把 bank 和核心接起來） | [第 42 支](lecture42_note.md)：GPUs and Interconnects |
 | SC、WC、fence 的定義 | [第 39 支](lecture39_note.md) |
 | cache 的 modified bit、write-back、整個 block 才能寫 | [第 35 支](lecture35_note.md) |
 | MESI、MOESI、directory 的細節、記憶體模型的正式定義 | [Advanced Computer Architecture](../advanced/README.md) |

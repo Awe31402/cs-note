@@ -412,11 +412,11 @@ $ python3 fpadd_nosticky.py ref.txt
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 浮點數乘法（significand 相乘、指數相加）、除法（Goldschmidt、Newton-Raphson） | **第 26 支**：Computer Arithmetic Part 6 |
-| 整數除法 | **第 24 支**：Computer Arithmetic Part 4 |
+| 浮點數乘法（significand 相乘、指數相加）、除法（Goldschmidt、Newton-Raphson） | [第 26 支](lecture26_note.md)：Computer Arithmetic Part 6 |
+| 整數除法 | [第 24 支](lecture24_note.md)：Computer Arithmetic Part 4 |
 | x86 的 x87／SSE 浮點指令、ARM／RISC-V 的浮點指令 | [第 13–14 支](README.md)、[第 17 支](lecture17_note.md) |
-| 浮點單元在 pipeline 裡占好幾個 stage | **第 30–33 支**：課本 Ch10 |
-| GPU 的浮點運算 | **第 42 支**：課本 Ch12 GPU |
+| 浮點單元在 pipeline 裡占好幾個 stage | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 |
+| GPU 的浮點運算 | [第 42 支](lecture42_note.md)：課本 Ch12 GPU |
 
 ---
 

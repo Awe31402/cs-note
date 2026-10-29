@@ -1,0 +1,480 @@
+[00:00] in the last lecture we had talked all about the scheduling process so that included
+[00:30] wake up select and broadcast
+[00:49] so in this lecture what we will do is we will start from there so we will discuss the basics
+[00:56] of the forwarding bypassing logic the basics of executing instructions the ex stage in
+[01:06] an out of order pipeline and then we will move on to some subtle issues some corner cases
+[01:13] in the wake up select broadcast mechanism so first we come to the bypass paths well the
+[01:19] bypass paths look almost identical to the forwarding logic in in order processors so the logic is
+[01:26] very similar as i said it is almost identical so what we have is we have a forwarding multiplexes
+[01:32] here in this case bypassing multiplexes so from this stage or from the output of this stage
+[01:40] which means after the next latch of course so this latch of course i am not showing here
+[01:48] for the sake of simplicity but we do have a latch
+[01:54] right uh so uh so from the next stage or from other stages uh we can get data and they can
+[02:06] be as inputs in this case they would be bypassed inputs and the bypass inputs can then be provided
+[02:12] to the forwarding unit the execution unit all right so there is always a choice between the default value
+[02:20] that we read from the register file and also values that come via the bypass paths
+[02:31] so now the question is when should we mark the available bit uh so several uh options some instructions
+[02:38] that have arrived after the broadcast might wait forever if the available bit is marked in the
+[02:44] register write stage right so this means that after the broadcast stage uh some instructions arrive
+[02:56] right and those instructions would have read the available bit to zero so what will happen is that
+[03:01] their available bit will be zero and they will miss the broadcast so they will essentially wait forever
+[03:07] that's the reason writing the available bit with the register write is a bad idea it will lead to a lead
+[03:13] to an incorrect solution it will lead to instructions indefinitely waiting which of course is not desirable
+[03:24] so what we need to do is along with the broadcast we should set the available bit in the rename table
+[03:31] so what we do is that we set the available bit along with the broadcast so whenever we broadcast we also send a
+[03:45] message to the rename table here uh for the entry of the destination
+[04:01] all right
+[04:08] all right
+[04:12] what we do is that we set the value of its
+[04:17] so this also is not problem free in the sense that we can have some issues uh one issue is of course
+[04:32] that uh instructions that are being written to the instruction window while we are setting the
+[04:40] available bit will miss the broadcast right and uh also the update of the available bit so let's see
+[04:49] what's happening so let us uh assume that we are setting the available bit and the broadcast together
+[04:56] at the same time so at that point if an instruction is entering the instruction window right so if it is
+[05:03] being dispatched so uh what will happen if it's in the dispatch stage this means that it has already
+[05:10] read the rename table at this stage right what is happening is that it has already read the available
+[05:20] bit to be equal to zero all right so that process has already happened that the available bit has been
+[05:26] read to be zero then what we are doing now is that we are also broadcasting so this instruction will miss the
+[05:37] broadcast the reason being that it is just being written into the instruction window so it is not fully
+[05:46] there yet the entry has not been finalized so it will also miss the broadcast right so two things will
+[05:53] happen the first is that it will miss the broadcast and the second is that it would have already read
+[05:59] the available bit to be zero so when both of these things are kind of if you take both of these things
+[06:07] together right what would mean that an instruction that is being written into the window the same time
+[06:14] that we are broadcasting and updating the available bit that will essentially end up waiting forever
+[06:20] for the destination tag why is this well two reasons one is that when it is entering this instruction
+[06:28] window at this point it means that in the previous cycle it was in its rename stage in this stage it
+[06:36] read the available bit to be zero the second important reason is that uh when it is being written
+[06:44] into the instruction window if there is a broadcast in that cycle unless we architect the entire circuit
+[06:52] well it might it might miss the broadcast if it misses the broadcast then there is an issue right
+[06:59] then you know so then essentially it has missed the broadcast and it's not going to read from the
+[07:05] register file where do we get the data from so because of that there is a need to fix both of these
+[07:13] solutions solutions solutions one and two so what will be the basic features of a new solution well
+[07:21] first we look at this important realization over here that instructions being written to the instruction
+[07:27] window when the concurrent broadcast is going on might miss the broadcast these instructions as we
+[07:36] have argued in the previous side would have read the available bit to be zero so hence they will wait forever
+[07:42] consequently a solution is required so what does the teacher do if let's say some people some
+[07:49] students in the class are sleeping right so in that case they will miss the instruction well uh so all
+[07:56] that the teacher does is the teacher teaches one more class something very similar can be done over here
+[08:03] for those instructions that are missing that might potentially miss the broadcast
+[08:11] we need to do something so first let me talk of a trivial solution which uh if you look at it
+[08:19] uh is simple subject to certain technological limitations
+[08:25] so in this case what we can do is we can divide our clock cycle into two halves
+[08:29] so we divide it into the first half and the second half this is the first half of the clock cycle
+[08:44] this is the second half of the clock cycle so what we can do is that we can ensure that we write
+[08:52] instructions to the instruction window in the first half of the clock cycle so this is the dispatch phase
+[09:00] so this of course requires us to have a mechanism to write instructions very quickly to the instruction window
+[09:07] that too in the first half cycle in the second half cycle we broadcast so this ensures that
+[09:14] instructions that are concurrently being written into the instruction window don't miss the broadcast
+[09:21] so well uh given that uh for back to back execution we want broadcast and select wake up of the consumer
+[09:31] instruction to happen in the same cycle this is not uh very practical it's not extremely practical to do it
+[09:39] nevertheless uh this is one solution but this is uh you know given these issues with squeezing uh
+[09:47] uh activities into half cycles is very hard to do in practice this is typically not the method of choice
+[09:56] what we instead can do is something called double broadcast uh so here we look at a simple solution
+[10:03] so this is a text heavy slide but let's go slow so let's focus on this part so we uh first follow the
+[10:11] default which is that we set the available bit to one along with sending the broadcast message right so
+[10:17] along with the broadcasting the tag we set the available bit to one as we have discussed instructions
+[10:23] that are simultaneously being written to the instruction window might might miss the broadcast
+[10:30] so we log the broadcasted tags in a temporary structure
+[10:34] we also record all the instructions that are being dispatched in another temporary structure called a
+[10:41] dispatch buffer so a dispatch buffer is a very small buffer that might contain two to four instructions
+[10:48] that are being written to the instruction window in one cycle so this will be equal to the rename
+[10:53] width basically and also we keep a small list of tags let me write it down this is the dispatch
+[11:04] we also have a small list of tags
+[11:12] that would broadcast in a given cycle so the next cycle what we do is that we match the tags with
+[11:18] entries in the dispatch buffer so we see that if any uh entry in the dispatch buffer if any operand
+[11:24] is getting ready because of a broadcasted tag so essentially we try to match them if there is a match
+[11:32] then what we do is we update the corresponding instruction window entry right so we figure out all the
+[11:39] matches then we go to the instruction window and of course this makes it more complex but something of
+[11:45] this nature has to be done so we go to that entry and we enable its corresponding source operands so this is
+[11:53] like a next cycle fix for uh instructions that are just being dispatched but some such small fixing action
+[12:04] is required and this is a rather tricky corner case so we do have a course here in iit delhi where we
+[12:12] design full out of order processors and while designing such processors such problems do come up
+[12:19] uh very often where something is being read something is being written there is a dependency and they are
+[12:26] happening in the same cycle so there is a possibility of missing the value so such uh conditions are also
+[12:33] called race conditions to avoid that we in this case we can apply a small fix in the next cycle
+[12:40] now let's look at the simpler parts which are register read and execute
+[12:49] well uh so we have already discussed the instruction window with green and red entries
+[12:54] we have already discussed the select unit which uses a variety of heuristics to select
+[12:59] the most appropriate instructions that need to be executed then we have the register read
+[13:06] uh stage so here we just access the physical register file read the operands
+[13:13] but mind you uh similar to forwarding in order processors some of these operands might not be useful
+[13:20] because we have a bypass path bypass paths in our system and then we have a plurality a multitude of
+[13:28] execution units uh these execution units uh execute they produce the final value and the final value is
+[13:39] written back to the register file as we can see over here
+[13:47] all right so what we have done is we have reached a very important juncture in our study of out of order
+[13:51] pipelines so we have completed instruction renaming instruction dispatch wake up and
+[13:58] select uh so those are critical mechanisms in the out of order pipeline for primarily register based
+[14:09] uh instructions so instructions that have register based operands so they help track their dependencies
+[14:16] they help and enforce the dependencies and they also help transfer uh the information from producers to
+[14:26] consumers that a source operand is ready now let's look take a look at memory dependencies a totally
+[14:32] different ball game altogether and let's propose the node store cube which whose job main job is to track
+[14:40] and enforce memory dependencies so consider these two instructions load r14 r3 and store r2 10 r5
+[15:00] so as far as we are concerned uh they appear to be independent in the sense that they
+[15:05] they access different registers but well uh the instructions mind you are sent to the adder to
+[15:13] compute the memory address we also refer to the memory address as the effective address same thing
+[15:19] so in this case uh we are computing 4 plus contents of r3 and 10 plus contents of r5
+[15:26] uh so it is possible there is a possibility that they are actually the same address right if the different
+[15:38] address is no problem but they are the same if they are the same addresses there is a dependency between
+[15:44] right so there is a dependence between them right so there is a dependence between them if they are the same address
+[15:58] so next uh these instructions are sent to a load store unit so the load store unit we will see does
+[16:07] something right so it's also called the load store queue but since i have not talked about the load store queue
+[16:12] yet i would prefer the term load store unit so the load store queue over here uh it does several things
+[16:22] what does it do it sends the loads and stores to the data cache uh that is one it does a few more things
+[16:31] as well so what what we need to understand is that loads can execute immediately you don't have to wait
+[16:36] so in out of order processing loads don't have to wait for anybody uh they don't have to wait for
+[16:44] other loads they don't have to wait for other stores unless they are to the same address
+[16:49] stores update the processor state uh so if you remember precise exceptions this means that unless
+[16:57] a store is deemed to be on the correct path uh we cannot send it to the memory system further most
+[17:03] stores should be sent in program order so handling stores is tricky right so so the because of precise
+[17:09] exceptions because of the fact that stores actually change the memory state uh we have to ensure that
+[17:17] they are issued to the memory system the data cache in this case in program model we cannot afford to
+[17:25] write values of stores in the wrong path so you have to wait till they become absolutely safe
+[17:30] which means that stores have to wait for how long well till they are the oldest instruction in the pipeline
+[17:38] right because it is possible that if a store is sent early and an instruction that is older than it
+[17:45] has a fault well then we are at trouble we can't ensure precise exceptions so until stores are the
+[17:52] oldest instructions in the pipeline they have to wait
+[18:15] right so until it becomes the oldest which means that though there is no oldest earliest whatever you may
+[18:21] call but until uh we don't have an instruction earlier than the store in the pipeline the store has to wait
+[18:29] uh this basically means that uh well number one uh we need to have a mechanism of ensuring this
+[18:39] and number two we cannot send a store to the memory system early because this would break our notion
+[18:45] of out of order inside in order outside so we will take a look at this in great detail but the important
+[18:51] take-home point is loads can go at any point of time immediately stores have to wait because they
+[18:58] are changing the external state of the program so they have to be they have to wait they have to be sent
+[19:04] in program order and they also have to be sent when they are the earliest instructions of the pipeline
+[19:10] in the pipeline the reason being that if we send the store and then we find that there is an instruction
+[19:16] earlier than it that has a fault some sort of an exception well then once we do a context switch
+[19:24] we will see that precise exceptions do not hold
+[19:31] so again a quick summary of what i said i said look stores need to wait this means that we need some
+[19:37] storage space to have the store value with us and since uh stores need to wait uh we cannot really
+[19:49] use bypass this so let's say the stores are waiting over here right then a later load comes load cannot
+[19:56] directly go to the cache that is not acceptable to us because it is possible that there is an earlier
+[20:02] store to the same address so this doesn't happen what happens is that loads check the first check the
+[20:10] dedicated space uh where stores are waiting if there is a store to the same address then the value is
+[20:17] forwarded back to the processor so this is required loads cannot directly be sent to the cache yes they
+[20:27] can be they can execute any time but they cannot directly be sent to the caches because there might
+[20:34] be stores before them uh that are either unresolved in the sense their address is not computed or their
+[20:42] address has been computed in this case we need to forward the value from this temporary structure that
+[20:48] has store values but if we consider the more trickier case where we have stores whose address is not
+[20:55] resolved called unresolved stores well then in this case we don't know because an earlier store
+[21:04] might map to the same address
+[21:16] if it maps to the same address then uh if we bypass it and then read the value of some store that
+[21:31] was earlier than it we will end up with the wrong value so we have to keep all of these things in
+[21:37] mind so uh i'm still presenting a rather vague picture of how to deal with loads and stores
+[21:43] that's why i just want to go back to the previous slide on this slide uh what we saw
+[21:50] is that loads of course can execute immediately but stores need to wait for precise exceptions
+[21:57] if stores need to wait we need some storage structure that has a list of stores and their values
+[22:02] right so let us whatever this storage structure is it just has a list of stores so any subsequent load
+[22:08] has to check this first this is like a cache for it before going to the memory system then the memory
+[22:15] system of course starts with the data cache so before going to the data cache we need to check the
+[22:23] temporary stores when we are checking the temporary stores it is possible
+[22:29] that we might have a store to the same address well then we forward the value but the trickier case
+[22:34] would be when these stores are unresolved
+[22:40] see the stores are unresolved in the sense address is not computed
+[22:44] then we in principle don't know if the address will be same as the load or not so we need to wait
+[22:52] so such issues have guided us the design of a structure called the load store queue
+[22:57] as we shall see in the subsequent slides so key requirements once again so uh i'm just going
+[23:05] over the requirements several times such that it's kind of rather clear in your head so stores have to
+[23:11] be sent to the memory system in program order because of precise exceptions we need some dedicated storage
+[23:18] space for keeping the stores that have not been sent let us call this the store queue so we didn't give it
+[23:25] a name but let's give it a name right here right now let's call it the store queue so at the cost
+[23:31] of repetition let me say it again for the last time that stores have to be in the correct path
+[23:36] which means that they need to be the earliest instructions in the pipeline
+[23:42] so because we need to store the stores in the store queue where loads have to check the store queue
+[23:47] first so that is the highest priority that any load has to check all the earlier stores in the store queue
+[23:56] if there is an earlier store to the same address well then it needs to use the value that is written
+[24:03] by that store instead of going to the cache our loads cannot be sent to the memory system until all the
+[24:11] stores before the load are resolved in the sense that address is computed and they are found to not write to the same address
+[24:20] so what we will see in the subsequent slides that this resolving the loads right that is an important concept
+[24:29] and that does play a very important and rather critical role in the development of the load store queue
+[24:36] so let's look at the load store queue so let us assume that time proceeds from left to right
+[24:48] so these are the earlier entries and these are the later entries right so that's how time proceeds
+[24:58] let the yellowish boxes be loads and the greenish boxes be stores
+[25:04] so we allocate an entry at decode time so the allocation of course is done in program audit in
+[25:11] the load store queue so the moment that we find that an entry is a load or a store we uh so this
+[25:20] is so when is this found out well this is found out in the decode stage so in this stage we allocate
+[25:25] the entry to the load store queue don't ask me when to deallocate right now this will come later right
+[25:33] at least 10 15 slides later so when the effective address or the memory address is computed we
+[25:39] update the entry with the memory address and this is where something important extremely important
+[25:45] needs to be done so this is where most of the tasks are right so this is where most of the important
+[25:52] stuff with regards to a load store queue needs to be done all right so uh our terminology would look
+[26:05] like this that the yellow entries will be a load and the green entries will be a store uh so uh the
+[26:15] no entry sign over here means that it is unresolved the address is not computed
+[26:21] and the tick means that the address has been computed so we will use this terminology for
+[26:27] the subsequent slides
+[26:33] so the other important thing that we see over here in the terminology is that for the loads for which
+[26:39] the address has been computed i am simply writing the address so the loads and stores i am just writing
+[26:45] the address in the entry and if i just want to say that the entry has been resolved with the address
+[26:51] doesn't matter i am putting a tick right so the tick indicates that it has been resolved the address
+[26:57] whatever it be doesn't matter and the other is that if an address is written needless to say the load or
+[27:04] store is resolved and this is the address for example here the address is a so let us look at the first case
+[27:12] where we compute the address of a store this is case one uh so in this case let us assume that we resolve
+[27:20] the address of this store and so this is step one that we resolve the address in the sense we find
+[27:26] that the address of this store is a then what we do is that we scan all the entries that have come after
+[27:35] the store not before but after so we scan all the later entries so we scan all the later entries so we
+[27:44] just you know sequentially look at them we find that we have a load instruction that is reading from the
+[27:55] same address a so what we can do is that we can forward the value to the load right so the value can
+[28:02] be forwarded to the load and the load can be said that look uh your data is here it is the same data
+[28:10] that the store is writing to memory so you can take the data and then write it to the register file
+[28:19] broadcast the tag and do whatever is necessary and essentially proceed with your execution
+[28:24] all right subsequently we find another store to the same address so we don't scan later entries
+[28:32] because any later loads will actually get uh their value from this store if they are writing to
+[28:38] the same address right which is addressing so it is important that we understand that the span of
+[28:45] this store is essentially from this point until a subsequent store to the same address right so of
+[28:54] course we don't consider this but let's say we consider till this point and if we find any load within
+[29:01] this window that reads from the same address which in this case is a then we forward the value
+[29:08] all right so that's important we forward the value so we don't go to the memory system because this
+[29:15] is the most recent write so we take the value and we forward it uh the second case we compute the
+[29:24] address of the store it's a second case uh in this case what do we do well uh so the first few steps are
+[29:32] the same uh let us assume that in step one uh we resolve the address of a store and it is found to be a
+[29:45] we do the same thing we scan the later entries as we scan the later entries we keep going going going
+[29:53] going uh we find a load with the same address so we forward the value we did it in the last slide as
+[30:00] well but there is a twist in this slide we come to this entry over here where we find that the store
+[30:07] has been unresolved given that the store has been unresolved we actually don't do anything
+[30:13] because as far as we are concerned this might be a store to any address right uh so we don't know the
+[30:20] address so this address can be a or it may not be a it can be any address but since we don't know we don't
+[30:28] proceed henceforth so if you proceed you will see that we have one load again to address a
+[30:35] but we are not doing this forwarding right so we are not doing this forwarding the reason we are not
+[30:41] doing it because is because we don't know the address of this store this store might very well
+[30:46] be a store to address a in that case this forwarding would be wrong and we would instead need to forward
+[30:52] the data like this hence any time we see an unresolved store we basically wait and we do not scan entries
+[31:00] after it now what do we do when we compute address of a load again we will divide it into two cases
+[31:09] case one and case two so assume that we compute the address of this load and find it to be a
+[31:17] entry then we scan earlier entries in this case the direction of the scan is reverse so we simply keep
+[31:26] on scanning earlier entries right we just go go go what we find is we find a store to an unresolved
+[31:35] address right so this address has not been resolved so even though there are stores before this that write
+[31:42] to the same address we do not do this forwarding right so we definitely don't do this forwarding
+[31:50] the reason is the same as this reason in the previous slide we do not know about the address in this
+[31:57] entry and this could be writing to a well we don't know since we don't know we don't do anything we just
+[32:02] wait all right uh so we don't we just stop over here we don't do anything else
+[32:09] let's now look at case two uh again we compute the address of a load now step one we resolve the
+[32:17] address of this entry to be a we scan earlier entries in this case uh this particular store
+[32:29] is resolved its address is a prime prime so we are not bothered with it so we find one store
+[32:36] that writes to the same address well uh since there are no intervening stores that either write to
+[32:42] the same address or are unresolved we can confidently and correctly forward the data from this store to
+[32:50] this load and this forwarding will be correct all right and so then this will release the load and
+[32:57] the load can go ahead and execute
+[32:59] so i hope that this point is well understood that in the case of stores we scan later entries
+[33:08] in the case of loads when you compute the address we scan earlier entries and as we scan earlier
+[33:14] entries we just keep going back back back back till we either hit a store to the same address or an
+[33:22] unresolved store or we reach the beginning of the queue if we reach the beginning of the queue and we
+[33:28] don't find anything then the load can be sent to the data cache right because there is no store that
+[33:35] can potentially forward uh its value to it so load can be sent the load can be sent
+[33:48] to the data cache but otherwise we always give priority to
+[33:53] uh entries in this queue right in in this queue of loads and stores called the load store queue
+[34:03] okay so so recall that i had mentioned one point and this point i will clarify slightly later
+[34:11] so what i had mentioned over here on this slide let me just go back because i just remembered it and
+[34:17] it has a potential some potential for confusion so i said that we will create some space called a
+[34:22] dedicated store queue that will store the values of store instructions that have not been sent
+[34:30] well yes uh we are using it and we will see how to use it uh but let us assume that this is some
+[34:38] structure that just stores the value we have not discussed the lsq yet we are only looking at the
+[34:43] conceptual design when we look at the actual design this will become clearer so coming back to the
+[34:49] conceptual design uh we were over here in case 2 and in case 2 what we had seen is that uh we simply
+[35:02] keep scanning earlier entries and whenever we find either uh as i said a matching store or an unresolved
+[35:10] store we wait there or if we reach the end of the hurry we send the load to the data cache all right
+[35:18] so this the last four slides which have the same diagram with green and yellow entries essentially
+[35:25] represent a conceptual view of the load store queue right it's kind of a conceptual view and the actual
+[35:31] implementation well we will see okay so so let me now kind of summarize whatever we discussed
+[35:42] in the conceptual implementation of the lsq and what are the important concepts that we are taking
+[35:48] along with us to an actual implementation well loads well we search all the stores before it
+[35:56] so it's the action condition pairs if we find a store to the same address we terminate and forward
+[36:02] the value if it's a store with an unresolved address well we just terminate the search process
+[36:08] we don't do anything else if both of these don't hold in the sense we reach the end of the array
+[36:16] then we go to the data cache similarly for stores when we search all the loads and stores
+[36:23] after it right so in loads is just stores but in stores it's loads and stores after it
+[36:29] so if we find a store to the same address well we terminate the process if we find the store with
+[36:36] an unresolved address then also we terminate the address because we don't know the address that the
+[36:41] store is going to resolve to else before termination if we find a load that also loads from the same
+[36:49] address we just forward the value as we have seen so this table is rather important because it tells
+[36:57] us what all we need to implement to actually realize a physical load store queue so this is where the
+[37:05] notion of that store queue comes up this is something that we had alluded to very briefly
+[37:11] but because we are not discussed the design of the load store queue this part i would presume
+[37:17] would not have been that clear so the load store queue for efficiency reasons actually has two queues
+[37:24] called a load queue and a store queue so whenever we decode and we find a new load entry well we enter
+[37:30] it into the load queue and whenever we decode and we find a new store entry we enter it into the
+[37:37] store queue all right the store queue additionally also acts as a cache for values as we have seen
+[37:43] right for store values basically as we have seen and essentially this is checked first
+[38:00] before going to the decache before accessing the caches we access access the store queue first
+[38:07] to see if we can forward data from a matching store
+[38:10] if we are able to forward data well and good the load can execute quickly else we access the data
+[38:17] cache which of course is slower right and which is also outside the pipeline
+[38:25] all right so uh before we proceed it's important before we proceed we need to understand how many of
+[38:33] these structures be it an instruction window a free list a load store queue are implemented
+[38:37] so we have already discussed this earlier in one of the previous lectures all of them use a circular queue
+[38:45] right so circular queue is a conceptual structure which was of course you can't have such a circle in
+[38:52] hardware but what you can have in hardware is that you can have a regular array and the regular array
+[38:58] converting that to a circular queue would implement a degree of wraparound
+[39:02] but you will essentially have two pointers you will have a head pointer and you will have a tail pointer
+[39:14] so whenever we want to enqueue well all that we need to do is we need to increment the tail pointer
+[39:20] and if we reach the end of the array we will wrap around
+[39:22] whenever we want to dequeue well again we increment the head pointer and if let's say i were to dequeue
+[39:29] i will return the value over here so this is again a conceptual view of a circular queue
+[39:36] so both the load queue as well as the store queue are internally implemented as circular queues
+[39:41] so this is kind of a universal statement across all of architecture
+[39:46] that whenever we need to implement a queue like structure it is almost always invariably a circular queue
+[40:00] so the organization well we will have a load queue and a store queue each of them are implemented as
+[40:07] circular queues uh they will have a head pointer and a tail pointer right
+[40:14] as was discussed so each entry of the load queue will have the load address
+[40:22] and similarly each entry of the store queue will also have the memory address and the value right
+[40:28] so the important point is the store queue is also storing the store value such that it can be forwarded
+[40:36] we will also need some more information for doing the kind of checks and searches that we have been proposing
+[40:44] so these new uh pieces of information that we need to add for the purposes of searching the way that
+[40:50] we have described are like this that in every load queue entry we also add index of the tail pointer
+[40:57] in the store queue right whatever was the value of the tail pointer in the store queue when the entry was
+[41:04] added that is important that when i'm adding a new entry in the load queue right so i'm adding a new entry
+[41:10] i'll increment tail so i'll add an entry over here so when this entry is being added i just also add the
+[41:20] tail pointer of the store queue right so that is important we will see why so this essentially
+[41:27] synchronizes uh the load queue entry and the store store queue entries points such that if let let us see
+[41:35] for a given load i want to find all the earlier stores i can use this information at this point all right
+[41:45] that's kind of important the other is that for a store queue entry uh what i do is i also add the
+[41:54] index of the tail pointer in the load queue when the entry was added so this is also giving it a point
+[42:01] that you can find earlier loads and later loads based on this information
+[42:11] so what are the basic search operations well the basic search operations if you take a look
+[42:16] at the table that we had shown a couple of slides earlier uh the basic search operations are we search
+[42:22] all the stores before a load uh for a store we search all the stores after it
+[42:29] and we also search all the loads after it such that uh so so we search and then we look for the
+[42:38] conditions that we have mentioned in the table like the earliest address of the math store or an
+[42:43] unresolved store so pretty much we need to find the indexes of all entries that are after a given load or
+[42:54] store and that meet a certain criteria after that we need to find the index of the earliest such entry
+[43:05] or latest such entry depending upon whether it's a load or a store so what we can do is we can
+[43:10] represent store queue locations as a bit vector so if a queue has n entries we can have n bit bit vector
+[43:18] with one bit for each entry let us also create a bit vector called prec where all the locations
+[43:26] before a given location are set to one so in a sense if this is the array right and we have one location
+[43:33] over here then essentially let this index be j then prec j would basically contain one in all the locations
+[43:47] other than this the ones before it so it has nothing to do with the fact that whether it's a circular queue
+[43:52] or not it just adds once in all locations in the array that are before that given location
+[44:06] all right so the implementations of the function before so we so we will implement two functions
+[44:12] before and after so i will just show you that how they are done uh in hardware so these are
+[44:19] representative designs so actual lsk implementations might be doing something else but not very
+[44:25] different so let us see i am given a certain index j and this there is no wrap around so j is greater
+[44:33] than equal to head so i want to find all the locations within the circular queue that are before j
+[44:42] so let us see uh what we have is we have an array without wrap around so we have the head pointer
+[44:48] the tail pointer the tail pointer and j i basically want to find the indexes or indices of these two
+[44:55] locations that are before j and and that are essentially there in the queue right so those are our two
+[45:01] requirements so to compute it what i can do is i can use some boolean expressions hardware is in general
+[45:09] very fast with boolean expressions secondly uh what happens is that uh hardware is nice and parallel so
+[45:20] given the inherent parallel processing that hardware enjoys if we sort of create a lot of boolean
+[45:25] expressions hardware can process them very easily and very quickly so let us look at preck head well
+[45:32] preck head will have a once will have once in these two positions preck j will have once in these two positions
+[45:41] sorry these four positions and before j will essentially be
+[45:48] uh well uh we need to see so we need to see how these two are related so we can compute not of preck head
+[45:56] so it will become zero zero and all of these will become one and preck j right so so so preck j will
+[46:09] again have once in these positions if i just compute a logical and of them what i am left with is this block
+[46:16] all right so this is exactly what i am left with and i compute a logical and and then i arrive at the
+[46:24] two positions that i i am interested in these are the positions of the two entries that are before
+[46:30] the jth entry so how will it actually translate to a real lsq well uh typically given a load we want
+[46:37] to find all the stores before it so we can go to that tail pointer which that load entry stored and just
+[46:44] find the addresses of all the stores the indices in this case in the queue of all the stores that are
+[46:50] before it and that are still a part of the queue so that will be given by this before function
+[46:56] which as you can see is a simple boolean combination of not of preck head and preck j
+[47:02] and this can be computed such functions that deal with boolean vectors can be computed very very easily
+[47:09] and quickly in hardware so let us now consider the other case where we have a wrap around so where we
+[47:19] have a wrap around what will happen is uh that the head pointer uh will be over here uh towards the end of
+[47:28] the queue and then the queue the logical conceptually logically and conceptually the queue will wrap around
+[47:37] like this so in this case all the entries that qualify to be before j will essentially be this entry
+[47:45] this entry this one and this one so what we can do uh sorry uh what we can do is we can uh create a
+[47:56] boolean expression that will have ones for these entries in the bit vector and zero for the rest of
+[48:04] the entries so mind you here across is basically those entries that are not a part of the queue
+[48:15] all right uh so so in in this uh entry what we will have uh is that uh uh if we see before j uh will
+[48:33] basically be all of these entries that are between head and the end so all the entries between the head
+[48:40] and the end of the queue will be not of preck head so not of preck head will be these two entries and
+[48:51] then we will have a logical or with preck j which are all the entries between j and the start which
+[48:57] are these two entries so this boolean expression provides the expression for before j when we have a
+[49:08] wrap around and wrap around and wrap around is when j will be less than head right and that's when we
+[49:13] will see that we will have a wrap around right in the sense that the array is wrapping around sorry the
+[49:21] queue uh the part of the queue we are interested in the circular queue is wrapping around the end of the array
+[49:28] we can create similar looking expressions for the after function so the after function is shown over here
+[49:36] so the first case is the case where we do not have a wrap around so j is less than equal to tail
+[49:43] so in this case after j would be these three entries the cross marks show those entries of the cube
+[49:51] that are sorry the cross mark shows those entries of the array that are not a part of the queue
+[50:00] so of course we will not consider these two so we are only interested in the three green cells
+[50:07] so what we do is for that uh this boolean expression the claim is that this boolean expression
+[50:16] represents these three cells where these three cells are one and the rest all are zero
+[50:21] so we are introducing a new function here called the map function so the map function has one for j
+[50:29] map j has one for j and zero for all the other positions so it is uh rather obvious uh to see that
+[50:38] why uh this expression would provide uh would lead to these three cells being selected as one
+[50:45] uh so we can quickly see not of prec j uh they are essentially all of these cells anded with not of
+[50:53] map j uh so if i do that then this cell will go away so we are only left with the cells from here and here
+[51:01] prec tail or map tail are essentially all the entries from the beginning
+[51:07] to this point and then we can see that a logical and between them will provide us pointers to these
+[51:14] three entries all right similarly we can also consider the next case where a j is greater than tail
+[51:26] uh so in this case this is head the array as you can see has wrapped around and j is greater than tail
+[51:34] uh so in this case we would like all of these four entries to be selected uh this is not very hard to see
+[51:48] so let us consider each of these individual terms so not of prec j uh are essentially these two terms
+[51:56] all right and prec tail or map tail are these four sorry not terms but entries
+[52:02] and if i take the union of them of course i have these four and these two but out of this i want
+[52:07] to discard this so i just compute a logical and with not of map j so that removes this cell
+[52:16] all right so what i am left with are these five which are the ones that i am interested in
+[52:22] so given the fact that i have computed the before and after functions i can proceed
+[52:27] so for the sake of readability i am just reproducing the table that we had shown
+[52:33] uh on a previous slide that talks about what we do for loads as well as for stores
+[52:40] so for loads what we do is we search all the stores before it right and this is easy because
+[52:47] when we add a load to a load queue we are essentially adding a pointer the value of the tail
+[52:53] pointer that existed in the store queue so that can be used to check for all the stores before it
+[53:00] and so then of course we need to find so if this let's say this is the load we find all the stores
+[53:07] before it considering wraparounds and everything and in this we need to find the latest store that is
+[53:14] either a store to the same address or an unresolved store then we need to consider this time window
+[53:22] sorry this window of entries and any entry over here can potentially forward a value to the load
+[53:30] of course if the address is matching uh then uh let's consider stores so for stores it is the reverse
+[53:40] we essentially look at later entries and so the entries that came after the store here also we
+[53:48] terminate if we have a store to the same address or an unresolved address so here also we have a window
+[53:55] between one store and another store uh for all the loads in this window that map to the same address
+[54:02] we can forward the value all right so so that is what we do for stores uh so we have up till now
+[54:12] only discussed the after and before functions we need to maintain a few more bit vectors uh so reserved
+[54:21] will be sorry not reserved resolved uh let's say it is a bit vector to store whether an entry is
+[54:28] resolved or unresolved so we can say it will store a zero if it is unresolved one if it is resolved
+[54:35] another bit vector called match which shows all the entries that match a given address right
+[54:41] it shows an address match so how will we implement this quickly in hardware without doing a sequential
+[54:47] search it turns out that this process can be done in parallel so we will only have to use a content
+[54:54] addressable array called a cam array we are not in a position right now to appreciate what a cam array
+[54:59] is but we will gradually do that right so we will do it in chapter 7 we will use cam arrays to some extent
+[55:08] in the next lecture on come on instruction retirement but in chapter 7 we will discuss a cam array in
+[55:16] great detail but till that point let us assume that we have a mechanism to find in parallel all the entries
+[55:23] that matching given address see if i were to find all the matching and unresolved stores before a load
+[55:31] right so this is a load right and what i want to do is that before it
+[55:42] i want to find all matching and unresolved stores
+[55:45] so what i need to do is that first i compute the bit vector before j and then i compute so either then
+[55:56] or in parallel i compute a match vector which is essentially a bit vector uh that can that points
+[56:05] to all the entries that match the address one if there is a match zero if there is no match so before j
+[56:12] produces a bit vector produces a bit vector match produces one more right and
+[56:21] resolved produces one more so since we are interested in unresolved entries so we just compute a logical
+[56:27] not of that so match or the complement of resolved this is essentially a bit vector that represents
+[56:36] all the matching entries all the matching entries all the entries that are either matching or unresolved
+[56:42] matching means same address and before j and this quantity basically means uh that
+[56:50] these are all the entries that are before the uh entry in considerations if this is
+[56:59] j so before it all the entries that additionally have these properties
+[57:04] so what is the final outcome well the final out output over here is essentially a bit vector
+[57:09] that has zeros and ones if it has a one it means it is before j along with that it either matches or it
+[57:16] is unresolved right and that would essentially indicate uh that the searched terminates over there
+[57:26] so what do we do what we have learned here is that we can compute a wide variety of functions
+[57:34] and find a set of locations of interest so once we have done that what is the output of all that we do
+[57:41] the output is a bit vector of let's say that contains 0 1 0 0 0 1 right in this bit vector we often
+[57:51] need to find the position of either the latest one or the earliest one or let's say the leftmost one or
+[57:58] the rightmost one so the question that we would like to now ask ourselves this is a very stock
+[58:06] question for hardware designers is that given a bit vector which of course we have computed with
+[58:13] a combination of our before after functions and the match and the resolved arrays so this i claim is
+[58:19] sufficient to handle all cases of loads and stores how can we do this quickly in hardware where what
+[58:29] is the problem the problem is either find the position of the leftmost one or the rightmost one
+[58:34] right so the left or right depends upon the problem on what we are trying to do and how do how do we do
+[58:41] this quickly well we don't want to scan see if there are n entries scanning will take order n time which
+[58:47] is inefficient right so we don't want to do it we want to use some solution that uses order of log n time
+[58:55] to quickly find out the index the position of the leftmost one or the rightmost one
+[59:01] well so given the fact that i have a burger over here all of you are expected encouraged to think
+[59:10] about this for five seconds so i'm giving you five seconds now
+[59:19] can we use a select unit well this is something that you need to think i don't want to answer this
+[59:24] question but can we use a tree shaped select unit to quickly find the position of so of course it will
+[59:32] not be a regular select unit it will be a select unit with modifications but can we use it to find
+[59:38] the position of the leftmost one or the rightmost one in an array of zeros and ones if we can then
+[59:47] we can find the index to till which we need to search uh the till which we need to scan
+[59:54] for loads and stores and also a host of other information right so it will essentially tell
+[59:59] us that for a load what is the valid window within which we need to look or whether there are matches
+[60:05] or not for a store again what is the valid window within which we need to look and furthermore
+[60:11] which entries within this valid window have a matching address and we need to forward so all of these
+[60:18] things can sort of be computed in parallel in hardware we have already shown the mechanism how of
+[60:23] computing the before and after functions but again that's not enough because the final result
+[60:29] is a bit vector so in a bit vector finding out the positions of the leftmost one and the rightmost
+[60:35] one are crucial that is where i suggest that a simple modification to a tree structured select
+[60:42] unit is all that you require how to do it well think about it good we are now in a good position
+[60:50] in the sense we have completed roughly 75 percent of the work so most of the heavy work within the
+[60:57] pipeline is done now essentially what we need to do is we need to wrap up so this process of wrapping up
+[61:04] which is the process of removing instructions from the pipeline this is known as instruction commit
+[61:12] or instruction retirement this we shall see next in the next video

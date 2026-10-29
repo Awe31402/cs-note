@@ -1,0 +1,799 @@
+[00:00] Let us now start out by extending what we had discussed
+[00:29] in the previous slide set.
+[00:33] So there we had established an equivalence between a parallel execution and a sequential
+[00:39] execution.
+[00:40] Alright?
+[00:41] So, one second, so we had said we had given this criteria, but we had not extended the
+[00:52] logic further to actually create a correctness criteria or to say that when a given outcome
+[01:01] is valid or not.
+[01:02] In a certain sense, this was not extended to a memory model.
+[01:06] So let us create a first memory model called sequential consistency or SC.
+[01:12] So this is fairly old and this was pretty much the first widely accepted memory model
+[01:17] to be proposed in the late 70s by Leslie Lamport.
+[01:22] It is the most intuitive yet the most impractical.
+[01:25] So, let me read it out, it is an easy definition.
+[01:31] So, when a parallel execution is equivalent to a legal sequential execution and the order
+[01:39] of operations in the sequential execution is as per program order.
+[01:43] We say that the execution is sequentially consistent.
+[01:48] So, what are we doing?
+[01:49] We have a parallel execution.
+[01:51] So, we say that for each thread, let us order them in program order.
+[01:56] So, this is the typical diagrams that we have been drawing for each circle represents an operation.
+[02:03] Then we define an equivalent sequential execution where the criteria for equivalence was specified,
+[02:09] where essentially we take all of these operations and we arrange them in a linear sequence with
+[02:16] a one-to-one correspondence, right, subject to the fact that the orders remain the same.
+[02:22] So, a further caveat is that yes, this needs to be legal sequential execution and second,
+[02:29] this order needs to be as per the program order of the thread, right.
+[02:33] So, because program order across threads makes no sense, but within the same thread of course,
+[02:39] the program order is the order in which we fetch instructions or the order in which we
+[02:43] retire instruction.
+[02:45] So, since that is in order, in program order, we say that the order in the final sequential
+[02:52] execution which is also this order in the parallel execution, this has to be as per program
+[02:58] order and the final sequential execution has to be legal.
+[03:02] So, if it is possible to convert such a parallel execution into such kind of a sequential execution
+[03:09] with these two properties, one it is legal and for every thread the operations appear in
+[03:14] program order, then we say that the parallel execution is sequentially consistent or it is an SC.
+[03:24] So, we can say the formally the execution is an element of SC which means that it is sequentially
+[03:31] consistent or in other words, it means that it is possible to take a parallel execution and
+[03:37] sequentialize it in this manner.
+[03:39] So, we will get into the deeper meaning of this, but we can visualize this differently.
+[03:46] So, if you would recall the previous slide said, what we were actually doing is that we were
+[03:54] taking operations issued by different threads and we are essentially, we were trying to interleave
+[04:00] the executions.
+[04:01] So, we are saying we take an operation from thread one, another operation from thread two,
+[04:05] another from thread one.
+[04:06] So, we are trying to create a sequential interleaving, right?
+[04:10] The same way we interleave our fingers.
+[04:12] So, this was creating a sequential execution, right?
+[04:18] So, this will be considered a sequentially consistent execution if number one it is legal which means
+[04:25] every read receives the value of the latest write.
+[04:28] So, latest and non-latest in a parallel one means nothing, but in a sequential world the
+[04:34] latest write is easy to find, we just walk towards the left and we find the latest write
+[04:39] to the same address and in each thread the operation, so for each thread, so let us say if I take
+[04:44] a projection with respect to a certain thread, for each thread the operations appear to be
+[04:50] in program order.
+[04:51] So, we can say that this predicate holds true for every thread, that the sequential execution
+[05:00] projected on every thread, they appear in program order and this is the same will be true for
+[05:05] the parallel execution as well with legality.
+[05:10] So if we think about it in a deeper way, let me just erase the ink on the slide.
+[05:16] So this in a sense captures the intuitiveness of what we have been trying to say.
+[05:23] So what are the key properties of SC?
+[05:25] Well, the key properties are that we take two threads, I am going to derive the two properties,
+[05:31] right?
+[05:32] Two-threaded system, we have operations, we have operation, we just create an interleaving
+[05:37] of them.
+[05:38] So let us say these operations are, let us represent them by circles and let us represent these operations
+[05:44] by squares, sorry by rectangles, so any of these interleavings is going to be, represent a sequentially
+[05:58] consistent outcome, right?
+[06:01] As long as we interleave them in a certain manner and the execution is legal and of course
+[06:06] the interleaving is as per program order.
+[06:08] So, as you can see a sequentially consistent outcome can still have, a sequentially consistent
+[06:15] system can still have multiple outcomes, that is fine.
+[06:20] But all of them have to be produced via an interleaving, where two things are preserved, one is legality
+[06:29] and other is program order.
+[06:30] So, I have written this in a slightly different manner, so when I say that I can arrange all
+[06:36] the operations on a sequential timeline, essentially it appears as if the operation appears to execute
+[06:46] at some instance between, some instant of time between the start and the end.
+[06:51] So I can say that all the writes in particular are atomic, right?
+[06:56] So reads of course do execute at one point in time because they read the value of, they
+[07:02] read a value and essentially a read is a private operation for a core but a write is meant to
+[07:07] be visible to everybody and all the observers and all the cores agree on a precise time of
+[07:13] the write, which in any case is a direct corollary of the fact that I can arrange these operations
+[07:19] sequentially.
+[07:20] So, if I can arrange these operations sequentially like this, then what I say is that look if
+[07:28] there is a write over here, all the cores in any case agree on this order of operations.
+[07:34] I can say that there is a unique instant of time, a precise specific instant of time at
+[07:40] which the write appears to complete, which means that any point in time or any operation
+[07:47] before this point in time does not see the write and all the operations after this point
+[07:52] of time see the write.
+[07:54] So whenever an operation completes instantaneously, we say that the operation is atomic.
+[08:02] So of course as I said a read by definition is a private operation in the sense I read something,
+[08:08] I keep it, nobody else sees it and in a sense whenever I read it at one point of time when
+[08:13] I get the value, it appears to execute at that point in time, so that is not a big deal.
+[08:21] But writes being atomic is important because everybody should agree that a given write was
+[08:27] visible to the world at a precise point in time.
+[08:30] So this does happen in the sequentially consistent memory model because when we arrange everything
+[08:38] on a linear timeline, a write has to appear to happen at a given point in time.
+[08:45] So the key word that I would like to use is the word appear and you will often see this
+[08:51] word in the concurrent systems literature, where the way to actually understand this is that
+[08:59] all the threads agree that look, there is one instant of time, it does not matter whatever
+[09:06] that instant is but at least the instant of time exists, right, so it is important, we
+[09:11] do not care what instant of time it was.
+[09:14] As long as all of us agree that look, there was a point in time where the write executed
+[09:21] instantaneously and this and all the reads after that will get the value of this write
+[09:29] after that to the same address, so this is legality and legality in this case is transferring
+[09:34] to the fact that writes are atomic, okay.
+[09:39] The second is program order is preserved in the sense in the final sequential execution,
+[09:45] which is equivalent to the parallel execution, for each thread the operations appear in program
+[09:51] order, which is anyway the order in which we were interleaving in our discussion in the
+[09:56] previous slide set.
+[09:58] So this is intuitive, this is intuitive, so all that sequential consistency does is that
+[10:04] it takes two of our intuitive notions of legality and program order.
+[10:08] Atomicity gets converted to atomicity and it combines atomicity and program order and lo and behold,
+[10:15] we have our first consistency model called sequential consistency, which given a parallel program
+[10:21] will give us a set of valid outcomes, which to our mind are intuitive.
+[10:28] In the sense, it is all a question of taking the instructions of different threads and just
+[10:34] interleaving them.
+[10:35] So the key word here is interleaving.
+[10:38] I would request all of you to thoroughly understand the meaning of this, pick up a dictionary and
+[10:46] the meaning of this is that I maintain the order of each thread and I just interleave them
+[10:53] the way I have done over here.
+[10:58] So this is a very, very, very, very, very, very, very important correctness criterion.
+[11:05] And so let us say that this is the gold standard of all consistency models, where this is clearly
+[11:10] the most intuitive.
+[11:12] Right.
+[11:13] In terms of intuition, it is very, very high and in terms of common sense, sequential consistency
+[11:20] appears to be the way to go because it preserves, it gives us a very simple property that take
+[11:27] a parallel execution.
+[11:30] As long as you can convert it to a sequential execution with these two properties guaranteed,
+[11:37] which appear to our innate sense of reason, we can say that the execution is correct.
+[11:43] We can reason about it.
+[11:45] Anything outside that we will say is in non-SC.
+[11:50] Now here is a sad part.
+[11:51] This is why I say it is impractical because almost all the optimizations that we have proposed
+[11:59] break SC.
+[12:00] Right.
+[12:01] So let them be out, let they be out of order processors, MSHRs, you name it.
+[12:06] All the cache, NOC and core optimizations that we have proposed, they either break program
+[12:12] order because loads are issued early.
+[12:15] Some of them, particularly the ones that we will discuss in this chapter as well as methods
+[12:21] that use the NOC will break atomicity.
+[12:25] So that's the reason there is a problem.
+[12:29] So here again, I would like to say that if a single threaded program is executing on a
+[12:35] multi-core processor, the results will be identical to that executing on a unicore processor.
+[12:48] For single threaded, there is no issue.
+[12:50] The issue arises for multiple threads, for multi-threaded programs that share variables,
+[12:58] because if we reorder accesses to different addresses, so recall this example that we had
+[13:03] given in the previous slide set, where this is what we had, x is equal to 1, y is equal
+[13:13] to 1, we read in y and we read in x.
+[13:19] So from the point of view of this program, we can reorder the accesses in the sense we
+[13:26] can send y first and send x later.
+[13:32] As far as we are concerned, this program is correct, compilers can also reorder, the processor
+[13:38] definitely will reorder.
+[13:40] And it will not change the final state or the outcome of the program, because these are
+[13:44] all, after all, accesses to different variables, right?
+[13:49] But as we see, this will create havoc in multiprocessor systems, because this harmless reordering,
+[13:58] that we have been doing up till now and that too, very very carelessly, without any concern
+[14:07] for what, what would happen in a multiprocessor system, this will actually create a lot of
+[14:14] issues in the sense, it will directly break sequential consistency, because if we reorder
+[14:20] these two instructions, send the loads early, we can read both t1 and t2 to be 0 and 0.
+[14:27] And as you can see, this execution is clearly not sequentially consistent.
+[14:31] So, let me maybe erase some part of it, which is not relevant, alright?
+[14:38] So, as we can see, this execution over here is clearly not sequentially consistent, if we
+[14:48] allow reordering, because program order is not being preserved.
+[14:52] But sometimes for performance, we break it.
+[14:54] And this is where it appeared to be a perfectly great thing to do when we were discussing an
+[15:00] out of order pipeline.
+[15:02] But when we consider multiple cores, we see that the intuitive correctness motion of sequential
+[15:09] consistency cannot be guaranteed.
+[15:12] So the main idea is you do something good somewhere, something bad happens somewhere else.
+[15:18] So we did great things in the memory system and pipeline.
+[15:22] Something bad happened when we start writing multithreaded code.
+[15:28] So let us look at a few examples to understand and also to further, to have a slightly deeper
+[15:35] discussion.
+[15:36] So, let us first take a look at single variable programs, ok?
+[15:40] So, in single variable programs, we will not have this reordering, because they were two different
+[15:47] variables.
+[15:48] So, for single variable programs, let us look at this example, where I write 1, then write
+[15:53] 2.
+[15:54] So, thread 1 reads 0 first, then 2 reads 1, thread 3 reads 1 first and then 2.
+[16:01] This execution is in SC.
+[16:03] Why?
+[16:05] Because as you can see, we can order them, a sequential ordering exists, Rx0, Wx1, Rx1, Wx2.
+[16:15] So, at no point of time have we broken program order yet, Rx2 of thread 2, Rx2 of thread 3.
+[16:25] So this is a legal ordering, it is an equivalent ordering and we have not compromised on program
+[16:33] order.
+[16:34] But let us take a look at this, Wx1, Wx2, so thread 1 writes 1 and 2 to x, but thread
+[16:44] 2 reads 1 first, then 2, thread 3 reads in the reverse order, 2 first and then 1.
+[16:51] So little bit of a homework kindly verify, this execution is not in SC.
+[16:56] It is not possible to come up with an equivalent sequential execution for this parallel program,
+[17:04] which is legal and preserves program order.
+[17:07] And regardless of whatever you do, you will not be able to come up with an equivalent sequential
+[17:13] execution.
+[17:14] So, this execution is not in SC.
+[17:18] Furthermore, if you look at it, this behavior is non-intuitive because for the variable x,
+[17:26] there appear to be different storage locations.
+[17:28] For the same variable x, it appears that there are different storage locations in the sense,
+[17:36] so here again the observer is at the level of the thread, so you are essentially looking
+[17:41] at it from the point of view of software.
+[17:43] So it appears that for one location, it sees the correct order of writes.
+[17:49] But for the other thread 3, sorry for the first thread 2, it sees the correct order of writes.
+[17:57] But for thread 3, it sees the writes in the reverse order.
+[18:02] So somehow the updates to x are getting garbled up and that is not really what you would expect
+[18:11] to see in a shared cache that has a single location for x, because any observer who is sitting
+[18:17] on x would essentially see 1 written first and then 2, thread 2 would agree with this,
+[18:22] thread 3 will not agree, hence thread 3's execution is not valid.
+[18:29] So what we see is that, you know, now we are kind of looking at the finer points, that for
+[18:36] a single variable program or let's say if I consider all the accesses to a single variable
+[18:41] in a multivariable program, if sc is not guaranteed, it appears as if we do not have a single storage
+[18:51] location for x and this is something that we explicitly wanted to ensure when we said that
+[18:59] for an outsider a shared cache should appear identical to a distributed cache, right.
+[19:08] So this is something that we wanted to ensure, but you can clearly see that if we have an
+[19:14] execution of this type, this is not being ensured.
+[19:17] Now is there a connection between a shared is equal to distributed and sc?
+[19:22] Yes there is and this connection is very interesting.
+[19:26] This is called PLSC, which I will define now.
+[19:31] So if we consider all the accesses to a single variable or a memory location, which is x in
+[19:37] this case, let such an execution be always in sc.
+[19:42] This correctness criterion is known as the PLSC constraint.
+[19:46] PLSC stands for per location sequential consistency.
+[19:51] It is needed to provide the illusion of a single memory location even if we have a distributed
+[19:57] cache.
+[19:59] So what is it that I am doing?
+[20:02] What I am essentially doing over here is I am saying that look consider a shared cache which
+[20:12] is slow and inefficient, but for the variable x it has a single location.
+[20:21] Place our friend who is an observer over there.
+[20:24] So our friend will observe at this location a sequentially consistent execution, right.
+[20:35] Primarily because your friend will basically see requests coming in and then it will be legal.
+[20:45] So definitely this kind of an execution will not be seen by an observer.
+[20:51] And even if let us say we are observing this cache from outside and only tracking accesses
+[20:55] to a single location, so we will see that look this is the shared cache, we are pumping
+[21:01] in accesses by different threads and let all of them be to the same location, let us filter
+[21:06] them out that way.
+[21:09] So if it is not in sc, it will appear as if look maybe we do not have a single physical
+[21:15] storage for x and something really strange is happening in there, but if we, but if we
+[21:21] genuinely have a single location for x, it has to be sequentially consistent unless accesses
+[21:27] are reordered.
+[21:28] So let us assume for a single location that is never the case.
+[21:32] Then if they are not reordered, then the only thing we need to guarantee is atomicity or legality
+[21:41] and it will be legal because it is a single location, right.
+[21:44] So whenever I read, I am bound to get the value of the latest right.
+[21:49] So for a single location in a shared cache, if I am observing, right, I will see it to be
+[21:57] sequentially consistent, hence the PLSC criterion is necessary and sufficient.
+[22:05] Of course, there is an informal proof, but there are more formal reasonings in the book.
+[22:09] But what you need to take away from this discussion is that the PLSC criterion is both necessary
+[22:16] as well as sufficient to ensure that a shared cache appears to an outsider the same as a
+[22:26] distributed cache or rather putting it the other way, the distributed cache appears to
+[22:30] an outsider the same as a shared cache because per location all the accesses are sequentially
+[22:36] consistent.
+[22:37] So it appears that we have a single location, whatever the observer at that location will
+[22:43] see and observer outside the cache will also see that look requests are going in.
+[22:48] They are being serviced in program order and second, every read is getting the value of
+[22:54] the latest right.
+[22:56] So the PLSC criterion for us is important, so we will not compromise on this.
+[23:02] But the PLSC is not the same as SC, PLSC is only per location and there is a deeper connection
+[23:08] between them, we will discuss this in some time.
+[23:12] But the key thing is this is something that we will not compromise on.
+[23:17] So SC of course, SC was the general thing for multiple locations and there we found that
+[23:24] look a lot of our optimizations are not guaranteeing SC, fine, fair enough.
+[23:31] But per location sequential consistency, let us strictly disallow this behavior and let us
+[23:36] say that we will always have it such that a shared and distributed cache appear identical
+[23:42] to outsiders.
+[23:43] How to ensure it is a separate question, but let us at least have it as one of our objectives.
+[23:50] Ok, so we have discussed the single variable case, let us discuss the multivariable case.
+[23:59] So let us now consider this execution, which is our running example that we have been showing.
+[24:06] So there are two threads T1 and T2, T1 writes 1 to X, T2 writes 1 to Y and then we read.
+[24:14] So we read Y, T1 reads Y, it reads it to be 0 because the load is issued early.
+[24:20] Likewise, T2 reads X to be 0.
+[24:24] So can X, Y be equal to 0, 0?
+[24:27] Well, in a modern out of order processor, yes, as per SC, no.
+[24:32] So as per, so this order is clearly not sequentially consistent, ok, this execution.
+[24:38] But, but, but, but let us look at this execution from the point of view of each location, right?
+[24:44] So as I said, in such theoretical discussion, which is of course very important, the reason
+[24:53] it is important is basically because without a little bit of theory, so, so when do you
+[25:00] need theory, ok?
+[25:01] It's a broad, you know, it's a philosophical thing, but when do you actually need a theory?
+[25:06] So look at the night sky.
+[25:08] So previously, when people didn't understand how really planets and stars move, they said
+[25:14] that maybe Orion is a hunter and it is hunting a scorpion or a lion or a bull.
+[25:21] So they created this notion of constellations, right?
+[25:26] And then they said, they gave a certain connotation to the pole star and so on.
+[25:32] But when they started understanding things better, they found that everything could be explained
+[25:37] with Newton's laws or Einstein's laws.
+[25:41] And pretty much that could explain most part of, most of the movements of the night sky.
+[25:50] Of course, this theory is not complete in the sense we do have dark matter and dark energy
+[25:54] and so on.
+[25:56] But that said and done, the objective of having a theory is to somehow explain experimental
+[26:04] results.
+[26:05] Right?
+[26:06] Or engineering decisions and choices.
+[26:08] So in this case, given the fact that we are looking at a very complex engineering system,
+[26:14] unless we have some specification, we will get lost.
+[26:19] So we have already discussed that in our complex engineering system, this execution is valid.
+[26:25] This is not an SC.
+[26:28] But we still need a little bit of a theory to understand this better.
+[26:33] That is why we created the notion of observers.
+[26:36] And this is very important because every observer has a point of view.
+[26:41] So we can always attach an observer per location, the observer only watches what happens for a
+[26:50] specific location, right?
+[26:52] So we can have an observer for x.
+[26:55] So that would observe a write to x by thread 1 and a read to x from thread 0.
+[27:03] As we have discussed in one of the assumptions in the previous slide set, the absolute times
+[27:09] do not matter.
+[27:11] So in any distributed or concurrent system, for such models, the absolute time, the wall clock
+[27:18] time does not matter.
+[27:20] So what matters is diagrams like this.
+[27:23] This is clearly sequentially consistent because we have a sequential order which is Rx0 and Wx1,
+[27:31] which means that x was initialized to 0, I read 0 first and then you wrote to 1.
+[27:36] Similarly, if I have another observer with respect to y, again this is the execution that the
+[27:43] observer sees, this is again sequentially consistent, well why not, Ry0, Wi1.
+[27:54] So we do have per location sequential consistency because for both x and y, they are per location
+[28:02] sequentially consistent.
+[28:04] So now we have an interesting example where overall we do not have sc, but we have PLSC.
+[28:11] So which means sc does not imply PLSC.
+[28:16] Oh, I am sorry, it is the reverse, it is the reverse, sorry, sorry, sorry, before, before,
+[28:21] sorry.
+[28:22] We have PLSC, but we do not have sc.
+[28:26] So this means that even if we have per location sequential consistency, it does not imply that
+[28:32] the overall execution is sequentially consistent.
+[28:37] So what does this mean for us?
+[28:38] This means that even if we have a system with a lot of distributed caches, where PLSC does hold,
+[28:44] in the sense the distributed caches appear as a monolithic shared cache for outsiders.
+[28:52] It still does not guarantee that the overall system provides sequential consistency.
+[28:58] And this is being captured by this example, where you can clearly see that PLSC holds, but
+[29:02] sc does not.
+[29:03] So PLSC does not imply sc.
+[29:07] Alright, let us keep moving.
+[29:12] So then, let us take a look at this particular execution once again.
+[29:19] So in this case, we are assigning them to the temporaries T1 and T2 which are registers.
+[29:27] So this outcome as we said is clearly not in SC and so as we have seen, this is not in SC,
+[29:38] but it is there in PLSC.
+[29:40] So an important point needs to be said here that look, PLSC does not guarantee SC.
+[29:47] But definitely SC guarantees PLSC because if it is overall sequentially consistent, it
+[29:54] is going to be per location sequentially consistent as well.
+[29:58] Because program order is guaranteed, legality is guaranteed, that will be there per location.
+[30:03] So SC guarantees PLSC, but PLSC does not guarantee SC.
+[30:07] So we can say that PLSC is weaker and SC is stronger.
+[30:12] Now let us come back to the discussion.
+[30:14] The reason why PLSC guarantees do not translate to SC guarantees is basically because the loads
+[30:22] will be sent early to the cache.
+[30:25] The stores will happen at commit time.
+[30:28] So the loads will in a sense bypass the stores.
+[30:33] If we still need sequential consistency, loads will have to be issued at commit time, which
+[30:39] means we will not have out of order execution.
+[30:43] All the benefits of out of order execution will go away.
+[30:48] Right?
+[30:49] All the benefits of having an LSQ will go away.
+[30:53] So pretty much everything that we have learnt in the previous chapters on performance enhancement
+[30:58] will be rendered to a null.
+[31:02] Right?
+[31:03] So for high performance, we have to let go of SC, we will have to sacrifice SC.
+[31:08] We may not sacrifice PLSC.
+[31:10] Right?
+[31:11] So we will not actually sacrifice PLSC, but we have to sacrifice SC in interest of high performance.
+[31:17] Otherwise, many of these performance enhancing optimizations will not be possible.
+[31:24] Alright?
+[31:25] So now let us look at some of the ways in which we can break SC because SC anyway, as we have
+[31:35] said, is meant to be broken.
+[31:37] So SC is essentially atomicity of rights plus program order is equal to SC.
+[31:47] Right?
+[31:48] So program order as we have seen is clearly being violated over here because of the out of
+[31:54] order pipeline.
+[31:55] Let us look at atomicity.
+[31:57] So in atomicity, what is happening?
+[32:00] Let us take a look at this execution where we write 1 to x.
+[32:04] As long as x is not equal to 1, we keep looping in a while loop.
+[32:09] So since we read 1 to x, ultimately it exits.
+[32:13] Sorry, since we write 1 to x, ultimately this while loop exits.
+[32:17] Then we write 1 to y.
+[32:19] Again, another while loop loops on y until it is 1.
+[32:23] Finally, it exits.
+[32:25] At this point, what would you expect?
+[32:27] You would see a clear path of causality.
+[32:30] Right?
+[32:31] And then you would see a clear path like this.
+[32:34] You would expect to read x to be 1.
+[32:36] But let us say you read x to be 0.
+[32:39] Okay?
+[32:40] So then what I can do is I can create an execution like this.
+[32:45] But let me assume the first time I access the while loop, I read x or y to be 1.
+[32:51] So I never iterate.
+[32:53] So then this would look like this.
+[32:55] I write.
+[32:56] I read.
+[32:57] Then the next is a program order relation which has to hold because unless I exit this,
+[33:05] I cannot execute this.
+[33:07] And then again I write.
+[33:10] I read.
+[33:12] In this case, you expect to read 1 but you read 0.
+[33:15] So what is happening?
+[33:16] This execution is not in SC.
+[33:18] Okay?
+[33:19] That should be obvious.
+[33:20] If it is not obvious, you try to put it into a sequential order.
+[33:24] And you will find that it is not putable because there is a clear path and legality is being
+[33:30] violated.
+[33:31] They should read 1.
+[33:32] It is actually reading 0.
+[33:33] So it is a violation of legality.
+[33:35] It is not in SC.
+[33:37] It is however in PLSC.
+[33:39] Kindly verify.
+[33:40] Verifying it is very easy.
+[33:42] So what you do is for PLSC, you just create an execution for a single variable.
+[33:50] So it is Wx1, Rx1 and Rx0.
+[33:57] Of course, it is in PLSC because I can order them sequentially.
+[34:01] Rx0, Wx1, Rx1.
+[34:07] Fine.
+[34:09] What about for Y?
+[34:12] For Y, I can do the same.
+[34:14] So for Y, what I can do is that I can have Wx1, Rx1 and this is also in PLSC because first
+[34:30] this instruction executes and then this.
+[34:33] So this is in PLSC.
+[34:35] It is not in SC.
+[34:36] It is one more of those executions which is in PLSC but not in SC.
+[34:44] But there is a fun point.
+[34:46] The fun point is that we are violating SC in a different way.
+[34:50] In the previous slide, we are violating the program order constraint.
+[34:53] In this case, we are violating the atomicity constraint.
+[34:57] So it appears that the write to x, it appears, the write to x is happening at two different
+[35:04] times.
+[35:05] The thread 2 is reading the value of x, the updated value of x.
+[35:09] Thread 3 is reading the old value.
+[35:12] So since a write appears to be happening at two different points of time, it is non-atomic.
+[35:19] So then, I mean, this complicates our life significantly, right?
+[35:24] So you will say that look, from the point of view of the observer who is only observing
+[35:33] the accesses to the variable x, we have PLSC.
+[35:36] What does PLSC mean?
+[35:38] It means per location sequential consistency, which is again, it means that all the accesses
+[35:45] to that location by a thread are in program order.
+[35:47] Fine.
+[35:48] I have no issues with that.
+[35:49] But it also means that writes are atomic.
+[35:52] Yes.
+[35:53] But this is where the point of view matters.
+[35:57] So the writes are atomic with respect to an observer who is only observing the accesses
+[36:04] to variable x.
+[36:06] But the writes are not atomic with respect to an observer who is observing the accesses to
+[36:13] all the variables, alright?
+[36:15] So the point of view of both the observers is different.
+[36:19] The point of view with respect to the observer who is only observing updates to a given variable,
+[36:26] accesses to a given variable, from her point, it is atomic.
+[36:32] But when we consider accesses to other variables like y in this case, then the writes to x do
+[36:39] not seem to be atomic.
+[36:41] That is why we have PLSC which is per location sequential consistency.
+[36:46] But we do not have sequential consistency when we consider the accesses to y as well.
+[36:53] So this is why memory consistency models are slightly tricky because what really matters is observers
+[37:02] and their point of view.
+[37:04] So what did we learn?
+[37:05] We learned that observers and their points of view are very, very important and crucial.
+[37:17] So in this case PLSC does hold but SC does not hold because writes are not atomic.
+[37:26] You can come back to me and tell me that look how did PLSC hold if writes are not atomic?
+[37:30] I will tell you that look from the point of view of an observer who is only looking at accesses
+[37:37] to x writes are atomic but when you consider multiple variables writes to x are not atomic.
+[37:44] So it is important that you understand this part because this is very, very crucial in analysis
+[37:50] of such systems which is the notion of observers and their points of view.
+[37:57] Okay, so we anyway we did a little bit of analysis so I have that in the slides where essentially
+[38:05] what I do is I look at the points of view of observers only from only for specific variables.
+[38:13] So you can see that these are clearly in SC writes so PLSC holds.
+[38:18] Non-atomic writes, well there are many popular architectures such as IBM machines and ARM machines
+[38:25] where writes are not atomic again for performance reasoning.
+[38:30] What is happening here?
+[38:31] Thread 2 is basically reading the write to x early before it is visible to thread 3.
+[38:36] This is possible if multiple locations store the variable x and core 2 is somehow closer
+[38:43] to core 1 and core 3 is far away so core 2 sees it first and core 3 sees it later.
+[38:52] In any system with an NOC this can easily happen.
+[38:56] But nevertheless as far as we are concerned the execution is in PLSC.
+[39:02] So let us accept it.
+[39:04] If we are accepting non-atomic writes and IBM and ARM's memory models do accept it.
+[39:11] So you run something on your phone you might very well see this execution.
+[39:15] So this means that PLSC will hold as I said PLSC always holds if we want distributed cache to act like a shared cache.
+[39:25] But atomicity might or might not hold it depends on the memory model.
+[39:30] So in Intel machines atomicity holds but in IBM and ARM machines it does not hold.
+[39:37] So let us now look at a behavior which is not in PLSC.
+[39:44] So this behavior would be that I write 1 and 2 to x and I read them in different order.
+[39:54] So we have seen this execution before also.
+[39:56] And this execution is not in SC since there is single location it is not in PLSC.
+[40:01] We have also seen SC implies PLSC.
+[40:04] PLSC does not necessarily imply SC.
+[40:08] And we have also seen that writes that are atomic with respect to one location may not be atomic with respect to multiple locations when you are considering multivariable programs.
+[40:20] So such kind of behaviors break the notion of shared memory completely.
+[40:26] Right which behaviors this is this kind of behavior right.
+[40:31] So the behavior of this because PLSC does not hold this behavior kind of breaks the notion of shared memory.
+[40:45] Because for any external what will it observe it will observe that look I wrote 1 first to x and then 2.
+[40:51] But then better everybody better observe that right.
+[40:54] If T3 is not agreeing then it appears that x is not stored in a single location and then essentially this does not make any sense.
+[41:04] So we will allow non-atomic writes let us thus allow non-atomic writes of which kind oops sorry of this kind.
+[41:16] Let us allow non-atomic writes as long as PLSC holds.
+[41:21] Which means that if I am only concerned about the accesses to a single variable they should be sequentially consistent.
+[41:30] And that will give me a lot of correctness properties of distributed caches make them similar to shared caches.
+[41:39] But of course when I am considering multiple locations then what will happen is that writes may appear to be non-atomic in the sense what is happening here.
+[41:50] I am writing 1 to x right I am writing 1 to x.
+[41:55] This write is quickly visible to thread 2 but it is taking much longer to propagate to thread 3.
+[42:02] Fair enough but how do we actually discover this fact?
+[42:07] We discover this fact via accesses to other variables right which in this case is 1.
+[42:13] But let us say that we do not actually consider this and then let us say that at some point of time we actually read 1 in thread 3.
+[42:25] All subsequent accesses will also give us 1 because the write has ultimately reached thread 3.
+[42:31] So the main reason for this behaviour is that look messages and accesses do take time in a realistic system.
+[42:42] But if I were only to consider accesses to one variable I will still see that writes are atomic because we will never have an execution where the writes are actually not atomic.
+[42:56] Ok?
+[42:57] So we will never see executions like this where writes are not atomic.
+[43:03] But what can happen is the moment I consider accesses to other variables then I can see the effect of a write or effect of a write being read early via other variables.
+[43:18] So what is the crux here?
+[43:20] So I can see that I am seeing the effect of a write being read early via other variables.
+[43:49] Ok?
+[43:50] Ok?
+[43:51] So basically if I do not consider other variables I will not see the effect of a write being read
+[43:56] early and that is why in this case PLSC holds.
+[44:00] Right?
+[44:01] So because in PLSC I do not consider other variables.
+[44:07] But if PLSC is genuinely not holding as in this case then clearly all observers will say
+[44:14] that look clearly we are not implementing a correct memory system.
+[44:21] So let us thus agree to allow non atomic writes as long as PLSC is preserved.
+[44:28] Right?
+[44:29] I mean subject to the memory model some memory models might allow might not allow but let us
+[44:34] say that we will not have objection to it or we will not say that a memory model is invalid
+[44:39] if it allows non atomic writes but PLSC we will never compromise.
+[44:44] So we have decided to draw a red line.
+[44:47] So PLSC there is no compromise.
+[44:50] Program order in atomicity well we will leave it to the processor designers.
+[44:56] So what we are saying is that look you are a processor designer.
+[45:00] Here are certain red lines thou shall not cross.
+[45:05] One red line is PLSC you will have to obey and observe.
+[45:11] Other things like program order and atomicity that you can break.
+[45:17] Okay?
+[45:18] So that it all depends on what optimizations you are implementing that you can possibly break.
+[45:23] But PLSC don't touch.
+[45:25] Alright.
+[45:26] So what is the summary till now?
+[45:29] SC is atomicity plus program order.
+[45:32] SC implies PLSC.
+[45:34] PLSC does not necessarily imply SC.
+[45:37] PLSC does hold in systems that have non atomic writes that have atomic writes.
+[45:43] PLSC is needed to provide the illusion of a single memory location in a distributed can.
+[45:49] So PLSC no compromise the rest possible compromise.
+[45:54] So how do we move from PLSC to coherence?
+[46:00] Right?
+[46:01] So PLSC to a large extent has taken us around 95 percent.
+[46:06] In the sense it has told us that look I have a shared cache.
+[46:10] Where for every variable I have a single physical location.
+[46:15] And then I have a distributed cache.
+[46:17] Where for every variable I have different physical locations.
+[46:21] For an outsider they will look identical if I have PLSC.
+[46:26] Which again can broken down into per location program order atomicity.
+[46:31] So program order would basically mean that processors or cache controllers are not allowed to reorder accesses to the same address.
+[46:40] So that they would anyway do.
+[46:43] Because caches are FIFO queues for requests.
+[46:45] So they already ensure program order in that sense.
+[46:49] And also our pipeline needs to be modified such that we will not reorder accesses to the same address.
+[46:56] But that we anyway don't do or load store queue ensures that we don't do it.
+[47:00] So the next is atomicity.
+[47:03] So because of PLSC an observer at a memory address always sees atomic writes only for accesses to that address.
+[47:13] So, but an observer on a different core as we have seen may see non atomic writes because of intervening accesses to other addresses.
+[47:21] Right?
+[47:22] So, if you take away other addresses it should then become atomic.
+[47:26] So, for a given address we have let us define two orders.
+[47:31] A global order is when all observers record this order between operations.
+[47:36] So, let us say we have one operation O1 and one O2.
+[47:40] So, if we have different observers in let us say different cores or in different sister caches of a distributed cache.
+[47:47] Everybody will record that look O1 happened first, O2 happened later.
+[47:51] Okay?
+[47:52] So, all of them will record.
+[47:56] If all of them record and agree say it doesn't matter if O1 happened before O2 one second before or 10,000 seconds before that doesn't matter.
+[48:06] As long as they record such a happens before relationship we say that this order is global.
+[48:12] If let us say a few do and a few don't we say that this order is not global it is local.
+[48:19] So, let us now look at the ordering between accesses to the same variable across threads where the observer is at a core.
+[48:31] Okay?
+[48:32] So, let us consider two reads to the same address.
+[48:37] So, their order doesn't matter because anyway they will read the same if there are no intervening writes.
+[48:42] So, we don't really care.
+[48:44] Consider a write and a read.
+[48:47] So, what can happen is that given that a core can read another core's write early while other cores may not even see the write,
+[48:58] write this order may not be global all the time.
+[49:02] Correct?
+[49:03] So, what will happen is that a core does not know when a write reaches the sister caches,
+[49:08] the rest of the sister caches present in other cores.
+[49:11] So, I might say that look I got a write and then I read.
+[49:15] So, I might record that order.
+[49:17] But the others might not really agree.
+[49:20] Alright?
+[49:21] Hence, another sister cache may not agree about the values read by other cores.
+[49:29] Right?
+[49:30] So, this order is local.
+[49:31] Let me explain with an example.
+[49:32] So, let us say I write 1 to x.
+[49:36] So, another core reads 1 and I read 0.
+[49:47] Right?
+[49:48] So, then and furthermore there could be intervening accesses to other variables.
+[49:54] So, there could be a break in atomicity.
+[49:57] But pretty much the key idea is that look this order.
+[50:04] So, these are separate cores.
+[50:06] Okay?
+[50:07] So, this order of Wx1 to Rx1, I might not agree that the write fully completed which means
+[50:14] that all the cores receive the value of 1.
+[50:17] So, then let me give these numbers 1, 2 and 3 then core number 2 actually read it.
+[50:23] Right?
+[50:24] So, I will not agree with that.
+[50:25] Even the core 2 will say that this write was fully completed hence I read x to be 1.
+[50:32] Core 3 will not agree.
+[50:35] Core 3 might say that look this write actually didn't.
+[50:40] So, I will go back to that slide that talks about this.
+[50:44] So, I will erase the ink.
+[50:46] So, just look at this.
+[50:47] So, in this case core 2 might say that look this write fully completed which means that
+[50:54] the write was broadcasted all over the place.
+[50:57] All the cores had x equal to 1 and I read x to be 1.
+[51:03] But I am core 3.
+[51:04] I might not agree that the ordering between the write and the read was global because I
+[51:10] will say that look that's not correct.
+[51:13] You read 1 early but when I tried to read x mainly because you read x to be 1 you set
+[51:19] y to be 1 then I read y to be 1 and when I tried to read x I read it to be 0.
+[51:26] So, I don't really agree that the write fully completed and then you read.
+[51:31] The write was in the process of completing and you went ahead and read.
+[51:35] So, the write to read order I will say that it is not global.
+[51:42] It is local.
+[51:43] Fair enough since we allow non-atomic rights there is nothing much that you know there is
+[51:50] no reason why we should have a problem.
+[51:54] But the remaining two conditions are directly following from PLSC.
+[52:00] So, consider write to write.
+[52:02] So, consider two observers are two different cores.
+[52:05] They cannot really record the fact as you can see over here that these writes happened
+[52:14] in a different order.
+[52:15] So, T2 is recording that write to x, x equal to 1 happened first and x equal to 2 happened
+[52:22] later.
+[52:23] But T3 is recording that x equal to 2 happened first and x equal to 1 happened later.
+[52:28] This means that x has ended up with two different final states.
+[52:32] T3 says the final state of x is 1, T2 says the final state of x is 2.
+[52:38] So, this completely breaks the notion of there being a single physical location associated
+[52:44] with x.
+[52:45] Right?
+[52:46] So, since they have two separate final states, we cannot allow the write to write order to
+[52:56] actually get violated.
+[52:57] So, even if we consider accesses to multiple variables, right?
+[53:04] We cannot say that look, I mean an observer at a core which is seeing accesses to all variable,
+[53:11] but it is only recording accesses between two accesses to the same variable.
+[53:18] It has to record a write and a write, two writes, right?
+[53:24] Possibly issued by different cores.
+[53:26] It has to record a consistent global order between them.
+[53:31] If let us say one core says that I wrote x equal to 1 first and then somebody else wrote
+[53:36] x equal to 2 after that, all the cores better agree otherwise x will end up in two final
+[53:41] states.
+[53:42] So, regardless of who issues the writes, this ordering has to be global, ok?
+[53:50] So, what is this order again?
+[53:52] Well, this order is between operations to the same variable and these operations can be issued
+[54:00] by different cores.
+[54:01] So, what we are saying is that look for the observers, what are they going to record?
+[54:07] So, if there are two writes to the same address which can possibly be issued by different threads,
+[54:14] they will still record the same order otherwise we will end up with two different final states,
+[54:19] not allowed.
+[54:21] So, let us say that some core reads and some other core writes after that.
+[54:28] So, you read x equal to 0 and somebody else writes x equal to 1.
+[54:36] Since writes are globally ordered, you will assume that one core records, let us say wy.
+[54:42] So, in a sense I write 0 to x, then I read 0, then I write 1.
+[54:52] If all the cores record that this read happened before this write, because the core that issued
+[54:58] ri could not have seen wj else it would have read a different value.
+[55:04] So what I am trying to say over here is as follows.
+[55:09] If let us say thread 1 read some value for x and thread 2 read some other value, thread
+[55:15] 2 then wrote some value to x.
+[55:20] If let us say another thread records that this read happened first and this write happened
+[55:24] after that, can any other thread record it in some other way?
+[55:30] So, can any other thread record this specific interaction in some other way?
+[55:36] What we are saying is that as a direct consequence of PLSC, there are more details in the book.
+[55:44] But the crux of what I am trying to say is that this is not possible.
+[55:48] So what I am trying to say is that both of these will be global and this is not possible.
+[55:55] And the reason that I am saying that this is not possible, because if some other thread
+[56:00] has recorded that RI, so let us say if some other thread has recorded a different order,
+[56:10] for example it has recorded that it has recorded the reverse order, it will have some reason
+[56:19] for recording it.
+[56:22] The reason is that it would have seen some path that I wrote, I did the jth write and then
+[56:29] I did a sequence of actions and finally thread 1 read x to be 0.
+[56:36] See, if there are a sequence of actions between this write and this read, it clearly means that
+[56:43] thread 1 given the global order of writes would have been aware of this write.
+[56:47] So, it would have read the value that Wj actually wrote, but that has not happened, that has
+[56:53] not happened.
+[56:54] It has read the value that has been written by a previous write.
+[56:58] So, given that that has not happened, we have a contradiction here and it will never be the
+[57:04] case that a read to write order between operations to the same address albeit issued by different
+[57:12] threads will actually be local.
+[57:15] In a sense, two threads will have conflicting views of the order, right?
+[57:21] So that will not happen.
+[57:22] So let me now summarize.
+[57:24] So what I am saying is that if I have observers at a core, at each core, so observers at each
+[57:32] core will record what they are seeing, right?
+[57:38] Pretty much what all they are seeing in terms of reads and writes.
+[57:45] So the reads and writes can be issued by different threads and they will record all of that.
+[57:53] And let us consider all the records that pertain to a single address.
+[57:59] So, in this case, the observer at the core will basically say that look the read to read order
+[58:08] does not matter because in any case if there are no intervening writes it is immaterial, right?
+[58:15] The write to read order given that we allow non-atomic writes will actually not be global.
+[58:25] In the sense an observer will basically say that look before a write was fully complete
+[58:29] you went ahead and read it.
+[58:31] So I will not agree that the write actually completed first and then you read and I might
+[58:37] at best say that they are concurrent but I will never agree that a given write happened
+[58:43] and then you read.
+[58:45] So go back to our example of three threads T1, T2 and T3 where we clearly saw a case where
+[58:52] PLSC holds but atomicity does not.
+[58:56] Now if we consider these two orders, so regardless of the fact that you are seeing accesses to
+[59:02] other variables as well, a write to write order will always be agreed, write to write order
+[59:09] to the same address will always be agreed to by all threads otherwise the same address might be
+[59:15] might end up with different final states and same is the case with a read to write order.
+[59:21] So read and write are asymmetric over here because let us say that we have a write to a given location
+[59:29] then we read its value then there is a subsequent write.
+[59:34] So all the threads will agree on this order why because if they do not and one thread actually
+[59:41] records this then using this logic RI should actually return the value written by this write
+[59:51] but that is not happening so there is a contradiction because of that these two orders are global
+[59:59] and the first order is actually local from the point of view. So the point of view is important
+[60:06] extremely important point from the point of view of an observer at a core or on a thread right.
+[60:13] See if I were to summarize these things the write to write order right is global the read to write order
+[60:23] is global and the write to read order is global only for machine only for machines with atomic writes
+[60:32] only for atomic writes then all of us will agree that look the write completed instantaneously and then
+[60:37] another thread read but if the write is not completing instantaneously at one point in time
+[60:43] the write to read order will not be globally agreed to but the rest will follow from PLSC.
+[60:50] So these orders will be agreed to by everybody. So the axioms of coherence
+[60:57] can sort of be distilled from PLSC and axioms of coherence basically say that writes to the same
+[61:05] location which essentially covers points one and two are globally ordered in the sense we all agree
+[61:13] that for a given location I wrote one first then two then let's say three then five then seven then
+[61:20] seventeen and so on. So there is no between observers seated at different cores there is no
+[61:28] discrepancy in what they have recorded. Given that writes are globally ordered the second
+[61:35] line follows and coherence in that sense is mostly equivalent to PLSC but coherence has one additional
+[61:45] constraint which is write propagation the first is called write serialization where serialization means
+[61:51] putting it in a sequence so we are doing that and write propagation means that a write is eventually
+[61:57] seen by all their threads. So writes are never lost right. So write messages are never dropped by the system
+[62:03] they are eventually seen by all the threads. So these two are the basic axioms of coherence where one
+[62:10] follows from PLSC and the other follows from the fact that we never drop a write okay. So if we can
+[62:19] ensure that our caches are coherent so they would automatically follow PLSC because they are capturing the
+[62:25] gist of PLSC and in addition they are also ensuring the fact that writes will ultimately propagate reach their locations and complete.
+[62:40] So now next we will discuss how to enforce sequential consistency or how to kind of force sequential
+[62:50] consistency in systems that have a wide variety of optimizations using what are called synchronization
+[62:57] instructions. So SC using synchronization instructions would look like this. So let us look at
+[63:08] some of the code that we have been looking at in the past. So what we have is we have value equal to 3
+[63:15] we set the status equal to 1. So this would be a typical way of communicating across threads
+[63:22] which unfortunately breaks if we do not have SC. So then we have a while loop which keeps on looping
+[63:29] to see when the status becomes equal to 1 and the moment we see the status equal to 1 we read the value of
+[63:36] value. This will unfortunately not work on a non SC machine the reason being that number one the writes may be reordered
+[63:52] if program order doesn't hold that's point number one. Point number two is the write may not be atomic.
+[63:58] So it is possible that this right at this point over here may not be visible. So because of this this
+[64:08] is you know appears to be a very easy way of transferring a value across threads
+[64:15] but this is not going to work. You can try it and see. So this is not going to work with 100% accuracy.
+[64:23] Had it been sequential consistent sequentially consistent it would have worked but it will not work.
+[64:30] So the ordering between the read and write in T2 also may not hold.
+[64:36] Also as I said atomicity is an issue this store will may not have fully completed.
+[64:41] So T1 might have said that look the store is done but well it might not have reached T2
+[64:46] while status may have reached. So that is why we add a fence instruction
+[64:53] where all the instructions fetched before the fence need to fully complete before the fence instruction
+[65:00] executes. Which essentially means that if I have a fence which I will show in the next slide.
+[65:08] This ensures that before the fence even you start executing everything before it reads,
+[65:14] writes everything. All the reads need to get their value
+[65:18] all set and all the writes should have committed and not only committed but the value should have
+[65:24] reached all the course in the sense it would have fully completed in the sense and
+[65:31] it would have updated all the physical locations that the variable is associated with.
+[65:36] Furthermore after the fence no instruction in program order after the fence would have actually
+[65:45] started its execution right. All the instructions after the fence cannot execute until the first
+[65:51] fence instruction is completed. So all architectures support fence instruction where they say everything
+[65:58] before me fully complete nothing after me starts. So how would this piece of code look like with fence instructions?
+[66:08] The way it would look like is that we set the value to 3 we have a fence. So this ensures
+[66:15] that when we set status to 1 the value is already fully written right. It is also called globally completed or fully completed.
+[66:25] But in layman's terms what it ensures is that look when I write the status the value is fully completed
+[66:33] and then when I read it over here it basically tells me that status is 1 which means value is 3 and to ensure
+[66:43] that these instructions are not reordered I add a fence. So then if I add another fence over here
+[66:50] when I actually come here I am sure that this instruction is done this instruction knows the status is 1
+[66:58] and because of the fence we are sure that value has been set equal to 3. So regardless of the underlying
+[67:05] memory model whatever is respected in terms of program order or in terms of atomicity it does not matter
+[67:13] this code will always work. So the way that an engineer is supposed to write parallel code
+[67:19] is by inserting fences and fences are expensive operation. So a fence would take 200 to 300 cycles
+[67:26] it is like a pipeline flush in the sense everything before it needs to fully complete
+[67:32] and also everything before it we need to send
+[67:37] either we get acknowledgement messages from the memory system it is fully done
+[67:41] or we need to flush the write buffers and MSHRs such that no write is there in any temporary structure.
+[67:50] So a fence is a broad is an example of a memory barrier so a barrier is basically something that
+[67:57] puts some sort of a precondition on the instructions before it before it actually executes. So there are
+[68:03] many other kinds of barriers so you can have what is called a store barrier. It will say that look before I
+[68:09] execute all the stores need to fully complete. I do not care about loads but all the stores need
+[68:15] to fully complete only then a store after me can begin. So in this case instead of a fence we can
+[68:21] have a store barrier which would be more efficient right. So similarly we can have a load barrier
+[68:28] which will be between two loads right. So we can have barriers of different types a fence is of course
+[68:34] very generic it does not differentiate between a read or write it just says before me all complete
+[68:40] after me nobody start all right. So we can have a special kind of fence operation so these actually
+[68:51] operate in pairs. So we will see the importance of this when we discuss critical sections locks and unlocks.
+[68:58] So there are two kinds of fences here an acquire instruction and a release instruction.
+[69:07] So an acquire basically says that when I want to start what is called a critical region of code
+[69:13] I have started with an acquire which means no instruction after after the acquired instruction
+[69:20] in program order which is essentially these ones can execute before the acquire has completed.
+[69:26] So I need to do acquire first then everything after it starts which means that either I acquire
+[69:33] some permission or some lock or we will see what exactly we acquired but let's put it this way that
+[69:39] something needs to be acquired. Similarly when I'm done with this piece of code I call release the release
+[69:47] instruction can only complete if the all if all the instructions before it which means all the
+[69:53] writes and everything right reads writes everything have been fully completed. Fully completed for a load
+[69:59] is when the result comes and for a store is when the value is sent to all the course. So note that the release
+[70:10] instruction allows the instructions after it to execute before it has completed in the sense instructions
+[70:17] after it can execute before the release has completed there is no issues there are you know absolutely no issues in
+[70:24] that but acquire says nothing after me starts until I am done and release says that I will finish only if
+[70:35] everything before me finishes. So we will see this there is a model called release consistency that uses this
+[70:43] but let's just remember it for the time be. All right so now we have discussed everything about sequential
+[70:50] consistency PLSC so what have we discussed we have discussed SC we have discussed PLSC and we have
+[70:58] discussed PLSC and how it relates to coherence we have discussed two axioms of coherence the serialization axiom
+[71:06] which means writes to the same location of a global order and how exactly what are the implications of that
+[71:14] and the fact that writes are never lost so we write serialization axiom and a write propagation axiom
+[71:21] and then we discussed synchronization instructions right sync we'll call them sync we'll not add a dot
+[71:29] we should but we'll take a little bit of liberty with English so we'll call them sync instructions
+[71:34] so now we have all the basic ingredients to dive right into the theory of memory models

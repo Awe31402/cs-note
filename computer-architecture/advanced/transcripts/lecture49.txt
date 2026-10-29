@@ -1,0 +1,786 @@
+[00:00] Welcome to chapter 12. It's a chapter on reliability. So typically we would associate
+[00:19] hardware with very high levels of reliability, but that's sadly not true. There are lots and
+[00:25] lots of error and failure mechanisms, which makes guaranteeing reliability in hardware
+[00:31] quite tough. So what's the background required to understand this chapter? Well, this requires
+[00:38] somewhat of a more background in electrical engineering and maths than all other chapters
+[00:45] in this book. Out of order process, yes, you're happy seeing that. But we also need a fairly
+[00:52] heavy dose of probability and statistics, and also a fair amount of basic semiconductor
+[00:58] physics. Right? At least not a lot, but a little bit. So I would assume, presume that you know
+[01:06] some of this before you actually get into the nitty gritties of this lecture. So the first
+[01:12] question is, are processes always reliable? Well, the answer is no. So you can have transient
+[01:18] faults, which happen more when processes are in an environment with high radiation such
+[01:24] as space, or inside a nuclear reactor. But they happen even otherwise. So, you know, large
+[01:31] modern supercomputers have one transient failure once every few hours. Then we have design faults.
+[01:39] So design faults are faults where, you know, the designers made a mistake. There is a bug,
+[01:44] there is a problem in the circuit. And also similar to human beings, animals, circuits age
+[01:51] and they wear out. Alright? So wear out and aging related faults are also quite important.
+[02:00] So let's now come to three definitions. These three definitions are very basic. So beyond this,
+[02:06] it's very hard to make any meaningful progress in this area. There are three terms, fault, error
+[02:15] and failure. They might sound to be the same, but they are not the same. So fault is a defect
+[02:25] in the system. Right? It's some problem. It's some deviation from ideal specifications in either
+[02:31] software or in hardware or in both. But it's some deviation. Right? An error is when that
+[02:38] deviation in a certain sense is exercised and you see or you perceive an incorrect internal
+[02:44] state, that is an error. Right? When the state that you see is incorrect, that is erroneous. And a failure
+[02:53] is basically an event that is visible to the outside world. Right? So the outside world gets to see it.
+[03:03] That's a failure. So that is basically when you have a wrong output of the system crashes or something else. Right?
+[03:11] So this is a deviation from ideal execution from the outsider's point of it. So failure is when something
+[03:16] really goes wrong. An error is when, you know, maybe you want the green button, the green LED to be on.
+[03:23] But you see the red LED to be on. That's an error. And a problem that can lead to an error is the fault.
+[03:31] So some points. A fault may or may not manifest in an error. An error may or may not manifest in a failure.
+[03:41] And failures themselves could be of several types. For instance, it could just be an erroneous output.
+[03:48] You are printing something on the printer and what you get is something totally different.
+[03:53] You could have fail-stop failures, which is that the system just stops. It just stops.
+[04:00] And then you could have Byzantine failures, where the processor behaves maliciously in the sense,
+[04:09] instead of sending, you know, instead of either failing, ideally you would expect something fails, so it stops.
+[04:16] But in the case of Byzantine failure, it does not stop. It essentially sends deliberately confusing messages
+[04:24] to the rest of the processor, rest of the nodes, rest of the elements, such that, you know, they don't know
+[04:29] whether it's coming from, you know, a genuine source or a malicious source. And sometimes, you know, multiple failed
+[04:36] elements could get together, collude and kind of confuse the rest of the world, right, misinform the rest of the world.
+[04:43] So Byzantine failures are hard to detect and hard to fix also, but they typically happen when you have a virus or something.
+[04:51] But what is most common is a failed stop, where something goes wrong and the device stops.
+[04:57] So how do you mathematically analyze the reliability of a system, right? So that's a key question.
+[05:04] So what you would do is that you would use a few metrics. So fit is failure in time.
+[05:15] So one fit is basically one failure in a billion hours. So that is a fit.
+[05:23] So typically any kind of an error rate is described in terms of fits.
+[05:29] So they could be like 50 fits, 100 fits, 200 fits and so on.
+[05:33] So that basically would mean what is this probability of failure with billion hours of operation.
+[05:38] Then there are three classical terms over here, MTTF, MTBF and MTTR. MTTF is the mean time to failure,
+[05:47] which is the average amount of time it takes for the system to fail.
+[05:51] And, you know, the more reliable a system is, higher is the MTTF. MTBF is a system which can fail multiple times.
+[06:01] In the sense it fails, you repair it, it fails again, you repair it.
+[06:05] So MTBF is basically a time between two failures. It fails here and then it fails here.
+[06:10] It's a time between two failures. And MTTR is basically the mean time to repair,
+[06:18] which basically means once it fails, how much time does it take for the system to come back up again?
+[06:25] That is MTTR.
+[06:28] So using these four terms and the definition of fault, error and failure, we will talk about a bunch of failure mechanisms.
+[06:44] Starting from soft errors to inductive noise. So they are basically, these are transient.
+[06:49] Even the ones due to non-determinism are transient.
+[06:53] These are permanent faults where the designer made a mistake.
+[06:56] And then these are related to aging, wear out, manufacturing defects, birth defects and so on.
+[07:05] So let's first look at soft errors.
+[07:08] So what happened is that way back in the 60s and 70s, scientists noticed that a very strange thing is happening in the vicinity of high radiation sites such as nuclear sites.
+[07:24] Which is that for no obvious reason electronic devices are failing.
+[07:29] So the reason was that very high energy particles, neutrons, alpha particles were striking them.
+[07:36] So the moment they kind of strike a transistor like this, right, they generate a current pulse.
+[07:42] The current pulse can propagate to the nearest latch.
+[07:47] Of course it is instantaneously changing the voltage, but it does more than that.
+[07:52] It propagates to the nearest flip-flop or latch and changes the voltage over there as well.
+[07:58] So basically the current pulse is in that sense very powerful where it can go and kind of flip values in latches and flip-flops.
+[08:10] So then it can convert a 0 to a 1 or a 1 to a 0 which is very very problematic.
+[08:16] And essentially all our execution fails at this point.
+[08:19] Basically you know in any program you just change one bit from 0 to 1 or vice versa and the program is going to crash.
+[08:27] So the main issue is that there are traces of uranium and thorium.
+[08:34] So this is in the packaging material in the die.
+[08:37] Basically in the material that is used to make the chip, right.
+[08:42] So these uranium impurities typically generate alpha particles.
+[08:49] Their energy is quite high for the level of, at the level of a transistor the energy is reasonably high.
+[08:57] 4 to 9 million electric volts.
+[09:00] And the penetration range is also quite high.
+[09:03] Along with that we can have traces of the unstable lead isotope 210 which has a long, you know it has a fairly elaborate decay process.
+[09:24] But finally it decays to another isotope of lead 206 and what's emitted is an alpha particle, right.
+[09:33] Basically two neutrons and two protons.
+[09:39] So the alpha particle again you know it's a heavy particle.
+[09:45] So it can displace a fair amount of charge and create a current pulse.
+[09:50] Similar to an alpha particle you again have an unstable isotope of boron, 10 boron, which is part of actually the dielectric material.
+[09:59] So they use a material called BPSG, boron phosphosilicate glass.
+[10:04] And this again can generate an alpha particle.
+[10:07] And of course you have neutrons.
+[10:09] Neutrons are there everywhere, they are part of cosmic rays.
+[10:12] So neutrons just keep coming, right.
+[10:15] From the galaxies they just keep coming.
+[10:18] So the dynamics of a particle strike is like this, that it can either strike the latch part or the logic.
+[10:26] So latches are of course in terms of area, they don't occupy a majority of the chip area.
+[10:33] It's a much, it's a very small fraction but the logic is quite a bit.
+[10:39] So what happens is when a particle impacts it, there is a current pulse.
+[10:43] The current pulse may propagate towards the latches.
+[10:46] If it reaches it at the right point of time, it may flip the bit.
+[10:52] So for a particle strike a lot of things matter, the location matters where it strikes.
+[10:58] The angle matters, what's the angle of the strike.
+[11:02] The density of the target material, all of that.
+[11:05] So we define the linear energy transfer rate, which is the energy lost per unit distance.
+[11:12] So as you know, as it travels down, down, down, it loses energy.
+[11:15] This normalized to the density of the material.
+[11:19] So typically, a LET of 20, you know, mega electron volts times centimeter squared divided by milligram.
+[11:28] So that's a strange metric.
+[11:30] But typically any LET over and above this is large enough to create a current pulse, which
+[11:36] can propagate to a latch and flip a bit.
+[11:40] So this is roughly the LET threshold that we are looking at more or less.
+[11:49] So the idea is that we need to only focus our attention on those particles that have an LET
+[11:58] value which is greater than this threshold.
+[12:03] So what are the broad steps?
+[12:06] The broad steps are that the particle will strike.
+[12:08] It will displace some charge.
+[12:10] So the moment you displace it, you kind of separate the whole and electron pairs.
+[12:15] So this again, I am relying on the fact that you know some device physics.
+[12:19] Otherwise, this chapter is going to be tough for you.
+[12:22] Right?
+[12:23] You may very well consider skipping.
+[12:25] If you have separated the whole electron pairs and you have understood what I am saying.
+[12:30] Right?
+[12:31] Understood the fact that they get separated.
+[12:33] Because of a particle strike, you are in the right chapter.
+[12:36] And you are in the right lecture.
+[12:38] Otherwise, it's important to get this background first and come back.
+[12:42] But I'm assuming that you have the background.
+[12:44] So once there is a separation, clearly when you separate charge that is tantamount to a transfer
+[12:51] of current and a current pulse is created, of course there are different regions of a transistor.
+[12:59] Right?
+[13:00] Or even a diode.
+[13:01] So if it hits the depletion region, then of course the effect is much more.
+[13:06] So what happens is that for the first few picoseconds, charge is collected.
+[13:11] Right?
+[13:12] And quite vigorously collected.
+[13:14] Then there is a process of the charge drifting.
+[13:17] So people who know transistor physics would know that there are two kinds of current transfer
+[13:23] within a transistor, drift and diffusion.
+[13:26] Broadly, these are the two main mechanisms.
+[13:31] So drift happens, the drift mechanism, which is primarily because of the electric field.
+[13:38] Right?
+[13:39] Happens in the first 400 odd picoseconds.
+[13:42] Right?
+[13:43] Half a nanosecond.
+[13:44] And the current here is arbitrary units, it doesn't matter.
+[13:47] But broadly speaking, it would be a log-normal kind of curve.
+[13:50] Again, I'm using a statistical term of the log-normal distribution, means the log is distributed
+[13:56] normally.
+[13:57] And here as you can see, first there is a high current pulse, the drift phase.
+[14:02] And then a diffusion where, you know, if there is an excess concentration of carriers,
+[14:07] carriers namely holes and electrons, they can diffuse to areas of lower concentration.
+[14:11] So this is a much lower passage of current as opposed to this part.
+[14:16] This is the bulk of the current pulse, which is roughly a third of a nanosecond, 300-400
+[14:21] picoseconds.
+[14:22] This is all that we are talking about.
+[14:24] But this is quite a bit.
+[14:26] In the modern clock regime, where we have a 3 gigahertz processor, we will have a 300
+[14:33] picosecond clock.
+[14:34] Right?
+[14:35] A third of a nanosecond.
+[14:37] So, the pulse is roughly as large as a cycle, as a clock cycle, which means it is reasonably
+[14:44] powerful.
+[14:45] Right?
+[14:46] It can flip the value stored in a latch.
+[14:49] So, what are some approximate equations for the current pulse?
+[14:53] Well, there is a lot of physics around this, a lot of models.
+[14:57] One approximate equation is this, where q total is the total charge that the particle displays,
+[15:03] somewhere between 50 to 500 femtocoulombs.
+[15:06] Then, there are two of these time constant terms, tau alpha, tau beta.
+[15:12] Tau alpha is something dependent on the properties of the transistor by and large.
+[15:18] And it is known as a charge collection time, roughly 164 picoseconds.
+[15:24] And you can sort of correlate that with, you know, the number, the x-axis of this graph.
+[15:30] Then, there is tau beta, which depends on the trajectory of the particle strike.
+[15:35] Right?
+[15:36] So, it depends how did the particle hit it.
+[15:38] And again, 50 picoseconds is a typical value, but this can vary based on the type of the particle
+[15:44] strike.
+[15:45] But this is a subtraction of two negative exponentials, kind of a reasonable assumption.
+[15:53] You will find a fair amount of physics in the literature that tries to explain this to
+[15:58] some extent.
+[16:00] Hazucha and Swenson have a single parameter model instead of a two parameter model.
+[16:07] Where, of course, this is the time.
+[16:09] So, this is the square root of time multiplied with a negative exponential.
+[16:13] A negative exponential will always be there.
+[16:15] Sorry.
+[16:16] If you look at this, it is still, you know, something like this.
+[16:20] That is why e to the power minus t comes from.
+[16:23] And then, we have this factor eta, which determines the shape of the curve.
+[16:28] So, the Hazucha-Swenson model, if we just slightly ignore the shape of the curve when we
+[16:34] look at other aspects of the model, actually says quite a bit.
+[16:38] So, it says that the soft error rate, soft error is basically errors caused due to such
+[16:42] particle strikes.
+[16:43] Is equal to F multiplied with CS, where F is the particle flux.
+[16:49] Basically, the rate of successful particle strikes per unit area.
+[16:55] And CS is the area, is the critical section of the area that is vulnerable to a particle
+[17:00] strike.
+[17:01] Because not all areas of the chip are equally vulnerable.
+[17:04] Like, there are places for wires, you know, empty space between transistors.
+[17:09] So, not all of it is vulnerable.
+[17:11] This is a vulnerable area.
+[17:12] So, the soft error rate is pretty much the particle flux times the area.
+[17:18] The vulnerable area, known as the critical section.
+[17:22] The critical section itself is proportional to the area of the circuit.
+[17:29] And it is proportional to another term which is very interesting.
+[17:33] It is again a negative exponential.
+[17:36] So, here what we are doing is, we are looking at two variables q crit and q s.
+[17:44] So, q crit is basically a constant.
+[17:47] It is a critical amount of charge that you need to displace to flip a bit, right?
+[17:52] So, pretty much what has been seen is that matters are not that sensitive to the shape
+[17:59] of the current pulse.
+[18:00] And again, the shape also does not vary a lot.
+[18:02] But what matters is the overall amount of charge that is displaced.
+[18:06] That is q crit or q critical.
+[18:09] And then again, we multiply this with a constant which is 1 by q s pretty much.
+[18:14] Where q s is like a slope.
+[18:16] It is like a, it is called the charge collection efficiency.
+[18:19] Where basically tells you that how efficiently the circuit can kind of collect charge and
+[18:26] create a current pulse out of it.
+[18:28] So, of course, if q s is much, much greater than q crit, which means that it is an infinitely
+[18:34] efficient collector of charge, then the c s will basically become proportional to the
+[18:41] area, right?
+[18:43] So, this makes sense because if you can collect all the charge that you need, the entire area
+[18:49] is vulnerable.
+[18:50] Of course, as I said, some parts are not like areas that do not have transistors.
+[18:54] But otherwise, it is vulnerable.
+[18:56] On the other hand, if q s is much, much smaller than q crit, in the sense the efficiency is
+[19:02] not there, then basically this term would tend to minus infinity, which means the critical
+[19:08] section would become 0.
+[19:09] That also makes sense.
+[19:10] We are saying if you are not collecting charge, then there is no vulnerability.
+[19:14] There are no vulnerable regions.
+[19:16] Makes sense.
+[19:17] In either case, it makes sense, but the important takeaway in this slide is this negative exponential
+[19:24] here, which says what is the total amount of charge that needs to be displaced and what
+[19:30] is the efficiency, right?
+[19:33] Efficiency means how effectively does the displaced charge create a current pulse.
+[19:39] So what are the methods to mitigate the effect of soft errors?
+[19:43] Because if you think about it, I have a large mainframe that runs the code of a bank or a
+[19:48] stock market, a single bit flips.
+[19:52] If that happens, well, you know, if it happens to my bank account, I'll be really happy if
+[19:57] I become a millionaire overnight.
+[19:59] But a millionaire can also become a non-millionaire overnight.
+[20:02] So that would be very funny.
+[20:05] So as I said, in critical systems, particularly if we have large number of machines, the
+[20:13] probability of one of them having a soft error is quite high.
+[20:17] Furthermore, the soft error rate increases quite significantly as we ascend in terms of
+[20:27] elevation, in terms of altitude.
+[20:29] So basically what happens is that this, in a sense, prohibits us from having data centers
+[20:36] in, let's say, hill stations and high altitude places, mainly because soft error rate is much
+[20:42] higher.
+[20:43] And the moment you go to space, you need to seriously look at soft errors.
+[20:49] Because the soft error flux in space is very high, they don't have a protective atmosphere.
+[20:54] So the soft error rate is very, very high and many commercial spacecrafts have also had issues
+[21:00] and in some cases, catastrophic failures because of soft errors.
+[21:05] So of course, space is a different ball game, but there the biggest thing is radiation is
+[21:09] absolutely damaging and it can cause a lot of bit flips.
+[21:15] So many solutions at the device level, circuit level, architectural.
+[21:20] Device level is to be done at the fabrication facility.
+[21:25] So the first thing is that we use sophisticated manufacturing processes such that all are impurities,
+[21:31] right?
+[21:32] Be it uranium, thorium, 10B, 210 PB, etc. are not used, right?
+[21:37] So we purify everything.
+[21:40] For boron-10, don't use BPSG as the dielectric.
+[21:46] The main aim is to increase Q-crate, is to increase the critical charge requirement.
+[21:51] So we can have larger transistors.
+[21:53] So again, larger transistors dissipate a lot of power and take more area.
+[21:59] But they also have a larger Q-crate which may be better for a soft error, from a soft
+[22:03] error point of view.
+[22:05] Similarly, larger supply voltages again dissipate more power and larger output capacitance.
+[22:13] Again it increases Q-crate but all of these kind of introduce inefficiencies into the system.
+[22:20] Because what they basically do is either they extend the clock cycle period, right?
+[22:26] Or they bring the frequency down or they take the power up.
+[22:30] Not great ideas by themselves.
+[22:32] But again, if we are designing a processor to be used in a spacecraft, all of these tradeoffs
+[22:37] make a lot of sense.
+[22:39] So what are the methods, so we would also want to actually reduce the charge collection efficiency.
+[22:52] So to reduce the charge collection efficiency, we can think of a triple-well process.
+[22:57] Where the entire transistor, the entire transistor is again buried in another N-well.
+[23:06] So what happens because of this, because the fact that the transistor is buried in another
+[23:12] N-type dock layer, is that you don't collect enough charge.
+[23:17] So there is a device physics explanation of this.
+[23:21] But let's not get there, you need to take my word for it.
+[23:26] The triple-well process creates much larger transistors.
+[23:29] The silicon-on insulator process is much better, where the body is absolutely isolated in the
+[23:36] sense we have an insulating layer, which isolates the body from the rest.
+[23:40] So the SOI process, as is known, is kind of creates compact transistors and also provides
+[23:52] a fair amount of software resilience because it reduces the charge collection efficiency.
+[23:59] Circuit level techniques, well, so let's look at some of the natural ways in which things
+[24:06] get masked.
+[24:07] Mask basically means that soft errors, current pulses don't propagate to the output latch because
+[24:13] typically what happens is that we have a latch stage, you have a bunch of logic, again
+[24:26] a latch.
+[24:27] See any soft error over here, a current pulse propagates this way.
+[24:31] But as it goes via a bunch of gates, the pulse itself gets attenuated.
+[24:36] This is known as electrical masking.
+[24:38] So even if you don't do anything, it will get attenuated.
+[24:41] So of course a smart designer, what she will do is that if there are certain vulnerable regions
+[24:47] like smaller transistors, maybe some of that can be done but ensure that you have a slightly
+[24:52] longer path such that some electrical attenuation is happening.
+[24:59] General masking is also simple.
+[25:00] Let's consider an AND gate.
+[25:03] One input is hardwired to zero.
+[25:06] Regardless of the pulses that are coming on the other input, the output is always zero because
+[25:11] of this.
+[25:14] So this is again logically speaking, even if we have a, you know, fairly strong zero to
+[25:20] one transition temporarily, for a bunch of circuits, the output is guaranteed to be zero
+[25:29] because one of the inputs is zero and logically output should be zero because one of the inputs
+[25:34] should be zero as is in this case.
+[25:38] A few more circuit level techniques.
+[25:44] So the pulse needs to reach the latch only during a critical time window.
+[25:51] So what happens is that if this is the negative edge of the clock, right?
+[25:55] So we have this notion of the setup time and the hold time.
+[26:00] Setup means that the signal has to be set up for some duration and then hold means that
+[26:05] at, it needs to hold for a certain duration.
+[26:08] If let's say that, you know, there is some transition over here, then it will get lost.
+[26:14] It will get lost basically because again it will return to its correct value and this is
+[26:18] the one that is going to get latched.
+[26:20] So you want some transition to basically happen here such that the setup and the hold, both
+[26:27] of them capture the fact that actually it's one, even though it's not a one, but a current
+[26:32] pulse has created a one out of a zero.
+[26:35] But that should happen critically at this juncture of time.
+[26:39] This is known as timing window masking.
+[26:41] And it doesn't happen at that juncture as you can see in this diagram.
+[26:47] If it's not happening here, then it's happened somewhere else.
+[26:51] That's fine because at the time of the latching, which is just at the time of the negative edge,
+[26:58] you will have the correct value.
+[26:59] That's what ultimately gets it.
+[27:03] So we can do a few more things.
+[27:05] So we can add error checking ports ECC.
+[27:08] They have been there in DRAM for a long time.
+[27:11] In fact, this problem was detected in DRAMs in the late, in the 60s, 70s.
+[27:16] They already have it, but almost all memory structures nowadays, including SRAMs and so
+[27:21] on on chip, also have some form of ECC at least parity.
+[27:28] Then what we can do is we can identify some of the paths within a chip.
+[27:32] So they are known as sensitive paths and which let's say don't have a great amount of masking.
+[27:41] In the sensitive paths, which appear vulnerable, mainly because these three masking mechanisms
+[27:47] are not active, we could add larger transistors.
+[27:50] So as we have discussed earlier, larger transistors increase Q-crit, which reduces the soft error
+[27:57] problem.
+[27:58] So to summarize, we have three masking mechanisms.
+[28:04] Electrical masking, this is a regular attenuation, logical masking and timing window masking.
+[28:21] So whatever soft error propagates to a latch has to propagate in spite of these three masking
+[28:27] mechanisms.
+[28:30] Now let's look at architectural techniques.
+[28:34] So let this be the ultimate failure rate due to soft errors.
+[28:37] In this case, we are talking about failure straight.
+[28:40] Because the point is that, you know, at the architectural level, if everything is working, it's fine.
+[28:46] But we only see a failure when the chip fails, right?
+[28:49] When there's a wrong output or it hangs.
+[28:53] So this is dependent upon the soft error rate and two other important factors which we shall
+[28:58] see.
+[29:00] The first is the timing vulnerability factor TVF and the second is the architectural vulnerability
+[29:07] factor AVF.
+[29:08] So TVF basically says that look, a soft error happened, it flipped a bit, all of that is fine.
+[29:16] But in that cycle, that particular unit was not being used.
+[29:20] For instance, so this is a probability of course.
+[29:23] So for instance, if let's say there is a strike on the floating point ALU, but we are running
+[29:29] an integer code that does not use floating point instructions.
+[29:34] Then at that point of time, this unit is basically, you know, either power gated or switched off, or
+[29:40] it is switched on, but it is simply not, I mean, it's simply not used.
+[29:46] So if it's not used, then of course, you can have multiple power off states, it's in any
+[29:51] one of them.
+[29:52] As far as we are concerned, no particle strike or no bit flip ever happened.
+[29:58] The other is the architectural vulnerability factor, which means that yes, it struck a
+[30:05] unit which was active.
+[30:09] But what is the probability that it actually led to a wrong output?
+[30:12] Let me give an example.
+[30:14] So let's say that, you know, it strikes the ALU and then a 5, which is 101 becomes a 7,
+[30:20] which is a 111.
+[30:22] And it propagates and propagates to the forward slice of the instruction, everything.
+[30:28] But the key point is that at the end, it may turn out that all these instructions were
+[30:33] on the wrong path of a branch.
+[30:35] So all of them need to be flushed.
+[30:37] So as far as you are concerned, the error did happen, but it did not lead to a failure,
+[30:43] primarily because they were on the wrong path of the branch and all of them went to.
+[30:49] Another example could be, maybe we are working on, let's say, two bytes of a four byte register.
+[30:55] And there was a software strike, which led to a bit flip in one of the MSP bits.
+[31:00] And these bits are not used.
+[31:02] Again, right, we go squat free.
+[31:07] So all of these are captured in this architectural vulnerability factor, which is the probability
+[31:13] that the bit flip that happened is actually led to something.
+[31:18] So in general, this table is used because this is a good way of kind of figuring out, did
+[31:29] an error lead to a problem or not?
+[31:32] So the first thing is that assuming there is a bit flip, bit flip, just see if the bit
+[31:37] was read or not.
+[31:39] If the bit was not read, right, nobody read the bit, then there is no error at all.
+[31:44] You can never have an error.
+[31:45] So in this case, you can't have an error, it's not in a fault.
+[31:49] So fine, this case is taken care of, so let's assume the bit is read.
+[31:53] Is it protected with ECC?
+[31:55] Well, okay, yes.
+[31:56] So ECC protection comes in two types.
+[32:02] One is you detect the error.
+[32:04] The other is you detect as well as correct.
+[32:07] If the error is only detected, for example, let's say you can, let's say have something
+[32:14] where you have parity.
+[32:15] Parity will tell you there is an error, but it won't tell you which bit has an error.
+[32:20] If the error is only detected, then what you do is you say this is a detected error, but
+[32:24] unrecoverable.
+[32:25] Because I simply don't have enough error correction bits to recover, it's a DUE error.
+[32:32] But let's say that you say that, no, no, the error was also corrected, like what happens
+[32:37] in memory chips and SRAM and so on.
+[32:41] Then you say that, no, it is detected as well as corrected, there is no error.
+[32:46] So this should be straightforward.
+[32:48] The other is, does the bit, so in this case we go no, which means that there is no protection.
+[32:54] There is no ECC.
+[32:56] So does the bit matter?
+[32:58] Well, you can say that the bit does not matter because for whatever reason, either for timing
+[33:06] TVF reasons or AVF reasons, the bit is not being used to decide the final outcome.
+[33:14] Then there is no error.
+[33:16] Else, we call it silent data corruption.
+[33:21] So why silent?
+[33:22] Silent basically because you were not able to detect the error, right?
+[33:25] You didn't have enough error detection and correction bits to actually detect the error.
+[33:31] So it is silent.
+[33:34] And then we have some data corruption because of course, an error happened, it propagated
+[33:41] to the output.
+[33:43] So DUE is where, you know, you detect there is a problem, you can't do anything about it.
+[33:47] Silent is where you don't even detect.
+[33:48] But in both cases, it leads to erroneous state.
+[33:51] In one cases, you know you are in trouble.
+[33:53] In other cases, you don't know that you are in trouble.
+[33:58] Further discussion of AVF is that SDC and DUE errors are definitely of consequence.
+[34:04] But DUE errors are kind of rare.
+[34:08] Because the idea here is that, look, you have enough bits to detect, but you are saying you
+[34:13] don't have enough bits to correct.
+[34:16] That would seldom happen because if an ECC can correct for 2-bit errors, let's say, then
+[34:23] the likelihood of having 3-bit errors in the same time window and then, you know, ECC detecting
+[34:30] 3 but not being able to correct them is going, is very, very rare.
+[34:35] It's so vanishingly rare that DUE errors are almost never considered.
+[34:40] Because as I said, multiple bit flips in the same data item is very rare, right?
+[34:48] And so, having errors with the ECC can't handle is so rare that we may not want to, you know,
+[34:56] give it its due share of credence because multiple bit flips are unlikely.
+[35:00] SDC errors are the errors which are way more important.
+[35:04] These are the ones that happen in spacecrafts and bring them down.
+[35:08] And the reason is that many structures are deliberately not protected for timing performance reasons.
+[35:13] For example, some may say that the register file is not protected, some internal latch
+[35:18] is not protected, a flags register is not protected.
+[35:22] Fair enough.
+[35:24] So then these problems can happen.
+[35:26] And of course, we need to read all of these in the context of AVF.
+[35:31] So the AVF clearly says that if there is an error in the branch predictor, the AVF is 0.
+[35:36] Well, why?
+[35:37] Because, well, what's the worst that can happen?
+[35:40] The worst would be that your prediction would be wrong, but that would not cause a correctness
+[35:43] problem.
+[35:44] Similarly, the AVF would be 0 for performance counters.
+[35:48] Again, let's say that you report that instead of 5 misses, there were 7 misses in some time
+[35:55] window.
+[35:56] That wouldn't cause a great amount of difference.
+[35:59] But for the rest, it's between 0 and 1.
+[36:02] And in fact, the study of AVFs is in itself a very interesting study area.
+[36:11] So in an industrial setting, they use architectural simulation and state checkers and so on to
+[36:19] bound, to find, kind of find bounds on the SDC and DUE error probabilities.
+[36:25] So in architecture, in the architecture space, we have these architectures known as checkers.
+[36:36] The job of a checker is to check if a program is having a soft error or not.
+[36:43] And basically, to do some sort of a correction.
+[36:48] This is very important.
+[36:49] So in any piece of hardware which is there on a flight, let's say.
+[36:53] Because aircraft also travel 9, 10, 11 kilometers above sea level.
+[37:00] Definitely in spacecraft, in hazardous environments like nuclear environments or even in large
+[37:05] data centers.
+[37:06] If I have 10,000 machines or 100,000 machines, then I'll have one soft error every three to
+[37:12] four hours, right?
+[37:14] So basically, even if I have, you know, one program running on one CPU for, let's say,
+[37:21] five years, I'll definitely see a soft error which will lead to some problems.
+[37:26] So we have a bunch of checkers depending upon what you need and the sophistication of the
+[37:31] processor.
+[37:32] One of them can be chosen.
+[37:34] Complete means that the entire thread, every single computation is checked.
+[37:40] Subset means you check for a subset, see if they are correct, the rest is correct.
+[37:47] Subset and symptom are interesting.
+[37:49] So let's say that I am computing the inverse of a large matrix.
+[37:57] If I'm computing the inverse of a large matrix, this will take a lot of time.
+[38:02] But finally, I can look at some invariants of the inverse and just check that.
+[38:11] So let's say I have this ax equal to b and then I compute x is equal to a inverse b.
+[38:16] So I'm computing a inverse.
+[38:19] But after doing that, I can just do a quick multiplication of a inverse with b.
+[38:25] Even if I don't want to compute all the elements, I can compute a couple of elements and see if
+[38:29] they match with the corresponding elements of x.
+[38:32] So there's an invariant.
+[38:34] So you want certain properties to hold throughout your computation.
+[38:38] That is an invariant.
+[38:40] And many processors have built-in invariant checkers.
+[38:44] See, invariant is something that should remain correct, like in this case, a inverse times
+[38:50] b should always be correct.
+[38:51] Or you can say that at all points of time, some function of the input should always be one.
+[38:59] Even though the input itself is changing, some function of the internal state should always
+[39:04] be one.
+[39:05] If that's not the case, I can say there is a bug.
+[39:09] Symptom is the inverse of an invariant, the reverse of an invariant, where what you do is
+[39:14] you check if something goes wrong.
+[39:16] For instance, you are doing a computation.
+[39:19] You are not expecting an arithmetic exception, but you get one, you can immediately say that,
+[39:23] look, it must have happened because of soft errors.
+[39:26] So a symptom checks for erroneous problems, red flags, particularly.
+[39:34] So these are the four kinds of checkers that people use.
+[39:39] Complete being the most common because if you want to check, just check everything.
+[39:43] Subset invariant and symptom are mainly research level ideas, but there are some commercial implementations
+[39:50] also.
+[39:51] So a complete checker is reasonably simple and many mainframe machines or large server class
+[40:02] machines have complete checking, which we also call as multi-master systems.
+[40:07] Why multi-master?
+[40:09] That will become clear quite soon.
+[40:15] So what we do is we run multiple pipelines running the same program in parallel, multiple
+[40:21] redundant copies of the same program.
+[40:24] Then what we do is that we just check.
+[40:30] So if let's say two copies are running in parallel, we just check the outputs periodically.
+[40:36] Of course at the same point.
+[40:39] And if they are the same, well and good, otherwise we roll back to what is called a safe checkpoint.
+[40:47] So you periodically store the entire state.
+[40:49] It's not very hard to do.
+[40:50] In fact, we will see how trivial it is for some cases.
+[40:55] And then if there is a problem, we just roll back to the checkpoint.
+[40:58] Both of them roll back and restart from there.
+[41:00] And given the fact that a soft error is a transient fault, in the sense it happens for some small
+[41:06] period of time, right, then the current pulse dies, right.
+[41:10] And another particle strike at the same location causing a current pulse large enough to flip
+[41:17] within a window of 100 cycles, the probability of that is nil.
+[41:21] The other is that we don't roll back.
+[41:23] So rolling back is called backward error recovery because you are going back.
+[41:28] Instead you do forward error recovery, which means you don't roll back.
+[41:32] Instead, what you do is that you have three redundant copies and then you use voting.
+[41:40] So the two that match, they go forward.
+[41:42] The one that doesn't match, it kind of takes the state from others and keeps going.
+[41:48] So in this case, you don't go back.
+[41:50] It's known as TMR.
+[41:53] So of course, when and how do you compare the results, right.
+[41:58] So what you can do is you can divide time into epochs and say that at a certain epoch, I
+[42:03] will checkpoint the full state, which is register state, memory state, everything.
+[42:09] And any problem, I'll go back to my previous epoch.
+[42:12] Sometimes things are easier.
+[42:16] So what we do is if we have you go back to our discussion on transactional memory.
+[42:21] In fact, you should actually in chapter nine, we had kind of discussed this sort of threadbare,
+[42:28] the transactional memory part.
+[42:30] So you should go back and take a look at it.
+[42:33] So there we had said of how we checkpoint and so on.
+[42:37] So simple approach would be what IBM G5 uses, which is that two parallel pipelines.
+[42:43] The moment there is a mismatch where, of course, the pipelines are running in lockstep.
+[42:48] If there is a mismatch, you just flush the pipeline.
+[42:53] Then you restart from the same point.
+[42:56] And this time, hopefully, things will go correctly.
+[42:59] But of course, the caveat over here is that only verified values are written to memory, memory
+[43:05] meaning the L1 cache in this case.
+[43:08] So verified values are written to the memory system, which is to the L1 cache.
+[43:22] So then we can go the other route, which is the HP nonstop server, which basically what
+[43:28] it does is that it does not check the pipeline results every cycle, but only checks IO, right?
+[43:34] Input output, which means that threads don't have to run in lockstep because running in
+[43:40] lockstep is difficult.
+[43:42] But whenever there's an IO request, kind of they stop, they check that whatever I'm writing
+[43:46] to the external world is the same.
+[43:49] And in case it's not the same, of course, they use voting.
+[43:52] And the thread that loses the vote, it kind of gets the state from others and restarts.
+[43:58] So this requires loose synchronization.
+[43:59] This is good for large server or mainframe class machines, where cycle level synchronization
+[44:06] is not required.
+[44:10] This is a multi-master system.
+[44:12] And as I said, in large industrial machines that run in banks, stock markets, etc., which
+[44:18] cannot afford a bit flip, otherwise they'll create millionaires, billionaires, just like
+[44:22] that they have these systems in place.
+[44:28] A very, very popular research prototype is the DIVA architecture.
+[44:33] I'm not aware of commercial implementations, but it's a very nice and cute idea.
+[44:39] So the fundamental insight is that verifying something, verification is faster than computation.
+[44:46] This is the fundamental assumption.
+[44:49] DIVA uses it to some extent, but of course, others use it even more.
+[44:54] But the idea is that verification is, by definition, a more efficient operation than computing it.
+[45:01] And if you can see, this is indeed true.
+[45:03] In fact, inverting a set of equations, sorry, solving a set of equations using matrix inversion
+[45:10] is a slow operation, right?
+[45:12] Matrix inversion is very slow.
+[45:16] But verifying that something is the solution is much easier.
+[45:20] All that you do is, you just, it's just a matrix vector product, that's it, just verify
+[45:24] that it's zero.
+[45:27] So verification is much faster.
+[45:30] So what you do is, you consider an out-of-order core.
+[45:34] How much would the IPC of an out-of-order core be?
+[45:39] Even in the best case with spec and benchmarks, the highest integer IPC would be between 1.5
+[45:45] to 2, not more than that.
+[45:48] If that is the case, what we do is, that we keep all the data, the instructions, the values
+[45:54] of the operands, and the value of the result.
+[45:59] Everything we keep with us.
+[46:01] All of that via a queue of unverified instructions, kind of like lengthening the pipeline.
+[46:07] We transmit them to a DIVA core, which is a dynamic verification core, which is purely
+[46:12] in order.
+[46:14] It has two sub-pipelines that check the communication and the computation.
+[46:19] The COM stage maintains a shadow register file, which basically is like the retirement register
+[46:25] file.
+[46:26] It just checks if the register file values have been read correctly or not.
+[46:31] Because it has a shadow register file, this can be done quickly and because we are sending
+[46:34] the operands, we can always verify them with this and check.
+[46:39] The COM for computation stage, we have a dedicated ALU that again performs the operation.
+[46:47] Let's say you did an addition, it will do an addition once again and check.
+[46:51] But because the operand values are coming and the COM stage is parallelly guaranteeing that
+[46:55] they were correctly read.
+[46:57] All that we have to do is we have to check the result and that is fast.
+[47:00] So no instruction window, wake up, select, nothing, nothing at all.
+[47:06] And then we commit.
+[47:07] It's a simple two-stage in-order pipeline with two parallel units over here.
+[47:12] This is very fast.
+[47:15] What about memory?
+[47:17] So right, memory means load and store accesses.
+[47:21] So of course, a store always happens to the lower level only after verification.
+[47:26] But then where does it stay in the middle?
+[47:28] Well, it stays in a large LS queue, makes things slow.
+[47:32] So that is why what we do is we have a small store queue over here to store those values which
+[47:37] are unverified.
+[47:38] So is that if there is a load, the value can come from here.
+[47:41] Along with that, there is an L0 cache also to ensure that there is some local storage for
+[47:47] unverified loads.
+[47:51] And that's all and the shadow register file, the checker register file is over here.
+[47:58] So you need a small extension of the store queue, a small L0 cache to ensure that the
+[48:03] loads are verified.
+[48:04] The loads also have to be redone.
+[48:06] You will have to issue one more load to the memory system, check that the values loaded
+[48:11] are correct.
+[48:12] And that is why this extended caching structures and store queues kind of help in reducing the
+[48:17] latency.
+[48:18] And the checker RF we have already discussed.
+[48:22] So what is the be all and end all of this?
+[48:24] What's the summary?
+[48:25] The summary look is very, very simple.
+[48:27] It's saying that if the values are available to me, the operand values the result, checking
+[48:34] them is much easier.
+[48:36] Right?
+[48:37] You are not supposed to computing them in the first place because then you need to look
+[48:40] at dependencies and what not.
+[48:42] But just verifying that they are read correctly or not by looking at the checker RF redoing
+[48:47] the computation is quite fast.
+[48:50] So I can have this small two stage in order code.
+[48:54] Maybe I can have two of them also.
+[48:56] Right?
+[48:57] It could be a two stage.
+[48:58] It could be a two issue in order pipeline that can easily verify a fat out of order machine,
+[49:03] because ultimately the IPC that I am seeing is not more than 1.5 to 2 in the long run.
+[49:10] Of course, there will be instantaneous IPC fluctuations, which is why this decoupling queue can be there,
+[49:17] where basically in case the in order pipeline is slowing down and IPC here is high, then instructions
+[49:25] will just accumulate over here and they will gradually get verified.
+[49:29] But as I said, in the long run, the integer throughput is never more than this.
+[49:33] Hence, DIVA typically does not cause a lot of stalls.
+[49:36] So, this sorry, I need to go back, this is a single slave system, because this is like
+[49:42] a master processor, this is a slave processor.
+[49:45] So, a quick recap of what I just said that the L0 cache is used to reduce the pressure on
+[49:52] the L1 cache makes sense, because the L1 cache is being used by the main processor to read and
+[49:58] write.
+[49:59] So, L0 cache is kind of like a cache on cache, it has the most frequently read written values,
+[50:06] which are useful.
+[50:07] Needless to say, we are not committing an instruction unless it is verified.
+[50:11] So, this increases the size of the ROB and the store queue, which we have discussed.
+[50:17] And values are sent to the memory system only after the instruction is verified.
+[50:22] The checker needs its own store queue and register file, again we have discussed.
+[50:27] And we have also said that you need a queue of unverified instructions, which is essentially
+[50:33] this queue over here, because if instantaneously this out of order core is fast, then the checker
+[50:40] whose, the checker of course will not have stalls and it is in order, so the checker will pretty
+[50:45] much always predictably have an IPC of 2 unless there are misses in this part.
+[50:51] But in case the out of order core is faster, the additional instructions will queue up in
+[50:56] this queue, they will gradually get cleared by the checker.
+[51:01] We can have a multi slave system, where I have a master here and then I have multiple checkers.
+[51:10] When is this useful?
+[51:12] This is useful when the checker simply cannot keep up with the masters.
+[51:16] In the Diva case, we assume that the checker which is the slave is able to keep up with
+[51:25] the master.
+[51:27] In this case, we are saying that look, the master is fast, the checkers cannot keep up.
+[51:35] So what will happen is that in this A, if master goes from A to B, one of them will be verifying
+[51:40] A to B, it is clearly taking more time.
+[51:43] Then when the master goes to B to C, one of them will verify from B to C. But by the time
+[51:49] C is reached, the first checker is free.
+[51:51] Then when the master is in C to D, another checker will take this up.
+[51:55] So two checkers together, what they can do is, they can verify the master, because in
+[52:00] this case, one checker cannot keep up.
+[52:02] This is a simple extension of the Diva idea for cases where a single checker is not sufficient
+[52:08] or for a high IPC master, we can use this method.
+[52:13] The logic is more complicated and you can have four, eight checkers, God knows how many.
+[52:18] But the idea is the same.
+[52:22] So we have discussed soft errors now, that was a reasonably long discussion.
+[52:28] We will not have that long discussions for the rest of the fault mechanisms.
+[52:35] So we will discuss inductive noise, again something similar to soft errors in character.
+[52:42] Issues that come out of the design of the chip, which is some inherent non-determinism as well
+[52:48] as design bugs.
+[52:49] And finally problems related to parameter variation and aging.
+[52:54] So let's start with inductive noise.
+[52:57] So let's go back to the discussion on the power and ground grid.
+[53:00] So recall in chapter 12 also, we had discussed the fact that we have a power grid, right?
+[53:07] In case you have forgotten, go there.
+[53:09] So in turn, when we were discussing leakage power reduction, the power and ground grid issue
+[53:14] had come up where we said you have a power grid to distribute power to different parts
+[53:18] of the chip and also you get the power from external voltage regulators via the pins of the chip.
+[53:27] No voltage source is ideal.
+[53:30] It always has an internal resistance.
+[53:33] No power grid is ideal because it has a finite resistance and capacitance, inductance as well.
+[53:41] So because of the inductance, it will oppose any abrupt change in current.
+[53:46] That is a Lenz's law that any inductor always opposes any dramatic change in current, which
+[53:54] is why we have decoupling capacitors as was discussed again in chapter 12 to somewhat make
+[54:03] the power grid immune to the effects of noise.
+[54:07] So that said and done, we are looking at the power grid's equivalent circuit is reasonably
+[54:13] complex.
+[54:14] We have the resistance part, inductance part, capacitance part is a proper RLC circuit and
+[54:20] as we know any RLC circuit does behave like an oscillator with a frequency of omega.
+[54:29] So what happens is that at the point of a frequency of omega, which is known as a resonating frequency,
+[54:37] the impedance reaches a certain extrema and this further can cause voltage spikes because
+[54:44] of the impedance.
+[54:46] Positive spikes, negative spikes doesn't matter.
+[54:48] We'll refer to both as spikes.
+[54:50] But what happens is that if let's say the activity within the chip, which is a natural activity,
+[54:56] right?
+[54:57] If the frequency of that approaches the resonant frequency of the power grid, then essentially
+[55:08] you will have resonance, right?
+[55:11] In a chip level resonance along with power level resonance.
+[55:16] And because the fact that at this point the impedance reaches an extrema, you are going to see the voltage
+[55:22] spikes.
+[55:23] Right?
+[55:24] You will see big drops in voltage regardless of whatever your decoupling capacitors are doing.
+[55:30] You will see big changes in the voltage which may cause faults unless something is done.
+[55:40] So of course this understanding this part, I won't blame you if you are not able to understand
+[55:44] what I just said because a fair amount of background is needed other than traditional computer architecture.
+[55:53] You need to know the following concepts to understand what I just said RLC circuits, right?
+[55:59] So the concepts of resonance, oscillation and resonance, but resonance kind of covers it.
+[56:08] The concept of impedance, and why impedance reaches an extrema when your activity is close
+[56:16] to the resonant frequency, and when impedance reaches an extrema, what happens to the on-chip
+[56:21] voltage, and why decoupling capacitors, I mean they still help, but why they don't help
+[56:28] as much as you think that they should.
+[56:31] So all of these factors are important, and it is important to look at an electrical engineering
+[56:36] textbook to understand this before you come to this slide.
+[56:39] It's a very loaded slide.
+[56:40] It may not appear to be loaded, but it's quite loaded because we are relying on these concepts
+[56:46] which at least many computer science graduates may not know.
+[56:52] So what we try to do is that of course we try to avoid voltage spikes.
+[56:57] So we first try to compute the resonance.
+[57:00] The resonant frequency is typically between 10 to 100 MHz.
+[57:06] An attacker could always run code snippets, or maybe by mistake you could be running code
+[57:11] snippets in a loop, which will produce current fluctuations roughly in the same resonant frequency
+[57:16] ballpark.
+[57:19] So there is a need to do what is called pipeline damping, which is to first realize that this
+[57:23] phenomenon is happening, that my on-chip activity is matching the resonant frequency.
+[57:30] Try to smooth out or homogenize the computation in the sense, instead of computation-like activity
+[57:35] like this, try to make it like that.
+[57:38] That would basically require you to do two things.
+[57:41] So it would be to either throttle it in periods of high activity, or kind of increase the frequency
+[57:48] at periods of low activity.
+[57:50] But of course it can't be done that easily.
+[57:53] Right?
+[57:54] Frequency changes require time.
+[57:56] So mostly we'll have to throttle and bring down the activity.
+[58:01] Such that this more or less resembles a smoother profile.
+[58:07] This would require us to do what?
+[58:09] We have detailed performance counter information, where we maintain a count of the events that
+[58:15] are happening in the CPU backend, like issue, select, etc, etc.
+[58:21] We correlate all of these things with the actual current.
+[58:26] So we have these developer supplied models.
+[58:29] And we correlate this, we find out how much activity in the chip would actually correlate
+[58:34] with the current.
+[58:36] Because finally the current fluctuation matters, but that is proportional to the activity fluctuation.
+[58:42] So what we do is that we'll, of course, we throttle.
+[58:46] As I said, at periods of low activity, we can either increase the frequency or slightly randomize
+[58:52] the frequency, but that's again easier said than done.
+[58:55] A better idea is to bring in dummy instructions, which is like create extra activity to sort
+[59:02] of fill this void because we are not running enough CPU instructions.
+[59:06] So just do other junk work, dummy work, such that finally this would look like this.
+[59:12] And as I said, some throttling and do dummy instructions, do useless work to ensure that you roughly
+[59:18] have similar CPU activity.
+[59:22] Increasing would reduce power, increasing dummy instructions would increase power.
+[59:26] Hopefully they will roughly cancel out.
+[59:29] That is the idea.
+[59:30] But if they don't, well, we may end up spending some extra power.
+[59:35] But the key idea is that you never want your CPU activity to be looking similar to the resonant
+[59:43] frequency because that will cause a lot of problems because in any circuit with RLC elements, particularly
+[59:51] L and C, which have a plus minus 90 degree reactance.
+[59:55] Again, I used a term, so you should know enough electrical engineering to figure out what is
+[60:01] it that I just said, right?
+[60:04] But the idea is that the moment the impedance is maximized, that's when you can have havoc
+[60:08] with the on-chip voltage, which is exactly why you would like to smoothen out the activity
+[60:14] profile.
+[60:15] As I said, if this is the thing with the frequency of omega, then try to make it like this.
+[60:21] That would involve bringing the activity down in places, taking the activity up in places,
+[60:26] a combination of throttling and adding dummy work.
+[60:31] So we are done with kind of the noise, transient faults, right?
+[60:36] Both noise as well as software strikes.
+[60:39] So this also ends the current lecture.
+[60:41] In the next lecture, we'll start with faults due to inherent non-determinism.
+[60:47] But mind you, they are not like particle strikes, but they have other reasons.
+[60:52] Design faults, which are genuine bugs and everything else related to, you know, chip defects and
+[60:56] aging and variation and so on.
+[61:01] Basically, in the next lecture we'll give you coffee in object format.
+[61:08] Don't hear it by
+[61:15] application.
+[61:17] What is the pranic Carol V
+[61:19] approval hit?
+[61:24] He went to Gordon hollow and
+[61:26] he went to the window,
+[61:28] good

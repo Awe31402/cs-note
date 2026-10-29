@@ -1,0 +1,456 @@
+[00:00] Welcome to the second lecture on DRAMs. So in this lecture we will discuss the design
+[00:26] space of DRAMs and how we can design them. So of course a DRAM is a very complex entity right so
+[00:33] if you thought the cache was complex well look at the DRAM we have full chapter on it and we still
+[00:40] may be just scratching the surface. So the key question is the first question and that's an
+[00:47] important question how do the memory controller and the DRAM device communicate? So you could say
+[00:54] that well what you do is asynchronous transfer which means that whenever you have data to send
+[01:01] or an address to send you place it on the bus and then the DRAM device pretty much picks it off the bus.
+[01:15] Sounds easy but there are many problems and the problem stem from the fact that the sender and
+[01:23] the receiver so be it the memory controller or the DRAM they don't share a clock so as a result
+[01:29] synchronization becomes difficult. So pretty much look the idea is something like this that if you
+[01:36] have the bus and you have the receiver the receiver could be anybody could be the DRAM or the memory
+[01:41] controller so what the receiver has to do is whatever bit is coming has to finally enter
+[01:48] a flip-flop right let's say it enters a D flip-flop. The D flip-flop is clocked and what we know
+[01:56] is that for something to enter the D flip-flop it needs to be stable for at least T setup seconds
+[02:05] and then it needs to be stable for at least T hold seconds after the clock edge. So for this entire
+[02:12] duration from like this point to this point the signal has to be stable otherwise it can enter a
+[02:18] very unstable regime. Given the fact that every receiver will have its own clock the signal cannot
+[02:27] arrive in this part right or it can't arrive and it can't go away. So in this setup and hold signal
+[02:33] the signal has to be stable and that is when the signal has to be latched. That is exactly why
+[02:39] communication is kind of tough because you don't want any transitions in this region otherwise what
+[02:44] happens is a phenomenon called metastability. Metastability basically means that the input
+[02:53] oscillates right so the basically the input changes so the output oscillates and then you never know
+[02:59] whether you're latching in a 0 or 1 that you don't know that's an erroneous situation.
+[03:05] Hence what we have is we send the clock along with the data or let's say some transition along
+[03:13] with the data such that the receiver can match the timing and this timing signal is known as a strobe
+[03:19] and if the data is dq the data signal is dq then dqs is essentially the strobe signal and the strobe
+[03:26] signal allows the receiver to in a sense synchronize its timing with the sender. So this means that the
+[03:34] data is latched in at exactly the right point of time. So the receiver would know when it is the
+[03:43] time to latch the data and you can say that this strobe can be positive edge triggered, upward edge
+[03:49] triggered or downward edge triggered. It doesn't matter but whatever is the convention and the convention
+[03:57] has to be agreed to by both the sender and the receiver. The idea is that it conveys the timing and
+[04:03] the timing is needed for proper latching of the data and this is the only thing that matters
+[04:09] insofar as the strobe signal is concerned. Again there are two kinds of strobe signals. So as I just
+[04:17] said you could have an active high or you could have active high means when it becomes you know one it is
+[04:23] time to latch and the other could be active low which is denoted as a dqs with a bar on top which means
+[04:31] when it becomes zero it is time to latch. The active high active low that's again a matter of convention
+[04:37] but insofar as we are concerned right now what we care about is that the strobe signal conveys the timing.
+[04:45] So one thing to know so it's time to discuss this full duplex and half duplex business.
+[04:50] So almost all memory buses or let's say very large majority of them are essentially half duplex which
+[04:58] basically means the data either flows this way or data flows the other way which is this way.
+[05:10] So given that you know we have a one-way transfer which is either one way or the other way.
+[05:15] It also makes a case for spending this strobe signal either you know this way or that way.
+[05:25] If you look at asynchronous memory so we would need multiple strobe signals right or multiple
+[05:32] signals that tell you when our data is to be latched in. So we'll have a row address strobe again
+[05:39] active low a column address strobe right again active low and we will send the address and the
+[05:47] data so the address lines will be called address and the data lines will be called dq.
+[05:53] So the idea is that when this row address strobe is asserted so asserted means active low which means
+[05:58] it is one when it becomes zero. So that is when you expect the receiver to latch the address which means
+[06:07] that you expect that the address bits are sent before this makes a transition to zero such that
+[06:13] when it latches it will have those bits already on the bus and then it can safely latch on to them.
+[06:21] So of course if there are 64 lines 64 parallel copper wires you expect that the signal on all 64
+[06:29] the signals are stable such that the moment you make a transition all of these 64 bits can be read out
+[06:37] at the same point of time and latched into the flip-flops that's why before the strobe the
+[06:42] address signal has to be stable. Once the row has been read then what we would like to do is we would
+[06:50] assert the column address strobe again active low we expect the column data to be there on the address
+[06:57] bus at this point of time. That's simple enough once that is done then what happens is that
+[07:05] the data is sent back so as I said most of our examples will be a memory read because
+[07:12] that is on the critical path so what has happened is that the device which is the DRAM device has
+[07:19] activated the row you have sent the column so the appropriate column mux demuxes have been activated
+[07:26] right and then you read the data you send the data and then what you do is you de-assert the signals
+[07:33] ras and gas which means they move back from zero to one so in this case of course you know that the
+[07:39] moment it is de-asserted the data should be there so in this case these become kind of active high
+[07:44] signals and then the data can be read by the memory controller and the transfer is over so mind you in
+[07:51] this case even though there is no clock no shared clock it is these strobe signals over here it is
+[07:57] the active low behavior here and active high behavior here which ensures that the row and column are
+[08:03] sent the data is sent back and the data is read at the memory controller at the right point of time
+[08:11] and this is purely asynchronous there is no shared clock now coming to this so what you see is that
+[08:18] there is a fair amount of time where you are not doing anything here you are not doing anything here
+[08:22] you are not doing anything at this point of time you know the address bus right is not sending uh so
+[08:28] address bus send this but at this point of time i'm sorry the address bus is idle so we can make this
+[08:35] process slightly more efficient so accesses have special locality so once a row so row incidentally
+[08:44] in the dram is called a page it's not the same as a virtual memory page but row and page in dram are the
+[08:49] same and that's maybe let's say two kilobits for every array so that's a fairly big thing right across
+[08:57] all the arrays it's it's a lot of memory so once you have activated it which basically means if the
+[09:04] values of those cells are in the sense amps and this feedback is there then the idea is that you just
+[09:10] want don't want to remove the data from the sense amps but instead you can make a guess and the guess
+[09:17] would be a fair guess that the next axis would basically read from another region of the same
+[09:23] row the next axis would again be another region from the same row so on and so forth so the idea
+[09:29] is that you need not what is called close the row close the row basically mean precharge the bit lines
+[09:36] back again you need not do that you can keep the row activated which means the sense amps retain their
+[09:43] values and keep on accessing them albeit a different set of columns so for a single array each column
+[09:51] supplies one bit but across the arrays of course multiple bits are supplied the key idea is the same
+[09:57] that we give a row address we can give the same column address but as i said the same row address and
+[10:04] same column address for let two 64 arrays would produce 64 bits so that is the most important point
+[10:10] that 64 arrays if you give the same row column address would produce 64 bits in parallel which
+[10:17] is something that you can read and send back to the memory controller so the basic idea is the same
+[10:23] we open the row it means activating the row which basically means enabling the word line transistors
+[10:30] and ensuring that the sense amplifiers are properly in sync with the DRAM cells so the DRAM cells are weak
+[10:39] but the sense amplifiers are strong so here again you know we use the row address strobe to send the row
+[10:47] and the column address strobe to essentially send a column the moment this is received we have a
+[10:54] separate data strobe signal what happens with the data strobe signal is that this also is an active low
+[11:00] signal so once we send a column the data is put on the data bus and the data strobe essentially
+[11:09] tells the memory controller when to read it slightly later again another column is placed again the
+[11:17] data for that is read so of course you know so this is basically if you have 64 bits you could have a
+[11:25] single strobe signal and that could in a sense coordinate the transfer of all 64 bits but i'm just
+[11:31] showing you know one column or one array or actually this could be a set of arrays it doesn't matter
+[11:38] so basically the strobe signal is common so again the at the next active low point which is basically this
+[11:48] point the data for this column is read out slightly later again the next column is placed so note that
+[11:56] the column address strobe again makes a transition from one to zero right so this is one transition
+[12:02] active low this is one transition active low is one transition again the column address is slightly
+[12:10] placed on the bus slightly before such that the values are stable and then again in due course of
+[12:15] time the data is placed and the data is read again active low so on and so forth so what we are doing
+[12:21] is we are keeping the row the same we are just reading out multiple columns and the advantage of
+[12:27] reading out multiple columns in the row is that in any case it is reflecting our accesses which shows
+[12:33] spatial locality and a row is quite wide in the DRAM the reason being that it's quite wide anyway plus the
+[12:42] fact is that every array pretty much supplies one bit per column right but if you have a large number
+[12:51] of such arrays let's say 64 such arrays we get 64 bits in the next let's say transfer window
+[12:59] which is let's say this is one this is two again we specify one more column which could be this one
+[13:04] but one column would mean the same column in all the arrays that's important right so this is basically
+[13:10] the same column in all the arrays which is one bit per array which is nothing but
+[13:16] 64 bits for 64 arrays right so we get 64 bits again and then again we specify one more column
+[13:27] and it's one array produces one bit 64 arrays produce 64 bits and we get that so on and so forth so this
+[13:35] process just continues and we have column column column data data data
+[13:45] so the advantage over here is basically that you are assuming spatial locality which in a sense does
+[13:55] exist right so the fact is that if you look at it a DRAM is nothing but a 3d structure
+[14:02] here where if this is an array this is one more array one more array so on and so forth every access
+[14:11] cycle or every time you access you read only one bit from a given row column pair and if let's say
+[14:18] there are 64 or 128 such arrays you read 128 or 64 bits in one go but the fact is that one row is
+[14:27] actually one row for every single array and that's huge so that's a fair amount of data so you will
+[14:32] see spatial locality so once you've opened slash activated a row which basically means you have enabled
+[14:40] all the wordline transistors and the sense amplifiers have come in sync with the row so they are now
+[14:46] storing the same data you can just keep the row activated no need to pre-charge once again and
+[14:54] delete the data in sense in the sense amplifiers just keep on accessing different columns keep
+[15:01] on reading out the data that would be a very efficient process for you and very fast also
+[15:07] all that you need is an additional or extra probe signal which you will get
+[15:14] so this method is known as edo or extended data out this is still asynchronous
+[15:19] so in this case what happens is note that there is still some periods of inactivity here which is
+[15:33] idleness which is something that we don't like so just remember this diagram and quickly move to this
+[15:39] diagram so kindly note that periods of inactivity are relatively much lower and also in this case we
+[15:47] don't have a data strobe signal right we have not had the requirement for that
+[15:56] the basic insight is as follows that you know we typically read a lot of data in one go
+[16:03] and basically what happens is that even though we may read 64 bits in let's say one cycle and we
+[16:11] typically have 64 parallel copper wires but in terms of the overall transfer it may be 64 bytes which is
+[16:19] basically eight such you know individual 64 bit level transfers so which basically means that if let's say
+[16:29] i have a starting column then i need to need the next the next the next so i already know that i kind of know
+[16:37] that in advance so what i can do is again i can use the same setup have a column address stroke provide the
+[16:44] column but what i can then do is that i can also send the data so i can say that i can kind of send
+[16:55] the data for that column and the next one pretty much right and then uh what i can do is so this
+[17:02] again can be the data can be synchronized with the column address strobe again i can send data for
+[17:10] another column which would be that and the next one so in a sense you know if i send column n i can send
+[17:15] the data for n and n plus one so this would mean that the prefetch length is kind of two because other
+[17:21] one i didn't specify but i'm inferring from this value so i kind of specify one address and the subsequent
+[17:30] addresses are generated internally in this case the prefetch length is equal to two and for both the
+[17:39] column as well as the data the same strobe is used which is the column address strobe and the reason
+[17:44] the word burst comes over here is basically because we are doing this internal calculation or internal
+[17:52] computation and we are basically getting multiple columns of data which is let's say one and the next
+[17:58] test so the fact is that this is more efficient no doubt than edo right bedo is more efficient and i can
+[18:10] increase the prefetch length so then things will get even more efficient i can make it eight for instance
+[18:17] so that will make the process of transmission more efficient more efficient but still
+[18:24] asynchronous transmission requires these complicated strobe signals is quite sensitive to noise so that
+[18:33] is why synchronization is difficult and essentially the circuits at both the end at this end and that
+[18:39] end are complex and cumbersome as a result even though you know we have good you know we saw what did we
+[18:48] see we saw a regular asynchronous memory edo and bedo people are you know people kind of have come to this
+[19:00] conclusion that a synchronous approach may be better where clocks are indeed used
+[19:07] so you look at synchronous memory
+[19:10] it is easy to design and verify no doubt right you don't need
+[19:14] this complex strobe logic and you don't have to add other kinds of logic you can do more at the
+[19:22] protocol level no doubt and furthermore you know you can have a complex hierarchical architecture
+[19:29] where in principle you can control different banks differently and do a lot just because they
+[19:34] synchronize with a common block now if you would recall our earlier discussion we had said that the
+[19:41] data bus is fundamentally faster faster than what the address command bus because the address slash
+[19:47] command bus which is essentially a row slash column id and the commands that are sent like read write etc
+[19:55] these go to kind of all the arrays but the data bus in a sense does not it just goes to
+[20:00] you know all the arrays in one row across the ranks if you would recall
+[20:05] this figure which i can quickly take you back this one so as you can see the address command bus is
+[20:11] connected to everything it has a massive rc delay or a capacitive loading because the more you are
+[20:16] connected to the more is the capacitance and the more is the time constant and more is the slowdown
+[20:24] in comparison the data bus is not connected to many elements which is why it is not that slow
+[20:29] so now uh the idea is that the data bus that is why is typically run faster at twice the speed of the
+[20:41] address command bus because it uses twice the speed this is known as a double data rate and all such
+[20:47] protocols are known as double data rate or ddr protocol so we will see ddr1234 right so now ddr5 has also come
+[20:55] along with ddr of course you can have qdr which is quad data rate but quad data rate is not very common as of
+[21:03] today so double data rate transfer with the clock right that is important with the clock this is how it
+[21:15] is going to look so we have a clock which we are presuming is triggered at the positive edge
+[21:23] so at all such positive edge edges let us use that as a strobe so the clock is of course shared right
+[21:30] so every single signal will synchronize with the clock
+[21:35] and uh the point is that there will be a separate command and address bus which could be multiplex but
+[21:41] in this case they aren't so what we do is we send the row and we send the act command or act or activate
+[21:48] command saying that you activate the row nothing but open the row and let the sense amp synchronize
+[21:54] the next cycle when we do nothing allow the row to get activated so we send a noop which basically
+[22:00] says don't do anything then uh we have retained the same name so we send the column and we call the
+[22:07] command the cast the column address stroke so this as you can see is a pure hot artificial artifact right
+[22:14] absolutely artificial artifact and here uh the idea is that while uh sending data back
+[22:22] we are using a stroke but we will discuss more about that later so in this case what we do is that
+[22:29] the strobe uh as you can see uh over here uh we are sending it at twice the rate so just look
+[22:39] at this this is like one full clock cycle right so we are sending it at twice the rate right for every
+[22:45] positive edge we are sending data every negative edge we are sending data so this is kind of like a
+[22:50] delay right so in this case the prefetch length is kind of four because given a column and a column address
+[22:57] stroke uh what has basically happened is so this is this is the command basically we are reading four bits
+[23:05] and then basically after that as you can see it is kind of synchronized with this so after that we
+[23:12] are kind of so in this case we have three states for this for the dqs for the data stroke we have three
+[23:18] states so let's say the default state is x so then it trans transition 0 to 1 then 1 to 0 then again 0 to 1
+[23:27] 1 to 0 and again from 0 to x so basically this is kind of a tri-state bus so what we are doing is that
+[23:35] any transition is a 0 1 1 1 0 transition means data is coming i mean you could argue that this could
+[23:42] be sync with that but as i said we will discuss the need for this later and then the point is that after
+[23:49] data is transferred we are giving some time right kind of for the bus to re-stabilize and recover
+[23:58] and what we are doing is that after transmitting two of these bits we are sending a column
+[24:05] address strobe once again so for this to take effect it will take some time so take effect
+[24:12] basically means when you send the command it is sent it is buffered on the other side then you wait for
+[24:18] the existing operation to finish which is i mean just that finishes and then the column mux demux are
+[24:25] changed they are kind of the columns are activated so that is why we have one idle cycle here for the
+[24:32] read process to finish and then once that has happened the call the new set of columns are activated and
+[24:37] again a new data transfer begins so as i said in many cases given the fact that inside the DRAM we have
+[24:46] an analog circuit typically after an operation which in this case reading poor bits it sometimes is
+[24:53] necessary to give kind of a fallow period a fallow period is a period in which uh you know nothing
+[25:00] happens and the reason for doing that is sort of let the voltages stabilize and clocks to re-synchronize
+[25:06] and so on and after that the new command takes effect so we clearly issued this command you know as
+[25:14] soon as we could and then uh the new transfer takes effect based on the column value specified over here
+[25:21] so this is an example of a clock transfer with a strobe where almost everything is coordinated with
+[25:28] the clock the strobe is also coordinated with the clock and data is transferred at twice the rate so
+[25:34] this is a very basic bare bones ddr protocol so in a certain sense we have retained the same names
+[25:42] as the synchronous protocol of course in this case they are commands and they are not strobe signals
+[25:47] so the ddr commands as we see is active activate the row noop is one idle cycle of the clock
+[25:57] and then a cas is activate column and call is the column address in this case as you can see the
+[26:03] prefetch length is 4. so let us look at some subtle aspects of the communication between the memory
+[26:10] controller over here and the dram cell over here so uh we have discussed this earlier also at the time
+[26:22] of prefetching that we typically transfer 64 bytes at a time which is 512 bits which basically means that
+[26:29] even if we send kind of 64 bits in one round so we need eight such rounds to transfer the entire cache of
+[26:36] 512 bits right the entire set of 512 bits so clearly uh we would like to access one rank we would not
+[26:45] like to access multiple ranks for at least a single transfer and a rank comprises multiple dram devices
+[26:52] or chips each device has multiple banks and each bank has multiple there is all of them put together
+[26:59] provide supply all the data in parallel of course it is possible that let's say instead of eight we have
+[27:05] nine banks where one bank is kept for a standby it is not used so all of that is possible and the modern
+[27:12] protocols do allow but the key idea is that uh data is provided in parallel and it is synchronized with
+[27:21] the strobe signal because we are sending the strobe which is kind of being used as a clock this is known
+[27:29] as the source synchronous mode of transmission where source synchronous basically says that you send the
+[27:34] data and you also send the clock along with it such that the receiver can recover the clock and then
+[27:41] recover the data so let's look at this first while reading which was the case over here all the data
+[27:49] transitions are synchronized with the strobe signals transitions as it is the case here zero to one
+[27:55] data transmission one to zero data transmission zero to one so on and so forth however in the case of
+[28:01] writing the strobe signals transition kind of happens at the middle of the bit and the reason is that it
+[28:09] is easier to recover the clock this way so recovering the clock is easier if the strobe signal transitions
+[28:14] there and so reading is what reading is reading from d-ram writing is writing to d-ram so when you are
+[28:22] writing and kind of sending a bit because the d-ram devices are not you know as smart as the cpu they
+[28:29] don't have that much of power and processing power particularly so that is the reason when you receive
+[28:35] the strobe you expect the signal to be stable on the bus and you pick it up from there so for writing
+[28:41] the timing is slightly different and clearly we are sending a data in half duplex mode either we are
+[28:49] writing or we are reading but never both so small correction is due here so quad data rate
+[28:56] something that i mentioned in the last slide is not 100 correct so in this case i said that qdr is just
+[29:03] ddr with you know four bytes per a single address or command transition i'm sorry four times the clock
+[29:14] rate but that is not the case when you use a full duplex bus which means it allows seamless communication
+[29:20] in both directions that is a qdr memory right so this is where i stand corrected uh to so my correction
+[29:28] is a correction on what i said in slide number 33 this is slide 34 which is that if from a half duplex
+[29:35] if i convert it to a full duplex bus which means uh communication both sides in parallel this becomes
+[29:42] a qdr memory so there are multiple ddr generations ddr one two three four currently ddr five is also
+[29:51] there right but it was not there at the time of writing the book so the bus clock speeds have just
+[29:58] increased from 100 to 200 megahertz 200 to 400 400 1066 to 800 to 2.13 gigahertz so currently we will
+[30:07] discuss ddr4 it is the state of the art in so far as this book is concerned so it has a very high bus
+[30:13] clock speed the prefetch length however has saturated to eight which is eight bits eight subsequent bits
+[30:23] and the transfer rate so as i said the transfer rate means that you are transferring two bits per bus
+[30:29] clock right for a single clock cycle you are doing two so that is why it was 800 to 2133 this will get
+[30:37] multiplied by 2 to 600 to 4266 transfers for per second right so this is megahertz this is million
+[30:45] transfers per second mt per s so then uh the idea here is that whatever is the bus block multiply that
+[30:53] into two that will give you the transfers per second because of the d in the ddr the double data rate
+[31:00] voltages have reduced and voltages do reduce to make things faster but of course you know you need to
+[31:07] have a smaller technology node also so transistors need to get smaller so previously the voltage was
+[31:14] 2.5 2.6 volts it has steadily come down to 1.2 and the maximum size of a dim also has steadily increased
+[31:21] from 1 gb to 64 gigabytes which is quite a bit so memories are getting faster and larger why is that
+[31:29] the case because the feature size the transistor feature size is reducing hence as you can see the
+[31:35] clock speed is increasing transfer rate is increasing the voltage is reducing which also means that the
+[31:42] speed is increasing and clearly because the transistors are getting smaller you can save more data which
+[31:48] means that the size is increasing of course kindly bear in mind that this is the bus clock speed it is the
+[31:58] speed of the clock speed of the bus that is essentially computing sorry connecting the cpu with its memory
+[32:08] controller to the dram all right so this is uh what is happening so the internal speed of a dram actually need
+[32:24] not be this high so this is of course the speed of the bus and the bus speed is high let's say the bus speed
+[32:30] is 800 megahertz the internal speed can be much lower so the internal speed let's say if it is 400 megahertz
+[32:38] so to compensate what you need to do is that in one 400 megahertz cycle you need to generate two bits
+[32:46] which means increase the bandwidth which is you know kind of two uh two bits for every bit that is
+[32:51] transmitted so is that effectively for someone seeing it from the outside we are generating one bit
+[32:59] in every 800 megahertz clock period right and so the idea is that internally you generate more bits
+[33:06] and then you transmit them one after the other on the bus and internally you can afford a lower
+[33:11] frequency as long as you are generating more bits such that they can be transferred quickly one after
+[33:17] the other so in this case the math is 400 megahertz into 2 is equal to 800 megahertz that's the reason for
+[33:27] every 400 megahertz cycle so every cycle corresponding to 400 megahertz if i am generating two bits
+[33:35] then i can transmit one bit in every 800 megahertz cycle so this is where i kind of compensate by
+[33:42] increasing the bandwidth there is some ddr math which is just uh exactly the same thing that i said
+[33:50] which is that the bus frequency is 800 megahertz and my internal clock frequency is 200 megahertz
+[33:55] then uh what i do is that my internal data rate divided by my bus data rate is 800 by 200 so it is 4x and then for
+[34:10] every bus cycle right so this is essentially the ratio so for every bus cycle if i am generating
+[34:17] let's say two bits because it is ddr then uh what i need to do what i get is this value of 8
+[34:25] which basically means that for every internal dram cycle
+[34:37] i need to generate 8 bits which is nothing but my prefetch length because uh what i do is that i just
+[34:45] generate these 8 bits and i send it if the weight of the processor memory bus is 64 bits and the prefetch
+[34:51] length is 8 then uh clearly the minimum transfer size would be 64 into 8 because once i read i will
+[34:59] then read one after the other i will read 8 in one go in subsequent consecutive cycles so it will be 64
+[35:06] into 8 which is 64 bytes
+[35:10] so let me explain this once again so the idea is that look uh if you are generating x bits
+[35:19] internally so let's say for every internal dram clock cycle i'm generating x bits
+[35:26] now the point is that uh if this is my bus frequency right so if my bus frequency is 800 megahertz and the
+[35:34] internal clock frequency is 200 megahertz so then effectively what is happening
+[35:49] is that i internally need to generate more bits right so if i'm generating x bits in 200 megahertz
+[35:57] so effectively if i look at this from 800 megahertz from the perspective of 800 megahertz i'm actually
+[36:05] generating x by 4 bits per bus block cycle this formula is pretty much catching the essence of that
+[36:15] which is basically saying that my internal data rate is high divided by the bus data rate which has
+[36:21] to be at the ratio 800 by 200 right and then if i multiply that with the number of bits that i'm sending
+[36:36] per block uh bus clock cycle which is 2 so then effectively what i need to do is that in every
+[36:44] internal dram cycle i need to generate 8 bits right that is what i need to generate
+[36:51] such that what will happen is that all 8 can be transmitted together on the bus after that which
+[36:57] means that my prefetch length or my bus size should be 8 because i clearly know that i need to generate
+[37:04] 8 such that i can quickly feed it on the bus and as far as i am concerned so in every internal cycle
+[37:11] if let's say this is an internal dram cycle so you know that in this time period you are actually going
+[37:19] to have four bus clock cycles all right and then if you will have four bus clock cycles
+[37:32] then so maybe i can draw four bus clock cycles here this is the first clock cycle this is the second
+[37:39] this is the third this is the fourth so you'll have four bus clock cycles so here if i am generating
+[37:47] eight bits in an internal thing then in the next time that i transmit the in the bus uh basically
+[37:54] and since i'm going double data rate i'll send the first bit here second bit here third one here fourth
+[37:58] year fifth year sixth year seventh year and eighth year so this basically means that i divide the frequencies
+[38:05] multiplied with two because of ddr and every internal cycle i generate eight such that i can send them
+[38:13] in a ddr fashion on the bus for this particular ratio so hopefully that should be clear
+[38:19] and given the fact that this is clear so prefetch length is what kind of i commit i send one column
+[38:25] address and then i generate eight and because i have 64 such parallel lines the minimum amount
+[38:32] of data that i can generate for a single command is 64 into 8 which is 64 bytes so i have i hope this
+[38:39] is clear so the last two slides are sort of confusing but if you kind of go over it and think over it
+[38:46] again and again it should become clearer and i have tried to explain in different ways you can always look
+[38:54] at the book but this is the big basic broad idea so the equation for the transfer rate would thus be quite
+[39:04] clear that 800 megahertz into 2 is 1600 million transfers per second 2133 into 2 is 4266 transfers per
+[39:14] second so this uh equation should be clear and this too comes because of the double data rate
+[39:21] so when i say that a technology is ddr3 1600 ddr3 means ddr third generation 1600 means 1600 million
+[39:30] transfers per second which is this one
+[39:35] so what is the problem with ddr memory and why do i need something more than ddr so ddr memories don't
+[39:43] scale so the bus frequency has kind of reached saturation it's not going to increase beyond it
+[39:48] and also given the fact that my bus frequency is quite high i can't place more devices on the bus
+[39:55] that will increase the capacity of loading so i can't place the i can't place more dims on a channel
+[40:01] right so there is a limit to the number of dims that can be placed on a channel because the entire channel
+[40:06] will become slow also number of devices per dim and so on so this is kind of decreasing and because ddr is
+[40:15] a well accepted standard we can't change the standard so a certain attempt was made to re-architect
+[40:22] memory such that still keeping with the ddr standard we can in a sense attach more devices to a channel
+[40:30] and make the memory controller think that is talking the ddr language but actually you are implementing the
+[40:36] backend in a slightly different way such that you can have more capacity and this approach was known as
+[40:42] fully buffered dims or fb dims so what is the crux of the idea the crux of the idea is
+[40:51] that we create a new structure called a decoupling buffer or an amb between the memory controller and
+[40:59] the dram devices all right so the amb stands for an advanced memory buffer so the idea here is that
+[41:10] it is sort of like a dummy interface for a rank so if you think of this this is like one rank
+[41:19] and so in this case i am assuming that you have one rank per dim this is also a dim so i'm assuming
+[41:24] is one rank per dim this is the second dim and this is the third dim so in general
+[41:31] you would use such kind of a system where let's say there would be a limitation for instance
+[41:37] it may be the case that your technology given the fact that it's such a high frequency technology is
+[41:42] supporting only one dim per memory bus but you want to attach three so what do you do so you attach
+[41:48] a fully buffered dim and fb dim which essentially has an amb which talks to the memory controller
+[41:58] and the memory controller uh then uh basically there are some you know small changes but then
+[42:06] the bus architecture is totally different the reason being that you are kind of splitting the lines
+[42:13] you have southbound bit lanes where data kind of follows south which is like to the rest of the
+[42:18] memory devices and then you are northbound when any traffic is destined oh i'm sorry uh is
+[42:26] trying destined to the memory controller so the architecture is like this that the first memory
+[42:32] controller is connected to the first amb and then the amb's are connected to each other using these you
+[42:40] know lanes where a lane uh carries a single bit it's a high speed serial bus because it carries a single bit
+[42:49] there is no need for you know absolute synchronization with other lanes so we will see that
+[42:54] this requirement has been removed in the interest of performance and furthermore this technique is
+[42:59] quite reliable in the sense if let's say this lane fails then there is graceful degradation and the rest of
+[43:05] the lanes can take over or you have additional spare lanes where you know the functionality of this can be assigned to
+[43:12] another lane right so there is some kind of resistance to failure and the role of the amb basically is
+[43:23] it is kind of like implementing a like implementing a physical channel right but it is a smart chip
+[43:29] so it implements the protocol so it its job is that it communicates with all the devices in the dim
+[43:36] and it communicates with other amb's the amb's so one advantage is that previously you know the buses
+[43:44] used to go to every single device in the dim and that had a massive capacitive loading but the nice
+[43:50] thing with the amb is that it is a it's a charge it's a powered it's an active electrical device which is
+[43:57] kind of drawing in current and then converting commands and only communicating with the devices in
+[44:04] its own dim for other dims it is just sending a message to the other amb so this is also reducing the
+[44:10] capacitive loading of any bus structure within the dim which is quite different from what was happening
+[44:17] in ddr but of course you know this is a new memory architecture and in general the memory community
+[44:24] has not been very receptive to changes in the fundamental architecture even though most fbdim architectures
+[44:33] are quite or try to be quite compatible with ddr but again it's not you know fully compatible
+[44:40] with ddr which is why this architecture did not fly even though it's a great idea and in this case
+[44:47] you know kind of theoretically you can add as many dims as you want one after the other of course the
+[44:53] fully buffered kind and then you can have a huge memory capacity which you actually need in servers
+[45:00] because as i said the main reason for requiring fully buffered dims is the fact that you know you have
+[45:07] very long data buses and address buses which need to kind of go to every single DRAM bank and array right
+[45:14] so basically you know this requirement is there and essentially this bus becomes very long
+[45:20] and no decoupling is happening so as a result basically the length is long and
+[45:25] it has a huge rc delay which makes it quite slow so the role of the amv is very simple
+[45:36] so if you see this is the memory controller these are the southbound lanes
+[45:44] you have an amv over here so its job is to basically pick up data on the southbound lanes
+[45:51] if it is meant for the other dims it needs to reconstitute the packet which means that as i
+[45:58] said there are multiple lanes which are not synchronized with each other so either you wait
+[46:03] for all the data to come then you kind of create a new packet from all the serial lanes and you send
+[46:09] it to the devices in the dim which is basically kind of sending to all the devices within the same dim right
+[46:19] so as i said if the data is destined to the devices in the same dim you kind of collect the data and
+[46:24] you create a packet and you send it if it is destined for other northbound or southbound amvs
+[46:35] other dims basically there is no need to reconstitute the entire packet even if there is a delay between
+[46:41] the lanes let that be you just relay the packets either southwards or northwards so the idea is again
+[46:48] quite simple if i were to explain once again with a different set of words that you have these amvs
+[46:56] they are connected one after the other so any let's say packet that comes southbound it could
+[47:03] either be destined for the current dim of which the amd is a part then what you do is you reconstitute
+[47:10] the packet and you send it or what you do is that you send it to other northbound or other southbound amvs
+[47:24] so in that case what happens is that
+[47:26] if you do that then there is no need to wait and reconstitute the packet a simple relaying is possible
+[47:40] so what are the features of fb dims well scalability we have discussed this a very large number of dims can
+[47:46] be connected to the same bus it is high speed so all the lanes have significantly reduced
+[47:55] rc delays right the main reason being that you have an amd am b i'm sorry so you don't have a large
+[48:02] copper wire which is sneaking through every device right like a large it's a very long address bus it
+[48:09] will sneak through every device and get connected to every device so that is not the case
+[48:14] so this vital act of decoupling also increases the speed also the idea is that we don't need that
+[48:26] many channels because in one channel if we can kind of connect multiple dims there is no reason to
+[48:32] have let's say three channels per chip so we can reduce the number of pins that are coming out of a chip
+[48:39] and of course there is reliability so if a few lanes develop faults it's fine
+[48:44] so in terms of high speed transmission let's give an example of how this happens so as i said you
+[48:52] know this is where this differs from ddr and so even though the high level compatibility the designers
+[49:00] tried to maintain their you know differences quickly cropped up in the implementation which is again why you
+[49:07] know the acceptability of this protocol was not great so we typically have 10 bit lanes in the southbound
+[49:15] channel and 14 on the northbound channel and furthermore on each lane per dram cycle we transmit 12 bits
+[49:26] and they could comprise you know addresses commands status bits error correction etc
+[49:31] so the key thing is that the capacity of the southbound channel right so basically what happens
+[49:39] is that you know a lane basically sequence of you know a lane is you can think of it as kind of multiple
+[49:49] serial buses all bundled into one or if you think of it from the point of view of a dram cycle or
+[49:56] if you think of it from the point of view of a bus cycle then of course it's a high speed serial bus
+[50:02] it doesn't matter in any case per dram cycle we are transmitting 120 bits on the southbound channel
+[50:10] and 168 which is 14 into 12 on the northbound channel which is per dram clock cycle and as i said
+[50:17] there are two conceptual ways of thinking about it right one is in the physical way which is a high
+[50:23] speed serial bus but then you know that will be like one bit per bus cycle or if you think of it
+[50:29] conceptually as a dram cycle you can think of them as some sort of a parallel transmission mechanism
+[50:38] so there are three things resampling resinking and reliability we have discussed these earlier
+[50:44] but let me still kind of recapitulate recapitulate and refresh the concepts and also put in some more
+[50:53] detail into them so as i said between multiple lanes clock skews will develop over time
+[51:04] so the clock skews if it accumulates so one idea could be you just allow them to pass through the
+[51:09] ambs and maintain the clock skew but then what would happen is that ultimately the slowest signal
+[51:16] would determine when the entire group reaches of course delays may cancel out over the transmission
+[51:24] but in general you know the slowest signal may dominate the other is resync which is that every
+[51:33] at every amb we resynchronize the signals and we reconstitute the packet if it is resynchronized and
+[51:40] reconstituted then the issue that emerges is that you know the fact that delays may cancel out we are
+[51:52] not allowing that to happen naturally so we are increasing the latency at each amb and that is an issue
+[51:58] that we are increasing and then we have bit lane steering which is that if this is a reliability angle
+[52:04] that if any lane develops a fault then traffic can be diverted to other lanes which is an inherent
+[52:11] strength of this system so of course resampling and resyncing there is a trade-off and the trade-off
+[52:17] that is there between resampling and resyncing is basically that we are making uh the amb do more work
+[52:25] in resyncing which means every time you know if let's say there are multiple signals they're coming
+[52:31] at different rates wait for all of them to arrive and you buffer them the other is resampling
+[52:40] which is basically that you just you know let them go you know just pass through right
+[52:49] so then uh of course some hybrid of this these have to be implemented depending upon how many ambs are
+[52:55] there one after the other on the row so fb dims as i said never took off because even though there
+[53:02] was a high level similarity people try to maintain but it never uh it was actually turned out to be
+[53:08] very different protocol so what we can get now even commercially are r dims or registered dims
+[53:16] where the idea is that you associate a register with a dim right register in a set of flip-flops
+[53:22] and for the address and command buses you kind of buffer them instead of having one
+[53:28] copper wire that is sneaking through every device you kind of have buffered copper wire
+[53:33] this means that you support all the regular ddrx protocols without any modification whatsoever
+[53:40] but it's just that this process of buffering adds a little bit of latency which to a large extent is
+[53:45] tolerable absolutely no issues but the great advantage is that we don't have a large rc delay the rc delay is kind of kept
+[53:57] it is kept under wraps it is kept
+[54:02] capped all right because the rc delay is capped or it is kept under wraps or it is kept under a limit
+[54:12] so what happens is that we can add more devices to a regular channel as was happening with fb dims
+[54:19] of course the resample resync reliability and all the other advantages that we are getting from fb dims we
+[54:25] will not get but the advantage is that we can use regular ddr protocol right and the only difference is that
+[54:35] for many of these for address and command buses we are placing buffers because the data buses were anyway
+[54:42] fast but the address and command buses were slow but the moment we place buffers on them the rc delay
+[54:48] reduces the latency increases but we are fine with that right to some extent and then what happens is
+[54:56] that you know the nice thing with buffers is that even though the latency increases this latency doesn't
+[55:02] hurt us because we can pipeline right so it is not you know the increasing latency is not a bad
+[55:09] thing if you are able to pipeline it which in this case we can so what we are basically doing is instead
+[55:14] of one long wire which is sneaking through we are now adding buffers and we can kind of pipeline these
+[55:20] buffers so the increased latency because of buffering and unbuffering is kind of gone right we are not
+[55:28] seeing the effect basically because now we can connect any number of devices and everything happens in
+[55:35] a regulated fashion right because of these buffers and the buffers internally you know you can also
+[55:42] regulate their transfers so that is why our dims or registered dims which are slightly more expensive
+[55:48] are the ones which are used
+[55:49] so now we have discussed the design space of DRAM so next we will discuss DRAM timing specifically the DDR4
+[55:59] protocol

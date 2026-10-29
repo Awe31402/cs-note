@@ -489,11 +489,11 @@ n=64 k=64: delay 131
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| Carry lookahead 的 Stage II | **第 22 支**：Computer Arithmetic Part 2 |
-| 用加法器做乘法：iterative、Booth、Wallace tree | **第 22–23 支** |
-| 除法：restoring、non-restoring | **第 24 支附近** |
-| 浮點數加減乘除的硬體 | **第 25–26 支** |
-| 處理器裡的 ALU | **第 27–29 支**：課本 Ch9 處理器設計 |
+| Carry lookahead 的 Stage II | [第 22 支](lecture22_note.md)：Computer Arithmetic Part 2 |
+| 用加法器做乘法：iterative、Booth、Wallace tree | [第 22](lecture22_note.md)–[23 支](lecture23_note.md) |
+| 除法：restoring、non-restoring | [第 24 支](lecture24_note.md) |
+| 浮點數加減乘除的硬體 | [第 25](lecture25_note.md)–[26 支](lecture26_note.md) |
+| 處理器裡的 ALU | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
 | ARM 的 adc、x86 的 adc（用到 carry in） | [第 9 支](lecture09_note.md#11-用到-carry-的指令adcsbcrsc)、[第 12 支](lecture12_note.md#7-加減法addsubadcsbb) |
 
 ---

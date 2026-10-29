@@ -1,0 +1,812 @@
+[00:00] We will now discuss the theoretical foundations of parallel computing.
+[00:28] So, this is a very very deep area.
+[00:33] So when I was doing my studies, a lot of this was not understood or let us put it this
+[00:38] way, it was not understood to the extent at which it could be explained easily.
+[00:45] But over the last 10 or 15 years, a lot of theoretical work has happened.
+[00:50] So this area is much better understood now and you will find references to solid theoretical
+[00:56] work in the book.
+[00:57] So, let us look at the main problems.
+[01:03] The main problems are like this that we are dealing with large caches.
+[01:13] So because we are dealing with large caches, what we discussed in the previous chapter is
+[01:19] that we create large multibanked caches where the banks are distributed all over the chip.
+[01:26] And to connect all of those caches banks, there is a need to create an on-chip network.
+[01:31] The access times also can vary, they can vary between 10 to 50 cycles.
+[01:36] Also congestion is an issue.
+[01:40] And furthermore, we have to traverse the NOC.
+[01:43] And the NOC has its own set of problems, dead logs, starvation, live logs and so on.
+[01:48] Even though we managed to avoid all of them, but still the traversal times of messages are
+[01:54] really variable.
+[01:56] Furthermore, if we have a lot of course, that implies a lot of parallel accesses.
+[02:01] So, what we need is essentially a large, a slow, sorry, this is not what we need.
+[02:08] What we are dealing with is a large, slow and multiported cache.
+[02:12] Of course, its internal organization can be into multiple banks, but if I see the entire
+[02:18] L2 or L3 cache as one unified whole, then it is going to be large, it is going to be slow
+[02:24] and multiported.
+[02:26] So, if this, well, this is not possible to build, let me add a further rider to it, that,
+[02:41] if let's say, at the L3 level, yes, it is possible to build, okay, at the L3 level.
+[02:52] Maybe at the L2 level also, it is possible to build, the primary reason being that the
+[02:58] number of requests that actually come to L2 or L3 is significantly lower because they
+[03:03] get filtered by the L1 level.
+[03:05] But consider the L1 level, that's the most, that's the trickiest.
+[03:11] So we have a core, then we have an L1 cache connected to it, we have one more core, we
+[03:16] have an L1 cache connected to it.
+[03:19] So, these are essentially, they have to be the same L1 cache, otherwise what will happen
+[03:27] is, I will write to a variable over here and the other core will not be able to see the
+[03:31] right.
+[03:32] But that is against our shared memory model of programming.
+[03:36] So our current understanding is that we will have one large L1 and the cores will be connected
+[03:44] to it.
+[03:45] So that is the conceptual model that we have been working with and definitely we will have
+[03:50] one large L2 and all the cores will also access that.
+[03:55] And as I said, both at the L1 and L2 levels, it will end up being large, slow and multiported.
+[04:02] This multiporting will not be that important for L3 because the number of L3 requests will
+[04:06] be low, alright, that is because of the filtering that will happen, so in L3 what matters more
+[04:13] is the size.
+[04:14] But clearly at the L1 level, where definitely there are one or two accesses every cycle and
+[04:20] let us say we have 16 cores, so and let us say two accesses per cycle, so we will have
+[04:24] a maximum of 32 accesses which is a huge amount of multiporting.
+[04:29] And also the addresses will be shared.
+[04:31] So one core will write to one address, one core will read from one address.
+[04:36] That is an issue.
+[04:38] So that is why we need to somehow create a distributed cache, right, where we have a set of small
+[04:44] caches such that they conceptually act like a large cache.
+[04:49] So this is the broad concept, but do not worry, I will be coming back to this.
+[04:55] So what I am trying to say is that this is the conceptual view, alright.
+[05:11] This is the conceptual view where all the processors, the processor scores, I am using them interchangeably
+[05:19] over here.
+[05:21] They are sharing an L1 cache which is also what we want conceptually, right, such that
+[05:26] I set x to 5 over here, this core sets it and this core reads it.
+[05:32] I set y to 4, this core sets it, this core reads it.
+[05:37] But again, if I have such a large cache, it will require a large number of ports, even if
+[05:43] I do have banks, there will be lot of bank conflicts.
+[05:46] So keeping all of these things in mind, what I should actually do is that I should opt for
+[05:52] this design, where all the L1 caches are private to each core and the set of L1 caches they
+[06:02] act as if.
+[06:03] So act as if means the software perceives or even the core perceives or anybody let us say
+[06:09] who is outside this shaded rectangle perceives that all these L1 caches are actually a single
+[06:15] cache.
+[06:16] So for an outsider, whether it is a set of distributed L1s or a single L1 will not matter, alright.
+[06:23] So this is different from banking, I will tell you how, there is a crucial difference.
+[06:28] The crucial difference is that you might now argue that what we were doing for a large cache
+[06:33] is that we were splitting the address space and we were assigning the addresses to different
+[06:38] banks.
+[06:39] So we were saying that look if the upper KMSP bits are a certain value, you go to this bank,
+[06:46] otherwise you go here, otherwise you go here.
+[06:49] Why cannot we do this with a shared L1 cache?
+[06:51] Well, the reason we cannot actually do it is like this.
+[07:00] So let us assume that we do it.
+[07:02] So let us assume that we take a large L1 cache and we multibank it.
+[07:06] And let us say that I write to a certain variable.
+[07:08] So let us say I write to x.
+[07:12] If I write to x, x might physically be in a place which is very far away from me and the
+[07:17] write will take a lot of time and even worse, the read will also take a lot of time if x
+[07:24] is located far away from the core and that will slow down the core to a large extent.
+[07:31] So the L1 cache by definition should be close to the core and should be accessible and should
+[07:37] be accessible within 1 to 2 cycles, which means that if let us say multiple cores are accessing
+[07:43] the same variable x, they will have to maintain multiple copies of it, multiple replicas of
+[07:48] it, right?
+[07:49] So this was not there in a multibank cache, but this is the key idea of a distributed cache,
+[07:56] that the reason we have a fast access is that we maintain multiple replicas of a variable.
+[08:02] That is the key idea, alright?
+[08:05] So, this is how a distributed L1 cache differs from actually a large shared cache with multiple
+[08:24] banks.
+[08:25] Because with multiple banks you maintain a single replica, but the point is that that replica
+[08:30] might be located far away from you and it will take a lot of time.
+[08:33] So, the core is over here, the replica is over here, it will take a lot of time to come to
+[08:37] this point and read the value.
+[08:41] But let us say that if we have multiple replicas, I can quickly access the replica that is there
+[08:47] in my private L1 cache and the accesses will be really fast.
+[08:53] But then if I have multiple replicas from the same variable, I have to synchronize them,
+[09:00] otherwise my notion of shared memory will break.
+[09:06] So I need to make a set of small caches designed in this manner, which of course is very different
+[09:11] from a multibank design, act and look like one single large cache to an outsider.
+[09:16] An outsider would be somebody who let us say, let me draw an eye looking at it from here
+[09:23] or looking at it from here.
+[09:25] And of course, the L1 caches might be connected with a shared bus which is just a set of copper
+[09:30] wire or they can be connected via an NOC as well, that is not important.
+[09:34] So, each of these L1 caches is called a sister cache.
+[09:40] It is small and fast, so it is giving you the advantage of high speed.
+[09:45] Furthermore, since they all can be accessed independently, it is giving you the advantage of multiporting.
+[09:54] That advantage is, that advantage is being derived and furthermore, we do not have to access
+[10:01] a remote L1 cache at least most of the time to access a variable that will always be there
+[10:07] close to the core, so it is fast.
+[10:10] So the main issue here is actually with correctness that if we were to design such a distributed
+[10:17] cache which will maintain multiple replicas and these replicas is a big issue.
+[10:22] This is the elephant in the room, right.
+[10:27] If I were to maintain multiple replicas, then how will this synchronize with each other,
+[10:32] right.
+[10:33] That becomes a very important issue.
+[10:35] Otherwise, what will happen is that I will write to x, another core will write to x, then
+[10:41] nobody else will see the writes or they might see it in one order, somebody else will see
+[10:45] it in another order, it will all become a mess.
+[10:48] So if I want the external world to think that these are, it is actually a single cache where
+[10:53] there is only a single location for the variable x, I need to do something, we will see what
+[10:58] I need to do.
+[11:02] So let us revisit this issue once again in some detail.
+[11:07] So what is the question?
+[11:08] The main question is that we want a set of small L1 caches known as sister caches to act
+[11:15] like one single large L1 cache.
+[11:18] So, we are saying that this set of small L1 caches will give us everything.
+[11:22] So, it will be high speed, it will give us the ability to make many many parallel accesses
+[11:30] by a large number of cores.
+[11:32] The issue was its correctness and the issue with correctness was that to give us all of
+[11:38] the aforementioned properties, we will have to maintain multiple replicas of a variable.
+[11:45] A variable and memory address are the same thing in this case.
+[11:49] So, let us consider accesses to a single memory address slash variable because they mean the
+[11:55] same thing and let us call it x.
+[11:57] So, if you have a single physical location for x which is always the case in a shared cache,
+[12:04] then there is no advantage of a distributed design.
+[12:07] So, we need to have multiple locations to store the variable x and but then the issue at that
+[12:15] point is the replicas have to contain the same value otherwise our program will show non-intuitive
+[12:22] behaviour and the distributed cache will not appear to be a single cache, right.
+[12:28] So, making a distributed cache appear as a single cache is a problem of coherence.
+[12:35] So, coherence basically means make a set of locations.
+[12:40] So, these are physical locations, right.
+[12:42] So, these are physical locations in the sister caches behave like a single location.
+[12:48] So, this will ensure that regardless of however, howsoever we design our ensemble of L1 caches,
+[12:58] they will appear to any external observer as a single cache or in other words, if there
+[13:08] are multiple locations within this L1 cache that are storing the same variable x, it should
+[13:14] appear to an external that there is only a single location for variable x.
+[13:19] If somehow we are able to ensure this or somehow if we are able to maintain this abstraction, we
+[13:27] are deemed to have solved the problem of coherence and if we solve the problem of coherence, then
+[13:33] we can realize a fast distributed cache and that will give us high performance for multi-threaded
+[13:40] code.
+[13:41] So, let us now discuss a couple of assumptions that we will make while presenting our examples.
+[13:49] So, these assumptions will hold throughout the presentation.
+[13:56] So, the assumptions are like this that all global variables are initialized to 0 and they
+[14:06] start with the letters u, v, x, y or z.
+[14:09] So, they will be our global variables which means that these variables are shared across
+[14:14] the threads, between the threads across the cores.
+[14:17] And it is possible for a core to write to a global variable and another core to read it.
+[14:25] In comparison, all the local variables are mapped to registers.
+[14:28] So, they start with a T. So, T for you can say temporary. So, they would be of the form T1, T2, T3 and so on.
+[14:40] So, all the local variables, any write to them, these writes are not visible across the cores.
+[14:49] So, these writes are not visible.
+[14:51] Furthermore, what we will assume is that the delay between the execution of consecutive instructions
+[14:57] instructions can be indefinitely large. So, we cannot, for example, say that look, we will execute this instruction.
+[15:05] Then, maybe we are guaranteed that within a window of 100 or 200 or 300 cycles, y equal to 1 will execute.
+[15:15] The reason that we say that the difference can be indefinitely large is basically because it is possible that the process might context switch.
+[15:23] So, the process after executing x equal to 1 might context switch and then some other process may execute and for a long time and this might come back or the core might get stuck.
+[15:37] A lot of events can happen. So, we can say that, you know, event A happened before event B or event A happened after event B or we cannot say anything,
+[15:49] but we can definitely, we will not use any cycles for the timing. Alright? So, this is important.
+[15:56] So, most students make a mistake in this part where they assume that two events will happen either at the same time or within a window of a certain number of cycles.
+[16:06] But that's not the case. So, in a concurrent system, particularly when it comes to a theoretical explanation, we just say, we just use the words before and after.
+[16:18] Before means before, after means after. We don't say one cycle before or 10,000 cycles before.
+[16:25] So, let's now consider this piece of code. So, I am erasing the ink. Alright? So, in this piece of code, thread 1 is writing to variable x and then to variable y.
+[16:40] And thread 2, we are reading them in the reverse order. So, we are reading y first and x later.
+[16:46] So, one thing that should be immediately obvious is that, given the fact that there is no synchronization between them, in the sense that thread 2 is not waiting for thread 1 to finish anything.
+[17:03] So, we can have many possible outcomes for this multithreaded code. In the sense, we can have many interleavings of the instructions.
+[17:13] So, it's possible this instruction executes first and then this and then this and then this or it's possible this instruction executes first, then this, then this and then this.
+[17:24] We can have many interleavings and consequently many outcomes. So, this is true for most multithreaded code that unless we do additional things, we will see what we can have many possible outcomes.
+[17:37] But out of all possible outcomes, we are interested in this outcome, which is basically t1 is equal to 1 and t2 is equal to 0.
+[17:47] What we are interested to know is, is this outcome possible? Right? And that is the question that concerns us.
+[17:56] And the reason it concerns us is basically because we find something non-intuitive with this outcome. What is it?
+[18:05] We find that no sequential ordering of these instructions can actually produce this. Let's see why.
+[18:12] So, we first set x to 1, then we set y to 1, and then after that it appears that in the ordering, we are looking at a situation like this.
+[18:24] x is set to 1, y is set to 1, then we are reading y, which is, we are reading 1, and then we are reading x.
+[18:34] x. So, if we are reading x, there is simply no way by which we can read the initialized value of x, which is 0.
+[18:45] Because we have already read y to be 1. We have already read y to be 1. So, x has to be read to be 1, but we are reading it to be 0.
+[18:55] So, we are saying that yes, there might be many outcomes, but this particular outcome, in our opinion, is not possible, because it does not meet our standard of intuitiveness.
+[19:08] It does not appear to be very intuitive, because our logic is that, look, first we set x, then we set y, then we read y to be 1, so we should definitely read x to be 1, but we are reading it to be 0.
+[19:21] And this is where we have a big issue. Alright, let us look at this once again. Alright, so just verify, it is the same code.
+[19:32] So, here is what can happen. Assume that thread 1 is running on core 1 and thread 2 on core 2.
+[19:37] So, this is generic assumption that we will continue to make in this presentation, in this slide set, that thread i, unless specified otherwise, always runs on core i.
+[19:50] So, what will happen is that thread 1 sets x to 1, which means the memory address corresponding to x, a store instruction is set to set it to 1 and the default values, initialized values are all 0.
+[20:05] So, then what it does is, it sends an update message on the NOC, ok, to the location of x, if it is there in its private cache, that is great.
+[20:16] But then, the point is that, that needs to be visible to the other core. So, let us not get into the details, but let us just assume that x equal to 1 is sent via a message on the,
+[20:29] NOC is a network on chip, and the message gets stuck in congestion, right, it enters a traffic jam, a message jam.
+[20:38] Then thread 1 sets y to 1, it again sends a message, but y is of course stored in a different place, in the shared L1 cache, or can be a distributed L1 cache, it does not matter, in the large L1 cache.
+[20:54] So, the message to update y actually gets delivered, and that too, it gets delivered very quickly.
+[21:01] So, then what will happen? After that, when thread 2 reads y, it will actually see y to be set to 1, because the message to set y to 1 would have been delivered and it will be visible to all the threads.
+[21:14] But, when it tries to read x, given that the update message to x is kind of stuck in congestion, it will read x to be 0, which is the initialized value.
+[21:26] So, what you can see is that, in a large system, with cores, cash banks, distributed caches, and NOCs, this is indeed possible, right.
+[21:36] So, indeed, there is a possibility that this can happen.
+[21:42] So, I will give you an example which is closer home.
+[21:45] So, assume that we have a right buffer.
+[21:48] So, as we discussed in chapter 7, a right buffer is one of those simple, simplistic structures, which just accumulates writes to the same block.
+[21:59] So, assume that x is stored in the right buffer, but y is not stored.
+[22:04] So, what will happen is, at the moment the store to x comes, it will get buffered in a right buffer, but other cores will not be able to see it.
+[22:13] So, from core 1's point of view, this write is done.
+[22:16] When it sets y to 1, y might bypass the right buffer and go and update y in some other location.
+[22:24] And subsequently, when we read y in core 2, core 2 will get this value.
+[22:31] But since the right to x is still stuck in the right buffer of core 1, the right to x will
+[22:37] not be visible.
+[22:38] And then what will happen is, that x will be read to be 0.
+[22:43] And as you can see, we will end up with a non-intuitive outcome.
+[22:47] But on a real machine, if we have to have these complex features of an on-chip network and
+[22:53] right buffer and all of these sophisticated things, then this outcome is indeed possible, right.
+[22:58] We might not like it, but what we will see is that if we have the complexities that we have mentioned,
+[23:06] this outcome is indeed, indeed, indeed possible.
+[23:11] Let us look at one more example and you will again see how what we think of as common sense
+[23:21] is actually not all that common or all that sensible when it comes to a multi-core system.
+[23:30] So, let us assume we have again two threads.
+[23:33] Thread 1 sets x to 1, reads y.
+[23:36] Thread 2 sets y to 1 and reads x.
+[23:40] So, can we have this outcome?
+[23:43] What is the outcome?
+[23:44] t1 is 0, t2 is 0.
+[23:46] Well, again, howsoever you reorder them, you will not see that.
+[23:51] So, let us see.
+[23:52] Let us say we have x equal to 1 because one of them will execute first, right.
+[23:57] So, with no loss of generality, let us say x equal to 1 executes.
+[24:02] Then, let us try to read the value of y.
+[24:05] So, this value will be read to be 0.
+[24:07] Fine.
+[24:08] Fair enough.
+[24:09] But after that, we will have to do this which is y equal to 1 and then read the value of x
+[24:19] and t2 but this will be 1 because this instruction is already executed.
+[24:25] So, you can try it the other way.
+[24:28] So, you can always read.
+[24:30] So, in this case what is happening?
+[24:33] t1 which is y is 1, t2 is 0.
+[24:37] You can always have another execution where we will read t1 is equal to 0 and t2 is 1.
+[24:44] So, we can always have another execution where we do x equal to 1 first, y equal to 1 because
+[24:51] as I said they can interleave in many different manners and then we read t1 is equal to y which
+[24:59] is equal to 1 and t2 is equal to x which is equal to 1.
+[25:04] But this outcome that both are 0, this does not seem to be possible, right.
+[25:09] How is it possible?
+[25:10] One of them, one of these two instructions has to execute first and then at least one
+[25:16] of these two has to read 1.
+[25:18] Both cannot read 0.
+[25:20] But, but, but, but as I said common sense is not that common and nothing is sensible when
+[25:27] it comes to multi cores.
+[25:29] So, hold on.
+[25:31] So, let us take a look at the internal out of order pipelines of core 1 and core 2.
+[25:38] That will give us the answer and incidentally you can write this piece of code in OpenMP
+[25:43] or P threads and I invite you to run it on an ARM or x86 machine.
+[25:50] So, the normal standard way that you would do it is that you write this piece of code and
+[25:54] run it a million times and just record the outcomes.
+[25:58] I claim that you will see this outcome.
+[26:01] The question is why?
+[26:03] So, I have a big yes over here with an exclamation mark.
+[26:07] So, the question is that consider this.
+[26:11] When does a store happen?
+[26:13] Store happens at commit time.
+[26:15] When does a load happen?
+[26:17] Right.
+[26:18] Even though a load is coming after a store, the load will actually execute early when its
+[26:23] address has been resolved and the other LSQ parameters, LSQ conditions all of them hold.
+[26:29] That is when a load is going to execute early.
+[26:32] So, in a certain sense the load will overtake the store because we have an out of order machine.
+[26:38] And in any case they are to different addresses.
+[26:41] Right.
+[26:42] Had they been to the same address, yes you could have forwarded.
+[26:45] But in this case they are to different addresses.
+[26:48] So, the load will overtake the store.
+[26:50] In a similar manner the load will overtake the store.
+[26:53] And both low and behold are going to reach 0.
+[26:57] So, this outcome in any system which has out of order execution.
+[27:02] Where loads are sent early.
+[27:05] Right.
+[27:06] And you have an LSQ to take care of dependencies.
+[27:12] You will see this outcome.
+[27:14] Right.
+[27:15] So, we will give a formal name to this.
+[27:18] It is called the right to read ordering.
+[27:19] But I don't want to confuse you right now.
+[27:21] So, I am not giving it a formal name.
+[27:24] But the truth of the matter is that regardless of how non-intuitive we think the outcome is.
+[27:31] We will see the outcome on a multi-core x86 or ARM machine.
+[27:35] And you are welcome to try it.
+[27:37] And as I said use OpenMP or P threads.
+[27:40] Write the code.
+[27:41] Run it for a million times.
+[27:43] And then just collect all the outcomes.
+[27:45] So, you will definitely see this.
+[27:47] As one of the sets of outcome.
+[27:50] So, that is the fun part.
+[27:52] So, where are we?
+[27:53] Where we are is basically that.
+[27:56] Regarding a multi-threaded code.
+[27:59] Here is what we can say.
+[28:01] Right.
+[28:02] Assume we have multi-threaded code.
+[28:04] We will have many outcomes.
+[28:06] Right.
+[28:07] Some of these outcomes make sense.
+[28:16] Some of these outcomes do not make sense.
+[28:19] Right.
+[28:20] Now, the thing is that why do these outcomes do not make sense?
+[28:27] Well, that is because we have a complicated set of out of order processors.
+[28:31] We have LSQs.
+[28:32] We have write buffers.
+[28:34] We have MSHRs.
+[28:36] Right.
+[28:37] We have an NOC.
+[28:39] Right.
+[28:40] God knows what.
+[28:41] We have thousand other things.
+[28:42] And to make matters even worse.
+[28:44] We also have a distributed cache in the place of a shared cache.
+[28:49] And that makes matters even worse.
+[28:52] Right.
+[28:53] So, given that we have all of these things, what we will actually read and what outcomes
+[29:00] make sense becomes a very important question to answer.
+[29:05] And furthermore, we have placed a requirement that we want a distributed cache to act like
+[29:11] a shared cache, which at the moment it does not appear to be acting in that manner.
+[29:15] Right.
+[29:16] But we will see how to make it act as a single shared cache.
+[29:24] And also for when you are dealing with multiple addresses.
+[29:27] Right.
+[29:28] So, the previous discussion regarding distributed and shared is like a single address.
+[29:34] But even in multiple addresses, something needs to be done.
+[29:37] Okay.
+[29:38] Otherwise, what will happen is that if we run something on a parallel machine, on a multicore
+[29:44] machine, we might end up with really bizarre outcomes for our programs and none of our
+[29:49] programs will work.
+[29:52] So, the key question that we should ask is, given a parallel program, what are the set of
+[29:57] valid outcomes?
+[29:58] And all of these entities, the out of order pipeline, memory system, NOC, and memory controllers
+[30:05] for the off chip memory, all of them can play spoilsport.
+[30:10] So, let's have a little bit of a legal definition over here to provide some order to such a disordered
+[30:19] world.
+[30:20] Every processor has a set of specifications that specify the allowed outcomes and behaviors.
+[30:27] Alright.
+[30:28] So, these set of specifications specify what is allowed as an outcome and what is not allowed.
+[30:37] Alright.
+[30:38] So, in a certain sense, it creates a sense and no sense boundary of specifying what is allowed
+[30:46] and not allowed.
+[30:47] And so, we say that if the outcome or the behavior is consistent with the specification,
+[30:53] then the outcome is consistent.
+[30:55] Otherwise, it is not consistent.
+[30:58] Right.
+[30:59] So, any execution, execution means the set, the values that all our instructions read and
+[31:06] the values that all our instructions write.
+[31:08] This is said to be consistent if it is, if it follows a known specification.
+[31:14] So, this specification is issued by the designers of the processor.
+[31:21] So, let's say if Intel is designing a processor, it will release its specification.
+[31:27] This is known as the memory model, Intel's memory model, IBM's memory model or the memory
+[31:32] consistency model, which says that look, I have a parallel program.
+[31:39] These are the rules for deciding the set of valid outcomes.
+[31:43] If an execution is consistent with these rules, it is a consistent execution, else it is not.
+[31:52] And needless to say, if I run any program on an Intel machine, it will always produce
+[31:59] a consistent execution.
+[32:00] If it does not, then yes, then there is a bug, but if we assume that there are no bugs,
+[32:05] then it will always produce a consistent execution, which is consistent as per Intel's memory model.
+[32:12] So, the memory model of Intel, IBM and ARM, these memory models are different.
+[32:17] But as I said, it is a specification, right, which says either something is according to
+[32:23] the memory model or we can say memory consistency model or it is not.
+[32:29] So now a little bit of this legal definitions.
+[32:32] So, this is looks like a paper on law, but well, it is not, even though it is something
+[32:39] not all that different, because we are talking about specifications.
+[32:44] So basically, we will discuss consistency and coherence, so a memory, so I am just reading
+[32:49] it out.
+[32:50] A memory consistency model or a memory model is a policy that specifies the behavior of
+[32:57] a parallel multithreaded program.
+[33:00] In general, a multithreaded program can produce a large number of outcomes depending on the
+[33:06] relative order of scheduling of the threads and the behavior of memory operations.
+[33:14] A memory consistency model restricts the set of allowed outcomes for a given multithreaded
+[33:20] program.
+[33:21] It is a set of rules that defines the interaction of memory instructions between each other.
+[33:27] So the nutshell of this huge definition basically is that a memory model or a memory consistency
+[33:33] model just gives a set of rules of how you determine the valid outcomes of a program.
+[33:39] And needless to say, any program running on IBM's processors will follow IBM's memory
+[33:45] model.
+[33:46] Coherence is just a subset of the overall memory model that specifies the behavior with respect
+[33:52] to a single location.
+[33:54] And coherence is typically used along in, so given the coherence is a generic term, but it
+[34:05] is typically used for equating a shared cache with a distributed cache.
+[34:11] In the sense we say that for an external, for an external observer, a shared cache and distributed
+[34:18] cache should look alike, which means that even if there are multiple replicas of a variable
+[34:25] within a distributed cache, all those disparate physical locations should appear to be a single
+[34:32] location to an external observer.
+[34:35] So this is cache coherence when we are restricting coherence to caches.
+[34:41] And as I said, most of the time we use the term cache coherence.
+[34:44] This coherence is not really defined otherwise, even though nowadays with other memory structures,
+[34:50] coherence is being defined in terms of them.
+[34:53] But traditionally we have only talked about cache coherence.
+[34:59] So now we will get deeper into theory and do more of, it is like theory within theory.
+[35:06] So now I will discuss some theoretical terms, I would ask you to go slow on this part.
+[35:13] But if you think about it, it is kind of easy.
+[35:15] But as long as, if you get a hang of it, it is even easier.
+[35:20] So look at this as a cache.
+[35:22] So let us say I place an observer.
+[35:24] So this notion of observers is very important, right?
+[35:26] Who is sitting where and observing and recording what?
+[35:30] So what will happen is, we will have a set of requests that come to a given location within
+[35:35] a cache.
+[35:37] And they can be put in a first in first out queue, a FIFO queue, right?
+[35:42] And we will define three terms, a starting time which means the time in which the request
+[35:47] starts, the ending time, the time at which it ends, right?
+[35:53] And the completion time which means the time at which it appears to execute, right?
+[35:58] Appears to fully execute.
+[35:59] So read would be when pretty much the value has been latched, value has been sensed and
+[36:06] it has been latched into the buffers of the cache.
+[36:08] Write is when we actually, the values in SRAM cells change.
+[36:13] See, if I were to draw a timeline at the bottom, the timeline of memory requests seen by the
+[36:19] observer, we would see that every request has a starting time which is when maybe we can
+[36:26] say it entered the queue.
+[36:29] It has a completion time when the actual read or write happened on the array and it has an
+[36:33] ending time when finally it is removed from the queue and we clean up its state.
+[36:38] Similarly, we have a starting time, a completion time, ending time, completion time being in
+[36:43] between, starting time, completion time, ending time.
+[36:47] And clearly for the same location, when we have a single port, there is no overlap between
+[36:55] these, right?
+[36:56] So the overlap between these is actually not there, fine?
+[37:01] So start, compend, start, compend, start, compend and so on in a non-overlapping manner.
+[37:08] So this is what somebody sitting on this memory location in a single cache would actually observe.
+[37:15] So this is the point of view, it is defined as the point of view of this observer as you
+[37:19] can see.
+[37:23] So let us now define formally, based on what we have just seen, what is an execution?
+[37:34] So an execution is essentially a set of operations, you know just a list of operations where an
+[37:42] operation contains 6 feeds.
+[37:44] So one TID we can say this is the thread ID, right?
+[37:48] The thread that is executing the operation, the start time, end time, the type of the memory
+[37:55] request whether it is a read or write, what is the address and in the case of a store,
+[38:02] what is the store value?
+[38:03] In the case of a load, what is the value that is read?
+[38:05] In the case of a store, what is the value that is written, alright?
+[38:09] So each of these, so this we can this timeline, we can think of it as an execution, where each
+[38:18] of these circular rectangles can be thought of as an operation, alright?
+[38:24] So an execution as you see is a list of operations and each operation has a thread ID, a start and
+[38:31] end time, a read write type, an address and a value and we have correlated an operation, sorry correlated
+[38:41] an execution with the figure over here.
+[38:47] So let us now talk a little bit more about executions, so let us talk of a sequential execution.
+[38:54] So here all the requests, sorry I should use the term operations, so little bit of a correction
+[39:02] is due here, all the operations are ordered, so as you can see here all the operations they
+[39:08] are ordered.
+[39:09] So ordered means that you know this comes first and first, second, third, fourth, fifth, sixth,
+[39:14] seventh, eighth, right?
+[39:15] So there is some theoretical terminology, but I do not want to introduce that and it is actually
+[39:20] called a bijection with the set of natural numbers, but let us not get into that.
+[39:26] So it is all the operations are ordered, so it is a sequential execution where I can say
+[39:30] this is operation 1, 2, 3, 4, 5, 6, just order them.
+[39:36] What is a legal sequential execution?
+[39:38] So in a legal sequential execution, so what will we have, we will have maybe a read, a read,
+[39:46] right?
+[39:47] So they are ordered, right?
+[39:48] So in a in a sequential execution, they are ordered, so we will have something like this.
+[39:56] In a legal sequential execution, every read operation returns the value of the latest write
+[40:03] operation to the same address, in the sense if I read, I will get the value of this write,
+[40:10] if I read over here, I will get the value of this write and I will get the value of this
+[40:14] write, right?
+[40:15] So, what I do is that I kind of walk back in a sequential execution, I find the latest
+[40:22] write to the same address and then, so let us assume that all of this is to the same address
+[40:28] x, I just walk back, find the latest write to the same address and I forward the value,
+[40:34] this would be a legal sequential execution, alright?
+[40:37] So, you would expect that the observer sitting on a memory location, let us assume for the
+[40:43] time being that there is a single memory location for every variable, right, a single location,
+[40:49] that observer needs to observe a legal sequential execution, right?
+[40:53] So, as you can see, the execution is sequential just because the way the cache is created, the
+[40:58] request comes, then the next, then the next, then the next and for the execution to actually
+[41:02] make sense, it has to be legal, in the sense, every time I read, I should get the value of
+[41:08] the latest write.
+[41:10] If this much is understood, I would ask you to take a deep breath because it is going to
+[41:14] get slightly more complicated and maybe have a cup of coffee and let us go to the next slide.
+[41:22] So, in this, in the case of a load, what we see is that this relationship still holds if
+[41:29] the observer is sitting on a core.
+[41:31] So, now what we do is that we change the location of the observer instead of the observer sitting
+[41:36] on the memory location within the memory system, let the observer sit on the core, right?
+[41:44] And the core has an out of order pipeline needless to say.
+[41:47] So, even in the case of a load, what will happen is, so we can say the start time is, let us say,
+[41:51] when the load comes into the pipeline, the end time is when the load commits, so in the
+[41:56] middle, the load has to return with its value, so this relationship will still hold.
+[42:01] But things do change for a store.
+[42:04] We really do not know when it will complete, so complete in this case means that it will
+[42:10] write its value such that all the other cores can see, okay?
+[42:14] So that is the most important point.
+[42:17] What will happen is that it will write its value to the memory system such that all the
+[42:23] rest of the cores can see the value, so we really do not know when that will happen.
+[42:29] So what will happen is that we might commit the store, but the store might be stuck in
+[42:33] a write buffer or the store might be stuck in an MSHR or in some message on the NOC and
+[42:39] it might not have reached the other cores.
+[42:41] So unless we have some way of getting an acknowledgement, which in most cases we do not, the store will,
+[42:48] I mean the store might reach its final destination a long time later.
+[42:54] But as far as we are concerned, the operation ends when the store leaves the ROB.
+[42:59] So we can very well have t start is less than t end is less than t comp, right?
+[43:07] Let me go back a few slides, so this is exactly what was happening over here, so right?
+[43:14] So this thing was, this is exactly what was happening over here that we released a store
+[43:20] from the pipeline, all right?
+[43:24] Sorry, sorry, no, no, no, no, hold on, yeah, so, so in this case what was happening is that
+[43:31] the completion time of a store was happening later, but a later load was completing earlier,
+[43:41] right?
+[43:42] And so this was again an artifact of our pipeline and what you get to see in this later slide
+[43:50] is that things can actually be slightly worse in the sense even after a store leaves, it
+[43:57] would not have fully completed.
+[43:59] What that basically means is that even if at that point of time other cores try to read
+[44:09] the value, they might still get the previous value.
+[44:12] Because even if one core writes and let us say each core has a private L1 cache, until
+[44:20] the store reaches all of them, we are, it is not deemed to have completed, right?
+[44:26] So this will happen much later after it leaves the pipeline.
+[44:33] Nevertheless, nevertheless, the observer on the core, right?
+[44:39] The observer on the core expects to see a legal sequential execution in the sense, in the
+[44:45] sense that if let's say the core has written some value and later on the core reads it, it
+[44:53] expects to either read that value or a later value, but not something earlier.
+[44:58] So let's say that I am sitting on a core over here, right, and I am the observer.
+[45:05] And let's say that I set x to 1 and a long time later I read x.
+[45:13] For me, given the fact that I set x to 1, I cannot read x to be 0.
+[45:18] I have to read either x as 1 or something else that some other core wrote in the time being.
+[45:24] So I am fine with that, but I can definitely not read x to be 0.
+[45:29] So in this sense, I do expect to observe a legal sequential execution, alright?
+[45:34] Otherwise too, the execution will not make any sense.
+[45:39] So what is the idea?
+[45:40] The idea is that if let's say I am looking at my own execution, of course they will be
+[45:45] in sequence.
+[45:47] And I expect every read to fetch me the value of the latest write.
+[45:52] So let me for the time being ignore the effect of other threads.
+[45:55] If I am the single thread running, then I expect to see a legal sequential execution in a unithreaded
+[46:02] code.
+[46:03] That I expect that the way that the assembly instructions the programmer has written, the
+[46:08] core executes this, then this, then this, then this, then this, regardless of the underlying
+[46:12] hardware.
+[46:13] Whenever I read something, I get the value of the latest write.
+[46:17] At least if there is a single thread, this is what I would expect.
+[46:20] Otherwise, the execution will stop making any sense to me.
+[46:25] And the typical assembly programs that we write, they will just stop working, right?
+[46:31] Because this is the, there are two important, if you think about it theoretically for a program,
+[46:36] there are two assumptions that we make.
+[46:38] If these are the assembly instructions, we execute the first one, then the next, then the
+[46:42] next, then the next, then the next, then the next and so on.
+[46:45] Whenever we read, we get the value of the latest write.
+[46:48] These are the only two assumptions that we make for a single threaded program.
+[46:52] Even if you have other cores, this abstraction still has to hold true, ok.
+[46:59] So let us keep moving.
+[47:01] So, now let us consider a parallel execution where we have multiple cores.
+[47:06] So, in this case, we could have had multiple cores, but we were still looking at a single
+[47:11] thread.
+[47:12] But now we will look at multiple cores, each running a thread.
+[47:15] So, multiple cores and multiple threads, right?
+[47:18] So, we are slightly broadening our scope.
+[47:23] So, let me just say from where we are coming.
+[47:29] So, we looked at a single threaded execution and we looked at an observer on a cache location.
+[47:36] It needs to see a legal sequential execution.
+[47:40] Then we considered a setup where we have a single thread, the observer sits on the core.
+[47:47] Regardless of the number of cores in the system, for a single threaded program, I have to see
+[47:52] a legal sequential execution.
+[47:55] Because for me, this makes sense.
+[47:57] In this case, an instruction is an operation, right?
+[48:00] See, if I have 20 assembly instructions, I observe that one instruction, first instruction
+[48:07] is fetched, second is fetched, third is fetched, fourth is fetched.
+[48:11] So, I can order them by their start times, which are their fetched times, and I will expect
+[48:16] them to finish in that order.
+[48:19] And then, whenever I read something, I want the value of the latest write.
+[48:24] That's all that I expect.
+[48:26] If that holds my execution from the memory point of view, it's correct.
+[48:31] But if I consider a parallel execution, things become trickier.
+[48:36] So, that's why I asked you to drink a cup of coffee, where we will have multiple cores,
+[48:42] and we will have, so let's say we have n cores and we have n threads, ith thread running
+[48:47] on the ith core.
+[48:49] So let us introduce a little bit more terminology.
+[48:52] Let's say, rx1 means that I read the value of x as 1, wy2 means that we set y equal to
+[49:01] 2.
+[49:02] So, I will read, w for write, x is the name of the variable, y is the name of the variable.
+[49:07] In this case, I am reading 1, in this case, I am writing 2.
+[49:10] So, in multiple threads, I have one observer per thread, these are software threads.
+[49:16] Each observer records the local execution history of a thread.
+[49:20] So, I will have multiple observers, each observer just records what it observes.
+[49:26] So let us look at a parallel execution.
+[49:29] So what can happen is that, I might write 1, 2, x, write, I'll have, if I have multiple
+[49:40] variables, I might be doing a lot of stuff, reading, writing, reading, writing and so on.
+[49:45] So let's not worry about that.
+[49:47] The start of a rectangle is the start time, the end of a rectangle is the end time, start
+[49:54] time, end time, start, end and the blue is the completion time.
+[49:58] So, the completion time can be before the ending time of a write.
+[50:05] It is possible in an out of order pipeline also if the write happens instantaneously and
+[50:10] slightly later we remove it from the pipeline, maybe like a fraction of a cycle or one cycle
+[50:15] later, right.
+[50:16] So, the commit process itself can take some time, right.
+[50:19] So, it does not matter whatever is the completion time, we have individual observers sitting at
+[50:26] the threads, which is fine.
+[50:29] So, what we can do is that, let us look at the outcomes and let us see that can we order
+[50:39] them.
+[50:40] So, here what we are assuming is that every operation, as you can see over here, has a
+[50:47] completion time and the completion time is known, okay.
+[50:50] So, this is the big assumption that we are doing that we somehow, our observer knows when
+[51:00] an operation is completing, right and we are assuming that it at the point of completion
+[51:06] it appears to execute instantaneously, which means that it appears to read exactly at this
+[51:11] point of time, it appears to write exactly at this point of time and if you consider a
+[51:16] practical system, this is more or less the case that when you read, reading is basically
+[51:22] a fraction of a cycle affair, in the sense you do everything, set the decoder and all
+[51:27] of that, but when you read, you basically latch the values from the sense amplifier to the buffer.
+[51:32] So, it is just capturing that moment and writing is also when you set the values of the SRAM
+[51:39] cells, it is capturing that moment, that is the completion time.
+[51:43] So, what we can do is that if all the observers see what the course executed, then they all
+[51:49] have a conference at the end and they order everything as per the completion time, so then
+[51:56] they would order Rx0 over here, right, fine.
+[52:01] Then Wx1 completed, then Rx1 completed, till this point the execution is sequential because
+[52:09] we can order the operations, one after the other, as long as we can order them one after the
+[52:15] other, which we have done here, fine it is sequential, is it legal, yes, till now it is legal because
+[52:21] 3 is reading the value written by, operation 3 is reading the value written by operation 2.
+[52:29] Sorry, there should be a 3 over here, that is some of our list, alright.
+[52:35] Then we will have instruction 4 where we write 1 to y, then we write 2 to y, so in this case
+[52:45] the completion time is outside the start and end, that is okay.
+[52:50] Then we again write 3 to x over here and then we read y to be 2, which means it gets the value
+[53:03] of the latest write.
+[53:04] So, this is a legal sequential execution as we see, it is an LSE, why because we were able
+[53:11] to order all the operations even though they were issued by different threads, that is important,
+[53:19] keep that in mind, bear that in mind, that even though these were operations that were issued
+[53:25] by different threads, we were able to order them by their completion time, so that made
+[53:33] it sequential and furthermore when we ordered them on the same timeline, we see that for any
+[53:40] variable, the read is getting the value of the latest write, so this makes this a legal
+[53:46] sequential execution.
+[53:48] So we have a parallel execution at the top, we ordered them by their completion time, so
+[53:54] we know, so we are assuming that we somehow know what the completion time is, so it becomes
+[53:59] a sequential execution and we are very happy with it because it is legal also.
+[54:04] Alright, so let's not look too much into it, let's keep going.
+[54:10] So what you need to note is the timeline, where it is ordered by the completion time, right.
+[54:17] So this is an important point to note, we will keep on revisiting this, this is a simplistic
+[54:21] scenario but nevertheless, this has been our first parallel execution, where we have placed
+[54:28] multiple observers at each of the cores, observer at the core and observer at the thread, let's
+[54:33] assume it is the same thing and then what we do is that we just see what the read and write,
+[54:40] we arrange them by the completion time, we find it to be legal and sequential.
+[54:45] Alright, that is great.
+[54:47] So, what did we learn from the execution shown in the previous slide, well what we learnt is
+[54:54] that we have the property of atomicity which means every operation has a single completion
+[55:02] time and it appears to execute instantly at that point of time, so we observed that in
+[55:09] our execution this property was holding, so this is a general property it is called atomicity
+[55:16] which means that if an operation appears to execute instantaneously at one point in time,
+[55:24] it is said to be atomic, okay.
+[55:29] So we observe this property, whether it holds for all architectures or not we will look at
+[55:35] that later.
+[55:36] We also found that we have multiple observers, in the sense we have multiple observers.
+[55:42] So having multiple observers really does not help because one observer does not know what
+[55:46] the other guy is observing.
+[55:48] Of course if all of them sit together and create some kind of a timeline like this, that helps.
+[55:54] Because we can at least see how the system proceeded, so that definitely helps.
+[55:59] So that is why at the end they can have a conference and they can reduce or equate the parallel execution
+[56:06] to a sequential execution, makes things extremely intuitive.
+[56:10] As you can see, don't you think that this is very intuitive?
+[56:12] Right?
+[56:13] And for this we need to introduce the notion of the equivalence of execution.
+[56:21] So particularly what we did over here, let us formalize this.
+[56:25] So we have a parallel execution, so this entire thing is a parallel execution, this is a sequential
+[56:32] execution.
+[56:33] So a parallel execution as such we did not find a lot of value.
+[56:39] But once we equated it to a sequential execution, somehow as we did in the previous case by ordering
+[56:46] them by the completion time, we were able to show that look, the sequential execution is
+[56:53] legal and sequential, so it makes sense.
+[56:55] So what does this mean?
+[56:56] What this means is that this gives a most likely order, well in this case it is not most likely,
+[57:04] but it is the exact order in which these operations would have actually executed on a multi-threaded,
+[57:10] multi-core system, right?
+[57:13] On a multi-core system this is how they would have actually executed.
+[57:16] And given the fact that it is a legal and sequential execution, this execution is indeed possible
+[57:24] and feasible and it is also correct, right?
+[57:30] You know, howsoever we think about it, it is also correct because well, I mean, for every
+[57:35] memory location, as you can see it is getting requests ordered by these blue completion timelines
+[57:41] over here, it is servicing them, we are reading what we should be reading, so it is correct.
+[57:46] So let us take this further and just equate, see when we can establish an equivalence between
+[57:54] a parallel execution and a sequential execution.
+[57:58] It will allow us to think about parallel executions in a much better and more intuitive manner.
+[58:06] So let us now theoretically describe how to establish the equivalence of two executions.
+[58:14] So this is a standard result in the area of concurrent systems, it is very easy to understand.
+[58:20] So what are we trying to do?
+[58:21] We are trying to say that a parallel execution with multiple threads and observer per thread
+[58:29] is equivalent to a sequential execution, where of course the operations are being arranged
+[58:37] in a linear or arranged in a linear sequence.
+[58:41] So we want to create some notion of mathematical equivalence.
+[58:45] So for this we need to introduce some terms.
+[58:50] So first is P, the straight line T, right?
+[58:54] So you can say P conditioned upon T or the set of T is a thread and P is a parallel execution.
+[59:02] So this basically refers to all the operations issued by thread T in the same order.
+[59:11] So what would happen?
+[59:12] Let us go back to the parallel execution.
+[59:14] So let us say thread 1, we can see all the operations issued by it, there is a sequential
+[59:19] order of at least of all the operations issued by a single thread, right?
+[59:27] So for thread 1, all the requests, all the memory requests or let us use the generic term operation,
+[59:36] they are ordered in a linear sequence.
+[59:38] So if we consider only those operations issued by a given thread in the same sequence, in the
+[59:47] same sequence in which the thread had issued them, this ordered sequence is P straight line
+[59:54] T, right?
+[59:55] So it is given by this expression.
+[59:59] So we say that the, this expression, which is all the ordered, the sequence of all the
+[60:10] operations issued by thread T, this is equivalent to, so we will use the three lines to indicate
+[60:16] equivalence of S T, where S T, S is again the sequential execution, but out of the sequential
+[60:26] execution, we take out all the executions, all the operations that have been issued by
+[60:34] thread T.
+[60:35] So let us say that we have a set of operations in the sequential execution, right?
+[60:41] And they are organized as a linked list.
+[60:43] So out of this, let us say this, this and this were issued by thread 1.
+[60:49] And we want to compute this, then what we do is, we just take these operations out and
+[60:55] we organize them as a linear sequence.
+[61:01] In the same sequence in which they were in the original, so they are just extracted, alright?
+[61:06] So this is just a projection operation, we can say P projected upon thread T and S projected
+[61:12] upon thread T. So all that we do is that we just extract out all the operations issued
+[61:17] by thread T. And given the fact that they were in any case in an ordered sequence, they are
+[61:24] extracted out in an ordered sequence.
+[61:27] So now the thing is that the operations, of course, need not be the same.
+[61:33] In a sense when they are, when we are seeing their equivalent, let us treat them as a different
+[61:36] set of operations.
+[61:38] But what we can do is we can establish a 1 to 1 mapping between the two sequences.
+[61:43] So let us say one sequence of operations 1, 2, 3, 4 and so on.
+[61:49] In other case, we can say it is 1 dash, 2 dash and 3 dash, where there is a 1 to 1 mapping
+[61:54] between 1 and 1 dash, 2 and 2 dash, 3 and 3 dash, right?
+[61:58] So this what we are doing?
+[61:59] Well, what we are doing is we are taking the parallel execution extracting all the operations
+[62:04] by thread T. Again taking the sequential execution extracting all the operations by thread T.
+[62:12] And then we are establishing a 1 to 1 correspondence between the two sequences. See if we can do
+[62:18] this for all threads, for all threads T, if we can establish an equivalence of this type,
+[62:24] then we say that the executions are equivalent. There is a lot of maths over here. This is simple
+[62:30] stuff. But nevertheless, for many of you who would have seen this kind of algebra kind of math,
+[62:38] you know, modern algebra kind of math for the first time, this would appear a bit weird and a bit
+[62:43] strange. But that's the reason I'd ask you to take this thing slow, read this several times and
+[62:49] definitely read this part in the book, right? So that's important.
+[62:54] So this will be clear when we consider an example, which we will do in the next slide, which will be
+[63:04] the last slide of this lecture. So let us look at the same parallel execution as we have done,
+[63:10] just to, you know, verify it's the same, just take a quick snapshot of this. We have 7,
+[63:16] 1, 2, 3, 4, 5, 6, 7 and just take a quick snapshot of this, 1, 2, 3, 4, 5, 6, 7. Alright, so here,
+[63:24] what we essentially did is that we had a set of operations of a parallel execution P.
+[63:32] So what we do is that we create a sequential execution. So mind you, the sequential execution
+[63:40] operations can be different, but they have to read and write the same value, right? So there is
+[63:44] a one to one correspondence. So the one to one correspondence means that is the same operation
+[63:49] reading and writing the same value, right? So this one to one correspondence does exist,
+[63:56] but of course their timings and their durations, those we are allowed to change. See, we consider
+[64:02] let us say P and thread 1, it is 2 and 6. As you can see, we have 2 dash over here, which is the same,
+[64:09] Wx1. We have 6 over here, Wx3, 6 appears after 2. Similarly, 1 and 5, we have 1 dash and 5 dash over here,
+[64:18] 1 is Rx0, Rx0, 5 is Wy2, this is Wy2. Then we have 3, 4 and 7, we have 3, 4 and 7,
+[64:28] where we have Rx1, Y1 and Ry2. So as you can see, for all threads, Pt1, so for any thread actually,
+[64:36] Pt is equivalent to, sorry, 3 lines, St, which means I extract the operations from there.
+[64:45] They are over here in the same linear sequence and there is a one-to-one mapping between them. In the
+[64:52] one-to-one mapping, we again read and write the same values, but of course the timing is what changes
+[65:00] in the sense, you just take a look at the time of 2. So, the timing actually does not matter as long as
+[65:06] they are arranged in a sequence. So, what matters is the sequence, the ordering. So, here 6 appears
+[65:13] after 2, here 6 dash appears after 2 dash, that is all that we care. And 1 is mapped to 1 dash,
+[65:18] 2 to 2 dash, 7 to 7 dash. It is a one-to-one mapping, right? So, it is a bijection actually.
+[65:25] So, where if we will have the same number of elements and it is a one-to-one mapping.
+[65:29] And for any thread, the operations appear in exactly the same order in both the sequential
+[65:35] execution and the parallel execution, right? So, this is where we say that the executions
+[65:42] are actually equivalent. And so, then what is the advantage that we got out of this?
+[65:49] One advantage that we got out of this is that what we are saying is that we given these parallel
+[66:00] executions, if let us say we have one global observer, right? Who can see all the events,
+[66:07] everything that is transpiring, then of course this is ordered by completion time, but let us assume
+[66:14] the completion times are not known and in almost 100% of the practical situations, we do not know
+[66:20] what is the real completion time, but it does not matter. It is possible to arrange all of the memory
+[66:26] operations in a sequence such that it is a legal sequence in the sense for any address, the read
+[66:33] fetches the value of the latest write. And it is a possible order in which these operations would have
+[66:40] actually completed in a real system as observed by an all powerful single global observer.
+[66:48] It would have observed that globally this is how all of them are completing, right? So, this is a feasible
+[66:55] execution sequence for the entire system. For the entire parallel system, the moment I equate it
+[67:02] to a sequential execution, right? So, the moment I equate a parallel execution to a sequential execution of
+[67:08] this type. Where, of course, this relationship, this equivalence holds, this essentially gives a feasible
+[67:16] execution order of how these memory operations would have actually executed and you can see that
+[67:26] it does satisfy at least our criteria of intuitiveness. In a sense, we can say that look,
+[67:32] first this instruction of thread 1 happened, sorry, first this instruction of thread 2 happened,
+[67:37] then this happened, then this, then this, then this, then this, then this and look, I can arrange them
+[67:43] in a linear sequence and see this makes complete sense because I read the value of y to be 2 because
+[67:50] the last write to y was 2 and then I read the value of let us say x to be 1 because the last write to x was
+[67:58] 1, so on and so forth, right? So, what I can do is that I can reason in this manner, in this
+[68:06] fashion and I can argue about the correctness of an execution by essentially reducing a parallel
+[68:16] execution to an equivalent sequential execution, this being the equivalence and if the sequential
+[68:22] execution I think is correct, then I can at least say that look, I think this execution is correct and
+[68:31] I think this outcome is valid, right? And if I cannot create a sequential execution as we have
+[68:38] seen some examples in the past, then I can say that look, I think this outcome is not correct,
+[68:43] it is not intuitive. I can always say that but as we have seen in real processors, sometimes they allow
+[68:51] executions of this type which do not appear to be intuitive in the sense the parallel execution
+[68:56] cannot be reduced to an equivalent sequential execution but whenever we can do what we just did,
+[69:04] we will be happy, we will have a big smile on our face and we will say that look, I think this is a very
+[69:10] intuitive execution which in my opinion is correct. So, alright, this lecture I will stop
+[69:19] over here because we have discussed several things even though the situation is far from complete
+[69:28] but let me maybe quickly summarize in some free space over here. So, let me quickly summarize all
+[69:35] that we have learnt and how we are going to proceed. So, what the first point that we have learnt is that
+[69:41] it is a very complex world within a multi-core processor, right? So, we have write buffers, MSHRs,
+[69:51] on-chip networks, distributed caches, you name it we have it. Given that we can have all possible
+[70:00] outcomes including ones that make no sense at all, right? It is possible. If we want performance,
+[70:09] we add these new structures and they give us the strange outcomes for multi-threaded code not for
+[70:14] single-threaded but for multi-threaded code we have this strange outcomes. So, there is a need for
+[70:20] some sort of a specification and some sort of order to a disordered world. So, we that is the reason
+[70:32] processor manufacturers release specification and if an execution is as per specification it is said to be
+[70:39] consistent, fine fair enough. So, then we looked at this world of executions
+[70:48] and we said that look if we have a single-threaded program we will observe a sequential execution
+[70:55] or observer can be on a memory location or can be on a code, doesn't matter. The execution will still
+[71:03] be sequential and it will also be legal in the sense every read will fetch the value of its latest write.
+[71:11] If we have multiple threads, the situation becomes very complicated.
+[71:16] But if we can establish the equivalence between a parallel and a sequential execution that is going
+[71:24] to be great. Then in that case we can actually reason in terms of the sequential execution.
+[71:32] So, it will be easier to make a specification and furthermore if this sequential execution is legal
+[71:37] then we can be doubly sure about its intuitiveness and correctness. So, we have not significantly discussed
+[71:48] this. We are stopping at this point where we are saying what it means for a parallel and sequential execution
+[71:55] to be equivalent, right? And we are not going more than that but this is not answering many other queries
+[72:03] in the sense how do we make a specification. What does it mean to be consistent with a specification
+[72:10] all of that but we are leaving you at this point where we are saying that look a parallel execution
+[72:18] by itself is a complex thing to analyze. If it can be reduced to a sequential execution
+[72:25] then at least it is the sequential execution is something that we can possibly reason about and analyze
+[72:33] So, let us keep this as our aim of converting a parallel to a sequential execution
+[72:40] which may be legal might not be legal we will see what that means over the next few slide sets
+[72:45] but at least let us have this as our aim and let us proceed. So, what is our aim? Our final aim is to
+[72:52] establish some sort of a control some sort of an order over what seems to be a very disordered situation
+[73:00] where all possible executions and outcomes and messages are allowed we need some sort of a
+[73:05] correctness framework. So, we have taken some baby steps towards it. We have looked at execution
+[73:11] we have looked at a parallel execution and we have looked at what it means for it to be equivalent to
+[73:19] a sequential execution. So, over the next few slide sets we will extend this formalism
+[73:26] to a full scale memory model. Alright, so this is our last slide. So, next slide set we will start from
+[73:35] this point which is sequential consistency.

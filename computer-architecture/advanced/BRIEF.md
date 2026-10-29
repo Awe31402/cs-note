@@ -30,7 +30,7 @@
   | 55–58 | Chapter 14 | Ch14 Architectures for Machine Learning（p.703） |
 
 ## Inputs（優先順序）
-1. 逐字稿 `transcripts/lectureXX.txt`。
+1. 逐字稿 `transcripts/lectureXX.txt`。YouTube 字幕缺的、或辨識成錯的語言的，改用本機 whisper（`large-v3-turbo`，GPU）轉錄；這些檔案旁邊有一個空的 `lectureXX.whisper` 標記檔，筆記標頭也會寫「whisper 轉錄」。
 2. 課本 `../../books/computer-arch/nextgen-comp-arch.pdf`（v3.2）。**PDF 頁碼 = 印刷頁碼 + 2**。筆記引用印刷頁碼。
 3. Basic 課本 `archbook.pdf` 與四本輔助課本（同 Basic）。
 4. 本機實測（同 Basic；另有 RTX 4060 Laptop GPU、CUDA 12.4）。Linux v6.2.12 原始碼只在真正相關時用。

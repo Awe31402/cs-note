@@ -1,0 +1,702 @@
+[00:00] Thank you for listening.
+[00:30] Thank you.
+[01:00] Welcome to the second lecture on RISC-V assembly.
+[01:17] So, in the first lecture, we had covered the basics of the instruction set and integer
+[01:25] instructions.
+[01:26] That is primarily what we had covered.
+[01:28] So, the machine model registers integer instructions.
+[01:34] We had seen, we had taken a look at all of that.
+[01:38] So, now we will get into the harder and deeper aspects of assembly language programming, namely
+[01:46] control transfer and memory instructions.
+[01:48] And given that this is the fourth chapter on assembly language in this book, we would naturally,
+[01:57] you know, like to presume that viewers have, readers have a certain degree of familiarity
+[02:05] and proficiency with assembly languages, which is why the treatment will be slightly brief
+[02:11] and we will go slightly quickly.
+[02:15] So, well, don't get scared by this slide.
+[02:20] It is essentially trying to show all the control transfer instructions in one slide, you know,
+[02:28] for the ease of reference.
+[02:30] So let's understand step by step what's happening.
+[02:34] So, what used to happen in other architectures, right, is that we used to compare, let's say,
+[02:42] two registers.
+[02:43] The result of the comparison was stored in what is called a flags register.
+[02:49] And this was internal to the processor.
+[02:53] It was not visible outside.
+[02:55] The flags register, in a sense, used to remember.
+[03:00] It used to remember the result of the comparison.
+[03:06] And any subsequent branch would basically look at these results.
+[03:11] Any subsequent conditional branch would look at these and it would see what is there here.
+[03:18] Did it lead to an equality, right?
+[03:23] Did it lead to a less than kind of situation, a greater than or equality or less than equal
+[03:30] to or greater than equal to.
+[03:32] And based on that, the branch decision was taken.
+[03:37] The advantage of doing this is clearly that you compare once and then, you know, many, many
+[03:46] branches can decide their behavior on the result of this single comparison.
+[03:51] And this can be many, many instructions away later.
+[03:57] So, given that RISC-V has 32 registers and they wanted more control, and we will see there
+[04:07] are certain advantages of this model as opposed to keeping this implicit.
+[04:13] Because the moment that you have an implicit register, well, so that has to be a part of the context.
+[04:20] Because when there is a context switch from one process to the other, then privileged
+[04:24] instructions are needed to read this, save it, restore it and so on.
+[04:29] RISC-V avoids many of those complications.
+[04:32] So, it has this set less than instruction where you compare RS1 and you compare RS2.
+[04:41] The result of whether if RS1 is less than RS2, let's say if one is X2, the other is X3.
+[04:49] If X2 is less than X3, then we set X1 to 1.
+[04:53] Right?
+[04:54] So, the value of X1 is set to 1.
+[05:00] Right?
+[05:01] If, you know, the operant stored here is less than this, the value of X1 is set to 1 and
+[05:07] this can be made a basis for conditional branch directions in the future.
+[05:15] So in this case, instead of having an implicit flags register, the register that is storing
+[05:21] the status of the comparison is explicit.
+[05:25] You can, instead of comparing, you can manually set it.
+[05:29] That is an additional flexibility that we have here, which we didn't have in the earlier
+[05:35] case and clearly saving and restoring the context is much easier because in this case, it's
+[05:42] a visible register.
+[05:44] So there is always an I variant of it where you compare with an immediate, an unsigned variant
+[05:50] of it where you do unsigned comparison.
+[05:54] Don't treat them as signed numbers, but unsigned numbers and then you have a I variant of it.
+[06:04] So this I is basically unsigned and immediate, right?
+[06:09] So basically unsigned comparison where the second operand is an immediate.
+[06:15] So this is there.
+[06:17] So this is available to us.
+[06:19] So we can use this for doing an explicit comparison, but this is not the only way.
+[06:27] There are other ways as well.
+[06:29] This is what makes the entire conditional branch business in RISC-V reasonably rich and elaborate.
+[06:37] This is one mechanism.
+[06:38] We shall look at another mechanism where a direct comparison is made then and there and
+[06:45] on the basis of that, the direction is decided, right?
+[06:49] So what would happen is one way, how would I use this?
+[06:53] Well, the way that you would use this is that you would take a look at the status here in
+[06:58] this register.
+[07:00] You would compare it with, let's say the zero register.
+[07:04] So if the previous comparison resulted in a less than, this would be one.
+[07:09] Clearly one is greater than zero.
+[07:10] So you would know it is less than.
+[07:13] If it was not less than, which means greater than equal to, this would be zero.
+[07:18] So there would be an equality here.
+[07:22] So now let's look at the way conditional branches are structured and a more direct way of achieving
+[07:28] the same.
+[07:32] So here what we see is that we have six different branch instructions here.
+[07:40] And these branch instructions, they actually take two register arguments and a label.
+[07:47] So instead of relying on a comparison made in the past, which you can, so the SLT mechanism
+[07:54] does enable that, but it is also possible to do a comparison right then and there in the
+[08:01] sense you compare the values of RS1 and RS2.
+[08:05] If they're equal, you jump to this label.
+[08:09] For example, if X1 is equal to X2, then you jump to the label foo.
+[08:14] Similarly, you have not equal, greater than or equal, greater than or equals, less than,
+[08:24] less than, greater than or equal in an unsigned sense, less than in an unsigned sense.
+[08:34] So the key idea here is that, well, you either use something, some comparison in the past,
+[08:45] store it in a register.
+[08:46] And when doing a conditional branch, you compare that register with a zero register.
+[08:51] The other is that you do not compare in the past, you compare right then and there.
+[08:58] And then, based on the result of the comparison, if the check is successful, then the machine
+[09:05] jumps to the label.
+[09:07] The advantage of the former mechanism, which is compare in the past, is basically that,
+[09:14] based on one comparison, you can do several branches.
+[09:18] You do not have to keep comparing.
+[09:20] Not a bad idea, saves us some effort.
+[09:25] But for a large number of cases, we will be doing a comparison only once.
+[09:32] In that case, it makes a lot of sense to go for the second approach, which is to compare
+[09:38] right then and there.
+[09:40] Based on the result of the comparison, if it is successful, you jump to the label.
+[09:47] So, given the fact that that slide actually did not look that scary, so, let us try to
+[09:57] use it.
+[09:58] So, let us say I want to compare 2 and 5, store the comparison, result in t2, how would I do
+[10:04] it?
+[10:05] Well, I would load 2 to t0, 5 to t1, then essentially I would set less than, so compare t0 and t1.
+[10:16] If t0 is less than t1, I would set the result to 1 else 0, and the SLT instruction allows
+[10:24] me to do that by storing the comparison result in t2, which was essentially the first mechanism
+[10:32] shown here.
+[10:34] That here, there is a way of storing the result of the comparison in a register that the programmer
+[10:43] specifies.
+[10:44] Now, let us look at another quintessential problem that we have seen.
+[10:51] You know, we have seen this in all ISAs actually.
+[10:54] So, this is not a problem with the ISA, it is a problem that we solve using the ISA.
+[10:58] It is a question.
+[10:59] So, I want to add two 64-bit numbers, so, that is not a very easy task.
+[11:07] So, each number is stored in two registers, each register is 32 bits.
+[11:12] I basically want to add them.
+[11:16] The main problem is, is there a carry from here to here?
+[11:20] That is the only thing that needs to be handled.
+[11:21] If there is no carry, it is two separate additions.
+[11:25] So, let us assume that I am adding t1, t0.
+[11:31] t0 is to the right, less significant, and t1 is to the left, more significant, with t3,
+[11:39] t2.
+[11:40] That is what, that is my task.
+[11:42] So, this is t0, this is t1, this is t2, this is t3.
+[11:51] So I load them with some values, so the values are not important.
+[11:55] So what I do is, I add t0 and t2, I put the result in t4.
+[12:02] Then I add t1 and t3, I put the result in t5, but hang on, I am not done yet.
+[12:08] The reason is because of this carry.
+[12:11] So what I do is, that I compare t0 and t4.
+[12:18] So I could have compared t2 and t4 also, it does not matter.
+[12:23] So it is important to understand when you will have a carry, because this is an addition,
+[12:37] and we can treat it as an unsigned addition.
+[12:40] So let us say I draw that number line like this, 0, 2, 2 raised to the power n minus 1,
+[12:46] where n is 32 in this case.
+[12:49] So what happens is that, you will have a carry only when there is an overflow, right?
+[12:54] So only when the result does not fit in 32 bits, that is when you will have a carry.
+[12:59] So let us say this point is t0 and I am adding t2 to it.
+[13:06] And so then essentially, if t2 is a large number, I can keep counting 1, 1, 1, 1, 1.
+[13:14] If I do not reach t2, then I will have to loop back and start going from here.
+[13:21] So this point may very well become t0 plus t2.
+[13:25] In this case, the result, which is t4, will be less than t0.
+[13:31] The same holds for t2 also, but I am showing it for t0.
+[13:35] So if it is less than t0 in an unsigned sense, then I can use SLTU.
+[13:41] So this instruction over here is the crux actually, right?
+[13:46] So basically, what I will say is if t4 is less than t0, I set t6 to 1.
+[13:53] And now I will use this flag in a very smart way.
+[13:59] So what I will do is, in this case, the carry is 1.
+[14:02] So I will just add the carry of 1 if that check succeeds to t5, right?
+[14:09] So t6 plus t5 is the new value of t5 and my addition is done.
+[14:17] So we have learnt an important thing here.
+[14:20] So we learnt that the SLTU, which is set less than in an unsigned comparison, this in itself
+[14:28] is a really valuable instruction because it stores a single bit, which is very useful.
+[14:35] So in this case, that single bit was actually the carry.
+[14:40] In another case, it may be something else.
+[14:43] So in this case, we were able to isolate the carry very easily by performing a comparison.
+[14:52] And then the value of the carry was stored in t6, which was later on added to t5 to update
+[14:58] its real value.
+[14:59] So given that we have now seen some of the advantages of this mechanism, let's move forward.
+[15:10] So let's look at, you know, a far more simpler example.
+[15:13] I want to add all the numbers from 1 to 10, right?
+[15:18] That's all that I want to do.
+[15:21] So what I can do is I can initialize t0 to 1 as the starting index.
+[15:27] Then I can initialize s0, which will hold the sum to 0 and t1, which is the ending index
+[15:33] to 10.
+[15:36] So what I can do is that I can add the current value of the index to s0, update its value,
+[15:47] and I can implement it, compare it with t1.
+[15:53] As long as t1 is less than equal to this, sorry, greater than equal to this, I stand corrected,
+[16:01] greater than equal to t0, which is the current index, and t1 is 10, I just keep looping, keep
+[16:07] looping, and the value of s0 will keep getting updated.
+[16:12] So this is a simple six-line piece of code.
+[16:17] So the actual code is three lines.
+[16:18] The first three lines are for initialization, but again, some of that has to be counted.
+[16:25] So what we can clearly see is that this is very simple, exactly the same way that the previous
+[16:31] assembly languages were.
+[16:34] Where I increment the index, I do a check, and all done.
+[16:41] So given that we have seen conditional branches, let us look at unconditional branches.
+[16:47] So unconditional branches are slightly tricky in the sense that they have same instruction
+[16:54] has a lot of features.
+[16:56] So this is kind of a consistent thing that we are seeing that every instruction is kind
+[17:05] of intelligent and smart.
+[17:07] You can do a lot of cool things with it.
+[17:11] So let us look at the JL, the jump instruction.
+[17:14] So it takes a register, which is the destination register, and a label.
+[17:21] The idea is very simple.
+[17:22] You jump to the function label, and you store the return address over here.
+[17:26] So in a certain sense, this acts like a call instruction that automatically stores the
+[17:32] return address.
+[17:37] But there is a catch.
+[17:39] If this register is zero, no return address is saved.
+[17:47] So if the return address register is zero, then obviously you can't store the return address
+[17:54] because the register x0, alternatively known as zero, cannot be overwritten.
+[18:04] It can't hold a new value.
+[18:06] It's hardwired to zero.
+[18:07] So if I set x0 over here, I put x0 over here, then obviously its value will not change.
+[18:14] So this becomes an unconditional branch, correct?
+[18:20] And if this is some other register other than x0, then it's like a call instruction because
+[18:27] the return address, which is PC plus 4, is stored here.
+[18:33] So let's look at JLR.
+[18:37] So JLR is like a return instruction, but of course, again, it can do more.
+[18:45] So it takes two registers and one offset as an argument, RD, RS1, and offset.
+[18:50] So consider an example, JLR, x1, x2, 20.
+[18:55] So what it would do is that it would jump to the address x2 plus 20 and basically store
+[19:05] the return address in x1.
+[19:08] All right.
+[19:12] So this is fine.
+[19:13] This can work like an indirect branch, which is actually a very strong aspect of a RISC-V
+[19:19] branch instruction.
+[19:21] Because this was slightly tricky in other instruction sets, here it is quite direct, that you can
+[19:28] have an indirect branch where the indirect branch, it's a sum of two quantities.
+[19:38] One quantity is stored in the register, which gives us flexibility, and the other one is
+[19:43] a fixed offset.
+[19:44] So I add both of them.
+[19:47] That's my address, and the return address is stored in x1, which in this case is a destination
+[19:53] register.
+[19:54] So the destination register is 0.
+[19:55] If RD is 0, then clearly you don't store anything, and you are just a simple indirect branch.
+[20:05] But the point is that if something is being stored, then it is much smarter, right?
+[20:17] If something is being stored, then in a sense you are returning back.
+[20:22] So one advantage of this is that maybe you can invoke JALR and then put the first destination
+[20:35] register as 0, which means I don't want to store anything.
+[20:40] If the return address is stored on a stack, then you can provide the stack pointer and the
+[20:47] offset with respect to the stack pointer, which could be, let's say, minus 8.
+[20:54] Alternatively, if it is stored in the return address register, then you could provide RA and
+[21:00] the offset, the addition on top of that could be 0.
+[21:09] So this is a reasonably complex and complicated instruction that allows you to return, and
+[21:16] also doubles up as a mechanism of doing an indirect branch, which is quite useful.
+[21:22] So if you want to implement function pointers or something, you would look at such instructions,
+[21:30] where the function pointer would be stored in this register x2.
+[21:41] So let's look at some examples of these unconditional instructions, things will become much clearer.
+[21:53] So I want to check if the number stored in A1 is a square or not, a square meaning a perfect
+[21:58] square.
+[22:00] So the number is in A1.
+[22:04] So then I give it some value, that's not important what I give, and I initialize the values of
+[22:10] A0 and T1, 2, 0 and 1, respectively.
+[22:16] So what I do is that I compute a square of T1, which is my index, and store that in T2.
+[22:23] So this is like I square, where I is my index.
+[22:27] I check T2 and A1 for equality.
+[22:29] If they are equal, I jump here, and I set the return address, I'm sorry, the return value
+[22:41] register.
+[22:42] In this case, I want to return the value by A0, which is the right thing, because A0 and
+[22:47] A1 are for return values anyway.
+[22:50] So I set the value of A0 to 1, and I'm done.
+[22:53] So I can just end, end means that, done.
+[22:59] If that is not the case, then I check if A1, which is a number, is it less than T2 or not?
+[23:14] So T2 is basically the square, the square of the index.
+[23:20] See, if A1 is less than T2, then it means that T2 is the index square.
+[23:39] So what it basically means that the index square is already very high, and it has crossed A1.
+[23:45] So there is no way that A1 can be a perfect square, because in a certain sense, you know,
+[23:52] we had our opportunity.
+[23:54] But now, you know, so let's say A1 is 11, and we tried with 3 squared.
+[24:00] 3 squared is not 11.
+[24:02] Then we made this 4 squared.
+[24:04] So in this case, 11 is A1, and 4 squared, which is 16, that is T2.
+[24:15] So clearly, A1 is less than T2 in this case, which means that this is not a perfect square.
+[24:20] We lost our chance.
+[24:23] So we again jump to end here, and given that A0, which will hold the final return value
+[24:30] is 0, we are good to go.
+[24:32] Right?
+[24:33] So we basically conclude in this case that A1 is not a perfect square.
+[24:38] Otherwise what we do is that we jump back to .loop.
+[24:42] So the space will not be there, it's just .loop.
+[24:47] And there is no return value, sorry, there is no return address to be saved.
+[24:52] That's the reason the first argument can be 0.
+[24:56] So there is no rocket science in this code.
+[24:58] We have seen similar codes throughout the text across the chapters.
+[25:03] This is just the RISC-V variant of it.
+[25:08] Something again very similar is the numbers stored in A1 a prime.
+[25:13] So what we will do is, we will essentially check all the divisors starting from 2 to A1-1.
+[25:22] If any one of them divides A1, then we are sure that A1 is not a prime number, else it is
+[25:30] a prime number.
+[25:32] So we set the starting value of the divisor to 2.
+[25:37] And then we divide A1 by T0 and let's say the remainder is in T1.
+[25:44] We compare that with 0.
+[25:47] And if the comparison is successful, clearly it's not a prime number.
+[25:51] So then we can return 0 and say all done.
+[25:56] If that's not the case, we try with an incremented index, we increment T0.
+[26:01] And we compare T0 with A1.
+[26:03] So as I said, we want to go only till A1-1.
+[26:09] So if both of them are not equal, then of course we can jump here.
+[26:15] So we can keep trying.
+[26:16] But if both of them are equal, this will fall through.
+[26:20] So the moment it falls through, we set A0, the return value to 1, which means it is a
+[26:24] prime number.
+[26:27] And then we jump to end.
+[26:29] And the way that we do that is using this jump instruction.
+[26:32] So JL is incidentally a jump and link.
+[26:36] And link means store the, you know, you're jumping it and you're linking the return address.
+[26:43] So you're essentially storing the return address.
+[26:45] In this case, obviously we are not because the first register is x0.
+[26:50] But in theory, with another register, we can.
+[26:53] So we jump to dot end and we are done.
+[26:58] So there is no additional rocket science here other than the slightly modified formats of instruction.
+[27:05] So we have seen ARM instruction, simple risk.
+[27:08] So in this case, the formats are slightly modified, but essentially that's all.
+[27:12] The rest, everything is 100%, the same.
+[27:17] So this is a slightly more complicated example.
+[27:22] We want to find the number of 1s in a 32-bit number.
+[27:25] So A1 stores a 32-bit number.
+[27:27] You'll have 0s and 1s.
+[27:29] We're going to count the number of 1s.
+[27:33] So in this case, the number is stored in the register A1.
+[27:41] Right?
+[27:42] That is normally the way it is.
+[27:45] That the number is stored in the register A1.
+[27:48] We're going to count the number of 1s and the final return value would be in the register A0.
+[27:59] So we will have a lot of bookkeeping and state creation to be done.
+[28:07] We set T0 as 0.
+[28:10] T1 is 32 because that's the final index.
+[28:14] T2 is one more index variable.
+[28:17] Sorry, T2 is one more variable that we hardware to 1.
+[28:21] And A0, which is the final output, is set to 0.
+[28:26] But we'll increment it whenever we see a 1.
+[28:30] So here is what we do that we check the least significant bit.
+[28:36] That's not very hard to do.
+[28:39] So we AND it with 1.
+[28:41] So when you AND any number with 1, so let's say this is a number, and this is being ANDed
+[28:48] with 1, and the rest all are 0, mind you.
+[28:53] So what you get is all 0s, and if this bit is x, you get x.
+[28:59] So the moment we AND it with 1, the result, which is the least significant bit, that gets
+[29:05] stored here.
+[29:08] And then we shift the number, shift the argument by one step, but this is a logical right shift,
+[29:23] because we don't, if we assume the most significant bit is 1, we don't want to put in another 1.
+[29:28] Our main aim is to count the number of 1s.
+[29:31] So that is why we do a logical right shift, note RL here, and we do it by 1 position.
+[29:39] And then we check the value of the LSP.
+[29:45] If this is equal to T2, which was hardwired to 1, initialized to 1, then we move to .inc,
+[29:54] which means there is a need to increment because we found a 1.
+[29:57] So we increment a 0, which is the final return value by 1.
+[30:03] And then we jump back to LRET, which is this point, post-incrementing.
+[30:09] Then we increment the index or the counter.
+[30:13] So that is stored in T0.
+[30:16] And we compare T1 and T0.
+[30:18] T1, mind you, is initialized to 32, so we are doing it 32 times.
+[30:24] The moment they become equal, because T0 is set to 0, right?
+[30:28] So 0th time, it is done, 31st time it is done, so total 32 times.
+[30:35] Then we increment T0 to 32, which means it's time to exit.
+[30:41] So the moment there is an equality, we jump to .end and done.
+[30:47] Otherwise, we go back to .loop and the loop starts yet once again.
+[30:52] So this is a simple piece of code, where we extract the LSP by an AND operation.
+[30:59] And we shift it to the right in every shift, the argument to the right by one position using
+[31:07] a logical right shift.
+[31:10] That's important.
+[31:11] A logical right shift once every iteration, that's all.
+[31:15] So there is no other fine print or there is no other rocket science or hidden trick here.
+[31:22] The code was long, but it's not very complicated.
+[31:27] Now let's introduce function calls, because a key part of doing a lot of things that we
+[31:34] have been doing is essentially to support function calls.
+[31:40] So assume I set x as 3, this is basically the C code.
+[31:45] And then I call the function foo that returns 2.
+[31:48] So I have 3, I get 2 here, I add them and I set y to 5.
+[31:54] So what I can do is that I can write my RISC-V code in exactly the same way, following exactly
+[32:02] the same structure that I set S0, which should be saved because I'm calling functions.
+[32:10] So this is where the S series suddenly becomes important.
+[32:15] Then I call the function foo.
+[32:19] In this case, I am specifying the return address register because I want to save the return address
+[32:24] here.
+[32:26] Then in the return value, I load 2.
+[32:31] And again, the return address is there in RA, so I specify 0 RA, right?
+[32:38] 0 is the offset.
+[32:39] So this is kind of another way of the same thing.
+[32:43] Instead of RA comma 0, this is 0 RA because this is the semantics of this instruction.
+[32:49] And then I jump back.
+[32:51] So I don't want to store any return address now.
+[32:55] So I jump back to the return point, which is this.
+[32:59] At this point, A0 has 2, S0 has 3, I just add them and S1 contains the result.
+[33:09] So this is a simple function called where we use JAL and JALR.
+[33:14] And the important point to note here is how we store the return address in the return address
+[33:20] register.
+[33:21] And how the return address register was used to go back to the return address via the JALR
+[33:29] instruction.
+[33:30] Where we get the contents, we add 0 because 0 is what makes sense.
+[33:35] We need the return address and then we go back.
+[33:40] Of course, this mechanism is flexible.
+[33:42] It allows other things which we are not using at the moment.
+[33:48] So let's now look at another such piece of code where we compute x to the power n and store
+[33:57] the result in A0 and we do some sort of function calling.
+[34:05] Right?
+[34:06] So that is a fun part that this is done using function calls.
+[34:11] But a single function call, it's not a recursive call.
+[34:14] We look at a recursive call later, this is a non-recursive call.
+[34:20] So assume I set x as 7, x is in A1, I set x as 7.
+[34:27] The second argument, I am trying to compute 7 to the power 3, so A2 is set to 3.
+[34:35] And then, obviously, I store the return address in RA and I jump to the power function.
+[34:41] Right?
+[34:42] I jump here.
+[34:46] So the final result will be in A0.
+[34:48] Right?
+[34:49] So A0 can contain 1 to begin with.
+[34:54] And then I'll set the state, so A2, that I will put into D1.
+[35:01] And so we'll see, you know, what's the need.
+[35:07] So in general, you know, instead of dealing with arguments directly, it's sometimes a better
+[35:11] idea to actually deal in terms of temporary variables.
+[35:16] The code becomes easier to understand.
+[35:19] So A1, what is it holding?
+[35:22] It's holding x, and A2 is holding n.
+[35:25] So now T1 is holding n, right?
+[35:29] And A1 is holding x.
+[35:34] So I compare T1 with 0.
+[35:36] So if n is equal to 0, then it clearly means that my job is done.
+[35:40] I can just get out of the program because A0 has been initialized to 1, and any number
+[35:47] to the power of 0 is 1.
+[35:49] So let's now look at the other case where I multiply A0 with A1.
+[35:57] So result multiplied with x, right, because A1 contains x.
+[36:02] That is because it is non-zero.
+[36:04] So I set n as n-1 by decrementing, by subtracting 1 from it.
+[36:12] Imagine the fact that I don't have a sub i, I use add i, and I just add minus 1.
+[36:19] Then I compare the index T1 with 0.
+[36:22] The moment it is 0, you know your job is done, and you can get out.
+[36:26] Otherwise, you need to loop.
+[36:29] And to get out, all that you do is you just return back.
+[36:32] In many cases, the return function is very simple.
+[36:36] It's just ret.
+[36:37] So internally, it's kind of implicit that you fetch the value of the return address register,
+[36:44] look at its contents, and jump there.
+[36:47] But in RISC-V, nothing is implicit.
+[36:50] Everything is explicit.
+[36:51] So in this case, what you do is you set the first argument to 0 because you do not want
+[36:56] to save any return address.
+[36:59] The second argument is where the return address actually is.
+[37:03] Is there in the RA register, the offset is 0.
+[37:06] So as I said, RISC-V, keep things explicit because it sort of is much easier to compile
+[37:13] the code, analyze the code, optimize the code.
+[37:16] The moment you see these explicit dependencies, right, it's sort of much easier.
+[37:23] So in this case, again you return.
+[37:27] So I have just cluttered up this slide by writing a lot of things.
+[37:32] But if you broadly look at it, there is one function call.
+[37:35] You check for the trivial case if whether n is equal to 0.
+[37:39] If it is not, you just keep on multiplying x with the product until n becomes equal to 0.
+[37:48] So we have not changed the argument as such.
+[37:52] In general, it's not a good programming practice to change the argument.
+[37:57] That is why we created a copy of A2.
+[37:59] We transferred it to T1 and then we did everything with T1.
+[38:05] It's kind of a good programming practice because then at any point of time, if you want to debug,
+[38:11] you can just print the arguments and you know that they wouldn't have changed.
+[38:15] If they would have changed, things become harder.
+[38:18] That is why we sort of followed a good programming practice here.
+[38:24] Let's now come to load store instructions.
+[38:28] They are almost 100% the same as other instructions in other RISC instruction sets.
+[38:41] So we have the same format where the load instruction takes in a source register, a base register,
+[38:50] an offset.
+[38:52] You load it into the destination register, something like this, SP plus 32.
+[38:57] Go to memory, load it into X1.
+[39:01] So store is always a special case because we need to, it doesn't have a destination.
+[39:07] We need to define a separate format for it because it has an immediate and two source registers.
+[39:13] So it always creates some problem.
+[39:16] It did create a problem in RISC-V as well.
+[39:19] We'll see how they solved it.
+[39:21] But the broad store instruction, that we know.
+[39:27] And then there is a little bit of a shortcut.
+[39:31] This is a pseudo instruction, an assembler directive.
+[39:33] So often what happens is that we would like to specify a constant in the assembly language
+[39:39] file itself.
+[39:41] So the constant, you know, could be of this type.
+[39:46] That dot pi 3.14 if it's a floating point constant.
+[39:53] And maybe let's say dot capital C, you know, 452.
+[40:01] So it's a good idea to associate an address with the constant such that we can load it
+[40:09] very easily using the regular load mechanism.
+[40:13] That is also how things would work internally, that whenever a constant is specified, it is
+[40:18] stored somewhere in memory and that memory has an address.
+[40:22] So that's how you would refer to that constant in any case.
+[40:26] So that is why LA is a directive to load the address of the label in RD.
+[40:34] For example, a label is pi.
+[40:36] Its address is loaded in X1.
+[40:38] X1 is address of pi.
+[40:40] So we shall use this a lot, especially when we discuss floating point numbers because loading
+[40:46] floating point numbers is sort of cumbersome.
+[40:50] It's a good idea to define all the constants and have addresses corresponding to them.
+[40:55] So every constant you define with a label and have a sudo instruction to convert a label to
+[41:02] an address.
+[41:03] That is exactly what it does LA.
+[41:05] LA takes a label which could be the label of a constant and convert that to an address.
+[41:17] And then, of course, it will generate all the assembly language statements or machine instructions
+[41:22] to basically load the… well, then we need to generate it.
+[41:30] This will not happen automatically.
+[41:31] What will happen automatically is the address of the label will come into a register.
+[41:35] Then we need to generate right assembly statements to load the constant to a register.
+[41:42] That's our job.
+[41:46] So this is the same diagram that we have been seeing that if I want to take M and X5, I
+[41:52] compute the address and then I load something.
+[41:55] It goes into register X1, which is the destination.
+[42:00] And also the next diagram for stores, also we have been seeing that the direction of data
+[42:06] transfer is the reverse.
+[42:08] So nothing, you know, no rocket science here and depending upon the Indian-ness of the machine,
+[42:14] little Indian or big Indian, appropriate, the bytes will be stored accordingly.
+[42:23] So let's say that I want to load A0 with the contents of the memory address SP minus 4 times
+[42:33] S0 minus 12.
+[42:36] So what I will do is I will first compute S0 into 4.
+[42:39] I don't have to multiply, shift left is good enough.
+[42:43] So I shift it to the left by two positions, same as multiplying.
+[42:48] I add 12.
+[42:52] Then, so this is 4S0 plus 12.
+[42:56] I subtract this entire thing from SP, so I produce T0.
+[43:01] And the contents of T0 are loaded into A0.
+[43:04] As simple as this.
+[43:06] And regular load store thing.
+[43:08] So this is something that we have been seeing for all memory instructions.
+[43:13] Exactly same here, right?
+[43:14] So if you go back to the semantics, exactly same here.
+[43:18] LW and SW.
+[43:19] LW is load word.
+[43:20] So of course you have other instructions to load half whites and half words and bytes and
+[43:25] so on.
+[43:27] So I'm not looking at that.
+[43:29] So let's look at this where I define a word which is basically 32 bits.
+[43:37] It is 17.
+[43:38] The value is 17 of the constant and I associate it with a label val.
+[43:44] So this dot word is essential because you have to specify the size of the storage specifier.
+[43:52] If it's 32 bits, it's 32 bits.
+[43:56] So val of course is kind of a label defined in assembly file.
+[44:01] Once address gets stored in T1 using the LA assembler directive.
+[44:07] Now T1 can be used as the base address register with an offset of 0 to load the value which
+[44:13] in this case would be 17 into a regular register.
+[44:18] So this is how we can kind of load the values of constants defined in the assembly file into
+[44:27] regular registers by first converting the label to an address and then loading that address
+[44:42] and into a register which basically the value gets stored in the register.
+[44:49] So let's take this forward.
+[44:51] I want to create a copy of a 10 element array.
+[44:56] So basically I want to set the array whose starting address is in A2.
+[45:02] So 10 elements with the array whose starting address is in A1.
+[45:09] So what I do is I initialize some state 10 elements.
+[45:13] So I said this is the index is T1 and T2 is the limit which is 10.
+[45:18] I load 0 A1, load an element and I store it here.
+[45:25] So what I do is I slightly abuse my rules and I modify A1 and A2 because I am assuming that
+[45:34] they will not be used.
+[45:36] And also this is an efficient way of doing that because the other solution of just modifying
+[45:42] the index will require too many instructions.
+[45:46] So what I do is that A1 was pointing to, it started out by pointing to the start of the array.
+[45:53] Now I make it point to the second element and this is easily achieved by setting A1 as A1 plus 4.
+[46:04] Similarly, I make A2 point to the second element which is easily achieved by setting A2 as A2 plus 4.
+[46:10] which is exactly what I do here.
+[46:13] I increment the index, loop index and then I compare it with T2 as long as it's not.
+[46:19] T2 is the limit.
+[46:22] As long as it's not the same, then I keep looping.
+[46:31] The moment it is the same, I exit.
+[46:32] So again, this is a simple way of doing it but the important take home point is how we
+[46:40] actually access array elements.
+[46:42] So A1 and A2 in this case are treated as pointers into the array and they are initialized to point
+[46:50] to the first element but we keep on incrementing them by 4.
+[46:54] Why 4?
+[46:55] Because the size of a word or the size of an entry in the array is 4 bytes, 32 bits, 4 bytes.
+[47:02] So we keep incrementing it by 4, 4, 8, 12, 16 and then just keep transferring.
+[47:14] So another such simple example which is the sum of all the elements in the 10 element array,
+[47:20] this is the C code.
+[47:21] So basically we increase the index from 0 to 10 and then we basically do sum is equal
+[47:28] to sum plus array index.
+[47:31] That is what we do.
+[47:32] So sum is kind of the running accumulator and I keep on adding the relevant entry of the array
+[47:42] to sum.
+[47:44] See, if I were to convert it to assembly, this is what it would look like.
+[47:56] So we can start with initializing the index to 0, the limit to 10, T0 always has the index,
+[48:03] T1 always has the limit and the result, the result is in this case the sum, right?
+[48:11] This is the final, something that we are adding.
+[48:14] So of course there should be a return statement here but that I am not showing.
+[48:19] So what we do is that we read the value of the array element, we store it in T2 and then
+[48:29] we add it to the result, so a0 plus equal to T2 which basically means I am adding it to
+[48:36] the result, the sum.
+[48:41] And here also I increment a1, so this is like an array pointer and I increment the index.
+[48:48] So one option always could have been not to increment the array pointer but to add the
+[48:53] incremented index.
+[48:55] But the incremented index would, we are incrementing the index by 1 but the array pointer by 4.
+[49:02] So then we would have actually had two more instructions.
+[49:06] One is multiply the index with 4 and then add it.
+[49:10] So instead of two instructions over here, we would have had three instructions where the
+[49:16] first would have been increment the index.
+[49:22] Then we would have had multiply the index with 4 and then it would have been add.
+[49:40] You add it to the array pointer.
+[49:49] So instead of three, we made two instructions.
+[49:53] So of course, if you recall, ARM had a shortcut, so it allowed you to add an index and then left
+[50:00] shift it right then and there.
+[50:03] So it was basically done for this use case that kind of allowed in-situ left shifting in
+[50:08] the sense whenever you are adding something and add a shifted version of it, which is
+[50:13] exactly what we need here.
+[50:15] But here, of course, we find another efficient way of doing that, which is to increment the
+[50:19] pointer itself.
+[50:21] And pointer is incremented separately and the index is incremented separately.
+[50:26] And finally, we compare the index with the limit.
+[50:29] If they are not equal, we keep looping.
+[50:33] So one important remark is due here that for many of the common patterns like reading an
+[50:41] array element, there are different kinds of styles and instructions defined in different
+[50:48] ISAs.
+[50:49] So ARM had this shifter operands primarily because of this.
+[50:54] So in this case, we don't have that, but we can instead tinker with the array pointer
+[50:59] directly.
+[51:00] Hence, we have done that and we have reduced one instruction, which is the right thing to
+[51:05] do.
+[51:06] Finally, you know, we have to show a recursive algorithm.
+[51:12] It's like, it's a tradition.
+[51:15] So we have always done that even in the last three chapters, we have done that.
+[51:19] So how can we not do it?
+[51:21] So as you can see, the recursive algorithm is kind of tough, but this is the hardest one.
+[51:26] Because once this is done, we will go to floating point instructions and instruction encoding.
+[51:33] So I would like to explain this and then kind of end the lecture over here with the recursive
+[51:42] algorithm because this is hard enough.
+[51:45] So I don't think the viewers would be interested in anything that is more difficult or tougher
+[51:51] than this.
+[51:52] That won't be a great idea.
+[51:55] So let us go step by step and understand how this algorithm works.
+[52:01] So this is the only algorithm incidentally that requires two slides.
+[52:06] So one is this slide 46 and the previous one 45.
+[52:10] We'll start with 46 and then we will go back.
+[52:15] So let us now look at the main function.
+[52:19] The main function is where the execution of the factorial code begins.
+[52:26] So what we are trying to do is compute n factorial where n is 5.
+[52:34] So here what we have done is that we have set a1 equal to 5, which is the first argument.
+[52:42] Then we call the factorial function.
+[52:45] So the return value is in register a0, but it is clear that we don't return here because
+[52:52] it is a recursive call.
+[52:54] We may not return here.
+[52:57] The body of the factorial function.
+[53:00] So the first thing that we check is either n where I am computing n factorial is it less
+[53:07] than or equal to 1.
+[53:10] The reason I do that is because in both cases the answer is 1.
+[53:14] 0 factorial is 1 and 1 factorial is 1.
+[53:18] So what I do is I set the value of this temporary register to 1.
+[53:22] I set T1 is equal to 1.
+[53:27] Then I check if 1 is greater than or equal to n.
+[53:33] Same as this, n is less than or equal to 1.
+[53:37] So if that is the case, then I can clearly terminate the recursion.
+[53:41] So this is the recursion termination clause.
+[53:59] So then what I do is I jump to LT1 and then my recursion terminates.
+[54:06] So I can return, that's the idea.
+[54:11] So if I go to LT1, what I do is my return value has to be in the register a0.
+[54:18] I set that to 0 plus 1, which is 1, which means that 0 factorial is 1 and 1 factorial is 1.
+[54:24] That's the reason I got here.
+[54:27] And I simply return.
+[54:28] So it's a regular vanilla normal return statement where I simply return.
+[54:32] This is my return address register.
+[54:37] I simply read its contents and I return.
+[54:40] I don't have to store the return address of the return anywhere.
+[54:45] It's a regular return.
+[54:48] If that is not the case, that is, if I come here, then I know that n is greater than 1.
+[54:55] So for me, this is where the actual work starts.
+[55:00] So what I do is I use a register S0.
+[55:04] So S0 is again a saved register, which I have to use because I want to save it, right?
+[55:09] There are function calls, but I still want the value to be saved.
+[55:16] So what I do is that I set, put the old value of n here because what I am trying to do is
+[55:27] invoke this n times fac of n minus 1, factorial of n minus 1, which is essentially equal to
+[55:35] factorial of n.
+[55:36] And I subtract 1 from n.
+[55:40] So a1 now contains is the new argument of the new avatar of the factorial function.
+[55:47] It now contains n minus 1 and I'm good to go.
+[55:51] So what are my temporary variables that I wish to store?
+[55:55] Well, so first I create space on my stack.
+[55:59] If this is my existing stack pointer, I create one cell here and one more cell here.
+[56:08] So then what I do is I save the return address over here.
+[56:16] And then I store the value of S0, which is nothing but, let me make it 0, nothing but the value
+[56:25] of n.
+[56:26] So I store both of them on the stack.
+[56:28] The return address, obviously I need to store it because I need to return.
+[56:33] And the stored register, which actually stores the value of n.
+[56:39] And then I make the recursive call with this being the return address.
+[56:44] So it is obvious that the input argument now contains n minus 1.
+[56:50] So basically this requirement is satisfied and the result of this will come in register
+[56:59] A0.
+[57:00] So this I know from my semantics.
+[57:04] So once the function has finished executing, it may have done a lot of things, I don't care.
+[57:09] So this is clearly a caller saved scheme, right?
+[57:14] The caller is saving the registers.
+[57:16] It is a caller saved scheme.
+[57:20] So I restore the registers that I had saved.
+[57:24] So I restore S0, all right?
+[57:31] That is something that I restore.
+[57:36] And I, sorry, and then I restore the return address, both of them I restore.
+[57:44] And essentially whatever space I had created on my stack, I created some space, right, to
+[57:50] store these two.
+[57:52] I wind the stack back.
+[57:55] So I wind it back because I don't need to store, I don't need to make any more function
+[58:00] calls.
+[58:01] I don't need that space.
+[58:03] So the last time I had subtracted, this time I add and I wind the stack back.
+[58:09] Now I come here.
+[58:11] So I know that A0 is basically FAC of n minus 1 is the return value of the function.
+[58:20] And S0 is n and this is something I had stored.
+[58:23] So the moment I multiply both of them, the new value of A0 is FAC of n, which is actually
+[58:30] the return value of this function.
+[58:34] And it is computed right here.
+[58:36] So I am all done.
+[58:38] And then I simply return.
+[58:42] So it is clear that I am doing a recursive, this is undoubtedly a recursive construction.
+[58:50] So what I am doing over here is that I am always maintaining two invariants.
+[59:03] The invariant that I am maintaining first is that the input argument always goes in A1.
+[59:09] So you begin the function and you set A1 as 5 because you want to compute 5 factorial.
+[59:14] Whenever a recursive call is being made, then also the input argument is correct.
+[59:20] In this case, it is n minus 1, which is anyway what you needed.
+[59:24] Similarly, the return value is also always being correctly transferred back to the caller.
+[59:32] In the first trivial case, which is the recursion termination case, where n is less than equal
+[59:39] to 1 means it is either 0 or 1, we are returning 1, right?
+[59:45] So clearly 0 plus 1, we are returning 1.
+[59:49] In the recursive case, we make a recursive call.
+[59:52] Obviously, we manage the state storing and restoration correctly.
+[59:58] At this line over here, we are multiplying n times fac of n minus 1 to get factorial of
+[60:04] n.
+[60:06] And we return.
+[60:07] And the return value is stored correctly in register A0, which is again what we needed.
+[60:15] So the final result is now in A0, which it will always be after every call.
+[60:22] And this is what we needed.
+[60:25] So now that we have seen this ultra complex example, we will not complicate things further.
+[60:32] This is the end of the second lecture.
+[60:34] In the third lecture, which is going to be the last lecture in the RISC-V series, we will
+[60:41] look at floating point instructions and instruction encoding.

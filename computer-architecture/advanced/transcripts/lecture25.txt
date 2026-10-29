@@ -1,0 +1,425 @@
+[00:00] let us now discuss some advanced aspects of cache design so these will definitely be deeper design
+[00:28] choices as compared to some of the design choices that we have seen particularly in
+[00:35] the first section where we discussed methods to improve the performance and
+[00:41] efficiency of a cache such as critical word fetch early restart and others like
+[00:49] a victim cache but these ideas are slightly more advanced
+[00:56] so let's start with asking a question let us say that a cache access takes 5 cycles which can be the
+[01:07] case particularly if we have a large L1 cache and we have a reasonably aggressive clock cycle time so
+[01:15] in that case it is very much possible that we can have a cache that takes 3 4 5 cycles to access and
+[01:24] definitely a larger cache such as the L2 cache can take even more time so the critical question over
+[01:34] here is that do we wait for 5 cycles for the next access so the answer is no so we have already
+[01:42] answered this question when we discussed in order pipelines and clearly the answer here is no it is
+[01:49] not going to be the case what we will instead do is we will pipeline the cache which means that at
+[01:57] least we can accept a new request if not every cycle then once every one or two cycles the latency can be
+[02:07] high as we have seen but what pipelining gives us is that is that it gives us high throughput all right
+[02:16] so this is an important point to bear in mind that even if the latency is high that's not desirable but
+[02:25] nevertheless if we pipeline the cache at least we can ensure that our throughput is high and so many
+[02:33] applications that are throughput dependent will at least be benefited from this design
+[02:38] so let us look at a simple idea of how to pipeline look at the tasks that are involved in a read operation
+[02:50] so in a read operation right one second
+[02:59] so in a read operation what happens
+[03:01] that we have a parallel tag and data array access so we have already discussed this and this was
+[03:13] a very beneficial design choice the reason being that of course we do waste a little bit of power
+[03:20] but at least we get the k data blocks in a k waste set associative cache in the same cycle
+[03:27] data block so this is of course the first part let us call it stage one then stage two is when we compare
+[03:43] the tags so the comparison is also a slow process because come in comparing what do we do we basically
+[03:52] take two tags and we subtract one from the other so that is one way of comparing the other is that we just
+[03:58] compare the bits and then we compute an XOR and if let us say any bit pair differs then the values are not the same
+[04:09] so regardless of how we do it this will take one full sub stage and finally once if there is a match
+[04:19] if we find a match then we select the data block so what we can do is we can take this simple design
+[04:26] and we can pipeline it so pipelining does not require any additional circuitry all that we need to do
+[04:33] is we need to insert a pipeline latch between adjacent stages write a tag array data access tag comparison
+[04:42] and data block all right so something similar can be done for a write operation so what we would do
+[04:56] is that for a write operation we will access the tag array then we compare the tags and we affect the write
+[05:03] in the data array so of course if we have a read and write to the same address some forwarding will be
+[05:09] required so that forwarding logic needs to be added so let us now see what else i have on this slide
+[05:18] so what we can do is that we can further add more pipeline stages so one worthy idea in this space is
+[05:27] to pipeline the sram access right so if you would recall in the sram access we have this huge row decoder
+[05:39] and input is the address and then of course this sets the appropriate word line then we go to the sram array
+[05:53] we read whatever that is that that needs to be read and by that time we are expected to have
+[06:00] configured the column mux dmux finally we the sense amplifiers sense amplifiers read the data and the
+[06:08] data comes out so we can in principle pipeline the decode process in the sense that we can add a huge
+[06:18] pipeline latch over here where the decoded address so the decode lines would be sort of temporarily
+[06:28] stored in that latch for one cycle so of course here the latch has to be very large right roughly
+[06:36] the size of the decoder because storing one bit is not easy if let us say we want fast access so
+[06:43] it will be it will have to be one d d flip flop per bit and this does cause issues in terms of a high area
+[06:54] footprint and also it adds to the capacitive delays of the word lines and so on so because of that
+[07:03] pipelining the sram access any further is not advisable
+[07:10] so what do we do then what we do then is that we look at other kinds of optimizations
+[07:17] which brings us to a second optimization this is another idea which is called a non-blocking cache
+[07:27] so let us say that we have a cache miss for a certain block b see if there are later cache accesses
+[07:34] what happens so if they are different if they are two different blocks well they can go through
+[07:39] but let us say if they are two different memory words within this block so what do we do do they
+[07:45] actually stall so what we do is that accesses to other addresses need not be blocked that is the
+[07:56] key idea that accesses to other blocks need not be blocked but let us say that for the missed block
+[08:03] what we need is we need to simply store or record all the accesses that are being made to different
+[08:10] words of the missed block such that when the missed arrives on a lower level all of them can be
+[08:17] serviced in one go so to do that what we do is we add a new data structure so this is not a data
+[08:25] structure in a data structure sense it is a hardware structure so let us call it a hardware data
+[08:30] structure okay so let me define something but this is of course pure hardware it is no software okay
+[08:36] so but i love the word data structure so but i love the word data structure because it uses
+[08:40] similar concepts but i do agree that this is kind of an abuse of the term so let us call it a hardware
+[08:48] structure okay so even though i would have been internally motivated to say hardware data structure but
+[08:58] in the interest of keeping things consistent and simple let us call it a hardware structure
+[09:03] uh this is an mshr a miss status holding register which has a rather intricate structure which we will see next
+[09:16] so the mshr is associated with a cache so it keeps track of the misses of the cache each entry of the mshr
+[09:28] has two fields if we look at it from the top level the first field is the address so this is the
+[09:36] block address that is the first field and the second field is a miss queue so whenever we have a miss
+[09:45] or let us say whenever we have a read or write access the mshr is always checked
+[09:50] so the block address is looked up very quickly and the mshr's are typically very small structures
+[09:58] so they have maybe 4 8 or 16 entries so this structure can be very well fully associative as well
+[10:06] right it can be there is no harm in that and furthermore each entry has a miss queue
+[10:14] miss queue so the miss queue each entry of the miss queue is called a miss queue entry its fields are as
+[10:21] follows the first field is read or write so this field refers to whether the particular access is a
+[10:28] read or write so this will be a one bit field next we have the word address this is the address of the
+[10:37] specific word within the block which led to a miss so this is the word address the next is the tag so
+[10:49] the tag is mostly useful for a load instruction so in a load instruction this tag and also this is useful
+[10:58] for the l1 cache so this is basically the tag of the instruction the tag of the register right
+[11:05] the physical register id of the register that caused a miss why is this needed well this is needed
+[11:14] because when the value of the load comes back from the lower level we can immediately send the address
+[11:21] to the processor sorry send the load value to the processor and along with this the tag will go
+[11:27] because the tag will indicate which load it is and the final field is a store value which is the value
+[11:34] that needs to be stored so this again is useful for stores so for every address what we do so for every
+[11:42] address meaning a block address we have an associated miss queue where all the miss queue entries are stored
+[11:50] in first in first in first out order in fifo order right and so there is applied one after the other
+[11:58] in fifo order after the block comes from the lower level
+[12:05] so a little bit of detail about the operation of an mshr so when there is a miss in a cache an entry is
+[12:13] created in its corresponding mshr so if there are no free entries right so assume that the mshr is full
+[12:21] and we can't create a new entry then of course the request blocks and so then from a non-blocking cache
+[12:30] the cache becomes a blocking cache but of course the mshr should be large enough such that this
+[12:35] particular scenario does not happen or let's say it does not happen frequently
+[12:54] so what we also do is we also create an entry in the miss queue which will be the first entry
+[12:59] this is known as a primary miss so once a primary miss is there in the miss queue what we need to do
+[13:07] is that we need to add additional entries if there are subsequent misses before the data actually arrives
+[13:15] so these misses will be known as secondary misses so if a secondary miss is a right what we do is we
+[13:23] just append it to the tail of the miss queue right so basically uh what we do is that if we assume
+[13:30] it's a it's a queue so then we just add a new entry to the tail of the miss queue and the write just
+[13:38] remains there if it is a read similar to a load store queue we search for all earlier writes in the
+[13:45] miss queue to the same set of bytes if we find an entry then there is no reason for us to queue the read
+[13:53] what we can do is we can just forward the value exactly the same way we would do it in a load store queue
+[13:59] and the processor can resume so in this case the operation of the lsq and the mshr is the same
+[14:08] else otherwise we enqueue the entry so we add the entry to a queue and again it remains
+[14:17] in the queue until the entire block comes from the lower level so what was new in this slide
+[14:23] the forwarding aspect was new in the sense that the mshr has a forwarding capability
+[14:32] uh similar to an msq so this aspect was new now let's come to the third idea so the third idea
+[14:42] is a new kind of a cache design uh which again if you can see it again comes from a simple data
+[14:50] structure concept so after all the cache what is a cache so a cache a direct mapped cache is like an
+[14:58] array right so its data structure analog will be an array so consider a direct map cache this the
+[15:05] analog for a direct map cache will be an array where we know the exact index we go there we see the value
+[15:11] is there or not if it is there we access it else we declare a miss even a set associative cache is
+[15:20] somewhat like an array but a fully associative cache is like a hash table
+[15:27] so in this case what we do is that well uh a given entry can be present anywhere uh so
+[15:43] we use a cam array a content addressable memory array
+[15:54] where uh we we can search which entry has the particular address and if you find it then at
+[16:04] least from the top uh it does appear to work as a hash table uh in the sense that we uh use
+[16:12] a baseline cam array which again addresses it by its content all right uh so this uh so
+[16:21] here again the broad uh big broad idea uh is uh rather different in skewed associative caches
+[16:32] so this uh the direct competitor for a skewed associative cache is a regular set associative cache
+[16:37] which is a combination of an uh array and a hash table or a hash table implemented on top of an array
+[16:46] where essentially we are pointed towards a set of locations and in let us say it is a k way set
+[16:55] associative cache then we are pointed to k locations we go there and we then see if the address is there or
+[17:03] not and of course conflict misses cause a problem in the sense that let us say if it is a four-way set
+[17:09] associative cache but there are five blocks that map to those four ways then continuously one of them
+[17:17] will get evicted and the there will be a timing penalty so what we do is instead of a regular hashing
+[17:26] scheme where a regular hashing scheme is that we take an address we extract some bits out of it we
+[17:34] might further mangle the bits and then we use it to access an array some location and then we do a local
+[17:43] search as we do in the fully i'm sorry as we do in the set associative case so this is kind of an
+[17:49] extension of the basic hash table idea even though some of you may not entirely agree with me in the
+[17:55] sense that you say that you might say that look in the hash table we only search for a few locations
+[18:01] search in a few locations but in a fully associative cache we actually search all the locations
+[18:08] i i agree with you the comparison is not 100 accurate but still a hash table searches
+[18:17] on the basis of content this is something that a cam array does and that's why i have created this
+[18:23] comparison even though there can be arguments against this comparison but broadly speaking a set
+[18:30] associative cache does embody the spirit of an hash table implemented on an array there is another way of
+[18:39] hashing which is known as cuckoo hashing so in cuckoo hashing what we do is that instead of using one
+[18:46] hash function we actually use multiple hash functions so what we can do is we can divide a cache
+[18:53] into four sub caches given an address we can compute four different functions on it f1 f2 f3 and f4 so
+[19:03] they would essentially produce different locations within the cache right so if you can see all of
+[19:09] these locations are all different so there is a beautiful property which i will come to next
+[19:16] the beautiful properties consider two addresses again they are block addresses in the context of this
+[19:25] discussion so let us say that they are colliding in sub cache one in the sense f1 a1 is equal to f1 a2
+[19:34] so this indicates a conflict miss with most likely or with a high probability
+[19:41] in the second sub cache they will not collide in the sense they will map to different locations f2 a1 will
+[19:49] be will not be equal to f2 of a2 so they will map to different locations so the key important insight
+[19:59] over here is that if they conflict in one sub cache most likely they will not conflict over there so
+[20:05] what we do is that if already let us say block with address a1 is there in one sub cache then what we
+[20:11] do is we go to the other one and there will not have so there will have another location and we
+[20:19] put our block over there so this really reduces the chances of conflict misses and this is an extension of the
+[20:31] basic cuckoo hashing idea because as i said what is architecture it is essentially a hardware wrapper
+[20:38] over what is fundamentally a data structure concept so the key important question over here is that we
+[20:46] need to compute these functions f1 f2 f3 and f4 right such that of course this property holds that
+[20:56] if there is collision in one sub cache we can go somewhere else all right replacements are tricky
+[21:05] we will see in a second why so we need to do something called a cuckoo search so assume we want
+[21:13] to add the block b at address a so we will first check the four locations f1 a f2 a f3 and f4 a to check if
+[21:21] they are free if one of them is free well fine we put the block over there and in this case accessing
+[21:34] in this case accessing the skewed associative cache does require more power in the sense the four
+[21:41] functions need to be computed and then we need to access the different sub caches to see where exactly
+[21:47] is the block right because it could be in it could be there in any sub cache right uh so so so in this
+[21:56] case while inserting an entry if any of these entries is free uh then we insert the block over there but
+[22:03] let's assume the worst case that none of these entries are free so what we do is we evict the block
+[22:10] b dash with address a dash that is let's say stored at f1 a all right so then we insert the block b in
+[22:19] the first sub cache at f1 a so now the idea is that since b and b dash had a conflict miss in sub cache 1
+[22:31] they will not have conflict misses right uh in other sub caches which means that even the likelihood of
+[22:40] uh you know had we not use this what would have happened is that pretty much all four of them
+[22:45] would have been like the same set so there would have been uh conflict misses for b dash in the other
+[22:50] sub caches as well but because we use different mapping functions what we can do is we can try to
+[22:57] accommodate b dash at these locations right recall that block b dash the address of block b dash is address
+[23:06] a dash so we can try to accommodate it at these locations f2 a dash f3 a dash or f4 a dash right
+[23:13] so what did we do well uh since we didn't find a free location we essentially tossed
+[23:19] block b dash out from sub cache 1 and we put in block b now the question is what do we do with b dash
+[23:28] so b dash again will map to three other locations in the three sub caches which are f2 a dash right i
+[23:38] mean it might be better to uh f2 a dash f3 a dash and f4 a dash these locations are most likely not same as
+[23:51] f2 a which we know to be full f3 a dash is most likely not the same as f3 a which we again know to be full
+[24:00] which is an f4 a dash is again not the same as f4 a again with high likelihood and f4 a is something
+[24:07] we know to be full so these locations are other locations and it is very much possible that one of
+[24:15] these locations may be free or we can randomly choose one if that is not free we can look at the
+[24:20] other two but it is very much possible that one of these locations may be free and block b dash can be
+[24:27] put there so let's assume again the worst case that these locations are not free well we can do the same
+[24:34] we can put in b dash in one of these locations toss out the block b double dash which was over there
+[24:41] and try repeating the process because b double dash will again with high likelihood map to another set
+[24:47] of different locations right and once it maps to another set of different locations ultimately after
+[24:55] maybe a few rounds we will find some free locations so this method is called cuckoo search so what i would
+[25:04] advise all of you is that you read up regular hashing so regular hashing again has
+[25:10] two variants one is called chaining and the other is called linear probing so we are not really doing
+[25:21] chaining over here uh what we are doing is more like linear probing which is similar to a set
+[25:29] associative kind of access scheme but the other access scheme which is a slightly different paradigm in
+[25:36] the world of algorithms and data structures is cuckoo search which is exactly something that i described
+[25:42] if you are not able to understand what i described
+[25:46] what i would like to advise you is kindly take a look at the cuckoo hashing and cuckoo search
+[25:51] algorithms and then you come back all right so it's an interesting thing of why do we say what is the
+[26:00] a you know why do we say it's a cuckoo search and why not some other bird so the interesting story is
+[26:08] that the cuckoo is actually a very clever bird so what the cuckoo does is that it lays its eggs
+[26:16] in a crow's nest and a crow's eggs and a cuckoo's eggs look more or less the same so unbeknownst to the
+[26:24] crow the crow actually helps incubate and hatch the eggs of the cuckoo and once baby cuckoos are born
+[26:33] then their mother comes and they are collected and they fly away so we are in a sense playing a similar
+[26:39] trick over here where we are having different hashing functions and we toss around blocks and so on
+[26:46] so so this is pretty much the history of this algorithm which of course has found an implementation
+[26:54] in the skewed associative cache scheme so as i said we can do this tossing around uh several times
+[27:06] but of course if the entire cache is full we will never find space but we can do it a few times and
+[27:11] if we don't find free space then we can evict uh the block to the lower level so that option uh always
+[27:20] exists now we come to our fourth mechanism called wave prediction so wave prediction is rather interesting
+[27:30] in the sense it takes us very close to the actual implementation right very close to a designer's
+[27:37] uh point of view so what is the default mechanism in let's say set associative caches we read all the
+[27:47] tags and blocks in a set simultaneously again why do we do that we do it for performance reasons
+[27:54] we compare the tag part of the address right with each of the tags so you pretty much do more work than
+[28:02] what is required whenever that is the case we end up burning more power and what is required so let us
+[28:14] propose a brilliant idea over here uh the idea is that we predict the way in which the tag will be found
+[28:23] so if there are key ways in a set we try to predict we say that look maybe in a second way the tag will be
+[28:29] found we access that way first so uh bear in mind that we do not read all the tags at the same time we
+[28:38] don't do that we predict in which way we will find we access that way first if the tags don't match
+[28:46] we access the rest of the ways and then we declare a regular hit or miss so the advantage over here is
+[28:53] that the additional energy that is spent in reading all the tags and blocks in a set and that too
+[29:01] simultaneously that energy is not spent right so we can save on energy subject to the fact that our
+[29:10] predictor is accurate enough so that is an important insight over here that if our predictor is accurate
+[29:18] then what we can do is that we can have a more power efficient version of a set associative cache
+[29:26] right so the key important point here is to design an accurate predictor to tell us in which way we
+[29:33] will have a hit let us now discuss the methods of wave prediction so the basic idea is that if the memory
+[29:41] address is available then we use it because after all the memory address will be the best predictor
+[29:49] on in almost all cases uh for the way that you would expect to find it in however there are pipelines
+[29:57] where the memory address may not be available when we initiate wave prediction at that point we need to
+[30:05] proceed on the basis of some other information right some other piece of information
+[30:10] we need to proceed on the basis of that so i outlined two approaches so in one approach
+[30:19] we predict based on the program counter so we use a mechanism that is very similar to branch predictors
+[30:25] that uses the pc address to make a prediction so in this case we have a predictor which is
+[30:30] which is extremely similar and we provide it the pc
+[30:44] it predicts and what we get out is the way
+[30:50] a major shortcoming of this approach is that for the same program counter the addresses keep on changing
+[30:56] so if the addresses if the memory addresses keep on changing the ways will also keep on changing
+[31:02] and the predictability of this source is kind of low so what we do is when you do not have the address
+[31:08] we use an estimate of the memory address right the estimate is computed using a different mechanism
+[31:17] the mechanism is as follows let me explain with an example
+[31:20] so let us assume the load instruction is of this type load into register r2 12 r1
+[31:30] so
+[31:34] then what we do is that we can divide this into four stages so let me first look at the stages of the
+[31:44] regular pipeline then i will talk about the additional stages so one stage is where we read the registers
+[31:53] so in this case we read the registers r1 and r2
+[31:59] so these are the source registers we read them
+[32:02] then the next stage we compute the address so in this case we add 12 to the contents of r1
+[32:09] now we have the memory address with us so in this case we check for load store queue forwarding
+[32:17] we can additionally have another stage to convert it from convert the virtual address to the physical
+[32:25] address so this depends upon what we store in a load store queue so if within the same thread
+[32:33] uh different virtual addresses can map to the same physical address then we need to store uh physical
+[32:40] addresses in the load store queue but otherwise if we are guaranteed that different virtual addresses
+[32:48] will point to different physical addresses we can use the virtual address to address the load store queue
+[32:55] and in parallel we can do the translation right so i'm not showing that because uh i will show
+[33:01] an optimization to this process a few slides later but in any case one uh cycle is definitely needed for
+[33:09] load store queue forwarding and then we access the dcache and this accessing the dcache itself can take
+[33:16] multiple cycles so let us now look at an alternative timing where our wave prediction the time it takes to do
+[33:25] wave prediction is actually closer to two cycles than to one cycle so there what we will see is that if we
+[33:34] have the address at this point of time we cannot afford two cycles to do the wave prediction and then access
+[33:40] the dcache so that will not be possible uh so what we should instead do is that uh we we should compute an
+[33:54] approximation of the memory address so the approximation can be computed like this that we take the contents
+[34:00] of the base register which in this case is r1 this is the base address and we compute compute an exclusive
+[34:07] OR with offset which is 12. uh so this can be done quickly i mean this is much faster than addition
+[34:15] wave prediction and uh so this uh can be done independently bitwise so after that the rest of
+[34:22] the time can be spent on doing wave prediction and the wave prediction will use similar tables as we use
+[34:29] branch predictors so uh the rest of the time which will be roughly two cycles right so we we are treating
+[34:37] this as a composite two cycle stage so this can be used to come up with the way when we access the dcache
+[34:45] uh so uh of course alternative uh organizations are also possible so there will be some questions at
+[34:53] the back of the chapter which also looks at different ways of organizing the timing but if we take a look
+[34:59] at this particular example uh what we can immediately conclude is that we do not have enough time
+[35:09] after the address to do the wave predictions it needs to happen in parallel that is why we need an estimate
+[35:15] where we use a xor function like the gshare predictor to provide us an estimate of the address
+[35:22] so let's say if from the lsq forwarding stage we decide that we need to access the dcache
+[35:28] then the way can come from here we first access the predicted wave which is fast if let's say uh
+[35:36] we do not find the data there then we access the rest of the waves
+[35:40] all right now let's come to our next optimization after wave prediction which is loop tiling
+[35:50] so loops are very important in code primarily because a program spends most of its time
+[35:58] executing loops all right so most of the time of a program is uh is spent in loops and particularly if
+[36:07] we have large loops that access large arrays on the that are stored in memory on the system with
+[36:14] caches running such large loops becomes a problem so we need to uh first answer a question how is a 2d
+[36:22] array stored so there are two ways of storing a 2d array one is a row major order and other is a column
+[36:29] major order because after all an array can be 2d but the memory the way that we see it is basically a
+[36:36] 1d array of bytes right with increasing addresses so for a 2d array what we can do is we can store the
+[36:43] first row then the second row third row and so on so many programming languages use the row major order
+[36:51] but what is kind of more common you know i would say slightly more common is a column major order
+[36:57] in this case we store the first column second column third column and so on right so that is primarily
+[37:08] the way that data is stored and so what happens is that if let's say an array is stored in row major
+[37:17] order and then we read it column wise it will cause a lot of cache misses because essentially there is no
+[37:24] locality right so locality spatial locality is not there but if an array is stored in column major order
+[37:31] and we access it in column major order then of course we will have good performance because we can leverage
+[37:37] the effects of spatial locality
+[37:42] so let us consider matrix multiplication for example so this is a standard code for
+[37:48] matrix multiplication uh where we are multiplying two n cross n matrices the final matrix is also n cross n
+[37:57] so is a multiplied with b is producing matrix c uh so the final uh as you can see the final result is
+[38:07] being written here and this loop over here uh basically computes uh does the multiply step
+[38:14] step so what we do in a matrix multiply step is we take a row multiply it with the corresponding column
+[38:21] so we take the ith row here multiply it with the jth column it's a pairwise multiplication and addition
+[38:29] that's the reason we have the plus equal to over here and finally uh after the pairwise multiplications
+[38:36] and additions the final sum is stored over here so when arrays are large let's say they are very large
+[38:42] they are much larger than the size of the cache so this will actually lead to a very inefficient
+[38:50] traversal so to speak because just take a look at this array so in this array we are essentially
+[38:56] traversing the array in row major order array a in row major order but here what we are doing is we are
+[39:05] choosing a column and we are traversing that array in column major order
+[39:14] so we are clearly not taking advantage of spatial locality of course some programming languages can
+[39:21] be smart and some compilers can be smart in the sense that they will store this array in row major
+[39:26] and this array in column major but typically that's not the case and the second is that even if they
+[39:33] are aware it is possible that a single row is much larger than the size of the cache which can be
+[39:39] the case with large data sets so there is a need to convert this code into a more cache friendly version
+[39:48] so the method to do that is called loop tiling which we will discuss
+[39:54] so this is also called blocking so we will see why it is called blocks but let's look at the idea
+[40:02] so what is the idea well the idea here is that let's first look at the default scheme
+[40:08] in the default scheme we take the ith row and the jth column we multiply the elements pairwise
+[40:15] and then we add them and the final result is stored over here so then the other thing is
+[40:28] that instead of the other idea which is in our sense novel idea which is loop tiling is that we
+[40:35] don't consider an entire row or an entire column instead what we do is we consider a small block of data
+[40:41] data all right so the small block of data
+[40:48] can start at the coordinate ii kk and then basically the size of the block might be b rows
+[40:57] on this side and b columns on this side and we consider a similar block which again starts from here
+[41:05] so what we do is that we take one small row over here we take one small column over here we multiply them
+[41:19] so we'll produce a set of partial sums and those set of partial sums can then be used
+[41:27] uh to basically
+[41:28] so so those are anyway part of the matrix multiplication right so those partial sums will
+[41:34] be used to update uh the final uh sums uh which is the final sum is being referred to as cij
+[41:43] so they will be used to update the values of cij in the final matrix right so we'll have to consider
+[41:49] many many many many such small blocks in each block we perform a regular matrix multiplication which
+[41:55] means we take a row take a column multiply them but unlike the previous default approach where
+[42:02] after one iteration we finally have the value of cij in this case we will not have rather we'll have
+[42:09] partial values for all the cells within a block but they are stored and this process is repeated
+[42:16] until uh all the pairs that need to be multiplied are done one small advantage of doing this is that
+[42:24] if let's say the size of this block is small the entire block can fit in the cache
+[42:30] similarly this entire block can fit in the cache so all of these traversals even if uh because of the
+[42:37] block effect uh so so even if let's say spatial locality is lower but at least it is guaranteed that
+[42:45] all of the accesses will hit in the cache and so basically this will be a very fast access
+[42:52] now let me show the code for dialing so the key idea is that we have six loops instead of three loops
+[43:03] the three loops at the top
+[43:07] which is the iterators iijj and kk they traverse the arrays
+[43:13] at units of the tile size so we are of course making an assumption over here that n is divisible
+[43:22] by b otherwise of course we can add some dummy elements or we can do a little bit of algebra to
+[43:29] take care of it but let's assume for the sake of simplicity that n is divisible by b
+[43:35] so we divide the matrices basically into small tiles as you have seen over here
+[43:42] that they are being divided into small tiles and each tile each b cross b tile is assumed to be
+[43:49] small enough such that it fits within the cache so what we do is that we are multiplying two matrices
+[43:56] over here right and whenever we multiply we consider the ith row over here and the jth
+[44:05] column over here where k is the iterator so in this case instead of the ith row we consider a set of
+[44:12] rows which is basically the tile size over here so we consider b rows and similarly for the other
+[44:18] matrix what we do is we consider a set of columns within the right so basically within each row
+[44:29] we don't consider the entire row but we consider a part of it and similarly within the set of columns
+[44:38] we don't consider the entire column but we consider a part of it all right so that is given by this
+[44:44] third parameter which is kk so this for us is the tile that we consider and we perform all the
+[44:50] multiplications within the tile so to perform all the multiplications within the tile what we do is
+[44:57] that we iterate within the tile so we have three loops over here where we perform an iteration within
+[45:07] the tile so we iterate from uh the locations ii to ii plus b right so ii is considered the starting
+[45:17] location of the tile so uh this is also shown over here where the starting location of the first tile
+[45:24] is ii kk and other one is kk jj so all that we need to do is we need to iterate within this tile
+[45:31] and we need to perform the multiplication so just look at the three iterators we are iterating from ii
+[45:37] to ii plus b jj to jj plus b and kk to kk plus b so once that is done uh what do we do well once that is
+[45:48] done we have the exact in indices i j and k we perform the multiplication so of course note the
+[45:54] plus equal to sign so the multiplication over here is just adding to the partial sum
+[46:01] which is cij so once all the additions are done you can see cij is complete and that would happen once
+[46:08] we consider all the relevant tiles so it is in fact quite easy to prove that this multiplication is
+[46:17] doing exactly the same thing as matrix multiplication
+[46:24] and so so this is something that can be proven and it's so if you think about it uh let's say that
+[46:37] n is divisible by b so the number of uh iterations of the top three loops are essentially n cubed by b cube
+[46:46] and the number of iterations of the bottom three for one given combination of this is essentially b cube
+[46:54] all right b times b times b so if i multiply both we still have the n cube multiplications
+[47:02] and no multiplication happens twice right so and then you can also verify what exactly we are adding and
+[47:09] how we are computing cij so using this it is possible to prove that both the algorithms are identical
+[47:17] and of course proving it more formally is left as an exercise for the viewer
+[47:27] well a burger question over here is that proof that the algorithm is correct so this can be done we need to
+[47:33] just prove that the same set of multiplications are done no extra multiplication is done and the results
+[47:41] are computed correctly
+[47:45] all right now let's come to the question that we had kind of left unanswered when we discussed wave
+[47:51] prediction so what we had discussed then is that any internal address is a virtual address which needs to be
+[48:00] converted to a physical address so we need to compute the address it needs to be translated
+[48:08] and the translated address needs to be used to access the dcash right so the key insight is that
+[48:15] we need to spend an additional cycle translating the address after it has been computed which is this cycle
+[48:21] so this cycle is essentially at least one cycle of delay because here we access the tlb between the
+[48:33] address compute phase and the dcash accessing but of course to improve performance after computing the address
+[48:40] we also access the load store queue so that can be uh that phase can be overlapped with this phase
+[48:49] subject to the fact that we store virtual addresses in the load store queue but storing virtual addresses
+[48:54] in the load store queue is tricky it does have correctness issues which were discussed in a previous
+[49:00] slide so now the question that we ask is what if we don't need any translation to access the correct
+[49:07] set in the l1 cache right so what if in the l1 cache we actually don't need any translation
+[49:13] well does it mean that we send the virtual address to the l1 cache that will cause a problem the reason
+[49:21] it will cause a problem is that the next time that another thread uh runs uh on the same core another
+[49:31] process runs on the same core right thread or process actually if they are using the same virtual address
+[49:37] space there will be a problem right so there will be a problem uh so let's uh uh discuss this in some
+[49:47] detail but we are saying that it is possible but well the idea is that if it's if there is a different
+[49:52] thread or process that uses a different virtual address space right if it's using the same virtual
+[50:00] address space there is no problem but we can always have a thread from a different process
+[50:05] that is that has a different virtual address space so unnecessarily if we use a virtual address to
+[50:14] access the cache we'll get a wrong answer so the overlap problem will come up so now we see that there is
+[50:21] a fundamental trade-off here between performance and correctness we would of course not want to
+[50:27] compromise on correctness but we would also like to use the virtual address in accessing the dcash let us
+[50:33] see how to do it in some cases we can get away with it so where can we get away let's understand this
+[50:40] process in some detail see if i have a 32-bit or 64-bit memory address i would typically break it into a
+[50:49] page id and an offset where the offset is typically 12 bits because the size of a page is normally 4 kilobytes
+[50:57] if i were to consider a 32-bit address space the page id would be 20 bits
+[51:03] and then the frame id will also be 20 bits but of course it can be different depending upon
+[51:10] the size of the physical memory but let's say that the maximum size is limited to 20 bits
+[51:16] so if i were to look at the offset in some detail i will see that there is a little bit of hidden magic
+[51:24] in here so what i can do is that if i take my cache address if let's say these 20 bits of the frame id
+[51:33] correspond to the tag and the offset corresponds to the byte offset within the block and the set index
+[51:40] then the offset which will actually not change right so basically the offset is not dependent
+[51:49] upon the virtual to physical mapping so essentially this part is something that does not change whereas
+[51:55] this part is the one that is actually mapped we can use the offset to find the set right so basically
+[52:04] to so the tag of course will come from the mapping process but what we can do is we can use the offset
+[52:11] to at least access the correct set within the cache and read out all the data blocks and tags within the set
+[52:19] simultaneously we can do the mapping so let me explain this in some more detail because this is
+[52:27] very very important mechanism so what is the what am i trying to say well what i'm trying to say is
+[52:34] that in any virtual to physical translation process there is a part of the address known as the page
+[52:41] offset i should call this the page offset and i should call this the block offset so sorry the byte offset
+[52:48] over here so the page offset remains constant if my addressing scheme of the cache is such that the tag
+[52:56] tag comes from the mapping phase and the rest is a part of the offset then the set index is not dependent
+[53:07] on the mapping right so the key important point is that the index which is the set index is not a function
+[53:15] of the mapping and then the brilliant idea is that i can use this index to access all the ways in the set
+[53:21] so what is it that i am doing well what i am doing is that my tag will go to the address translation module
+[53:35] but my index can come directly from the page offset this can be used to read all the tags of the tag array
+[53:45] as well as read all the blocks from the data array in parallel so i'm essentially what am i doing i'm accessing
+[53:53] the tag array i'm reading the data array in parallel i'm doing the address translation so i'm overlapping
+[53:59] all of these within the same time window after that i can perform the tag comparison because i'll already
+[54:06] have the tag so i'm essentially saving a cycle over here that instead of this process being sequential
+[54:14] where i translate the address first and then access the cache i'm deliberately introducing an
+[54:19] overlap over here to give me that extra one to to reduce that extra one cycle then i do the tag
+[54:27] comparison and i select the appropriate data block so this part is the same what is actually different
+[54:34] is the earlier part where i was able to save one cycle by creating an overlap over here and the reason
+[54:42] that i could create this beautiful overlap is basically because the tag part of the access
+[54:48] actually came from the mapping phase so this is not a generic mechanism because this depends on the
+[54:54] size of the cache the size of the set index and so on so that's the reason for an l2 cache this is not a
+[54:59] very reasonable idea but if you read the book and you will see a working example given you will find that for
+[55:08] most typical l1 cache sizes this is a very reasonable idea that is why many commercial processors actually
+[55:16] use this mechanism all right so next we will discuss a novel idea called trace caches so when in trace
+[55:29] caches the idea is that can we totally sideline the branch predictor and the decode unit and just store an
+[55:37] unrolled trace of instructions that can be directly fed to the renaming stage right so can this be
+[55:46] directly done so we will look at that next

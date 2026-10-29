@@ -525,8 +525,8 @@ nvme1n1 rotational=0 logical=512 physical=512 size=512GB  model=SAMSUNG MZVL4512
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 光碟（CD、DVD、Blu-ray）、flash memory 與 SSD | **第 46 支**：Optical Drives and Solid State Drives |
-| 計算機架構的未來 | **第 47 支** |
+| 光碟（CD、DVD、Blu-ray）、flash memory 與 SSD | [第 46 支](lecture46_note.md)：Optical Drives and Solid State Drives |
+| 計算機架構的未來 | [第 47 支](lecture47_note.md) |
 | LVDS、NRZI、source synchronous、asynchronous | [第 43 支](lecture43_note.md) |
 | CRC、split transaction、endpoint／port、DMA | [第 44 支](lecture44_note.md) |
 | 移位相加的乘法器（GF 乘法同一招） | [第 22 支](lecture22_note.md#6-iterative-multiplier-的硬體) |

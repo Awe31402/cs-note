@@ -510,8 +510,8 @@ Associativity Rule：
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| Virtual memory、page table、TLB（TLB miss 也算進 AMAT） | **第 37 支**：The Memory System Part 4（課本 §11.4） |
-| 多核心共用 L2／L3、coherence miss（第四個 C） | **第 39–40 支**（課本 Ch12） |
+| Virtual memory、page table、TLB（TLB miss 也算進 AMAT） | [第 37 支](lecture37_note.md)：The Memory System Part 4（課本 §11.4） |
+| 多核心共用 L2／L3、coherence miss（第四個 C） | [第 39](lecture39_note.md)–[40 支](lecture40_note.md)（課本 Ch12） |
 | CPI = CPI_ideal + stall rate × stall penalty | [第 32 支](lecture32_note.md#15-真實-pipelinecpi--cpi_ideal--stall-rate--stall-penalty) |
 | cache 的結構、associativity、LRU | [第 35 支](lecture35_note.md) |
 | 局部性、cache block | [第 34 支](lecture34_note.md) |

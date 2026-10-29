@@ -1,0 +1,784 @@
+[00:00] Collect stages, so their main aim is to take in, if I were to draw, to take in a sequence
+[00:29] of renamed instructions, get the renaming done, and subsequently, I'm sorry, they take
+[00:52] in a sequence of renamed instructions and get them added to the instruction window, that's
+[00:58] what I meant to say.
+[01:01] So some of these instructions would have both of their source operands ready, some would.
+[01:07] So for the ones that are not ready, well, we wait for the source operands to be ready.
+[01:13] And for the ones that are ready, we send them to the execution units.
+[01:20] So, so of course, if they are ready, we need to read the register file first.
+[01:26] And then we read the register file and then we send them to the execution units.
+[01:35] So, let us look at the first stage, which is the dispatch stage.
+[01:41] And then we will introduce the other stages first, first a high level view, and then we
+[01:45] shall get into the details.
+[01:47] So, until the renamed stage instructions proceed in order, in program order.
+[01:54] After that, they are entered into the instruction window.
+[01:57] This also happens in program order, because the input of renaming is in program order, the
+[02:02] output is also in program order.
+[02:05] And the instructions are entered into the instruction window from the renamed stage.
+[02:10] So, this process is known as dispatch.
+[02:13] So, different books or different sources can use different terminology.
+[02:20] And some might confuse dispatch with a related term called issue, but we will use this convention
+[02:28] that transferring instructions from the rename table, sorry, the renaming stage to the instruction
+[02:34] window is the dispatch stage.
+[02:37] So, the instruction window is essentially a set of instructions.
+[02:44] And it is typically organized as a circular queues.
+[02:47] Almost all queues in hardware are organized as circular queues.
+[02:53] The reason being that, you know, a queue is essentially a software concept that is meant to be implemented
+[03:02] using a linked list, but this is rather hard to do in hardware.
+[03:08] Because in hardware, we cannot implement such a complex thing as a linked list.
+[03:13] So, what we have is, we have a single array of entries and we have, as discussed before,
+[03:19] we have multiple pointers, two in this case, a head and a tail and the wraparound.
+[03:25] So, this is a very, very standard design that is used in a large number of hardware structures.
+[03:33] The instruction window most of the time uses something similar.
+[03:40] So, what is the status of an instruction in the window, what are all the fields, right?
+[03:46] So, it has a lot of information associated with it.
+[03:52] So, let us go over them one after the other.
+[03:58] So the first field is that, is the entry valid or not?
+[04:03] So almost all queue base structures would have such a single bit entry, right?
+[04:06] So, this is a single bit.
+[04:07] It is a one bit entry to say if the entry over here is valid or not.
+[04:13] The next is the op code.
+[04:17] So the op code is the operation code of whether we are dealing with the add, subtract, multiply,
+[04:21] divide instruction.
+[04:23] Then, we have information for each source operant.
+[04:27] So we, in our risk instruction set, we have a maximum of two source operants.
+[04:34] So if it is an immediate, we store the immediate value over here because this comes along with
+[04:42] the instruction and it needs to be stored somewhere.
+[04:45] So it is stored over here.
+[04:48] If otherwise, if it's not an immediate, then what we do is we store what is called the source
+[04:55] tag and the source tag is nothing but the physical register ID.
+[05:01] So it is just the ID of the physical register if we are talking of a register operant here.
+[05:17] And this is the ready bit.
+[05:19] So the available bit that we read in the rename table, the ready bit is definitely related to
+[05:26] it.
+[05:27] If the operant is an immediate, well, then the ready bit is one.
+[05:32] Otherwise the ready bit is the same as the available bit of the rename table.
+[05:37] So what did that bit indicate?
+[05:39] Well, that bit indicated if the instruction, if the first source operant in this instruction,
+[05:49] if it is ready or not.
+[05:50] If it is ready, then we directly read it from the register file or we read it from the forwarding
+[05:55] network.
+[05:57] So forwarding is primarily an in-order pipeline concept.
+[06:02] So we have something very similar in out-of-order pipelines because whenever we have multi-cycle
+[06:07] functional units and we do need forwarding, right?
+[06:12] So there is no escaping from forwarding, but it has a different name.
+[06:16] So we will henceforth use the different name, even though they mean exactly the same thing,
+[06:23] in out-of-order pipelines.
+[06:27] So in out-of-order pipelines, instead of using the term forwarding, we will use the term bypassing.
+[06:33] So bypassing, forwarding, same thing, forwarding in-order pipelines, bypassing out-of-order pipelines.
+[06:39] And the ready bit basically indicates if either we have the data with us, which means it is
+[06:44] an immediate.
+[06:46] So we of course have another bit to indicate if it is an immediate operant or a register
+[06:52] operant that I am not showing.
+[06:54] And it stores the source tag, source tag is nothing but the physical register ID.
+[07:00] Similarly, we have exactly a same copy of this information for the second source operant,
+[07:06] if there is one.
+[07:08] And also we have the destination tag, where the destination tag is that if this instruction
+[07:13] has a register destination, a lot of instructions don't.
+[07:18] For example, the store instruction does not have a register destination.
+[07:22] But if there is one, what is the physical register ID?
+[07:28] Corresponding to this instruction, corresponding to this destination.
+[07:44] So that is the most important aspect over here that we basically deal, store and deal in terms
+[07:53] of these tags.
+[07:55] Alright?
+[07:56] So we will see that this will become important at a later stage.
+[08:01] So at any point in the instruction window, what will happen is that we will have a set
+[08:07] of green instructions and a set of red instructions.
+[08:11] The green instructions will be those instructions for whom all the operants are ready.
+[08:17] So they will be the green instructions and we will have a set of red instructions, which are just
+[08:28] a red means kind of like a traffic light stop there.
+[08:32] So these are instructions which are waiting for an operant to be ready, right?
+[08:36] So either one operant or both operants are not ready.
+[08:39] So they are waiting.
+[08:43] So let us look at this part of the pipeline.
+[08:45] So the earlier part, what did we have?
+[08:49] We of course had fetch.
+[08:51] So fetch had a host of things like branch predictors and so on.
+[08:55] Then we had decode.
+[09:02] Then we had rename.
+[09:06] And then we essentially, this process is known as dispatch, where we write it to the instruction
+[09:13] window.
+[09:14] And at any point of time, we will have a set of green or ready instructions and a set of
+[09:22] red instructions that are essentially waiting, right?
+[09:26] So these instructions are waiting for one or both of their operants to be ready.
+[09:32] So out of these green instructions, a few of them, well, all of them we can execute.
+[09:39] But let's say that we have two adders and all four of them are add instructions.
+[09:43] We can only execute two out of these four.
+[09:46] So let's say they are these two.
+[09:49] So these two instructions essentially get selected.
+[09:52] So we have a select unit.
+[09:53] So it selects these two instructions.
+[09:56] They read their value either from the register file or of course, what I'm not showing here
+[10:02] is that we have a full bypass network here, right?
+[10:06] We have a full bypass network here, okay, from the different values that are being written.
+[10:14] And we have a full bypass network here at, you know, different stages, right?
+[10:18] And even from within, so we have a host of, it's similar to forwarding, we have a large
+[10:25] number of multiplexes.
+[10:27] So this is the bypass network.
+[10:28] So it's not being shown for the sake of simplicity.
+[10:31] So it doesn't matter where they get the value from.
+[10:34] They get it either from the register file or from the execution units, doesn't matter.
+[10:39] So I'll just show the animation once again.
+[10:42] They get selected, right?
+[10:44] So at this point, structural hazards can happen.
+[10:47] It's an out of order pipeline, so definitely structural hazards can happen.
+[10:52] So as I said, we could have only two adders out of these four execution units and all the
+[10:57] four green instructions shown over here may be add instructions.
+[11:02] So we just choose two of them.
+[11:03] Well, how do we choose?
+[11:04] We will discuss that in detail when we discuss the select unit and how do we know who's ready
+[11:10] and how is this information propagated?
+[11:12] Even that will also be discussed, but this is just the high level view.
+[11:16] So in the high level view, we choose two instructions, select them, read their source operand values
+[11:23] and execute.
+[11:28] So now that we have seen the overall picture, let us now start looking at each of these individual
+[11:36] stages in great detail.
+[11:38] So let us kind of elaborately look at each of these specific individual stages.
+[11:48] So some of the key questions that we need to answer over here is that consider an instruction
+[11:54] in the instruction window that does not have one of its operands ready.
+[11:59] So how does it know that one of its operands has become ready, right?
+[12:04] So then, so the question here is that how do we make a not ready to a ready transition?
+[12:12] Somebody needs to let it know, who lets it know?
+[12:16] Well, the solution to the puzzle is that the producer instructions that are producing the
+[12:21] value, they need to let it know.
+[12:23] For example, let us say that the physical register is P5 and P5's value is being produced and
+[12:30] it is being consumed by a later instruction.
+[12:35] So at the moment, P5 will not be ready.
+[12:38] But when the producer produces the value of P5, it needs to somehow let all of the consumers
+[12:44] of P5 know.
+[12:47] So once a producer finishes executing, it broadcasts the tag.
+[12:52] The tag is nothing but the destination physical register ID as we have seen, to the entries
+[12:58] of the instruction window.
+[13:01] So if this is the instruction window, all the entries are kind of listening.
+[13:07] And once P5 is done, it is sort of broadcast to all of them.
+[13:14] All the entries check if P5 is one of their sources.
+[13:18] If it is, if the tag matches, if it is one of the sources, they set the corresponding source
+[13:23] operand to be ready.
+[13:25] So this process is known as wake up.
+[13:28] So in this case, we are waking up an operand.
+[13:32] It's also known as waking up an instruction.
+[13:34] For example, if for an instruction, it finds that after a wake up, both its operands are ready,
+[13:41] then we say that the instruction has woken up.
+[13:44] So wake up means that it is ready to execute.
+[13:47] What does that mean in this case?
+[13:49] What it means is that it can go ahead and read the value of its operands.
+[13:55] This is an important point to make here.
+[13:58] The important point that we want to make here is that what is being broadcasted is the tag.
+[14:05] So the tag in this case, if there are 128 physical registers, the tag is only log 128 to the base
+[14:12] 2, which is 7 bits.
+[14:14] So that's all we are broadcasting.
+[14:15] We are not broadcasting the value.
+[14:17] Okay.
+[14:18] So this is a very important point to keep in mind that we are not broadcasting the value.
+[14:26] Why are we not doing that?
+[14:28] Well, that will become very clear later on, not now, but it is very important.
+[14:35] So keep this in mind.
+[14:36] It is an important question that we are not broadcasting the value.
+[14:40] But why are we not broadcasting the value?
+[14:42] I will not tell you the reason now.
+[14:44] This is kind of food for thought.
+[14:45] So I am drawing a virtual burger.
+[14:46] I have a bad drawer, but this is essentially, you know, like a side view of a burger, right?
+[14:52] Add your letters and chips and other unhealthy stuff in between.
+[14:58] So not broadcasting the value is something we are doing right now.
+[15:01] We are just broadcasting a tag, which is 7 bits.
+[15:04] 7 bits is not much.
+[15:05] A value can be a fat 64-bit value.
+[15:09] So that's not being broadcasted.
+[15:11] And 7 bits broadcasting is fast and quick, and this can be done.
+[15:18] So what would be a representation of this?
+[15:21] Well, the representation is very simple that in the simple diagram, there is a tag bus.
+[15:26] So the tag bus is being broadcasted to, so the tag is being broadcasted to both sides.
+[15:35] So let's say one side are comparators for the first source operant, and the second side
+[15:41] are comparators for the second source operant.
+[15:44] The tag could match any one of them.
+[15:46] So what we have is that for every entry, we have two comparators.
+[15:49] So for let's say this entry, we have two comparators, source 1 and source 2.
+[15:56] So for each of them, well, what do we do?
+[15:59] We read the contents of the entry.
+[16:01] We read the contents of the tag.
+[16:03] If they match, we set the ready bit.
+[16:06] Similarly here, if they match, we set the corresponding ready bit.
+[16:11] So this is done for every single entry, and for any instruction where both the ready bits
+[16:18] are set, or the instruction is set to have woken up.
+[16:24] So every cycle, whenever we broadcast, right, we will definitely wake up some operants.
+[16:33] And we will also wake up some instructions if the rest of the operants are ready.
+[16:39] So whatever instructions are woken up, they are set to be in a woken up state.
+[16:44] So they subsequently need to be selected.
+[16:47] Go through the select unit and then get, read the values from the register file and execute.
+[16:52] So what is this?
+[16:54] What is the sequence here?
+[16:55] Well, first we dispatch.
+[17:04] And once we dispatch, they enter the instruction window, then of course they wait.
+[17:13] Subsequently the tag gets broadcast by the producer, right, so you broadcast the tag.
+[17:21] Then what you do is that you do your process of waking up, you do a wake up.
+[17:27] For all the instructions that have fully woken up, we select, right, we select a subset based
+[17:37] on structural hazard considerations.
+[17:41] And then once we select a subset, we read the operants from the register file.
+[17:46] So it could either be the register file or the bypass network.
+[17:51] Once that has been done, what do we do?
+[17:55] Once that has been done, well, we don't know much, we just execute.
+[18:02] So this process of waking up the instructions, right, and sending them to the execute units
+[18:14] is known as issue.
+[18:16] So what do we do?
+[18:17] Well issue, basically if I were to look at it broadly, right, is said where I can basically
+[18:25] take the instruction window and from it I send them to the execution units.
+[18:32] So this is said to be issuing to the execution units.
+[18:35] So this process is known as issue.
+[18:40] So here is a slightly deeper view of it.
+[18:46] What we do is we compare the both the sources, source tag 1 with the broadcaster tag and source
+[18:53] tag 2 with the broadcaster tag.
+[18:55] And we set the corresponding ready bits.
+[18:58] So this is happening for each entry.
+[19:01] Let us now consider the case where we have multiple tag buses.
+[19:08] So recall that if we have a multi-issue processor where we send multiple instructions to the execution
+[19:18] units every cycle.
+[19:20] So multiple producer instructions will become ready every cycle.
+[19:25] And they will broadcast their tags.
+[19:28] So we actually need multiple tag buses, one for each producer.
+[19:32] So this can be producer instruction one.
+[19:43] And this can be producer two.
+[19:53] So the producer instructions can broadcast their tags.
+[19:57] So what will actually happen is that we need to compare both the tags that are being broadcasted,
+[20:06] tag 1 and tag 2.
+[20:08] So let's say for the first source one, we will actually compare both the tags.
+[20:13] So we need two comparators.
+[20:14] We need one over here and we need one over here.
+[20:18] So both the tags are compared and then an OR gate.
+[20:23] So just one of the comparisons will be successful.
+[20:26] So we will never broadcast the same tag.
+[20:30] The same tag will not be broadcasted on both the buses.
+[20:34] So there will be at most one match.
+[20:36] So if there is a match, the OR gate will catch it and it will set the ready bit.
+[20:41] Same is the case with the ready bit for the second source where we will broadcast two tags.
+[20:48] And if there is a match, this will be captured by the OR gate.
+[20:53] And this will set the status of ready to.
+[20:58] So this was the basic broadcast and wake up mechanism.
+[21:06] So let us now take a quick look at the instruction select mechanism,
+[21:12] which means that once we have chosen the set of instructions, what do we do?
+[21:21] So what we do is that let's consider this the instruction window.
+[21:25] So in the instruction window, we will have instructions of two types, red and green.
+[21:31] So green are green instructions are the ready instructions, which are ready to execute.
+[21:37] And the red instructions are waiting.
+[21:40] So each instruction, there is a wire.
+[21:44] So there is a wire essentially for each entry.
+[21:47] So we call it the request line.
+[21:49] So whenever it is ready, it just asserts its request line, which means sets it to one.
+[21:54] So there are similar request lines connected from the rest of the entries.
+[22:05] And all of their status is zero.
+[22:08] But again for the next green line, it is one.
+[22:12] So what the select unit does is that it basically selects one of the requests and grants it.
+[22:23] So well, how does it do it?
+[22:24] And how does it do it for multiple instruction types and take structural hazards into account?
+[22:29] Well, we will take a look at all of those issues.
+[22:32] But let us look at a simplistic variant of the problem where we are considering only a single type of instructions.
+[22:42] And let us also consider only one functional unit, right?
+[22:46] Only one execution unit.
+[22:48] Let us proceed with that.
+[22:50] We will gradually complicate the story.
+[22:52] So what is the idea over here?
+[22:54] The idea over here is that we have n inputs.
+[22:57] And so let us say, you know, there are total of n inputs in the select unit.
+[23:06] In the n inputs, so out of the n inputs, a few are one, a few are zero.
+[23:12] If it is one, it clearly means it is interested to be selected.
+[23:15] So one among these requests is selected.
+[23:18] Which one we will see later.
+[23:20] And then the one that is selected, let us say that this instruction is selected,
+[23:26] then its grant line is asserted to 1.
+[23:29] And the grant lines for all the others remains at 0.
+[23:34] So the one that is asserted, essentially that entry can proceed forward and read its data and execute.
+[23:44] Alright?
+[23:45] So you read the register file subsequently and you execute.
+[23:49] So the job of the select unit is pretty much to select one among the n that is interested or whose request line is set to 1.
+[24:02] So let us now take a look at a select unit.
+[24:06] So select unit takes in a set of requests and its job is to assert one of the grant lines.
+[24:13] The request that is granted.
+[24:15] So the grant lines are not being shown for the ease of readability.
+[24:20] So in this case, what we see is, we see a tree structured select unit as you can see over here.
+[24:26] These are the different levels of the tree.
+[24:29] So the tree need not have a fixed addity.
+[24:32] So I am showing a tree where there are four leaves at the, sorry, there are four requests coming in at the lowermost layer.
+[24:42] And all the internal nodes have two each.
+[24:44] So it does not matter.
+[24:45] But what matters is the logic of these rectangles over here.
+[24:50] So a rectangle here is called a choice box.
+[24:54] So what a choice box does is like this, that it first inspects all the requests that are coming in.
+[25:02] They can either be 0 or 1.
+[25:04] So let's say if all of them are 0, it will set its output to 0.
+[25:09] Basically saying that none of its requests are interested.
+[25:13] Let's say one of them is a 1 and the rest are 0, well then it's easy.
+[25:18] It just remembers the fact that this was the request that it chose and it sets its output to 1.
+[25:26] But let us say multiple requests are 1.
+[25:29] In that case, it needs to choose 1.
+[25:32] Well, which one, that we will see.
+[25:35] But let's assume for the time being that it chooses 1 kind of arbitrarily, randomly.
+[25:41] Let's say it chooses this one.
+[25:43] So then it remembers this choice internally.
+[25:45] So internally it has a set of registers to remember which choice.
+[25:50] So that's not much.
+[25:51] If there are 4 inputs, you just need a 2-bit register.
+[25:54] So with that you remember this choice.
+[25:58] Then what you do is that the output is set to 1.
+[26:07] So this choice box also does something similar.
+[26:10] So let's assume the output for this is 1.
+[26:13] So then this choice box would do something similar.
+[26:16] It would remember which input it chose.
+[26:20] So let's say it chose this one.
+[26:22] It will then set its output to 1.
+[26:25] And this choice box doesn't have a choice.
+[26:27] It needs to choose this one.
+[26:28] It also sets it to 1.
+[26:30] Finally, the root node will make a choice.
+[26:35] So let's say it chooses this one.
+[26:37] So then it will decide to grant the request.
+[26:40] So the grant signal will follow the reverse path.
+[26:43] It will grant this.
+[26:45] Then this choice box will go back to the request that it had remembered.
+[26:49] Right.
+[26:50] So then this is this.
+[26:51] And then the grant signal will go via this route.
+[26:55] Alright.
+[26:56] So what we are essentially doing is that we are aggregating the choices in a tree structured fashion.
+[27:02] And so this entire thing by the way is happening in hardware.
+[27:05] So entirely in hardware.
+[27:07] Right.
+[27:08] So whoever thought that trees, link lists and queues are concepts that are only used in software
+[27:15] data structures, that is totally wrong.
+[27:17] So you can clearly see an example over here where a tree is implemented in hardware.
+[27:26] Alright.
+[27:35] So this tree over here is entirely implemented in hardware.
+[27:49] And so this is of course the VLSI implementation.
+[27:53] And all that you require is we need a little bit of state at each choice box to remember
+[27:58] which input was chosen.
+[28:01] So once that is done, well we just aggregate the choices key, keep going towards the root
+[28:07] aggregating the choices.
+[28:08] And finally one is chosen and a reverse path is followed.
+[28:13] So what we need to do now is we need to create a more, a fairer version of the selection mechanism.
+[28:22] But I have a small animation that I can show you.
+[28:26] So let us say that we have two requests with these blue circles over here.
+[28:30] So this is how they flow.
+[28:33] They come to the root nodes.
+[28:35] Assume that there are no other requests.
+[28:37] The root node chooses one.
+[28:40] Then the grant signal as we have discussed goes back the reverse way.
+[28:45] It requires some state at the, at each choice box.
+[28:49] Let us now make the select unit more complicated and more realistic.
+[28:56] So, what if we have two adders, two multipliers and one divided.
+[29:01] Well, a simple solution is that we have a separate select unit for each class of instructions.
+[29:07] For example, for the adders we have a separate select unit.
+[29:12] So, for this select unit all non-add instructions are by default not interested.
+[29:17] Right?
+[29:18] In or by default sort of not valid for this select unit.
+[29:23] So, recall that with an adder it is kind of an overloaded unit.
+[29:29] So, it of course does do addition but it does addition as well as subtraction and it also
+[29:36] computes the addresses of load and store instructions.
+[29:38] So, in that sense we typically have more adders than what is required.
+[29:43] Then we can have multipliers and dividers.
+[29:46] So, basically for multipliers also we have a separate select unit and a separate one for
+[29:53] a divide.
+[29:54] So, consider a select unit that caters to multiple FUs or multiple functional units.
+[30:01] Right?
+[30:02] So, so, so there are separate options for it.
+[30:08] And also, so also what I mean by this is multiple functional units of the same type.
+[30:16] So, this basically means that if let us say we have two adders we will have one select
+[30:21] unit for adders but again instead of one unit it will actually have two units.
+[30:26] Right?
+[30:27] Because there are two adders.
+[30:28] So, in this case one option which is a simple one is we change select units.
+[30:33] In the sense we have a set of requests coming in one of them is granted.
+[30:38] And for the line that is granted if it is one and we just XOR it with its request.
+[30:45] Right?
+[30:46] So, we do it for all and I am only showing the circuit for the request that was granted.
+[30:52] So, for the next select unit essentially the request for it is 0.
+[30:59] That is because it was granted by the earlier one.
+[31:01] So, it cannot be granted by the second select unit and it is 0.
+[31:06] But for almost, but for all the other inputs, right?
+[31:10] So, there are many other inputs and I am not showing them.
+[31:13] So, all of these inputs, so, all of these inputs are pretty much connected to others or units.
+[31:23] For each one of those we will have a request unit, request line and a grant line which is
+[31:31] coming from the previous select unit.
+[31:34] So, in this case, the grant line for one only one of them will be 1 for the rest will be
+[31:42] 0.
+[31:43] So, pretty much the request will show up over here.
+[31:47] So, the request is 1 it will show up over here.
+[31:50] If it is 0 it will show up over here.
+[31:52] The job of the second select unit is to basically grant one more request.
+[32:00] So, that is how even if we have two adders by chaining the select units we can grant two
+[32:09] requests.
+[32:10] What is the disadvantage of this method?
+[32:13] The disadvantage of this method is that the time that is required is double, right?
+[32:19] So, it requires twice the time so it is slow.
+[32:22] So, the signal has to pretty much pass through the first select unit and then pass to the
+[32:28] second select unit.
+[32:29] So, it is roughly two times the latency which is not optimal, right?
+[32:34] Which is clearly not what we wanted.
+[32:37] So, we need to search for a more efficient method.
+[32:42] The second method is that we complicate the choice box.
+[32:49] So, what we do is that we send multiple request signals up to the root.
+[33:00] So, we have the lowest layer of choice boxes looks the same.
+[33:06] So, pretty much here we have request lines that are coming in.
+[33:12] But each choice box instead of selecting one request selects a maximum of two requests.
+[33:19] So, each one of them instead of one selects a maximum of two.
+[33:25] So, again they are sent to one more choice box which again selects a maximum of two.
+[33:36] So, on and so forth until you reach the root.
+[33:41] So, what I say is that we can generalize this.
+[33:43] Every level sends at most n requests to the root.
+[33:46] The root will ultimately select at most n requests and issue grant signals.
+[33:51] Where one grant signal might go this way, another might go that way, it does not matter.
+[33:56] But at the most n signals, at the most n requests will be granted.
+[34:03] So, this in a certain sense is faster than the design shown in the previous slide.
+[34:10] No doubt it is faster.
+[34:12] However, the choice boxes need more elaborate logic and they become more complicated, right.
+[34:21] So, it is not, it is a better solution at the cost of complicating the choice box.
+[34:29] Let us consider a different design that has a symmetric select units.
+[34:33] So, in this case what we do is I have drawn a regular restructured select unit where there
+[34:39] are two copies of the tree and both run side by side in parallel.
+[34:44] So, let us consider the first select unit which is select unit 1.
+[34:50] So, there will be two, sorry, there will be four cases.
+[34:54] So, if you consider this choice box, either both the request lines are 0, well then there
+[35:00] is no problem at all, no choice needs to be made.
+[35:03] So, we can happily erase the ink on the slide.
+[35:07] If one of the request lines is 1, then also there is no problem at all because by default
+[35:13] this request is chosen.
+[35:15] So, we can again erase the ink on the slide and likewise is the case for the other case,
+[35:22] right.
+[35:23] If it is 1 and 0, then by default this input is chosen.
+[35:27] However, if both the inputs are 1, then the fun lies here.
+[35:33] So, if both of them are 1 at any level regardless of the level, the first select unit, select
+[35:39] unit 1, the choice box gives priority to its left input.
+[35:44] What this basically means is that it chooses its left input, right.
+[35:49] So, the left input is chosen.
+[35:52] In the second select unit, each choice box gives priority to its right input, which means
+[36:01] that the right input in this case, this input will be chosen.
+[36:04] So, it is possible to prove and in fact, I would like to invite you to prove the following
+[36:12] that if I were to design a select unit in this fashion and if at least greater than equal
+[36:22] to 1, sorry greater than equal to 2 request lines are positive, both the select units will
+[36:29] never make the same choice.
+[36:31] So, this is easy to prove.
+[36:33] It is not hard at all.
+[36:35] So, let us consider the case when only 2 request lines are 1.
+[36:40] So, of course, they will be at different places.
+[36:43] So, ultimately, they will collide in some choice box.
+[36:46] Whenever, so wherever they collide, let us say they collide over here, one, the select
+[36:54] unit 1 will choose the left input, when the select unit 2 will choose the right input.
+[36:59] So, automatically the choices will be different.
+[37:02] So, this can of course be proved for more than 2 inputs that are set to 1.
+[37:08] So, it does not make a difference.
+[37:11] This is a general result and can be proven.
+[37:14] So, this is a rather fast method of designing parallel select units.
+[37:20] So, we will essentially have two, one like this and one more like this.
+[37:25] So, this gives priority to the left input and this gives priority to the right.
+[37:30] And as we see, if we have two adders, then we can make two choices and they will be different.
+[37:37] And in terms of latency, well, the latency is roughly the same and we get twice the throughput.
+[37:45] So, this is one of the examples of using a smart design method with a little bit of math to
+[37:53] actually speed up hardware significantly.
+[37:55] I would like to repeat what I said that it is normally construed that links, cues, trees,
+[38:02] etc. are software concepts or computer science concepts.
+[38:06] However, that strictly speaking is not true.
+[38:09] You are seeing an application of it in hardware.
+[38:13] So, the select policy has an important implication on performance.
+[38:21] So, we have till now kind of elided the question on which instruction we should select.
+[38:27] So, clearly all instructions are not the same.
+[38:31] So, there might be one instruction and no other instruction is dependent upon it.
+[38:36] So, that should have a lower priority, but it is possible that there is one instruction,
+[38:43] but a lot of instructions are dependent on the output that it produces.
+[38:47] So, if let us say this instruction is executed and in a certain sense sent forward, right?
+[38:56] Then all of the instructions are dependent on it, all of them can wake up and the amount
+[39:01] of ILP will increase significantly.
+[39:04] So, the main point of designing a good select unit is to figure out those instructions on
+[39:11] which a large number of other instructions are dependent.
+[39:16] These instructions should be selected.
+[39:18] So, of course, how to do it in hardware and that too quickly?
+[39:21] Well, that is difficult, but a lot of modern select units actually have some estimate of
+[39:30] how to do it.
+[39:32] So, let us look at this.
+[39:35] So, one of course, the most simplest method and yet the most impractical is random that
+[39:41] we just select any input at random.
+[39:46] So, another option which is fair is oldest first in the sense we give priority to the
+[39:55] requests that are that have been in the instruction window for the maximum amount of time.
+[40:01] And given that the instruction window is a queue from their position, we can roughly figure out
+[40:06] how old an entry is.
+[40:08] But ideally, it should be a combination of the age and the impact.
+[40:13] So, any fairness by definition should be a combination of age and impact.
+[40:19] So, this is kind of a natural rule in the sense that even if a leader is to be chosen like
+[40:26] a village head man or a head woman or a head person.
+[40:31] Well, in general, people give preference to age because everybody has a natural respect
+[40:39] for age.
+[40:40] But along with that, you would also look at the most eligible person, right?
+[40:46] The person with the maximum amount of caliber for doing a certain job.
+[40:50] So, in this case, the caliber is the number of instructions that are dependent on it.
+[40:54] But if you always start choosing this, then of course, we will have starvation and that
+[40:58] will lead to other problems, which we will see a few slides later.
+[41:02] So, it should be some combination of basically age and impact.
+[41:06] And as I said, it is a general rule in life as well.
+[41:09] There are a few other important points to keep in mind.
+[41:14] One is that load instructions typically have slightly higher priority than stores.
+[41:21] The reason is that if you think about it, who is dependent on a store?
+[41:26] Actually, it is a later load.
+[41:29] But there are other ways to take care of them.
+[41:32] So, stores pretty much write to memory.
+[41:34] And it is rather unlikely that you would write to memory and you would read it.
+[41:38] But we have seen such a pattern in assembly code where you store a register and you read
+[41:43] it back.
+[41:44] But as I said, we will talk about another hardware structure called a load store queue that precisely
+[41:50] structures such patterns.
+[41:51] Otherwise, it is kind of rare that you would write to memory and read it back in general
+[41:57] code.
+[41:58] But in general, for a load instruction, it is on a critical path.
+[42:03] Because the sooner its value comes back, many, many more instructions will be dependent,
+[42:11] might be dependent on the value that the load brings from memory.
+[42:15] So, many a time it is seen that load instructions are way more critical.
+[42:20] And thus, if we have to give a priority, we should give a priority to a load as compared
+[42:25] to the store.
+[42:27] So, most modern select units sort of design a select function, which is a rather complicated
+[42:40] function and also the function can change over time.
+[42:43] So, you know, a lot of learning is involved over here, which is sort of a function of the
+[42:48] age, the impact of the instruction.
+[42:50] As we discussed the number of instructions dependent on it and also the op code.
+[42:55] So, the op code can, you know, for example, loads of higher priorities and stores and so
+[42:59] on.
+[43:00] So, based on this, you derive some sort of a score.
+[43:05] And this is kind of fed to the choice boxes and the choice boxes make a choice accordingly.
+[43:12] So, of course, they do become complicated.
+[43:14] But well, this complexity is not a bad complexity in the sense that this is a performance enhancing
+[43:21] complexity.
+[43:22] So, there is nothing to be awfully concerned about.
+[43:26] Now, let us come to another important and rather critical issue, which is how do we broadcast
+[43:38] the tag and when do we broadcast the tag.
+[43:41] So, let us quickly look at this short snippet of assembly code.
+[43:49] So, these are consecutive instructions with a raw dependency.
+[43:54] And so, this is writing to R1 reading from R1.
+[43:58] So, even after renaming the read after write dependence would remain.
+[44:03] So, this would of course be in physical register.
+[44:06] But nevertheless, there would be a dependence.
+[44:08] So, what we ideally want is we want back to back execution.
+[44:12] Because after all in order pipeline with forwarding, they would execute in consecutive cycles, right.
+[44:19] So, we would have forwarding pretty much MA to EX forwarding, right memory access to execute
+[44:25] forwarding, we would have that.
+[44:27] But in order pipeline would ensure what is called back to back execution or execution in
+[44:33] consecutive cycles.
+[44:34] If we do not get that in an out of order pipeline, then for a long piece of code, which has kind
+[44:39] of a chain of dependencies and in order pipeline would give us a higher IPC as opposed to an
+[44:47] out of order pipeline.
+[44:48] And this is not acceptable to us.
+[44:50] So, the reason that we went for an out of order pipeline is because what we expect is
+[44:56] the IPC of an out of order pipeline is greater than the IPC of an in order pipeline.
+[45:02] But programs with a chain of dependencies have a potential of spoiling the party.
+[45:10] So, they have a certain potential of actually ensuring that the IPC of out of order pipelines
+[45:19] is lower, which is something that we should not allow.
+[45:22] And what do we need to do?
+[45:24] Well, if the producer instruction wakes up in cycle I and proceeds to execution, the consumer
+[45:31] function should also wake up in cycle I plus 1, which is the cycle just after it, such
+[45:37] that there are no stalls in between.
+[45:40] Because there are no stalls in between in an in order pipeline.
+[45:43] So, the same should hold in an out of order pipeline as well.
+[45:48] So, what does this imply?
+[45:51] Well, this implies that we sort of need to design these stages very carefully.
+[45:58] So, let me look at one design point.
+[46:01] So, in this design point, let us assume that we are able to optimize our pipeline such that
+[46:11] wake up and select happen at the same cycle.
+[46:14] So, if they happen in different cycles, it will introduce more complexities and it is also
+[46:20] there is an exercise at the end of the book.
+[46:23] So, let us look at the simple case first and we will then gradually, gradually, slowly,
+[46:27] slowly ramp up the complexity.
+[46:30] So, in cycle I, let us assume we can do both wake up as well as select.
+[46:36] So, that would be like packing two things, two very performance critical things together.
+[46:42] But let us assume we have an optimized pipeline and good designers to do it.
+[46:48] So, then what essentially happens?
+[46:52] So, what happens is that this part of the pipeline would look like this rename, dispatch, wake
+[47:02] up and select, register read, we read the values from the register file, then we execute and
+[47:09] then we write to the registers.
+[47:11] So, one of the simple options that we are looking at here is that we actually broadcast over here.
+[47:20] And if you broadcast over here, let us see what are the problems.
+[47:24] So, note that in this pipeline, we have full bypassing and forwarding enabled, right?
+[47:28] So, forwarding in an out of order pipeline is called bypassing.
+[47:34] So, in this case, what will happen is that if you broadcast in this stage, we will have
+[47:46] to have a two cycle delay as we can see over here between the producer and the consumer instruction.
+[47:55] So, this delay is clearly not acceptable to us, right?
+[48:00] So, this flies in the face of pretty much everything that we have been talking about.
+[48:06] So, what this basically says that look in these two cycles, we either insert bubbles, which
+[48:13] means we do not do anything or we execute some other instructions.
+[48:17] So, that possibility is always there because it is an out of order pipeline.
+[48:21] We can bring some other instructions, instruction x and instruction y and they can be executed
+[48:27] in this stage, right?
+[48:29] So, in a certain sense, we can still have a reasonably high instruction throughput.
+[48:34] But if you are unfortunate enough to have a code with low ILP, which means that we have
+[48:38] a lot of code with these sequential dependencies, right?
+[48:41] So, the dependencies are like a chain.
+[48:44] Clearly, we need to insert a two cycle bubble.
+[48:48] And there was no need to do it in an in order pipeline.
+[48:52] But in an out of order pipeline, we have to do it, which is not something that makes us
+[48:58] happy.
+[48:59] Let us assume that somehow we are able to.
+[49:03] So, one thing is that along with writing to the register, we cannot broadcast the tag,
+[49:08] which incidentally appears to us to be an intuitive solution, intuitive way of doing it.
+[49:15] So, this is clearly not allowed, right?
+[49:18] This is not acceptable.
+[49:20] Another approach could be that we broadcast the tag along with execute.
+[49:30] If we broadcast the tag along with execute, what will happen is that we can reduce this delay
+[49:41] a little bit, right?
+[49:43] So, we are of course assuming that we broadcast at the beginning of the cycle.
+[49:48] And then it immediately catches it, it wakes up and selects, right?
+[49:52] That is what you are assuming all happens in the same cycle.
+[49:55] So, even if this does happen, there is still a one cycle bubble.
+[50:00] So, this is again not acceptable to us.
+[50:03] What is possibly acceptable to us?
+[50:07] This is just showing the way that instructions move.
+[50:10] But what is possibly acceptable to us is option 3.
+[50:15] Well, well, well, when instruction 1 is in the register read stage.
+[50:27] Then in the register read stage itself, we broadcast the tag.
+[50:30] So, this is clearly an early broadcast.
+[50:32] So, we will discuss the implications of an early broadcast.
+[50:35] But if we are able to do it and the instruction 2 catches the broadcast in this cycle itself,
+[50:43] right?
+[50:44] You know, when we broadcast in the same cycle, it catches it, then it can get, then it can
+[50:49] wake up and select.
+[50:51] And in this case, the execution will be back to back because then when 1 is executing, 2
+[50:57] is reading the registers, which of course it will not get the right value.
+[51:01] But then it will get it from the bypass path, which is in the next cycle because 1 would
+[51:06] have completed its results.
+[51:07] So, it can bypass the results to instruction 2.
+[51:11] So, it is important that we see this animation once again, and I will clear off the ink.
+[51:17] And it is important that we see this once again to appreciate what exactly we are trying
+[51:22] to say.
+[51:23] So, what we are trying to say over here is that look, if you broadcast along with a register,
+[51:30] right?
+[51:31] It is not a good thing.
+[51:32] The reason that it is not a good thing is because we will have to introduce the distance
+[51:42] between instruction 1 and 2 has to be two instructions.
+[51:45] Since it is an out of order pipeline, these two instructions need not be stalls.
+[51:49] They can be other instructions.
+[51:51] Nevertheless, we will not have back to back execution, which does matter in a code with
+[51:56] very low ILP, where we have a chain of dependencies.
+[51:59] Even if I were to broadcast one cycle earlier, that will still not work because we have this.
+[52:05] Hence, what I need to do is that when instruction 1 goes to the register read stage, right?
+[52:12] Just after getting selected, it kind of speculatively broadcasts the tag.
+[52:18] I am using the word speculated.
+[52:20] Well, so, in this case, it makes an assumption that execution will take one cycle.
+[52:29] So, we will come to that.
+[52:31] But, so, we will come to the implications of this.
+[52:35] But, what we are essentially trying to say is that along with the register read, it broadcasts
+[52:40] the tag.
+[52:41] At the same cycle, instruction 2 wakes up, then both proceed.
+[52:47] So, naturally instruction 2 will not get the right value from the register, but that is
+[52:52] okay.
+[52:53] We can use a forwarding mechanism called bypassing here.
+[52:56] So, you can bypass the results from instruction 1 to 2.
+[53:00] And this will work in exactly the same fashion as the in order pipeline.
+[53:05] So, what is the option that actually worked?
+[53:09] It is early broadcast.
+[53:11] This allows back to back execution, which means execution of dependent instructions in consecutive
+[53:18] cycles.
+[53:19] So, it does allow this to a certain extent.
+[53:23] Well, we will see.
+[53:25] So, when we discuss later ideas, we will see why to a certain extent.
+[53:30] So, what needs to be done?
+[53:32] Well, when instruction 1 is in the register read stage, 2 needs to be in the select stage.
+[53:38] This is possible if you broadcast the tag for 1, when it is in the register read stage.
+[53:43] 2 will simply pick up the tag.
+[53:47] It is going to wake up and get selected for the next cycle.
+[53:51] Alright.
+[53:52] So, that is all that it is going to do.
+[53:55] That it is going to wake up and simply get selected in the next cycle, which is anyway
+[54:00] what we want.
+[54:01] So, the classic example of forwarding in an out of order pipeline would look like this.
+[54:11] So, by the way, our out of order pipeline now has changed.
+[54:13] So, I am not showing the fetch and decode stages.
+[54:15] So, they are of course there.
+[54:17] So, I am showing rename dispatch and then wake up select.
+[54:24] So, wake up select is happening in the same cycle and then we have register read and broadcast.
+[54:32] So, we are of course assuming here it is kind of a bold assumption, but this needs to be made.
+[54:40] At least in this simplistic setting that we broadcast at the beginning of a cycle and roughly
+[54:46] in the same cycle.
+[54:47] So, not roughly in the same cycle, the consumer instruction wakes up and of course if no other
+[54:54] instruction is being selected, it gets selected.
+[54:57] So, the select is again a best case select, right?
+[54:59] So, it is possible it does not get selected in this cycle in a later cycle, but we are just
+[55:04] assuming a tight case over here.
+[55:06] So, after this the consumer proceeds along the same path and then of course when it needs
+[55:19] the value there is a forwarding that we can see over here.
+[55:22] I should also write bypass, the word bypassing is more appropriate over here.
+[55:26] The value is bypassed and the execution proceeds.
+[55:32] So, what do we get to see here, well what we get to see here is assume that the duration
+[55:41] of execution instead of one cycle is two cycles.
+[55:45] When can this be the case, well this can be the case for a load instruction.
+[55:50] In a load instruction what happens is that we actually spend two cycles executing it, why?
+[55:57] The first cycle is address calculation.
+[56:02] That is the first cycle which is address calculation.
+[56:12] The second cycle is memory access.
+[56:13] All right.
+[56:14] So, that is the reason what I have done is that I have I have pretty much created a two-century
+[56:19] execute over here.
+[56:20] So, in this case, of course, back-to-back execution is not possible.
+[56:21] It was not possible in order of execution.
+[56:22] It was not possible in order of execution.
+[56:23] It was not possible in order of execution.
+[56:24] In order of pipeline as well.
+[56:25] So, there was a one-cycle delay or a one-cycle stall.
+[56:31] So, in this case, of course, back-to-back execution is not possible.
+[56:35] It was not possible in order pipeline as well.
+[56:38] So, there was a one-cycle delay or a one-cycle stall.
+[56:43] So, in this case, the advantage of an out-of-order pipeline is that we do the same, but instead
+[57:02] of actually stalling, we can execute some other instruction in the middle, in this middle cycle.
+[57:09] We can execute some other instruction.
+[57:11] But that said and done, what we do is we do, in this case, we do not broadcast immediately.
+[57:15] That is important.
+[57:16] That needs to be kept in mind.
+[57:18] We do not broadcast immediately after getting selected.
+[57:21] So, instruction 1 is the load and instruction 2 is the use.
+[57:26] So, what we do is that we broadcast one cycle later, right, because in this case, it is not
+[57:32] a one-cycle execution.
+[57:33] So, we broadcast one cycle later.
+[57:36] And so, we instead of broadcasting a tag here, we broadcast it over here.
+[57:41] After this, we have wake up select, we have read and execute.
+[57:45] If forwarding is, if I am sorry, bypassing is required, then we forward or bypass in this
+[57:52] cycle.
+[57:53] So, you can see it happens seamlessly, the same way it would happen in a regular in-order
+[57:58] pipeline.
+[57:59] So, what is the key learning from this figure?
+[58:02] Well, I am erasing the ink and maybe give you five seconds to meditate on this figure
+[58:07] before I tell you the answer.
+[58:09] So, your meditation time starts now, okay, 3, 4, 5.
+[58:16] So, the important point is that for different kinds of instructions, we just broadcast at different
+[58:22] times.
+[58:23] So, what we do is we just broadcast at different times, we do not broadcast at the same time,
+[58:48] broadcast at different times.
+[58:50] So, for an add instruction, we broadcast in the next cycle, in the register read cycle.
+[58:55] And for a load instruction, we broadcast one cycle later, which is in the execute, in the
+[59:03] first cycle of execute, we do that.
+[59:06] So, if I were to kind of summarize everything that I said up till this point.
+[59:14] So, what would it be?
+[59:17] Well, what it would be is that, well, we have rename, dispatch, wake up, select, read, broadcast,
+[59:26] execute, assuming one cycle execute, of course.
+[59:29] So, for different instructions, we broadcast the tag at different points of time.
+[59:33] So, we clearly saw that for a regular one cycle add and for a load, which in a by definition
+[59:40] takes multiple cycles because of address calculation, we broadcast at different times.
+[59:45] If I were to generalize this, I can say that if the execution requires k cycles, we broadcast
+[59:52] the tag k cycles after getting selected.
+[59:55] Is this true?
+[59:56] Well, all that we need to do is we need to go back.
+[59:59] So, in this case, execution requires one cycle.
+[60:02] So, we get, we select in this cycle, one cycle later, we broadcast.
+[60:07] In this case, execution requires two cycles.
+[60:10] So, after selection, we wait, after two cycles, we broadcast cycle one, cycle two, we broadcast.
+[60:20] So, this is the general idea of broadcasting.
+[60:24] And so, if you would recall, I had asked a question several, several slides earlier.
+[60:33] What I had said is, why do not you actually broadcast values, what do you broadcast tags?
+[60:40] So, the answer should be clear at this point.
+[60:43] Let me just write this down.
+[60:50] So, why do not you broadcast values, why do we broadcast tags?
+[60:55] Well, the reason we broadcast tags instead of values is because we do an early broadcast.
+[61:02] And in an early broadcast, we do not have the value with us, we cannot broadcast, right?
+[61:08] So, we need to broadcast the tag, alright?
+[61:11] So, this pretty much completes our discussion of the basic mechanism.
+[61:20] So, we will now look at a more complicated, we will look at a complicated version of broadcast
+[61:26] slightly more and we will look at some corner cases.
+[61:30] ...
+[61:36] ...
+[61:37] ...
+[61:39] ...
+[61:40] ...
+[61:42] ...
+[61:44] ...
+[61:46] ...
+[61:48] ...

@@ -602,8 +602,8 @@ block 變大先有好處（空間局部性），太大反而變差：8 KB 裡的
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | 平均存取時間、miss 的種類（compulsory、capacity、conflict）、怎麼降低 miss | [第 36 支](lecture36_note.md)：Memory System Part 3（課本 §11.3） |
-| Virtual memory、page table、TLB（TLB 就是一種 cache） | **第 37 支**（課本 §11.4） |
-| write-through 讓多處理器的 cache 好做；coherence | **第 39–40 支**（課本 Ch12） |
+| Virtual memory、page table、TLB（TLB 就是一種 cache） | [第 37 支](lecture37_note.md)（課本 §11.4） |
+| write-through 讓多處理器的 cache 好做；coherence | [第 39](lecture39_note.md)–[40 支](lecture40_note.md)（課本 Ch12） |
 | 時間、空間局部性；stack distance 和 LRU 的關係 | [第 34 支](lecture34_note.md) |
 | CAM、SRAM 的電路 | [第 20 支](lecture20_note.md) |
 

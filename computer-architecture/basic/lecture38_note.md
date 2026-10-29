@@ -523,12 +523,12 @@ N=4 processes: sum=234881024  7.8 ms
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
 | Shared memory 的正確性：coherence、memory consistency | [第 39 支](lecture39_note.md)：Coherence and Consistency |
-| False sharing、cache coherence protocol（snoopy、directory） | **第 40 支**：Cache Coherence Protocols |
-| Multithreaded processor、SIMD／vector processor | **第 41 支**：Multithreading and Vector Processing |
-| GPU、interconnection network | **第 42 支**：GPUs and Interconnects |
+| False sharing、cache coherence protocol（snoopy、directory） | [第 40 支](lecture40_note.md)：Cache Coherence Protocols |
+| Multithreaded processor、SIMD／vector processor | [第 41 支](lecture41_note.md)：Multithreading and Vector Processing |
+| GPU、interconnection network | [第 42 支](lecture42_note.md)：GPUs and Interconnects |
 | 頻率的限制、功耗 ∝ f³ | [第 32 支](lecture32_note.md#19-pipeline-的好處到底在哪裡) |
 | Process、virtual memory、shared memory 的 OS 機制 | [第 37 支](lecture37_note.md) |
-| 計算機架構的過去、現在、未來 | **第 47 支** |
+| 計算機架構的過去、現在、未來 | [第 47 支](lecture47_note.md) |
 
 ---
 

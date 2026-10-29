@@ -1,0 +1,762 @@
+[00:00] We'll be right back.
+[00:30] Let us now talk about interrupts and exceptions.
+[00:39] So these are very important features in modern pipeline processors and they are required
+[00:44] particularly while interacting with I-O devices.
+[00:48] What are I-O devices?
+[00:50] Input-output devices like the keyboard, the mouse.
+[00:53] Alright, so what happens when you press a key?
+[00:58] So when you press a key on keyboard, this is the precise sequence of actions.
+[01:04] So what happens is that the keyboard first logs the key press, right?
+[01:10] So every time we press a single key, the keyboard records which key was pressed.
+[01:16] It converts the key to its equivalent ASCII code which is a 7-bit number or its equivalent
+[01:22] Unicode code which can be a multi-byte number.
+[01:26] It depends on the language, right?
+[01:28] So this is this step.
+[01:31] Then it sends the code of the key that was pressed to the processor.
+[01:37] So once this is sent to the processor, what the processor receives is an interrupt, right?
+[01:42] It is receiving an interrupt.
+[01:44] An interrupt is a certain message which can appear anytime.
+[01:47] You can press a key anytime.
+[01:50] So the keyboard sends an interrupt to the processor which is essentially a single-bit signal that
+[01:55] look, there is some data arriving.
+[01:57] It's like a doorbell.
+[01:58] You can think of an interrupt like a doorbell where the keyboard pretty much rings the bell
+[02:05] and tells the processor that there is a message waiting for it.
+[02:13] And then what the processor does.
+[02:15] So at that point, you know, either the processor is idle or it is running a program.
+[02:20] If the processor is running a program, it suspends the execution of the current program.
+[02:26] It stops it.
+[02:29] And then it jumps to a specialized program, another program, which is within the operating
+[02:36] system, right?
+[02:37] So operating system is basically a set of specialized programs to manage normal programs as well
+[02:42] as the devices connected to the computer, such as the mouse and the keyboard.
+[02:48] So once we receive an interrupt, we jump to the interrupt handler, which is a very small
+[02:52] program which is meant to process the input.
+[02:56] So the interrupt handler will then, so if I, you know, press a key, then the key is coming
+[03:01] on the screen, right?
+[03:03] So its job is to invoke either do it itself or invoke another program with separate issue,
+[03:08] but essentially draw the shape associated with the key on the screen.
+[03:12] So for example, if we click the O button, then what is drawn on the screen is pretty much
+[03:19] an O, right?
+[03:20] So what if I, let's say, press O at a certain point, then an O is drawn.
+[03:25] If I press K, then a K is drawn.
+[03:28] Similarly, I can receive an interrupt from the mouse or from the tablet that I'm using.
+[03:34] So my tablet is saying that the pen has moved, let's say, one centimeter to the right.
+[03:41] So what the processor is doing is that it is running the interrupt handler program, which
+[03:47] is moving the dot that you are seeing on the screen one centimeter to the right, and also
+[03:53] drawing a line in this case.
+[03:55] So after the interrupt has been processed, which means that once, you know, the value of the
+[04:03] letter that was pressed on the keyboard that comes on the screen, or let's say the mouse
+[04:08] pointer moves, the processor returns to execute the original program that it was executing,
+[04:15] right?
+[04:16] Before the interrupt.
+[04:18] So the way we can visualize it that a program is executing, then an interrupt comes, the interrupt
+[04:24] handler is executed, then again the program starts, again the interrupt handler executes.
+[04:30] So that's the way it continues.
+[04:33] Alright, so this is the interrupts.
+[04:37] So then there is a term called exceptions.
+[04:41] So exceptions are generated when a program accesses an illegal, you know, it can be generated in
+[04:48] many situations, but pretty much it's a situation which is not normal.
+[04:52] It's an exceptional situation.
+[04:55] So one way can be when a program accesses an illegal address, right?
+[05:01] When the address itself is not legal, right?
+[05:07] So you know, some sort of an address which is sort of, if this is the address space that
+[05:10] we are allowed to use, some sort of an invalid address, right?
+[05:15] If the program accesses that, then it's a cause of an exception, or if we divide, you
+[05:21] know, 5 divided by 0, and it's an integer division, the result is infinity, but you know, infinity
+[05:27] does not have a representation in integers.
+[05:30] So that's also an exceptional case, or if we issue an invalid instruction, you know, an
+[05:35] invalid opcode, that's also an exceptional case.
+[05:39] So we can have many such exceptions in this fashion, where essentially the program does
+[05:48] something which is not right, not correct, not in the normal course of actions, and this
+[05:54] is an exception.
+[05:55] So exceptions are handled the same way as interrupts.
+[05:58] So interrupts have an interrupt handler, exceptions have an exception handler.
+[06:02] So if you access an illegal address, then the exception handler might just terminate the
+[06:06] program and let the user know that an illegal address has been accessed.
+[06:12] So once the interrupt and exception handler execute, after that we come back and start
+[06:17] executing programs.
+[06:19] Might be the same program that was executing before the interrupt or exception, or might be
+[06:23] another program.
+[06:26] Alright, so the most important property in this lecture that we want to define is something
+[06:35] called precise exceptions.
+[06:38] So we'll give an informal definition first, and then we'll give a formal definition of
+[06:43] precise exceptions.
+[06:46] So the informal definition is that we need to return to the original program at exactly
+[06:53] the same point at which we had left it.
+[06:56] So let's assume that in the original program, we had executed some instructions and then
+[07:01] an interrupt came.
+[07:03] So when we go back, we'll pretty much have to start from exactly the same point at which
+[07:08] we had left.
+[07:09] Right?
+[07:10] So we can't skip an instruction, neither can we execute an instruction twice.
+[07:16] So what it is saying is that the execution of the interrupt handler.
+[07:21] So you know, we'll use the terms interrupt handler and exception handler interchangeably.
+[07:26] In this case, interrupt handler means both interrupt as well as exception handler.
+[07:30] So you know, the meaning has to be inferred from the context.
+[07:34] So what we are saying is that the execution of the interrupt handler should not disrupt the
+[07:40] execution of the original program in any way.
+[07:47] So what we mean by the fact that the execution is not disrupted in any way, it basically means
+[07:53] that the outcome of the original program should be independent of the fact that there was an
+[07:58] interrupt.
+[07:59] Right?
+[08:00] You know, unless it is dependent on the interrupt, right, you know, the interrupt is unrelated
+[08:04] to the program, then the outcome of the program, the final output or any of the outputs of the
+[08:09] program or the behavior of the program should be absolutely independent of the interrupt.
+[08:15] Right?
+[08:16] Unless, of course, you know, it's dependent on the interrupt.
+[08:18] For example, if the interrupt is an exception, so then, you know, something like if you do
+[08:24] five by zero, then, of course, you know, some, then, you know, in some systems, the program
+[08:34] may be terminated, then, of course, it is dependent.
+[08:37] But let's assume that, in this case, the interrupt or the exception, whatever it may be, is, you
+[08:45] know, not related to the program, it's not an exception, it's just a key press.
+[08:51] Then, the execution of, you know, the interrupt handler or the interrupt handlers should not
+[08:57] disrupt the execution of the program in any way.
+[09:00] So, the output of the program will remain the same, right, the final output, the outcome
+[09:05] of the program will remain the same.
+[09:07] And, there should be no disruption whatsoever, right.
+[09:11] So, the same instructions will execute.
+[09:13] So, we need to ensure that this happens, right.
+[09:16] The process of interrupt processing is seamless.
+[09:20] Otherwise, what will happen is, let's assume that I am playing a chess game.
+[09:23] And, after that, in the middle, I click some buttons or, let's say, open another program
+[09:31] and do something.
+[09:31] So, then, you know, the moves of my chess game will change.
+[09:34] But, that does not happen.
+[09:36] The reason that does not happen is because we have some notion of a precise exception.
+[09:42] So, note that a precise exception, a precise interrupt is the same.
+[09:45] So, the word exception and interrupt are used interchangeably.
+[09:50] And, the reason that that does not happen is basically because we ensure that, you know,
+[09:58] when a program executes, it executes completely on its own.
+[10:02] If an interrupt comes and the interrupt is not related to the program, then we process the
+[10:07] interrupt.
+[10:08] So, we execute the interrupt handler and then the original program starts.
+[10:12] The original program, otherwise, is oblivious of the fact that it was interrupted in the
+[10:16] middle.
+[10:17] So, let's now have a slightly more formal definition.
+[10:22] So, let us consider the sequence of dynamic instructions in the program as I1 to IN.
+[10:31] Let us further assume that an instruction completes after it either updates memory, writes to registers
+[10:39] or reaches the MA stage, which in this case, which means that, you know, something has
+[10:45] happened.
+[10:46] And, what has happened?
+[10:47] Well, let's see.
+[10:50] So, for the CMP instruction, the flags register would have been updated.
+[10:54] For B, BEQ, BGT, and RET, the value of the new PC would have been written to the PC
+[11:02] register.
+[11:03] Right?
+[11:04] So, let's define a notion of completeness of an instruction once again.
+[11:09] An instruction completes if, let's say, I either, after it updates memory or writes
+[11:14] to the registers or reaches the MA stage, whichever is earlier.
+[11:19] Right?
+[11:20] And, so, basically for the branch instructions by the MA stage would have updated the program
+[11:26] counter, the compare instruction would have updated the flags register.
+[11:34] So, basically that's how we define a broad notion of completeness.
+[11:39] So which means that some notion to permanent state would have, some change to permanent state
+[11:44] or permanent registers would have happened.
+[11:47] So, for example, if an instruction has written to memory, right, we say that it is complete
+[11:53] because it is, its job is deemed to have been done.
+[11:56] Similarly, if an instruction has written to a register, we say it is done or it has written
+[12:01] to the flags or updated the PC, we say that it has done.
+[12:06] So let the last program instruction that completes before the first instruction in the interrupt
+[12:13] handler completes, let it be IK.
+[12:15] Alright?
+[12:16] So, you know, the reason that we are defining so much is basically because in a pipeline there
+[12:22] will be multiple instructions, right?
+[12:25] At one point.
+[12:26] You know, this is a pipeline, we will have five instructions at the same time.
+[12:29] Let's assume that at this point the interrupt arrives.
+[12:33] So what do we do?
+[12:36] So let's see if the interrupt arrives, if we kill all of these instructions, that will be wrong.
+[12:42] Because the instruction in the maybe RW stage is maybe a store instruction which is already
+[12:49] completed in the MA stage.
+[12:50] So if we remove all of this and then, you know, later on start from this instruction,
+[12:59] it will be wrong because we will be redoing work.
+[13:02] So we don't want to do that.
+[13:04] So that's the reason we have to be slightly more careful when we define the notion of instruction
+[13:09] completeness and also how we ensure that we stop and already executing program very carefully,
+[13:20] execute the interrupt handler and again come back, right?
+[13:23] So this entire process has to be done pretty carefully.
+[13:26] So that's the reason we define one additional terminology which is instruction IK which is the
+[13:35] last instruction in the program that completes before the first instruction in the interrupt
+[13:40] handler completes.
+[13:43] So let all the program instructions that complete before the first instruction in the interrupt
+[13:47] handler completes be represented by the set C.
+[13:51] So what we want is that for an outsider, he will see that all the instructions in the set
+[13:57] C have completed and then the interrupt handler executes.
+[14:02] It executes in totality and then the execution starts.
+[14:07] So the last instruction to complete here is IK.
+[14:10] So then the execution starts from IK plus 1.
+[14:14] So recall that in some situations, we might want to execute IK once again.
+[14:19] We will discuss when are those situations in chapter 10, but right now you need to take my word
+[14:24] for it.
+[14:24] So in general, if we have done till IK, we can start here from IK plus 1.
+[14:35] So the formal correctness condition or the formal correctness criteria that we want to define
+[14:43] is that if any IJ is element of C, which is a set of instructions that have completed before
+[14:50] the instruction, before the first instruction of the interrupt handler, then J is less than
+[14:57] equal to K, which means that IK in program order is the last instruction to complete.
+[15:04] All other instructions that are a part of C complete.
+[15:08] So recall that C was declared here, that C was declared here as the set of all instructions
+[15:15] that complete before the interrupt handler.
+[15:19] So if any instruction IJ is a part of C, then this implies that J is less than K, less than
+[15:24] equal to K, which means that it is one of the instructions before it.
+[15:28] And no instruction after IK will actually complete.
+[15:32] So we need to ensure this condition.
+[15:36] In addition, we need to ensure one more condition that no instruction of the form IK dash where
+[15:42] K dash is greater than K should complete before all the instructions in the interrupt handler
+[15:48] complete, right?
+[15:50] So if you consider IK and if you consider IK plus 1, so between them, all the instructions
+[15:57] in the interrupt handler have to complete, right?
+[16:00] They have to completely finish.
+[16:02] And only then will we start executing instruction IK plus 1, alright?
+[16:08] Then after returning, we can seamlessly execute IK, either the same instruction in some cases,
+[16:15] you know, especially when the execution of IK was not correct, so it's required to execute
+[16:20] it once again, or we need to execute IK plus 1, which is the next instruction.
+[16:30] So this is something like we are trying to execute, we are trying to ensure that the execution
+[16:37] of the interrupt handler is completely invisible.
+[16:39] It somehow happened in the middle, it finished its job and went out.
+[16:42] We were not able to know.
+[16:45] And this problem is particularly difficult, you know, had it been a single cycle processor,
+[16:51] this would have been very easy.
+[16:53] That once the interrupt comes, we finish the execution of the current instruction, that
+[16:56] becomes IK.
+[16:58] And all the instructions before it, which is the set C, have already completed.
+[17:04] And then we execute the interrupt handler and then we restart.
+[17:08] But since it's a pipelined processor, right, with five stages, 1, 2, 3, 4, and 5, if an
+[17:16] interrupt comes, it'll become, it's slightly difficult.
+[17:23] The reason it is slightly difficult is because, you know, some of these instructions, you know,
+[17:28] maybe this one or this one or this one, you know, some of these instructions might have
+[17:34] made some changes to the permanent state, so they should be allowed to complete.
+[17:39] And some of these instructions might not have made, you know, any changes to the permanent
+[17:43] state.
+[17:45] So then, maybe the instruction in the fetch stage can be discarded, the instruction in the
+[17:49] decode stage can be discarded.
+[17:51] And for the rest, we need to see.
+[17:54] So, you know, it's like that, that we need to ensure that the instructions that have at
+[18:01] least made some progress need to complete and some which have not, they can be discarded
+[18:07] because they have not updated any state.
+[18:10] So this is required to ensure both these conditions that before IK, all the instructions have completed.
+[18:16] After it, none have completed.
+[18:18] And also, when we, when we finish, it also says that once the interrupt handler starts,
+[18:26] it needs to complete all of its instructions.
+[18:29] And no instruction of form IK dash, where K dash is greater than K, you know, some instruction
+[18:34] after IK should complete before all the instructions in the interrupt handler complete, all right?
+[18:41] So that's the broad precise definition.
+[18:44] It's the same as the informal definition means that the interrupt handler, handler's execution
+[18:49] should be, in a sense, informal.
+[18:54] And so we can clearly see that, you know, if we don't follow this precisely, a lot of problems
+[18:59] can happen.
+[19:00] Consider a branch statement.
+[19:02] So if the branch statement, we allow it to upgrade the, I'm sorry, update the program
+[19:07] counter with a new value, right?
+[19:09] So instead of 10, the offset, we make it 20.
+[19:13] And we somehow end up executing the same branch statement once again.
+[19:18] And let's say the offset in the branch statement is 12, it'll again add 20 plus 12 and make
+[19:26] it 32.
+[19:27] It'll essentially add the offset twice.
+[19:29] So you have to ensure that one instruction does not execute twice unless we want it to.
+[19:36] So what we do, the way, the way to do it is that when an interrupt arrives, we mark the instruction
+[19:44] in the MA stage because, you know, all the changes are being made in the MA stage, even a branch
+[19:49] instruction is making the changes in the MA stage.
+[20:02] So if, so this marking the instruction, we will, if there's an, only if an interrupt arrives, then
+[20:09] only we'll mark it in the MA stage.
+[20:11] We'll mark whatever instruction is there in the MA stage.
+[20:15] Otherwise, if there is an exception, we mark the instruction as soon as it encounters a
+[20:20] fault or exception.
+[20:21] And this instruction can be in any stage.
+[20:23] So for example, in the fetch stage, if, you know, there is an exception, we'll mark the
+[20:29] instruction in the fetch stage.
+[20:30] Right?
+[20:31] So whichever stage causes an exception or if we have a divide by 0 like 5 by 0 and the
+[20:38] EX stage, it causes an exception and we'll mark the instruction in the EX stage.
+[20:44] So recall that the way that we are marking, this is kind of simple.
+[20:49] That for any interrupt that, when that arrives, so we basically, whatever instruction is in
+[20:57] that cycle in the MA stage, we will mark it.
+[21:01] And for an exception, we'll mark it whenever we see an exception.
+[21:05] In whichever stage there is an exception, we'll mark that instruction.
+[21:09] So recall that the way that we are trying to do this is to basically ensure precise exceptions.
+[21:16] And there are all kinds of state in a program.
+[21:19] For example, there are the registers, which are permanent state.
+[21:25] There is memory, which the store instruction writes.
+[21:28] Then there is the flags register.
+[21:31] And then there is the PC.
+[21:33] So whether we access all of them, store all of them, or, you know, how we manage them,
+[21:40] will be gradually clear as we keep on describing.
+[21:43] But it is important to know that these are all the pieces of state that we have.
+[21:48] All right.
+[21:49] So now, once an instruction is marked, we have two kinds of instructions in the pipeline.
+[21:54] One set of instructions after the marked instruction and one set of instructions before the marked
+[21:59] instruction.
+[22:00] All right.
+[22:01] One after and one before.
+[22:04] Our job is to ensure that all the instructions after the marked instruction complete.
+[22:10] Right.
+[22:11] And none of the instructions before the marked instruction complete.
+[22:16] That's our job to ensure.
+[22:17] All right.
+[22:19] That everything after it completes and nothing before it completes.
+[22:22] Right.
+[22:23] Completes means either reaches the MA stage or makes a change to the registers or memory.
+[22:30] So the flags register is not a part of this.
+[22:34] All right.
+[22:35] So now we go to the next.
+[22:36] So now what we do is we wait till a marked instruction reaches the end of the pipeline.
+[22:42] After that, we convert all the instructions after the marked instruction which are there
+[22:46] in the pipeline to bubbles.
+[22:48] So in a sense, they are cancelled.
+[22:51] All right.
+[22:52] And we also ensure that all the instructions after the marked instruction are not able to
+[22:57] make any permanent changes.
+[22:59] Right.
+[23:00] So basically, you know, if this is the marked instruction, all the instructions after it
+[23:05] are sort of converted to bubbles.
+[23:07] And once this reaches the end of the pipeline, we can pretty much clean up the pipeline.
+[23:11] So this ensures that both the conditions of a precise instruction are met.
+[23:16] And the reason being that we, you know, that is the conditions we have set that let's assume
+[23:21] we mark the instruction in the MA stage.
+[23:23] So we wait for these two instructions to get out.
+[23:26] And all the other instructions are converted to bubbles.
+[23:29] So they have no effect at all.
+[23:33] So once the marked instruction reaches the end of the pipeline, the exception unit will load
+[23:38] the PC of the interrupt handler.
+[23:40] So the exception unit is a special additional unit that we are adding.
+[23:45] All right.
+[23:46] So as I said, the program state, the state of a program is its program counter, the set
+[23:52] of all the 16 simple risk registers, the flags register and memory.
+[23:56] All right.
+[23:57] So we assume that, you know, in the case of memory, there is no overlap of memory regions
+[24:03] between the program and the interrupt handler unless explicitly intended.
+[24:07] So let's assume that, you know, memory for our program and memory for the interrupt handler
+[24:12] is separate.
+[24:13] So this is all the state that we are talking about.
+[24:16] So we need to ensure that our instruction IK and all the instructions before it in the
+[24:23] pipeline update the state and whatever state we have, the same state is exactly loaded back
+[24:30] after the interrupt handler finishes execution.
+[24:33] That's our aim.
+[24:34] So what is the state again?
+[24:36] The PC, registers, flags and memory.
+[24:40] All right.
+[24:41] So let's add a little bit of additional work.
+[24:46] But maybe we can have a brief discussion right here and I'll discuss the logic behind marking.
+[24:52] Okay.
+[24:53] So let us assume that we have marked our instruction.
+[25:04] So basically in the MA stage, we marked the instruction, which means that this instruction
+[25:09] and this instruction need to complete.
+[25:11] So if you want to exactly start our position in the instruction after the MA stage, what is
+[25:17] it that we require?
+[25:18] So what we would require is that if we have the PC of the instruction that is there in
+[25:24] the MA stage, then and also if we, if just in case this instruction is a branch.
+[25:33] So we also have the next PC, right?
+[25:35] The branch target.
+[25:36] Then, you know, we can happily cancel all of these instructions.
+[25:42] Right.
+[25:43] It doesn't matter.
+[25:44] All these instructions can be canceled.
+[25:47] And next time we'll start from the next PC, which is either this PC plus four or the
+[25:52] branch target.
+[25:53] Right.
+[25:54] So this ensures that we can recover the program state for the PC.
+[26:03] Similarly, you know, no instruction before the RW stages actually modified the set of registers.
+[26:11] So if we don't allow any of these instructions to modify the registers and just allow these
+[26:18] two instructions to leave the pipeline, the state of registers at the end, if you have
+[26:23] some way of capturing and restoring it, we'll be able to come to the same state as it would
+[26:29] have been after executing the instruction, after executing the marked instruction in the
+[26:34] MA stage.
+[26:35] So this also can be done.
+[26:37] Subsequently, what we need to do is that when we return, we need to restore the state of
+[26:43] the flags register to the flags that the MA instruction would have seen or in the case
+[26:49] of CMP instruction would have set.
+[26:51] So we need to have some way of doing that.
+[26:54] We'll find out how.
+[26:56] And also in the case of memory, what we need to do is that, well, so this can be a store
+[27:02] instruction.
+[27:03] That's the reason we mark this stage, the instruction in this stage, but none of the
+[27:07] instructions prior to this would have actually written something to memory.
+[27:11] So in any case, they are being invalidated, converted to bubbles.
+[27:15] But at least after this point, all our changes to memory would have been done and no additional
+[27:22] changes to memory would be possible.
+[27:24] So memory will retain its state because, you know, there's no overlap.
+[27:28] So no other program is coming and changing the data in the memory regions.
+[27:34] So now let's see how to implement all of these things.
+[27:39] So memory as such, you know, saving, restoring the memory is not difficult at all because
+[27:46] the data remains in memory.
+[27:47] So next time when we come back, we can start from exactly the same point.
+[27:52] The reason being that none of the, so these are all the marked instructions, right?
+[27:56] And these are the unmarked instructions.
+[27:58] None of the unmarked instructions are actually changing anything in memory.
+[28:02] We're not allowing them to.
+[28:04] Neither is any other program including the interrupt handler changing anything in the memory.
+[28:08] So the memory will remain as is.
+[28:10] The problem is basically the PC, the registers and the flags have to be, you know, these three
+[28:16] have to be restored to, I'm sorry, have to be restored to exactly the same state at which
+[28:23] we had left, right?
+[28:24] So this instruction in the MA stage, whatever it had left the values of these three instructions
+[28:30] with these three state elements with, we need to come back to exactly the same state, right?
+[28:37] Restore the PC, the registers and the flags as seen or as updated by the instruction in
+[28:43] the MA stage, right?
+[28:45] Or let's say we are marking some other instructions as seen by the instruction that was marked.
+[28:51] So for the PC and register and flags, let's first look for the, look at the PC.
+[28:57] So let us add a NPC.
+[28:59] NPC is next PC field in the instruction packet.
+[29:02] Recall that the instruction packet is basically a set of bits that travels along with the instruction
+[29:08] in the pipeline.
+[29:10] So for taken branches, it will be equal to the branch target.
+[29:14] For all other instructions, it will be equal to PC plus four.
+[29:17] Alright?
+[29:18] So we will have this in the field.
+[29:20] So this will ensure, well, this will give us some benefits, but I'll talk about it slightly
+[29:25] later.
+[29:26] So the NPC, if in the EX stage, when we compute the branch target, we populate the NPC field
+[29:32] of the instruction packet.
+[29:33] And this moves along with the instruction in the pipeline.
+[29:36] Depending on the type of the exception, we might want to return to PC or NPC, but that's
+[29:42] okay.
+[29:43] The exception unit will take care of it.
+[29:46] So the exception unit, which is specialized hardware sets the old PC register to the right
+[29:53] return address, right?
+[29:55] So which can either be PC or NPC.
+[29:58] So depending upon the type of the interrupt or exception, one of these values will be saved
+[30:03] in the old PC registers, right?
+[30:06] So this is an additional register.
+[30:08] It's an extra register.
+[30:09] It's also called a privilege register because normal programs cannot see it.
+[30:14] It's an extra register that we are adding and the dedicated hardware called the exception
+[30:20] unit.
+[30:22] What it will do is that it will take the program counter or the next program counter, whichever
+[30:32] may be the case depending upon the type of the interrupt or exception.
+[30:36] And save it in a new register called old PC which normal programs cannot access but interrupt
+[30:42] handlers can.
+[30:43] Alright?
+[30:44] So this will ensure that we can come back to exactly the same point at which we had left,
+[30:52] right?
+[30:53] So basically the instruction that is marked over here, we can either do this instruction
+[30:58] or the next one if it's a branch.
+[31:00] But at least we'll be able to save this information via this NPC field in the instruction packet
+[31:07] and the old PC register, right?
+[31:10] Okay.
+[31:11] So now let's take a look at spilling and restoring registers, right?
+[31:17] So what were the elements of our state?
+[31:20] The PC.
+[31:21] So we have a way.
+[31:22] So you know given a marked instruction.
+[31:24] So for every marked instruction, we have an NPC field.
+[31:27] You know for every instruction rather.
+[31:29] So NPC field either stores the PC plus 4 for this PC, the PC of this marked instruction
+[31:36] or the branch target if it's a branch.
+[31:39] In any case, it's an XPC.
+[31:41] So whenever there is, whenever the marked instruction reaches the end of the pipeline,
+[31:47] in a special register, a new register called old PC, either the NPC field is stored, right?
+[31:57] And sometimes depending upon the type of the exception, of course we want to store the current
+[32:06] PC and execute the marked instruction once again, alright?
+[32:10] Now let's take a look at registers.
+[32:12] So we had three parts of the state that we needed to store.
+[32:14] The PC is taken care of.
+[32:16] The registers we have to store and restore them.
+[32:19] The set of all 16 registers.
+[32:21] And the flags registers.
+[32:22] So flags register is the third.
+[32:24] This is the second point.
+[32:26] In the case of functions, we used to store registers on the stack.
+[32:30] Right?
+[32:31] So we used to do spilling.
+[32:33] In this case, the interrupt handler has to have a separate stack.
+[32:37] It can't be the same stack.
+[32:39] Because if it's the same stack, I mean, it can't be the same area because we'll have to
+[32:45] update the stack pointer.
+[32:46] So what will happen to its old, to the old value of the stack pointer?
+[32:49] So we cannot override the stack pointer, right?
+[32:52] We'll lose its previous value.
+[32:54] So let's consider the fact that, you know, we have a program and a stack pointer is pointing
+[33:00] somewhere.
+[33:01] Then, you know, we don't want to, now let's say we want to save it on the interrupt handler
+[33:09] stack.
+[33:10] Then we'll have to overwrite the value of the stack pointer, right?
+[33:13] Such that it points to somewhere else where all the registers can be saved.
+[33:17] And this will kill its previous value.
+[33:20] So what we do is, we add an additional register called old sp, to save the stack pointer of
+[33:28] the program.
+[33:29] So when the marked instruction reaches the end of the pipeline, and you know, that's when
+[33:34] all our previous instructions have completed, we save the value of the current stack pointer,
+[33:40] which is register 14 in simple risk, to a new register called old sp, old stack pointer.
+[33:47] Then we load a new stack pointer, which is the stack pointer of the interrupt handler, whatever
+[33:51] it is, and we spill all the registers there.
+[33:56] And we, in addition to that, we save the old PC and the old sp, of course, in that region,
+[34:02] right?
+[34:03] So this has taken care of the storing of the old program counter and the old sp.
+[34:09] stack pointer.
+[34:10] Now let's take a look at the flags register.
+[34:14] So the strange case of the flags register is like this.
+[34:18] Let's see.
+[34:19] So a simple naive solution will be that we do not allow any instruction after the marked instruction
+[34:25] to update the flags register.
+[34:28] Then, so the thing is we detect an, but the problem is that we detect an interrupt or an
+[34:36] exception, typically towards the middle or end of a clock cycle.
+[34:40] By that time, the instruction might have already updated the flags register, right?
+[34:44] Or at least the latch, at least the master's latch or the master's slave flip flop, if there
+[34:49] is one.
+[34:50] So this is hard to do, you know.
+[34:52] Let's not do this because we'll not know exactly when the flags register is being updated
+[34:57] and when it is being restored.
+[34:59] So that can be a problem.
+[35:01] So let's look at a better solution.
+[35:04] So it is true that the flags register is a part of a permanent state.
+[35:08] And if let's say this is the marked instruction and all the ones before the marked instruction
+[35:16] in the pipeline, all of these need to complete and none of these, you know, none of these
+[35:21] can complete before the interrupt handler starts executing.
+[35:25] The flags register that this marked instruction would have seen or updated is what needs to
+[35:30] come back when we restart the program, right?
+[35:33] When the instruction over here starts to execute, this is what it needs to see.
+[35:38] So one approach will be that let us add a flags field to the instruction packet.
+[35:43] So every instruction will save the updated value of the flags register to the flags field
+[35:49] in its instruction packet if it updates it or the value that it sees when it passes by
+[35:54] the EX stage, alright?
+[35:56] So only the CMP instruction updates the flags register.
+[36:01] But the rest of the instructions when they pass by the EX stage, whatever value they see,
+[36:07] they will put it in the flags field of the instruction packet, which is a set of bits that it takes
+[36:13] down the pipeline.
+[36:15] So the exception unit, then at the end when the marked instruction reaches the end of the
+[36:22] pipeline, will save the flags field of the marked instruction to the old flags register.
+[36:28] So this is a nice way of doing it.
+[36:31] So this basically says, you know, go ahead and do whatever you want with the actual flags
+[36:35] register.
+[36:36] But we'll in addition have a flags field in the instruction packet, which means that whenever
+[36:43] any instruction passes by the EX stage, whatever value of flags that it sees or it updates,
+[36:50] it carries it along with it, you know, like in a suitcase, it carries it along with it.
+[36:55] When it exits the RW stage, what the exception unit does is that it writes this value to the
+[37:00] old flags register, right?
+[37:02] Only for the marked instruction.
+[37:04] So we'll store the old flags register to a location in the interrupt handler stack.
+[37:09] So what are the new registers that we have added?
+[37:12] We have added old PC to store the value of the PC that we need to go back to.
+[37:18] What are the values?
+[37:19] Well, this can be the PC of the marked instruction for some kinds of interrupts or it can be the
+[37:25] next PC for some other kind of interrupts.
+[37:28] Then we have old SP.
+[37:30] Old SP is the old stack pointer.
+[37:33] So the old stack pointer is basically the, you know, the stack pointer that the marked instruction
+[37:43] sees.
+[37:44] So this needs to be stored.
+[37:45] Otherwise, how do we update the value of the stack pointer?
+[37:48] So this needs to be stored as a new instruction we're adding and also old flags.
+[37:53] So this stores the value of the flags register.
+[37:56] You know, we are, we essentially have two one-bit flags, flags.e and flags.gt.
+[38:01] But let's treat it as a 32-bit register for the sake of simplicity.
+[38:06] So the flags that the marked instruction sees or updates, they will be stored in the old
+[38:13] flags register once the marked instruction reaches the end of the pipeline.
+[38:17] So these are the three registers that we add.
+[38:20] They are not visible to normal programs.
+[38:23] They are visible only to special programs like interrupt handlers.
+[38:26] So that's the reason we'll call them privileged registers.
+[38:29] Right?
+[38:30] They are privileged.
+[38:31] They are special.
+[38:32] Alright.
+[38:33] So along with privileged registers.
+[38:36] Right?
+[38:37] So we, so what we do is that we add some privileged instructions.
+[38:47] So we will add the following new registers to the ISA.
+[38:53] So in the ISA, you know, what we can do is that we will also expose the flags register that we have over here to the ISA.
+[39:06] So, but these are the other privileged registers that we have added, old flags, old PC and old SP.
+[39:22] So, yeah, as I said, you know, this we'll discuss in a short while when you see the assembly code of an interrupt handler.
+[39:28] So, let us call this as the Z series of privileged instructions, the Z series of privileged instructions.
+[39:37] So, let's add a few more instructions to operate on these registers.
+[39:42] Right?
+[39:43] The new ones that we have added.
+[39:45] So, recall that, you know, we had discussed the simple risk instruction set in Chapter 3.
+[39:52] And we had discussed all the registers, but we had not discussed these ones.
+[39:56] Because these are new ones that we are adding now.
+[39:59] So, in general, what most processor designers do is that they have a normal register set.
+[40:05] Then they have a special register set.
+[40:07] For special programs like, you know, interrupt handlers.
+[40:11] So they will typically have a slightly different encoding.
+[40:16] So we need to change the decode unit as well to take care of these instructions.
+[40:21] So, the first instruction in this class that we want to introduce is the MOVZ instruction,
+[40:29] which transfers values between regular registers and special registers.
+[40:35] Another instruction we want to introduce is RETZ.
+[40:39] So, RETZ transfers the value in the old PC privileged register to the current PC.
+[40:45] So, it means we can start executing from Z.
+[40:48] So, the Z series instructions can only be used by the interrupt handler and the operating system.
+[40:56] So, how do we ensure?
+[40:59] So, the way that we ensure that normal programs cannot access these registers or these instructions
+[41:05] is that we use a bit called the CPL bit.
+[41:09] And the CPL bit is called the current privilege level bit for setting permissions.
+[41:15] For user programs, we set the CPL bit to be 1.
+[41:18] And for interrupt handlers and kernel programs, we set it to be 0.
+[41:22] So, what this means is that the user programs will use a certain kind of registers and instruction encoding.
+[41:28] So, they will not be able to see the special additional registers, old flags, old PC, old SP, or even the flags register for that matter.
+[41:36] They can see it implicitly, but not explicitly.
+[41:39] However, once an interrupt or exception handler comes, the CPL bit will automatically convert from, you know, change from 1 to 0.
+[41:47] So, then our interrupt handlers and kernel programs will be able to access all the special registers as well as special instructions.
+[41:58] Alright.
+[41:59] So, once then, you know, when the, so kernel, oh, I'm sorry.
+[42:03] So, kernel I have not defined.
+[42:05] So, the kernel is, so the operating system code is also known as, the operating system program is also known as the kernel.
+[42:13] And, so the same thing, it's just known in our computer science parlance as a kernel.
+[42:20] And a kernel is basically a special program to manage other programs, right, which is the job of the operating system.
+[42:28] And once we execute, once we exit the kernel and go back to the user program, the CPL bit will convert from 0 to 1,
+[42:35] which means that these special instructions and registers cannot be used.
+[42:40] So, implementing MOVZ and RETZ, so these opcodes are usable only when CPL is 0.
+[42:49] So, we augment the OF and RW stages to use these special registers if there is a requirement.
+[42:55] And also, in this mode, we'll see a different view of registers.
+[43:00] So, let us, you know, see just 6 registers.
+[43:05] Let us see R0.
+[43:06] Let us encode it as 0000.
+[43:09] Old PC as 1.
+[43:11] Old SP as 2.
+[43:12] Flags as 3.
+[43:13] Old flags as 4.
+[43:15] And the stack pointer SP as 1110.
+[43:18] So, this is the same as 14.
+[43:21] So, it maintains its existing value.
+[43:23] But the rest, we give them new values.
+[43:26] So, essentially, in a privileged mode, we see a different encoding of registers.
+[43:30] And these, and this encoding also corresponds to different registers, right, different privileged registers.
+[43:39] Alright.
+[43:40] So, let us look at the assembly code for the interrupt handler, which is to spill the registers.
+[43:46] So, the first thing that we do, so, so, what is the idea?
+[43:49] The idea is that our entire state, right, the memory is taken care of, but the PC, the registers,
+[43:59] and the flags, all three of them, have to be stored somewhere in memory, such that later
+[44:07] on, we can read it from there and we can restore it.
+[44:10] Alright.
+[44:11] So, where will we store it?
+[44:13] We will store it in the stack of the interrupt handler and from there, we can store it somewhere else.
+[44:18] But, essentially, we need, it needs to be stored somewhere in memory.
+[44:22] So, the first thing that we need to do is that we need to save the stack pointer.
+[44:30] Alright.
+[44:31] So, once the marked instruction reaches the end of the pipeline, so, we can sort of clean up the pipeline
+[44:38] because the rest of the instructions we have converted to bubbles.
+[44:41] So, we will have the circuitry anything after the marked instruction is all a bubble.
+[44:46] So, then we load the interrupt handler and the first thing that the interrupt handler does
+[44:50] is that it transfers the value of the current stack pointer to the old SP register.
+[44:56] So, mind you, this can be done automatically as well.
+[44:59] So, it can be done in this case via an assembly instruction.
+[45:03] So, both are possible.
+[45:04] In this case, we are doing it via an assembly instruction.
+[45:08] Now that this is stored, let us assume that the stack pointer at which we want to store
+[45:13] the set of registers in the interrupt handler is 0x-ff-fc.
+[45:19] Let's assume this is the address.
+[45:21] So, let us load it directly into the SP register and let's start from there.
+[45:28] So, now essentially we have loaded a new location which is the stack pointer of the interrupt handler.
+[45:34] So, there we will start storing all our registers.
+[45:37] So, no problem.
+[45:38] So, we start storing our registers like this.
+[45:41] We start storing R0 at SP-4, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12.
+[45:55] So, we are simply storing the values of all our registers in the stack of, on the stack
+[46:02] of the interrupt handler.
+[46:04] And we store, mind you, R13 and R15.
+[46:08] We don't store R14 because R14 is the stack pointer itself.
+[46:11] So, we don't do that.
+[46:13] Then we save the stack pointer, the old stack pointer in old SP.
+[46:17] So, what we do is, is that we move it to R0, which is one of the registers that is visible
+[46:23] to us in this mode.
+[46:25] And then we store the value in R0 to memory, to SP-64.
+[46:32] Alright?
+[46:34] So, after storing the old stack pointer, we now save the flags register, right?
+[46:42] So, the flags that the marked instruction had seen or updated have been automatically transferred
+[46:47] to the old flags register.
+[46:49] So, this can be transferred to R0 and then R0 can be stored in, you know, we'll use the
+[46:59] regular store instruction.
+[47:02] So, this can be stored in this particular memory location.
+[47:08] And lastly, we will store the, we will store the old PC.
+[47:17] So, the old PC, we will store it in this particular memory location.
+[47:22] So, recall that, you know, just to keep things simple, we have not, you know, introduced any
+[47:29] additional instructions beyond move Z and write Z.
+[47:33] And move Z also, we have said, it can move data between a special and a normal register.
+[47:38] And the rest of the instructions, we have kept the same.
+[47:42] So, once we have done this, we need to update the stack pointer such that, you know, the size of the stack.
+[47:49] So, it's, it's sort of, the stack has increased by 72 bytes.
+[47:53] So, this is reflected.
+[47:55] So, we subtract 72 from the stack pointer and use it to update the value of the stack pointer SP.
+[48:02] So, now that we have saved our entire state, which includes all our registers, the old stack pointer,
+[48:08] the old flags and the old PC, we can start the core of the interrupt handler.
+[48:12] Because we know that all the state is saved and we just have to restore all of the state to start back again.
+[48:18] So, for restoring registers, we pretty much work in the reverse fashion.
+[48:24] So, we update the stack pointer by 72.
+[48:27] Then, we restore the, we, I'm sorry, we restore the old PC.
+[48:42] It's not the flags register.
+[48:43] It's actually the old PC.
+[48:45] So, we restore the old PC.
+[48:47] So, what we do?
+[48:48] So, recall that the old PC we had saved in this location.
+[48:51] So, we restore the old PC.
+[48:54] Right?
+[48:55] And so, we transfer this to R0 and then we have a move Z instruction to do that.
+[49:02] And then, what we do is that we restore the flags.
+[49:06] So, sorry.
+[49:07] There's another mistake here.
+[49:08] We restore the flags.
+[49:09] So, here what we do is that we take the value in the flags register.
+[49:23] And so, we take the value in the old flags register, which was actually stored in memory.
+[49:29] And we restore it to the flags.
+[49:30] So, the way that we do it is that we read the value first into one register.
+[49:36] And then, we do a move Z.
+[49:38] So, we set the flags register with whatever value was previously stored.
+[49:45] So, recall that that's why, you know, we had exposed the flags register to assembly software,
+[49:51] such that we can restore its value.
+[49:53] Then, we sort of walk reverse and restore the value of all the other individual registers,
+[50:00] starting from R0 to R15.
+[50:04] It is just that we leave the stack pointer.
+[50:07] So, we restore everything, but not the stack pointer.
+[50:09] We'll do it at the end.
+[50:11] So, at the end, what we will do is that we will restore the stack pointer.
+[50:17] So, the stack pointer, where is it stored?
+[50:20] Well, the stack pointer is stored at this location, the old SP, right?
+[50:25] At minus 64, you know, contents of SP minus 64.
+[50:30] So, we will have this instruction over here, which will take the contents of the stack pointer,
+[50:37] subtract 64, and then write it to the SP register.
+[50:42] So, now that we are all done, and, you know, old PC has been loaded, we can execute the RETZ instruction,
+[50:49] which will basically do what?
+[50:52] The RETZ instruction will transfer the old PC to the current PC.
+[50:57] It will start execution, and it will start execution in the original program at the CPL level of 1.
+[51:07] Alright?
+[51:08] So, that's what it's going to do.
+[51:10] That it will transfer it, and recall that the old PC we had restored in these lines.
+[51:16] So, once we call RETZ, the program counter will be equal to whatever is there in the old PC register.
+[51:23] Alright?
+[51:24] And also, the CPL level will be the same as that of user programs, which is 1.
+[51:29] So, a normal user program can start executing, and its state would have been restored.
+[51:34] So, it will have no way of knowing that an interrupt had actually come in the middle.
+[51:38] It's as simple as that.
+[51:40] So, to summarize, how did we do it?
+[51:43] Well, the way we did it is by actually introducing some special instructions and registers.
+[51:51] So, in specific, the instructions that we introduced.
+[51:55] So, let me clean up this slide.
+[51:58] So, in specific, the instructions that we introduced are MOVZ and RETZ.
+[52:04] So, MOVZ essentially transfers data between normal and special registers.
+[52:09] And RETZ, what it does is that it essentially returns from an interrupt handler.
+[52:15] So, the contents of old PC are transferred to the program counter PC.
+[52:20] And we start running the user program.
+[52:23] And the user program runs with a privilege level of 1.
+[52:28] CPL is equal to 1.
+[52:31] Alright?
+[52:32] And these are the four additional special registers that we introduced.
+[52:36] So, why do we introduce special registers?
+[52:38] Well, to transfer all the general registers from point A to point B, we need to write assembly code.
+[52:45] And assembly code would require registers.
+[52:48] And then, you know, some of the registers will end up getting overwritten.
+[52:51] That's the reason we have to introduce additional registers such that our general purpose registers are not overwritten.
+[53:00] So, now that we have some understanding of this, let's take a look at our updated pipeline diagram.
+[53:06] Average diagram, of course.
+[53:08] So, what we have done is that we have, of course, this new marking circuitry which can mark an instruction in any stage.
+[53:17] In addition, the PC slash NPC, oblique NPC, any one of these values and the flags, one or both of these values,
+[53:26] and the flags field from the instruction packet are going to the exception unit along with the CPL register over here.
+[53:34] So, the exception unit will control the execution of the interrupt handler.
+[53:38] So, once the marked instruction reaches the end, we will update the CPL bit, start the interrupt handler or the exception handler depending upon, you know, interrupt oblique exception handler.
+[53:53] So, depending on what kind of interrupt or exception it is, it will essentially send a command to the fetch unit.
+[54:00] And we will start the regular execution and they will also follow the same pipeline pattern of execution as we have been following.
+[54:08] The only additional detail that we need to consider out here is that in our register file, we have augmented it.
+[54:16] So, we have added four additional registers, old flags, old PC, old SP and flags where, you know, this flags and this flags are conceptually the same.
+[54:27] And so, we just assume that whatever, you know, the contents of this flags register and this one here are the same.
+[54:34] So, you know, this flags register can actually be physically located over here, right?
+[54:38] But, you know, since it's a register, we have put it in the registered unit.
+[54:43] But, you know, this and this are, you know, the same entity, alright?
+[54:48] So, this is sort of our entire pipeline processor with the stall logic, the bubble logic, you know, the data hazard and control hazard handling logic,
+[54:59] with the forwarding unit, with the exception unit to take care of interrupts and exceptions, which are extremely useful things.
+[55:08] Because otherwise, how would you interact with IO devices?
+[55:11] How would you interact with programs that have faults?
+[55:14] So, an exception unit is required.
+[55:16] And we need additional instructions, of course, which our decode unit will take care.
+[55:22] And we need, you know, some additional registers, which are saved in the registered unit.
+[55:29] And, of course, an exception unit with the CPL bit.
+[55:33] Alright, so this brings us to an end of the pipelining chapter.
+[55:38] So, we have now discussed in a fair amount of detail the design of a processor and we have further optimized it with pipelining.
+[55:48] So, now this part of the book ends, subsequently we will move to the design of memory systems.

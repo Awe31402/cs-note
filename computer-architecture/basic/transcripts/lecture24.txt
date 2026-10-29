@@ -1,0 +1,563 @@
+[00:00] We'll be right back.
+[00:30] Welcome back.
+[00:36] So this is the second slide set in the computer arithmetic chapter.
+[00:40] So since the chapter was long, we divided it into two slide sets.
+[00:43] This is otherwise the fourth lecture in this series.
+[00:48] So we had promised to discuss a couple of things.
+[00:51] We had promised to discuss division and floating point operations, namely addition, multiplication
+[00:58] and floating point division.
+[01:01] So let us now divide.
+[01:03] So let us only consider positive numbers in our discussion because dividing negative numbers
+[01:09] is kind of tricky.
+[01:11] Well, it's tricky in the sense that we need to first understand that when we are doing
+[01:19] integer division and there's a negative number involved, there are different conventions for
+[01:24] the remainder, you know, some conventions say the remainder is always positive.
+[01:29] Some conventions say that the remainder has the same sign as the divisor.
+[01:33] So actually what most libraries or processors would do is that they would first convert the
+[01:42] numbers to positive numbers, do the division with positive numbers and then adjust the remainder
+[01:51] according to the convention.
+[01:53] So again, there are different ways of doing it, but let's just stick to positive numbers
+[01:57] in our discussion because number one is simpler.
+[02:01] Secondly, since division is a fairly long operation and it's not possible to have log n time algorithms
+[02:09] very easily, it's okay to convert negative numbers to positive, do the division and then adjust
+[02:19] the signs.
+[02:22] So let's now introduce some basic terminology.
+[02:27] The terminology is like this that when we are dividing, sorry, let's say that we are dividing
+[02:37] n by d, right?
+[02:41] So this is, you know, slash operator, same as integer division, n divided by d.
+[02:48] So in this case, we'll have a quotient and a remainder.
+[02:51] For example, if I divide 5 by 2, the quotient is 2 and the remainder is 1.
+[03:00] So this can alternatively be said that n, which is the dividend, so basically the top number
+[03:06] is called the dividend and this is the divisor.
+[03:09] n is equal to dq plus r, where n is the dividend, d is the divisor, so we are essentially dividing
+[03:16] the dividend by the divisor, we are computing n by d, then we'll have a quotient.
+[03:23] Quotient is a result of the division.
+[03:24] For example, if we divide 100 by 20, the quotient is 5.
+[03:29] If we divide 101 by 20, also in integer division, the quotient is 5, but in this case the remainder
+[03:35] will be 1.
+[03:38] So there are two things, so a division has two outputs, a quotient and a remainder.
+[03:44] Both of them need to be computed.
+[03:48] Now let's take a look at some properties, right?
+[03:51] In this equation n equals dq plus r.
+[03:56] So one property is that the remainder has to always be less than the divisor, right?
+[04:02] So that has to be the case.
+[04:04] The reason that that has to be the case is otherwise, you know, the division is wrong.
+[04:08] For example, if I divide 101 by 20, right?
+[04:11] If I divide 101 by 20, the quotient cannot be 4 and the remainder cannot be 21.
+[04:20] So it basically means that the division has not been done correctly.
+[04:24] So the quotient has to be 5 and the remainder has to be 1 in this case.
+[04:30] So r is less than d.
+[04:31] Furthermore, r is greater than or equal to 0.
+[04:34] So we always have a positive remainder if we are considering only positive numbers.
+[04:40] We can then, so let's remember these properties.
+[04:43] We'll refer to this as property 1.
+[04:46] The property that the remainder is less than a divisor.
+[04:49] The other one we'll refer to as property 2, which says that the quotient q is the largest
+[04:57] positive integer that satisfies equation 1, okay?
+[05:02] I should probably call this as equation 1, sorry, right?
+[05:06] That satisfies the equation and this is equation 1.
+[05:11] So the quotient is the largest positive integer.
+[05:13] So this is also obvious.
+[05:15] So again, if I am dividing 101 by 20, so 5 is the largest number that satisfies the equation
+[05:24] 1 and essentially the equation and the property 1.
+[05:29] So why is this the case?
+[05:31] Because 5 times 20 is 100 plus 1, 6 will not do.
+[05:35] Because if I have 6 times 20, then dq will become 120, so r has to be minus 19.
+[05:42] But what we understand from here, from property 1 is that r is always greater than or equal
+[05:48] to 0.
+[05:49] So as a result, it cannot be negative.
+[05:53] So both of these properties are otherwise obvious, but you know, it's nice to write
+[05:57] them down because any division algorithm has to obey both of these properties.
+[06:05] And so these are also sufficient properties, not necessary but sufficient properties.
+[06:10] We need to find, so q is the largest positive integer which satisfies the equation.
+[06:16] And also property 1 needs to hold where r is less than d and r itself is greater than equal
+[06:22] to 0.
+[06:23] So we need to ensure that these two properties 1 and 2 always hold.
+[06:29] So let us, so maybe you know the way that we should modify this slide is that you know
+[06:35] satisfying equation 1 and property 1, right, so that will fix this slide, alright.
+[06:51] So let us do one thing, let us do a little bit of math.
+[06:54] So let us start with our division equation which is n equals dq plus r.
+[07:00] And let us assume that the quotient q which is of course represented in binary.
+[07:06] The bits are qn to q1.
+[07:12] So what we can do is that we can divide the quotient, sorry, so we can sort of break it into two parts.
+[07:22] One is qn times 2 raised to power n minus 1 plus one number which corresponds, which consists
+[07:31] of the remaining n minus 1 bits, right.
+[07:34] So we have also done this before in chapter 2.
+[07:37] So one good idea would be that somebody, you know, who has forgotten what we did and learnt
+[07:42] in chapter 2 all about bits and floating point numbers and so on, can go back to chapter
+[07:48] 2 and refresh the knowledge because we will be using many results here.
+[07:56] So what did I do again?
+[07:58] I considered the quotient to be an n-bit number and I take the MSP out.
+[08:04] So I say qn times 2 raised to power n minus 1 plus the number that is left out of the rest
+[08:10] n minus 1 bits.
+[08:14] So if I break the quotient in this way, I have one component over here, which is the first
+[08:18] n minus 1 bits of the quotient.
+[08:21] I have one more component over here, which is divisor times this thing.
+[08:28] And this thing is qn is the MSP of the quotient, most significant bit, times 2 raised to the
+[08:34] power n minus 1 plus the remainder r.
+[08:39] Now what I can do is that I can take this term to the left side and have n minus d times qn
+[08:50] to 2 raised to power minus 1 is equal to d times.
+[08:55] So let the number formed by the first n minus 1 bits of the quotient, let us call it q dash.
+[09:06] So what we will have is d times q dash plus r, right?
+[09:10] And let me call this term over here as n dash.
+[09:14] So what we see is that this equation looks very very similar to this equation, right?
+[09:20] There is no difference at all in the structure, but there is a little bit of difference in
+[09:26] the terms.
+[09:27] So the remainder is the same mind you.
+[09:31] The divisor is the same, but the quotient in this case has the n bit quotient.
+[09:39] In this case is the same quotient, but the first n minus 1 bits.
+[09:43] In this case is the original dividend.
+[09:45] In this case, it's the dividend.
+[09:46] The dividend is, so what's the dividend in the upper case?
+[09:52] It is the original dividend n minus the divisor times the nth bit of the quotient times 2 raised
+[10:01] to power n minus 1, right?
+[10:02] So this is the dividend that is being used.
+[10:08] So what we have done is that if we can somehow figure out the nth bit, right, the most significant
+[10:17] bit of the quotient, if there is, you know, some way of figuring that out, then what we
+[10:22] can do is that we can compute a new dividend, which is n dash and solve a smaller division
+[10:32] problem for the quotient has n minus 1 bits, all right?
+[10:37] Similarly, I can then have one more, then, you know, I can carry on in the same manner,
+[10:44] same fashion, I can then have one more equation, which is q dash dash plus r, where this contains
+[10:50] of the last n minus 2 bits of the quotient.
+[10:54] If I have some way of again figuring out the n minus 1th bit of the quotient, I can come
+[10:59] to this equation.
+[11:01] Similarly, I can go down, down, down, down, till I sort of reach one point.
+[11:09] So let me maybe put a star, sorry, this is a bad star, let me erase that.
+[11:16] Here is a better star, till I reach one point, where this is the divisor times the first bit
+[11:35] of the quotient q1 plus r, right?
+[11:41] Now at this point, if I have some magical way of figuring out what is the least significant
+[11:45] bit of the quotient, then what will ultimately remain is, we will ultimately, what will remain
+[11:54] is at the end, we will only have the remainder left.
+[11:57] So we can, you know, what's left will be the remainder, and at every point, we will get
+[12:02] one bit each in the quotient, starting with the nth bit, till the first bit, alright?
+[12:09] So what we are doing is that we are divide, we are, I am sorry, gradually reducing the division
+[12:14] problem, from a problem of dividing, you know, I am sorry, from a problem of computing an
+[12:20] n bit quotient, to a problem of computing an n minus 1 bit quotient, to a problem of computing
+[12:30] a 1 bit quotient, right?
+[12:33] So we, at every stage, we are sort of making the problem slightly smaller, and slightly simpler.
+[12:40] Till at the end, we need to compute a single bit, and finally we will be left with the remainder.
+[12:48] So this sounds like a good plan, it is just that the secret sauce is missing, and the secret
+[12:54] sauce here, is how on earth do we compute the, oops, I am sorry, how on earth do we compute
+[13:06] the nth bit of the quotient?
+[13:08] Because if we can do that, then we will be able to solve the entire problem, because at
+[13:12] every stage, what we will do is, that we will keep on reducing the problem to a smaller version,
+[13:19] till we reach the end, we get all the bits of the quotient, and what's left will be the
+[13:23] remainder.
+[13:25] So let's see, right?
+[13:29] How do we reduce the original problem to a slightly smaller problem?
+[13:36] So what is the main issue?
+[13:38] The main issue here that is bothering us, is how to find q n, the nth bit, the most significant
+[13:47] bit of the quotient, how is that to be found?
+[13:51] So let's think of it, so it's simple, but let's sort of look at it from a distance.
+[13:58] The nth bit of a quotient, so it's after all a single bit, right?
+[14:01] So if it's a single bit, how many values can it have?
+[14:04] It can have only two values, 0 and 1.
+[14:07] So since there's two values, what we can do is that we need to, well, we can try a brute
+[14:16] force approach, so we can try both the values, both 0 and 1.
+[14:20] So let's first try one.
+[14:23] So if n minus, so what do we need to do?
+[14:27] We basically need to compute n dash is equal to n minus d times q, right?
+[14:37] If q n is equal to 1, then n dash becomes equal to n minus d times.
+[14:49] So what we can do is we need to compute this and since we have to maximize our quotient,
+[14:54] so why do we need to maximize our quotient?
+[14:56] It is property number 2 that we want to maximize the largest positive integer, right?
+[15:02] So since we want to maximize our quotient, what we would like to do is that we would
+[15:08] try to set q n is equal to 1 if the new dividend is still positive, right?
+[15:16] So n minus d times 2 to the power n minus 1, if that is still greater than or equal to 0,
+[15:22] then it means that the nth bit of the quotient can be set to 1 and we, in a sense, will maximize
+[15:28] the quotient, right?
+[15:31] So then fine, if this is the case, we set q n is equal to 1 because our original aim was
+[15:36] to have a quotient as large as possible and if we can get away with setting the nth bit
+[15:41] of the quotient as 1, this means that it is the right guess, it is the correct guess and
+[15:48] we will set the new dividend to be this and solve a smaller division problem, right?
+[15:54] Where we will get the rest n minus 1 bits of the quotient.
+[15:58] However, if this term is less than 0, then it means that the largest weight of the quotient
+[16:03] cannot be 1.
+[16:05] Hence, we set it to 0.
+[16:08] We set what to 0?
+[16:09] We set q n to 0, alright?
+[16:14] So what we have done is that we have thus computed q n and we have also reduced the problem.
+[16:23] Problem was initially to compute an n-bit quotient.
+[16:26] Now we are computing an n minus 1-bit quotient, right?
+[16:32] So how are we doing that?
+[16:33] We considered the quotient to be an n-bit number.
+[16:37] We made two guesses for q n.
+[16:39] One guess was 1, the other guess was 0.
+[16:42] With 1, we tried to see that whether the problem still remains valid if we make a guess of 1.
+[16:49] And if it remains valid, we agree that q n should be 1.
+[16:54] So we set it to 1, the n-th bit of q.
+[16:57] Otherwise we set it to 0.
+[17:00] And then we compute the new dividend, which is n' is n minus d times 2 to the power n minus
+[17:08] 1 times q n, right?
+[17:12] And we proceed recursively.
+[17:15] Which means that we call the same process over and over again, albeit with reduced or
+[17:19] smaller arguments, till we are left with a single bit.
+[17:23] Alright, so the long and short of this slide, the summary of this slide, is that we now have
+[17:31] a method of computing a single bit in the quotient, which is the most significant bit.
+[17:36] We have a method.
+[17:38] What we do is that we first make a guess.
+[17:41] We see if, you know, whether if it is 1, it will work or not.
+[17:46] The reason for this is that we want to maximize our quotient.
+[17:52] If n minus d times 2 to the power n minus 1, if this number is greater than or equal to
+[17:59] 0, then it means that the quotient can be set to 1.
+[18:05] Otherwise it means that the quotient cannot be set to 1.
+[18:09] In this manner, we proceed and we gradually reduce the problem.
+[18:15] Alright, let's proceed, but before, alright, let's proceed and then I'll show an example.
+[18:23] Okay, so before I actually show the mechanism, let me make a quick trip to the previous slide,
+[18:32] and let me, you know, delete all of this stuff and explain with a very quick and small example.
+[18:41] So what I do, oops, sorry.
+[18:46] So let me try to divide, so let me consider a 4-bit number system, alright?
+[19:01] So in this case, n, which is the number of bits in the number system, that is equal to 4.
+[19:11] Furthermore, let me try to divide 13 by 4, no, let me try to divide 13 by 3.
+[19:20] So what is the quotient?
+[19:21] Well, the quotient in this case is 4 and the remainder is 1.
+[19:28] What is the binary representation of the quotient?
+[19:30] It is 0, 1, 0, 0, alright, so let's try to do something.
+[19:36] So in this case, n is 13, the divisor is 3.
+[19:42] So let me first, in the first iteration, iteration number 1, let me try to compute n minus d times
+[19:50] 2 raised to the power n minus 1, which is equal to 13 minus 3 times 2 to the power 4 minus
+[19:58] 1, which is 2 cubed, which is 8.
+[20:01] So 13, 13 minus 24 is less than 0.
+[20:06] So as a result, we will set the most significant bit of the quotient to be 0.
+[20:11] As we can see, this is the correct answer, alright?
+[20:15] So in this case, n dash, which is a new dividend, will remain the same as the old dividend, which
+[20:24] is 13, fine.
+[20:29] After that, let us go to the second, next iteration.
+[20:33] So in this case, let me do the same thing, 13 times.
+[20:40] So in this case, n was 4.
+[20:43] Now in this case, n will become equal to 3 because we are moving to a smaller number system, right?
+[20:48] So it's the next iteration, pretty much.
+[20:52] So in this case, what we do is that we do 13 minus 3 times 2 raised to the power 3 minus
+[21:01] 1, which is 2 to the power 2, which is equal to 1, which is greater than or equal to 0.
+[21:09] So as a result, we said q n is equal to 1.
+[21:15] And as you can see, this is exactly, sorry, sorry, not q n, but this is q n minus 1.
+[21:20] So let's call it q 4 and q 3, you know, that's slightly easier.
+[21:25] The fourth bit of the quotient and the third bit of the quotient.
+[21:28] Just quickly erase this part, erase this part.
+[21:37] So let us say that this is q 4 and this is q 3.
+[21:45] Fine let's go to the next iteration, which is iteration number 3.
+[21:50] So in this case, so what is n dash?
+[21:52] n dash is equal to 13 minus 3 times 2 square, which is 1.
+[21:59] So then I will again compute 1 minus 3 times, okay, so in this case n again becomes 2.
+[22:09] So 2 to the power 2 minus 1 is 1, so which is less than 0.
+[22:14] So basically q 2 is equal to 0.
+[22:17] Well, so again q 2 here is equal to 0.
+[22:20] So we have computed this properly.
+[22:22] So we go to the last iteration, which is the fourth iteration.
+[22:26] See here again the new n dash is equal to 1, because no change was made in the last time.
+[22:34] So what we need to compute is 1 minus 3 times 2 to the power, in this case it is 1 minus
+[22:45] 1, which is 2 to the power 0 is 1, this is again less than 0.
+[22:48] So we can say that q 1 is equal to 0.
+[22:52] So as you can see q 1 is equal to 0 over here.
+[22:57] So what we basically get to see is that we have computed the quotient which is 0 1 0 0 correctly
+[23:09] using this method.
+[23:11] So we will get to see some more examples of this method, but this is at least a quick way
+[23:15] of explaining how this method works.
+[23:19] So how will we actually implement it in hardware, well very similar to the iterative multiplier.
+[23:26] So we will have the divisor here in d, initially so we will have two registers here, and the
+[23:32] same way we had for the iterative multiplier and for the purposes of shifting, they act as
+[23:37] the same register.
+[23:40] So initially v will hold the dividend n, and u will contain the number 0, and d will contain
+[23:48] the divisor.
+[23:49] So here instead of addition, every, since division is repeated subtraction, every iteration will
+[23:55] subtract, you know, possibly subtract d from u, and write the value back to the u register.
+[24:02] All right, so let's take a look at the algorithm, which is very simple.
+[24:08] It's called the restoring algorithm.
+[24:12] So the restoring algorithm, what it does is that we divide two 32-bit numbers, 32, 64 doesn't
+[24:19] matter.
+[24:20] So the input is the data, the divisor is in register d.
+[24:23] So as you can see, the divisor is here in register d.
+[24:29] The dividend is in register v, so which is this register, the dividend is loaded over here.
+[24:37] And so if you left shift, then essentially this bit will come here.
+[24:44] And at the end, we want u, the register u to contain the remainder, and register v to contain
+[24:51] the quotient.
+[24:52] So u will, at the end, contain the remainder, that's what we want.
+[24:56] And register v, we want it to contain the quotient at the end.
+[25:00] All right, so what we do is that we run an iteration, a for loop for 32 times, for i equals
+[25:08] 1 to 32.
+[25:09] That's all that, you know, these lines do, is that you run a for loop for 32 times.
+[25:16] So then we left shift the uv register, the same way we did with the case, the multiplier.
+[25:21] So in that case, we were right shifting, in this case, we left shift.
+[25:24] So we do a left shift by one position.
+[25:28] Then what we do is, we subtract d from the register u.
+[25:34] So we subtract the divisor from the register u.
+[25:38] So if u is greater than or equal to 0, right, then we set q to 1.
+[25:44] q is a temporary variable, we set it to 1.
+[25:48] Otherwise what we do is, we restore the value of u.
+[25:51] So u becomes its old value, that's the reason it's called a restoring division, because initially
+[25:56] we subtract it, but if we find that the result has become negative, then what we do is that
+[26:03] we add the value of the divisor back to u, right.
+[26:07] So u becomes its old value.
+[26:09] And we set q to 0.
+[26:12] And then we set the quotient bit, least significant bit of v to q, alright, so that's what we do.
+[26:23] So before we look at an example, it is very, very important for me to give a certain feel
+[26:31] of why this algorithm is working, because to get a feel is very important.
+[26:38] So let me use some real estate here to draw.
+[26:41] So let us consider the two registers.
+[26:44] The two registers that I have are registers u, okay, let me just write them at the corner,
+[26:54] I need some space, and registers v.
+[26:58] So initially the dividend is completely loaded in register v, till we come to this line, in
+[27:05] which the dividend is shifted to the left, right, so the dividend is shifted to the left
+[27:12] by one position.
+[27:14] So basically the dividend occupies, so you know, let's consider this much to be one position,
+[27:20] so pretty much occupies this, this much, right.
+[27:23] So let me call this the dividend portion.
+[27:30] So I am just considering the first iteration, but all iterations will argue in the same fashion.
+[27:37] So this is the dividend n.
+[27:40] Of course there is some amount of space created over here, but let's ignore this.
+[27:44] So this will not come into our calculations, so it can be ignored.
+[27:49] Now what I do is that I subtract the divisor from register u.
+[27:56] So if I consider this part as the divisor, right, from register u, and if I consider this
+[28:04] as an entire number starting from here, right, so to the right of this I ignore, but let's
+[28:09] say starting from here, if I consider this much to be a full number, what I am essentially
+[28:17] computing is, I am computing an n dash, which is equal to n minus the divisor.
+[28:25] So mind you, the divisor as compared to the beginning of this number is shifted to the left.
+[28:31] How many positions is it shifted?
+[28:33] So basically this entire distance is n bits.
+[28:39] So since, and this distance here is one bit.
+[28:45] So as compared to the beginning of the place where our dividend starts, right, so as these
+[28:52] bits we have ignored because we have left shifted it anyway in this line.
+[28:57] So as compared to the beginning of where the dividend starts, the divisor is n minus one
+[29:02] positions to the left, alright.
+[29:05] So if you are looking at the screen, the divisor is n minus one positions to the left.
+[29:11] So when I am doing the subtraction, u is u minus d, what I am essentially doing is that
+[29:17] for this number, which is, which begins from the beginning of the dividend till the end
+[29:24] of register u, if I, so this number at the beginning is all zeros.
+[29:29] So let it remain in that fashion.
+[29:32] So this number that I have, I am essentially subtracting the divisor multiplied by 2 raise
+[29:38] to the power n minus one, right.
+[29:42] And since, well, I can maybe clean up the minus one a little bit.
+[29:50] And since I initially assume that I am multiplying this, you know, the quotient bit is 1, I can
+[30:10] add q n, where q n is 1.
+[30:13] Well, so does this particular equation look familiar?
+[30:17] It definitely should, because this equation is exactly this equation over here.
+[30:25] So let me maybe in a good idea to clean the slide.
+[30:28] This is exactly this equation, right.
+[30:30] This is the same term, n dash is n minus divisor times 2 raise to the power n minus one times
+[30:36] q n.
+[30:37] So this is exactly what we are doing, that we have computed the new dividend.
+[30:47] And the way we have done that is via this particular hardware mechanism.
+[30:53] But in a sense, what is being computed inside is the old dividend minus the divisor multiplied
+[30:59] by 2 raise to the power n minus one times q n, where we are assuming that the quotient bit
+[31:05] is one.
+[31:07] So this is, you know, we, this is just a hardware implementation of the algorithm that we have
+[31:12] described.
+[31:13] Now, if the new value of u is less than 0, which means that, you know, this new dividend
+[31:21] is not valid, then we will set the quotient bit to 0 and restore the value of u, right.
+[31:27] So we don't want a negative dividend.
+[31:29] So we will restore it.
+[31:31] That's what we have been doing.
+[31:33] Otherwise, if it's greater than or equal to 0, well, fair enough, we have computed the
+[31:37] quotient bit to be 1.
+[31:40] So once we have done that, the quotient bit that we compute, that is set to this unused
+[31:46] space over here, which is q n, right.
+[31:51] Because this space is anyway not used, we are not factoring it into the dividend.
+[31:56] So this will become q n. So gradually, what will, so now let's consider the next iteration,
+[32:02] right.
+[32:03] So this is the first iteration.
+[32:04] If I consider the next iteration, the situation will be very, very similar.
+[32:08] I am just drawing a smaller version of the u and v registers.
+[32:14] The situation will be very similar.
+[32:15] We will, instead of, we will start our dividend from a newer position and there will be two
+[32:20] bits here instead of one bit.
+[32:23] And we can consider the rest as a new dividend n dash that was computed in the previous iteration.
+[32:30] One bit over here will be the nth bit of the quotient q n, which we have computed.
+[32:36] And this bit will be q n minus 1 that needs to be computed in the current iteration, which
+[32:41] is the second iteration.
+[32:44] Then we can do exactly the same, right, in the next iteration and compute q n minus 1 exactly
+[32:51] the same logic.
+[32:53] And the same logic will work.
+[32:55] The reason that this will work is basically because, you know, this certain, this equation
+[33:04] has a recursive structure.
+[33:05] So initially, you know, n is 32, then n is 31, 30, 29 and so on.
+[33:11] So in consonance with these equations, this hardware will perform appropriately.
+[33:21] So what will happen as I keep on going towards the end?
+[33:25] What will happen is that at one point, the dividend will start from here.
+[33:29] So this entire register here, the V register will contain the quotient.
+[33:36] And what will be left here will be the remainder, right, after we have computed all the quotient
+[33:41] bits.
+[33:42] All right.
+[33:43] So after all the quotient bits have been computed, what will essentially remain is the remainder
+[33:50] of the quotient bits.
+[33:52] So that we are going to have to be placed in the quotient, which is what we initially started
+[33:54] out to find.
+[33:54] So, well, an example is worth a thousand words.
+[33:59] So let's do it in a proper way.
+[34:02] So let us assume that we are trying to divide 7 by 3.
+[34:07] So 7 is a dividend.
+[34:08] So similar to multiplication to avoid overflow issues we consider a 5-bit dividend.
+[34:15] So in this case our N dividend is 00111 and the divisor is D.
+[34:23] So how do we start our algorithm?
+[34:25] We start our algorithm by loading the dividend in register V which is 0111 and we load the
+[34:38] divisor into the D register 0011.
+[34:46] Subsequently we will compute our results at two points one is after the shift which is
+[34:51] this point and one is at the end of the iteration which is this point.
+[34:57] So after the shift 111 comes here and X means that this you know bit we don't care.
+[35:05] Then what we do is we try to subtract the divisor from this number and since we don't have
+[35:11] anything we write a 0 over here.
+[35:14] So since the result is negative will be negative right 0 minus any number is negative we write
+[35:21] a 0 here fine then after the shift we do a one bit shift so this numbers come here and
+[35:29] the quotient bit that we have computed comes here.
+[35:32] Again we try to subtract 3 from 1 we are not successful.
+[35:36] So the next quotient bit we compute to be 0.
+[35:41] Again we do a shift so this one comes here, this one comes here, this one comes here and
+[35:47] these two bits come over here and one extra space is created where we need to write the
+[35:53] next quotient bit.
+[35:55] So we see here the 3 you know the divisor D can be subtracted from 3.
+[36:01] So we go ahead and subtract so at the end of the iteration we will have all 0's and here
+[36:06] since we are able to successfully subtract we will set the quotient bit to 1.
+[36:12] So what we will have here is 1 0 0 1.
+[36:16] Fine after that we do one more shift so this one comes here, this one comes here and since
+[36:23] we cannot subtract 3 from 1 1 will remain and 0 will come here because we couldn't do the
+[36:29] subtraction.
+[36:30] So the quotient becomes 2 and the remainder becomes 1 right which is exactly what we needed
+[36:37] to do that 7 divided by 3 the quotient is 2 and the remainder is 1 and this is exactly
+[36:44] what we compute right to the quotient 2 remainder 1 and this is a very simple algorithm so we
+[36:52] just run n iterations every iteration involves addition and subtraction which are order log
+[36:58] n time operations so the total time complexity is n log n n coming from n iterations and log
+[37:06] n coming from the fact that we have additions and subtractions in each iteration and it takes
+[37:13] log n time for doing an addition or subtraction all right so this is a textual description
+[37:22] of our algorithm we considered each bit of the dividend we try to subtract the divisor from
+[37:28] the u register if the subtraction is successful we set the relevant quotient bit to 1 otherwise
+[37:34] we set the relevant quotient bit to 0 and then we left shift.
+[37:40] So this is a proof of you know what we discussed and since we have already given a graphical proof
+[37:47] you know students can take a look at this I will not you know cover this but you know students
+[37:54] can take a look at this part of our description and they will get an idea that you know pretty
+[38:04] much what we are talking about all right.
+[38:07] So this is more of like a formal proof so you will find the formal proof in the book but
+[38:12] I just gave a slightly semi-formal graphical proof to you know which can be further elaborated
+[38:18] and written in a formal way but I will not discuss that in the current presentation.
+[38:24] All right so I'm skipping the proof part so part of the proof you know at least graphical
+[38:31] part we have covered the rest you know I think the best strategy would be to read the proof
+[38:36] from the book and try to correlate it with what's written over here.
+[38:40] All right so as I said it takes n iterations and each iteration takes log n time so total
+[38:49] time is n log n so I'm just you know I have taken the o out so it's order of n log n.
+[38:56] All right so let's now introduce a new kind of division algorithm called non-restoring division.
+[39:05] So here so what did we see we saw that we subtract d from u and we need to restore the value of
+[39:13] register u right so this is a problem in the sense that we first subtract you find that
+[39:19] the result is negative then we need to add the divisor back so which means we're restoring
+[39:26] the value of register u so this requires either an extra addition or another approach can be
+[39:32] that we'll copy the register u to another temporary location we will then do a subtraction and
+[39:39] then move the values back in in any case it's some amount of work so can we just you know avoid
+[39:45] this to avoid this we do something called non-restoring division so in this case I'll give the algorithm
+[39:55] the entire structure remains the same u v d n everything remains the same so I'll just
+[40:02] give the algorithm so we do the same thing we run a loop for 32 iterations and so this is
+[40:09] the beginning of the for loop and this is the end of the for loop so we do the same thing
+[40:15] we first do a left shift on the u v combined register by one position right then what we
+[40:24] do is as follows so so this is where you know there is a difference so you first check the
+[40:30] sign of u see if u is greater than 0 then we subtract the divisor d from it otherwise if
+[40:40] u is less than 0 which it can be because we are not restoring right so we you know in the first
+[40:46] iteration even if we cannot subtract meaning that the value of u will be less than 0 we still go
+[40:53] ahead and subtract and then in the subsequent iterations the number can remain negative so that's
+[41:01] the reason in any iteration if we find u to be negative we'll add the value of the divisor d
+[41:05] right so this is one if statement one so what it's saying is that we take a look at the sign of u
+[41:12] we subtract if it's positive we subtract the divisor if it's negative we add the divisor
+[41:19] after that if u is positive you know positive or 0 we set the quotient bit to 1 otherwise we set the
+[41:30] quotient bit to 0 and finally the least significant bit of v we set the quotient bit in a q the number
+[41:40] that we computed that is set to the least significant bit of v and so this is the way that we do this
+[41:49] algorithm so what we essentially do is that we don't do any restoring if u becomes negative after a
+[41:56] subtraction we allow it to remain negative and in the next iteration we just add the divisor
+[42:02] so so that's the way that we you know go that we if it's if u is positive we subtract if it's negative
+[42:09] we add and after that we take a look at the sign of u if u is positive or 0 we set the lsp of you
+[42:19] know the current bit of the quotient to 1 otherwise we set it to 0 so after all the 32 iterations are
+[42:26] finished if we find u to be less than 0 then we set u equal to u plus the divisor so at the end the
+[42:36] lower 32 bits so u is a 33 bit registered again to avoid overflows right so at the end if u at the
+[42:45] end u contains the remainder and v contains the quotient all right so so before giving the insight
+[42:53] into why this algorithm works it's slightly complicated but it's there in the book let us
+[42:59] understand via an example how this works so let's again try to do the same division which is divide
+[43:06] seven by three so we start with loading the dividend in the register V and the divisor can remain in
+[43:22] register D so in the first iteration after the shift we basically shift the three bits one one and one over here and then what we do is since the sign of this so since this is a positive this number is positive or zero we subtract the divisor so well subtracting the divisor means adding its two's complement and so this is the two so I can just so this is one one one one zero zero plus one
+[43:40] so this is the two's complement of three so it's minus three so after this the sign of this number is negative because the sign bit is one so hence we set the quotient bit right q n to zero q
+[43:45] four to zero all right so after this we perform
+[44:15] one more shift so we have one one one zero one so one one zero one gets shifted to here one gets shifted here and here we have one one zero and we have one bit that will fill later
+[44:29] so this number is negative since this number is negative what we do is that instead of subtracting we actually add the divisor so we add one one zero one one plus one one
+[44:43] so one plus one is zero one plus one so one is the carry one plus one plus one is one one plus zero is one one one so we have one one one zero so again this number is negative so the quotient bit that we set is zero now we do one more shift for the third iteration so one one one one zero gets shifted by one position
+[45:12] this one this one comes here so this one comes here and one zero zero get shifted over here this number is again negative so we add one one once again so one one one zero one is one one plus one is zero carry is one one plus one is zero carry is one one plus one is zero carry is one one plus one is zero carry is one
+[45:38] one is zero carry is one and again zero so i left it all five zeros and this number mind
+[45:45] you is zero right it's positive or zero so we'll set the quotient bit to one all right
+[45:52] so the relevant quotient bit is set to one because our variable q in that algorithm is
+[45:57] one fine we do one more shift so we set so one comes here zero zero one comes here and
+[46:06] so since this number is positive we will subtract the divisor so subtracting the divisor means
+[46:13] adding its two's complement which is one one one zero one plus just one and so then this
+[46:21] becomes one plus one is zero carry is one right so this becomes what we need to have and since
+[46:31] this number is negative we set the relevant quotient bit to zero so now the quotient is
+[46:38] nicely saved in register v which is zero zero one zero which is two so the quotient is correctly
+[46:44] computed the seven divided by three the quotient is two this is correct however we find that
+[46:52] the register u so if you consider the last line we have said if u is less than zero then we
+[46:57] add the divisor to u so in the last line here a register u is negative because the sign bit
+[47:04] is one so we need to add the value of u so we need to add u as u plus d so the way that
+[47:12] we do is we add one one one zero plus the divisor so this is zero plus one is one one plus one is
+[47:22] is again zero carrier one so the rest will be all zeros so that's the reason we see zero zero one here
+[47:29] so zero zero one is the remainder right so the remainder is one and the quotient is two so in this
+[47:37] case it is not that we change the you know ultimate asymptotic complexity of the algorithm we didn't do that
+[47:44] so we still have n iterations so the time required is ordered n we still have n iterations right
+[47:52] and then in each iteration we at least have a subtraction or an addition so that is log n time
+[47:58] so we still require order n log n but it's just that we don't restore the value of u
+[48:04] so we either do an addition or we do an subtraction but that's it right we don't do anything more
+[48:10] so that's the reason this is called a non-restoring algorithm which is again a standard and very
+[48:15] popular algorithm and the non-restoring algorithm is regard regarded as a standard so it is used in
+[48:23] many many processors for division and the algorithm is again you know just to summarize we take a look at
+[48:32] the register u it is positive we subtract the divisor else if it's negative we add the divisor
+[48:39] we take a look at the sign once again see the sign has become if the sign bit is zero which means the
+[48:46] number is non-negative we set the relevant quotient bit to one otherwise we set it to zero we perform
+[48:53] a small check at the end if the register u is still less than zero we add the divisor to u and u contains
+[48:59] the remainder and register v contains the quotient all right so now let me give an idea a very very
+[49:09] brief idea of the proof but the detailed proof is there in the book so it's not really you know
+[49:14] the proof is slightly involved it's also so that's the reason is it is kind of difficult to explain it
+[49:22] via presentation but let me nevertheless try so let's assume that u minus d at some point is greater than
+[49:30] equal to zero so both the algorithms restoring and non-restoring will produce the same result
+[49:37] and we'll have the same state right now assume that u minus d is less than zero then both the so
+[49:44] the way the proof is going is that uh we are trying to say that our results will be the same as that of the
+[49:53] restoring algorithm since the restoring algorithm is correct we are also correct so we are saying
+[50:00] that let's start from the beginning if we can subtract d from u we are at the same state otherwise we
+[50:07] diverge we go on one path and non-restoring restoring goes on one track and non-restoring goes on another
+[50:13] track so in the restoring algorithm the value of the uv register discounting the quotient bits let it be a
+[50:20] a in the non-restoring algorithm is a minus you know the divisor sort of shifted by n bits so a minus 2
+[50:31] to the power nd so where is this coming from this coming from the fact that in our uv register u and v
+[50:40] if i consider the divisor it is from the beginning of the v register where you're assuming all the
+[50:46] temporary quotient bits are all zero this is in a sense left shifted by n positions so that's the
+[50:53] reason uh 2 to the power n comes now in the next iteration just after the shift that is so we'll
+[51:02] multiply the number by 2 so it'll become 2a so in non-restoring in in the restoring the number will
+[51:08] become 2a in non-restoring the number will be 2a times 2 raised to power n plus 1 times d so whatever
+[51:16] was there in the previous iteration just gets multiplied by 2 now at the end of this iteration
+[51:22] of the quotient bit is 1 then we will subtract 2 to the power n times d in the restoring algorithm
+[51:29] to get the value of uv discounting the quotient bits of course as 2a minus 2 raised to power n times
+[51:36] d so what we will get is 2a minus so this is what we began with 2a minus 2 to the power n plus 1 times d
+[51:55] since we are negative we'll add 2 to the power n times d so what we will get is we'll get this so as
+[52:03] we can see this is equal to this which means that whenever we set the quotient bit to one
+[52:10] the state of the restoring and non-restoring algorithms becomes the same and uh so since
+[52:18] the restoring algorithm uh computes the right results we also compute the same set of results
+[52:27] in terms of both the quotient as well as the remainder so mind is my proof is slightly you know
+[52:34] hand wavy in nature the main reason being that i uh the book has a more detailed proof and you know
+[52:42] presentation is just uh my aim is to give a very very high level overview so again the so just you know
+[52:51] continuing in an overview style whenever we set the quotient bit to one uh we will find that the value
+[52:58] in the uv register uh discounting the quotient bits between the restoring and non-restoring will be the
+[53:05] same otherwise the quotient will also keep set uh i'm sorry the restoring algorithm will continue to
+[53:12] set the quotient bits as zero and the non-restoring algorithm will continue to also set the quotient bits
+[53:20] as zero and whenever the quotient bit is set to one both the algorithms will have the same state in the
+[53:27] sense all the registers will have the same set of values uh now let's say at some point you know we
+[53:35] have if the quotient bit is zero then the partial dividend n dash in the case of restoring is 2a and
+[53:43] in the case of non-restoring is another value so like that we can keep going but we can easily prove
+[53:51] that whenever the quotient bit is set to one the states of both the restoring and the non-restoring
+[53:57] algorithms become the same all right so i explained two kinds of algorithms restoring and non-restoring
+[54:10] and with the help of this example where the slide uh deserves to be cleaned up uh so with the help of
+[54:19] this example uh we explained how to divide 7 by 3 and compute the quotient and the remainder
+[54:28] uh so in this context two algorithms were discussed
+[54:37] restoring and non-restoring
+[54:45] so in a restoring algorithm one subtraction needs to be done in each
+[54:50] uh iteration and one addition you know alternate versions are possible but still a fair amount of
+[54:57] work needs to be done right so essentially here one subtraction and one addition needs to be done
+[55:03] but in a non-restoring version either you do a subtraction or you do an addition but not both
+[55:10] so uh in that sense the work is roughly halved that's the reason the non-restoring algorithm is used
+[55:17] and the way that you prove it works is that uh you start so the first state is the same
+[55:24] after that what we need to prove is that uh every quotient bit is computed correctly
+[55:29] and whenever a quotient bit is computed to be one the state of both the algorithms is the same you
+[55:36] know the values of all the registers is the same so pretty much we can say that let's say that we
+[55:43] compute the quotient bit to be one right maybe small q after this as long as the bits are being
+[55:50] computed as zero the algorithms will take two separate paths right
+[55:54] in this entire region the quotient bit is being computed to be zero finally when uh we again
+[56:01] compute a quotient bit to be one the states merge then again if the quotient bits are zero the states
+[56:06] diverge again the next time that the quotient bit is one the states will merge and be the same
+[56:12] so that's the way that we can prove the detailed proof is there in the book but in any case the
+[56:18] summary is that the non-restoring algorithm is faster than the restoring variant so now uh we shall take
+[56:27] a look at floating point addition

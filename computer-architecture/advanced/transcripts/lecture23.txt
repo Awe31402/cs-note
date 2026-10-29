@@ -1,0 +1,597 @@
+[00:00] In this lecture, we will discuss modeling and designing caches.
+[00:27] So modeling and designing caches is a very complicated engineering problem and there are a lot of factors
+[00:34] that need to be taken into account.
+[00:37] So we will look at many of these factors and see it is a complex interplay of the area budget,
+[00:43] the timing, the power and the implications on performance.
+[00:50] So we will discuss two important technologies in this space.
+[00:55] One is an SRAM array, a static random access memory SRAM, an SRAM array and the other is
+[01:00] a CAM array, a content addressable memory array.
+[01:04] So these are the two basic technologies that are used for creating on-chip memories.
+[01:14] So we have all studied latches in our basic digital electronics courses.
+[01:19] So I will not discuss latches further, but there are some key concepts that a person should
+[01:26] know before attempting to go through or understand this section.
+[01:31] So one is the notion of an SR latch, a set reset latch.
+[01:37] So here basically we have a cross coupled pair of NAND gates.
+[01:42] So ultimately in every latch to store a value, the output of one is the input of other and
+[01:49] the output of the other one is the input of this.
+[01:53] So pretty much and then we have some controlling inputs and then we have the outputs which are
+[01:57] typically a complement of each other.
+[02:00] So this is typically the way that a latch is constructed that we have this cross coupled
+[02:06] pair.
+[02:07] In an SR latch is typically a cross coupled pair of NAND gates.
+[02:14] So this is something we want people to know before they proceed.
+[02:19] And the other concept that we want the viewer to know is the notion of a JK flip-flop.
+[02:26] So this is also an important concept.
+[02:34] Often the words latches and flip-flops are used interchangeably even though they shouldn't
+[02:39] be.
+[02:40] So a flip-flop is typically used where we are talking of a negative edge triggered circuit.
+[02:47] But I would say that the terms are often misused, abused, any combination thereof.
+[02:53] So for example in a pipeline, when we talk of pipeline latches, what we actually mean is
+[02:58] edge triggered latches where at a negative edge the value gets stored, right?
+[03:06] So the value gets stored and reflects at the output of the latch.
+[03:10] But one thing that is clear is that a pair of NAND gates have a lot of transistors.
+[03:17] So if they have a lot of transistors, we can't really create a dense or compact memory array
+[03:23] just with a pair of NAND gates, right?
+[03:26] So it will be very, very inefficient when it comes to area and it is clearly not desirable.
+[03:31] So we need a new kind of a memory cell, which is why instead of using a cross coupled NAND
+[03:38] gate, what we use is, we use a pair of cross coupled CMOS inverters.
+[03:45] So once we do that, whatever is the value here, the complement will come up over here, Q and
+[03:53] Q bar.
+[03:54] But that's not the important point.
+[03:55] The important point is that a cross coupled inverter made in this fashion is capable of
+[04:01] storing a value, right?
+[04:02] It is still not edge triggered in the sense that this has nothing to do with a clock.
+[04:08] So it has nothing to do with a clock, neither does it have anything to do with clock's edges.
+[04:13] But any kind of a cross coupled structure because of mutual feedback is capable of storing a
+[04:20] bit, right?
+[04:21] That is the important take home point.
+[04:24] So we will use two triangles, a triangle pointed upwards is the supply VDD and a triangle pointed
+[04:31] downwards is ground.
+[04:35] So this circuit is just a realization of this.
+[04:40] So this is just breaking it down into CMOS logic.
+[04:43] So as you can see, the output of one is the input of the other and the output of one is
+[04:49] the input of the other.
+[04:51] That is all that we have to it, right?
+[04:53] So this just has four transistors.
+[04:56] So this four transistor structure is capable of storing a bit, right?
+[05:01] And of course, it has two terminals.
+[05:03] One terminal has Q and other has the complement of Q, which is Q bar, alright?
+[05:10] So of course, a lot of analysis can be done.
+[05:14] And we can look at the basic transistor equations.
+[05:17] And we can see how exactly this structure will charge and discharge.
+[05:22] So that is anyway not in the scope of our current discussion.
+[05:26] It is just that if let us say we have a 0 over here, right?
+[05:31] So let us say we have a 0 over here, we will have a 1 over here and then a 0.
+[05:35] Or the other state can be we have a 1 over here, then we have a 0 over here, right?
+[05:40] So as you can see, it has two states, alright?
+[05:44] So I am not going beyond that in the sake of readability and also this is not in the scope
+[05:49] of the current discussion.
+[05:51] So we can take this small cell over here, which is an SRAM cell.
+[05:58] And we can actually create, you know, we can add two more transistors.
+[06:03] They are known as access transistors and actually create.
+[06:07] So I stand corrected, these four transistors are not the SRAM cell, they are only a part
+[06:13] of it.
+[06:14] So when we add the two additional transistors, we have a six transistor structure and this
+[06:19] becomes the SRAM cell.
+[06:25] The two additional transistors are W1 and W2, which you can see in the figure.
+[06:31] These are called word line transistors.
+[06:33] So recall that a transistor is basically a switch.
+[06:37] When the word line signal is a 1, the switch is connected.
+[06:41] So this becomes a closed circuit.
+[06:44] Otherwise if the word line, the voltage on the word line, which is this same as this, if
+[06:52] the voltage here is 0, then the switch is open, which means that it is not connected.
+[06:59] So in the six transistor SRAM cell, these two access transistors control the access of the
+[07:04] transistor to the bit line pair, right?
+[07:08] So bit line are essentially the bit lines are two vertical lines on both sides of the
+[07:14] cell.
+[07:15] So one is called BL and the other is called BL bar.
+[07:19] So essentially they hold complementary values.
+[07:22] If the switch is connected, if the switch is disconnected, then of course the values in
+[07:27] the cell remain what they are and they are unaffected by the voltages of the bit lines, alright?
+[07:35] So the way to access a cell, a six transistor SRAM cell, is basically by setting the word
+[07:41] line voltage to 1 and that ensures that this cross coupled inverter pair gets connected to
+[07:48] the bit line pair.
+[07:53] So now let us create an array out of this.
+[07:55] So what we see is we have the six transistor SRAM cell.
+[08:00] We create columns of these SRAM cells and they are connected to both sides, the bit line
+[08:07] pair BL and BL bar.
+[08:10] And so then we have several such columns and each row, it shares the word line.
+[08:19] As you can see each row shares the word line.
+[08:22] And we have a decoder over here.
+[08:24] The input is the row address.
+[08:26] So the row address is n bits.
+[08:29] We will essentially have 2 raised to the power n rows.
+[08:34] And what is the job of a decoder?
+[08:37] The job of a decoder is to take an n bit input.
+[08:42] It will have a 2 to the power n output lines.
+[08:46] One of them will be set to 1 depending upon the input.
+[08:48] So the input is let us say 0 0 1 1.
+[08:51] This basically says that you know 0 1 2 3 is counting from 0.
+[08:56] The third line is set to 1, alright?
+[09:01] So as I said, if the row address is n bits, we have 2 raised to the power n rows over here.
+[09:09] One of the word lines is set to 1, and this enables all the SRAM cells, enables means connects
+[09:15] to the bit line, all the SRAM cells in that row, right?
+[09:20] So let us look at the case of reading first.
+[09:23] So when I am reading, what will happen is that all of these bit lines will get connected.
+[09:28] So let us say this is the row.
+[09:30] So the bit lines will then get charged to their values, alright?
+[09:37] So the bit lines will then get, you know, charged to their values.
+[09:44] And so let us say one bit line can be, let us say one bit line pair can be 0 1, other can
+[09:50] be 1 0.
+[09:51] So whatever is the value stored in the SRAM cell that will come to the bit lines.
+[09:57] So it is possible that we might have a very, very wide row, in the sense the row might
+[10:02] contain let us say 64 bytes, but we might be interested in only reading 4 bytes.
+[10:08] So what we will have is that we will have a multiplexer over here, so which I am calling
+[10:14] a column marks, demarks.
+[10:16] So we will have a multiplexer over here.
+[10:19] What the multiplexer will do is that out of all the inputs that are coming, it will essentially
+[10:25] choose the set that we are interested in.
+[10:29] So let us say that there are 64 bytes, 64 bytes means 64 times 8, which is equal to 512 bits.
+[10:39] So there are 512 cells in the row.
+[10:42] Out of that, let us say we are interested in only 4 bytes.
+[10:47] So 4 bytes is essentially 32 bits.
+[10:50] So we are interested in the values of 32 cells in the row.
+[10:55] So the mark structure will choose 32 out of 512.
+[10:59] And then they will come to these circuits called sense amplifiers.
+[11:05] So the sense amplifier is a specialized circuit which what it does is that it senses the difference
+[11:13] in voltage between the bitline pair and then essentially converts it to a logical 0 or logical 1.
+[11:23] So these are essentially voltages.
+[11:25] And the SRAM cell is a very weak driver.
+[11:28] So we will see that the sense amplifier is a special circuit.
+[11:32] But give me a second to explain that.
+[11:36] But prior to that, it is important to understand that the voltage difference in the bitline pair
+[11:42] is what the sense amplifier will look at.
+[11:45] And it will convert that to a logical 0 or 1 such that the values can be sent to the CPU.
+[11:52] So we have looked at the case of a read.
+[11:55] Now let us look at the case of a write.
+[11:57] It is pretty analogous.
+[12:00] So what we do over here in the case of a write is that first we do not use the sense amplifiers.
+[12:09] Rather the data that has to be written is sent to these write drivers.
+[12:15] So what do driver circuits do is that they basically set the voltages of the bitline pair.
+[12:28] Then instead of using a column multiplexer, we will use a column demultiplexer.
+[12:34] What the column demultiplexer is going to do is that it's going to do the reverse in
+[12:40] the sense that if you want to write 4 bytes or 32 bits and let's say the row has 512 SRAM
+[12:51] cells.
+[12:53] So essentially whatever is being written has to be routed to the correct SRAM cell.
+[12:58] So we are writing 32 bits, but we have a choice of 512.
+[13:01] So the demux structure will ensure that whatever we are writing actually goes to the right column.
+[13:08] So this goes to the right column.
+[13:10] So multiplexer and demultiplexer, these are very standard circuits, but there is a little
+[13:17] bit of a twist here.
+[13:18] So typically multiplexers and demultiplexers use logic gates to a large extent.
+[13:25] But when we are looking at this kind of logic, we typically don't use logic gates in an SRAM
+[13:33] array.
+[13:34] Instead, what we do is that we use pass transistors.
+[13:38] So simple way of using pass transistors is like this.
+[13:43] So let's say that, you know, there are four inputs and we need to choose one.
+[13:50] So what we do is that for each one of them similar to the wordline transistor, we just add
+[13:55] a switch.
+[13:56] The transistor is just a switch, right?
+[13:59] It's nothing more than that, right?
+[14:01] So it's just, and the switch has two states, open and closed.
+[14:05] So for digital logic, this is all that you need to know.
+[14:10] Of course, when the transistors have analog properties as well, but we are not interested
+[14:14] in them, right?
+[14:15] So we are only interested in the digital properties of transistors.
+[14:21] So what we do is that we have a specialized circuit.
+[14:28] Given these four inputs, what the specialized circuit would do is that it would enable one
+[14:33] of these inputs and then these would just be connected to one line, right?
+[14:39] So which is the output.
+[14:40] So what will happen is that let's say if they are numbered 0 0 0 1 1 0 and 1 1, depending
+[14:47] upon which input we want, the enabling line at the gate of the transistor will be set to
+[14:54] 1 and that will ensure that that input will flow to the output.
+[14:59] So this is how you would actually construct a multiplexer using pass transistors, right?
+[15:07] So a very similar technology is used over here, where it is primarily based on pass transistors.
+[15:15] And this is a rather fast and area efficient way of constructing this.
+[15:20] On similar lines, you know, we can just reverse this and this will become a demultiplexer where
+[15:26] the current flow will be in the reverse direction.
+[15:29] But the logic, the controlling logic will still be the same, alright?
+[15:34] So this is for newbies.
+[15:37] This is a simple SRAM circuit.
+[15:41] So what you need to note is that we have an array of SRAM cells that are arranged in
+[15:46] a 2D fashion, right, a rectangular array.
+[15:51] Note the position of the decoder, note the column mux, demux and of course the sense amplifiers.
+[15:57] So we will talk more about them, right?
+[16:00] So we are not done yet.
+[16:03] So let us visit them slightly later, but we are now in a position to actually look at the
+[16:11] structure of a cache.
+[16:12] So we have a tag array over here and we have the data array.
+[16:17] So they can share the decoder, there is no reason to have separate decoders, we can have
+[16:21] just one.
+[16:24] So the decoder will then enable the appropriate word line.
+[16:28] Once the word line is enabled, the values will start flowing in, into the column muxes,
+[16:35] into the sense amplifiers.
+[16:36] And of course if it is a set associative cache, then what we can do is in the tag array the
+[16:42] data for all the sets can be stored in the same row of SRAM cells similar for the data array.
+[16:51] And then all that we need to do is we need to compare.
+[16:54] And after performing the tag comparison, we can then have a multiplexer to choose the data
+[17:05] output.
+[17:06] So we are assuming that all the blocks of a set are stored along the same row and this
+[17:10] will clearly give us some advantage.
+[17:13] So what we are doing over here is that we are connecting a concept that we learned earlier
+[17:19] with the physical organization of a cache.
+[17:21] So we are saying that a desirable property is that store all the blocks of a set in the
+[17:49] same row of the array.
+[17:51] So then we can read it in one go.
+[17:53] And then we can perform the comparison and choose one of them.
+[17:59] So now let us revisit the issue of the sense amplifiers, alright?
+[18:04] So what are we doing?
+[18:06] So I have just simplified this circuit for you where we have an SRAM cell and we have
+[18:11] two bit lines on both sides.
+[18:14] So let us say the SRAM cell stores 1 and 0.
+[18:19] So the moment it is connected, the voltage here will move towards the logical 1.
+[18:23] So let us assume logical 1 is also 1 volt, which is roughly the case.
+[18:29] And logical 0 is 0 volts and the voltage here will go down until this becomes equal to 0 volts
+[18:37] and this becomes equal to 1 volt.
+[18:40] And then of course the sense amplifier will sense this and tell you that look the output
+[18:45] is either a logical 1 or logical 0.
+[18:49] This is simple.
+[18:51] The main disadvantage over here is that if we actually wait for the voltage to reach 1 volt,
+[19:00] it will take a lot of time.
+[19:02] The reason it will take a lot of time is that for the reasons of efficiency because we want
+[19:09] to pack in as much of memory as possible on the chip, this is a very small circuit.
+[19:16] The transistors are as small as possible.
+[19:19] So smaller the transistor, weaker it is.
+[19:21] What do you mean by a weak transistor?
+[19:23] It means it can drive little current.
+[19:26] If its current driving capacity is low, for it to charge the bitline to 1 volt, it will
+[19:32] take a lot of time.
+[19:41] So this is clearly slow and we are performance freaks, right?
+[19:43] So we want to run our circuit as fast as possible, our entire processor as fast as possible.
+[19:50] And since the SRAM technology is going and creating caches, this is vitally important for us.
+[19:58] That is where we do something called a trick.
+[20:01] So take a look at this scale over here.
+[20:04] Let us assume that this big stone is slightly heavier than the load on the left.
+[20:11] Then gradually the bar over here will tilt towards the bottom and this will tilt towards the top.
+[20:21] So we want to figure out which side is heavier, this side or that side.
+[20:27] If let us say this stone is heavier, do we wait for this bar to actually hit the ground,
+[20:33] which is over here?
+[20:34] If we wait for it to hit the ground, which means it needs to cover this much of distance,
+[20:40] it will actually take a lot of time.
+[20:43] What we can do is, we can do something smarter.
+[20:48] So we can keep measuring the slope of the rod.
+[20:51] So initially let us say it is zero.
+[20:54] So what can happen is because of a little bit of wind, there might be a little bit of oscillation.
+[20:59] And so we need to ignore that.
+[21:01] But once we are sure that the rod has tilted, right, the rod, bar, whatever, but I am calling
+[21:07] it the rod, and so once let us say this rod or slab is tilted beyond what you would expect,
+[21:14] beyond a normal fluctuation because of wind, you can confidently say that this side is
+[21:21] heavier.
+[21:22] And let us say if it tilts the other way, like if it tilts this way, you can say that
+[21:26] this side is heavier.
+[21:27] Alright?
+[21:28] So you need not wait for one side to actually hit the ground because just by seeing the direction,
+[21:35] it will be amply clear which side is heavier.
+[21:40] So this is something similar, you would have seen these scales that are used, so many of
+[21:44] you, so I am not sure if this is there or not.
+[21:50] But at least when I was a child, so the vegetable vendor didn't have these weight measuring machines,
+[21:58] right?
+[21:59] So nowadays they have this machine, so you put in, let us say, potatoes, it tells you
+[22:03] it is 650 grams.
+[22:05] On the basis of that, they calculate the price.
+[22:08] But when I was a child, that was not the case.
+[22:10] So what you would do is you would put potatoes on one side, and the vegetable vendor would put
+[22:16] weights on the other side.
+[22:18] So let us say one kg weight, a half kg weight, and so on.
+[22:22] And then what you would do is that he would wait for either.
+[22:28] So let us say initially, of course, one side will be unbalanced.
+[22:33] So when one side is unbalanced, one side will tilt.
+[22:35] So let us say the weights are more.
+[22:37] So he never waited for this side to actually hit the ground.
+[22:41] He quickly removed the weights and replaced them until there was roughly a balance.
+[22:45] Alright?
+[22:46] So we can use the same logic over here, where we just look at the direction in which it is
+[22:54] moving.
+[22:56] And after that, we essentially declare the result that which side is heavier.
+[23:02] So can we do something with pre-charging?
+[23:03] Well, yes, we can.
+[23:05] I'm sorry, can we do something with bit lines?
+[23:07] Yes, we can.
+[23:09] And the technique is called pre-charging.
+[23:11] So the technique is like this that we monitor the voltage of the bit line and the complement
+[23:18] of the bit line.
+[23:19] So if let's say this difference exceeds the threshold, where the threshold is essentially
+[23:26] the noise margin.
+[23:27] What is the noise margin?
+[23:29] It is equivalent to the effect of wind on a scale.
+[23:33] So basically what this means is that since we have a long copper wire, it will pick up
+[23:41] some amount of electromagnetic interference from all sides, in the sense if you turn on a microwave
+[23:47] or when, then a changing magnetic field will induce a potential difference.
+[23:54] Right?
+[23:55] It will be minor, but nevertheless there will be something.
+[24:00] Also if there is another line that is close by, because the bit lines run in parallel, right?
+[24:04] Say there is one current flowing over here, it will induce some amount of a current over
+[24:09] here, which is called crossed up noise.
+[24:12] So because of several effects of noise, there will be a little bit of a noise margin.
+[24:17] So we need to ignore that, but the moment the difference crosses this threshold, we need not
+[24:23] wait for this voltage to actually reach 1, we don't have to wait.
+[24:28] Once it crosses the threshold, we declare victory and say that it is a logical 1.
+[24:32] And similarly, in the other direction, once the voltage of the complement of the bit line
+[24:37] exceeds the voltage of the bit line, by the same noise threshold, we declare a 0.
+[24:44] So this is the brilliant idea, so this is known as pre-charging.
+[24:48] So what we essentially do is we take both the lines, and then both the bit lines, BL and
+[24:53] BL bar, we set their voltage to 0.5 volts, and then we connect the SRAM cell.
+[25:03] After that, we just sense the difference in the voltage, and it sets the output once the
+[25:10] difference crosses the threshold, delta, alright?
+[25:16] So what do we need to do?
+[25:17] Well, we first need to pre-charge it to 0.5 volts.
+[25:20] This can be done very quickly, because in this case, a small SRAM cell is not driving it.
+[25:27] Instead, we will have this fat pre-charge driver circuits, which can quickly set its voltage
+[25:34] to 0.5 volts.
+[25:37] And after that, the teeny-weeny-weak SRAM cell is connected, and we just sense the difference.
+[25:42] If, let's say, the difference is 100 millivolts, so the moment that this reaches, let's say,
+[25:51] 550 millivolts, and this, let's say, reaches 450 millivolts, and we realize that, hey, look,
+[26:00] the difference is crossing the threshold, we declare a logical one.
+[26:05] So this is much faster, in the sense, we don't have to wait for the voltage to actually reach
+[26:10] 1000 millivolts, which is 1 volt.
+[26:14] Hence we have, we gain performance.
+[26:18] And we gain performance significantly, it's not a small gain, right?
+[26:21] So it can very well become 5 or 10 times faster just by using this trick.
+[26:26] Alright, so let us discuss more about the sense amplifier, so I will not discuss much in the
+[26:35] sense that this is out of scope, but this is just to give you an idea of the elaborate
+[26:40] circuitry that goes into making a sense amplifier.
+[26:48] So I will explain the broad insights.
+[26:51] So what you see in this figure is that you see three shaded squares.
+[26:56] Each of them is a differential amplifier, okay?
+[26:59] So each of them, its job basically is to amplify the difference in the voltages.
+[27:06] I will tell you in a second what those voltages are.
+[27:10] So this voltage is the bitline voltage.
+[27:14] And then this voltage is the bitline complement voltage, alright?
+[27:19] Let us now see what happens if the voltages on the bitline or the bitline complement deviate
+[27:28] from the pre-charged values.
+[27:30] Let us assume that we have a position where VBL bar becomes greater than VBL, right?
+[27:38] So there is an increase in the voltage over here which means that this transistor over here,
+[27:44] this one becomes more conductive.
+[27:47] So this particular circuit that you see over here, the transistors T1 and T2, this is a classic
+[27:54] organization.
+[27:55] It is called a current mirror.
+[27:58] So what a current mirror basically means is that whatever is a current that is flowing
+[28:04] through this branch, the same current flows through the other branch.
+[28:09] Now given that this transistor over here, let us call it T3, has become more conductive,
+[28:16] an additional current will flow.
+[28:18] Let us call this Id.
+[28:21] Suppose an additional current will flow through this branch, a similar additional current will
+[28:26] also flow via this branch, alright?
+[28:30] But the interesting part is that if we take a look at this transistor over here, this transistor
+[28:37] is in saturation.
+[28:39] So what it means is that the current that will flow through this transistor is constant.
+[28:44] Given that it is constant and one of the components is increasing by Id, the other component has
+[28:50] to decrease by Id.
+[28:53] So there are two things happening.
+[28:55] First is that because T3 became more conductive, additional Id mA flow through it.
+[29:03] And the other thing that is happening is that because of the current mirror effect, additional
+[29:09] Id mA are flowing through T1.
+[29:12] Additionally there is a shortfall of minus Id mA because the sum has to remain constant at
+[29:18] this transistor.
+[29:20] The only way that this situation is possible is if Id plus Id, 2 Id mA flow via this branch
+[29:31] over here into the gate of this transistor which let us call as T4.
+[29:40] So what is happening over here?
+[29:42] What is happening is that because the voltage at Vbl bar increased, we are seeing an additional
+[29:49] two Id units of current flow into T4.
+[29:53] So of course this is a transient phenomenon, it is not a steady state phenomenon.
+[29:57] But nevertheless the effect is that the voltage here will increase.
+[30:00] If the voltage here will increase, we can see something similar over here, the voltage here increased.
+[30:07] And then what happened?
+[30:09] The voltage at the output increased.
+[30:10] So the voltage increases over here.
+[30:12] The voltage will increase over here.
+[30:16] And given that this is an inverter, ultimately the voltage will move to 1.
+[30:20] So the output will move towards 0.
+[30:24] This is anyway what we expect because when Vbl bar becomes greater than Vbl, in any case the
+[30:30] cell stores a logical 0 which is exactly what we get to see over here that the output gets
+[30:37] driven to 0.
+[30:40] So we will have a similar effect over here.
+[30:42] Of course if Vbl becomes greater than Vbl bar, the output will be driven to 1.
+[30:47] And again all three of these differential amplifiers will come into play.
+[30:53] But what we see is that we can adjust the parameters of the circuit.
+[30:59] What kind of parameters?
+[31:00] Well, the dimensions of the transistors and the resistances of the wires and so on.
+[31:08] Such that if the difference in voltage is slightly greater than the noise threshold, then the
+[31:16] output over here will either become a logical 0 or logical 1.
+[31:21] And you already saw it becoming logical 0 and the mechanism was explained.
+[31:26] So a sense amplifier as such is a pretty elaborate circuit.
+[31:29] But since we don't have very many of them, we can afford to have such an elaborate circuit
+[31:36] such that a small difference in voltage can be amplified and you can have a 0 or 1.
+[31:42] And we can use our precharging trick.
+[31:44] Right?
+[31:45] So the key thing is that whenever you have a precharging, you require a sense amplifier to
+[31:51] essentially amplify the difference.
+[31:54] This is the key key key most important concept in SRAM design.
+[31:59] We will also find that this is also very important in DRAM design, dynamic RAM cell design.
+[32:09] And the DRAM design will use sense amplifiers, albeit their design will be not like this, it
+[32:17] will be different.
+[32:19] But the basic concept is still the same that you precharge and then you look at deviations
+[32:25] from the precharged voltage.
+[32:28] Alright, so we have discussed the SRAMs.
+[32:31] So let us get into the...oh, I am sorry, I am sorry.
+[32:35] This is a small mistake over here.
+[32:37] It should be a cam array.
+[32:39] This is what happens when you copy paste slides.
+[32:42] So I will advise all of you not to copy paste slides.
+[32:45] If so, don't do it the way I am doing.
+[32:48] Use your brain.
+[32:49] Ok, I apologize for this mistake.
+[32:52] So we have a cam array.
+[32:54] So cam is a content addressable memory.
+[33:00] A content addressable memory at its heart is an SRAM cell plus slightly more.
+[33:07] So we recognize the top part above the match line.
+[33:10] It is the regular 6 transistor SRAM cell, which by now we totally understand we are experts
+[33:16] in it.
+[33:17] And we understand everything that is happening between these two arrows.
+[33:22] We understand everything that is happening between these two arrows.
+[33:25] Right?
+[33:26] So we understand this completely.
+[33:28] So I don't want to draw...let me draw a big circle to clutter up the diagram.
+[33:32] And then what I am going to do is that I am going to erase the big circle such that the
+[33:38] diagram becomes uncluttered.
+[33:41] Now the important point is that I have an additional bit A which is an input bit.
+[33:49] And I would like to check if the value stored in SRAM cell which is Q is equal to A or not.
+[33:57] If it is equal to A, I would like to do something.
+[33:59] If it is not equal to A, I would like to do something else.
+[34:03] Right?
+[34:04] So what will I do if it is equal to A?
+[34:06] Here is what I am going to do.
+[34:09] So the additional A, the value that I would like to compare because recall that a content
+[34:15] addressable memory, you compare the contents of the cell.
+[34:19] So one way to compare is we use a traditional comparing circuit which is essentially a XOR gate.
+[34:27] We can use a XOR gate but XOR gate would require more transistors and also XOR gate is not very
+[34:33] efficient when comparing several values.
+[34:36] Right?
+[34:37] So we will use a different technology but let me tell you what it is.
+[34:41] So first we input A and A complement both.
+[34:47] So this value over here which is coming is A complement.
+[34:50] This is Q.
+[34:52] This is Q complement and this is A.
+[34:56] Alright?
+[34:57] So every transistor as I said is a switch.
+[35:01] You send it 1 the switch closes, you send it 0 the switch opens.
+[35:06] So the thing is that we need to understand under what conditions is there a conducting path
+[35:11] from the match line to the ground which means the match line will get set to 0 volts.
+[35:16] Alright?
+[35:18] So we will keep on coming back to this slide.
+[35:20] Let me show you the next slide.
+[35:24] So here I should maybe have a slightly longer one.
+[35:27] Alright?
+[35:28] A slightly longer one.
+[35:30] Alright?
+[35:31] So let us look at these values once again.
+[35:33] Alright?
+[35:34] So let us take a look at the first row.
+[35:36] So let us assume, sorry, I didn't mean to do that.
+[35:47] So let me assume that both Q and A complement both are 0.
+[35:52] See both of them are 0, both these transistors are off.
+[35:56] So there is clearly no path from here to here.
+[36:00] Alright?
+[36:02] So let us say that they are 0 and 1.
+[36:05] Then also one is off, other is on.
+[36:08] So even if one is off, since they are in series, so since you know these are in series, right?
+[36:14] Right?
+[36:15] So basically, and the other one is also in series.
+[36:28] What we want is that if there is a conducting path from ground to the match line, both the
+[36:34] transistors have to be on.
+[36:36] And what we see is both of them are on only when either Q is equal to A bar, right?
+[36:44] Which is this condition, where both match, or Q bar is equal to A, which is again the same,
+[36:56] right?
+[36:57] When both are equal to 1.
+[37:00] So that is when there is a conducting path.
+[37:03] So which we can clearly see over here that if Q bar is also 1 and A is 1 and both are equal
+[37:11] to 1, then there is a conducting path.
+[37:15] Or when Q is equal to A bar and both are equal to 1, there is a conducting path, right?
+[37:20] So basically, I should write it as this.
+[37:23] So this will kind of clarify things, alright?
+[37:28] So here is the important point.
+[37:30] So the important point is that if let us say Q is equal to A bar is equal to 0, automatically
+[37:36] you can say that Q bar is equal to A is equal to 1 and similarly you can say the vice versa.
+[37:43] So which basically means that if Q is equal to the complement of A, only then do we have
+[37:52] a conducting path, which means if Q is unequal to A, if Q and A are not the same, then only
+[37:58] we have a conducting path, otherwise we don't have.
+[38:01] So this is the most important insight over here that look, the way that we have organized
+[38:07] this, the conducting path will come only when both of them are equal to 1, which means either
+[38:13] Q is equal to A bar equal to 1 or Q bar is equal to A is equal to 1, right?
+[38:19] Any one of them, both cannot be true.
+[38:21] But essentially, if I were to distill both of them, the important point that will come
+[38:27] out is that both of them have to be equal.
+[38:29] If they are equal, either they are equal to 1, this is satisfied, or if both are equal
+[38:34] to 0, then this is satisfied.
+[38:37] If they are equal, I can then write this as, if Q and A are not equal, given it is Boolean,
+[38:44] I can write this.
+[38:45] If they are not equal, only then the match line in this case will be set to 0, otherwise it
+[38:51] will retain its previous voltage, alright?
+[38:55] So let us say if I pre-charge the match line to 1 volt, it will remain so, unless Q is not
+[39:02] equal to A, in this case it will quickly get discharged to 0, alright?
+[39:07] So this is the key idea behind a 10 transistor cam cell, where we have a 6 transistor SRAM,
+[39:13] which is a, you know, a traditional SRAM, nothing new about it, new with it.
+[39:19] And in addition, we have this little trick over here, with these four transistors, T1,
+[39:24] T2, T3, T4, which essentially checks if Q and A are the same or not.
+[39:29] If they are the same, the match line maintains the same voltage, otherwise it gets set to
+[39:34] the ground voltage, okay?
+[39:38] So you keep taking a look at this table, it will help you understand the previous table
+[39:46] over here, but let me move ahead.
+[39:50] So what we can do is, that we can have the same SRAM array, instead we replace an SRAM
+[39:57] cell with a CAM cell.
+[39:59] And of course there is some additional circuitry in the sense along with the bitline and bitline
+[40:03] bar, we also input the bits, right, that we would like to compare.
+[40:08] So if let's say there is an, there are n elements over here in a row, we put in n elements.
+[40:16] And then what we do is, we simply compare, alright?
+[40:20] So our job over here is to simply compare.
+[40:23] The way that we do it is that we pre-charge the match line to 1 volt.
+[40:28] Even if there is one mismatch, the match line will get discharged to 0 volts, alright?
+[40:34] So even if there is one mismatch, the match line over here will get discharged to 0 and
+[40:41] you will know that there is no match.
+[40:44] So what we can do is that in our decoder we can have two modes.
+[40:48] One can be the regular SRAM mode where we don't use the CAM functionality.
+[40:53] And this can be used for example to populate data, to read out data, right, non-CAM functionality.
+[41:00] So in this case what we do is that we disable these A1, A2, AN lines, right, they don't matter.
+[41:07] And we don't care about the match lines and we just access them as regular SRAM cells.
+[41:12] And recall we had a column mux, dmux there also.
+[41:15] We have one here also.
+[41:17] And we have the write driver and the sense amplifiers.
+[41:20] So all of these remain the same.
+[41:22] What actually varies or differs in this case is that in the CAM mode what the decoder is
+[41:29] going to do is that the decoder is going to enable all the word lines, alright?
+[41:36] Oops, I am sorry, I stand corrected.
+[41:41] What the decoder will do is it will disable all the word lines.
+[41:45] So it will essentially disable the SRAM functionality.
+[41:55] It will totally disable the SRAM functionality.
+[41:58] And what it is going to do is that we will pre-charge all the match lines.
+[42:03] After we pre-charge all the match lines, we will allow the match lines to be set.
+[42:10] And then, if we don't have multiple copies, only one of them will remain one, right, at most
+[42:19] one of them.
+[42:21] Then what we can do is that we can have an OR gate and if one of the match lines is 1, then
+[42:25] the final match, which means whether a match exists or not, that can be set to 1.
+[42:34] Once we might have duplicates, it is possible.
+[42:39] If you have duplicates, it doesn't matter, this circuit will work as it is.
+[42:43] But we will need a priority encoder instead of a regular encoder.
+[42:48] So the priority encoder will basically tell us the index of the match line that has a 1
+[42:58] and the one that has the highest priority.
+[43:01] How is the priority decided?
+[43:03] The priority is decided, you know, based on other heuristics, for example, it can be the
+[43:09] earliest match line or based on some other information, some other state.
+[43:13] So that's not really that important.
+[43:16] But this is where a priority encoder would differ from a normal encoder or a regular encoder
+[43:23] in the sense that if multiple match lines are 1, it will choose that match line that has
+[43:29] the highest priority.
+[43:30] Howsoever it is determined and the output will be a matching index, so that's the important
+[43:36] point over here.
+[43:38] The output will be a matching index, a row index that in which row we have a match.
+[43:45] So then this can be used for further processing.
+[43:49] For example, in a fully associative cache, the tag array can be a cam array.
+[43:57] So we can check the tag.
+[43:58] Wherever there is a match, we can send it to the SRAM array, which is the data array which
+[44:06] is made of SRAM cells.
+[44:08] So since we have the exact index, we send it over here and we get the data.
+[44:13] So the data array will clearly be much bigger because it will contain 64 byte blocks.
+[44:18] So that can be made using SRAMs.
+[44:21] And the tag array can be made using cams.
+[44:23] So cams are of course much slower and require much more area as you can clearly see over
+[44:28] here that each cell is bigger and also we need more space for these wires.
+[44:33] So that is why the cam array is much bigger and slower and inefficient.
+[44:39] But it can be used for the tag part and tags are in any case small.
+[44:44] And also cam arrays will be used when we have fewer entries.
+[44:49] So once that gives us the matching index, if there is a match that is, we can quickly access
+[44:54] the data array made of SRAMs.
+[44:58] So this should give you a broad overview of the cam and SRAM technologies.
+[45:06] So they form the basis of modern memory systems.
+[45:09] SRAMs as I said are faster, much faster.
+[45:13] So they are used almost everywhere for the data part, for the data arrays.
+[45:21] Cam arrays are occasionally used for the tag arrays, particularly when we have few entries.
+[45:26] And there is a need for creating a hash table like structure, where we would need a fully
+[45:34] associative structure.
+[45:36] Alright, now the next part is the design of the cacti tool.
+[45:45] The cacti tool is an automatic cache design space exploration tool which we will discuss
+[45:53] next.
+[45:56] Here are some things in this guide glyphositive.
+[46:01] Peace out!
+[46:01] and
+[46:02] away
+[46:03] ANY
+[46:04] belga
+[46:05] out
+[46:05] now
+[46:06] have
+[46:08] here
+[46:09] go
+[46:10] will
+[46:11] be
+[46:13] will
+[46:15] hand

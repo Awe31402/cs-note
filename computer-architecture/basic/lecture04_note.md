@@ -38,7 +38,7 @@
 
 ## 0. 本講地圖
 
-上一講（第 3 支）講了**正整數**的二進位表示法。這一講處理**負數**：試四種方法，只有最後一種過關。
+上一講（[第 3 支](lecture03_note.md)）講了**正整數**的二進位表示法。這一講處理**負數**：試四種方法，只有最後一種過關。
 
 | 方法 | 0 的表示 | 加減法 | 乘法 | 結果 |
 |---|---|---|---|---|
@@ -458,11 +458,11 @@ $ gcc -O2 -fwrapv -c ub.c  → cmp $0x7fffffff,%edi; setne %al   （x 是 INT_MA
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| Bias-based 表示法 | **第 5 支**：IEEE 754 浮點數的指數 |
-| Sign extension | **第 6–8 支**：SimpleRisc 的立即值（immediate）擴展 |
-| x86 的 movsx／movzx | **第 11–14 支**：Ch5 x86 組合語言 |
-| 2's complement 加法器、overflow flag | **第 21–26 支**：課本 Ch8 計算機算術 |
-| 乘法規則（有號乘法用無號硬體） | **第 22 支附近**：Booth 乘法（課本 Ch8） |
+| Bias-based 表示法 | [第 5 支](lecture05_note.md)：IEEE 754 浮點數的指數 |
+| Sign extension | [第 6](lecture06_note.md)–[8 支](lecture08_note.md)：SimpleRisc 的立即值（immediate）擴展 |
+| x86 的 movsx／movzx | [第 11](lecture11_note.md)–[14 支](lecture14_note.md)：Ch5 x86 組合語言 |
+| 2's complement 加法器、overflow flag | [第 21](lecture21_note.md)–[26 支](lecture26_note.md)：課本 Ch8 計算機算術 |
+| 乘法規則（有號乘法用無號硬體） | [第 22 支](lecture22_note.md)：Booth 乘法（課本 Ch8） |
 
 ---
 

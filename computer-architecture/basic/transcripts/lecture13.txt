@@ -1,0 +1,919 @@
+[00:00] We'll be right back.
+[00:30] Now let us discuss advanced memory instructions.
+[00:40] So advanced memory instructions is where we can actually see the power of the x86 instruction
+[00:45] set.
+[00:47] So what good is a complex instruction set, unless it gives us some instructions that
+[00:53] make our life really, really easy, and so you know there has to be some justification
+[00:58] for the C in CISC.
+[01:00] So we'll see that with advanced memory instructions.
+[01:05] So let me illustrate a typical case.
+[01:11] Typically some instructions will prove to be useful if we look at certain common programming
+[01:20] patterns.
+[01:22] So a typical programming pattern is that we move a large amount of data, like a large
+[01:27] sequence of bytes, from one memory location to another memory location.
+[01:33] So instructions that help us in moving a long sequence of bytes from one memory location
+[01:39] A to memory location B, these are known as string instructions.
+[01:45] The string instructions make special use of the EDI and ESI registers.
+[01:50] As we had discussed in one of the earlier slides, EDI contains the default destination and ESI
+[01:58] contains the default source.
+[02:00] So the first instruction that we need to introduce in this category is the LEA instruction because
+[02:11] this is what will be used in the subsequent discussions.
+[02:19] So this is very important.
+[02:20] It's like the bedrock of all string instructions.
+[02:24] So LEA means load effective address and it is used to load an address into any register, in particular
+[02:32] the EDI and ESI registers.
+[02:35] So in general LEA can be used to load an address into any register, but we will mostly be interested
+[02:42] in EDI and ESI in the later discussion, but let's look at the generic case first.
+[02:48] So the standard format of LEA is this, so the standard format of LEA is register, so it takes
+[03:06] two operands, it's a two address format instruction.
+[03:09] It takes a register and a memory.
+[03:12] So for example in this case, we have a displacement, we have a scaled index and we have a base register.
+[03:18] So instead of, so how does this differ from the MOVE instruction?
+[03:24] So what this does is instead of actually loading something from memory, it considers this memory
+[03:31] address and simply computes the address part, does not access memory, right, this is very
+[03:37] important.
+[03:39] It does not access memory per se, right, by itself, memory is not accessed.
+[03:58] So what it alternatively does is that it considers the memory operand, gets the address in memory,
+[04:06] computes the address, right, loads, it's called essentially, it should rather be called compute
+[04:11] effective address.
+[04:13] So it computes the address, does not access memory and transfers the value of the address,
+[04:18] which in this case is this, right, the address, transfers the value of the address to the destination
+[04:26] register, which is EBX, right, it just helps us compute the address.
+[04:32] So let's look at our first instruction, which makes our life slightly easy.
+[04:37] It's the STOST instruction.
+[04:41] It does not have any operands.
+[04:43] So what it does is this.
+[04:46] It saves the value that is there in EAX to EDI, the memory location in EDI.
+[04:55] So basically it treats EAX as sort of as a default source, essentially it's a STOST instruction,
+[05:00] right.
+[05:01] So EAX is the register that has a default source.
+[05:06] So it takes the value in EAX, takes, assumes that EDI contains a memory address, accesses
+[05:14] memory at that address and does a STOST, right.
+[05:18] So EDI is assumed to contain by default a memory address and the value in EAX is stored over
+[05:25] there.
+[05:26] If the value of the DF flag, well, so in the flags register is essentially the DF bit, it's
+[05:33] not the DF flag, it's the DF bit in the flags register.
+[05:37] So maybe I should make it slightly more specific.
+[05:55] If the value of the DF bit in the flags register is set to 1, what the STOST instruction subsequently
+[06:02] does is that it will subtract 4 from the EDI register because we are considering a 32-bit
+[06:12] instruction set.
+[06:13] So it will subtract 4 from the EDI register.
+[06:17] If the value in the DF flag is 0, instead of subtracting 4, it will add 4 to EDI register.
+[06:24] So think of it as a post-indexed addressing mode where we do a store to memory, the address
+[06:32] being in EDI and the source of the data being in EAX.
+[06:36] After doing that, we either increment EDI by 4 or subtract it or sorry, we either decrement
+[06:44] it by 4 or increment it by 4.
+[06:47] Why 4?
+[06:48] Because 4 means 4 bytes and we are considering a 32-bit instruction set.
+[06:53] And whether we subtract 4 or add 4 depends on the value of the DF flag.
+[07:01] The LODST, this instruction is a load string instruction.
+[07:09] It also does not have any operands.
+[07:11] What it does is essentially the reverse of the previous instruction STOST.
+[07:18] It saves the value in ESI.
+[07:20] See, ESI is considered as the source register.
+[07:24] So ESI is considered to have an address and the address within square brackets becomes a
+[07:30] memory address.
+[07:31] So it saves the value in memory whose address is in ESI to EAX.
+[07:38] So this is like loading, you are loading from memory with the address being the contents
+[07:43] of ESI.
+[07:44] Right?
+[07:45] The memory location is in ESI.
+[07:48] And here also we change the value of ESI.
+[07:51] So the value of the DF flag in the flags register is 1, then we subtract 4 from ESI.
+[07:58] Otherwise if the value in the DF flag in the flags register is 0, we add 4 to ESI.
+[08:05] So this is a post-indexed addressing mode, where what we do is that we first access memory.
+[08:16] In this case, perform a load, right?
+[08:19] Perform a load from the memory operand ESI, ESI contains the address.
+[08:28] And then we subsequently modify the contents of ESI.
+[08:31] We either subtract 4 or add 4 depending upon the value of the DF bit in the flags register.
+[08:38] All right.
+[08:41] So let me summarize the memory instructions.
+[08:48] So the first instruction that we discussed in this interesting set is LEA.
+[08:53] LEA is load effective address.
+[08:59] So it has a simple form, where the first and the only source operand is a memory operand.
+[09:10] But we do not access memory, we compute the value of the address and store it in the register.
+[09:16] Subsequently, we introduced STOSD.
+[09:21] So STOSD is a part of, you know, there are many kinds of instructions can be there.
+[09:30] So it is a part of a set of four instructions, which are STOSB, STOSW, D and Q.
+[09:36] So you already know what these stand for.
+[09:39] B stands for byte.
+[09:41] So a byte is 8 bits.
+[09:44] W stands for a word.
+[09:46] So a word is 16 bits.
+[09:48] It means a transfer 16 bits.
+[09:51] D is, we have been using D, which is a double word, which is essentially 32 bits, because
+[09:57] our example is in 32 bits.
+[10:02] Q is 64 bits.
+[10:04] So this will be useful in an instruction set with 64 bits.
+[10:08] So depending upon the type of instruction that we are using, we add the right suffix.
+[10:13] So since we are looking at a 32-bit instruction set, we use STOSD.
+[10:18] If it is 64 bits, use STOSQ.
+[10:21] So what does this do?
+[10:23] Essentially, it reads the value in EAX, saves it in the location, the memory location stored
+[10:31] in EDI.
+[10:32] Subsequently, it augments EDI.
+[10:35] It says EDI equals EDI plus 4 times minus 1 to the power DF, where DF is the flag spit.
+[10:43] So if DF is 0, this is EDI plus 4.
+[10:46] If DF is 1, it's EDI minus 4.
+[10:50] So LOD ST is the same thing, same format as STOS.
+[10:55] So we used LOD SD, and because it's a 32-bit ISA, LOD SQ could have been used if it's a
+[11:04] 64-bit ISA.
+[11:05] So here, what was done, what was done is that, this is the reverse of STOSD.
+[11:12] Here, the source address in memory is stored in ESI.
+[11:17] So we read the contents of that, store it in EAX.
+[11:21] Then we augment ESI.
+[11:23] So we can either add 4 to ESI or subtract 4 depending upon the value of the DF bit.
+[11:30] If the DF bit is 0, we add 4.
+[11:33] So let us now introduce the moveST instruction.
+[11:37] This is also part of the same family of instructions.
+[11:40] So in this case, what we do is that we read the value, we read a memory operant and we transfer
+[11:48] it to another memory location.
+[11:50] So moveST also works without any operants, without any source or destination operants.
+[11:57] Sorry, this should have a square bracket.
+[12:03] So what we do is that we read the contents of ESI and so basically ESI contains the source
+[12:11] address.
+[12:12] So you go to memory, access the source address, read the contents.
+[12:15] And we save it in the memory address pointed to by EDI.
+[12:20] So think of it as a loadST and a subsequent storeST fused into 1.
+[12:27] So this is exactly what it does.
+[12:31] Subsequently, we augment ESI.
+[12:36] So we add 4 to 8 or subtract 4 depending upon the flag bit.
+[12:41] So this DF should be at the top.
+[12:48] And similarly, we do the same with EDI.
+[12:51] We either add 4 to it or subtract 4 to it depending upon the value of the DF flag bit.
+[13:00] We have two more instructions STD and CLD.
+[13:04] The STD sets DF to 1 and CLD which is like clear D, it sets the direction flag to 0 depending
+[13:14] upon what we want to do, whether you want to add 4 or whether we want to subtract 4.
+[13:19] Alright, so let us consider an example.
+[13:26] So let's see what is the value of EAX after executing this code snippet.
+[13:34] Right, so basically this code snippet is fairly complicated.
+[13:38] So we need to take a look at each of these instructions and see what is the value of EAX after at the end.
+[13:46] So let's see.
+[13:50] First we have a move instruction.
+[13:53] So we move the value 192 to ESP plus 4.
+[13:58] And we move 32 bits, so we move a D word, a double word.
+[14:04] 32 bits to the location ESP plus 4.
+[14:07] So this is the stack pointer.
+[14:08] So this is the stack pointer.
+[14:09] The stack pointer is pointing to a location, to the location on top of that we save 192.
+[14:22] Then we load the effective address into ESI which is ESP plus 4.
+[14:28] So let's assume that ESP was 1000.
+[14:32] So at this point, ESI is equal to 1004.
+[14:41] Right, so which is this location 1004.
+[14:47] Similarly, we load effective address of ESP plus 8.
+[14:50] So this is EDI will be equal to 1008, which is actually the address just above it, 1008.
+[15:04] Then we execute the move SD instruction.
+[15:07] So the move SD instruction will transfer 4 bytes from the memory address specified in ESI
+[15:13] to the memory address specified in EDI.
+[15:16] Fine.
+[15:17] So what is there in ESI?
+[15:19] In ESI points to 1004, which has 192.
+[15:22] So these contents will get transferred over here.
+[15:26] So 192 will get written over here.
+[15:29] Subsequently, if we access ESP plus 8, which is the location 1008, which is there in EDI,
+[15:36] and we transfer the contents to EAX, what do we get?
+[15:40] We get the same.
+[15:42] So these contents get transferred to EAX.
+[15:47] So what do we get?
+[15:48] We get 192.
+[15:50] Right.
+[15:51] So since we write 192 in the memory address specified in ESI,
+[15:55] we shall read back the same value in the last slide.
+[15:59] So this is a small and simple example.
+[16:03] Let's now do something.
+[16:06] So where is the power of the string instruction?
+[16:11] So what we have seen is, we have seen the LODST, STOST, and MOVST kind of instructions,
+[16:17] which are essentially shortcuts of load instructions.
+[16:21] The MOVST instruction actually fuses a load and a store into one instruction.
+[16:26] But that is hardly any power.
+[16:29] We are looking for something clearly much, much more.
+[16:32] So let's consider an example and let's see what can be done.
+[16:37] So let's assume that we have a 10 element array of integers.
+[16:41] The starting address of the source array is in ESI,
+[16:44] and the starting address of the destination array is in EDI.
+[16:48] And essentially, we want to copy the source to the destination.
+[16:53] So the first thing that we do, which we should always do for such kind of codes,
+[16:59] is that we should set the value of df, the data flag, to either 0 or 1,
+[17:04] depending upon what we want to do.
+[17:06] In our case, we want to count upwards, start at the lowest element and keep going up.
+[17:11] Up means towards higher addresses.
+[17:13] So we set df equal to 0 by calling the CLD instruction.
+[17:18] Then we initialize the loop index of the array.
+[17:21] So we set ebx equal to 0 and start a loop.
+[17:24] So we call MOVST.
+[17:26] So what it does is that it transfers the contents of the memory contents from ESI to EDI.
+[17:37] So this it does, right?
+[17:42] Subsequently, we increment ebx, which is the index.
+[17:48] We compare the index with 10.
+[17:51] As long as the index has not reached 10, we keep on iterating, right?
+[17:56] So basically, if the index is not equal to 10, we do one more iteration.
+[18:01] And mind you, since the MOVST has a built-in post-increment operation,
+[18:06] both EDI and ESI are incremented with 4 bytes,
+[18:10] we don't need to explicitly increment or in some other cases decrement EDI and ESI.
+[18:17] So they are being incremented automatically.
+[18:20] So nothing needs to be done.
+[18:22] So we just keep on calling MOVST in a loop.
+[18:26] That's all that needs to be done to transfer one array from a source location to a destination location.
+[18:35] This sounds simple enough in the sense it takes six instructions.
+[18:39] Otherwise, it would have taken slightly more because we would have had a load and a store.
+[18:47] It turns out that this is not the end.
+[18:50] We can do something better.
+[18:53] So let me introduce the rep prefix.
+[18:56] So rep basically means the repeat, the repetition, repeat prefix.
+[19:00] So the semantics is that we put rep.
+[19:04] So rep is the starting of the instruction and then we specify the instruction.
+[19:09] Any instruction, we put rep before it.
+[19:12] Example would be rep MOVST.
+[19:14] So what we do?
+[19:16] So it will consider the value in the register ECX and let's say its value is val.
+[19:23] It will execute the MOVST instruction val times.
+[19:27] Right?
+[19:28] So basically this is a very, very powerful instruction because one instruction incorporates a loop inside it.
+[19:36] So what will this do again?
+[19:38] So what will this do again?
+[19:39] It will repeat the instruction inst the same, you know, val times where val is the contents of ECX.
+[19:48] So for example, if ECX contains 10, the rep prefix will ensure that the instruction after it gets repeated 10 times.
+[19:59] And every time the value of ECX will get decremented till and at the end it will become equal to 0.
+[20:08] So what do we do?
+[20:09] Here is a simple piece of code.
+[20:12] So we call the CLD instruction first.
+[20:15] We set DF to 0, which is something we need to do.
+[20:18] In this case, we are looking at 10 iterations.
+[20:21] So we set ECX to 10 and all that we do is rep MOVST.
+[20:27] Voila, we are done.
+[20:29] It's as simple as that.
+[20:31] So let us look at the previous, so let us look at this piece of code, which is 6 instructions.
+[20:42] And let us now look at this piece of code, which is only 3 instructions.
+[20:45] And the fantastic thing is that we have effectively incorporated an entire loop into one instruction
+[20:54] and we are all done.
+[20:56] So transferring a huge amount of data from point A to point B is not a big deal at all.
+[21:03] We just have to execute 3 instructions in sequence.
+[21:07] Let me go through these 3 magic instructions.
+[21:10] So we have CLD, which essentially indicates the direction in which we will traverse upwards or downwards in memory.
+[21:19] In this case, we decide to go upwards.
+[21:21] So we set the DF flag to 0.
+[21:24] Subsequently, we set the number of iterations in ECX, which is 10.
+[21:28] And then we execute MOVST 10 times.
+[21:31] So MOVST, what will it do?
+[21:34] It will essentially read the contents of ESI, access the memory location, transfer them to the memory location pointed by EDI.
+[21:42] Since DF is 0, ESI will be set to ESI plus 4.
+[21:55] EDI will be set to EDI plus 4.
+[22:06] And we just need to execute it 10 times and we are all done.
+[22:20] Alright, so now that we have seen the power of some advanced memory instructions, branch instructions,
+[22:26] our understanding of integer instructions is per se more or less complete.
+[22:32] So we will not talk about it anymore.
+[22:35] So we will now move to floating point instructions.
+[22:39] So all the students that I have talked to regarding this issue of floating point instructions in x86,
+[22:49] have consistently indicated that floating point instructions are fairly complicated.
+[22:54] And this is the part that they would rather not study.
+[22:58] And you know, they want to focus on something else.
+[23:01] But that's not the case.
+[23:02] So x86 floating point instructions are not complicated at all.
+[23:08] As long as you understand the basic philosophy behind them.
+[23:13] So the machine model is like this, that we have memory.
+[23:16] So we can directly load constants into memory via the...
+[23:22] Okay, let me write it.
+[23:24] So we can directly store constants into memory.
+[23:27] We can directly store constants into registers.
+[23:30] Registers can then be stored into memory.
+[23:33] And memory values can also be stored into registers.
+[23:37] However, floating point registers are sort of...
+[23:43] Their connections are weak.
+[23:45] Floating point registers can only talk to memory.
+[23:49] And so loading constants and so on into them is slightly difficult.
+[23:53] We shall see how.
+[23:55] But their primary interface is via memory.
+[23:58] So there is no direct connection between integer and floating point registers.
+[24:02] That's point number one.
+[24:03] FP stands for floating point.
+[24:06] They can only communicate via memory.
+[24:09] And there is also no way to load floating point immediates directly.
+[24:12] So that also needs to be done via memory.
+[24:15] So once this basic diagram...
+[24:18] So once this...
+[24:20] Sorry...
+[24:22] Basic diagram is understood.
+[24:24] We are in good shape.
+[24:26] Alright.
+[24:28] So let's understand what are some of the basic floating points.
+[24:32] The basic floating point instructions.
+[24:34] How are they to be invoked?
+[24:37] And what is to be done?
+[24:39] To learn them correctly.
+[24:41] So basically one major problem that happens while...
+[24:44] Writing floating point programs...
+[24:47] Is that students don't understand the machine model.
+[24:50] They can make mistakes.
+[24:52] And this is something we want to avoid.
+[24:54] So let's consider the FLD instruction.
+[24:57] FLD is very simple.
+[24:58] Floating point load.
+[25:00] So this instruction pushes the value of the first operand...
+[25:05] Which can either be a register or memory.
+[25:09] So that's the reason actually I have written it twice.
+[25:11] I have written a register form and a memory form.
+[25:15] Onto the floating point stack.
+[25:18] So let's see.
+[25:19] So recall that in the floating point stack...
+[25:23] You actually have eight floating point registers.
+[25:28] Right.
+[25:29] So this is like the FP stacks.
+[25:31] I'm not drawing eight boxes.
+[25:32] But that should be the connotation.
+[25:35] So the top of the stack is always ST0.
+[25:38] So a floating point register is actually a pointer to the floating point stack.
+[25:43] And the bottom of the stack is ST7.
+[25:46] Right.
+[25:47] That is the idea.
+[25:49] So essentially the values of registers will change.
+[25:53] So if I let's say push something onto the stack.
+[25:56] Let's say push 3.5.
+[25:58] So previously there was 4.5 over here.
+[26:02] And then I push 3.5.
+[26:04] So 4.5 goes over here.
+[26:06] It becomes ST1.
+[26:07] And 3.5 becomes the new ST0.
+[26:10] So when I call something like FLD MEM.
+[26:15] So the first thing I need to do is I need to specify how many bytes I am interested in.
+[26:24] So here this is the memory operand stored, the address stored in the AX.
+[26:29] If I'm interested in 4 bytes, I specify the DWORD modifier.
+[26:34] So it pushes a floating point number.
+[26:41] Well it's an FP number fine.
+[26:44] Grammatically it's still okay.
+[26:45] So it pushes an FP floating point number stored in EAX.
+[26:50] Right.
+[26:51] In square brackets.
+[26:52] To the floating point stack.
+[26:54] So there if the number stored is 3.5, it gets stored on the floating point stack.
+[26:59] Similarly there is a register form as well.
+[27:03] But mind you this is not an integer register.
+[27:06] This register form of the instruction.
+[27:09] This is a floating point register.
+[27:11] So what we can do is we can do FLD ST1.
+[27:15] The floating point registers are ST0 to ST7.
+[27:18] So it will push the contents of ST1 to the top of the stack.
+[27:22] So it will read the contents of ST1.
+[27:24] So let's say you push 4.5.
+[27:26] Right.
+[27:27] Because 4.5 is ST1.
+[27:29] So then this will again get pushed to the top of the stack.
+[27:32] Right.
+[27:33] So these are the two most common variants of the FLD instruction that we can either read
+[27:39] directly from memory.
+[27:40] Or we can read another floating point register.
+[27:44] But we read the contents and simply push them on the floating point stack.
+[27:49] Similarly we have the FILD instruction.
+[27:54] Which basically what this does is that I stands for integer.
+[27:58] So this pushes an integer stored in memory to the floating point stack.
+[28:02] Essentially it converts.
+[28:03] It does an int to float conversion.
+[28:06] Think of it that way.
+[28:10] So in this case we read the value of EAX which is an address in memory and we read in 32 bits.
+[28:24] But the 32 bits are not in the floating point format.
+[28:27] They are in integer format.
+[28:29] So this integer which is stored in EAX is first converted to a 32 bit floating point number.
+[28:36] And then pushed to the floating point stack.
+[28:41] So what are the basic instructions?
+[28:43] FLD, floating point load.
+[28:45] And FILD.
+[28:46] Where actually we load an integer but we convert it to the floating point format.
+[28:51] And we push it onto the stack.
+[28:53] So this is how we load memory values, right?
+[28:59] So there are two ways to load a floating point immediate.
+[29:03] The first is that we first load its hex representation to memory.
+[29:08] And so what do we do?
+[29:10] Let's take a number 3.5.
+[29:12] So we will first, well this technically should not be load.
+[29:18] It's better to call it store, right?
+[29:21] It's a better idea to actually call it store.
+[29:24] So what we can do is that we can store its hex representation, right?
+[29:30] The representation in IEEE, I should also maybe call it the IEEE 754 format, right?
+[29:49] We can store it to memory and use the FLD instruction to bring the value into a floating point register.
+[29:55] Otherwise, we can use an assembler directive to store the immediate as a constant before the program starts.
+[30:04] So what would the assembler do?
+[30:06] The assembler will essentially insert code to basically convert it into hex and store it in a certain area of memory.
+[30:15] And then we can use the FLD instruction to transfer the value to the FP stacks.
+[30:20] So in a sense, both these instructions, you know, both of these points are the same.
+[30:28] The points basically say that either the program, assembly programmer manually converts a floating point number to its hex representation.
+[30:37] And stores it to memory and then reads it to the floating point stack.
+[30:43] The other is we let the assembler do exactly the same thing.
+[30:46] So in NASM, we can have it.
+[30:49] There is a data section in which all of these constants can be declared, section dot data.
+[30:55] So what we do is that we can define a 32-bit floating point constant called num, which is…
+[31:05] So this specifies its 32-bits and this is its value 2.392.
+[31:12] So this is something that can be done, that we can specify a number in its decimal format.
+[31:19] And so the num, the label here is actually the name of the variable, the memory variable, which can be referenced later.
+[31:26] And this is the value.
+[31:27] So what the assembler would do is it will take 2.392, convert it to its hex representation, store it somewhere in memory, right,
+[31:36] and associate that memory address, right, mem address with the label num.
+[31:48] So that's exactly what will happen.
+[31:51] The assembler will associate the label num with the memory address that saves 2.392.
+[31:56] In the assembly program, all that we need to write, in the case of NASM, but all similar…
+[32:01] Other assemblers have a similar format as well, is that we'll write fld, d word for 32-bits, and num.
+[32:10] So the assumption here is that num will get replaced by the actual value of the memory address by the assembler.
+[32:17] So with this method, we do not have to save the hex or binary representation of a floating-point number.
+[32:23] This will automatically be taken care of by the assembler for us.
+[32:29] All right.
+[32:30] So now we will look at another instruction which works exclusively on floating-point registers.
+[32:44] It is called floating-point exchange or FXCH, right?
+[32:49] F for floating-point, XCH for exchange.
+[32:52] So we can call it FXCH.
+[32:57] So here, it has two variants.
+[33:01] And in both the variants, it exchanges the contents of two floating-point registers.
+[33:06] And ST0, which is the floating-point stack top, is always one of the FPA registers.
+[33:12] If I write FXCH ST3, it will exchange the contents of ST0 and ST3.
+[33:21] If I just write FXCH without any arguments, it will exchange the contents of ST0 and ST1.
+[33:28] So pretty much, if this is the floating-point stack and the top is referred as ST0 and the
+[33:36] second is ST1, then essentially their contents will be exchanged, interchanged.
+[33:44] So now that we have taken a look at load instructions, let's take a look at floating-point store instructions.
+[33:51] So similar to an FLD, we have an FST.
+[33:56] It does exactly the same thing.
+[33:59] So let's take a look at the two variants of FST that we have.
+[34:04] So the FST MEM instruction takes a memory address, a memory open as its argument.
+[34:11] And so it can save it in multiple formats.
+[34:14] But let's only stick to the 32-bit format right now, DWORD.
+[34:19] So since we are not specifying which floating-point register, ST0 is assumed to be king, the stack top.
+[34:25] So it takes the contents of the stack top and saves it at the memory address specified in EX.
+[34:32] Alternatively, it is possible to specify a certain floating-point register.
+[34:41] In this case, what happens is that the contents of ST0 are...
+[34:48] So this acts like a floating-point register move pretty much.
+[34:52] So it takes the contents of ST0 and saves it in this case in ST4.
+[34:57] Right?
+[34:58] So basically ST0 is always the source.
+[35:00] We can either save it in memory.
+[35:02] We can either save its contents in memory.
+[35:05] Or we can save its contents in another floating-point register.
+[35:10] So let us now look at this variant over here, FST P, which is exactly the same as FST.
+[35:19] But in addition, P stands for POP.
+[35:23] So let me maybe write here.
+[35:25] The P over here stands for POP.
+[35:29] So it does exactly the same thing as FST, but the additional P, after doing what FST would have done, it pops the floating-point stack.
+[35:38] So FIST is an analog of FILD.
+[35:45] So what this does is that, see here also we specify a memory address, and of course the size, how many bits need to be saved.
+[35:54] So what this does is that, let us just compare FSTMEM and FISTMEM.
+[35:59] So it is this line over here and this line over here.
+[36:03] So what this instruction does is that, it first converts the floating-point number into an integer representation, pretty much by truncating everything after the decimal point.
+[36:16] So that's what it does, that it first converts it into an integer.
+[36:23] After converting it to an integer, what does it do?
+[36:31] So what it does is, that it saves it in memory.
+[36:35] And the FIST instruction is the same, that we read in the value of the floating-point register ST0.
+[36:41] So ST0 is almost always the default source or the default destination.
+[36:46] And so ST0 is sort of as a special place.
+[36:49] It's the top of the floating-point stack.
+[36:51] And if an argument is not specified, most likely it is ST0.
+[36:56] So in this case, the FISTPMEM, an argument is not specified which register.
+[37:01] So that is ST0.
+[37:02] So we convert it to an integer and save it in memory.
+[37:05] And because the P suffix is there, we pop the floating-point stack.
+[37:11] So what have we looked at till now?
+[37:14] We have looked at FLD and its variants like FILD.
+[37:20] We have looked at floating-point exchange, which exchange the contents of two registers.
+[37:25] We have looked at FST, which stores the value of a floating-point register either in memory or in another floating-point register.
+[37:34] And again, you know, different variants with a P suffix pops the stress tag and FIST for integer conversion and so on.
+[37:42] So the main instructions are FLD and FST that we need to bother about, right?
+[37:47] FLD and FST.
+[37:49] Let us now consider an example.
+[37:51] So a 32-bit floating-point number is loaded in ST0.
+[37:56] So it is present in ST0.
+[37:58] Let us convert it to an integer and let's save its value in EX.
+[38:04] So to do this, so one thing that is clear is that from the floating-point set of floating-point registers,
+[38:13] so the direction of data flow is from the floating-point registers to memory.
+[38:26] So this is a store.
+[38:29] So we need to use some variant of the FST instruction.
+[38:34] And since conversion to an integer is also there, the instruction that we need to use is FIST, right?
+[38:43] FST for store and I for the conversion to integer.
+[38:47] So we want to save this in a memory location first and then transfer it from memory to a register, to an integer register,
+[38:58] because we cannot directly transfer a floating-point value to an integer register.
+[39:04] So what we do is that we assume that let's say this location on the stack ESP plus 4 is available, is free.
+[39:15] So there we transfer a DWORD or 32-bits, because it's a 32-bit floating-point number.
+[39:23] So the contents of ST0 get written to this memory location.
+[39:29] This is what the first statement achieves.
+[39:32] Then the second statement is a simple register move, which we have seen in great detail in the previous sections.
+[39:44] So here what we do is that we specify a memory address.
+[39:52] And from this memory address, we essentially read in 4 bytes into the register EX.
+[40:00] So let us now look at the floating-point ADD instruction, which is in a sense similar to some of the earlier instructions that we have seen.
+[40:09] And so, but let's take a look. It also has different forms. And some of these forms are slightly involved.
+[40:17] So let's start taking a look at at least the most basic form.
+[40:22] So the one operant form of the FAD instruction takes a memory operant as the single source.
+[40:32] So for example, FAD DWORD EX.
+[40:35] So in this case, the contents of the register EX are taken, memory is accessed.
+[40:41] And from there, we read in a DWORD or a DWORD, which is 32-bits.
+[40:45] So the assumption is that a floating-point number is present over there.
+[40:50] And we take it and we add its contents to ST0 and save the results in ST0 as well.
+[40:57] So ST0 can be thought of as the default floating-point register for this instruction.
+[41:05] The other form is where the instruction takes two registers, two floating-point registers to be specific as the operants.
+[41:15] And this, the form is exactly similar to the add instruction, to the integer add instruction.
+[41:22] The only caveat here is that one of the registers has to be ST0.
+[41:26] So most versions of the x86 ISA actually require this, that one of the registers has to be ST0.
+[41:37] So in this case, the add instruction is similar to the integer add instruction, where we set ST0 is equal to ST0 plus ST1.
+[41:47] I mean, this instead of ST1, this can be ST5, it's still fine.
+[41:51] So we can say ST0 is ST0 plus ST5.
+[41:54] So it doesn't matter.
+[41:56] Then, the add instruction also has a mode where we can pop this tag.
+[42:04] So we use the P suffix.
+[42:06] P is for pop.
+[42:11] So here what we do, so before I explain this, we need to consider one thing that we cannot store the result in ST0,
+[42:26] because ST0 is going to get popped.
+[42:28] So the typical form in this case is that we have some floating-point register which is not ST0.
+[42:35] Typically ST1, but can be others also.
+[42:38] And then we store the result in ST1.
+[42:42] And so in this case also, it is typically the case that ST0 is one of the opponents.
+[42:49] So in this case, we can think of this as STi, where it can be any ST.
+[42:59] And any ST where i is not equal to 0.
+[43:03] Since this is ST1, the explanation is that the way this instruction will work,
+[43:08] we will compute ST0 plus ST1 and save the result in ST1.
+[43:13] That is important, because we can't save it in ST0, it's going to get popped.
+[43:17] Subsequently, we pop the floating-point stack.
+[43:20] So this means that whatever are the contents of ST1 become the contents of ST0 after the pop.
+[43:26] This instruction also has a mode where we can read in an integer from memory,
+[43:34] convert it to floating-point, and do an addition.
+[43:37] For example, if I have the fi, if I have this i, the character i after f,
+[43:44] so the instruction will become fi add.
+[43:49] And an example of this instruction would be fi add d word ax.
+[43:55] And so here, this contains the memory address.
+[43:59] So the computation that is being done is that to ST0, we add the contents of the memory address.
+[44:06] So that's assumed to an integer, so we convert it to a floating-point.
+[44:09] We add it to the contents of ST0 and save the results in ST0.
+[44:15] So since all our code has been specific to the NASM assembler,
+[44:21] the NASM assembler also provides one more variant of the fadd instruction.
+[44:26] So this variant has also been discussed in the book and is there in several examples as well.
+[44:31] But this is not a part of the general x86 specification.
+[44:35] Even though a lot of assemblers do implement it because it's very convenient.
+[44:39] But users should keep in mind that the table on top,
+[44:43] these are like generic formats which you'll find in Intel manuals.
+[44:47] But this is NASM specific.
+[44:49] So it can be used if NASM is being used as the assembler.
+[44:53] And if there are other assemblers that support this particular format,
+[44:56] this can be used.
+[44:58] There's nothing wrong in it.
+[45:00] So this format is a one-address format instruction,
+[45:06] where the only operand that fadd takes is a floating-point register.
+[45:11] So for example, fadd st1.
+[45:14] So here the default source, the default second source is ST0,
+[45:20] and the default destination is ST0.
+[45:23] So we could have very well written fadd st4.
+[45:29] So the effect that this would have had is ST0 is ST0 plus st4.
+[45:39] So this is very convenient for writing assembly programs.
+[45:43] But as I said, this is not a general format of the fadd instruction.
+[45:48] So it is possible that in some assemblers this might not work.
+[45:53] And so this possibility is always there that in some assemblers it might not accept this format.
+[45:59] But wherever this format is being accepted, it can be used.
+[46:02] See here, what needs to be remembered is that the second source operand is ST0,
+[46:08] and the destination is also ST0.
+[46:10] So similar to add, we have subtract multiplication and division instructions,
+[46:18] which work in exactly the same way and have the same variance also.
+[46:22] So let me write it down.
+[46:27] So exactly the variance that we have seen over here,
+[46:42] say they can take a single memory operand as the arguments of the instruction,
+[46:51] or they can take two floating point registers.
+[46:54] They also have the additional p-mode where we pop the floating point stack.
+[47:02] And also similar to fiadd, you can have an fi-sub where we read in an integer from memory,
+[47:10] convert it to floating point, and use it in a subtraction.
+[47:13] So here I am just showing examples with a default memory operand.
+[47:18] So in this case, if this is the memory operand,
+[47:21] what we will do is that we will read in the value and subtract it from ST0,
+[47:26] or multiply it to ST0, or divide it to ST0, whatever the case may be.
+[47:31] And the rest of the variance are the same.
+[47:33] So basically to avoid repeating, I am not talking about all of the variance once again.
+[47:43] But essentially to look at what variance are supported, let's go back to this table,
+[47:48] which shows the variance for the fadd instruction,
+[47:51] and reuse the same variance for the other instructions fsub, fmull, and fdiff.
+[48:00] So let's show an example.
+[48:02] Let us compute the arithmetic mean of two integers stored in EAX and EBX.
+[48:06] Let's save the result.
+[48:08] So here there is a catch.
+[48:09] So we don't want to save a 32-bit floating point.
+[48:13] We want to save a 64-bit floating point.
+[48:16] A 64-bit floating point number is double precision number.
+[48:21] So we want to save this in the address ESP plus 4.
+[48:27] Let's assume that the memory address 2 contains the constant 2.
+[48:31] So basically loading values into floating point registers is complicated,
+[48:35] loading constants particularly.
+[48:37] So they need to be saved in some memory location,
+[48:40] and the contents of that memory location need to be transferred to the floating point stack.
+[48:48] So let's do one thing.
+[48:50] Let's first start by loading the inputs to the floating point stack.
+[48:54] So since EAX and EBX contain the two integers,
+[49:01] we need to transfer them to memory first,
+[49:04] because direct communication between integer and floating point registers is not there.
+[49:09] So let's transfer them to memory.
+[49:11] So let's assume that these two memory locations at ESP and ESP plus 4 are free.
+[49:17] Subsequently, let's load them onto the floating point stack.
+[49:23] We'll use the FILD instruction.
+[49:26] The I basically meaning that a conversion will happen from integers to floating points.
+[49:33] So this is what the I means over here.
+[49:36] So then we will convert them and we'll load them onto the stack.
+[49:40] So basically this value will be at the stack top ST0 and this will be at the second from the stack top ST1.
+[49:50] All right, let's go ahead.
+[49:52] Let's compute the sum of ST0 and ST1.
+[49:55] And so the result will get saved in ST0.
+[49:58] And let us divide the contents of ST0 by whatever is stored in the memory location 2.
+[50:05] So what is stored there?
+[50:07] What is stored there is 2.0.
+[50:09] So let us divide it and the final result is there in ST0.
+[50:14] So basically let's consider an example if EAX can contain 8 and EBX contain 9.
+[50:22] So the arithmetic of 8 and 9 is 8.5.
+[50:25] So 8.5 is stored in ST0.
+[50:28] What needs to be done next?
+[50:31] Well, what needs to be done next is that we need to save the result to ESP plus 4, to this memory address ESP plus 4.
+[50:41] And we want to save a 64-bit result.
+[50:43] So that is the catch.
+[50:44] To save a 64-bit result, I am using the FST instruction.
+[50:48] And to just clean up the stack, I am using FSTP.
+[50:51] But it's technically not required.
+[50:53] So FST would have been just fine.
+[50:56] And then the important point to note is that the keyword identifier is being used.
+[51:08] The keyword identifier basically means quad word or 64 bits.
+[51:12] So we are saving the result as a 64-bit quantity.
+[51:15] And this is being stored at the memory location ESP plus 4.
+[51:21] So this is all that we need to write this program.
+[51:26] So the program contains 7 assembly instructions, which is not much.
+[51:32] Given the fact that a lot is being achieved, we are taking integers, converting them to floating-point,
+[51:37] putting them on the floating-point stack, computing their arithmetic mean and writing them back.
+[51:43] So it's a fair amount of work that is being done.
+[51:48] But it's important to understand that what is being used.
+[51:52] The FILD instruction is being used to achieve the conversion from integer to floating-point.
+[52:00] That is point number 1.
+[52:02] Second, we are doing a division and a constant 2 is saved at a certain memory address called TWO.
+[52:09] And then we are saving the result back, which is a 64-bit quantity using the keyword identifier to ESP plus 4.
+[52:23] Now let's take a look at instructions for some special functions.
+[52:26] So basically, you know, what is the advantage of having a CISC instruction set unless these special functions are supported?
+[52:36] So there are many more special functions which listeners can find, readers can find in Intel's manual.
+[52:43] But some of the ones that are most commonly used are FABs for an absolute value,
+[52:49] square root that computes the square root of ST0 and saves it in ST0.
+[52:55] Then cos and sine, yeah, then cos and sine.
+[53:02] So where again the cos of ST0 is computed and saved in ST0 and same for sine.
+[53:08] So there are many functions, other functions for other transcendentals and logarithms and so on.
+[53:17] So the listener, the reader, the user, right, all these three are interchangeable terms,
+[53:24] can take a look at the Intel's manual to find out what are the other instructions that are supported.
+[53:34] Alright, so let's do one thing.
+[53:37] Let's now compute the geometric mean of two integers stored in EX and EBX.
+[53:42] And let's save the result again in 64 bits at the location ESP plus 4.
+[53:48] So the only change that is being done is that from arithmetic mean, we have gone to geometric mean, that's all.
+[53:55] So most of the code will remain the same and it genuinely does.
+[53:58] So this part remains exactly the same where we read in the floating point numbers from these two registers.
+[54:05] So these two registers contain integers.
+[54:07] They are converted to floating point numbers and stored on the floating point stack.
+[54:12] Subsequently, instead of an F add, we multiply them.
+[54:16] So ST0 contains the product of ST0 and ST1.
+[54:27] We compute the square root.
+[54:29] So basically ST0 contains the square root of ST0, right.
+[54:35] And then the last line is exactly the same where we again store it.
+[54:41] We use the keyword identifier to ensure that the result is 64 bits.
+[54:48] And we store it at the memory address ESP plus 4.
+[54:53] All right.
+[54:54] So now let's take a look at comparing floating point numbers.
+[54:58] That's important because that's, you know, a lot of code that has branches and so on depends
+[55:03] on the results of comparison.
+[55:05] So compare also has two variants, two simple variants.
+[55:10] The first variant is fcomi.
+[55:12] So here we compare two registers.
+[55:17] Let's say ST0 and ST1.
+[55:19] So we compare ST0 and ST1 and we set the flags register appropriately.
+[55:27] So here the caveat in most variants of the x86 instruction set is that the first register
+[55:34] has to be ST0.
+[55:35] So that is typically the caveat that is placed.
+[55:39] So another variant of the fcomi, the compare instruction.
+[55:43] So this compare instruction is very similar to the CMP instruction for integers.
+[55:49] So essentially we compare registers and we set the flags.
+[55:52] That's the simple basic idea.
+[55:55] So we can additionally have the p suffix where we compare two registers and we set the flags
+[56:05] register and additionally at the end, we pop the floating point stack.
+[56:10] So let's say we don't need a value.
+[56:12] We don't need ST0 for example.
+[56:14] We can do the comparison and then at the end of the instruction, we can also pop the floating
+[56:20] point stack.
+[56:21] So here is a very important point.
+[56:25] A lot of students make mistakes in this point and this is a very, very common source of bugs
+[56:31] while writing assembly programs with floating point operands.
+[56:37] So the source of the bugs is as follows.
+[56:46] So let me draw a circle over here.
+[56:51] The important point is that the flags are set for unsigned comparison, not for signed comparison.
+[56:56] So recall that we had different kinds of flags.
+[57:00] So basically the condition codes that we need to use are essentially below and above.
+[57:08] So these are the condition codes for unsigned comparison, not greater than, less than anything
+[57:14] else, right?
+[57:16] So definitely not greater than and less than and greater than equals and so on.
+[57:21] Not these ones.
+[57:22] We need to use the condition codes basically B for below, A for above, NB for not below
+[57:29] and so on.
+[57:31] So these are the condition codes that need to be used and these are the condition codes
+[57:35] for unsigned comparison.
+[57:37] And this is definitely what it is that needs to be used.
+[57:42] So this is a very, very, you know, very common source of mistakes because typically students
+[57:49] would use the condition codes for signed comparison and they get the wrong answer.
+[57:55] So this needs to be kept in mind that the condition codes that need to be used are the ones for
+[58:01] unsigned comparison.
+[58:02] So essentially we need branch instructions of the form J B or J A.
+[58:10] All right.
+[58:11] So now let's take a look at a difficult example.
+[58:13] It's not that difficult, but it pretty much uses all the concepts that we have learnt up till
+[58:18] now.
+[58:19] So let us compare sine 2 theta and 2 sine theta cos theta.
+[58:24] So those who still remember trigonometry will quickly guess that both of these expressions
+[58:31] are the same.
+[58:32] So sine 2 theta and 2 sine theta cos theta are the same expressions.
+[58:37] Let us verify that they have the same value for any given value of theta and assume that
+[58:43] theta is stored in the data section, data section of the assembly file at the label theta.
+[58:49] Right.
+[58:50] At the memory address theta and the threshold.
+[58:54] So here is the important thing.
+[58:56] Let me stop here.
+[58:57] Right.
+[58:58] So how do you compare two floating point variables?
+[59:02] Let's say F1 and F2.
+[59:03] So the nature of real numbers or floating point numbers is inexact.
+[59:12] Right.
+[59:13] So this we have discussed in chapter 2 that comparing floating point numbers makes little
+[59:18] sense basically because the representation is not exact.
+[59:23] So essentially, you know, we have a basic question here that let's say a number of the form
+[59:30] 3.0 and 3.0 plus, are they equal or not equal?
+[59:42] So this is a broad philosophical issue.
+[59:44] So theoretically speaking, they are not equal, but practically they might be equal.
+[59:49] And the reason being that we might not have enough bits to specify 3 plus 10 to the power
+[59:55] minus 30.
+[59:56] Right.
+[59:57] So we might not have that precision that is required to specify F2.
+[60:01] And as a result, the hardware, the hardware might compute F1 to be equal to F2.
+[60:08] Right.
+[60:09] This is not, this is theoretically not correct, but real number arithmetic is always inexact.
+[60:14] So the best way and the standard method, the standard approach of comparing floating
+[60:21] point numbers is like this, that we take two numbers F1 and F2.
+[60:25] We subtract them, take their absolute value and see if this is less than a predefined threshold
+[60:32] like epsilon.
+[60:33] The threshold can be arbitrarily small.
+[60:35] It depends upon what our tolerance is.
+[60:38] So maybe like 10 to the power minus 5 or 10 to the power minus 10.
+[60:41] It all depends on what F1 and F2 are.
+[60:44] But once we, the main idea is that the way we find out equality is basically by using the
+[60:51] fact that the difference, the absolute value of the difference has to be less than a given
+[60:56] threshold.
+[60:57] So in this case, let us assume that this threshold is saved at the label threshold.
+[61:04] And finally, after the comparison, let's save the result in AX, 1 if there is equality and
+[61:09] 0 if there is lack of equality.
+[61:12] So we expect 1 as an answer all the time.
+[61:17] So let's now gradually, let's break this example because the example is kind of long and complicated.
+[61:25] As you see, it's a two-page example.
+[61:27] So let's nevertheless try to understand it slowly, gradually.
+[61:34] So let's do one thing.
+[61:35] Let's first compute sine 2 theta and let's save it in memory, right?
+[61:40] So the first thing that we do is that we load the constant theta from memory.
+[61:50] So what we do is that we assume that the constant theta in any value of the angle theta is stored
+[61:57] in the memory label theta.
+[62:02] So we load the contents onto the stack top, which is ST0.
+[62:08] And then we add ST0 with ST0, essentially compute 2 theta.
+[62:13] Then we compute the sine of this.
+[62:15] So this basically at this point ST0 is equal to sine of 2 theta.
+[62:27] Subsequently, we save sine 2 theta into the memory location pointed to by ESP, where we assume
+[62:35] that that particular memory location is available and can be used.
+[62:39] So since all our quantities are 32 bits, we use the DWORD identifier.
+[62:44] And in addition, we actually use the FSTP instruction.
+[62:48] So basically, we don't need the value anymore.
+[62:51] So we pop the stack also, right?
+[62:53] In addition, since this is in general a good idea that when we don't need the value, we
+[62:58] can additionally pop the stack such that the floating point stack remains fairly clean.
+[63:04] All right.
+[63:05] So now let us compute 2 sine theta times cos theta.
+[63:12] So let's do the same thing.
+[63:14] Let's load theta into ST0.
+[63:16] Let's create one more copy of theta in ST1 by the FST instructions.
+[63:24] FSTST1 basically sets ST1 equal to ST0, which is equal to theta, right?
+[63:31] So both at this point, at this particular point, ST0 and ST1, both of them contain theta.
+[63:40] Now let's issue the Fsine instruction.
+[63:43] So the Fsine instruction has, computes ST0 is equal to sine theta.
+[63:51] Let's exchange.
+[63:52] So F exchange exchanges swaps ST0 and ST1.
+[63:57] So at this particular point, after this instruction, ST1 will contain the previous contents of ST0,
+[64:03] which is sine theta, and ST0 will contain the old contents of ST1, which is just theta.
+[64:11] Then let's issue Fcos.
+[64:13] So Fcos will compute ST0 as cos theta.
+[64:18] Then let's multiply ST0 and ST1.
+[64:21] So ST0 will then contain sine theta times cos theta, right?
+[64:26] And then let's add ST0 with ST0.
+[64:30] So then ST0 will be 2 times ST0, which is 2 sine theta cos theta, all right?
+[64:47] Okay.
+[64:48] So where are we at the end of this page?
+[64:51] We have saved sine 2 theta at the memory location ESP, right?
+[64:57] Point whose address is in ESP, and we have 2 sine theta cos theta in ST0.
+[65:03] All right.
+[65:04] Now that we have this, let's do one thing.
+[65:06] Let us again load the value that was stored in ESP, which was 2 sine theta, which is sine
+[65:13] of 2 theta.
+[65:14] So let's load this value into the stack top.
+[65:17] So the previous stack top goes into ST1.
+[65:21] So at this particular point, ST0 contains sine of 2 theta.
+[65:27] And ST1, which used to be ST0 before we actually did a push operation on the stack.
+[65:35] So recall that any FLD instruction, any FLOAD instruction pushes the value on the stack.
+[65:43] So ST0 becomes ST1, ST4 becomes ST5, ST6 becomes ST7, and so on.
+[65:50] So ST1 will be the previous contents of ST0, which is 2 sine theta cos theta, right?
+[66:04] So at this point, let us subtract them.
+[66:07] So let us subtract this value and this value.
+[66:10] And the difference between this, these two values will be saved in ST0.
+[66:15] And let us also then compute using the FAB's instruction, its absolute value.
+[66:21] All right.
+[66:22] So what does ST0 at this particular, maybe let me draw a line here.
+[66:27] What does ST0 contain?
+[66:29] ST0 contains the absolute value of the difference between sine of 2 theta and 2 sine theta cos theta.
+[66:48] All right.
+[66:49] So now let us do one thing.
+[66:51] Let us read in the value of the threshold, which is the value epsilon.
+[66:55] The maximum possible deviation between two quantities are deemed to be equal.
+[67:02] So let us read its value.
+[67:04] So when we load its value, it will get loaded to ST0, right?
+[67:08] So ST0 will contain epsilon.
+[67:10] And the new ST1 will actually contain the previous contents of ST0, because we just pushed the
+[67:17] stack, which is this difference over here.
+[67:20] So let us compare ST0, which is epsilon, and ST1, which is the difference, right?
+[67:27] Let us just compare.
+[67:29] So ideally, what is it that we want?
+[67:31] We want epsilon to be greater than the difference, right?
+[67:36] The threshold to be greater than the difference.
+[67:39] So which means that the threshold is above the difference because it's an unsigned comparison.
+[67:45] That's an important point to note that we'll only use above and below.
+[67:49] So we use the branch operation JA, the conditional branch JA.
+[67:54] So JA is for jump and A is for above.
+[67:58] So if JA is true, we jump to dot equal.
+[68:03] And at this particular point, since we have found out equality that the difference is less
+[68:10] than the threshold, we set 1 to EAX and we exit.
+[68:14] Otherwise, just if this is not the case, we'll set 0 to EAX and then we will exit.
+[68:21] But the important point is this should not happen because the trigonometric equality is a trigonometric
+[68:26] identity.
+[68:27] This should hold all the time unless, you know, there is some bug in the code.
+[68:32] So thankfully, there is no bug and you can copy paste the code as is written onto a NASM window
+[68:39] and test.
+[68:40] So it should work just fine.
+[68:42] And so this is where and all the time the output should be equal to 1, which means that
+[68:48] equality between sine 2 theta and 2 sine theta cos theta exists.
+[68:53] So one thing that we get to understand over here is that writing a program with regular x86 floating
+[69:07] point instructions is certainly not difficult at all.
+[69:11] We just need to understand the nature of the floating point stack.
+[69:15] So let me just write down what are the concepts that we need to understand.
+[69:19] We need to understand the nature of the floating point stack.
+[69:24] That's the first thing that we need to do.
+[69:26] So we need to understand that when a new value is pushed into the stack, the rest of the values
+[69:31] go down by one position.
+[69:33] That's point number one.
+[69:34] We need to understand the nature of the floating point instructions, right?
+[69:42] So basically the fact that they treat ST0 in a special way and how they work.
+[69:49] Then we need to understand the nature of floating point conditionals that always the above and
+[70:03] the below flags are to be used.
+[70:07] Right below condition codes are to be used.
+[70:10] And the rest is straightforward.
+[70:12] The rest is pretty easy.
+[70:14] So that's not difficult at all.
+[70:16] And we can write fairly efficient floating point code with this.
+[70:21] So let me now add an afterword.
+[70:23] Now that we have seen this, actually let me add the afterword after the next slide,
+[70:27] because that's when I'll introduce two more instructions.
+[70:30] So these instructions are typically used as cleanup operations for the stack cleanup.
+[70:35] So the F free instruction which takes a floating point register as an argument like F free ST4,
+[70:42] essentially frees the content of ST4 and marks it as clean.
+[70:46] So typically it is good programming practice that at the end of a program or at the end of
+[70:51] certain points in the program, clean up the floating point stack.
+[70:55] Because the floating point stack is a part of the program state.
+[70:59] So let's say that another program wants to execute and the current program needs to be suspended.
+[71:05] It is necessary to save the complete state of the floating point stack and then restore it.
+[71:10] So that is the reason that it is advisable that if floating point code is not used,
+[71:18] then we can keep the stack of the floating point clean.
+[71:22] So the instruction that helps us clean the floating point stack is F in it.
+[71:28] So what does F in it do?
+[71:30] It resets the status of the floating point unit, including the stack and registers,
+[71:34] which basically means that it cleans up all the registers.
+[71:38] If there is essentially says that the floating point stack is empty, right?
+[71:44] And it resets the flags and condition codes of all the floating point.
+[71:51] I'm sorry, I shouldn't use the word flags and condition codes,
+[71:55] but it resets the status of all the floating point hardware,
+[71:58] which includes adders and multipliers and all of that.
+[72:01] And also similar kinds of hardware.
+[72:05] It marks the floating point registers and the stack is empty.
+[72:09] So it pretty much cleans it up.
+[72:11] Now let me add my afterward.
+[72:14] So my afterward is that this is the basic floating point support that x86 processors have.
+[72:22] So x86 processors are primarily, you know, 16 bit types, which are the 8086 types.
+[72:28] So these are not used very frequently these days,
+[72:32] maybe in some embedded applications, but otherwise not very frequently.
+[72:36] 32 bit is still around also in the embedded domain.
+[72:40] It's gradually going away.
+[72:43] But 32 bit is definitely around.
+[72:46] And so this is what is referred as x86 or x86 32 bit or sometimes i386.
+[72:53] Then we have 64 bit.
+[72:56] 64 bit is definitely around and will be around for a long time.
+[73:00] So this is called x86 64.
+[73:03] So these are all the variants and versions of the x86 instruction set.
+[73:08] The 8 bit instruction set is also there, but that's too old.
+[73:12] So the floating point stack has been there since pretty much 1987.
+[73:18] To the best of my knowledge, at least with a 387 co-processor whose job was to do floating point operations.
+[73:27] So it's been there for a long time.
+[73:30] So this is a basic and, you know, the architecture is somewhat slightly old and primitive.
+[73:37] So maybe as an addendum to this book at a later point of time, I'll add the more recent architecture.
+[73:45] So subsequently Intel has introduced many more floating point register sets actually.
+[73:50] One of them is MMX.
+[73:52] The other are the SSE registers.
+[73:56] Then recently the AVX registers.
+[73:59] So it is possible to use particularly if MMX defines the XMM registers.
+[74:06] Right?
+[74:07] There are XMM registers, YMM registers and so on.
+[74:10] But with the XMM registers, a lot of this code can actually get far more simplified.
+[74:15] So we are not covering them in at least this version of the book.
+[74:20] But my advice to readers would be that if they want to know more, they can definitely read more about these extensions of the X86 architecture set.
+[74:30] ISA.

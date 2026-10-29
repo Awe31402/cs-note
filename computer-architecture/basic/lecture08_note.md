@@ -728,11 +728,11 @@ $ ulimit -s
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| ARM 的 lr（return address）、bl 指令、stack | **第 9–10 支**：Ch4 ARM |
-| x86 的 call／ret／push／pop、rsp | **第 11–14 支**：Ch5 x86 |
-| RISC-V 的 jal／jalr、ra、sp、呼叫慣例 | **第 15–16 支**：Ch6 RISC-V |
-| 解碼器、用 opcode 判斷格式 | **第 27–29 支**：課本 Ch9 處理器設計 |
-| nop 為什麼需要 | **第 30–33 支**：課本 Ch10 pipeline |
+| ARM 的 lr（return address）、bl 指令、stack | [第 9](lecture09_note.md)–[10 支](lecture10_note.md)：Ch4 ARM |
+| x86 的 call／ret／push／pop、rsp | [第 11](lecture11_note.md)–[14 支](lecture14_note.md)：Ch5 x86 |
+| RISC-V 的 jal／jalr、ra、sp、呼叫慣例 | [第 15](lecture15_note.md)–[16 支](lecture16_note.md)：Ch6 RISC-V |
+| 解碼器、用 opcode 判斷格式 | [第 27](lecture27_note.md)–[29 支](lecture29_note.md)：課本 Ch9 處理器設計 |
+| nop 為什麼需要 | [第 30](lecture30_note.md)–[33 支](lecture33_note.md)：課本 Ch10 pipeline |
 | Kernel stack、context switch 時存暫存器 | [`os/linux-os` 第 8 支](../../os/linux-os/lecture08_note.md)、[第 12 支](../../os/linux-os/lecture12_note.md) |
 
 ---

@@ -1,0 +1,1126 @@
+[00:00] Satsang with Mooji
+[00:30] So, we have looked at one kind of a processor known as a hardwired processor.
+[00:39] So in this hardwired processor, the main brain of the processor is the control unit.
+[00:46] The control unit, as we have just seen, generates all the control signals.
+[00:51] And these control signals control the movement of data inside the processor, right?
+[00:59] So for different kinds of instructions, different control signals are generated.
+[01:04] So this kind of a processor with a hardwired control unit is fairly common.
+[01:10] In fact, that's the standard, but there is another kind of processor as well that gives
+[01:14] us a lot more flexibility.
+[01:17] In certain situations, it is used.
+[01:20] Also in modern processors, such as the Intel line of processors, there are some instructions
+[01:26] which run, you know, so essentially the processor itself contains a hardwired part and what we
+[01:32] call a micro-programmed part, where some very complex instructions are implemented using
+[01:38] the latter, the micro-programmed part.
+[01:41] So let's take a look at a micro-programmed processor in slightly more detail.
+[01:49] So what's the idea of micro-programming?
+[01:51] So in this case, we expose the internal elements of a processor pretty much to software, right?
+[01:59] So to the assembly programmers, we expose the internal details of the processor which were
+[02:05] otherwise hidden.
+[02:06] So this allows us to pretty much code an instruction, right?
+[02:13] So consider an add instruction.
+[02:15] An add instruction is doing many things.
+[02:18] So what we can do is that we can add a new instruction or modify an add instruction to,
+[02:23] for example, instead of add two numbers, add three numbers, right?
+[02:28] So we can change the behavior of instructions, we can do many more things.
+[02:32] And we can also add very, very complicated instructions which are like add, register the contents
+[02:37] of R1 and R2 and multiply them by 37.
+[02:42] So we can, you know, introduce an instruction of this kind, right, 37 times R1 plus R2.
+[02:51] So you know, we can definitely introduce instructions of this kind.
+[02:55] And this, so we are searching for such kind of a processor which can give us this flexibility
+[03:02] of doing many things, implementing, so let me, you know, walk backwards, implementing complex
+[03:09] instructions, fixing bugs in the implementations of current instructions, and also changing
+[03:16] the behavior of instructions.
+[03:17] As I said, instead of an add instruction, we can replace it with this if, you know, there
+[03:22] is a requirement by applications.
+[03:24] So, this is, all of this is great, this comes at a price, and the price is speed, of course.
+[03:32] So processors with hardwired control units are much faster, and processors with microprogramming
+[03:38] are relatively slower, so the price is speed and efficiency.
+[03:44] So we need to create a microprogrammed data path.
+[03:47] So microprogramming is different from conventional programming, because in this case we are writing
+[03:52] the code for each instruction, so that's why it's microprogramming.
+[03:56] So what we do, is that we expose all the state elements inside a processor to system software.
+[04:06] So this is also known as firmware, where we can write dedicated routines in firmware, which
+[04:12] basically means the part of the system software that, you know, very intricately controls the
+[04:18] behavior of hardware.
+[04:20] So this can be done for implementing each instruction.
+[04:23] So the way that we look at, we have conventional software, we have conventional hardware, and we
+[04:34] can have a small thin layer in the middle called firmware.
+[04:42] So firmware is still software, but we still distinguish it from it, because unlike traditional
+[04:47] software, the firmware is loaded or stored in a specific location in hardware, and it is
+[04:54] used to very intricately control all that the hardware does, so it has far more visibility
+[05:00] into hardware as compared to traditional software.
+[05:03] So that's the reason we refer to this layer as firmware, and it's a very common term in the
+[05:09] systems community.
+[05:10] So you can have firmware for all kinds of systems.
+[05:14] You can have firmware for disks.
+[05:16] You can have firmware for network cards, for routers, everything, right?
+[05:21] It's possible to have a firmware layer.
+[05:23] So firmware is again software, but software meant for a different purpose.
+[05:29] So let me talk about the basic idea of microprogramming.
+[05:34] So in this case, we take one simple RISC instruction, like add, subtract, multiply, and we break it into
+[05:42] several small micro-instructions.
+[05:46] We execute each micro-instruction, pretty much one every cycle, and so pretty much what we
+[05:53] do is for an add instruction, we replace it with a micro-program, which can have many micro-instructions.
+[06:10] So what we do is that we start from the top and keep on executing till the bottom, and so
+[06:21] basically this is a small program by itself, where instead of one high-level RISC instruction,
+[06:30] we execute several micro-instructions.
+[06:32] Once this micro-program is done, it's typically represented something like this micro-program.
+[06:38] Once this is done, it means that we have completed finishing the execution of this instruction.
+[06:45] So we require a micro-program counter and a micro-instruction memory, very similar to the
+[06:51] PC that we had, and the instruction memory, sorry, I shouldn't be using the word cache
+[06:58] here because we have not introduced it, but the instruction memory, right, that we have
+[07:04] been using.
+[07:05] Alright, so let's now, this also has different units, so let's take a look at the fetch unit.
+[07:13] So in the fetch unit, we still have the PC register here.
+[07:16] So the PC register is used to access the instruction memory and load the contents of a regular simple-RISC
+[07:24] instruction.
+[07:25] The contents of the instruction are saved in the instruction register IR.
+[07:30] So mind you, this is a micro-register, and this micro-register, which we are calling IR,
+[07:35] instruction register, contains the contents of the instruction, where its address is given
+[07:45] in the PC.
+[07:46] So this is the address of the high-level simple-RISC instruction.
+[07:50] We use this to access instruction memory, and the contents get transferred to the IR register.
+[07:57] Let's now take a look at the decode unit.
+[08:01] So in the decode unit, the input pretty much comes from the IR register, and so basically,
+[08:11] so then what a little bit of circuitry does, which is pretty much hidden, is that we extract
+[08:19] all the fields from the IR register.
+[08:22] So for some instructions, some of the fields might not make sense.
+[08:26] They might contain junk, but nevertheless, we extract all the fields.
+[08:29] For example, we extract the I bit, the immediate bit.
+[08:34] We extract the RD field, which in normal cases, stores the ID of the destination register.
+[08:41] We extract the first source register, the second source register.
+[08:46] We also have an immediate unit that extracts the 32-bit extended immediate after taking
+[08:54] modifiers into account.
+[08:56] So it extracts the immediate, right?
+[08:58] So basically, the 18-bit immediate is extracted to a 32-bit immediate.
+[09:04] So recall that, you know, an immediate and simple-RISC is actually 16-bits plus 2, where
+[09:09] the 2-bits specify in the modifier.
+[09:12] So the 32-bits are available in the IMMX register.
+[09:18] In addition, what we do is that we take the offset part from the instruction.
+[09:26] So of course, at this point, we don't know what is the type of the instruction, but we
+[09:30] prepare for all kinds of instructions.
+[09:33] So we pre-compute all of these terms, right, the immediate and also the branch target.
+[09:40] But of course, it's not necessary that every instruction is a branch.
+[09:43] So if an instruction is not a branch, this micro-register will contain junk.
+[09:48] But nevertheless, in the interest of time and performance, it's a good idea to compute
+[09:53] things in advance, just in case they are required.
+[09:56] So to compute the branch target, what do we do?
+[09:58] We take, extract the offset part from the instruction register, add it to the current PC, and we
+[10:06] get the branch target.
+[10:07] So you also compute this.
+[10:09] All of these registers are connected on a shared bus.
+[10:13] What is a shared bus?
+[10:15] So a shared bus is basically a set of copper wires to which all of these registers are connected.
+[10:21] But it is not the case that all of them are feeding their data to these copper wires,
+[10:25] right?
+[10:26] So then it will not work.
+[10:27] So by default, you know, these links between the register and the bus are actually turned
+[10:33] off or they are open circuits.
+[10:35] But it is possible for us, as we shall see in the next few slides, to, you know, occasionally
+[10:42] read these registers.
+[10:44] So to read these registers or rather micro-registers, what we need to do is we need to send a command,
+[10:50] for example, to read emex, and then this connection from emex to the bus will get enabled.
+[10:57] And what we will see on the bus is the value of emex, which others can read.
+[11:02] After reading, again, we will send one more commander automatically.
+[11:06] This link will get cut off and the bus will not contain the value of emex.
+[11:11] So what again is a shared bus?
+[11:14] It is a set of shared copper wires.
+[11:16] So now let's take a look at the next stage, right, the execution stage, the ex stage.
+[11:25] So this contains the register file.
+[11:29] So what we shall do?
+[11:33] So we augment this part of the processor with actually three more micro-registers.
+[11:40] So the micro-registers are as follows.
+[11:43] So one of them is reg-source.
+[11:46] So reg-source is the register that we want to access, either for read or write, it doesn't
+[11:52] matter, but reg-source contains a 4-bit value, mainly because we have 16 registers.
+[12:00] And this is the ID of the register that we want to access.
+[12:04] Then we have reg-data, which means that if you want to write to a register, then the value
+[12:11] of reg-data will come from the shared bus.
+[12:14] It will be saved in the reg-data micro-register, and from there it will go to the register file.
+[12:21] The args or the arguments basically specify whether we want to do a read, you know, read
+[12:28] a register or write to an actual register.
+[12:32] So mind you, the register file here is exactly the same as the previous processor, right?
+[12:38] So let's maybe adopt this convention that whenever I introduce a new structure for the micro-programmed
+[12:45] processor, I'll separately specify, use the word micro-register as far as possible.
+[12:51] Otherwise, you know, almost everything remains the same and, alright, so what is reg-data again?
+[13:01] So when I'm writing to a register, reg-data contains the value that needs to be written.
+[13:07] Assume that I want to read a register, then the value of reg-data is irrelevant.
+[13:11] So it will not be read.
+[13:13] However, the value of the arguments will be equal to r, which means I want to read a register.
+[13:19] The id of the register will be there in reg-source, and the contents that are read from the register
+[13:26] file will go and will get stored in the reg-val micro-register.
+[13:32] Subsequently, if some other stage, you know, if some other part of the processor wants to
+[13:37] know what exactly was read from the register file, then the reg-val micro-register can supply
+[13:44] the value on the shared bus, alright?
+[13:47] So we have reg-source, which contains the id of the register, reg-data which contains something
+[13:52] if something has to be written, and reg-val, which is the value of the register which was
+[13:58] just read.
+[14:01] Alright, let's take a look at the ALU.
+[14:05] One small correction here.
+[14:07] In this slide, I had incorrectly mentioned that this is in the execution stage.
+[14:12] That is not correct.
+[14:13] This is still a part of the operand fetch or the OF stage.
+[14:16] So this is one correction that I would like to make.
+[14:20] Alright, so now we enter the proper EX stage.
+[14:24] In the EX stage, the main elephant in the room, for the EX stage, the ALU.
+[14:30] So controlling the ALU is easy.
+[14:32] So what we have done previously is that we have kept...
+[14:36] So the pink boxes here are things, are artifacts of earlier, you know, hardware processor design.
+[14:45] And these are all the new elements, alright?
+[14:48] So basically this light brown color, these are all the new elements that we add.
+[14:53] So let's take a look at them.
+[14:54] So let's assume we want to perform an ALU operation.
+[14:59] If you want to perform an ALU operation, then we'll have two operands, right?
+[15:06] You know, most of the time we'll have two operands, like add, multiply, subtract.
+[15:11] Sometimes we'll have one.
+[15:13] We'll take a look into that.
+[15:14] But most of the time we'll have two operands.
+[15:16] So we'll add one 32-bit micro-register called A, which stores the first operand.
+[15:22] We'll have one more 32-bit micro-register called B, which will store the second operand, right?
+[15:32] That we will read from the shared bus.
+[15:34] So the second operand will be stored in micro-register B.
+[15:39] Args, which is incorrectly specified here, will contain the nature of the operation that
+[15:45] the ALU needs to perform.
+[15:47] So I should rather write nature of the ALU operation.
+[15:50] You know, add, subtract, multiply, what kind?
+[16:03] So Args will contain the nature of what exactly, you know, you want the ALU to do.
+[16:09] So that will be there in Args and all of them will be read from the shared bus.
+[16:12] So it is not that, you know, all of these units are active all the time, but we'll have
+[16:17] a way of activating only, you know, a certain subset of these units, depending upon what needs
+[16:22] to be computed.
+[16:23] So let's assume that the ALU is active.
+[16:26] So it will read the contents of Args directly from the bus, A and B. After that, the result
+[16:34] of the ALU, after the computation is done, towards the end of the cycle will be stored in another
+[16:40] micro-register called ALU result.
+[16:43] And for each of these micro-registers, they will contain their value till they are overwritten.
+[16:49] So ALU result can further supply the, this ALU result micro-register can supply the value
+[16:57] to others in a units, on demand of course, via the shared bus.
+[17:03] So everybody operates via the shared bus.
+[17:06] Similarly, we'll have our flags register that we have discussed in our previous lecture.
+[17:12] So it stores the flag of a compare.
+[17:15] And we'll also expose the flags.
+[17:18] So we'll have two small sub-micro-registers, flags.e and flags.gt.
+[17:23] E for equality and gt for greater than.
+[17:27] So these two sub-micro-registers will also be able to export their values on the shared
+[17:33] bus to whoever who requires it, right?
+[17:37] So these are all the registr, micro-registers, I'm sorry, that we add in the ALU stage, A
+[17:43] and B.
+[17:44] For the inputs, ALU result contains the output, flags.e and flags.gt contain the results of
+[17:51] the flags.
+[17:52] So recall that it's only the CMP instruction that changes them.
+[17:57] Otherwise, the flags values reflect the state of the flags that was set by the last CMP
+[18:03] compare instruction.
+[18:05] Alright, now let's go to the MA stage, the memory unit.
+[18:12] The memory unit does something very similar.
+[18:14] So we add, you know, following the same line of thought, we add micro-registers to the data
+[18:22] memory.
+[18:23] So we add a memory data register, MDR.
+[18:28] Similarly, we have a memory address register.
+[18:53] The value of the arcs say whether the operation is a load or a store, right, which operation
+[18:59] it exactly is.
+[19:02] So whenever we are doing a store operation, we'll send the memory address via the memory
+[19:07] address micro-register.
+[19:10] And the data that needs to be stored will come via the shared bus to the memory data register.
+[19:16] Subsequently, and also the type of operation, which will be a store.
+[19:21] This will go to the data memory, where the store will be affected.
+[19:27] If the operation is a load, then of course the arcs here will contain the fact that this
+[19:32] is a load operation.
+[19:34] And, so the MDR will not have any value, but the load will have an address.
+[19:38] So the address will be stored in the MAR or memory address register.
+[19:45] And the result of the load will be stored in another micro-register called LD result, load
+[19:50] result.
+[19:52] This is similar to ALU result, exactly similar in spirit.
+[19:55] So this will contain the result of the load, which can be given to others on the shared bus.
+[20:02] Alright, so what we have done is, we have taken again our old unit, which is the data memory
+[20:08] in pink.
+[20:10] And we have added three new micro-registers MAR for the address, MDR for the store data,
+[20:16] and load result for the data that we read from data memory.
+[20:21] So we add these three micro-registers.
+[20:24] Alright, so what does our micro-programmed data path look like now?
+[20:32] This is what it looks like.
+[20:33] So what I have done is, I have taken all the small diagrams that we have been introducing
+[20:40] over the last few slides, and I have collated them into one large diagram.
+[20:45] So let me start from one side.
+[20:49] So given the PC or the program counter, so this is connected to the shared bus, of course.
+[20:55] And, so this is not, maybe it was not mentioned in that slide, but it needs to be connected
+[21:01] to the shared bus, both for read and write.
+[21:05] It accesses the instruction memory.
+[21:07] The contents of the instruction memory go to the IR instruction register, which contains
+[21:11] the contents of the instruction.
+[21:13] We have a little bit of circuitry that breaks the instruction into its constituent fields,
+[21:20] namely the immediate bit, RD, RS1, and RS2 fields.
+[21:25] The extended immediate, the 32-bit immediate that we get from the 18-bits embedded in instruction.
+[21:31] We also calculate the offset, you know, there'll be an offset, some bits in the instruction specified
+[21:39] in offsets.
+[21:40] We add it to the PC to get the branch target.
+[21:43] Simultaneously, the instruction, particularly the opcode of the instruction goes to the micro-control
+[21:50] unit, which decides, you know, for one given instruction, there is, for every separate instruction,
+[21:56] there is a separate micro-program, so it decides which micro-program needs to be run.
+[22:01] And, based on that, it runs a separate micro-program for each instruction.
+[22:07] So, what again is the advantage?
+[22:09] Well, the advantage is we have complete flexibility as we shall just see.
+[22:13] So, we can add new instructions, we can change the behavior of existing instructions, and all
+[22:18] of this can be done at the level of firmware, right, which is very, very specialized software.
+[22:25] So, for example, a processor is sold and it is a part of a system.
+[22:30] After that, we can change the way its add instruction operates.
+[22:33] So, that's pretty cool in a lot of cases.
+[22:36] So, to do that, what we need is that we need to consider some of our main functional units
+[22:41] that were there in our previous processor.
+[22:43] For example, the register file, ALU, and data memory.
+[22:48] For each of these, we add micro-registers between the unit and the shared bus.
+[22:55] So, the micro-registers buffer the inputs and also store the outputs.
+[22:59] And the outputs will remain in that state till the unit is accessed once again and the inputs
+[23:05] or the outputs are overwritten.
+[23:07] And to control the units, we have some bits that come from the shared bus, namely the args, arguments bits,
+[23:15] to, for example, tell the register file to read or write or to tell the ALU what kind of operation it needs to do
+[23:22] or to tell the data memory whether it's a load or a store.
+[23:26] Once the operation is complete, the results will all be there in these result micro-registers,
+[23:32] load result, ALU result, and reg val, which can then be used by other units if required.
+[23:39] So, we shall see.
+[23:40] When we shall write micro-programs, we'll see how all of this works.
+[23:45] And the crux of the entire processor is a micro-control unit, which runs the micro-program for each
+[23:52] high-level simple risk instruction, and the shared bus, which conceptually is just a set of copper wires.
+[24:02] Now that we have seen the micro-programmed processor, let us look at micro-assembly language.
+[24:11] So, before we begin, let's look at all the registers that we have introduced.
+[24:19] So, we have taken the PC register from our previous implementation of a processor,
+[24:25] and this is the typical program counter, so no changes in that.
+[24:30] We have introduced the IR register to contain the contents of the instruction.
+[24:34] The I instruction is a single bit, I'm sorry, the I micro-register, which is single bit, the immediate bit.
+[24:41] RD, RS1, and RS2, which contain the destination register ID, ID of the first and second sources.
+[24:48] The 32-bit extended immediate stored in the MX micro-register, the branch target in the branch target micro-register.
+[24:58] Reg source, reg data, and reg val, which encapsulate the register file.
+[25:10] Similarly, A, B, flags.e, flags.gt, and ALU result, which encapsulate the ALU.
+[25:20] And finally, the MAR, MDR, and load result micro-registers, which encapsulate the data memory.
+[25:30] Alright, so let's introduce some basic instructions.
+[25:33] We don't want to introduce many, but let's at least introduce a few, right?
+[25:38] As many as are required.
+[25:40] So the basic instructions, or rather basic micro-instructions, are...
+[25:45] So let's make a convention that we'll start all micro-instructions with the letter M.
+[25:51] So let's look at MLOADIR.
+[25:54] So MLOADIR loads the instruction register IR with the contents of the instruction.
+[26:01] So whatever are the contents of the instruction, right, they come from the instruction memory
+[26:06] and get stored in the instruction register IR.
+[26:10] Fine?
+[26:11] So this is MLOADIR.
+[26:13] Next is MDECODE.
+[26:15] This is a one-cycle instruction.
+[26:18] So all the decode registers get populated.
+[26:21] So we read the contents of the instruction from IR.
+[26:24] And all the decode registers, which are essentially the immediate bit I, RD, R1.
+[26:31] So recall that we, I'm sorry, we are interchangeably using the term micro-register and register.
+[26:38] So please infer them from the context.
+[26:41] So we, our decode micro-registers are RS1, IRD, RS1, RS2, MX, and branch target.
+[26:57] Sorry.
+[27:05] Alright, so these are our decode registers, micro-registers.
+[27:12] So they, what we do is that the MDECODE instruction, we wait for one cycle.
+[27:17] And in the one cycle, we expect that the circuitry that takes the contents of the instructions from IR would have populated each of these registers here, right.
+[27:32] Subsequently, once we have decoded, we call the M-switch micro-instruction, which loads the set of micro-instructions corresponding to a given program instruction.
+[27:43] For example, if, let's say the program instruction is ADD, we will know that it's an ADD in the decode stage.
+[27:55] So this will go to the micro-controller, and this will load the set of micro-instructions into some internal storage.
+[28:03] Such that for an ADD instruction, we can execute all the micro-instructions that correspond to it.
+[28:11] So this will happen with the M-switch instruction.
+[28:18] Now, let's also take a look at two more instructions which are very basic.
+[28:24] So all the instructions in the micro-program pipeline are actually extremely basic.
+[28:28] So we have taken a look at M-load IR, which essentially loads the contents from the instruction cache to IR register.
+[28:36] M-decode, which simply does a decode.
+[28:38] And M-switch, which for a given simple-risk instruction, loads its corresponding micro-program.
+[28:45] So M-move and M-move are slightly different.
+[28:50] So in M-move, given two registers, R1 and R2, it simply takes the contents of R2 and puts it in R1.
+[28:59] We have another variant of M-move, where it additionally takes a few bits called the arguments.
+[29:06] So what it does is that it puts R2 and R1.
+[29:11] That it does.
+[29:12] And it also sends the value of args on the bus.
+[29:17] Alright?
+[29:18] So basically it does these two.
+[29:19] If an additional arguments, set of arguments are present, then the value of the args field is sent on the bus.
+[29:27] On the shared bus, that is.
+[29:29] So this is what M-move does.
+[29:30] It comes in two formats.
+[29:32] One with arguments, one without arguments.
+[29:35] And we have M-move i.
+[29:37] So M-move i is M-move immediate.
+[29:40] Where given an immediate, the immediate is moved into the register R1.
+[29:45] Right?
+[29:46] The first register, whatever it is.
+[29:48] But M-move i pretty much moves the contents of the immediate into the register.
+[29:57] We have a few more.
+[29:59] So we introduce three very basic instructions, which are micro-instructions, which are required for every instruction.
+[30:04] Namely M-load IR, M-decore and M-switch.
+[30:09] We then introduce two generic move instructions.
+[30:12] M-move and M-move i.
+[30:14] So one to move a register, one to move an immediate.
+[30:17] Now we need a little bit of add and branch micro-instructions.
+[30:23] So one, the add micro-instructions that we shall introduce is M-add.
+[30:32] So it takes the first argument as a register.
+[30:35] The second argument is an immediate.
+[30:38] And the third argument is basically a set of bits called the args field.
+[30:44] So what it does is that it sets R1 similar to x86 where, you know, the one destination and source, they are common.
+[30:53] So we have it in a similar way.
+[30:56] Where R1 is set to the old value of R1 plus the immediate.
+[31:01] So R1 is equal to R1 plus the immediate.
+[31:04] And we send the value of args on the bus.
+[31:08] The arguments we send them on the bus.
+[31:11] Similarly, we have M-beq.
+[31:14] M-beq is, it's a micro-branch if there is an equality.
+[31:19] So the equality is like this.
+[31:21] We specify a register, specify an immediate and a label, a micro-label rather.
+[31:27] So if R1 is equal to equal to immediate, which means if R1 is the same as, the contents of R1 is the same as the contents of M.
+[31:37] We set the micro-PC in the micro-program to the address of this label.
+[31:42] So this is an artifact of traditional assembly.
+[31:45] So it works in exactly the same way.
+[31:47] But it's just that we send a register and an immediate.
+[31:52] We compare them.
+[31:53] If the comparison is successful, we do a branch.
+[31:56] We also have an unconditional branch M-B, which just takes a label.
+[32:01] When we set the micro-PC to the address of the label, you know, unconditionally.
+[32:06] So we added, so we introduced three new micro-instructions on this slide.
+[32:11] M-add for a micro-instruction addition.
+[32:16] M-B-Q which is a conditional micro-branch.
+[32:19] And M-B which is an unconditional micro-branch.
+[32:23] Alright, so let's summarize the eight instructions that we introduced.
+[32:30] The eight instructions that we introduced are like this.
+[32:34] That we introduced the M-load IR micro-instruction.
+[32:38] Which takes the contents of the instruction memory addressed by the PC and puts them in IR.
+[32:46] M-decode populates all the decode registers.
+[32:50] M-switch will jump to the relevant micro-program counter corresponding to the op-code of the simple risk instruction.
+[32:57] Then we define three instructions which actually use the arguments.
+[33:05] And they can have different variants with or without arguments.
+[33:08] But let's assume that even if arguments are not there.
+[33:11] It's still part of the same generic variant where the arguments are not there, right?
+[33:15] So, for example, in the M-move micro-instruction which takes register 1 and register 2.
+[33:22] We set register 1, the contents of register 1 to the contents of register 2.
+[33:28] And these are all micro-registers.
+[33:31] And we send the value of args, right?
+[33:35] So, we send the value of args on the bus.
+[33:38] In specific, we send it to the unit that owns reg 1.
+[33:42] For example, if we send it to ALU result, it will essentially go to the ALU.
+[33:48] So, since it's sent on the bus, theoretically everybody can read.
+[33:51] But the unit that owns a certain register is the one which is supposed to read and process it.
+[33:57] Similarly, we have the M-move I instruction which moves an immediate to a register.
+[34:04] And so, here also args is optional but it works in exactly the same manner.
+[34:09] Where args is sent on the bus and the unit that owns reg 1 ends up processing it.
+[34:16] We have M-add which does the same thing.
+[34:21] It sets reg 1 as reg 1 plus M.
+[34:24] So, args is again optional but it does the same thing.
+[34:28] We have two kinds of branches M-B-E-Q and M-B.
+[34:31] M-B-E-Q is conditional upon equality.
+[34:34] That if a given register is equal to an immediate, then we set the micro-PC to the address of the label.
+[34:43] Well, I would not put an address here.
+[34:47] I would rather put a label.
+[34:48] So, that's a mistake.
+[34:50] So, here whatever is the address corresponding to the label in the micro-program, right, that will be set to the value of the micro-PC.
+[35:06] And M-B is an unconditional branch.
+[35:09] So, that's an unconditional branch.
+[35:12] So, in this case we will jump to the label in any case.
+[35:15] So, the micro-PC is set to the address of the label.
+[35:19] So, these are the only eight instructions that we introduce.
+[35:23] And we will use these eight instructions to do all our work.
+[35:26] So, every micro, you know, every instruction in its micro-program will always have some instructions in common at the beginning.
+[35:39] That is called the preamble, right, of every micro-program which is common.
+[35:45] So, this preamble, we have made it start at the dot begin label.
+[35:50] So, the assembly format is also the same as simple risk which we introduced in chapter 3.
+[35:56] So, here we start with mloadir.
+[36:00] We have to because we need to read the contents of the current PC.
+[36:05] Then we decode.
+[36:06] So, this is again common.
+[36:08] Then we call the madd instruction to increment the PC by 4 bytes to go to the next simple risk instruction.
+[36:17] So, basically we have PC equal to PC plus 4 over here.
+[36:23] And which means next time that we read the program counter, it will be the next instruction, next simple risk instruction.
+[36:31] And then we start executing the loaded micro-program.
+[36:35] Then we actually load the micro-program and we call mswitch.
+[36:40] So, mswitch does many things.
+[36:44] What it does is, it switches to the first micro-instruction in the micro-code sequence of the program instruction, of the simple risk instruction.
+[36:54] So, it does two things.
+[36:56] One thing is, given the simple risk instruction, it first, you know, figures out which micro-program it's supposed to execute.
+[37:04] Then it also moves the micro-PC to the first instruction in that micro-program.
+[37:11] For example, add will have a separate micro-program.
+[37:17] Subtract will have a separate micro-program.
+[37:20] So, whenever we encounter subtract and we have decoded it, when we call mswitch, it will move the micro-PC to the first micro-instruction in the micro-program, in the part of the micro-program that is specific to the subtract simple risk instruction.
+[37:39] So, the preamble remains common.
+[37:41] So, all instructions will have to execute the preamble first, which are these four micro-instructions.
+[37:46] These are absolutely common.
+[37:48] After this, the micro-instructions will be different.
+[37:52] So, let's now look at the micro-code of different high-level instructions.
+[38:00] High-level meaning simple risk instructions.
+[38:03] So, let's first consider three-address format ALU instructions, something of the form add r1, r2 and r3, right?
+[38:13] Something of this form, where we actually do r1 is equal to r2 plus r3.
+[38:20] So, what we do is that, we first read all the values, we transfer them to the ALU, and then we perform the ALU operation.
+[38:34] So, the first step is, we need to read the sources of the ALU operation, which in this case,
+[38:42] running example is an add operation, but can be any three-address format ALU instruction.
+[38:49] Then we do the ALU operation, and we write the result back.
+[38:53] So, there are many steps here, let's take a look.
+[38:56] So, the first step, which is the first two lines, is to transfer the first operand to the ALU.
+[39:05] So, what we do is that, we issue an mmove instruction.
+[39:12] The mmove instruction addresses, I'm sorry, accesses the RS1 register, the first source, and then, it transfers its content to the reg source, right?
+[39:27] So, recall that the register file, the reg source instruction encapsulates it, and it contains the ID of the register that needs to be accessed.
+[39:36] So, we take the contents of RS1 and put it in reg source.
+[39:40] And, further what we do is that, we send the arguments read on the bus.
+[39:47] So, which means, that two things will happen.
+[39:52] What will happen is, that the contents of RS1 will go to the register file, they will be saved in reg source.
+[39:59] Simultaneously, the read operation will be initiated in the register file, and the register file will take the values from the reg source field.
+[40:13] So, think of it this way, on the shared bus, the register file is connected.
+[40:18] Two things are coming together, one is that a read operation is coming from the bus.
+[40:24] Also, what is coming, is that the contents of RS1, so, the contents of RS1 will actually be the register R2.
+[40:37] So, the register R2, you know, that ID is coming.
+[40:41] It is going into the reg source micro register, and simultaneously, it is going into the register file, right?
+[40:49] And, so basically, we are doing a register file read access also simultaneously.
+[40:55] So, we are doing two things, you know, maybe this diagram is small, so let me draw it once again.
+[41:00] So, it is very important to appreciate that we are actually doing two things over here.
+[41:04] So, let me draw the shared bus once again.
+[41:17] So, what we are doing is that, uh, and also here we have the address.
+[41:38] So, what we are doing is that, uh, and also here we have the address.
+[41:45] So, what we are doing is that, uh, we are executing an assembly instruction, which in hardware, is telling the RS1 micro register to send its value on the shared bus.
+[42:03] And once it's something is sent on the shared bus, everybody will be able to pick it up.
+[42:08] We are also telling that, let's send the read command on the shared bus as a part of the arguments.
+[42:15] So, then the register file will see that the read command is meant for itself, so it will activate itself.
+[42:21] And it will see that, you know, a read is being sent.
+[42:25] Along with that, the contents of RS1 are being sent.
+[42:28] So, it will do two things.
+[42:30] We are also asking the register file to move the contents of RS1 to reg source.
+[42:35] So, it will do that.
+[42:37] The contents of RS1 will be moved to reg source.
+[42:41] In addition, since we have sent the read command, the register file will take the contents of RS1,
+[42:48] and, uh, along with writing it to reg source, in parallel, it will start performing the register file read access.
+[42:56] So, it will do two things.
+[42:57] Write to reg source, and since arguments have been set, it will use the contents of RS1, right,
+[43:05] which it will treat as the source contents, which it will treat as the ID of the source register,
+[43:11] to access the register file.
+[43:14] Then, it will store the final result, the computed result, in the micro register reg val by the end of the cycle.
+[43:25] Subsequently, what we will do, is that we will move this to register A, which is a part of the ALU's system.
+[43:35] Right, ALU has two input registers A and B.
+[43:38] So, whatever is there in reg val in the next cycle, we will transfer the contents of reg val to register A, again via the shared bus.
+[43:48] But since there are no arguments, nothing needs to be done.
+[43:52] Alright, so let me erase the ink on this slide, and let me move to the next part.
+[43:59] So, here what we do is, we check the value of the immediate register.
+[44:03] So, we compare the contents of register i with the value 1.
+[44:10] If i is equal to 1, it means that the immediate is set to true.
+[44:15] So, we will jump to dot im, which is over here.
+[44:19] Here what we do, is that, we transfer the contents of imx, which is the extended immediate, to the register B.
+[44:30] So, recall that the ALU is also connected to the shared bus via the registers A and B.
+[44:43] Then the args are also coming in, and this is the ALU.
+[44:50] And we also, we can, you know, optionally send this data here, if it's a simultaneous thing.
+[44:58] Which is exactly what we are doing here.
+[45:00] So, we are sending imx on the bus.
+[45:03] imx is being written to microregister B.
+[45:06] In addition, we are sending the ALU op, you know, ALU op argument, which is basically what is operation we want to do on the ALU.
+[45:15] Which can be add, subtract, multiply, all other, you know, compare all other ALU operations.
+[45:22] These ALU operations are being sent to the ALU.
+[45:25] So, when the ALU sees that a command via the args field is being sent to it, it activates itself.
+[45:32] And it takes a look at what other data is being sent.
+[45:36] So, the value of mx is being sent, and this is being sent to register B.
+[45:41] So, along with writing it to microregister B, it will also go to the ALU.
+[45:45] And since A was already populated over here, both the operands are there in A and B.
+[45:52] So, the ALU will start doing the ALU operation.
+[45:55] Let's take a look at the other branch of the if statement.
+[46:00] If, if the immediate field was 0, which means the second source operand is a register, right?
+[46:11] If the second operand is a register, then we need read the contents of RS2, which is exactly this statement repeated once again,
+[46:20] that we read the contents of RS2, transfer them to regs source.
+[46:26] Regs source is a microregister that encapsulates the register file.
+[46:30] Simultaneously, we send the read argument on the shared bus.
+[46:35] So, along with writing the value of RS2 to regs source, it will also read the register file with whatever value is being sent.
+[46:44] That output will be written to the regval microregister.
+[46:48] So, again, a statement similar to this will be executed here.
+[46:53] So, since the value of A is already there, and it has been set in advance,
+[46:58] and now, you know, some ALU operation, add, subtract, multiply, whatever is coming via the bus,
+[47:05] and we are writing the sum value is being written to microregister B,
+[47:11] we can write it to microregister B and also in parallel send it to the ALU,
+[47:17] and the ALU will then process the contents of A and B and the ALU operation,
+[47:22] and write its result.
+[47:24] So, after this, we move to the next microinstruction.
+[47:28] And, so, we don't want to enter this part.
+[47:31] So, we will directly make a jump, an unconditional jump to the RW label,
+[47:36] where the RW label is here.
+[47:39] So, we will execute this instruction.
+[47:41] What we will now do is that we will start the procedure to write the ALU result to the register file.
+[47:50] So, let me do a partial erase.
+[48:04] So, in the register file, we have the reg source microregister,
+[48:13] which contains the ID of the register that needs to be accessed,
+[48:18] and we have the reg data microregister, which contains the data that needs to be written.
+[48:24] And then again, of course, we have the shared bus.
+[48:28] So, what we do is that we move the contents of the RD register,
+[48:36] which contains the ID of the destination register to reg source in the first cycle.
+[48:41] So, we don't access the register file because there are no arguments,
+[48:45] so there is no command, but we populate the reg source microregister with RD.
+[48:51] Right, the ID of the destination register.
+[48:55] Since the result of the ALU operation is there in the ALU result microregister,
+[49:01] we transfer this to reg data via the shared bus, of course.
+[49:06] So, ALU result, which has the result of the last ALU operation,
+[49:12] its data is transferred to reg data, because this is what needs to be written.
+[49:17] And since the ID is already there, we can simultaneously send a write signal via the args argument to write to the register file.
+[49:29] So, in this manner, what we do is that we first read data from the register file in these statements,
+[49:39] or we read the immediate, I'm sorry, with this statement and this statement, or we read the immediate over here.
+[49:46] We perform the ALU operation and then we write the result of the ALU operation back to the register file.
+[49:52] Once we are done, we make an unconditional jump to the begin label,
+[49:58] and recall that the begin label is the beginning of the preamble,
+[50:02] where there are first a fixed set of instructions that we have to execute,
+[50:06] and then we move to the particular microcode, microprogram, I'm sorry,
+[50:12] of each and every simple RISC instruction.
+[50:16] So, now, the important point, of course, a large part of this is very very straightforward of just moving things around,
+[50:26] but the important point is an instruction of this type.
+[50:30] So, recall that two things are being done here.
+[50:33] First, we are setting the contents of reg source to the contents of RS2.
+[50:40] That is one thing.
+[50:42] In parallel, I remind you, in parallel, simultaneously, concurrently,
+[50:48] we are also accessing the register file.
+[50:52] Why are we doing that?
+[50:54] Because the command is being sent via the bus, via the args field of the bus,
+[51:00] to the register file to either read or write.
+[51:04] In this case, it is read.
+[51:05] It doesn't matter.
+[51:06] It can be read or write.
+[51:07] Since the command is being sent, we will activate the register file.
+[51:11] And since it's a read operation,
+[51:15] we will read the data from the reg source microregister.
+[51:19] So, we allow a concurrent writing of this microregister and also reading of its values.
+[51:25] We will need to have a very small forwarding circuit.
+[51:28] But that's a very simple detail.
+[51:30] I'm ignoring that.
+[51:31] But pretty much the reg source microregister needs to be accessed.
+[51:36] We need to get its current contents.
+[51:38] If its current contents are being written to, are being modified,
+[51:42] that's okay.
+[51:43] Whatever we are writing, we can sort of bypass the value.
+[51:46] That's alright.
+[51:48] And then we can start the access.
+[51:50] So, in this case, we save one cycle.
+[51:52] So, this is an interesting, neat, elegant, efficient optimization to make.
+[51:57] We do the same thing for an ALU operation as well.
+[52:01] Where we also write the value of regval to microregister B.
+[52:07] And also simultaneously initiate an ALU operation.
+[52:11] So, this can be done.
+[52:12] And, you know, with a small forwarding path, this can be done.
+[52:16] So, this is per se not a very technically challenging operation.
+[52:23] Alright.
+[52:24] So, now that we have seen a difficult set of instructions.
+[52:27] Namely, three address format ALU instructions.
+[52:29] Let's take a look at something similar, yet significantly simpler.
+[52:35] Namely, the move instruction.
+[52:37] So, this is easy.
+[52:38] We first check the value.
+[52:40] So, since I have also discussed the format of most of the instructions.
+[52:44] I will go slightly faster.
+[52:46] So, we check the value of an immediate register.
+[52:49] How do we check?
+[52:50] We compare I with 1.
+[52:52] So, we read the value of the I microregister, which has been populated in the M decode step.
+[52:58] We compare it with 1.
+[53:01] If the comparison is successful, which means I contains 1.
+[53:06] We directly jump to .im.
+[53:09] So, what we do is that the contents of imx, right, the extended immediate, are written to regdata.
+[53:17] So, regdata recall is the register, which contains the data that needs to be written to the register file.
+[53:25] Otherwise, the second operand is a register, right, because the immediate is 0.
+[53:32] So, what we do is that we read the contents of RS2 and transfer it to regsource.
+[53:38] And simultaneously, we also send the read command on the bus.
+[53:43] So, it initiates a register file read.
+[53:46] And the results of the read are stored in the regval microregister, right.
+[53:53] So, the register file, this is the register file.
+[53:56] We have regsource, which is the ID of what needs to be read.
+[54:02] And we have regdata, which is the contents of what needs to be written.
+[54:10] And then, we have the output of the register file as regval, right.
+[54:18] So, what we do is that we send the contents of RS2.
+[54:23] So, we read one of the registers, right, the second register, second operand.
+[54:29] Then, what we do is, once we read it, we again need to use it to write it to the destination.
+[54:37] So, we transfer the contents of regval to regdata by this move instruction.
+[54:42] Then, we do an unconditional jump to RW, which brings us over here.
+[54:47] So, since the correct ID is loaded in regsource, no, not yet, not yet, I'm sorry.
+[54:57] So, then what we need to do is, we need to load the ID of the destination register in the regsource microregister.
+[55:05] So, what we do is, we read the microregister RD, which contains exactly this information.
+[55:12] And this is transferred to regsource.
+[55:17] And since, in advance, we have already written the write data that needs to be written,
+[55:23] via this statement over here, and this statement over here,
+[55:27] either the contents, either the immediate or the contents of a register have been written to regdata,
+[55:33] we can in parallel initiate the register file write, by sending the write command.
+[55:39] which is exactly what has been done.
+[55:42] And thus, what we have done is that, if let's say we want to set R1 to R2,
+[55:49] we essentially read the contents of R2, and transfer it to the destination register R1,
+[55:56] which we have just done.
+[55:57] We have either read a register or an immediate, and we have written it to the destination register.
+[56:03] Once we are done, we jump to the beginning of the preamble, by the micro instruction, mb.begin.
+[56:12] Now let's take a look at a NOT instruction, a little bit of a problem here, this should be NOT.
+[56:22] So here we do exactly the same thing, but we need to do a little bit more.
+[56:28] So this is essentially a two address format instruction.
+[56:31] So we do a little bit more.
+[56:34] But try to understand that all the programs are written more or less in a similar fashion,
+[56:40] a little bit of difference here and there.
+[56:42] So what we do is, we check the value of the immediate register.
+[56:47] So we again compare it with one.
+[56:50] If the second operand is a register, we do something, otherwise we do something else.
+[56:55] So we have always been looking at the first case, you know, the case when the operand is an immediate.
+[57:01] So let's take a look at it first.
+[57:03] If it's an immediate, what we do, is that we access the MX micro register, which contains the immediate.
+[57:12] We move it to the ALU micro register B.
+[57:17] Why?
+[57:18] Because recall that the ALU is encapsulated with two micro registers A and B.
+[57:23] And we have always, you know, even back in chapter 3, we have used B as the source of data for the NOT instruction.
+[57:32] So we'll do the same over here.
+[57:34] We'll populate the B micro register.
+[57:37] It will send its contents to the ALU.
+[57:40] And since this is a single operand ALU instruction, we can in parallel initiate the ALU operation as well,
+[57:49] by sending the command NOT, right, the NOT ALU instruction on the bus.
+[57:54] So the ALU in one cycle will be ready with its result.
+[57:58] However, if the second operand is not a register, is not an immediate, it is a register, we need to do something else,
+[58:08] which is that we need to access the RS2 micro register, which contains the ID of the source operand.
+[58:16] We need to, this is a register ID, so this needs to be transferred to reg source as we have been doing.
+[58:25] And in parallel, we can issue a register file read.
+[58:29] So in one cycle, the data will be ready in the reg val register.
+[58:34] So this we need to do exactly the same as we did here in this line, that reg val will send it to the ALU register B.
+[58:44] And in parallel also issue an ALU operation to compute the NOT of the value.
+[58:51] Once done, once we are ready with the ALU result, we do an unconditional jump to RW.
+[58:58] So irrespective of how we get here, so let me, the slide is getting cluttered up, so little bit of cleaning is due.
+[59:15] So irrespective of how we get here, what we know at this point is that the ALU has computed its value.
+[59:24] And the value is present, as of now, in the ALU result micro register.
+[59:33] And the value can come from two sources.
+[59:35] It can either come from MX, which contains the immediate, or it can come from the register file,
+[59:41] where the ID of the source register is in RS2.
+[59:44] In both of these cases, we have read, we have transferred the data to the ALU,
+[59:49] with the commands specifying that do compute the NOT operation.
+[59:56] So once done, what is left?
+[59:58] We need to write the result to the register file.
+[60:00] So we transfer the contents of ALU result to the micro register that contains, you know,
+[60:08] what exactly needs to be written to the register file, which is reg data.
+[60:12] So the reg data, micro reg is populated here.
+[60:17] And we read the RD micro register that contains the ID of the destination register.
+[60:25] This is sent to reg source.
+[60:27] So we have a register file, and the register file has, you know, this is an F, okay.
+[60:35] It's an F.
+[60:37] So it has reg source for the ID of the register and reg data for what is it that needs to be written.
+[60:44] So reg data came from the output of the ALU, which is ALU result.
+[60:49] And reg source will come from the RD register, which contains the ID of the destination register.
+[60:56] So since reg data is already populated, we can in parallel issue a write in the register file.
+[61:03] And the write will happen in one cycle.
+[61:06] And then we are done.
+[61:08] So we jump to the beginning of the preamble.
+[61:11] Alright, so we have done instructions of the form move and not.
+[61:15] And also three address format ALU instructions.
+[61:18] So let's see what's left.
+[61:20] The compare instruction.
+[61:23] So the compare instruction is also simple.
+[61:26] So now that we have gotten a hang of micro programs,
+[61:29] my speed of going through these programs will slightly increase.
+[61:34] Just in case you are not able to understand me,
+[61:36] my advice would be that please go back in a one slide, two slide, three slides,
+[61:42] and then try to understand that part.
+[61:45] Also read the relevant sections in my book.
+[61:48] And after that, you will be able to understand these things.
+[61:52] So they are very simple, but you just need to get a hang of it.
+[61:55] So the compare instruction, same thing.
+[61:58] Compare instruction, recall that it has two,
+[62:01] it does not have a destination.
+[62:03] It has two sources.
+[62:04] The first source is always, the compare instruction is always of the form.
+[62:09] It has one source in RS1.
+[62:11] The second source can either be RS2 or it can be an immediate.
+[62:15] Right, MX.
+[62:17] So let's first read RS1.
+[62:20] So we transfer the contents of RS1 to reg source.
+[62:24] Right.
+[62:25] So the ID of what needs to be read.
+[62:27] That is sent to reg source,
+[62:29] simultaneously a read command is issued.
+[62:31] So in one cycle, the result is ready.
+[62:34] Result meaning the contents of RS1 from the register file is ready in regval,
+[62:40] which is transferred to the first register,
+[62:47] the micro register in ALU, which is A and B.
+[62:50] So recall that for the ALU,
+[62:52] there are two micro registers, A and B.
+[62:56] And the ALU computes some operation on the contents of A and B.
+[63:00] So for A, we have loaded the first argument, the contents of RS1.
+[63:05] Same thing, once again, we check the value of the immediate.
+[63:09] If it is one, we do something.
+[63:11] If it's zero, we do something else.
+[63:13] So we've always been explaining the one case first.
+[63:16] So let's try to stick with the same tradition.
+[63:19] If it's an immediate, well, it's very simple.
+[63:22] We'll move the contents of MX via the shared bus, of course, to B.
+[63:30] And since A is already pre-populated right over here,
+[63:35] we send the compare command on the bus, right, via the args mechanism.
+[63:40] We send the compare command.
+[63:42] So the ALU will populate B in parallel also do the comparison.
+[63:48] In one cycle, we'll be done.
+[63:50] However, if the second source is registered, no problem.
+[63:55] Let's read RS2 and let's, you know, to read it, we save RS2 in regsource
+[64:02] and also issue the read command.
+[64:04] In one cycle, the result is in regval, which is sent to B.
+[64:09] Write B again.
+[64:11] So B can either get its value from the immediate, from MX
+[64:15] or from the register file, doesn't matter.
+[64:18] And we simultaneously issue the compare command to the ALU.
+[64:23] And so we are ready with, so mind you, when we are doing a comparison,
+[64:29] the ALU result will contain nothing.
+[64:32] What will happen is that the results of the comparison
+[64:35] will populate the flags register.
+[64:38] So we can read flags.e and flags.gt at a later point of time
+[64:43] to figure out what was the result of the comparison.
+[64:45] So the compare instruction will not write to any registers.
+[64:48] It does not have any register side effect per se.
+[64:52] It will just modify the flags.
+[64:55] So, alright.
+[64:56] So now that we have, so now basically what we do is in this path,
+[65:06] once we have done the comparison, we can actually jump back to the preamble.
+[65:10] In the other case, once you have done the comparison,
+[65:12] we can also jump back to the preamble and we thus exit.
+[65:17] Alright.
+[65:18] Let's continue our journey.
+[65:21] The NORP instruction.
+[65:22] Well, this cannot be simpler.
+[65:24] You'll be really happy to see the code.
+[65:26] We do nothing at all.
+[65:28] We just jump to the beginning of the preamble.
+[65:31] And we are all set to load the next simple risk instruction.
+[65:36] We just jump to the beginning.
+[65:37] MB.begin.
+[65:38] Now, let's look at the load store instructions.
+[65:44] Right?
+[65:45] The memory instructions.
+[65:47] So they are also very easy.
+[65:48] Everything is very easy in our setup.
+[65:50] Right?
+[65:51] Nothing is hard at all.
+[65:52] You know, if you think it's hard, it's just in the mind.
+[65:55] So the load instruction works.
+[65:58] I'm sorry.
+[65:59] Instead of ID, this should be L.
+[66:02] So let me just note down the slide number such that I can fix it.
+[66:07] So the load instruction works like this.
+[66:10] That the format of the load instruction is that we actually write to a destination register.
+[66:23] And we have an immediate which contains the offset.
+[66:28] And RS1 contains the, RS1 is the base register.
+[66:32] So this is the format of the load instruction.
+[66:35] So what we do is we read RS1 first.
+[66:39] So we read it by transferring the contents of RS1 to reg source.
+[66:44] And by transferring the read command on the bus.
+[66:48] So then the output of the register file will have the contents of, you know, some register
+[66:57] whose ID was in RS1.
+[66:59] This is regval.
+[67:01] So what we do is we transfer this to the ALU.
+[67:05] And so basically the ALU which has two operands A and B.
+[67:11] One of the operands is the contents of RS1.
+[67:14] Subsequently what we do is we calculate the effective address which is basically the contents of the RS1 register plus MX.
+[67:25] Right.
+[67:26] Well not the RS1 register but essentially the RS1 contains an ID of a register.
+[67:32] So the contents of that register plus MX.
+[67:35] So what we do is we move MX to B.
+[67:40] And in parallel we issue an ALU add operation to compute the memory address.
+[67:50] So we are adding A which is the base address and B which is the memory offset.
+[67:55] So we are adding both of them via the ALU.
+[67:58] So the result of the addition will be saved in the micro register ALU result.
+[68:06] Right.
+[68:07] So then the.
+[68:09] So what we will now do is that using the shared bus.
+[68:13] We will transfer the address ALU result to the memory unit.
+[68:17] So recall that in the memory unit.
+[68:20] So maybe let me just you know erase and redraw.
+[68:24] Let me erase all of it.
+[68:29] So recall that in the memory unit we have the data memory.
+[68:32] We have the MAR for the memory address register and the MDR which is the memory data micro register.
+[68:40] But MDR in this case is not required.
+[68:43] So what we actually do is via the shared bus let me call it SB.
+[68:48] We transfer the ALU result which contains the address of the memory location.
+[68:58] This we transfer to the MAR register.
+[69:01] And in parallel we initiate a memory load.
+[69:04] So we send the load command.
+[69:06] Alright.
+[69:07] So we send the load command and we write to the MAR register.
+[69:11] And also this data is sent to the data memory.
+[69:15] And in parallel we send the load command as well.
+[69:18] So in one cycle.
+[69:20] We expect that the data memory is accessed.
+[69:23] And the result of the load.
+[69:25] Is available in the output register of this.
+[69:28] Micro register of this particular stage.
+[69:31] Which is the LD result.
+[69:33] In the micro register.
+[69:36] So LD result contains the output of.
+[69:39] The load.
+[69:40] The load.
+[69:41] Well.
+[69:42] So what's left?
+[69:43] What is left is that we need to write the contents of LD result to the register file.
+[69:48] How will you do that?
+[69:50] Well that's very easy.
+[69:51] We have done it many many times now.
+[69:53] We transfer the contents using an MMOV instruction.
+[69:56] We transfer the contents to the reg data micro register.
+[70:01] Right.
+[70:02] Because this contains the data that needs to be written.
+[70:05] In.
+[70:06] Subsequently in the next micro instruction.
+[70:10] We read the ID of the destination register RD.
+[70:14] Right.
+[70:15] So we read its ID.
+[70:17] And we transfer that to reg source.
+[70:19] Because reg source is supposed to contain the ID of the register.
+[70:22] And in parallel we issue the write command.
+[70:25] So the write command will essentially write the load result.
+[70:30] To the destination register.
+[70:33] Right.
+[70:34] In the register file.
+[70:36] So since we have discussed this mechanism.
+[70:38] A few times before.
+[70:39] I am not going into the details.
+[70:41] But pretty much.
+[70:42] To summarize the load operation.
+[70:44] We first read the.
+[70:46] Contents of the base register.
+[70:49] Write it to the ALU.
+[70:51] We read the immediate.
+[70:53] Which is the memory offset.
+[70:55] We write that again to another ALU register.
+[70:57] And also simultaneously initiate an addition.
+[71:00] The additions result is the.
+[71:03] Address.
+[71:04] Is the memory address.
+[71:06] This is sent to the memory unit.
+[71:09] And in parallel we initiate a memory load.
+[71:12] After that.
+[71:14] What we do is.
+[71:15] Once the load result is available.
+[71:17] We write it to the register file.
+[71:19] And the ID of the register.
+[71:22] That we will write it to.
+[71:23] Comes from the RD field.
+[71:25] So once the load is done.
+[71:28] We can jump back.
+[71:29] To the beginning of the preamble.
+[71:31] By doing an unconditional jump.
+[71:33] To the .begin label.
+[71:35] Well we did load.
+[71:38] So symmetry says.
+[71:39] That we have to do store.
+[71:41] Alright.
+[71:42] So store has the same.
+[71:44] Format technically.
+[71:45] But recall that.
+[71:46] In a store.
+[71:47] A little bit of an exception.
+[71:48] Was made.
+[71:49] In a sense that store.
+[71:50] Does not have a destination.
+[71:51] It rather has two sources.
+[71:52] And.
+[71:53] That's fine.
+[71:54] One of them.
+[71:55] Is the address source.
+[71:56] And the other is the data source.
+[71:57] So this is also a register.
+[71:58] Which contains the data.
+[71:59] That needs to be stored in the memory address.
+[72:01] So we have discussed the store exception.
+[72:02] So let me see how.
+[72:03] This is implemented in microcode.
+[72:04] So what we do is.
+[72:05] That.
+[72:06] We will.
+[72:07] We do the same.
+[72:08] Two lines are common.
+[72:09] We transfer the contents of RS1.
+[72:10] To red source.
+[72:11] And we initiate a register read.
+[72:12] And the contents of the base register.
+[72:13] Go to the ALU register A.
+[72:14] We subsequently.
+[72:15] Read the value of the MX.
+[72:16] MX is the offset.
+[72:17] The immediate.
+[72:18] This is sent to the ALU.
+[72:19] Via its macro register B.
+[72:21] And then we also.
+[72:22] We also.
+[72:23] And then we implement.
+[72:24] In the microcode.
+[72:25] So what we do is.
+[72:26] That.
+[72:27] We will.
+[72:28] We do the same.
+[72:29] Two lines are common.
+[72:30] We transfer the contents of RS1.
+[72:31] To red source.
+[72:32] And we initiate a register read.
+[72:33] And the contents of the base register.
+[72:34] Go to the ALU register A.
+[72:35] We subsequently.
+[72:36] Read the value of the MX.
+[72:37] MX is the offset.
+[72:38] The immediate.
+[72:39] This is sent to the ALU.
+[72:41] Via its macro register B.
+[72:43] We then.
+[72:44] Initiate an.
+[72:45] Add operation.
+[72:46] In parallel.
+[72:47] So the ALU.
+[72:48] Result.
+[72:49] Contains the.
+[72:50] Memory address.
+[72:51] And the.
+[72:52] Memory address.
+[72:53] Is.
+[72:54] Then sent.
+[72:55] To the MAR.
+[72:56] Register.
+[72:57] On the.
+[72:58] Memory address.
+[72:59] Register.
+[73:00] So recall.
+[73:01] That the.
+[73:02] Memory access.
+[73:03] Stage.
+[73:04] With the.
+[73:05] Data memory.
+[73:06] DM.
+[73:07] For data memory.
+[73:08] Is.
+[73:09] Organized like.
+[73:10] This.
+[73:11] That we have.
+[73:12] And.
+[73:13] Of course.
+[73:14] Some arguments.
+[73:15] That come.
+[73:16] From.
+[73:17] The shared bus.
+[73:18] SP.
+[73:19] For shared bus.
+[73:20] So in the MAR.
+[73:21] Register.
+[73:22] We save.
+[73:23] The result.
+[73:24] Of the ALU operation.
+[73:25] It gives us.
+[73:26] The memory address.
+[73:27] And.
+[73:28] For the.
+[73:29] Reg source.
+[73:30] Reg source.
+[73:31] Is the.
+[73:32] ID.
+[73:33] Of the register.
+[73:34] That we need.
+[73:35] Either need.
+[73:36] To read.
+[73:37] So.
+[73:38] What we do.
+[73:39] Is.
+[73:40] We populate.
+[73:41] This.
+[73:42] How do we populate.
+[73:43] It.
+[73:44] Well.
+[73:45] So.
+[73:46] What we do.
+[73:47] Is.
+[73:48] That.
+[73:49] We read.
+[73:50] The ID.
+[73:51] Of.
+[73:52] The RD.
+[73:53] Register.
+[73:54] To be stored.
+[73:55] So.
+[73:56] In any case.
+[73:57] We need.
+[73:58] To read it.
+[73:59] So.
+[74:00] We read it.
+[74:01] By transferring.
+[74:02] Its.
+[74:03] Contents.
+[74:04] To read.
+[74:05] Source.
+[74:06] And.
+[74:07] Initiating.
+[74:08] The.
+[74:09] Read.
+[74:10] Command.
+[74:11] After.
+[74:12] That.
+[74:13] The value.
+[74:14] Comes.
+[74:15] To.
+[74:16] And.
+[74:17] The MDR.
+[74:18] Register.
+[74:19] Right.
+[74:20] MDR.
+[74:21] So.
+[74:22] This.
+[74:23] Is.
+[74:24] The.
+[74:25] Value.
+[74:26] That.
+[74:27] Needs.
+[74:28] To be stored.
+[74:29] In the.
+[74:30] In the.
+[74:31] Previous.
+[74:32] We are.
+[74:33] Issue.
+[74:34] A.
+[74:35] Store.
+[74:36] To.
+[74:37] The.
+[74:38] Data.
+[74:39] So.
+[74:40] This.
+[74:41] What.
+[74:42] Will.
+[74:43] It.
+[74:44] Is.
+[74:45] In.
+[74:46] This.
+[74:47] Line.
+[74:48] So.
+[74:49] Let me.
+[74:50] Maybe.
+[74:51] Do.
+[74:52] A.
+[74:53] Little.
+[74:54] Bit.
+[74:55] Of.
+[74:56] Erasing.
+[74:57] Since.
+[74:58] The.
+[74:59] Memory.
+[75:00] Address.
+[75:01] Has.
+[75:02] Already.
+[75:03] Been.
+[75:04] Populated.
+[75:05] In.
+[75:06] Advance.
+[75:07] By.
+[75:08] The.
+[75:09] Contents.
+[75:10] Of.
+[75:11] You.
+[75:12] Know.
+[75:13] Get.
+[75:14] Absolutely.
+[75:15] To.
+[75:16] Know.
+[75:17] Ask.
+[75:18] With.
+[75:19] Dead.
+[75:20] To.
+[75:21] You.
+[75:22] To.
+[75:23] To.
+[75:24] To.
+[75:25] To.
+[75:26] To.
+[75:27] To.
+[75:28] To.
+[75:29] To.
+[75:30] To.
+[75:31] To.
+[75:32] To.
+[75:33] To.
+[75:34] To.
+[75:35] To.
+[75:36] To.
+[75:37] To.
+[75:38] data memory well then we are done so we just have to then
+[75:43] you know migrate back jump back to
+[75:47] the beginning of the preamble for the next
+[75:50] simple risk instruction

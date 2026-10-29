@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | 1 | [本書介紹](lecture01_note.md) | 前言 | 12:09 | Introduction to the book: Basic Computer Architecture |
 | 2 | [計算機結構導論](lecture02_note.md) | Ch1 | 1:03:50 | Chapt 1: Introduction to Computer Architecture (Smruti Sarangi) |
-| 3 | 待寫 | Ch2 | 49:29 | Chapt 2: Language of bits, Part 1/3 (Smruti Sarangi) |
+| 3 | [布林代數與正整數的表示法](lecture03_note.md) | Ch2 | 49:29 | Chapt 2: Language of bits, Part 1/3 (Smruti Sarangi) |
 | 4 | [負整數的表示法](lecture04_note.md) | Ch2 | 1:04:36 | Chapt 2: Language of Bits, Part 2/3 (Smruti Sarangi) |
 | 5 | [浮點數與字串](lecture05_note.md) | Ch2 | 51:14 | Chapt 2: Language of Bits, Part 3/3 (Smruti Sarangi) |
 | 6 | [組合語言基礎](lecture06_note.md) | Ch3 | 46:02 | Chapt 3: Assembly Language, Part 1/3 (Smruti Sarangi) |
@@ -16,27 +16,27 @@
 | 10 | [ARM 的分支、記憶體指令與編碼](lecture10_note.md) | Ch4 | 1:25:08 | Chapt 4: ARM Assembly, Part 2/2 (Smruti Sarangi) |
 | 11 | [x86 的機器模型](lecture11_note.md) | Ch5 | 1:13:21 | Chapt 5: x86 assembly, Part 1/4 (Smruti Sarangi) |
 | 12 | [x86 的整數、分支與函式指令](lecture12_note.md) | Ch5 | 1:29:15 | Chapt 5: x86 assembly, Part 2/4 (Smruti Sarangi) |
-| 13 | 待寫 | Ch5 | 1:14:33 | Chapt 5: x86 assembly, Part 3/4, (Smruti Sarangi) |
-| 14 | 待寫 | Ch5 | 25:24 | Chapt 5: x86 assembly, Part 4/4 (Smruti Sarangi) |
+| 13 | [x86 的字串指令、rep 與 x87 浮點指令](lecture13_note.md) | Ch5 | 1:14:33 | Chapt 5: x86 assembly, Part 3/4, (Smruti Sarangi) |
+| 14 | [x86 指令的編碼：prefix、opcode、ModR/M、SIB](lecture14_note.md) | Ch5 | 25:24 | Chapt 5: x86 assembly, Part 4/4 (Smruti Sarangi) |
 | 15 | [RISC-V 的機器模型與整數指令](lecture15_note.md) | Ch6 | 58:42 | RISC-V Chapter: ISA and Integer Instructions (Part I/III) |
-| 16 | 待寫 | Ch6 | 1:00:48 | RISC-V Chapter: Branch and Memory Instructions (Part II/III) |
+| 16 | [RISC-V 的分支、跳躍與 load／store](lecture16_note.md) | Ch6 | 1:00:48 | RISC-V Chapter: Branch and Memory Instructions (Part II/III) |
 | 17 | [RISC-V 的浮點指令與編碼](lecture17_note.md) | Ch6 | 50:36 | RISC-V Chapter: Floating point instructions and encoding (Part III/III) |
-| 18 | 待寫 | Ch7 | 57:32 | Chapt 6: Digital Logic, Part 1/3 (Smruti Sarangi) |
-| 19 | 待寫 | Ch7 | 1:00:48 | Chapt 6: Digital Logic, Part 2/3 (Smruti Sarangi) |
+| 18 | [電晶體、CMOS 邏輯閘與組合邏輯](lecture18_note.md) | Ch7 | 57:32 | Chapt 6: Digital Logic, Part 1/3 (Smruti Sarangi) |
+| 19 | [循序邏輯：SR latch、clock、D 與 JK flip-flop](lecture19_note.md) | Ch7 | 1:00:48 | Chapt 6: Digital Logic, Part 2/3 (Smruti Sarangi) |
 | 20 | [記憶體單元：SRAM、DRAM、CAM](lecture20_note.md) | Ch7 | 52:33 | Chapt 6: Digital Logic, Part 3/3 (Smruti Sarangi) |
 | 21 | [加法器：ripple carry、carry select、carry lookahead](lecture21_note.md) | Ch8 | 1:29:40 | Chapt 7: Computer Arithmetic, Part 1/6 (Smruti Sarangi) |
 | 22 | [Carry lookahead 的 Stage II、iterative 乘法器與 Booth 乘法器](lecture22_note.md) | Ch8 | 1:38:40 | Chapt 7: Computer Arithmetic,  Part 2/6 (Smruti Sarangi) |
 | 23 | [O(log² n) 乘法器、carry save adder 與 Wallace tree](lecture23_note.md) | Ch8 | 22:09 | Chapt 7: Computer Arithmetic, Part 3/6 (Smruti Sarangi) |
-| 24 | 待寫 | Ch8 | 56:34 | Chapt 7: Computer Arithmetic, Part 4/6 (Smruti Sarangi) |
+| 24 | [整數除法：restoring 與 non-restoring](lecture24_note.md) | Ch8 | 56:34 | Chapt 7: Computer Arithmetic, Part 4/6 (Smruti Sarangi) |
 | 25 | [浮點數加法與捨入](lecture25_note.md) | Ch8 | 1:07:02 | Chapt 7: Computer Arithmetic, Part 5/6 (Smruti Sarangi) |
 | 26 | [浮點數乘法與除法：Goldschmidt 與 Newton-Raphson](lecture26_note.md) | Ch8 | 55:30 | Chapt 7: Computer Arithmetic, Part 6/6 (Smruti Sarangi) |
 | 27 | [單週期處理器的五個階段與 hardwired 控制單元](lecture27_note.md) | Ch9 | 1:27:39 | Chapt 8: Processor Design, Part 1/3 (Smruti Sarangi) |
-| 28 | 待寫 | Ch9 | 1:15:53 | Chapt 8: Processor Design , Part 2/3 (Smruti Sarangi) |
-| 29 | 待寫 | Ch9 | 33:20 | Chapt 8: Processor Design, Part 3/3 (Smruti Sarangi) |
+| 28 | [Microprogrammed 處理器：微暫存器、shared bus、8 條微指令與 ALU／ld／st 的微碼](lecture28_note.md) | Ch9 | 1:15:53 | Chapt 8: Processor Design , Part 2/3 (Smruti Sarangi) |
+| 29 | [微碼的 branch、call、ret，shared bus 與 vertical／horizontal microprogramming](lecture29_note.md) | Ch9 | 33:20 | Chapt 8: Processor Design, Part 3/3 (Smruti Sarangi) |
 | 30 | [Pipeline 的概念、pipeline register 與三種 hazard](lecture30_note.md) | Ch10 | 1:08:36 | Chapt 9: Pipelining, Part 1/4 (Smruti Sarangi) |
-| 31 | 待寫 | Ch10 | 1:14:39 | Chapt 9: Pipelining, Part 2/4 (Smruti Sarangi) |
+| 31 | [軟體解法（nop、重排、delayed branch）、interlock 與 forwarding 的觀念](lecture31_note.md) | Ch10 | 1:14:39 | Chapt 9: Pipelining, Part 2/4 (Smruti Sarangi) |
 | 32 | [Forwarding 的實作、forwarding 條件與效能公式](lecture32_note.md) | Ch10 | 1:27:44 | Chapt 9: Pipelining, Part 3/4 (Smruti Sarangi) |
-| 33 | 待寫 | Ch10 | 55:58 | Chapt 9: Pipelining, Part 4/4 (Smruti Sarangi) |
+| 33 | [Interrupt、exception 與 pipeline 裡的 precise exception](lecture33_note.md) | Ch10 | 55:58 | Chapt 9: Pipelining, Part 4/4 (Smruti Sarangi) |
 | 34 | [記憶體系統概論：時間與空間局部性、cache 階層、cache block](lecture34_note.md) | Ch11 | 59:56 | Chapt 10: The Memory System, Part 1/4 (Smruti Sarangi) |
 | 35 | [Cache 的設計：fully associative、direct mapped、set associative、寫入與替換策略](lecture35_note.md) | Ch11 | 1:08:13 | Chapt 10: The Memory System, Part 2/4 (Smruti Sarangi) |
 | 36 | [記憶體系統的數學模型、三種 miss 與降低 miss 的方法](lecture36_note.md) | Ch11 | 55:33 | Chapt 10: Memory Systems, Part 3/4 (Smruti Sarangi) |

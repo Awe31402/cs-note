@@ -1,0 +1,953 @@
+[00:00] Let us now discuss the last phase of instruction processing, which is the instruction commit
+[00:28] phase.
+[00:30] So we typically use this phase to release resources, remove instructions from the pipeline and
+[00:39] also ensure precise exceptions.
+[00:44] So what have we been discussing up till now?
+[00:46] What we have been discussing up till now is out of order inside, in order outside.
+[00:52] So instructions enter in order, mind you they are perceived to be executing or leaving
+[01:00] the processor in program order.
+[01:01] So it is important to note that perceived in a sense that is what an observer perceives
+[01:07] even though the execution is actually happening out of order.
+[01:11] So for an external observer at any point of time, the instruction flow can be paused.
+[01:18] This is a corollary of in order execution that if instruction execution is in program order,
+[01:25] well we can pause it at some point and resume it at exactly the same point later on, alright.
+[01:34] So that is the most important aspect of out of order execution.
+[01:44] So what we will do, the core structure that we will add over here is the reorder buffer.
+[01:49] It is called the ROB, right, the short form of a reorder buffer is ROB.
+[01:54] It contains one entry for every instruction that has been fetched, alright.
+[02:00] So similar to other structures it is a queue, similar to the instruction window for example,
+[02:07] it is a queue.
+[02:12] So after decoding an instruction we enter it in the ROB, so as soon as we have read the
+[02:18] instruction and we have decoded it, it is entered into the ROB.
+[02:22] And needless to say all queues that we have in our, in an architectural setup, they are implemented
+[02:29] as circular queues, right, otherwise you know there is no other way to implement it using
+[02:33] a finite sized array, so they are implemented using circular queues.
+[02:40] So when we decode an instruction, we enter it into the ROB.
+[02:45] That is the important point over here.
+[02:47] If there are no free entries, right, so if the ROB is full, which means that instructions
+[02:54] are not able to leave the pipeline for some reason, we will see what are the reasons later,
+[03:01] then the ROB will essentially become the bottleneck, the decode process will stall.
+[03:09] This means that the fetch process will stall and the entire pipeline will stall.
+[03:14] So pretty much the ROB maintains a record of all the instructions that are in flight, which
+[03:19] means within the pipeline.
+[03:21] Let us call this in flight instructions, right.
+[03:30] And it is pretty much an in order queue, where when we decode, we enter.
+[03:34] And they leave when what we call instruction commit or instruction retirement.
+[03:42] So when do we update an entry, well, so the instruction remains there, after we decode, the instruction
+[03:54] remains in the ROB.
+[03:57] As soon as an instruction finishes its execution, which means it computes its value and it is done,
+[04:04] we update the entry of the ROB, we mark it to be ready.
+[04:07] So there is a ready bit in the ROB, we just mark it as ready.
+[04:11] So what do we mean by finishing its execution, well, an ALU instruction finishes its execution
+[04:17] when it has computed the value of the output register.
+[04:21] A branch finishes its execution when it has computed the outcome and the target.
+[04:36] So what instruction finishes its execution when it has read the value from the memory.
+[04:43] So let us call it read the value.
+[04:49] So that is what we mean by finishing.
+[05:00] So I am deliberately mute about the store because we will see that the store is a special case.
+[05:06] And as we have argued earlier, a store is only sent to the memory system when it is the earliest
+[05:13] instruction in the pipeline, which would basically mean that it is at the top of the ROB.
+[05:18] So there is no instruction earlier than it.
+[05:22] That is when we actually send it to the memory system.
+[05:25] So hang in there.
+[05:26] We will discuss the case of stores over and over again in the next few slides.
+[05:34] Removing an entry, well, removing an entry is easy.
+[05:36] We just remove it from the top, it is called retiring or committing and of course instructions
+[05:41] are removed in program order.
+[05:44] It is a loaded statement, keep reading, keep watching.
+[05:50] So what do we exactly mean?
+[05:52] So what we exactly mean is that our fetch and execute stages.
+[05:56] So the moment we decode, right, we create an entry, add it to the ROB.
+[06:03] After finishing execution, we update the entry.
+[06:07] So essentially we set a ready bit.
+[06:10] We make it known that the operation associated with the entry has completed.
+[06:15] So the ROB is updated.
+[06:18] Now the ROB is not updated, the entry in the ROB is updated.
+[06:22] Furthermore, every cycle, we inspect the earliest entries of the ROB.
+[06:29] So maybe we inspect the earliest.
+[06:32] If that is ready, if it's done its job, we just remove it.
+[06:35] Then we inspect the next.
+[06:36] If that is done, we remove it.
+[06:38] Then the next.
+[06:40] So how many do we inspect at most?
+[06:43] We inspect W entries at most, where W is called the commit width.
+[06:48] It's typically 2, 4 or 6, so let's assume it's 4.
+[06:51] So what we do is that we inspect the earliest.
+[06:55] If that is ready, well, we just remove.
+[06:58] If it's not ready, we don't do anything.
+[07:01] We stop there.
+[07:02] Then we inspect the next one, the second earliest.
+[07:06] If that's ready, well, we remove it.
+[07:09] If not, we stop there.
+[07:11] So on and so forth until we reach the limit, which is the commit width.
+[07:15] So the commit width essentially determines the rate of instructions exiting the pipeline.
+[07:21] So we typically set the fetch width equal to the commit width because if you look at
+[07:26] the pipeline as sort of an instruction processor, on an average, if we are committing four instructions
+[07:33] per cycle, we should also be fetching that much, otherwise it will lead to a rate mismatch.
+[07:41] So now coming to the commit, well, the commit process is entirely in order, which basically
+[07:48] means that we keep inspecting the entries earliest first, right?
+[07:54] And we stop at the first entry, which is not ready, so if it's not ready, we just stop
+[07:58] there.
+[07:59] So this is the case that we commit an entry, but an entry earlier than it is still there
+[08:04] in the ROB.
+[08:05] So that never happens.
+[08:07] And until we reach the wth entry, so we have a limit on how many instructions we commit per
+[08:12] cycle.
+[08:13] All right.
+[08:14] So you pretty much commit all the earliest entries that we find to be ready in program
+[08:18] order, right?
+[08:19] So we never skip any entry.
+[08:23] What is the advantage of doing this?
+[08:25] Well, let's see.
+[08:27] What does it mean to commit an entry?
+[08:29] Well, one is removing it from the ROB.
+[08:30] So this pretty much removes it.
+[08:32] Removing it from the ROB is tantamount to removing it from the pipeline.
+[08:39] So that is what this amounts to.
+[08:50] Furthermore, removing an entry also might involve additional processing, right?
+[09:01] So it depends on the type of the instruction.
+[09:03] For example, if we have an instruction with a register destination, I can add instruction.
+[09:14] Let's see.
+[09:15] Let's see.
+[09:16] So here we will answer one of the key important questions of when we release a physical register.
+[09:21] Put it back into the free list.
+[09:22] We will answer it now.
+[09:24] So consider instruction J.
+[09:26] Let it be R1 is equal to R2 plus R3.
+[09:29] Assume that R1 is mapped to Py.
+[09:32] Assume that at this point, R1 is mapped to Py.
+[09:37] So before this instruction, right?
+[09:38] So before instruction J came and it was renamed.
+[09:42] Let us assume that the mapping just before R1 to Py, the mapping was R1 was mapped to Px.
+[09:50] So what happens?
+[09:51] Well, R1 was mapped to Px.
+[09:52] Then instruction J came and it changed Px to Py because it got Py from the free list.
+[09:59] Now the question is when can we feed Px, right?
+[10:04] This is a question of register release.
+[10:16] So after J commits, after J is removed from the ROB, from the pipeline, right?
+[10:24] There are no instructions earlier than J in the pipeline.
+[10:27] So this should be rather clear that the reorder buffer ensures that once J is removed, there
+[10:32] are no other instructions that are earlier than J, right?
+[10:36] That precede J which are still in the pipeline.
+[10:40] Important insight.
+[10:41] Let us keep this in mind.
+[10:42] So this is very important.
+[10:43] Let us keep it in mind.
+[10:51] This means that there is no instruction that requires the value in Px.
+[10:56] So this is correct because R1 was mapped to Px.
+[11:01] Then a couple of instructions maybe came, a few of them might be using Px.
+[11:06] Then R1 got mapped to Py and this was the direct consequence of renaming instruction J.
+[11:13] So once J is committed, it implies that all the instructions before it that precede it,
+[11:20] they are also committed, which means that all the instructions that possibly use Px, all
+[11:26] of them are committed and all of them have left the pipeline.
+[11:29] Let me repeat the last statement, rather important.
+[11:33] All of them have committed and all of them have left the pipeline.
+[11:38] This means that Px can be reclaimed, alright?
+[11:44] So this means that at this point, Px can be released and added to the free list.
+[11:51] This is undoubtedly a very important insight for us.
+[11:58] So this essentially says that whenever I am renaming an instruction that has a register-based
+[12:05] destination operand, I need to remember the previous mapping.
+[12:10] So at this point, the previous mapping is Px.
+[12:13] So when instruction J is committing, we cannot release Py, that is important because consumers
+[12:19] of Py will still be there in the pipeline.
+[12:21] But we can definitely release Px because Px's uses over, right?
+[12:26] All the instructions that we are using Px, all of them have been committed, we know that
+[12:30] for sure, direct corollary of in order commit.
+[12:34] So what is essentially left is Py and its uses, so Px can be released.
+[12:42] So what is the update we need to do to the renaming phase?
+[12:45] Well, the moment we see an instruction of this type, where R1, let's say in this case is R1,
+[12:52] it can be any Rx that is being written to, we remember the previous mapping of R1 by reading
+[12:59] the rename table.
+[13:01] So this does complicate the rename table, by the way, adds additional ports.
+[13:05] So we assume that R1 was mapped to Px.
+[13:09] So we save this mapping in the ROB entry for instruction J. When J is committed, we unmap
+[13:16] Px, which means we return it to the free list, such that the register Px can now be given
+[13:23] to other instructions, right, can now be assigned to other instructions.
+[13:29] This can be done for all instructions that have a destination operand that is a register,
+[13:35] right?
+[13:36] So these will be ALU instructions, load instruction and so on, where the destination operand is
+[13:41] a register, alright?
+[13:44] So this should, at this point, be easily understood that when we actually release registers, will
+[13:51] we release when the instruction that overwrites the register, when that commits.
+[13:58] Now let's come to loads and stores.
+[14:00] So when should a store be written to memory?
+[14:02] Well, we have discussed this in the past.
+[14:07] Just a quick reminder.
+[14:08] When we are sure that it is not on the wrong path of a branch and no interrupt will come
+[14:14] before it.
+[14:15] So as long as there is an instruction before it, earlier to it, that precedes it, that instruction
+[14:23] might suffer from a fault and we don't want to take the risk.
+[14:28] So only when we are committing a store, which means when it becomes the earliest and it is
+[14:31] being removed from the ROV, that is when we send the stores to the memory, right?
+[14:37] At commit time, we send the stores to the memory.
+[14:40] And that is when they actually take effect.
+[14:42] So this is clearly happening in program order, right?
+[14:46] So there is no doubt about it.
+[14:47] And that is when it takes effect.
+[14:49] At the same time, we remove the entry from the store queue as well.
+[14:53] It is not required.
+[14:54] Because the store queue, all that it was doing is that it was essentially providing temporary
+[14:59] storage, right?
+[15:01] Which in itself is an important service, no doubt.
+[15:12] And loads were supposed to check this temporary storage first before actually going to the
+[15:17] cache, right?
+[15:20] So this solves the question about stores, that when we are about to commit stores, we actually
+[15:27] send them to the memory system.
+[15:30] Now when should a load be removed from the LSQ?
+[15:33] Well, this answer is also obvious.
+[15:35] We have touched upon this.
+[15:37] So the answer for this is that again at commit time, we remove the load from the LSQ.
+[15:42] And from the ROV as well.
+[15:44] So we just remove it from the pipeline.
+[15:49] Next question, what do we do in the case of an interrupt?
+[15:55] So let us treat interrupts, exceptions.
+[16:00] And mind you, this is very important and this is a question that many people would ask when
+[16:06] we talked about branch predictors, about recovery.
+[16:09] But this question is being answered now.
+[16:12] That interrupts exceptions and branch predictions, mispredictions, I am sorry.
+[16:17] Let them be placed in the same category as exceptional events.
+[16:21] So whenever we mispredict a branch, let this be treated as an exceptional event.
+[16:31] So whenever we receive any of these notifications, we will clearly have some instructions in the
+[16:37] pipeline that are on the wrong path.
+[16:40] And if they are on the wrong path, then they should not be committed.
+[16:43] Right?
+[16:44] So they should be removed.
+[16:48] So let us look at the interrupts and exceptions are easy to handle.
+[16:50] We just mark one of the instructions the same way we did in an inorder pipeline.
+[16:56] And we just wait for that instruction to reach the head of the ROB.
+[17:01] So this means that all the instructions after the interrupt, after the marked instruction,
+[17:07] they have completed.
+[17:08] And nothing is completed before that, right?
+[17:11] Because we do not make permanent architectural state changes before commit time, right?
+[17:19] Now, using the ROB, well, let us look at using the ROB primarily for branch mispredictions.
+[17:25] The others are simpler to handle.
+[17:29] So whenever an instruction has an exception or suffers from a misprediction, we mark it.
+[17:36] So for example, if a certain branch is mispredicted, all that we do is we just mark it.
+[17:42] We do not do anything else.
+[17:43] So we can either mispredict the outcome or the branch, but all that we do is we just mark
+[17:48] it.
+[17:49] So we just mark the instruction, which means that we remember that this instruction was
+[17:59] mispredicted and we do not do anything else.
+[18:02] We wait for the instruction to reach the head of the ROB, which means we wait for it to become
+[18:08] the earliest instruction.
+[18:10] In the case of an interrupt, well, we can mark any instruction that we choose, but if we want
+[18:15] the interrupt to be processed as soon as possible, we mark the topmost entry in the ROB, which
+[18:22] is also the earliest entry.
+[18:25] So that is what we mark.
+[18:27] We wait till the marked instruction retires.
+[18:29] So retire and commit is something we use interchangeably.
+[18:32] So we wait till the marked instruction reaches the head of the ROB and is ready to commit.
+[18:40] Then we initiate what is called a recovery sequence, which is described in the next slide.
+[18:48] Let us now look at a visualization of the pipeline.
+[18:53] So in the pipeline, we will not show much.
+[18:56] What is shown here is the fetch unit.
+[19:01] The fetch unit fetches instructions.
+[19:04] They pass through the rest of the pipeline.
+[19:07] And finally, the reorder buffer maintains a record of all the instructions that are in flight.
+[19:14] So this animation will nicely show you all the processes that are involved.
+[19:23] So initially what we do is we fetch an instruction and at decode time, it is added to the reorder
+[19:29] buffer.
+[19:30] So if we fetch five instructions as we are doing right here, we are getting added to the reorder
+[19:36] buffer.
+[19:47] Alright.
+[19:48] And so we have now fetched and decoded five instructions.
+[19:52] And you can see that all these five instructions are present in the reorder buffer over here.
+[20:00] Now let's assume that the instruction that was fetched, the latest instruction that was fetched,
+[20:08] that suffers from a branch misprediction.
+[20:12] In this case, the four earlier instructions, which are these instructions, these instructions
+[20:20] are safe, they are on the correct path, hence they should be committed, whereas this instruction
+[20:27] as well as instructions before it, which means the instruction that mispredicted and the instructions
+[20:34] that were fetched after the mispredicted instruction, these instructions should not be committed and
+[20:41] they in fact should be removed from the pipeline.
+[20:45] So what do we do?
+[20:46] Well, we just commit the earlier instructions.
+[20:49] Keep committing, keep committing, keep committing and wait for the mispredicted instruction to reach
+[20:57] the head of the ROB, the top of the ROB.
+[21:01] Once it reaches the top of the ROB, well, something needs to be done.
+[21:06] Also please bear in mind that even though we are not showing other instructions might have
+[21:13] been decoded and might have entered the ROB after the mispredicted instruction.
+[21:20] So they will be at these positions.
+[21:22] Alright?
+[21:23] So it doesn't matter.
+[21:24] So when the mispredicted instruction or let's say an instruction that suffers from an exception
+[21:34] or an instruction which we mark because of an interrupt, the moment it reaches the head
+[21:40] of the ROB which means that it becomes the earliest instruction in the ROB.
+[21:47] What we do is that we flush the entire buffer.
+[21:51] So we flush the not only the ROB but the entire pipeline.
+[21:56] This includes the load store queue, the instruction window as well, along with all the internal pipeline
+[22:01] and registers and buffers, we flush everything.
+[22:07] Alright?
+[22:09] So what is the recovery sequence?
+[22:11] The recovery sequence is that we flush the pipeline.
+[22:14] What exactly would this mean?
+[22:16] This would mean flushing the reorder buffer.
+[22:20] This would mean flushing the load store queue, the instruction window and all other internal
+[22:25] structures.
+[22:26] They are all cleaned up.
+[22:28] We remove entries from the instruction window, LSQ, ROB.
+[22:33] All internal pipeline registers, etc. also we remove the entries.
+[22:38] And then the most important part is that we restore the state.
+[22:42] So before this, I would like to make an important point.
+[22:46] So what exactly was our architectural state?
+[22:49] It was the program counter, the set of architectural registers.
+[22:57] So they here only exist in principle.
+[23:01] Then we had the memory state.
+[23:04] So since we send stores to the memory system only when they commit, the memory state is correct.
+[23:10] The set of architectural registers, we need to ensure that it is correct.
+[23:16] Well, it has to be correct.
+[23:18] We will see why.
+[23:20] The reason is that whatever was the current mapping when the branch was fetched, those physical
+[23:27] registers have still not been touched.
+[23:29] Right?
+[23:30] To a certain extent, those physical registers still maintain their value.
+[23:38] They have not been touched.
+[23:42] So the architectural state is still there.
+[23:43] It is still intact.
+[23:45] And it is still there.
+[23:47] Right?
+[23:48] And the program counter, of course, we can add it into every ROB entry.
+[23:53] So we just need to restart from the program counter.
+[23:55] So in a certain sense, the architectural state is still intact.
+[24:00] We just need to restore the state.
+[24:03] In the sense, recover the state that existed just before the branch was fetched.
+[24:08] We need to go back to that point and start re-executing everything.
+[24:13] Now that we know the correct target and the outcome of the branch, at least this branch will
+[24:18] not suffer from a misprediction.
+[24:21] So what do we precisely need to do?
+[24:23] Well, we need to roll back the architectural register state or recover the architectural
+[24:29] register state of the last committed instruction, which is the instruction that was committed
+[24:35] just before the branch.
+[24:37] The contents in the rest of the physical registers do not matter.
+[24:41] In this case, we are only concerned with the contents of the 16 architectural registers.
+[24:55] Alright?
+[24:57] So we are only concerned with their contents.
+[25:00] And so we somehow need a way to kind of recover and rewind our state to the state that existed
+[25:09] just before renaming.
+[25:13] You can call renaming, fetching, recording does not matter, but just before processing the
+[25:17] branch instruction in program order, whatever was the state we need to roll back to that
+[25:23] point.
+[25:24] So we will discuss four approaches for state recovery.
+[25:30] The four approaches have different pros and cons.
+[25:35] They are also arranged in an increasing order of complexity.
+[25:39] The first two are more commonly used, the rest, the next two are not that commonly used.
+[25:45] But nevertheless, we will discuss four approaches.
+[25:48] Here is approach one.
+[25:51] The first approach is rather simple.
+[25:54] So I will not vouch for its efficiency.
+[25:57] But in terms of sheer simplicity, it is clearly the most straightforward.
+[26:01] In hardware many a time, we prefer simple designs because it is easy to design and verify many
+[26:08] of these protocols.
+[26:10] And simplicity by itself has its merit and value.
+[26:14] So what we do is that we introduce a new register file.
+[26:18] This is an architectural register file, mind you.
+[26:21] It's called the RRF, the retirement register file, which if there are 16 architectural registers,
+[26:28] it will have 16 entries.
+[26:34] And let's assume that we are committing an instruction of the form ADD.
+[26:45] And then the value that we compute R5 plus R6 is equal to 10.
+[26:50] So what we do is that when this instruction is committed, we also remember the value.
+[26:57] So each entry of the ROB is augmented with the value of the destination register.
+[27:02] So this does add extra storage, by the way.
+[27:05] So ROB typically has 200 entries.
+[27:08] So this does add extra storage in the sense that if it is a 64-bit machine, it adds 64 bits
+[27:16] to the size of each ROB entry.
+[27:19] So this additional storage overhead is there.
+[27:22] So that we go to register number R4.
+[27:26] In R4, we add the 64 bits, which is the value that was computed.
+[27:33] So which means that the RRF contains the retirement state or the state of all the committed instructions.
+[27:41] So what state?
+[27:42] The register state.
+[27:44] So at any point of time, it contains the architectural register state of all the committed instructions.
+[27:50] All right?
+[27:52] So any point of time an instruction commits, its value is written over here, right?
+[27:59] The destination register at commit time.
+[28:01] So recovery is very easy because this is sort of a commit time.
+[28:07] This is called a checkpoint.
+[28:08] A checkpoint is nothing but the record of a state.
+[28:11] So any time we want to recover, well, no problem.
+[28:14] If the branch is at the head of the ROB and we find it as mispredicted, not an issue, we
+[28:21] flush the pipeline and the entire state of the RRF is written to the physical register file.
+[28:31] So what we do is, we need to create a new mapping in this case.
+[28:38] So the rename table also should be modified, I am not showing that.
+[28:42] So what we can do is that we can, so since we are cleaning up the pipeline, we have the
+[28:49] liberty to also clean up all the mappings and start a fresh state.
+[28:54] So if let's say our registers are numbered R0 to R15, architectural registers that is.
+[29:02] Then we can map R0 to P0 in the rename table.
+[29:06] And in the entry for R0, we can write the contents of R0 from here, right?
+[29:13] In the entry for R1, we can write the contents of R1 from here.
+[29:18] So we essentially need to transfer this entire state, R0 over here, R1 over here, R15, sorry,
+[29:25] R0 will come to P1, R0, sorry, I am sorry, R0 will come to P0, R1 will come to P1, so on
+[29:34] and so forth.
+[29:35] But at least the first 16 registers here can just be made a copy of the architectural registers
+[29:43] file.
+[29:44] And the mapping can be set in such a way, R0 to P0, R15 to P15.
+[29:50] And this is because we are essentially starting afresh.
+[29:55] So we have the liberty to change the mapping, we do that.
+[29:59] And we copy the state of the entire architectural register file to the PRM.
+[30:06] So this is undoubtedly a simple method because what we are doing is, we are like doing a fresh
+[30:13] start.
+[30:15] The entire architectural state is being written to the physical registers and those physical
+[30:22] registers are being mapped to the architectural registers in the rename table.
+[30:26] So the rename table I should have shown, I am not showing that.
+[30:30] And then we just start from here and the program will not get to know that it actually suffered
+[30:35] from a misprediction or an exceptional event of any kind.
+[30:40] So if you look at this, just appreciate the sheer simplicity of this idea.
+[30:46] This is like a brute force idea where it is guaranteed to work because we just are transferring
+[30:54] the state of all committed instructions to the PRF and restarting the program from there.
+[31:02] There is no hidden trick involved.
+[31:05] What is the problem?
+[31:06] Well, the problem is that it is inefficient.
+[31:09] What are the inefficiencies?
+[31:11] The inefficiencies are that each ROB entry is being augmented with the value of the destination
+[31:21] register.
+[31:22] That is one.
+[31:23] The other is that the process of recovery is slow because physically 64, 16, 64 bit values
+[31:30] have to be computed and the rename table has to be adjusted.
+[31:34] So those are the overheads.
+[31:38] So let us move to approach two, which does something more efficient.
+[31:44] And if you look at it, I would, I have, you can already see a burger, right?
+[31:50] So if you can see a burger, it should ring a bell in your head that there is something that
+[31:55] needs to be proved, right?
+[31:56] So unless something is proven, you will not appreciate the complexity of this design and the correctness
+[32:02] of this design.
+[32:03] So as I said, burger means the white and gray matter should start journeying in your head.
+[32:10] And it should tell you that look, there is something coming up, which requires some amount of thinking.
+[32:17] So much of the out-of-order logic and the rename table logic and all the other things that we have been discussing, we pretty
+[32:28] much tossed out all of that in the previous design because it was so simple.
+[32:33] It was simple and inefficient.
+[32:36] It turns out that we can make the design far more efficient if we simply realize a couple
+[32:42] of things.
+[32:44] First, let's ask a question.
+[32:49] Why do we need to write the values into the RRF?
+[32:51] What is the need?
+[32:52] Right?
+[32:53] The values are anyway there, correct?
+[32:55] So the values are anyway there.
+[32:57] Well, why do I say so?
+[32:59] So that is important.
+[33:00] If you can understand this sentence of mine, that the values are already there, you have
+[33:06] probably already guessed what I am getting to.
+[33:10] But let's understand the insight.
+[33:13] Let us say that time flows to the right and this is the reorder buffer.
+[33:19] This is the mispredicted branch.
+[33:21] We have some instructions fetched after it and some fetched before it.
+[33:28] So let us say that when, so the branch does not write to a register.
+[33:34] So let us say that when we were dealing with the branch, we found that R1 is mapped to Px.
+[33:43] Now when this branch instruction reaches the head of the reorder buffer, will R1 still be
+[33:50] mapped to Px?
+[33:51] That is question 1 and question 2 is, will Px still have the same value or will it have
+[33:57] a different value?
+[33:59] Well, so this means that we need to think about several things.
+[34:09] The first thing is, we need to see when exactly is Px released.
+[34:17] So Px is released when some instruction writes to R1 and that instruction commits.
+[34:26] So at the point of the branch if R1 is mapped to Px, it is clear that some instruction fetched
+[34:32] after the branch would be writing to R1 which would be Py, so it does not matter.
+[34:40] But it is definitely not before.
+[34:42] So if it is not before, then what it means is that when the mispredicted branch actually
+[34:49] reaches the head of the ROB, we are guaranteed to still have Px in an untouched form because
+[35:00] the instruction that maybe modifies R1 would not have committed.
+[35:05] So Px would still retain its value and this can be used, so we do not really have to copy
+[35:11] any values.
+[35:13] So let me illustrate this slightly better.
+[35:18] So let us assume that there is one instruction after the mispredicted branch where R1 gets
+[35:25] mapped to P1.
+[35:27] So of course after this instruction is renamed, all subsequent instructions will see R1 mapped
+[35:33] to P1.
+[35:35] But nevertheless Px will still be alive, it will still retain its value.
+[35:41] The reason is that this instruction over here, this one, would not have committed primarily
+[35:48] because it would commit only when it reaches the head of the ROB.
+[35:53] But before it reaches the head of the ROB, the branch will reach the head of the ROB.
+[35:58] And at that point we will realize that it has been mispredicted.
+[36:03] Since it has been mispredicted, we will then try attempt a recovery.
+[36:08] And then we will realize that look, when the branch was being renamed, R1 was mapped to
+[36:15] Px.
+[36:16] I will tell you in a second how we will realize that.
+[36:18] And then we will also realize that this is the latest value of R1 from the point of view
+[36:24] of when the branch was renamed.
+[36:26] At that point the latest value was Px.
+[36:29] So R1 even though it might have been mapped to other registers like Py, we should restore
+[36:35] the mapping and we should again map R1 to Px.
+[36:39] Since Px has its value intact, restoring the mapping itself is sufficient.
+[36:46] So let us go through the text first and then I will explain this diagram.
+[36:52] So what we do is, we maintain a copy of the mapping of the destination register in the
+[36:57] ROB entry.
+[36:58] In this case, in the ROB entry for the branch, I am sorry, I take the previous sentence back.
+[37:09] Let us look at the example.
+[37:11] Let us assume that R1 is mapped to, R1, there is an instruction add R1, R2, R3 where R1 gets
+[37:19] mapped to Px.
+[37:22] Then we maintain this R1 to Px mapping in the ROB entry.
+[37:26] Alright?
+[37:27] So which means that if let us say there is one instruction over here where R1 gets mapped
+[37:32] to Px, right?
+[37:37] Then we maintain the R1 to Px mapping in the ROB entry of this instruction.
+[37:42] And later on when R1 gets mapped to Px, we also maintain that in ROB entry of that instruction.
+[37:50] So whenever an instruction commits, let us say at this point, an instruction commits where
+[37:55] R1 is getting mapped to Px, we will update what is called the retirement RAT, retirement
+[38:03] register alias table with R1 in the RAT as Px, right?
+[38:18] So which basically means that from the point of view of this instruction, R1 and Px contains
+[38:25] the latest value of R1.
+[38:27] And since this is committing from the commit stream, from the point of view of all the
+[38:32] committed instructions, the retired instructions, Px contains the latest value.
+[38:38] Similarly, if this branch would not have suffered from a misprediction, we would have ultimately
+[38:43] committed R1 to this instruction where R1 is mapped to Px.
+[38:49] At that point of time, we would have updated the retirement RAT with R1 and Px.
+[38:54] So what does the retirement RAT contain?
+[38:57] It essentially contains a mapping of the 16 architectural registers to the corresponding
+[39:07] physical registers in the physical register file.
+[39:10] So since the architectural register can actually, you know, since the mapping of an architectural
+[39:17] register to a physical register changes, we will have several physical registers that
+[39:22] contain the value of an architectural register at several points of time.
+[39:28] So given that fact, what the R RAT basically contains is, it contains the, it contains the commit
+[39:40] time checkpoint or it contains the fact that what was the mapping when this instruction was
+[39:48] being renamed.
+[39:49] So that would be the latest mapping from the point of view of this instruction.
+[39:53] So we keep on updating the R RAT with this mapping.
+[39:57] So what is the advantage of doing this?
+[39:59] Well, the advantage of doing this is like this, that when we want to recover, right, so let
+[40:07] me draw the same diagram again, and then I will talk about what is the advantage.
+[40:11] So this is the mispredicted branch.
+[40:14] There are two instructions over here.
+[40:16] So this instruction where R1 is getting mapped to Px is the earlier instruction.
+[40:22] This is the later instruction.
+[40:26] So this instruction is committed.
+[40:30] When this instruction was being committed, we go to the entry corresponding to R1 and we
+[40:37] write Px over there.
+[40:40] Which means that from the point of view of this instruction and all the instructions fetched
+[40:44] before it, Px contains the latest value of R1 or in other words, when this instruction
+[40:52] was being renamed, just after it was renamed, Px contains the latest value of R1.
+[41:00] Next assume we commit a few more instructions but nobody writes to R1, then we arrive at the
+[41:06] branch.
+[41:07] When we arrive at the branch, we will again find that R1's latest value is in Px and this value
+[41:19] should be written to the actual register alias table, RAT.
+[41:26] But it is possible that by that time R1 has been mapped to Py, which means we have fetched
+[41:32] and renamed this instruction.
+[41:34] So in for R1, actually Py is written, let me write Py over here.
+[41:41] But since this instruction is being flushed from the pipeline, it is being removed from
+[41:45] the pipeline and it is not being committed, what we need to do is, we need to get rid
+[41:50] of Py.
+[41:52] So let me use my eraser to get rid of it.
+[41:56] So we get rid of Py over here.
+[41:59] And instead, what we do is that we write Px.
+[42:08] So this is equivalent to, tantamount to restoring the value of R1 to that value which was the
+[42:17] latest when this branch was being renamed, right, which was Px not Py.
+[42:24] We do the same for the rest of the architectural registers.
+[42:28] And this can be done, I will tell you why it is efficient in a second.
+[42:33] But after doing that, we will have a set of 16 physical registers that contain the value
+[42:41] of the committed state when this branch reaches the head of the ROV, right, it holds the architectural
+[42:51] state for all of these instructions that are before the branch.
+[42:56] And if we just restore the mapping instead of the values, it is good enough.
+[43:02] So what is the, if I were to compare this scheme and the previous one, what is the advantage?
+[43:09] Well, first, before discussing the advantage, you need to prove slightly more rigorously
+[43:15] that this is actually correct.
+[43:17] What is correct?
+[43:18] That transferring the mappings is sufficient.
+[43:20] You don't have to record the values and transfer the values, right.
+[43:24] So we just remember the mappings and transfer them.
+[43:28] So transferring the mappings is good enough.
+[43:30] So that's the reason instead of storing the value which is a heavy 64-bit number, we actually
+[43:36] store a 7-bit number if we have 128 physical registers.
+[43:41] So transferring the mappings is good enough.
+[43:50] So this again, I have given you sufficient pointers.
+[43:54] Furthermore, more rigorous proof should be done.
+[43:59] Once we have convinced ourselves of this fact, let us compare the RRF and the RRAT.
+[44:04] In the RRF, we transfer a total of 16 times 64 bits, 16 architectural registers multiplied
+[44:11] with 64 bits per register.
+[44:14] In this case, we transfer only 16 times 7 bits because 7 represents the size of a mapping.
+[44:23] So as we can see, in terms of the number of bits transferred, this is roughly 9 times more
+[44:31] efficient, which means it is much faster as well as more power efficient.
+[44:36] And it also utilizes the built-in support that we have for out of order execution.
+[44:44] In the sense that if the value is already there, all that we need to do is we need to update
+[44:49] and adjust the mappings, right?
+[44:51] Just by adjusting the mappings, we can effectively recover to the state that existed when the branch
+[44:59] instruction was being renamed.
+[45:01] That was the latest state, right?
+[45:04] So we can recover to that just by updating the mappings.
+[45:11] Now let us look at the third design.
+[45:16] So in the third design, what we do is that instead of recording something or doing some
+[45:24] bookkeeping whenever an instruction is retiring, we explicitly consider the fact that most of
+[45:34] the exceptions will happen when we actually encounter a branch, right?
+[45:40] So let us assume that at other points exceptions will not happen.
+[45:44] Even if they do, we have some mechanism of ensuring that we pretty much record state only when
+[45:54] we encounter a branch, right?
+[45:56] Or at other periodic points.
+[45:59] But not on, not for every instruction.
+[46:03] So for every instruction, we do not read or write or register at commit time, right?
+[46:07] So we do not do reads or writes at commit time because that is the biggest disadvantage of
+[46:14] the previous approaches that whenever an instruction is committed, we need to read something, we need
+[46:19] to write something.
+[46:20] It is not power efficient.
+[46:22] So what we can do is if we are considering only branches and the only source of flushing
+[46:29] and recovery is a branch misprediction, whenever we encounter a branch, we should maintain a
+[46:34] checkpoint.
+[46:37] So what we can do is that whenever we see a branch, we simply take a checkpoint of the
+[46:45] rename table, which is essentially a set of 16 7-bit IDs, 112 bits total.
+[46:54] So what we can do is we can architect the rename table differently.
+[46:58] So in the rename table, previously we just had one 7-bit field along with the available entry,
+[47:04] of course, I am not discussing that.
+[47:07] So we just had pretty much one 7-bit field to discuss the, to record the physical register
+[47:13] ID.
+[47:15] So what we can have is we can have a circular shift register, where instead of 1, we can
+[47:20] think of this as a linked list, right?
+[47:23] Just think of it as a linked list.
+[47:26] So to create a checkpoint, all that we need to do is that we need to record a column of
+[47:31] these mappings, which can be seen better on the next slide.
+[47:42] So what we do is that we update the rename table such that each entry is a linked list.
+[47:50] So what we do is that each of these entries are 7-bits.
+[47:56] We create a linked list of such 7-bit entries.
+[48:01] And then whenever we want to take a checkpoint, right?
+[48:08] This is what we do.
+[48:11] That we shift all of these entries one step to the right.
+[48:14] So we shift all of them one step to the right, right?
+[48:18] Assuming we have enough space that is.
+[48:20] We shift all of them one step to the right.
+[48:22] So this essentially becomes an instantaneous snapshot of the rename table.
+[48:28] This becomes the instantaneous snapshot of the rename table for a different branch.
+[48:33] And finally, the last one essentially becomes the architectural state for the branch that
+[48:40] is at the head of the rename table, right?
+[48:43] So this becomes the architectural state.
+[48:45] Why?
+[48:46] Well, because this captures the state of the rename table for the last branch.
+[48:52] And if this branch reaches, becomes the earliest, then this mapping is essentially what we need
+[48:57] to restore.
+[48:59] And this would be very simple, we just need to move the latest mapping pointer over here.
+[49:04] So recovery is very fast.
+[49:07] And to create a checkpoint, a checkpoint is essentially a snapshot of rename values.
+[49:16] All that we need to do is we just need to transfer the values in these registers.
+[49:22] One step to the right.
+[49:24] The same way that we operate a shift register or a link list.
+[49:27] We just take all of these values, transfer them one step to the right.
+[49:32] And this is our latest rename table, which we can keep on updating.
+[49:36] There is no problem, this we can keep on updating.
+[49:39] But whenever we want to freeze it, essentially take a photograph, instantaneous photograph of
+[49:45] it, all that we do is we just shift it one step to the right.
+[49:49] So once it has been shifted, it cannot be modified again.
+[49:52] It's like an immutable photograph which cannot be changed.
+[49:57] And so it's basically a copy and a shift.
+[50:00] So let's say for register R1, P6 is written.
+[50:05] So what we do is when we shift it, we maintain P6 here.
+[50:09] Then we shift, you know, I am assuming there are other columns, we just shift them here,
+[50:13] shift this one here, shift this one here.
+[50:16] And ultimately when this becomes empty, we write P6 over here.
+[50:22] So recall that when we are creating the checkpoint, this column and this column will be the same.
+[50:28] But gradually since this column is meant to contain the latest mapping, it will keep on changing
+[50:35] as new instructions keep getting renamed.
+[50:38] Once if you want to take a checkpoint, we follow the same strategy where we right shift all the
+[50:43] previous checkpoints because each one of them contains a checkpoint.
+[50:48] Right, each column in a sense contains a checkpoint.
+[50:53] So all that we need to do is we need to right shift all the checkpoints, create space for this
+[50:58] and transfer the contents of all of these over here to this column.
+[51:04] So this is advantageous no doubt.
+[51:08] One advantage is that recovery is quick.
+[51:11] So while recovering, we don't really have to do much in the sense all that we need to
+[51:18] do if I were to consider a physical implementation.
+[51:23] So these are not really linear linked lists, but these are essentially circular linked lists
+[51:28] with one pointer to the latest mapping.
+[51:31] So all that I can do is I can move the pointer of my latest mapping from here to actually here.
+[51:38] So this will give me the, one sec, I'll probably clean the screen and show you.
+[51:44] So the pointer of the latest mapping can be moved from here to actually here, which will tell
+[51:51] me that look, we have discarded all of these checkpoints, right?
+[51:57] All of these checkpoints contain irrelevant data now.
+[52:02] This is the only checkpoint that we need to use.
+[52:05] And for us, this is the latest mapping.
+[52:07] So the execution can begin from here.
+[52:11] What is the disadvantage?
+[52:12] Well, the disadvantage is that each entry of the rename table is now a linked list, right?
+[52:18] Essentially it's a circular linked list.
+[52:21] We can also call it a, so physically you will implement it using a shift register.
+[52:26] That's one disadvantage.
+[52:28] And the other is that if let's say an arbitrary instruction suffers from a fault, we can only
+[52:35] recover to the nearest branch.
+[52:38] So that will complicate some of the logic for maintaining precise state.
+[52:45] But that of course can be fixed in the sense that if you are recovering to the nearest branch,
+[52:50] then the state difference between the current instruction and the branch, that difference
+[52:55] has to be recorded.
+[52:56] But that's not a major issue, it is something which is solvable.
+[53:04] Let us now come to the fourth scheme, which is more complicated.
+[53:10] Many of you also might not have the adequate background to understand this scheme.
+[53:14] So in this case, we architect the rename table differently.
+[53:22] So a traditional rename table actually uses a structure called an SRAM.
+[53:27] So a static RAM and a CAM can be picked up from two sources.
+[53:32] The first source is chapter 7 of this book, where this concept is explained rather briefly.
+[53:41] Or you can look it up in chapter 6 of the older book, Computer Organization and Architecture,
+[53:48] McGraw-Hill 2015.
+[53:51] So in that book, if you go to chapter number 10, then SRAM and CAM arrays are described in
+[53:59] great detail.
+[54:00] So an SRAM array is like a regular array, where we essentially have entries and we have indices.
+[54:09] So essentially, if we are talking of entry number 3, it points to this point.
+[54:15] The third index, if you start counting from 0, well no problem, 0, 1, 2 and 3.
+[54:21] A CAM array on the other hand is like a hash table.
+[54:25] So for a CAM array, we basically have an array of keys and an array of values.
+[54:33] So both contain the same number of entries.
+[54:38] So what we can do is that we don't search by index, we search by the key and what we return
+[54:44] is the value.
+[54:50] In many cases, the value field can be empty.
+[54:52] We just search by the key and the index in which the key matches, that is the value.
+[54:59] Right?
+[55:00] So in many cases, that is what we want.
+[55:02] We want to find out where the key is in the large array.
+[55:06] If it is at the 59th entry, the value is 59.
+[55:09] That is a legitimate variation of a CAM array.
+[55:14] But regardless of which flavor we are using, we need to think of a CAM array pretty much as
+[55:19] a hash table, where we search not by the index, but by a multi-bit field.
+[55:26] The multi-bit field in this case is being referred to as the key.
+[55:31] Alright?
+[55:32] So, I mean the basic abstraction is that an SRAM array is like a regular array, but a CAM
+[55:41] array is like a hash table.
+[55:43] So it is possible to implement the RAT, the register alias table using CAM arrays.
+[55:51] So, what we can do is, we can have 128 entries.
+[55:55] Each of these entries will contain two things.
+[55:59] Right?
+[56:00] So if I were to see one entry, so each entry, right, I am just blowing this thing up.
+[56:09] So each entry will contain two things.
+[56:12] It will contain the architectural register ID that the given physical register is mapping
+[56:22] to.
+[56:24] So why 128?
+[56:25] Because we have 128 physical registers.
+[56:29] And let's say I want to find out which physical register is R5 currently mapped to.
+[56:35] So in the previous approach, I will just index the fifth entry, but in this case I will not
+[56:38] do that.
+[56:39] In this case, what I will search for is, I will search for 5, which is 0101 and binary.
+[56:46] And also the mapping should be valid.
+[56:50] In the sense that what we have discussed in the past is that there might be multiple physical
+[56:56] registers that mapped to R5 in the pipeline at the same time.
+[57:01] One of them will be the most recent, let us call it valid and the rest invalid.
+[57:07] So we want the valid bit to be 1, which means it is the most recent mapping.
+[57:14] Alright?
+[57:15] And also that it is mapping to R5.
+[57:18] So what we need to search for, what the key would be in this case is 0101 corresponding
+[57:23] to R5 and the fact that it is a valid mapping, the most recent mapping.
+[57:27] I search for this within the CAM array.
+[57:30] I am guaranteed to find only one entry that matches and the index of that can give me the physical
+[57:37] register ID.
+[57:38] So let us say that this maps to the 28th entry and here we find out that it contains 0101,
+[57:45] 1.
+[57:46] Then I say that R5 is mapped to P28.
+[57:53] So if you think about it, this in itself is a valid way.
+[58:01] I would not say it is a common way, but it is undoubtedly an extremely plausible way of
+[58:07] implementing a register alias table.
+[58:10] Where instead of implementing it as an array, we implement it as a hash table.
+[58:15] So in this case, we will have a CAM array and the CAM array will pretty much have two columns,
+[58:20] the architectural register ID and the valid bit.
+[58:24] The valid bit indicates that it is the most recent mapping.
+[58:29] So when we search, we concatenate the architectural register ID with 1, which indicates we need
+[58:34] the most recent mapping for a given architectural register.
+[58:40] So I will just clean up the ink on this slide such that at least you can see the animation.
+[58:49] So it is a 4-bit architectural register ID and a valid bit is what you get for a 7-bit physical
+[58:57] register ID.
+[58:58] So 7-bit physical register ID need not be a part of the entry.
+[59:03] The index in which this information is found can represent the physical register ID.
+[59:15] So now let us see how a CAM-based RAT actually works.
+[59:22] So the key points over here are that at any point of time, 16 bits are set to 1 because
+[59:32] only 16 architectural registers are what we have.
+[59:37] So this is the set of 16 entries in the RAT table and we can save a snapshot of these.
+[59:43] So this is an important point in a graphical form.
+[59:48] So there is an important thing that needs to be understood.
+[59:51] So a lot of people find it very very hard to understand this scheme and the entire crux
+[59:57] of the problem stems from the last statement that I made.
+[60:02] So you need to understand that there are 128 entries in this structure.
+[60:08] This structure is a hash table which we are calling a content addressable memory or a CAM.
+[60:15] Each entry of this CAM contains an architectural register ID.
+[60:22] Let us see if we are talking about R5, then it is 0101 and a valid bit.
+[60:35] So the valid bit is an important concept.
+[60:39] In fact, it is the most important concept when we are discussing this.
+[60:44] So it is possible that in our pipeline, we might have four instructions fetched at different
+[60:52] points of time that pretty much write to register R5.
+[60:58] So the earliest one might be write R5.
+[61:02] You would have mapped it to Px.
+[61:06] The next one might have been mapped to Py.
+[61:12] And the next one might have been mapped to Pz.
+[61:18] So all three of these mappings will exist in our pipeline.
+[61:27] But clearly the R5 to Pz mapping will be the most recent.
+[61:33] So the valid bit for the Px and Py entries will be 0.
+[61:42] The valid bit for this will be 1.
+[61:45] Alright?
+[61:46] So whenever any subsequent instruction comes and it tries to see which physical register
+[61:53] is mapped to R5, it will essentially search for this value in the CAM which is 0101 and 1.
+[62:03] 1 because of validity.
+[62:05] And that would point us to this entry which is the entry for Pz.
+[62:11] Alright?
+[62:12] So this is the crux.
+[62:14] So regardless of the fact that many instructions might be mapped to R5, of course capturing different
+[62:23] points of the execution, only one will be valid.
+[62:26] The same holds true for other registers.
+[62:30] So it can be proven that this column, the column of valid bits, will have these properties.
+[62:43] Right?
+[62:44] So I have provided an informal proof.
+[62:47] But a formal proof is something that you can work out on your own.
+[62:51] It's easy.
+[62:52] It's not that hard.
+[62:54] So the first is that only 16 out of 128 valid bits are 1.
+[63:12] That should be obvious because we will have 1 valid bit per each architectural register.
+[63:17] And there are 16 such architectural registers.
+[63:21] The other would be that essentially it is 1 valid bit per architectural register, which is just a rehash of the previous statement.
+[63:44] Alright?
+[63:45] The rest remains the same.
+[63:48] So here is the key insight.
+[63:50] Alright?
+[63:51] So let me draw a small bulb.
+[63:52] I am not a good drawer.
+[63:54] And I am not a good artist.
+[63:56] That too with a tablet.
+[63:59] Still I am trying my best.
+[64:02] Alright?
+[64:03] I seem to have done an okay job.
+[64:05] So what I am trying to say over here is the key insight is that since registers tend to maintain their value.
+[64:16] Right?
+[64:17] Until another register that writes to the same architectural register gets committed.
+[64:22] So it is the same insight as the previous approach.
+[64:26] Approach 3.
+[64:27] What I am saying or rather I am claiming is that checkpointing the
+[64:47] column of valid bits is sufficient.
+[64:55] Checkpointing essentially means storing.
+[64:58] Right?
+[64:59] So this is sufficient.
+[65:03] All that I need to do is that this column that essentially contains these 1 bit numbers,
+[65:10] these columns are valid bits.
+[65:11] If I just checkpoint it, if I just store it, then I can easily restore it.
+[65:16] So which basically means that for a branch, instead of having to deal with 7 bit numbers,
+[65:24] so instead of having to deal with 16 7 bit numbers, where of course moving them in principle will take 7 block cycles,
+[65:33] I can have one thin and narrow column of 128 1 bit numbers.
+[65:43] And as far as I am concerned, these 1 bit numbers, a sequence of 128 of them, they represent a checkpoint.
+[65:54] And what I can do is that I can just roll back and restore a checkpoint rather easily.
+[66:02] So if you think about it, if we look at it in the context of this example, I can do this for R5 and you will see that it will be correct.
+[66:13] So let us consider the execution at this point.
+[66:17] At this point, clearly Pz is the latest mapping.
+[66:20] And what we see is that the rest of the mappings to Py and Px are outdated and old.
+[66:28] Now let us assume that a branch misprediction happens over here.
+[66:36] So one branch misprediction over here happens.
+[66:39] So which means that at this point, we do not do anything.
+[66:44] We wait for the branch to become the head of the ROB.
+[66:47] When it becomes the head of the ROB, then the mapping of R5 to Px is a part of the committed state.
+[66:56] Correct?
+[66:57] And R5 to Py is an interim value and R5 to Pz is the latest.
+[67:06] So let me name them.
+[67:10] So this is a part of the committed state.
+[67:13] Right?
+[67:14] Because this has been written.
+[67:16] This instruction has been committed.
+[67:19] This instruction is interim, which means that a write has been done, but the instruction
+[67:25] has not committed.
+[67:26] Consequently, we have not released Px because this instruction has not committed R5 to Py.
+[67:31] And this is the latest.
+[67:33] So what do we do?
+[67:37] What we need to do over here is, we need to, what we need to do is, well, the first thing
+[67:44] that we need to do is essentially change the color.
+[67:47] And I am changing the color of my ink.
+[67:50] So we pretty much need to cancel this part of the execution.
+[67:54] Because this is potentially on the wrong path.
+[67:57] And we need to roll back our state to this point.
+[68:03] If we need to roll back our state to this point, we pretty much need to restore the values
+[68:10] of all the registers that existed at this point.
+[68:14] So we have already seen in approach 2 that restoring the values is a slow operation.
+[68:22] What we should instead do is that we should restore the mappings.
+[68:27] So for restoring the mappings, what we need to do is that we will have a bit vector that
+[68:35] would have stored the mapping for the current, you know, for the branch corresponding to this.
+[68:45] So there will be a mapping corresponding to this branch, right?
+[68:50] So the mapping that would correspond to this branch would have one over here for Px.
+[68:56] Because for it, Px is the latest mapping of R5.
+[69:03] And for the other two, well, we don't really care what it contains.
+[69:08] Because you know, those are not relevant.
+[69:10] So let me put a question mark because we don't care.
+[69:13] So when we restore the mapping for this branch and we start our execution from here, we will
+[69:20] pretty much start.
+[69:21] Sorry, this doesn't look like a question mark.
+[69:23] So let me put a cross because the mapping doesn't really matter.
+[69:27] So what we would do is we will restore this entry as a valid bit for register R5.
+[69:36] Alright?
+[69:37] And then this is effectively the same as changing the mapping in the previous approach.
+[69:45] But in the previous approach, we were actually copying the mapping, the 7-bit physical register
+[69:51] ID.
+[69:52] In this case, all that we do is in the Pxth entry of this cam-based RAT, instead of 0, we just
+[70:01] convert it to 1.
+[70:03] And naturally, over here, since this entry is replacing this, if 5 is written over here
+[70:10] for Pz, then of course, this gets converted to 0.
+[70:14] But if this is mapping to some other architectural register, then we don't care.
+[70:19] But the most important point is that for Px, the mapping becomes 1, which means that Px becomes
+[70:26] Px now contains the most recent value, which actually it should.
+[70:31] Right?
+[70:32] Because the rest of the instructions state anyway we are getting rid of.
+[70:35] So this actually it should.
+[70:38] So this basically tells us that the process of our checkpoint creation is much faster.
+[70:45] Because in this case, we are dealing with single bits instead of larger 7-bit quantities.
+[70:53] So dealing with them is much faster.
+[70:56] Right?
+[70:57] But of course, the cam itself is slower than a basic SRAM.
+[71:00] In a sense, a hash table is always slower than an array.
+[71:03] So that issue notwithstanding.
+[71:06] Since we are dealing with single bits, we can look at this as a faster alternative, subject
+[71:13] to other constraints.
+[71:14] So now let's go back to the slide show.
+[71:19] So essentially for every branch, we take a snapshot of the valid bits.
+[71:27] The best way to achieve this is to have a shift register with each row, similar to what
+[71:33] we had in the previous design.
+[71:35] And we use the same idea as the SRAM based RAND.
+[71:40] So what do we do?
+[71:41] Well, in this case, what we do is we have a list of mappings where this is of course the
+[71:46] current mapping.
+[71:48] Then we have a field of architectural registers.
+[71:53] So this will remain the same.
+[71:56] Only thing that will get checkpointed are these 1-bit columns.
+[72:00] The checkpointing logic also happens in the same way.
+[72:05] So how does it happen?
+[72:07] Well, the way it happens is whenever we want to take a checkpoint, we just right shift everything.
+[72:12] So these are internally organized as circular queues, which is a recurring pattern that we
+[72:17] are seeing in hardware.
+[72:18] So pretty much this moves over here, this here, this here, this here, then this here.
+[72:25] And whenever we want to recover, we pretty much take the rightmost entry, right?
+[72:30] Or rather the head of the queue, the earliest entry of the queue, the head of the queue.
+[72:35] And then we recover our state to that point.
+[72:40] So this, mind you, is a much faster option because each of these entries is 1-bit instead
+[72:46] of 7-bits.
+[72:48] Hope it's clear.
+[72:50] So now we are in a position to look at the pros and cons of all four schemes.
+[72:56] So the RRF is clearly simple to implement.
+[72:59] Transferring the checkpoint is easy.
+[73:02] It does involve extra register writes every cycle.
+[73:05] We need to say fat values and that too in the ROB.
+[73:09] So space is a concern.
+[73:11] Power efficiency is a concern.
+[73:13] So I would say RRF is simple.
+[73:15] It's not something that you would always want to use if you want to create a high-performance
+[73:20] processor.
+[73:21] What you should instead use is an RRAT where you require less space.
+[73:28] And, but the point is that transferring the checkpoint, etc. is much faster because you
+[73:35] are dealing with mappings and not with values.
+[73:38] It still has activity every cycle.
+[73:40] If you are not happy with activity every cycle, you just want to have it on a branch.
+[73:45] Well, then use an SRAM based RRAT checkpointing scheme.
+[73:51] But, well, what do you do if a normal instruction has an exception?
+[73:56] Well, you need to recover to the nearest branch.
+[73:59] What about the instructions between the branch and that instruction?
+[74:03] Well, then you need a smaller state buffer for that.
+[74:09] What if a code that doesn't have branches for a long time?
+[74:13] So for all of these, I would, there are simple solutions that require some amount of bookkeeping
+[74:20] or some amount of forced checkpointing.
+[74:23] So this is left as an exercise for the viewer to figure out a solution of creating a practical
+[74:30] form of this.
+[74:31] A CAM based approach is needless to say much more efficient than an SRAM based approach
+[74:37] because we are only shifting one bit.
+[74:39] But the overhead is that you are using a CAM which per se by itself is a slower structure
+[74:46] than an SRAM.
+[74:47] All right, so we have successfully ended our journey of this very long chapter on the rather
+[74:58] intricate aspects of an out of order pipeline.
+[75:02] But at least you'll be happy to know that the out of order pipeline is complete.
+[75:08] So some of the key points, renaming is done using the RAT table between architectural and
+[75:14] physical registers.
+[75:15] We do need a free list and dependence check logic.
+[75:19] Wake up, select and broadcast are the core mechanisms that comprise instruction scheduling.
+[75:27] Again, the LSQ manages the dependencies between loads and stores, forwards data between in-flight
+[75:34] loads and stores.
+[75:37] And the reorder buffer is a very important buffer that keeps track of in-flight instructions.
+[75:42] And when they complete, they are said to be committed.
+[75:46] And of course, we need a method of state recovery to move back in time to restore the state that
+[75:54] existed when a given branch was being renamed.
+[75:57] All right.
+[75:58] So in the next chapter, chapter 5, we will study more complex mechanisms in out of order
+[76:05] processors.
+[76:06] And we'll also look at how the compiler helps make processors more efficient.
+[76:12] Right.
+[76:13] So what we can do at the compiler level to make the process of, you know, dealing with
+[76:21] instructions to make processors essentially way more efficient.
+[76:26] All right.
+[76:27] The end.
+[76:28] Thank you very much.
+[76:30] See you in chapter 5.

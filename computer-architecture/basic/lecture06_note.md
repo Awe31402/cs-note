@@ -512,13 +512,13 @@ column order: 112.8 ms
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 自己設計的 ISA | **第 7 支**：SimpleRisc 的指令 |
-| Return address、stack pointer | **第 7–8 支**：函式與 stack |
-| 指令怎麼變成 0 和 1 | **第 8 支**：SimpleRisc 的編碼 |
-| ARM 的 r0–r15、3-address | **第 9–10 支**：Ch4 ARM |
-| x86 的暫存器、2-address、base-index-offset、memory direct | **第 11–14 支**：Ch5 x86 |
-| PC-relative | **第 16 支**：RISC-V 的 branch 與記憶體指令 |
-| Row major vs column major 的取捨、cache | **第 34–37 支**：課本 Ch11 記憶體系統 |
+| 自己設計的 ISA | [第 7 支](lecture07_note.md)：SimpleRisc 的指令 |
+| Return address、stack pointer | [第 7](lecture07_note.md)–[8 支](lecture08_note.md)：函式與 stack |
+| 指令怎麼變成 0 和 1 | [第 8 支](lecture08_note.md)：SimpleRisc 的編碼 |
+| ARM 的 r0–r15、3-address | [第 9](lecture09_note.md)–[10 支](lecture10_note.md)：Ch4 ARM |
+| x86 的暫存器、2-address、base-index-offset、memory direct | [第 11](lecture11_note.md)–[14 支](lecture14_note.md)：Ch5 x86 |
+| PC-relative | [第 16 支](lecture16_note.md)：RISC-V 的 branch 與記憶體指令 |
+| Row major vs column major 的取捨、cache | [第 34](lecture34_note.md)–[37 支](lecture37_note.md)：課本 Ch11 記憶體系統 |
 | 每個程式以為記憶體都是自己的 | 課本 Ch11 虛擬記憶體；[`os/linux-os` 第 5 支](../../os/linux-os/lecture05_note.md) |
 
 ---

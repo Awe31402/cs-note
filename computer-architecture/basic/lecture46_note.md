@@ -430,7 +430,7 @@ erase 之後才能寫 1001：[1, 0, 0, 1]，這個 block 的 P/E = 1
 
 | 本講觀念 | 後面在哪裡用到 |
 |---|---|
-| 計算機架構的過去、現在、未來 | **第 47 支**：Computer Architecture: Past, Present, and Future |
+| 計算機架構的過去、現在、未來 | [第 47 支](lecture47_note.md)：Computer Architecture: Past, Present, and Future |
 | 進階計算機架構（老師說的下一本書） | [Advanced Computer Architecture 課程](../advanced/README.md)（`nextgen-comp-arch.pdf`） |
 | 硬碟、zoning、LBA 對應表 | [第 45 支](lecture45_note.md) |
 | NRZI、CRC | [第 43 支](lecture43_note.md)、[第 44 支](lecture44_note.md) |
