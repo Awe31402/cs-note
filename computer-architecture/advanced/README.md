@@ -51,16 +51,16 @@ YouTube 播放清單「Advanced Computer Architecture -- Smruti R. Sarangi」的
 | 43 | [主記憶體（三）：DDR4 的狀態圖、時序參數與 memory controller](lecture43_note.md) | Ch10 | 1:07:58 | Chapter 10: Main Memory (DDR4 timing and the memory controller) -- Part III |
 | 44 | [主記憶體（四）：非揮發記憶體、flash（NOR、NAND、P/E cycle、wear leveling）與 FeRAM](lecture44_note.md) | Ch10 | 57:56 | Chapter 10: Main Memory (Flash and FeRAM) -- Part IV |
 | 45 | [主記憶體（五）：STT-MRAM、PCM、ReRAM、3D 記憶體與 roofline model](lecture45_note.md) | Ch10 | 42:36 | Chapter 10: Main Memory (MRAMs, PCM, ReRAM, Roofline model) -- Part V |
-| 46 | 待寫 | Ch11 | 47:40 | Chapter 11:  Power and Temperature (dynamic and leakage power) --- Part I/III |
-| 47 | 待寫 | Ch11 | 52:00 | Chapter 11:  Power and Temperature (temperature modeling) --- Part II/III |
-| 48 | 待寫 | Ch11 | 42:23 | Chapter 11:  Power and Temperature (power and temperature management) --- Part III/III |
-| 49 | 待寫 | Ch12 | 1:01:10 | Chapter 12: Reliability (Soft errors and inductive noise) -- Part I/III |
-| 50 | 待寫 | Ch12 | 43:28 | Chapter 12: Reliability (non-determinism and design faults) -- Part II/III |
-| 51 | 待寫 | Ch12 | 1:18:33 | Chapter 12: Reliability (Variation and Hard Errors) -- Part III/III |
-| 52 | 待寫 | Ch13 | 1:10:14 | Chapter 13:  Secure Processor Architectures (Part I) -- Cryptographic Fundamentals and Encryption |
-| 53 | 待寫 | Ch13 | 1:24:53 | Chapter 13: Security (Part II/III) -- Secure Processors |
-| 54 | 待寫 | Ch13 | 1:07:26 | Chapter 13: Secure Processor Architectures (Side channel attacks and ORAM) -- Part III/III |
-| 55 | 待寫 | Ch14 | 1:14:37 | Chapter 14: Architectures for Machine Learning (Part I) -- Basic ML Concepts |
-| 56 | 待寫 | Ch14 | 1:06:22 | Chapter 14: Architectures for Machine Learning (Part II) -- Mathematical representations |
-| 57 | 待寫 | Ch14 | 1:06:44 | Chapter 14: Architectures for Machine Learning (Part III) -- Hardware Architectures |
-| 58 | 待寫 | Ch14 | 38:54 | Chapter 14: Architectures for Machine Learning (Part IV) -- Optimizations and Memory Systems |
+| 46 | [功率與溫度（一）：動態功率、ED² 指標、短路功率與六種漏電機制](lecture46_note.md) | Ch11 | 47:40 | Chapter 11:  Power and Temperature (dynamic and leakage power) --- Part I/III |
+| 47 | [功率與溫度（二）：晶片散熱封裝、Fourier 熱傳導方程、FDM／電路類比、FEM 與 Green's function](lecture47_note.md) | Ch11 | 52:00 | Chapter 11:  Power and Temperature (temperature modeling) --- Part II/III |
+| 48 | [功率與溫度（三）：DVFS、clock gating、power gating、drowsy cache 與溫度／排程管理](lecture48_note.md) | Ch11 | 42:23 | Chapter 11:  Power and Temperature (power and temperature management) --- Part III/III |
+| 49 | [可靠度（一）：fault／error／failure、軟錯誤物理（Hazucha–Svensson）、遮罩機制、DIVA checker 與電感雜訊](lecture49_note.md) | Ch12 | 1:01:10 | Chapter 12: Reliability (Soft errors and inductive noise) -- Part I/III |
+| 50 | [可靠度（二）：固有非確定性、確定性匯流排、設計缺陷（errata）、形式驗證與矽後除錯](lecture50_note.md) | Ch12 | 43:28 | Chapter 12: Reliability (non-determinism and design faults) -- Part II/III |
+| 51 | [可靠度（三）：光微影與參數變異（Varius、SSTA、OPC／PSM）、電晶體老化（NBTI／HCI）、硬錯誤（RAMP）與浴缸曲線](lecture51_note.md) | Ch12 | 1:18:33 | Chapter 12: Reliability (Variation and Hard Errors) -- Part III/III |
+| 52 | [安全處理器（一）：密碼學基礎、AES 區塊加密、CTR 模式、RC4、RSA 與 Diffie–Hellman](lecture52_note.md) | Ch13 | 1:10:14 | Chapter 13:  Secure Processor Architectures (Part I) -- Cryptographic Fundamentals and Encryption |
+| 53 | [安全處理器（二）：SHA 雜湊、MAC、緩衝區溢位、TCB／TPM、記憶體加密引擎（MEE）與 Bonsai Merkle tree](lecture53_note.md) | Ch13 | 1:24:53 | Chapter 13: Security (Part II/III) -- Secure Processors |
+| 54 | [安全處理器（三）：Intel SGX 飛地生命週期、反向分頁表（IPT）、Path ORAM 與旁道攻擊](lecture54_note.md) | Ch13 | 1:07:26 | Chapter 13: Secure Processor Architectures (Side channel attacks and ORAM) -- Part III/III |
+| 55 | [機器學習硬體（一）：機器學習基礎、非線性活化（Sigmoid／tanh／ReLU）與卷積神經網路（CNN）](lecture55_note.md) | Ch14 | 1:14:37 | Chapter 14: Architectures for Machine Learning (Part I) -- Basic ML Concepts |
+| 56 | [機器學習硬體（二）：七重迴圈數學表示法、loop tiling、halo pixels 與四種 stationarity 映射](lecture56_note.md) | Ch14 | 1:06:22 | Chapter 14: Architectures for Machine Learning (Part II) -- Mathematical representations |
+| 57 | [機器學習硬體（三）：空間重用硬體資料流、脈動陣列（systolic arrays）、Retiming Lemma 與矩陣乘法轉換](lecture57_note.md) | Ch14 | 1:06:44 | Chapter 14: Architectures for Machine Learning (Part III) -- Hardware Architectures |
+| 58 | [機器學習硬體（四）：推論最佳化、位元串列乘法、記憶體系統與記憶體內類比運算（PIM／ReRAM）](lecture58_note.md) | Ch14 | 38:54 | Chapter 14: Architectures for Machine Learning (Part IV) -- Optimizations and Memory Systems |
