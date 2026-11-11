@@ -1,0 +1,20 @@
+== INV : F = (A)'
+   n-network: ('nmos', 'A')
+   p-network: ('pmos', 'A')
+   transistors: 1 nMOS + 1 pMOS = 2
+   all 2 inputs: exactly one network conducts and output = F -> True
+== NAND2: F = (A·B)'
+   n-network: ('series', ('nmos', 'A'), ('nmos', 'B'))
+   p-network: ('parallel', ('pmos', 'A'), ('pmos', 'B'))
+   transistors: 2 nMOS + 2 pMOS = 4
+   all 4 inputs: exactly one network conducts and output = F -> True
+== NOR2 : F = (A + B)'
+   n-network: ('parallel', ('nmos', 'A'), ('nmos', 'B'))
+   p-network: ('series', ('pmos', 'A'), ('pmos', 'B'))
+   transistors: 2 nMOS + 2 pMOS = 4
+   all 4 inputs: exactly one network conducts and output = F -> True
+== AOI22 (slide 91 example): F = (A·B + C·D)'
+   n-network: ('parallel', ('series', ('nmos', 'A'), ('nmos', 'B')), ('series', ('nmos', 'C'), ('nmos', 'D')))
+   p-network: ('series', ('parallel', ('pmos', 'A'), ('pmos', 'B')), ('parallel', ('pmos', 'C'), ('pmos', 'D')))
+   transistors: 4 nMOS + 4 pMOS = 8
+   all 16 inputs: exactly one network conducts and output = F -> True

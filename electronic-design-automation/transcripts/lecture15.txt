@@ -1,0 +1,1150 @@
+[00:00] 這個我們再來講這個重要的Croptry Synthesis。那我是在上網查到一些資料跟你們分享。那首先呢,我們知道在這一個繼續沿用這個,尤其San Diego,他們介紹的這個等格明星的流程呢,在placement中間跟signal
+[00:29] Routing 中間有一個Cloud Tree Synthesis
+[00:33] 那是什麼呢
+[00:34] 跟大家分享一下
+[00:36] 它是一個Cloud Tree Synthesis
+[00:37] 它是這麼講
+[00:38] 一個Clark的這個Source 這樣進來
+[00:41] 去Drive的很多個Free Frog
+[00:43] 那這個時候還沒加Puffer
+[00:45] 那通常來講的話
+[00:48] 這個它這個Timing Delay 的話
+[00:50] 會是蠻辛苦的
+[00:53] 因為很多個Free Frog
+[00:56] 所以這個Loading 蠻大的
+[00:58] 這時候我們也看到
+[01:01] 詞明有時候用H3這樣的情形
+[01:03] 但是也是一樣
+[01:05] 他這個我們要想辦法的
+[01:08] 讓這個Insertion Delay
+[01:09] 就是從這個Clark
+[01:11] Reach到這些Clark Pin
+[01:13] 它的Delay不要太長
+[01:15] 然後這個每一個Clark Pin的這個Delay
+[01:20] 也都不會太多
+[01:21] 所以Skill Minimize
+[01:22] 所以很自然的就是說
+[01:24] 要不要加Buffer跟這個
+[01:26] 然後把這一個
+[01:28] Clark Delay 把它 balance 了
+[01:30] 所以呢
+[01:30] Clark Tree Synthesis 是一個很重要的 Step
+[01:34] 然後呢
+[01:34] 它的
+[01:36] 它的結果呢
+[01:37] 可以決定的 Timing Convergence 還有 Power
+[01:41] 那我們知道通常來講
+[01:43] Clark 數 30-40% 的 Power
+[01:45] 所以呢
+[01:46] Clark Architecture
+[01:47] Clark Gating 啊
+[01:48] Clark Tree 呢
+[01:49] 都是
+[01:50] 會幫忙 Reduce Power
+[01:53] 所以呢
+[01:53] Power Consumption 變得不要
+[01:56] 那麼熱,那麼多,這個是蠻重要的
+[01:58] 那從這個把這個clock distribute 到這個clock pin 叫做 CTS
+[02:05] Cluck Tree Synthesis
+[02:06] 那I basically deliver clock to all sequential elements
+[02:11] 它要是這個insert the buffers or inverter along the clock path
+[02:17] 然後to achieve zero or minimum clock skill or balance skill
+[02:24] 那before cloud tree synthesis 的時候
+[02:26] 所有的 cloud pin 都被 drive by
+[02:29] driven by 一個 single cloud source
+[02:31] 但是這樣的話
+[02:33] loading 太大
+[02:33] 這樣子不行
+[02:34] 所以必須要加 buffer 這樣的情形
+[02:37] the cloud tree synthesis
+[02:38] starting point is the cloud source
+[02:40] ending point is the cloud pin
+[02:42] of the sequential sales
+[02:44] 這邊的這一章呢
+[02:48] 基本上是講說
+[02:49] 這 cloud tree synthesis 是 challenge
+[02:51] 因為呢
+[02:52] 剛剛講過 cloud tree
+[02:53] 然後我們當然就要想辦法的去reduce它了
+[02:58] 然後呢這個complex的clock tree呢
+[03:00] 還有一些clock large cell 也使得這些問題
+[03:03] such as 比如說clock gating
+[03:05] 然後呢還有divided max
+[03:07] 所以這些都在clock tree synthesis 要考慮到
+[03:10] 那複雜的跟這個timing constraint
+[03:13] across the process
+[03:15] across the voltage and temperature
+[03:17] 還有這不同的這個operative
+[03:20] Voltage 和Temperature 還有不同的Operating Scenario
+[03:24] 這也是複雜
+[03:27] Ulture Variation 也是一通口
+[03:31] 但是我們必須要考慮
+[03:33] 因為這樣的話
+[03:35] 可以使我們的Design Margin大一些
+[03:39] 這個圖的話基本上是講的
+[03:40] Before Cloud-Tree Synthesis Cloud-Sources
+[03:43] Drive了這麼多的Free-Front Cloud Pin
+[03:46] 然後我們必須要決定
+[03:48] 到底要用幾個level的Club Buffer
+[03:51] 然後呢來drive到這個Free Flop
+[03:54] 然後呢
+[03:55] 你可以看出來這一個呢
+[03:56] 最上面的那個Club Buffer呢
+[03:59] 它是比較大
+[04:00] 那慢慢的這個這個變小
+[04:02] 所以呢
+[04:03] Club3呢是一個pass呢
+[04:05] 從Club Source到這個Club Sync
+[04:08] 然後Club3現在是process creating
+[04:11] 這Club Pass
+[04:12] 從Club Source到Club Sync
+[04:14] 那所有的Club Pin和Free Flop
+[04:17] I'll consider as a cloud sink
+[04:20] 好
+[04:21] 然後
+[04:22] 再來就是說
+[04:23] 我到底要有幾個 cloud buffer level
+[04:26] 比較好
+[04:27] 然後呢
+[04:28] 要有什麼樣的 cloud buffer
+[04:31] 然後呢
+[04:32] At the bottom level
+[04:33] How many free flops can be driven by one cloud buffer
+[04:39] 還有呢
+[04:39] For the higher level
+[04:41] 這個 cloud buffer drive buffers
+[04:45] How many of them can form a group?
+[04:48] 所以就是這個意思
+[04:49] 像這個的話
+[04:50] 它Drive兩個不同的Buffer
+[04:53] 不同Size的Buffer
+[04:54] 這樣進行
+[04:57] 好的
+[04:57] 然後呢
+[04:58] 再來就是說
+[04:59] 我們就從下面做起的話
+[05:01] 這個Free Flop
+[05:02] 我要怎麼做grouping
+[05:04] 那通常我們知道
+[05:05] 這個Cloud Traces都是在
+[05:07] After Placement
+[05:08] 對不對
+[05:09] 然後呢
+[05:10] 這個時候我們來決定
+[05:11] 什麼樣的Buffer放上去
+[05:13] 然後呢
+[05:14] 要放在什麼地方
+[05:17] 好
+[05:19] 那最後呢
+[05:23] 這些這個card power放好了
+[05:25] 那當然就一個下一個問題
+[05:26] 就是怎麼樣去接它
+[05:27] 要用H3的這個style
+[05:30] 還是怎麼樣進行
+[05:31] 所以呢
+[05:32] 這些都是在考慮的
+[05:33] 那這些就是在這個
+[05:35] 都是這個
+[05:37] 這個plan tree synthesis
+[05:38] 必須要考慮到的東西
+[05:40] 那這邊的話
+[05:42] 他就說好
+[05:42] 我再做cloud-sensibility
+[05:44] 我考慮到cloud-skill
+[05:45] 我要去minimize它
+[05:46] 然後呢
+[05:47] 如果說cloud-incertion delay太長的話
+[05:50] 這也不好
+[05:51] 那再來一個skill
+[05:53] 對不對
+[05:54] 剛剛有講說像這一個
+[05:55] 進到第一個freeflop
+[05:57] A的話
+[05:58] cloud-a
+[05:59] 它的cloud waveform是這樣的情形
+[06:02] cloud-b waveform是這樣
+[06:03] 我們就看到這邊是有skill了
+[06:05] 那
+[06:06] 一個cloud-buffer
+[06:08] 一個cloud-source
+[06:09] drive很多個freeflop
+[06:11] 或者它的這個loading也比較
+[06:13] 所以也有這樣子
+[06:15] 也是必須要考慮的
+[06:17] 然後呢
+[06:17] Clark's power hungry
+[06:20] 然後呢
+[06:20] 它跟這個signal的話
+[06:22] 這個這個wire
+[06:24] 如果擺得太靠近的話
+[06:25] 會有一些coupling effect
+[06:27] 所以呢
+[06:28] 很多的時候呢
+[06:29] Clark tree的這個routing呢
+[06:32] 旁邊都要加一些
+[06:33] 多一點space呢
+[06:34] 去減少
+[06:35] 這minimize the cross-tall
+[06:37] 然後呢
+[06:37] 因為Clark呢
+[06:38] 這個toggle很大很快
+[06:41] 所以我們也要考慮到electro-migration的問題
+[06:44] 這樣進行
+[06:48] 那在這邊
+[06:49] 配文上就講說這個Cluck Tree
+[06:52] 甚至是有哪些控制要follow
+[06:54] 第一個呢
+[06:55] 你要設計到Tarkey的
+[06:59] Skill是多少
+[07:01] 0的話是最好
+[07:02] 但是0也有不太好的地方
+[07:04] 因為所有的Cluck和Free Flop
+[07:06] 都同時Targo
+[07:08] 這樣的話
+[07:09] 也會肯輸很多的power這樣的情形
+[07:11] 所以Skew的這個Skew有一個range
+[07:16] 這個有一個tolerance
+[07:17] 再來呢
+[07:18] maximum transition
+[07:20] 我們講到delay的時候呢
+[07:22] 又講到transition delay是什麼意思
+[07:24] 然後呢
+[07:25] 這個maximum的transition delay是多少
+[07:28] 還有maximum的passion是多少
+[07:32] 所以對那些freeflop的input ping
+[07:35] climb input ping
+[07:36] 還有buffer的input ping
+[07:37] 這些都有loading cap
+[07:39] 那我到底最多隻能夠看到多少個
+[07:42] 這個maximum的capacitance
+[07:44] 然後呢
+[07:46] insertion delay
+[07:47] 就是從clock source
+[07:48] 一直到clock pin在free flow上頭
+[07:53] 這個delay呢
+[07:54] 這個叫做latency
+[07:55] 這個也不能夠太長
+[07:58] 那這個clock tree呢
+[08:00] 這些buffer這些cell
+[08:01] 是哪些可以用到的
+[08:02] 因為這些buffer也要特別的設計
+[08:04] 使得它的rise跟fall的
+[08:07] 那個微縫呢
+[08:08] 其實都要非常非常的靠近啊
+[08:11] 我們不願意說
+[08:13] Rise很快的Falling
+[08:14] 不太好這樣的執行
+[08:17] 然後呢
+[08:18] 每一個Buff呢
+[08:19] 它的最多的Fainout是多少
+[08:22] 然後呢
+[08:22] Prefer的Clock Tree的Routing Layer
+[08:25] 在到底在哪個
+[08:27] 哪個Layer
+[08:27] 那如果這個Layer高的話
+[08:29] 那它整個從
+[08:31] 從這個
+[08:32] 這個Clock Source那個Ping啊
+[08:34] 怎麼
+[08:35] 怎麼浮上來
+[08:37] 浮到GollarLayer,然後再Drive它
+[08:39] 這就是上次有講過
+[08:41] 有的時候都要用到
+[08:43] VRPillar
+[08:45] 那也是蠻辛苦的
+[08:47] 因為有些DRC的violation
+[08:49] 常常在那個地方發生
+[08:51] 然後這個Club3的Routing
+[08:53] 通常都需要用到
+[08:55] DefaultRouting Rules
+[08:57] 然後考慮
+[08:59] SaleDensity
+[09:01] 在做Placement的時候
+[09:03] SaleHalo
+[09:05] 那這個意思是headle什麼意思呢
+[09:07] You need to provide a header around a clock tree's instances
+[09:10] to avoid a dense placement
+[09:12] which will cause the IR 或者是 crumbtong issue
+[09:16] 所以呢大家知道說
+[09:18] 在整個layout design的時候
+[09:20] 也會考慮到這些東西
+[09:21] so provide a header constraint
+[09:24] 在X跟Y的這個 direction over the cell
+[09:28] 就是這個周圍的空間
+[09:30] 你不要有其他的incense進來
+[09:35] 不要弄得太密
+[09:37] 這樣的形式
+[09:38] 那這個的話其實是這樣子
+[09:40] 我這個class source
+[09:42] 這個webform開始的時候
+[09:44] 經過這class buffer
+[09:45] 所以有一個transcend delay
+[09:47] 所以稍微慢了一點
+[09:48] 所以我們需要
+[09:50] timing library的information
+[09:52] 才能決定說
+[09:54] 這個transcend delay是多少
+[09:55] 然後再來
+[09:57] given一個class buffer
+[09:58] assuming
+[10:00] 它的Input Transition是多少
+[10:02] 然後我們來看
+[10:04] 多少個Loading Cap
+[10:06] 使得會造成這個Transition Delay
+[10:09] 就Output的Transition Delay
+[10:10] 是可以被接受的
+[10:12] So how much Total Cap
+[10:15] It can drive
+[10:16] and it means the output
+[10:18] Next amount ofTransition Delay
+[10:19] 所以當時我們這個Cloud Trade Sensitive Program
+[10:23] 是這樣的情形
+[10:24] 對每一個Buffer
+[10:26] 我們去看
+[10:27] 它的Transition Delay
+[10:29] 這是假設是很快上來的好了
+[10:32] 然後呢
+[10:33] 根據這個
+[10:35] FreeFrog的這一些
+[10:37] Clug的Ping的loading
+[10:39] 那我來決定
+[10:41] 這個我一個
+[10:43] 這個Buffer可以決定
+[10:44] 可以來Drive多少個ClugPing
+[10:47] And check the Input Cap
+[10:49] 好
+[10:50] FreeFrog and Etimate
+[10:54] 然後呢
+[10:54] 這時候呢
+[10:55] 再來看說這個FreeFrog的ClugPing
+[10:59] 然後再來estimate是Wireless多少
+[11:02] 然後RC多少
+[11:03] 這樣子的話
+[11:05] 所以每個Buffer
+[11:06] 都要來做這樣子的分析
+[11:09] 這樣才能夠決定這個Buffer
+[11:10] 可以Drive
+[11:11] How many free-frog clumpings
+[11:13] and still meet the
+[11:16] Foundstrain
+[11:18] 所以這一張的話
+[11:19] 是跟大家講的
+[11:21] 我們當時
+[11:22] 怎麼去挑那些Clubbuffer
+[11:24] 在可以挑的那些Clubbuffer中間
+[11:27] 怎麼調
+[11:31] 所以這個Input to Classic Synthesis
+[11:33] 當然是這個
+[11:34] 第1個Technology File
+[11:37] Netlist
+[11:39] 這個
+[11:40] Static Delay
+[11:42] LongStraint
+[11:43] 或者是Synopsis Delay
+[11:46] LongStraint
+[11:47] 然後呢
+[11:48] DotLive File
+[11:49] 然後呢
+[11:50] 這個
+[11:51] 這是Timing.Live
+[11:53] 然後呢
+[11:53] DotLive File
+[11:55] 還有TLU Plus
+[11:56] 這個是給RCE的作用
+[11:58] 那Placement也做好了
+[11:59] 所以一個Placement的DevFile
+[12:02] 那Clark的Specification呢
+[12:04] 然後Contains的
+[12:05] InsisionDelay是多少
+[12:06] Skill要多少
+[12:08] ClarkTransition是多少
+[12:10] ClarkSale
+[12:10] 我們ClarkBuffer哪些是可以用的
+[12:13] 什麼樣的DefaultRouting rule
+[12:15] 這個Tree的Type是怎麼樣進行
+[12:18] 然後Tree有沒有一些Exception
+[12:21] 然後List of Buffer Inverted
+[12:23] 所以在這個地方
+[12:25] 所以這個地方
+[12:29] 就這些input
+[12:31] 然後對Project Synthesis
+[12:32] 最重要的話題是
+[12:34] Meeting the clock tree target
+[12:37] Minimize skill
+[12:38] Minimize incision delay
+[12:41] 這是這樣的情形
+[12:42] 這是我看到的這些information
+[12:45] 那我當時做的也是相同
+[12:49] 那我們對這個
+[12:50] 那通常clock是進來到這個rock裡頭
+[12:54] 那通常都經過一些 insertion delay
+[12:57] 那就是class source
+[12:58] 通常PL產生出來
+[13:00] 然後呢
+[13:01] 從這個點的話
+[13:02] 進到這個free flop這邊的clamping
+[13:05] 我到底要這個
+[13:08] 要加多少個buffer
+[13:10] 然後這個tree長什麼樣子
+[13:12] 那如果說你看
+[13:13] 像這個的話
+[13:14] 是經過一個buffer就drive
+[13:16] 到第一個free flop的clamping
+[13:18] 這個要經過三個buffer
+[13:20] 那他們這個delay是
+[13:22] 就會有點不同
+[13:25] 所以呢
+[13:27] 以整個System Level 來看的話
+[13:29] Total Latency 的話就是
+[13:30] Source 方面的Insurgent Delay
+[13:33] 再加上這個Network 的Insurgent Delay
+[13:37] 所以呢
+[13:37] 好
+[13:38] 所以這個是要考慮的
+[13:40] 當我們在考慮這個
+[13:42] Latency 方面的時候
+[13:45] 好
+[13:46] 那
+[13:47] Leptor Tree is built
+[13:48] 我們要做Routing
+[13:49] 假設我們這 Cloud Buffer
+[13:51] 這個tree做好了
+[13:52] 那現在就說我怎麼去route它
+[13:55] 所以呢
+[13:56] 這也是
+[13:58] 剛剛我們在前面的
+[14:01] 那個chapiton講到說
+[14:02] 這個clark tree routing
+[14:03] 就對這個來講
+[14:06] 這class source drive
+[14:07] 這四個buffer的話
+[14:09] 我當然也要用什麼樣的
+[14:11] 這個pattern
+[14:13] 去tree的pattern
+[14:14] 還是說要用到這個
+[14:16] zero skewed的那些routing的pattern
+[14:19] 這樣進行
+[14:21] 然後也歡迎大家想想看
+[14:24] 我怎麼樣去synthesize一個cloud tree
+[14:26] 除了我剛剛講的一些分析
+[14:31] 根據time.lib的information
+[14:33] 然後這個cloud buffer
+[14:34] 我可以每個cloud buffer
+[14:36] 它可以drive多少個freeflop
+[14:38] in order to meet這個maximal transition trend
+[14:43] 好的
+[14:44] 那cloud tree routing
+[14:46] 通常是在regular signal net的routing之前
+[14:51] 因為這個比較critical
+[14:53] 通常我們都要
+[14:54] 還要多一點space
+[14:56] spacing來保護它
+[14:59] 減少這個cross talk
+[15:02] 好
+[15:04] 所以像剛剛這邊
+[15:05] 這個D4 routing rule
+[15:07] 有一個signal
+[15:08] 有一個clock
+[15:09] 像這個的話
+[15:10] 就會造成cross talk
+[15:11] 不太好
+[15:12] 所以clock的這個
+[15:14] 因為它toggle比較快
+[15:16] 比較這個大
+[15:18] 所以通常這個位置要寬一點
+[15:20] 然後這個spacing要快一點
+[15:23] 所以用這個圖來給大家分享
+[15:26] 甚至有的時候
+[15:29] 要加ground的shoulding來保護它
+[15:33] 是這樣子
+[15:34] 那現在的shoulding的話
+[15:36] 這是在同一個layer上頭
+[15:38] 甚至有的時候
+[15:39] 要跑到上面的layer去
+[15:41] 那people rule剛剛也講了
+[15:44] 這個wire的wistar spacing
+[15:46] 然後再來一個也跟VR有關
+[15:50] 那我比如說我打彎的時候
+[15:52] 這個地方我到底是要加幾個V
+[15:54] 是不同的寬度
+[15:57] 那是不是要R的V
+[15:59] 還是RV
+[16:00] 所以這個Effect of Different V
+[16:03] 這個在這個
+[16:05] 這個constraint裡頭都可以
+[16:08] 印出來
+[16:09] 然後呢我們就看到了IC2
+[16:11] 可以說Route Cluxnet
+[16:13] Using the default routing rules
+[16:15] Double Spacing
+[16:17] Double Whist
+[16:18] Shielding
+[16:18] 然後呢
+[16:20] NDRU通常去harden the clock
+[16:23] 它的意思就是說
+[16:25] make the clock route less sensitive to the cross-talk
+[16:28] and the electro-migration的 effect
+[16:30] 因為它的target很快
+[16:32] 然後呢
+[16:33] 另外一個呢
+[16:34] 還不需要跟其他的signal太靠近
+[16:36] 會造成cross-talk的影響
+[16:39] 那更進一步的Clarnail
+[16:42] harden to provide 100% VR optimization
+[16:47] 去 enhance reliability
+[16:49] 就是要 double VR
+[16:51] 甚至呢
+[16:53] 用大的 VR
+[16:54] 這樣進行
+[16:55] 所以目前的這個
+[16:58] 這個這些
+[17:00] press and route
+[17:01] 都往這方面這樣子走了
+[17:03] 好的
+[17:04] 那這個就是剛剛講的
+[17:06] 從這個大的這一個
+[17:08] club buffer
+[17:09] 我drive它的時候
+[17:10] single VR
+[17:11] 這是不夠的
+[17:12] 這個single stacking VR
+[17:14] 所以要用這個VR pillar
+[17:15] 所以我們看到在臺階這個ISPD的發表
+[17:21] 大的Driver
+[17:22] 然後要把這個Wire放到upper layer
+[17:28] 它有比較厚比較寬
+[17:30] VR pillar這樣湧上來
+[17:33] reduce這個transistor,Metal,還有VR的resistance
+[17:38] 那這個VR pillar enablement是比較複雜的
+[17:43] 而且需要EDA的tool進來看
+[17:46] 是這樣的情形
+[17:48] 這也是為什麼EDA是蠻重要的
+[17:51] 這個東西
+[17:53] 好
+[17:54] 那我們也看到呢
+[17:56] 這位老師呢
+[17:57] 這個2018他的上課的slide
+[17:59] 我這個cloud tree呢
+[18:01] 我怎麼去optimize它
+[18:02] 我們就來看看
+[18:04] 有這麼一個sergic diagram
+[18:07] 然後是cycle是這樣的情形
+[18:09] 然後好
+[18:11] 那我們先看
+[18:11] 原來是這樣子的club tree
+[18:15] 第一個club buffer drive
+[18:19] 是四倍的這個strength
+[18:22] 然後經過這個
+[18:23] 這個是一個end gate
+[18:25] 這是一個buffer
+[18:26] 好的
+[18:27] 然後呢
+[18:28] 他就說了
+[18:29] 這幾種optimization
+[18:31] 第一個呢
+[18:32] 我把這個三倍的這一個club buffer呢
+[18:35] 要動一動
+[18:36] 所以動一下
+[18:38] 所以這個有白線的話
+[18:40] 大家知道一下
+[18:42] 然後呢
+[18:43] 再來的話
+[18:44] Gate 可能也要
+[18:45] 所以這一個
+[18:46] 就是這個來線的話
+[18:48] 代表這個意思
+[18:49] 所以對這個圖來講
+[18:50] 是這樣的進行
+[18:52] 那甚至呢
+[18:53] 我可能把原來用兩倍的
+[18:55] 這個 Drive
+[18:56] Strange
+[18:57] 來Drive的這一個
+[18:58] 這一個FreeFront
+[18:59] 把它改成三倍
+[19:00] 所以呢
+[19:01] 包括有些Sizing的東西
+[19:03] 然後呢
+[19:04] 甚至呢
+[19:05] 這個Gate的話
+[19:06] 我可能也Size它
+[19:08] 那甚至有的時候呢
+[19:09] 這個時候呢
+[19:10] 我還要insert一些delay
+[19:12] 這些都是仿生的
+[19:15] 那甚至可以看這邊
+[19:17] 這邊還要再加一個4倍的X這個東西
+[19:20] 所以這個都在調那些delay這樣進行
+[19:23] 所以有幾種optimization的結果
+[19:28] 就讓大家知道
+[19:29] 那這張slide就講說
+[19:31] 對長的delay
+[19:33] 為什麼我們要加buffer
+[19:35] 所以呢
+[19:36] 就在這個有一個reference book上頭
+[19:38] Google上頭,我也找到這個picture
+[19:41] 跟大家分享
+[19:43] 它基本上就說,好,我對一個buffer來講
+[19:46] 它的這個small signal的
+[19:48] 這個switch level的這個modeling是這樣子
+[19:51] 這邊有一個pubbling cam
+[19:53] 這是從gate那邊過來的
+[19:55] 中間這邊是斷掉的
+[19:56] 那這邊是一個是
+[19:58] Either是voltage control source
+[20:00] 或是current control source
+[20:02] 有這個output resistance的
+[20:04] 還有它的這個output
+[20:08] 所以這個buffer的model是這樣進行
+[20:12] 所以中間是有點把
+[20:13] 就是這邊是有這個彈調的
+[20:17] 所以這個是switch level的這個modeling
+[20:20] 那對一個很長的這個wire的話
+[20:23] 然後呢
+[20:25] 我們找一個地方
+[20:26] 找一個地方加buffer
+[20:31] 那本來這個wire很長
+[20:32] wire很長的話
+[20:34] 你看
+[20:35] 還有前面的後面的
+[20:38] 它的意思是這樣子
+[20:41] 我加了這一個
+[20:43] 挑了某個地方
+[20:45] 加了這個buffer
+[20:46] 所以我就把這個長的話
+[20:48] 就變成兩段
+[20:50] 前面那一段
+[20:51] 就是講的前面upper
+[20:53] 然後下面的那一段是這個dump
+[20:55] 然後呢
+[20:56] 這個upper這邊的話
+[20:58] 它所看到的這一個
+[21:00] 這個wire的cap
+[21:01] 就比較短了
+[21:03] 因為這邊是
+[21:04] 這邊要沉起來的
+[21:06] 當然呢
+[21:07] 那這邊也看到自己buffer的這個input的cap
+[21:13] 然後downstream的話就是它的outputcapacitance
+[21:16] 再加上這個instream的cap
+[21:20] 所以這樣的情形的話
+[21:21] 就把這個rc呢
+[21:23] 這個buffer就把這一個就把它拆開來
+[21:27] 這樣的話
+[21:28] 它的delay會變少
+[21:29] 這是為什麼用這張這個picture呢
+[21:33] 就是解釋為什麼
+[21:35] 對,長的interconnect,我們通常都要加Buffer
+[21:39] 好,那我們剛剛講到這個Cluck Tray Synthesis
+[21:42] 因為這個Cluck Source drive很多個FreeFront
+[21:46] 所以這個很大的net的話是沒有辦法drive那麼多個FreeFront
+[21:53] 所以同樣的道理
+[21:55] 我們遇到一個這個Plump Fan Online Synthesis
+[21:58] 就是有一些net呢
+[22:00] 它以很大的費量,比如說像Sed Reset
+[22:03] 它也要跑到所有的FreeFront
+[22:05] 然後scan-enabled也是一樣
+[22:08] 還有一些signal
+[22:10] 但是比較靜態static
+[22:14] 就是偶爾才變一下
+[22:17] 這種訊號當然也要加這個buffer
+[22:24] 那是什麼樣的buffer呢?
+[22:26] 被用在一般的hyphenoland
+[22:30] 所以他這邊稍微要講一下
+[22:32] 我們在做clock的時候
+[22:33] clock tree的時候
+[22:35] 剛剛講過,不然是buffer,或者是inverter
+[22:39] Rise跟Fall Time是要儘量一樣的
+[22:45] 所以對這種Design,它的requirement就比較高一點
+[22:50] 但是HyphenLNet它的buffer就不見得要這麼樣的嚴格的限制
+[22:58] 所以它可以比較relax一下
+[23:02] 那再來一個呢
+[23:03] 這個的話
+[23:06] ClubTree的Buffer呢
+[23:07] 通常我們ClubTree的Power
+[23:10] 通常我們要給它特別的注意
+[23:12] 因為它是一直都在switching
+[23:15] 但是呢
+[23:17] HyphenRound Synthesis
+[23:18] 它的那些Net的話
+[23:19] 基本上都比較穩定一點
+[23:21] Static一點
+[23:22] 所以不見得要
+[23:24] 我們要考慮它
+[23:26] 擔心它太多Power的東西
+[23:28] 然後呢
+[23:30] 一般來講的話
+[23:31] ClubTreeRounting會用到Default
+[23:34] 然後呢,這個HalfingNodeSynthesis就用不到
+[23:39] 那這邊也講呢
+[23:41] ClubBuffer requiresSame,Rise and Fall Time
+[23:45] 然後呢,這樣的話
+[23:48] 這個PauseWaste的Violation就可以避免掉了
+[23:53] 好
+[23:54] 那這邊還有一些BetaRatio的東西
+[23:57] 那一般的Buffer呢
+[24:00] 見得會有相同的Rise和Full Time
+[24:05] 所以一般的Buffer不會用到Eclat Tray
+[24:09] 這個是跟大家稍微講的
+[24:12] 當然就是要讓過很多的Spice Simulation
+[24:16] 確保這些Buffer
+[24:19] Eclat用的跟一般的Signal用的
+[24:22] 它的Design Performance上的Track Off
+[24:29] 那這個地方就講說對那個
+[24:32] hyphenol那樣的 synthesis 我要怎麼做
+[24:34] 通常它這邊講的
+[24:36] hyphenol synthesis 是這個
+[24:40] it's been done before the character synthesis
+[24:44] 然後我們在做這一個
+[24:47] CDS organization的時候 我們也講說
+[24:51] 有一些buffer不能用
+[24:53] 然後再來一個就是說
+[24:55] 我是考慮size 還是什麼樣的情形
+[24:58] 所以呢
+[24:59] 通常hyferonel sensor是一個buffering的
+[25:01] 這個hyferonel net
+[25:03] 那它可以
+[25:05] 但是通常這個hyferonel net
+[25:07] 通常可以有很大的分構
+[25:09] 比如說1000個
+[25:11] 只講到這些錢
+[25:13] 然後
+[25:14] 是不是要考慮修理
+[25:16] 剛剛也講過了
+[25:18] 這個hyferonel sensor不見得要
+[25:21] 不見得要這麼樣的保護
+[25:23] Country才有
+[25:25] 那HiveRagin可以在Synthesis的那個步驟就做掉
+[25:30] 但是這個時候沒有Placement Information
+[25:33] 所以這個也是
+[25:35] 但是不管如何是一個Approximation
+[25:38] 這樣子進行
+[25:40] 好的
+[25:41] 那在做Cloud3 Synthesis
+[25:43] 我們要做一些Sanity Check
+[25:45] 它的Legality
+[25:47] 它那個PowerGround的那個Strive的情形怎麼樣子
+[25:50] Stand Cell的這個Rail擺在什麼地方
+[25:53] 確保這個PG的Connection
+[25:56] 然後Timing的QR
+[25:59] Timing的Design Rule Violation
+[26:03] 然後-net已經被拷費過了
+[26:07] 所以再來一個是不是很Congestion
+[26:11] 如果說Zeronic CDS
+[26:13] Congestion Design
+[26:15] 已經很擁擠了
+[26:17] 你還要再加這個Plotree Cloud Buffer
+[26:20] 這個會更辛苦
+[26:24] 然後呢
+[26:26] 有一些呢
+[26:27] don't use的attributes
+[26:28] cloud buffer
+[26:29] 所以要稍微注意一下
+[26:31] 因為剛剛那個
+[26:32] 就是說
+[26:33] 我在做cloudry synthesis
+[26:35] 在做high-window synthesis
+[26:36] 我說這些東西不能用
+[26:39] 那我現在要給
+[26:41] 那個cts用的時候
+[26:43] 所以這個要考慮一下
+[26:45] 這些
+[26:46] 這些attributes
+[26:48] 好
+[26:50] 基本上以前是這樣子
+[26:53] 那在Cloud3是這邊的talking呢
+[26:59] 我也找到了一些教學的材料
+[27:03] 像這個老師Edden的Teman
+[27:05] 他們的Cloud3他就講了
+[27:09] 那這個Clark Network的Cloud3呢
+[27:13] 通常是跟Cloud Generator
+[27:14] 那Cloud Elements
+[27:15] Cloud Wire
+[27:16] 那這Wire就是Cloud Routing
+[27:18] 到底是怎麼樣的情形
+[27:19] 那這些東西都consume area
+[27:23] Clark Generator 如果是用Pure
+[27:25] 那這個可能會非常大
+[27:27] 然後這Clark Buffer
+[27:29] 你看這個Free Flop 擺來什麼地方
+[27:33] Clark Buffer 說不定
+[27:34] distribute all over the place
+[27:36] 然後Clark Wire
+[27:37] consume a lot of rotting resource
+[27:39] 那你看這邊這些highlight的
+[27:43] 這些比較濃顏色的
+[27:47] 然後再加上這些
+[27:49] 這個是藍色
+[27:51] 深藍色
+[27:52] 再加上這個Brown color的
+[27:55] 棕色
+[27:56] 那這些都是表示
+[27:58] 這看一看一看的
+[28:01] 那Blocking Resource呢
+[28:03] 是非常這個viteal
+[28:04] 大家都知道
+[28:05] 那我們希望呢
+[28:06] 這個RC能夠少一點
+[28:08] 小一點
+[28:09] 這樣子for transition power方面
+[28:11] 但是這樣的情節的話
+[28:13] 這個時候就必須要用到
+[28:15] 高的
+[28:17] 高Layer的Metal或者甚至是寬一點的
+[28:21] 然後呢
+[28:22] 這對這個FreeFront的時候呢
+[28:23] 我們要去考慮到這些
+[28:25] Wire的它的Distribution
+[28:27] Illusion Over的這個Drip
+[28:30] 然後呢這個VR這個Stacking
+[28:33] 如果是從高的Layer走下來的時候
+[28:36] 這個VRStacking
+[28:38] 那裡面也秀出來這個VRPillar的事情
+[28:42] 好的
+[28:43] 那怎麼build這個Clock Tree
+[28:45] 他通常講說 perfect 最漂亮的時候
+[28:48] balance 就是 h-tree
+[28:50] 但是這個並不是很 practical
+[28:53] 因為是 something to do
+[28:55] 所以他講的甚至有些時候是 tapering
+[28:59] 就是說開頭的時候 down
+[29:01] 這個地方 down
+[29:03] 然後再來就 tapering
+[29:06] 越來越小
+[29:09] 這是 top tree 的時候
+[29:13] 就是原來有大的buffer
+[29:14] 然後在中間的到最後小一點的
+[29:18] 那standard cloud synthesis approach的話
+[29:22] 它就是說我們知道
+[29:23] free flower are not distributed evenly
+[29:26] 這個時候就要想辦法的
+[29:28] build一些這個balance的tree
+[29:32] 看這邊畫出來的大的buffer
+[29:35] 到時候再變得小一點
+[29:37] 這樣進行
+[29:39] 好的
+[29:40] 那它也秀出來這個H3
+[29:45] 當時在2002的時候
+[29:47] 已經有點H3的觀念
+[29:49] 這是IBM的PowerPC
+[29:51] 然後這個是Intel
+[29:55] Italian
+[29:57] 如果我們進去看的話
+[29:59] 有一些H3
+[30:01] 就是Club3的這個
+[30:03] 它怎麼走的
+[30:05] 那這個的話是
+[30:08] wapc 的話是非常像
+[30:10] 有這個H3這方面
+[30:12] 那甚至另外一個東西呢
+[30:15] 另外一個做法
+[30:17] 真的去減少這個crunk skill
+[30:20] 這個時候你看這邊就是crunk buffer進來
+[30:22] drive 全部drive
+[30:24] 然後每個再去drive這些breed
+[30:27] 然後呢
+[30:29] 用breed的話
+[30:30] fit這個free from directly
+[30:32] 不用Clubbubble
+[30:35] Clubbubble是放到外面
+[30:37] 但是用Grid不然這樣走
+[30:39] 但是Grid是變成一個Mesh
+[30:42] 這樣子的話這個Skew
+[30:44] 就可以幾乎來講減少
+[30:49] Determined by the Grid Density
+[30:52] 假設越密的話
+[30:53] 當然這個Skew
+[30:56] Delayed difference就比較小了一點
+[30:59] 然後我們也不會太sensitive to load 這一個position
+[31:07] 當然做的就是這樣走的話
+[31:09] 把clock signal bring to everywhere
+[31:12] available almost everywhere
+[31:14] 然後可以tolerable to process variation
+[31:21] 這樣的做法就是
+[31:24] 非常的很小的這個skill
+[31:27] 但是問題就是huge amount,wiring power,huge amount
+[31:32] 然後這個時候自然的loading cab就比較大
+[31:37] 所以wire cab就大了
+[31:40] 你看這邊就是car driver tree span the height of整個trip
+[31:48] 然後internal level,然後shorting
+[31:52] 在internal level的話,你看這奧過去不修起來
+[31:56] 然後這邊是
+[31:58] 就是這個
+[32:00] intermediate level 這邊的opper全部秀起來
+[32:02] 然後這邊再drive到這個club
+[32:06] 然後這個時候當然要drive整個prons這個chip的話
+[32:11] 你當然要用很強的drive
+[32:14] 所以routing area也被用到
+[32:19] 當然這個時候就想
+[32:21] 是不是這個grid不要弄得
+[32:25] 那麼密,所以這Grid比較Course一點
+[32:28] 那這樣的話這個Skill就有點不太好了
+[32:31] 所以你可以看出來這個有Tray-Off
+[32:36] 那一般來講這個東西的話
+[32:38] 是對一般的SoC的確認並不是很Feasible
+[32:43] 但是我記得在某一個好像是Alpha的
+[32:48] 它的CPU的Processor它是有這樣的進行
+[32:53] Deck,你看Deck,Alpha
+[32:55] 它用到它的CloudTrip的東西
+[33:02] 這個的話它是說中間
+[33:04] 它中心有一個大的Driver
+[33:07] 它用CloudGrid
+[33:09] 就是我剛剛講的
+[33:11] 你想這個AlphaTrip
+[33:14] 它是用到這個Grid方面
+[33:16] CloudGrid就是前面講的那些
+[33:19] 好的
+[33:20] 另外一個就用到Clock Spine
+[33:24] 或者Clock Trunk
+[33:27] 剛剛講了Clock Read的話你放太多
+[33:30] 是Power Hungry
+[33:32] 也就是Rotting Hungry
+[33:34] 因為它用泰國的resource
+[33:37] 這個時候就說我就用這個Spine
+[33:40] 然後呢有了Spine
+[33:43] 然後呢
+[33:44] Spine的話用H3把它標起來
+[33:48] 然後radiate local clock distribution from the spine
+[33:55] 你看看出來是這樣子
+[33:57] 這邊你看這個clock spine到這個地方
+[34:01] 然後再來
+[34:03] 這個就這個clock
+[34:06] 一般的pin tap到這個spine上頭去
+[34:10] 這是這樣的進行
+[34:11] 所以大家知道這個
+[34:15] trunk routing或者spine routing
+[34:17] 的確還蠻popular
+[34:19] 然後我們知道在Clark上頭
+[34:22] 它也被用到
+[34:24] 這個地方你會看到
+[34:26] 如果中印進去的話
+[34:28] 這個地方好像是這些Clark Buffer
+[34:30] 都派在一起
+[34:32] 凹過都派在一起
+[34:33] 那當然是會比較辛苦一點
+[34:37] 過他這邊講的這個Spine
+[34:39] 他是OK
+[34:40] 你看他這邊是這個Spine
+[34:43] 然後呢
+[34:44] 這個Clark Buffer drive到這個Spine
+[34:46] 然後這Spine在Feed到每一個FreeFront的ClubPing
+[34:51] 所以是這樣進行
+[34:54] 那這個Intel Pentium在那個時候有用到
+[34:59] 然後Spine的Approach
+[35:01] 所以呢他這邊Build一個Table
+[35:05] 對這個EdgeTree來講的話
+[35:09] 他的Skill可以弄得非常小
+[35:13] 因為他真的是弄到EdgeTree
+[35:15] Grid的Skills會比較小
+[35:20] 但是用Spine的Skills的控制會稍微弱一點
+[35:26] 所以Skills會高一點
+[35:27] 但是H3的話
+[35:30] 它的Forefront的Flexibility就比較差了
+[35:35] 因為我們知道你要把那些FreeFront擺得非常整齊
+[35:39] 有點不太可能
+[35:40] 這樣的情形
+[35:41] 那Grid的話,這個時候用Grid的話,就是太多的routing resources放上去
+[35:47] 那這capacitance、power的需求就高了
+[35:53] 那你這個flexibility當然高,因為它是一個
+[35:57] 這個Grid的go everywhere,所以你怎麼擺那些freefront都沒有關係
+[36:05] 那spine的話就進來中間
+[36:08] In terms of area consumption,In terms of flexibility
+[36:11] 這個flow plane的話,它是medium
+[36:14] 是這樣的情形
+[36:15] 所以這邊有講了
+[36:17] H3它可以達到非常的低的skill
+[36:21] 它也用到的這一個routing也比較少一點
+[36:26] 但是呢它這個flexibility
+[36:29] flow plane的flexibility就比較弱一點
+[36:33] 那你用Grid的話,Skill可以降下來
+[36:36] 但是Routing Resource
+[36:38] 跟這一個capacitum就增加了
+[36:41] 那Beg Arpanchen
+[36:43] 它用到Global的Cloud Grid
+[36:48] 然後Regular,就是Regional的Cloud
+[36:52] 它也有自己的每一個region的Cloud Grid
+[36:56] 它是用這樣的方法
+[36:59] 那另外呢就是走中間的話就是用spine
+[37:03] 可以使得這個rcdelay稍微小一點
+[37:08] 那spine也可以balance delay
+[37:12] 但是這個擺在什麼地方是一個問題
+[37:15] 再來一個就是trump pin怎麼tap到spine
+[37:19] 也是一個辛苦的問題
+[37:22] 這邊有些summary
+[37:26] 我覺得也值得給大家分享
+[37:30] 那現在的情形的話
+[37:32] 如果說有興趣的話可以看看這個YouTube
+[37:36] 現在的話是ClubTree跟Data
+[37:39] 一起Optimize
+[37:41] 所以叫CCD
+[37:44] Concurrent Cloud
+[37:45] Data Optimization
+[37:47] 所以讓大家知道
+[37:49] 那我用這個Picture來解釋
+[37:52] 一般的
+[37:53] 就是以前的古老的ClubTree
+[37:55] 就甚至這邊clock drive這些buffer
+[37:59] 然後走到freefrog
+[38:02] 所以clock tree is built
+[38:04] 但是ignore這個freefrog中間的datapath
+[38:09] 那完全的目標是minimize這個skill
+[38:13] 那完了以後呢
+[38:14] 這個datapath
+[38:16] 就是在這些freefrog中的datapath
+[38:19] 我就optimize
+[38:20] 是在postcts
+[38:24] 那這ClubTree是比較touch的
+[38:27] 現在越來越做的更復雜了
+[38:30] 然後可以說concurrentClubData
+[38:33] 譬如說這個圖來講
+[38:35] 這一個粉紅色的freefrog
+[38:37] 然後這邊有過來這個東西呢
+[38:39] 是表示說這個freefrog跟這個freefrog中間有datapass
+[38:43] 並不是經過這個buffer
+[38:45] 那這個buffer是講說這個
+[38:48] ClubTree
+[38:49] 那因為中間有datapass呢
+[38:51] 我可以CraftBuffer加到這個地方來
+[38:55] 所以他說CraftTree
+[38:58] CraftTree is built with full knowledge of data paths
+[39:03] 這個時候大家有時候會聽到所謂的
+[39:05] useful skill 這個東西
+[39:07] 也是跟這個 data paths有關的
+[39:11] 主要的目標是說
+[39:13] 我也一起去考慮setup time
+[39:18] 跟hold time的這個timing
+[39:20] 就開始我們講Country的時候
+[39:22] 稍微解釋一下
+[39:23] second time 的考量
+[39:26] 跟whole time 的考量
+[39:28] 現在是把它整個合在一起
+[39:32] Data path is optimized
+[39:34] along with incremental cloud tree modification
+[39:39] 加一些 green buffer
+[39:41] 這個意思
+[39:42] 這邊加一個 wire
+[39:44] 就是說
+[39:45] 我從這個粉紅色到這個 free flood
+[39:48] 是有一個Datapath
+[39:50] 那我想辦法的看
+[39:52] 我怎麼樣去optimist它
+[39:55] 就讓大家知道一下
+[39:58] 這個是最新的
+[40:00] 現在就說這個裡頭到底是要怎麼做
+[40:04] 這個是值得去探討
+[40:05] 所以是這樣子
+[40:06] Now these clock tree data paths are considered together
+[40:11] 好的
+[40:12] 然後呢
+[40:14] 那這個的話就是
+[40:17] 這個應該是這個Synopsis
+[40:19] 它的這個Flow
+[40:20] 我再上我看
+[40:21] Hose CTS Optimization
+[40:23] 那你看
+[40:24] Clark Optimization
+[40:26] 然後呢
+[40:27] 從這個Final的這個
+[40:29] 結果
+[40:30] 我去考慮到Virtual Round
+[40:32] Google Round
+[40:33] Google Round
+[40:34] Based
+[40:35] 所以呢
+[40:36] 那大家知道一下
+[40:38] 好
+[40:39] 你看整個Flow的話
+[40:40] Placement Optimization
+[40:42] 這時候來做
+[40:43] Clark Optimization
+[40:44] 那Clark Optimization
+[40:45] 後來的這些呢,這個時候有這個VirtualRaw的東西
+[40:48] 還有做一些它的這個GoblRaw
+[40:52] 所以呢,這個
+[40:54] 所以這個GoblRaw到底是給
+[40:56] 應該是比較,天效率是給Clark方面的
+[40:59] Clark是一個比較解析
+[41:01] 再來Raw Auto
+[41:05] 然後呢,做Track Assignment DetailRaw
+[41:08] Followed by這個Raw Optimization
+[41:10] 所以我就讓大家知道說
+[41:13] 現在的這個
+[41:15] Digital的這個Present Round Flow
+[41:17] 是這樣的情形
+[41:19] 那自然的就是說
+[41:21] 我CraftTree放上去了
+[41:24] 那再來就是說這個Time Fix
+[41:26] 要怎麼樣的情形
+[41:28] 所以呢
+[41:28] 剛好這個Lecture我也找到
+[41:31] 所以也值得跟大家分享的
+[41:34] 好
+[41:35] 所以
+[41:37] Recap
+[41:38] 我們從Argorithm我們談
+[41:40] 然後講到很多的complexity的分析
+[41:44] 然後幾個graph的search的method
+[41:47] triboring sales problem
+[41:49] brecifer search
+[41:50] debcifer search
+[41:51] range and bound
+[41:52] 那這些我們都分享了
+[41:55] 然後再來講到dynamic programming
+[41:57] mean packing
+[41:58] 有topological sort
+[42:01] 那走到partitioning的話
+[42:03] 我們就找到multi-weight partitioning
+[42:06] 然後把它minimize
+[42:08] restrict 到 2-way balance partition
+[42:13] 所以有著名的
+[42:14] Kernig & Link partition 出來了
+[42:17] 然後這個時候
+[42:18] 我們知道在 layout 的上頭
+[42:20] 我們要去考慮到
+[42:22] terminal propagation
+[42:23] 就是我們一直 partition 到下面的 level
+[42:27] 那個 level
+[42:28] 它跟周圍的
+[42:30] 跟外面的 connection
+[42:32] 希望說對它有影響
+[42:35] 然後走到
+[42:37] Mathematical analytical programming的方式
+[42:42] 來做Placement
+[42:43] 所以叫做Portrait programming
+[42:46] 勾點
+[42:48] 可以Publish
+[42:50] 是經典的
+[42:52] 那當然也可以用這個Force Directed的方法
+[42:55] 那也有人用這個Simpling
+[42:58] Aleaning
+[42:59] 那在這個Float Plane的話
+[43:01] 如果是Slicing
+[43:03] Structure的話
+[43:05] 就Polish Expression
+[43:06] 我們也談到說在這個Expression上
+[43:09] 我們去做Perturbation
+[43:12] 然後來Improve這個FullPlan
+[43:15] Sizing Structure的話就走到這個Bistar Tree
+[43:19] Routing的話MazeRoute,LineSearch,
+[43:22] UberRoute,TrackSamuel
+[43:23] 稍微提了一下ChannelRoute
+[43:26] 然後走到這個TrumpRoute,DetailRoute
+[43:30] PlumTreeRouting,PlumTreeSynthesis
+[43:33] 還有PG方面的
+[43:35] 還有一些Code Optimization的東西
+[43:38] 那在Logic方面呢
+[43:39] 我們講到這個
+[43:40] 2-Level的Logic Optimization
+[43:42] BDD 還有Technological Mapping
+[43:45] 那在這個做
+[43:47] Country Routing的時候
+[43:48] 這個Exec Zero Skull的這個安慰中
+[43:51] 我們談到一些Delay
+[43:52] 談到一些Timing
+[43:54] 那也希望大家的這個要
+[43:58] 也填一下
+[44:00] 就是這個瞭解一下
+[44:02] 核心能力的方面
+[44:03] 同時這些上課的同學們
+[44:07] 要親身給我們feedback
+[44:10] 謝謝

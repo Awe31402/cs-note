@@ -1,0 +1,313 @@
+[00:00] 這張我們要講一個蠻重要的Argression,叫做Stanning tree,那這個在Layout上的,尤其是Routing常常會聽到,是這樣的情形,我們剛剛看到就是前面講到spanning tree,得到一個minimum spanning tree,就是given一個graph上找一個tree,它是minimum spanning tree,然後,
+[00:30] 但是我們真的在做layout的時候
+[00:31] 根據這幾個點
+[00:33] 那產生的grab
+[00:35] 如果說是這個anyangular wire的話
+[00:38] 這個layout上頭做起來是會
+[00:40] 這個比較不太方便
+[00:43] 所以我們都要想把它變成orsagonal
+[00:46] 所以呢就有這個東西叫做rectinian
+[00:49] 的spinning tree
+[00:50] 就是說是一個spinning tree
+[00:52] 但是呢它connect這個node呢
+[00:54] in such a way
+[00:55] 它都是用minehattan pass
+[00:57] 像這個picture
+[00:58] 這樣子這幾點
+[01:00] 我用這樣子的方法
+[01:02] 來把它借起來
+[01:03] 那這個by whole distance的話
+[01:05] 就是說它這個
+[01:07] 就是完全都是Ossaga
+[01:11] 所以任何兩點
+[01:13] X1 Y1 X2 Y2
+[01:15] 然後它的distance的話
+[01:17] 就是用這個
+[01:19] 它的X的Δ
+[01:20] Y的Δ
+[01:21] 然後把它加起來
+[01:22] 是這樣的情形
+[01:23] 那現在我們就看了
+[01:25] 這個spanning tree
+[01:26] rectinian spanning tree
+[01:28] 它是最短的嗎
+[01:30] 結果發現了不是
+[01:32] 所以在下面這個Picture
+[01:35] C的話
+[01:35] 它就變成說
+[01:36] 一個
+[01:37] 這個時候就產生
+[01:38] 叫做Standard Tree
+[01:39] 它還是一個Tree
+[01:41] 所以它並沒有錄不出來
+[01:43] 它的Tree
+[01:44] Connect它這個Node
+[01:46] 還有放了一些Additional Point
+[01:48] 那這些Point
+[01:50] 叫做Standard Point
+[01:51] 然後呢
+[01:52] 根據這些Standard Point的話
+[01:54] 你就放出來
+[01:55] 一個Retineer的Spending Tree
+[01:58] 所以呢
+[01:59] 就是說我叫要
+[02:01] 額外的加一些Standard Point
+[02:03] 使得呢
+[02:05] 我現在拉出來的這一個Tree呢
+[02:08] 是它的Total Wireless
+[02:09] 是最短的
+[02:11] 所以呢
+[02:14] 這些點叫Standard Point
+[02:17] 然後呢得出來的Tree呢
+[02:19] 叫做Standard Tree
+[02:20] 那如果說這個Standard Tree是
+[02:22] Total的這個
+[02:23] 是Distance呢
+[02:25] WireLens是最短的叫做Minimal Rectinian Standard Tree
+[02:31] 所以呢
+[02:32] 這邊他又講了
+[02:34] Minimal Rectinian Standard Tree
+[02:36] 是在P
+[02:37] 就是Polynoma Time
+[02:39] 但是呢
+[02:41] 我要去得到一個
+[02:42] Minimal Rectinian Standard Tree的話
+[02:45] 這是一個Ubicomplete的問題
+[02:48] OK
+[02:48] 那有名的那些
+[02:51] 聰明的那些
+[02:54] 這個computer science
+[02:56] 這個 theory 的人他有證明出來
+[02:58] spanning tree 的 algorithm
+[03:00] 可以去 approximate
+[03:01] 這個 standard tree
+[03:02] 最多最多的 50% away from the optimal
+[03:06] OK
+[03:07] 好
+[03:07] 所以這個是一個重要
+[03:09] 那現在就是說
+[03:10] 這些 standard point 是怎麼去找到的
+[03:12] 你沒有找到它的話
+[03:14] 那得到的這個
+[03:16] 這個 rectilinear 的這個 standard tree
+[03:18] 並不是最好的
+[03:20] 好
+[03:21] 所以這張圖的話
+[03:22] 跟大家稍微分享一下
+[03:24] 那當然
+[03:25] 真正的 in reality 的話
+[03:26] 這個事情會複雜一點
+[03:29] 因為有的時候我在做 layout 的時候
+[03:30] 會有這個障礙 blockage
+[03:32] 它就擋住了
+[03:33] 這個時候
+[03:34] 要得到什麼樣的一個
+[03:36] 一個
+[03:37] 一個 tree
+[03:38] 所以不是很容易的
+[03:41] 然後呢因為呢
+[03:42] minimum standard tree
+[03:43] 是一個MP complete problem
+[03:45] 花的時間長
+[03:46] 假設你這個弄的很多的話
+[03:48] 所以呢通常
+[03:49] 也都會有一些
+[03:50] heuristic
+[03:51] 來
+[03:51] 來取代它
+[03:52] 好的 所以這邊講 假設有blockage 怎麼辦
+[03:56] 然後呢 這一個這些span tree 啦
+[04:01] Rectinian standard tree 都已經研究很多了
+[04:04] 所以上網可以看到這些paper
+[04:07] 所以呢 像這個呢 是這個
+[04:11] 另外一個在GHub上頭
+[04:13] 也有一些極好的program 你可以用它
+[04:16] 所以Library contains Rectinian Spanish Graph
+[04:20] 然後再找到minimal的spanning tree
+[04:23] 然後用binatelysearch tree這樣的情形
+[04:26] 好
+[04:28] 然後呢在這個水素線上
+[04:31] 這個fruit是一個蠻有名的
+[04:34] 它是用一個很快的lookup table的方式
+[04:37] 去把這個lentinear的standard tree把它給找到
+[04:43] 那這樣的話你就可以去construct這個routing
+[04:47] 甚至用它的Trader
+[04:49] 可以去estimate它的WireLens
+[04:51] 這樣的情形
+[04:53] Prim跟Dextra
+[04:55] 他們這些有名的發明的這些Argrids
+[04:57] 在這個
+[04:59] 2018年的時候
+[05:01] 又被revisit
+[05:03] 因為他們在
+[05:05] 這個Routing上
+[05:07] 理學被用了很多
+[05:09] 這樣的情形
+[05:11] 所以跟大家稍微分享一下
+[05:13] 可以看到這個
+[05:15] ISPD的Paper
+[05:17] 那現在我們就稍微簡單一下
+[05:20] 這個how to transform into rectilinear minimum standard tree
+[05:24] given 剛剛知道
+[05:26] given這幾點
+[05:27] 然後呢
+[05:27] 有一個
+[05:29] rectilinear standard tree
+[05:31] 不簡單是minimum
+[05:33] 然後呢
+[05:34] 我們就把這幾點
+[05:35] 主要用一個簡單的方法
+[05:38] 我就看到呢
+[05:39] 這麼一個L shape
+[05:41] 假設
+[05:42] 我把這L shape把它flip過來的話
+[05:45] OK
+[05:46] 那這個新的tree呢
+[05:50] 我就少了一個segment
+[05:53] 就是這個vertical的segment
+[05:56] 所以我的wire length我就減少了
+[05:58] 所以大家可以看一下
+[06:00] 這變成這樣的情形
+[06:01] 我是把flip過來
+[06:03] 然後這一點就這樣子接過來
+[06:05] 所以這個wire length
+[06:07] 比這個wire length要來的短
+[06:10] 然後我們再繼續呢
+[06:11] 你可以看到下一個步驟
+[06:14] 這邊也是一個l shape
+[06:16] 可不可以把它flip過來
+[06:18] flip上去
+[06:19] 這一段呢 我就共同share了
+[06:22] 所以變成這樣的情形
+[06:25] flip上來
+[06:26] 我只在這幾個點給它畫出來
+[06:29] 那這個呢
+[06:30] 可不可以再繼續的去improve
+[06:32] 看一下
+[06:33] 這個呢
+[06:34] 把它flip下來
+[06:36] 然後就變成是這樣的情形
+[06:38] 然後現在我把點給把它
+[06:40] 映進來
+[06:41] 所以這個tree就變成這樣的情形
+[06:45] 所以呢
+[06:45] 就這張圖呢基本上呢
+[06:48] 就是給大家share
+[06:49] 在這個
+[06:51] 這個imvariable的一個
+[06:53] practical的方法
+[06:54] 就是找到這些l-shave
+[06:56] 然後去把它看
+[06:56] 能不能把它給
+[06:58] 這個翻過去
+[06:59] flip過去
+[07:02] 那這是剛剛在這個前面的picture看到的
+[07:06] 那現在就說
+[07:07] 好
+[07:08] 得到這個呢
+[07:09] 是不是可以再繼續improve呢
+[07:11] 所以上面這是一個例子
+[07:13] 那你看得到的跟這個不至於並沒有很像
+[07:18] 再來一個呢
+[07:19] 假設有blockage呢
+[07:21] 然後呢
+[07:22] 再來一個呢
+[07:23] 假設我們必須要做layer change的時候
+[07:26] 因為這些都是在同一個layer
+[07:29] 是這樣的情形
+[07:30] 我layer change的時候
+[07:31] 假設有障礙物
+[07:32] 那當然是不敗
+[07:34] 所以呢
+[07:35] 這個
+[07:37] 所以
+[07:38] 又
+[07:39] 那在這個上頭呢
+[07:40] 又有很多的這個變化
+[07:43] 我們剛剛談的都是曼哈騰、奧上根
+[07:46] 但是在flat panel、packaging
+[07:48] 就有很多這種不同的routing style
+[07:52] 大家可以看到
+[07:54] 像這種any angle的wire
+[07:56] 這樣子
+[07:57] 或者是piecewise linear的這個wire
+[08:01] 那這個東西叫做rubber bending的東西
+[08:05] 所以讓大家稍微知道一下
+[08:07] 在這個advanced packaging的上頭
+[08:10] 會不同的routing
+[08:12] 那你想想看
+[08:13] 這些routing基本上就是在一個平面上頭
+[08:16] 所以single layer routing
+[08:18] 不要有crossing
+[08:20] 那怎麼去把它達到
+[08:23] 那這個picture的話就是講到這些
+[08:25] 你看我把它這個bundle起來
+[08:29] 這個地方是說有空間
+[08:32] 把它respace一下
+[08:34] 去減少到這個coupling的東西
+[08:39] 好的
+[08:40] 所以是這樣的情形
+[08:42] 那在這個繼續講到這個EDA的Tour的話
+[08:48] 有這些有名的這個Conference
+[08:51] 還有它的Journal
+[08:53] 都有買好的Paper
+[08:55] 是讓大家可以興趣
+[08:57] 往這邊轉研的時候可以去看
+[09:01] 那so far呢
+[09:01] 我們講到很多的Argreens
+[09:04] 然後呢
+[09:05] 也分析它的Capacity
+[09:06] Prinomial可以解決的
+[09:08] 在用Non-Determinational Machine
+[09:11] prolimatize 解答
+[09:13] 找到
+[09:14] 一翻出來
+[09:15] unbicomplete 的問題
+[09:16] unbicomplete
+[09:18] tsp
+[09:19] 是unbicomplete
+[09:21] minimum spanning tree
+[09:22] 怎麼在graph上都找到
+[09:24] 然後開始稍微有講到standard tree
+[09:27] 然後講到harmatonic circuit
+[09:29] 講到sat
+[09:30] 這個circuit satisfiability的problem
+[09:33] 然後有share一些search
+[09:36] 然後用這個backtracking的search
+[09:39] 但是花時間有Dynamic Programming進來
+[09:42] 然後呢這個Beam Package呢
+[09:44] 又常常看到
+[09:45] 好是這樣進行
+[09:47] 我剛剛稍微講到
+[09:48] 我怎麼去產到一個
+[09:50] minimum rectilinium
+[09:51] Standard tree
+[09:53] Standard tree的話
+[09:55] 講的是非常useful在layer上頭
+[09:58] 那SAT的話
+[10:00] 在Large Synthesis
+[10:01] 還有Full Home Relation
+[10:03] 常常被用到
+[10:04] 所以呢
+[10:05] 這個就讓大家
+[10:07] 稍微有點這個瞭解這些重要的aggressions
+[10:11] 在這個EDA的Proper裡頭
+[10:13] 那最近呢我們也看到呢
+[10:15] 這個稍微跟reality稍微搭配一下
+[10:19] 臺積走到N2去了
+[10:20] 那N2裡頭怎麼設計的
+[10:23] 或者在這個Analdo Design上頭
+[10:25] 怎麼樣做migration啊
+[10:27] 然後這個AutoMotive的這個IP也越來越重要
+[10:32] 然後呢
+[10:33] Advanced Packaging好多個Dive
+[10:36] 合在一起的這個tripling
+[10:37] 所以呢
+[10:38] 從這個角度來講
+[10:39] 就是讓大家知道
+[10:41] EDA是很重要
+[10:43] 扮演一個重要角色
+[10:44] 才把這個
+[10:45] IA Design的flow
+[10:48] 可以弄得更順
+[10:49] Design productivity 能夠增加

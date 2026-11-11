@@ -1,0 +1,11 @@
+(1) wire length (um): unbuffered delay vs best buffered delay [fs]
+    L=  1000: unbuffered       29125   buffered     44125 (k=1)
+    L=  2000: unbuffered       66300   buffered     81300 (k=1)
+    L=  4000: unbuffered      167200   buffered    162600 (k=2)
+    L=  8000: unbuffered      475200   buffered    325200 (k=4)
+    L= 16000: unbuffered     1516000   buffered    650400 (k=8)
+(2) CKBUFX4 (R=400 ohm): can drive 29 FF clock pins within 100 ps transition
+(2) CKBUFX8 (R=200 ohm): can drive 58 FF clock pins within 100 ps transition
+(2) CKBUFX16 (R=100 ohm): can drive 117 FF clock pins within 100 ps transition
+(3) star (each sink wired straight from source): skew = 35625 fs
+    H-tree: every sink is at the same wire distance and sees an identical subtree -> skew = 0 by symmetry

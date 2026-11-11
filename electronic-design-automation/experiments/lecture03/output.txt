@@ -1,0 +1,9 @@
+TSP exhaustive     : best 20 via AEDCBFA; search nodes 62; complete tours 10 costs [20, 20, 27, 27, 27, 27, 31, 31, 33, 33]
+TSP branch-and-bound: best 20 via AEDCBFA; search nodes 60; complete tours 6 costs [20, 20, 27, 27, 27, 27]
+transport n=10: DP 6  UCS 6  path (1, 2, 3, 4, 5, 10)
+transport n=20: DP 8  UCS 8  path (1, 2, 3, 4, 5, 10, 20)
+transport n=100: DP 13  UCS 13  path (1, 2, 3, 6, 12, 24, 25, 50, 100)
+transport n=400: DP RecursionError (default limit 1000)  UCS 17  path (1, 2, 3, 6, 12, 24, 25, 50, 100, 200, 400)
+FFD (1, 4, 2, 1, 2, 3, 5) cap 6: 3 bins [[5, 1], [4, 2], [3, 2, 1]]; exact optimum 3; lower bound ceil(sum/cap) = 3
+HC->TSP (slide graph): (5, (1, 4, 3, 2, 5))   bound B = n = 5
+HC->TSP (5-cycle with one edge removed): (6, (1, 4, 3, 2, 5))

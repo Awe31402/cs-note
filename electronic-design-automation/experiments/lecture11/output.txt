@@ -1,0 +1,14 @@
+S=(6, 4) T=(3, 11) Manhattan distance MD=10
+Lee: shortest length 12, cells labelled 80 of 95 free
+   ..............
+   ...######.....
+   ........#.....
+   ..##....#..T..
+   ..##....#..**.
+   ........####*.
+   ....S********.
+   ..............
+Hadlock: detour d(P)=1  ->  l(P) = MD + 2d = 12; cells expanded 34
+Soukup: path length 18 (not guaranteed shortest)
+Akers 1,1,2,2 labels along the Lee path: 1122112211221
+multi-terminal Lee (4 pins, propagate from ALL tree cells): tree wirelength 24

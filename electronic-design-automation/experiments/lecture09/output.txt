@@ -1,0 +1,20 @@
+16H35V2HV74HV   polish=True  normalized=True
+16H2V75VH34HV   polish=True  normalized=True
+12H34H5HV       polish=True  normalized=True
+123H4VV         polish=True  normalized=False
+123HV4V         polish=True  normalized=True
+12HH3V          polish=False normalized=False
+slide perturbation sequence (M1, M2, M3):
+  12V4H3V: polish=True normalized=True
+  12V3H4V: polish=True normalized=True
+  12H3H4V: polish=True normalized=True
+  12H34HV: polish=True normalized=True
+  M3 operand/operator swap on 12H3H4V at i=2: 1H23H4V  2N_(i+1)<i and normalized -> False
+  M3 operand/operator swap on 12H3H4V at i=4: 12HH34V  2N_(i+1)<i and normalized -> False
+  M3 operand/operator swap on 12H3H4V at i=6: 12H3HV4  2N_(i+1)<i and normalized -> False
+  M3 operator/operand swap H<->4 on 12H3H4V: 12H34HV  polish=True normalized=True
+shape A: [(3, 5), (5, 3)]  shape B: [(2, 4), (4, 2)]
+vertical stack (H) corner points: [(3, 9), (4, 7), (5, 5)]
+side by side   (V) corner points: [(5, 5), (7, 4), (9, 3)]
+8 random hard blocks, total block area 62: SA best bounding area 64 (dead space 3.1%)  E = 15H82HV6V47V3VH
+B*-tree packing: {'b0': (0, 0), 'b3': (4, 0), 'b4': (5, 0), 'b1': (0, 3), 'b2': (0, 5)}  bounding box 8 x 8

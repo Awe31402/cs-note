@@ -1,0 +1,21 @@
+succ(3) = [('walk', 4, 1), ('tram', 9, 3)]  succ(6) = [('walk', 7, 1), ('tram', 18, 3)]
+backtracking   N=500: totalCost 20  (6.505 s)
+    ('walk', 2, 1)
+    ('tram', 6, 3)
+    ('tram', 18, 3)
+    ('tram', 54, 3)
+    ('walk', 55, 1)
+    ('tram', 165, 3)
+    ('walk', 166, 1)
+    ('tram', 498, 3)
+    ('walk', 499, 1)
+    ('walk', 500, 1)
+dynamicProg    N=500: totalCost 20  (0.520 ms)
+uniformCost    N=500: totalCost 20  (0.261 ms)
+backtracking runtime grows exponentially with N:
+   N= 100: 0.004 s
+   N= 200: 0.062 s
+   N= 300: 0.392 s
+   N= 400: 1.773 s
+   N= 500: 6.601 s
+   N= 700: 51.869 s
