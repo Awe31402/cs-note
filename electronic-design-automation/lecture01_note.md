@@ -89,7 +89,7 @@
 - 【口頭】最重要的先修是 **data structure**；transistor design 要懂 gate level。
 - 參考書（投影片綠框）：
   1. S. H. Gerez, *Algorithms for VLSI Design Automation*, Wiley, 1999。【口頭】雖然是二十多年前的書，圖書館應該有電子版。
-  2. Y.-W. Chang, K.-T. Cheng, L.-T. Wang（eds.）, *Electronic Design Automation: Synthesis, Verification, and Test*, Elsevier, 2009 ——**本筆記對照的課本**（`eda.pdf`）。
+  2. Y.-W. Chang, K.-T. Cheng, L.-T. Wang（eds.）, *Electronic Design Automation: Synthesis, Verification, and Test*, Elsevier, 2009 ——**本筆記對照的課本**（`../books/eda/eda.pdf`）。
   3. Naveed A. Sherwani, *Algorithms for VLSI Physical Design Automation*（投影片附了一個網路上的 PDF 連結）。
   4. Gary D. Hachtel, Fabio Somenzi, *Logic Synthesis and Verification Algorithms* ——講 synthesis 時會用到。
   5. Sung Kyu Lim, *Practical Problems in VLSI Physical Design Automation*。【口頭】Lim 教授在 Georgia Tech 教 physical design automation，用很實際的問題來講。

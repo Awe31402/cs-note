@@ -1,6 +1,6 @@
 # 設計自動化（一）（李炯霆，NTHU 2026 春）隨堂筆記索引
 
-依播放清單順序（`playlist.txt`）。課程：清大 CSR 5302 *Electronic Design Automation (1)*，李炯霆（JT Li），NTHU OCW 錄影。課本為 Wang, Chang, Cheng（eds.）*Electronic Design Automation: Synthesis, Verification, and Test*（2009，`eda.pdf`）。影片用老師自己的章號，和課本章號不同（對照見 `BRIEF.md`）。影片沒有字幕，逐字稿是 whisper 轉的（`transcripts/`）。實測程式在 `experiments/`。
+依播放清單順序（`playlist.txt`）。課程：清大 CSR 5302 *Electronic Design Automation (1)*，李炯霆（JT Li），NTHU OCW 錄影。課本為 Wang, Chang, Cheng（eds.）*Electronic Design Automation: Synthesis, Verification, and Test*（2009，`../books/eda/eda.pdf`）。影片用老師自己的章號，和課本章號不同（對照見 `BRIEF.md`）。影片沒有字幕，逐字稿是 whisper 轉的（`transcripts/`）。實測程式在 `experiments/`。
 
 | # | 筆記 | 影片章節 | 課本 | 長度 | 原影片標題 |
 |---|---|---|---|---|---|

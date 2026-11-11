@@ -30,7 +30,7 @@
 ## Inputs（優先順序）
 1. 逐字稿 `transcripts/lectureXX.txt`。影片沒有任何字幕，全部用 whisper `large-v3-turbo`（`--language zh`）轉錄成 `[mm:ss] 文字`。中文語音辨識會錯字（尤其專有名詞），讀的時候要依上下文和課本判斷；看不懂的地方寫 ⚠️，不猜。
 2. 投影片：影片是全螢幕投影片＋老師講話。從影片每 3 秒取一張、去掉重複，得到投影片截圖與時間點（只當工作素材，不放進 repo）。投影片上的字、圖、例子以截圖為準；口語細節以逐字稿為準。
-3. 課本 `eda.pdf`。有文字層，可 pdftotext。**PDF 頁碼 = 印刷頁碼 + 37**。筆記引用印刷頁碼。
+3. 課本 `../books/eda/eda.pdf`。有文字層，可 pdftotext。**PDF 頁碼 = 印刷頁碼 + 37**。筆記引用印刷頁碼。
 4. 本機實測（Intel i7-13650HX、Ubuntu、kernel 6.5.0、Python 3.10、gcc 11.4）：演算法（KL／FM partitioning、Steiner tree、maze routing、left-edge channel routing、slicing floorplan 等）用 Python 小程式跑課本或影片的例子驗證。實測程式放在 `experiments/lectureXX/`，筆記用 `experiments/lectureXX/檔名:行號` 引用。
 5. 不用外部筆記或網站。查不到的寫「待補」，不捏造。
 
