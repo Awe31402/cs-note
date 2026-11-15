@@ -1,0 +1,78 @@
+diff --git a/plat/mediatek/drivers/smpu/smpu.c b/plat/mediatek/drivers/smpu/smpu.c
+index 85e670d58..e1dd651ea 100644
+--- a/plat/mediatek/drivers/smpu/smpu.c
++++ b/plat/mediatek/drivers/smpu/smpu.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2025 MediaTek Inc.
+  */
+ 
++#include <common/debug.h>
+ #include <lib/mtk_init/mtk_init.h>
+ #include <smpu.h>
+ 
+@@ -116,6 +117,13 @@ int smpu_init(void)
+ 	set_aid_table();
+ 	smpu_setting();
+ 	set_smpu_regions();
++	/* DRAMEXP: read back (secure read only) the regions BL31 just programmed */
++	for (int r = 1; r <= 4; r++)
++		NOTICE("DRAMEXP smpu region %d SA=0x%x EA=0x%x\n", r,
++		       smpu_read(SECURE_REGION_SA(r)), smpu_read(SECURE_REGION_EA(r)));
++	NOTICE("DRAMEXP smpu ENABLE0=0x%x ENABLE1=0x%x +0x2a0=0x%x IOMMU_MPU_EN=0x%x\n",
++	       smpu_read(SECURE_REGION_ENABLE(0)), smpu_read(SECURE_REGION_ENABLE(1)),
++	       smpu_read(NEMI_SMPU_BASE + 0x2a0), smpu_read(NEMI_IOMMU_MPU_ENABLE));
+ 	return 0;
+ }
+ MTK_PLAT_SETUP_0_INIT(smpu_init);
+diff --git a/plat/mediatek/mt8189/drivers/dpmfw/mt_dpm.c b/plat/mediatek/mt8189/drivers/dpmfw/mt_dpm.c
+index 6edc5f090..ba231add0 100644
+--- a/plat/mediatek/mt8189/drivers/dpmfw/mt_dpm.c
++++ b/plat/mediatek/mt8189/drivers/dpmfw/mt_dpm.c
+@@ -54,6 +54,10 @@ int dpm_init(void)
+ 	struct mtk_mcu *dpm;
+ 
+ 	NOTICE("%s\n", __func__);
++	/* DRAMEXP: read-only, DDRPHY_AO DVFS_STATUS / DRAMC_AO SA_RESERVE before DPM load */
++	NOTICE("DRAMEXP bl31 before dpm: CHA DVFS_STATUS=0x%x SA_RSV=0x%x CHB DVFS_STATUS=0x%x SA_RSV=0x%x\n",
++	       mmio_read_32(0x10238C7C), mmio_read_32(0x1023000C),
++	       mmio_read_32(0x10248C7C), mmio_read_32(0x1024000C));
+ 
+ 	dpm_mcu[0].run_size = dpm_dm_bin_len;
+ 	dpm_mcu[1].run_size = dpm_pm_bin_len;
+@@ -64,6 +68,8 @@ int dpm_init(void)
+ 		if (mtk_init_mcu(dpm))
+ 			return -1;
+ 	}
++	NOTICE("DRAMEXP bl31 after dpm: CHA DVFS_STATUS=0x%x CHB DVFS_STATUS=0x%x\n",
++	       mmio_read_32(0x10238C7C), mmio_read_32(0x10248C7C));
+ 
+ 	return 0;
+ }
+diff --git a/tools/cert_create/Makefile b/tools/cert_create/Makefile
+index 77d2007d5..e585a10f1 100644
+--- a/tools/cert_create/Makefile
++++ b/tools/cert_create/Makefile
+@@ -62,8 +62,8 @@ HOSTCCFLAGS += ${DEFINES}
+ # Make soft links and include from local directory otherwise wrong headers
+ # could get pulled in from firmware tree.
+ INC_DIR += -I ./include -I ${PLAT_INCLUDE} -I ${OPENSSL_DIR}/include
+-LIB_DIR := -L ${OPENSSL_DIR}/lib
+-LIB := -lssl -lcrypto
++LIB_DIR := -L ${OPENSSL_DIR}/lib ${BUILD_LDFLAGS}
++LIB := -lssl -lcrypto ${BUILD_LDFLAGS}
+ 
+ HOSTCC ?= gcc
+ 
+diff --git a/tools/fiptool/Makefile b/tools/fiptool/Makefile
+index 11d2e7b0b..cf723e1f6 100644
+--- a/tools/fiptool/Makefile
++++ b/tools/fiptool/Makefile
+@@ -28,7 +28,7 @@ else
+   Q :=
+ endif
+ 
+-INCLUDE_PATHS := -I../../include/tools_share
++INCLUDE_PATHS := -I../../include/tools_share ${BUILD_CFLAGS}
+ 
+ HOSTCC ?= gcc
+ 

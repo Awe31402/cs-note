@@ -1,0 +1,32 @@
+[00:00] A decoder, or to be more precise, a binary decoder, is an electronic component that takes multiple inputs and uses them to activate one of many possible outputs.
+[00:15] This decoder uses three inputs to select one of eight possible outputs. It's therefore known as a three to eight decoder.
+[00:24] If, for example, all three inputs are set to a low voltage, the top output line is set to a high voltage. The top output line is activated.
+[00:34] If the first input is high, the second output is activated instead.
+[00:39] If the second input only is high, so the inputs collectively represent the Dennery value 2, the third output is activated.
+[00:48] If the inputs collectively represent the Dennery value 3, the fourth output is activated.
+[00:54] An input of Dennery 4 activates the fifth output, Dennery 5 activates the sixth output, 6 activates the seventh, and 7 activates the eighth.
+[01:06] A decoder can be built using combinational logic.
+[01:11] This three to eight decoder is constructed from three NOT gates and eight AND gates.
+[01:18] Decoders have a number of applications, including selecting a row, also known as a word line, from an array of memory cells based on a binary row address.
+[01:29] If the three address lines are all at zero voltage, then only the top row of the array has a high voltage across it.
+[01:38] In other words, only the top word line, let's call it word line zero, is asserted.
+[01:44] Notice how each of the decoder's inputs is split into two, then one of each pair is passed through a NOT gate.
+[01:52] So the output voltage of each NOT gate is high.
+[01:55] Only the top AND gate is connected to the three lines which are high, so only the top AND gate has an output which is high.
+[02:07] Now the row address 001 is applied to the inputs, and a different combination of lines inside the decoder are now high.
+[02:15] Only the second AND gate down has three inputs which are high, so only the second word line, word line 1, is asserted.
+[02:24] This is row address 010, the number 2 in denary.
+[02:30] Word line 2 is asserted.
+[02:32] This is row address 011, 3 in denary.
+[02:36] Word line 3 is asserted.
+[02:38] Row address 100, the number 4 in denary, asserts word line 4.
+[02:43] Address 101, 5 in denary, asserts word line 5.
+[02:48] And address 110, the number 6, asserts word line 6.
+[02:53] Finally, row address 111, which is 7 in denary, asserts the bottom word line.
+[03:02] A 328 decoder can be constructed with an extra input whose job is to enable the device.
+[03:09] Each AND gate now has four inputs instead of three.
+[03:14] Only when the enable input is high does the decoder activate anything at all according to the selection inputs.
+[03:22] Finally, it's worth mentioning that it's possible to combine decoders to make an even larger one.
+[03:28] In this example, a pair of 3 to 8 decoders have been combined to make a 4 to 16 decoder.
+[03:35] Notice that the NOT gate connecting them together ensures that the enabling input of one decoder is always the inverse of the other.
+[03:44] So only one of them will ever produce an output.

@@ -1,0 +1,18 @@
+@startuml
+skinparam defaultFontName "Noto Sans CJK TC"
+skinparam rectangleBorderColor #555
+title 開機之後，誰能改 DRAM 的狀態？
+
+rectangle "Linux 6.6.137\n• 沒有 DVFSRC／DRAM devfreq driver\n• dvfsrc_top 只當時脈 gate\n• MSDC 找不到 dvfsrc-vcore → dummy\n• GPU 電源域開關時設 EMI bus protect" as linux
+rectangle "OP-TEE 3.19\n只有 main.c＋i2c\n不碰 DRAMC／EMI" as tee
+rectangle "U-Boot\n只讀 BOOT_ARGUMENT\n沒有 RAM driver" as ub
+rectangle "BL31\n• dpm_init（載 DPM ×2）\n• smpu_init（保護 BL31、OP-TEE）\n• SPM suspend：允許 DRAM_S0/S1\n• SiP VCORE_CONTROL：沒實作" as bl31
+rectangle "DPM 韌體（黑盒）\nrelease note：DRAM suspend／DVFS" as dpm
+rectangle "實測（D7、D8）\n閒置、壓力、suspend 前後\nCHA／CHB 都是 SHU0 = 6400 Mbps" as obs #lightyellow
+
+linux -[hidden]-> tee
+tee -[hidden]-> ub
+bl31 --> dpm
+linux ..> bl31 : PSCI SYSTEM_SUSPEND
+dpm ..> obs
+@enduml

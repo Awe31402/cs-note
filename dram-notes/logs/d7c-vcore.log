@@ -1,0 +1,36 @@
+Sat Oct 17 08:00:13 UTC 2026
+lrwxrwxrwx 1 root root 0 Oct 17 07:45 /sys/class/regulator/regulator.6 -> ../../devices/platform/soc/1cc04000.pwrap/1cc04000.pwrap:pmic/regulator/regulator.6
+name=vcore
+type=voltage
+microvolts=693750
+min_microvolts=506250
+max_microvolts=1300000
+state=disabled
+opmode=normal
+num_users=1
+/sys/devices/platform/soc/1cc04000.pwrap/1cc04000.pwrap:pmic
+== consumers
+lrwxrwxrwx 1 root root    0 Oct 17 08:00 device -> ../../../1cc04000.pwrap:pmic
+lrwxrwxrwx 1 root root    0 Oct 17 08:00 of_node -> ../../../../../../../firmware/devicetree/base/soc/pwrap@1cc04000/pmic/regulators/buck_vcore
+lrwxrwxrwx 1 root root    0 Oct 17 07:45 subsystem -> ../../../../../../../class/regulator
+ regulator-dummy                  8   18      0 unknown     0mV     0mA     0mV     0mV 
+    11250000.mmc-dvfsrc-vcore     0                                 0mA     0mV     0mV
+    11270000.xhci4-vusb33         1                                 0mA     0mV     0mV
+    11270000.xhci4-vbus           1                                 0mA     0mV     0mV
+    11260000.xhci3-vbus           1                                 0mA     0mV     0mV
+--
+    11201000.usb0-vbus            0                                 0mA     0mV     0mV
+    11240000.mmc-dvfsrc-vcore     0                                 0mA     0mV     0mV
+    cpu7-cpu                      0                                 0mA     0mV     0mV
+    cpu6-cpu                      0                                 0mA     0mV     0mV
+    cpu5-cpu                      0                                 0mA     0mV     0mV
+--
+ vpu                              1    0      0  normal   856mV     0mA   400mV  1193mV 
+ vcore                            1    0      0  normal   693mV     0mA   506mV  1300mV 
+ vs2                              1    0      0  normal  1450mV     0mA   800mV  1600mV 
+ vpa                              0    1      0  normal  3000mV     0mA   500mV  3000mV 
+    11240000.mmc-vmmc             0                                 0mA  3000mV  3000mV
+== sample vcore 10x idle
+     10 693750
+== sample vcore under load
+     10 693750

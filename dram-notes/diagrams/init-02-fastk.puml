@@ -1,0 +1,30 @@
+@startuml
+skinparam defaultFontName "Noto Sans CJK TC"
+title BL2 libdram：要不要整套校正？（每個 shuffle 各判斷一次）
+
+start
+:BL2 先開 UFS、讀 GPT;
+:get_part_addr("dramk") → 0x4880000\nblkdev_set_dramk_data_offset();
+:DramcSave_Time_For_Cal_Init()\n→ read_offline_dram_calibration_data(shu);
+if (header 的 pl_version、pl_build_time\n跟這份 libdram 一樣？) then (不一樣)
+  :把 5 個 shuffle 的 checksum 清成 0\n（寫 dramk）;
+  :femmc_Ready = 0;
+elseif (magic = 0x9502 且\n該 shuffle 的 CRC16 對？) then (對)
+  :femmc_Ready = 1\n讀出存的校正值;
+else (不對)
+  :femmc_Ready = 0;
+endif
+if (femmc_Ready?) then (1)
+  :各校正步驟用存的值\n（Bypass_RDDQC 等）;
+  :不寫 dramk;
+else (0)
+  :整套校正（掃描）;
+  :DramcSave_Time_For_Cal_End()\n→ write_offline_dram_calibration_data()\n寫 header＋這個 shuffle;
+endif
+stop
+note right
+本板實測：熱開機、冷開機、燒錄後
+dramk md5 都是 19a518c8…，沒被改寫
+→ 每次都走 femmc_Ready = 1
+end note
+@enduml

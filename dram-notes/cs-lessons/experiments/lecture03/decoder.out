@@ -1,0 +1,14 @@
+addr  word line（3-to-8）
+000   10000000
+001   01000000
+010   00100000
+011   00010000
+100   00001000
+101   00000100
+110   00000010
+111   00000001
+3-to-8、enable、4-to-16 全部 one-hot 正確： OK
+ 3-to-8      decoder：3 個 NOT、8 個 3 輸入 AND
+ 4-to-16     decoder：4 個 NOT、16 個 4 輸入 AND
+10-to-1024   decoder：10 個 NOT、1024 個 10 輸入 AND
+14-to-16384  decoder：14 個 NOT、16384 個 14 輸入 AND

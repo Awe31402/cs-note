@@ -1,0 +1,20 @@
+== Sat Oct 17 07:51:56 UTC 2026 before
+406.288 CHA DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00208000 drm_sram=0
+406.288 CHB DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00200000 drm_sram=0
+suspend success before: 0
+rtcwake: assuming RTC uses UTC ...
+rtcwake: wakeup from "mem" using /dev/rtc0 at Sat Oct 17 07:52:07 2026
+== Sat Oct 17 07:52:08 UTC 2026 after resume
+407.577 CHA DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00208000 drm_sram=0
+407.577 CHB DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00200000 drm_sram=0
+408.077 CHA DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00208000 drm_sram=0
+408.077 CHB DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00200000 drm_sram=0
+408.578 CHA DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00208000 drm_sram=0
+408.578 CHB DVFS_STATUS=0x02000000 sram_shu=0(6400) reg_gp=0 other_gp=0 pll_sel=1 latch=0 | SA_RESERVE=0x00200000 drm_sram=0
+suspend success after: 1
+[    0.000000] OF: reserved mem: 0x000000013fffe000..0x000000013fffffff (8 KiB) nomap non-reusable dramc-rk0@1,3fffe000
+[    0.000000] OF: reserved mem: 0x000000023fffe000..0x000000023fffffff (8 KiB) nomap non-reusable dramc-rk1@2,3fffe000
+[    0.884300] mtk-msdc 11240000.mmc: supply dvfsrc-vcore not found, using dummy regulator
+[    1.303987] mtk-msdc 11250000.mmc: supply dvfsrc-vcore not found, using dummy regulator
+[  406.317852] PM: suspend entry (deep)
+[  407.516261] PM: suspend exit

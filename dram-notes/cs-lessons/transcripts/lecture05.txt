@@ -1,0 +1,62 @@
+[00:00] In the previous videos, you saw how DRAM memory cells are arranged into a two-dimensional array,
+[00:10] and that an individual cell can be selected for reading by passing a row address through a decoder
+[00:17] and a column address through a multiplexer. Alternatively, to write to a cell, a row address
+[00:24] is decoded, but the column address is demultiplexed. You will now see how this model can be scaled
+[00:30] up. You'll also be introduced to the overall organisation of a dual inline memory module.
+[00:37] To begin with, we can build an array with more cells. Many more cells. Over the years, manufacturing
+[00:45] techniques have improved so much that it's now possible to pack millions of electronic
+[00:50] components onto a tiny piece of silicon. To make even better use of the space available,
+[00:57] memory arrays are rectangular rather than square. Consider this. Each bitline, that is, each column,
+[01:05] relies on a number of supporting components. Each column has its own sense amplifier with
+[01:11] the ability to latch onto a value. Each column also contributes a number of components to
+[01:16] the multiplexer and demultiplexer, and some additional components are needed to control
+[01:22] the pre-charging of each bitline. Each row, on the other hand, contributes only a small
+[01:29] number of components to a decoder. Therefore, to maximise the space available for storage cells,
+[01:36] it makes sense to minimise the number of peripheral components. And this can be achieved by building
+[01:43] an array with many more rows than columns. A typical array might have 16,384 rows and 1024 columns.
+[01:55] That's about 16.7 million individual cells, each capable of storing one bit. It follows that to
+[02:04] individually identify each of 16,384 rows, we would need a 14-bit row address, and to individually identify
+[02:14] each of 1024 columns, we would need a 10-bit column address. But even a full-sized version of an array
+[02:23] with several million cells is still only capable of reading or writing a single binary digit at a time.
+[02:31] Let's return to our scaled-down model. To read or write a byte of data, the solution is rather elegant.
+[02:42] We need multiple arrays, eight in fact. Each array has its own supporting circuitry, its own decoder,
+[02:50] its own sense amplifiers, and its own multiplexer and demultiplexer. But the decoder of each array
+[02:58] array is fed the same row address. So when a row address is strobed as part of a read or write cycle,
+[03:06] the same word line is selected in each of the arrays. Furthermore, the multiplexer and demultiplexer
+[03:14] of each array is fed the same column address. So when a column address is strobed, the same column
+[03:22] is selected in each of the arrays. In other words, when a memory address is applied to a group of
+[03:27] arrays, only one cell is selected in each array, but at the same position. All we need now is a data bus,
+[03:36] but notice that each array is connected to a different line of this eight-line data bus.
+[03:42] This means a different binary digit can be read from or written to the same position in each array.
+[03:52] We now have a memory device that can read or write a whole byte of data in one go.
+[03:59] A set of memory arrays like this is called a bank.
+[04:05] Eight banks are then included in a single microchip.
+[04:09] Typically, a single chip will contain either four, eight or 16 banks.
+[04:16] The memory controller needs a way to identify each bank. To support eight banks, three bits of every
+[04:22] memory address must be dedicated as a bank address. The memory controller can therefore use a bank
+[04:28] decoder to select and activate one particular bank when reading or writing.
+[04:33] Eight of these chips will be fitted to a single circuit board.
+[04:41] A circuit board like this is often referred to as a stick of RAM. It's also known as a memory module,
+[04:48] or to be more precise, a dual in-line memory module, or DIM for short.
+[04:54] A DIM like this is plugged into a RAM slot on the computer's motherboard, which in turn is connected
+[05:00] to the computer's memory controller via a memory channel. A set of chips like this, which can be
+[05:07] accessed simultaneously via the same memory channel, is known as a rank. It's common for a DIM to include
+[05:14] only one rank, so it would be known as a single rank dual in-line memory module. Some DIMs, however,
+[05:22] have two or even four ranks. If you come across a DIM with another set of eight chips, that is another
+[05:27] rank, perhaps on the opposite side of the circuit board, this would be referred to as a dual-rank
+[05:34] dual in-line memory module. A typical PC motherboard has four RAM slots, so you can install up to four DIMs.
+[05:45] You can check how many RAM slots your PC has and how many of them are occupied, either by removing the
+[05:51] case and taking a look – be careful, you need to know what you're doing – or by using the Windows task
+[05:57] manager. If each of four DIMs has its own memory channel, and therefore they can be accessed at the
+[06:05] same time, this is referred to as quad-channel mode. It theoretically makes the computer's memory four
+[06:13] times faster, which can lead to a better performance overall. It can make a real difference to some
+[06:18] applications, such as games. Being able to use multiple channels simultaneously depends on the
+[06:26] capabilities of the CPU. Some high-end processors, such as Intel's Core i9 and AMD's Ryzen Thread
+[06:34] dripper, support quad-channel mode. But most modern PC processors work in dual-channel mode, that is,
+[06:41] they can only utilise two DIMs at the same time. This makes the memory twice as fast. There are still
+[06:47] some PCs around in which all of the RAM slots share the same memory channel, which means single-channel mode
+[06:54] only as possible. A computer in single-channel mode will still benefit from having a RAM stick in
+[07:00] every slot, but it won't have the same gains in terms of speed. You can check the channel mode of your
+[07:08] computer by using a utility such as CPU-Z. In the next video, I'll say more about the factors that affect the
+[07:18] performance of DRAM and the trade-offs that designers have to make between capacity, speed, energy efficiency,
+[07:26] and cost. I'll also talk about the different generations of double data rate DRAM, that is DDR DRAM.

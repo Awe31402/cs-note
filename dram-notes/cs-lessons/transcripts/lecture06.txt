@@ -1,0 +1,131 @@
+[00:00] You were previously introduced to the organisation of a DRAM Dual Inline Memory Module, or DIM for short.
+[00:12] A typical PC motherboard has four DIM slots, so you can install up to four at once.
+[00:18] A typical DIM has one rank of eight chips on one face of the circuit board.
+[00:24] Some DIMs have more than one rank. Often a second rank is located on the opposite face of the circuit board.
+[00:31] Each chip contains multiple banks, and each bank contains multiple arrays.
+[00:38] Each array is made up of multiple rows and columns.
+[00:42] In this video, you'll learn more about the hierarchical organisation of a DIM and how it operates.
+[00:48] You'll also learn about some of the factors that memory designers have to consider when striking a balance between capacity, speed, energy efficiency and cost.
+[00:59] First of all, let's consider how a DIM interacts with the processor.
+[01:04] A DIM is plugged into a slot on the computer's motherboard, which in turn is connected to the computer's memory controller via a memory channel.
+[01:13] The memory controller of a modern PC is integrated into the same chip as the CPU.
+[01:20] The memory channel includes an address bus, a command and control bus, and a data bus.
+[01:27] These are drawn onto the motherboard.
+[01:29] Typically, 17 lines carry the memory address.
+[01:33] These lines are used to deliver a row address and a column address separately, meaning we can have larger memory addresses than 17 bits alone would allow.
+[01:42] Six lines of the memory channel carry command and control signals, and 64 lines carry the data itself.
+[01:51] If the data bus supports error correction, it may well be 72 bits wide rather than 64.
+[01:58] The memory channel of an early PC had only 32 lines for the data bus,
+[02:03] so a typical memory module of the day had only a 32-bit connection to the motherboard.
+[02:08] These were known as single inline memory modules, or SIMs for short.
+[02:14] In an early PC, data moved around the computer 32 bits at a time.
+[02:19] 32 bits, that's 4 bytes, was known as a word.
+[02:24] The memory channel of a modern PC has a 64-bit data bus.
+[02:29] So a modern memory module has a 64-bit data connection, twice as much as a SIM.
+[02:35] That's why a modern memory module is referred to as a dual inline memory module, or DIM for short.
+[02:42] The word size of a modern PC is 64 bits.
+[02:47] The effective frequency of the memory channel is typically 2132 MHz.
+[02:54] That means 2,132,000,000 new 64-bit words can be transmitted every second.
+[03:03] Less than half a nanosecond per word.
+[03:06] More about how the DIM can keep up with this in a moment.
+[03:09] If there are, say, two DIMs installed, and they both share the same memory channel,
+[03:16] the memory is said to be working in single channel mode.
+[03:19] If, on the other hand, each of two DIMs has its own memory channel,
+[03:24] then the memory controller can access them simultaneously.
+[03:27] This is called dual channel mode.
+[03:30] It theoretically makes accessing the memory twice as fast,
+[03:33] which can make a real difference to some applications.
+[03:36] If there are four DIMs installed, and each has its own memory channel,
+[03:41] this is called quad channel mode.
+[03:43] Some high-end gaming PCs offer this capability.
+[03:47] Being able to utilize multiple channels simultaneously depends on the design of the motherboard
+[03:54] and the capabilities of the CPU.
+[03:56] Most modern PCs offer dual channel mode.
+[04:00] It should be noted that there are power constraints on how many DIMs can share one.
+[04:05] one memory channel.
+[04:07] Channel signals are weakened when split between multiple DIMs.
+[04:10] Typically, a maximum of two DIMs can share one channel.
+[04:14] Bear in mind also that if a single DIM has two ranks,
+[04:18] these ranks are bound to share the same memory channel because they share the same slot.
+[04:23] Dual and quad rank DIMs may have a higher capacity,
+[04:27] but they demand more power and offer little extra in terms of speed.
+[04:33] Accessing an individual memory cell is a relatively slow process.
+[04:38] Reading or writing just one bit of data takes several clock cycles.
+[04:43] But the data bus of a memory channel can transfer two new 64-bit words in every clock cycle,
+[04:51] once on the rising edge and once on the falling edge.
+[04:54] This is where the term double data rate DDR comes from.
+[04:59] A memory module is therefore constructed in such a way as to keep the data bus fully occupied
+[05:05] for as much of the time as possible.
+[05:08] Each chip on a typical DIM is wired to eight lines of the data bus.
+[05:14] This means eight bits of a 64-bit word is read from or written to each of eight chips simultaneously.
+[05:22] Eight chips is typical, but some DIMs have more and some have less.
+[05:27] Assume for a moment that a single chip has a fixed capacity, then more chips means more storage.
+[05:34] But because the chips work together to service a read or write request,
+[05:39] more chips would use more power.
+[05:41] Fewer chips on the other hand would use less power,
+[05:44] but each chip would have to handle a bigger share of 64 data lines.
+[05:49] Fewer chips therefore means more data pins per chip, and pins are expensive.
+[05:55] Inside each chip, there are typically eight banks, each of which can store eight bits.
+[06:02] Banks at equivalent positions inside the chips share the same address lines and the same control signals.
+[06:09] So when eight bits are written to each chip simultaneously,
+[06:13] they are written to banks in equivalent positions.
+[06:16] But being able to read or write 64 bits all at once
+[06:21] isn't any faster than reading or writing just one bit.
+[06:25] To see how to speed things up, let's take a look inside a single bank.
+[06:30] This bank contains eight arrays, each with 64 memory cells arranged in eight rows and eight columns.
+[06:42] Of course, this is just a model.
+[06:44] A typical array will be rectangular and might have 1024 columns and 16384 rows.
+[06:53] To read some data, first the row address is strobed, which initiates the read cycle,
+[06:58] followed by the column address.
+[07:00] Together, the row and column address identify a particular cell in each array.
+[07:05] These eight cells are in the same position because they share the same row and column address.
+[07:11] The row is activated and latched into the sense amplifiers.
+[07:16] This is a relatively slow part of the read cycle.
+[07:19] At this point, the row is set to be open.
+[07:22] Now, one bit from each array can be simultaneously loaded into the output buffer.
+[07:30] Remember, this is just a model.
+[07:32] A DRAM with eight chips will have a bank in each chip doing exactly the same thing at exactly the same time.
+[07:39] Between them, they deliver a 64-bit word to the output buffer.
+[07:44] Since only one row at a time can be open, early types of DRAM would now close the row
+[07:50] and another would be opened if necessary, or this one would be reopened.
+[07:55] But opening a whole row, which in reality might be 1024 columns wide or even double that,
+[08:02] just to read one bit, is a waste of time, so to speak.
+[08:07] So, while the row is already open, another byte can be read into the output buffer,
+[08:13] then another, and another.
+[08:16] In other words, a burst of data can be read very quickly by supplying just one row address and one column address.
+[08:23] The number of columns read while the row is open is called the burst length.
+[08:31] Different generations of DRAM have different burst lengths.
+[08:35] Typically DDR2 has a burst length of 4, DDR3 has a burst length of 8, and DDR4 has a burst length of 16.
+[08:45] Don't forget, what you can see here is just one bank.
+[08:49] In reality, a DDR3 DRAM module will have a bank in each of 8 chips working simultaneously to deliver 8 64-bit words in very close succession.
+[09:01] This technique is called pre-fetching.
+[09:05] But there's still a problem.
+[09:07] Only one row per bank can be open at any one time.
+[09:11] As soon as a burst has finished, the row has to be closed before another can be opened.
+[09:16] This involves refreshing the cells of the row that has just been read, then pre-charging the bit lines again.
+[09:22] This might take as many as 18 clock cycles.
+[09:25] Furthermore, data move between the CPU and the DRAM in blocks known as cache lines.
+[09:33] A cache line is typically 64 bytes in size.
+[09:37] That's 8 64-bit words.
+[09:40] One burst from a modern DIM may be able to fill a single cache line as quickly as the data bus can carry it.
+[09:46] But what if multiple cache lines need to be read in close succession?
+[09:51] To increase the throughput of a DIM, each bank inside one chip is designed to operate independently of the other banks in the same chip.
+[10:01] This means different banks can be at different stages of their read or write cycles.
+[10:06] A simplified model of one of the banks inside a chip illustrates a system known as bank interleaving.
+[10:14] As soon as one bank has delivered a burst, another burst can begin immediately from the next bank, and then the next, and then the next.
+[10:24] While one bank is pumping out data, the others can be getting ready to do it again.
+[10:29] By the time the last bank in this chip has completed a burst, the first bank has had plenty of time to recover.
+[10:37] Bank interleaving, therefore, allows the data bus to operate at very high speeds and, most importantly, to remain saturated during prolonged read and write operations.
+[10:50] This chip has 8 banks, but some chips have more and some have less.
+[10:56] Deciding how many banks to include inside a chip is an important decision that DRAM designers have to make.
+[11:03] More banks offer more parallelism and lower latency, so more banks are better at keeping the data bus busy more of the time.
+[11:12] More banks means faster memory.
+[11:15] But there is something of a balancing act to be performed here.
+[11:19] For a given area of silicon, more banks means smaller banks.
+[11:24] This, in turn, might mean smaller arrays and more of them.
+[11:28] Each array has its own peripheral components such as decoders, sets amplifiers and multiplexers.
+[11:34] If you want to build a DRAM with the highest possible storage capacity, you need to minimise the number of supporting components and leave as much physical space as you can for storage cells.
+[11:46] Ultimately, then, more banks means lower capacity.
+[11:50] Fewer banks, on the other hand, means larger banks and, therefore, larger arrays.
+[11:56] Potentially, this means higher capacity.
+[11:59] But larger arrays have longer bitlines, which are slower than smaller ones and consume more power.

@@ -1,0 +1,86 @@
+Loading cache...done.
+Loaded 5264 entries from dependency cache.
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.8.1"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "aarch64-poky-linux"
+MACHINE              = "genio-720-evk-ufs"
+DISTRO               = "rity-demo"
+DISTRO_VERSION       = "26.0-release"
+TUNE_FEATURES        = "aarch64 armv8a crc"
+TARGET_FPU           = ""
+meta                 
+meta-poky            
+meta-yocto-bsp       = "HEAD:d4576e3c081a7ee7b57d48421c4c4f491cb4defe"
+meta-arm             
+meta-arm-toolchain   = "HEAD:a81c19915b5b9e71ed394032e9a50fd06919e1cd"
+meta-clang           = "HEAD:b4532c75af7b1957b10cc4d5377fc4cfa0b1cbf6"
+meta-mediatek-bsp    = "HEAD:24dad2a50ad27ea2d0c2e65d8389e5ae36e2f1e6"
+meta-mediatek-tsn    = "HEAD:9e780f424ba2b1f56090113e96acf8f90aabf0ed"
+meta-mediatek-bluedroid = "HEAD:bfb2c6f718b76465e940533b85089eea25f4b6c6"
+meta-mediatek-demo   = "HEAD:815a43e8c1d5850c7d4d633d0dd4d532186b859f"
+meta-asix            = "HEAD:d2551230c1fc4a0bebd2d2f0b5e3e9a0aee678e2"
+meta-nn              = "HEAD:9bf72cf539cec4ab6ce5c4ae64daa201af889875"
+meta-security        = "HEAD:b13f1705d723650de61277670c8a76aadea4cfdd"
+meta-multimedia      
+meta-networking      
+meta-oe              
+meta-python          
+meta-perl            = "HEAD:ae7dfb12245c7f9b9a353499e2688015bd4e6413"
+meta                 
+meta-rity-bringup    
+meta-rity-demo       = "HEAD:4542a23fdd0c3384230efa73e402d597f10425c7"
+meta-tensorflow      = "HEAD:eeee54cfa3c51c1fd99604a0d5f173096bdcf1da"
+meta-lts-mixins      = "HEAD:96deb45139df027473faf0938fe006d33c45c375"
+meta-chromium        = "HEAD:f50e7319de63d6c36810cfbfac417e18233d430e"
+
+Initialising tasks...NOTE: Tainting hash to force rebuild of task /home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb, do_compile
+WARNING: /home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_compile is tainted from a forced run
+WARNING: /home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/bl2_2.6.bb:do_compile is tainted from a forced run
+Sstate summary: Wanted 19 Local 10 Mirrors 0 Missed 9 Current 758 (52% match, 98% complete)
+done.
+NOTE: Executing Tasks
+NOTE: Running task 1817 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_compile)
+NOTE: Running task 1878 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/bl2_2.6.bb:do_deploy)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_compile: Started
+NOTE: recipe bl2-2.6-r0: task do_deploy: Started
+NOTE: recipe bl2-2.6-r0: task do_deploy: Succeeded
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_compile: Succeeded
+NOTE: Running task 1879 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_install)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_install: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_install: Succeeded
+NOTE: Running task 1880 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_package)
+NOTE: Running task 1881 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_populate_sysroot)
+NOTE: Running task 1882 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_deploy)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_populate_sysroot: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_deploy: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_deploy: Succeeded
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_populate_sysroot: Succeeded
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package: Succeeded
+NOTE: Running task 1883 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_packagedata)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_packagedata: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_packagedata: Succeeded
+NOTE: Running task 1884 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_package_qa)
+NOTE: Running task 1885 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_package_write_ipk)
+NOTE: Running task 1886 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_create_spdx)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package_qa: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package_write_ipk: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_create_spdx: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_create_spdx: Succeeded
+NOTE: Running task 1887 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_create_runtime_spdx)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package_qa: Succeeded
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_create_runtime_spdx: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_package_write_ipk: Succeeded
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_create_runtime_spdx: Succeeded
+NOTE: Running task 1888 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_rm_work)
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_rm_work: Started
+NOTE: recipe trusted-firmware-a-2.6-r0: task do_rm_work: Succeeded
+NOTE: Running noexec task 1889 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_rm_work_all)
+NOTE: Running noexec task 1890 of 1890 (/home/awe/disk/mtk-iot-yocto/src/poky/../meta-mediatek-bsp/recipes-bsp/trusted-firmware-a/trusted-firmware-a_2.6.bb:do_build)
+NOTE: Tasks Summary: Attempted 1890 tasks of which 1876 didn't need to be rerun and all succeeded.
+
+Summary: There were 2 WARNING messages.

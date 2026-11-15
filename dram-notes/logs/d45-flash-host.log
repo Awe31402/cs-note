@@ -1,0 +1,24 @@
+Genio Tools: v1.7.1
+Yocto Image:
+	name:     Rity Demo Image (rity-demo-image)
+	distro:   Rity Demo Layer 26.0-release (rity-demo)
+	codename: scarthgap
+	machine:  genio-720-evk-ufs
+	overlays: ['ufs.dtbo', 'video.dtbo', 'apusys.dtbo', 'display-dsi.dtbo']
+
+Looking for MediaTek SoC matching USB device 0e8d:0003
+Opening /dev/ttyACM0 using baudrate=115200
+Connected to MediaTek SoC: hw_code[0x8189]
+Sending bootstrap to address: 0x2001000
+Jumping to bootstrap at address 0x2001000 in AArch64 mode
+flashing mmc0boot0=bl2.img
+< waiting for any device >
+Sending 'mmc0boot0' (449 KB)                       OKAY [  0.015s]
+Writing 'mmc0boot0'                                OKAY [  0.010s]
+Finished. Total time: 0.031s
+flashing bootloaders=fip.bin
+Sending 'bootloaders' (1938 KB)                    OKAY [  0.051s]
+Writing 'bootloaders'                              OKAY [  0.023s]
+Finished. Total time: 0.081s
+Rebooting                                          OKAY [  0.002s]
+Finished. Total time: 0.052s
