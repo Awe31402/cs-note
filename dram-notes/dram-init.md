@@ -99,30 +99,7 @@ LK 沒有加 log（LK 不改，見 BRIEF），只能用主機收到 UART 的時�
 
 BL2 版是 `libdram/memory.c:790-852`。LK 版是同一個檔案 `:854-889`，用 `#ifdef _FLASH_MODE_DA_` 分開。
 
-```
-mt_mem_init()                          memory.c:790（BL2）／:854（LK）
-├─ exception_detection_start()         :796  只有 BL2
-├─ print "libdram version"
-├─ mt_base_probe()、mt_base_init()     libbase.a（沒有原始碼），印 "base init: MT8391 platform"
-├─ normal_mem_init()                   :167
-│   ├─ check_pl_build_time_updated()   :177  只有 BL2：比對 dramk header 的 build time
-│   └─ mt_set_emi()                    dramc_top.c:2236
-│       ├─ setup_dramc_voltage_by_pmic()          :2273  設 Vcore、VMDDR、VDDQ、VDD2H、VIO18
-│       ├─ dram_auto_detection()                  :2117
-│       │   └─ Init_DRAM(..., GET_MDL_USED)       讀 MR5～MR8：型號、rank、密度
-│       │      → update_dram_setting／decode_emi_info／update_emi_setting
-│       ├─ Init_DRAM(..., NORMAL_USED)            :2312  真正的初始化＋校正
-│       │   └─ Init_DramcCalibrationAllFreq()     dramc_pi_main.c:2358
-│       ├─ 校正失敗 → clean_dram_calibration_data() → reset   :2314-2325
-│       └─ switch_dramc_voltage_to_auto_mode()、restore_vcore_vddq_setting()、
-│          check_dramc_voltage_after_k()
-├─ mem_test()                          :839  只有 BL2：complex_mem_test 0x2000 bytes
-├─ exception_detection_end()           只有 BL2
-├─ emi_init3()                         :844
-├─ print "DDR frequency"、"Memory size"
-├─ aoc_init()                          :850  只有 BL2
-└─ reserve_dramc_dummy_read()          :851  只有 BL2：mblock 保留 dramc-rk0／rk1
-```
+![mt_mem_init() 呼叫樹](diagrams/init-03-call-tree.png)
 
 ### 校正：LK 只校一組，BL2 五組
 
