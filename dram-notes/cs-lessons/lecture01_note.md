@@ -34,21 +34,7 @@
 
 ## 0. 本講地圖
 
-```
-電晶體（開關） + 電容（存電）= 1 個 cell = 1 bit
-            │
-            ▼
-很多 cell 排成陣列：橫的 word line、直的 bit line
-            │
-            ▼
-讀一個 bit = 讀一整個 row
-  precharge bit line 到 Vdd/2 → 讓它浮著 → 打開 word line
-  → 每條 bit line 變一點點（±ΔV）→ sense amplifier 比較、存起來
-            │
-            ▼
-讀是破壞性的 → sense amplifier 把整個 row 寫回去
-電容會漏電   → 每個 cell 約 64 ms 要 refresh 一次 → 所以叫 "Dynamic"
-```
+![第 1 講地圖：從一個 cell 到 refresh](assets/l01-overview.png)
 
 ---
 
@@ -113,14 +99,7 @@
 - [04:11] 【口頭】用金屬氧化物半導體和矽，經過微影、蝕刻做出來，「但那是另一個故事」。
 - [04:23] 投影片上有些電容是紅色（有電 = 1），其他是 0。
 
-```
-          bit line  bit line  bit line  bit line
-              │         │         │         │
-word line ────┼──T──────┼──T──────┼──T──────┼──T────
-              │  ╧C     │  ╧C     │  ╧C     │  ╧C
-word line ────┼──T──────┼──T──────┼──T──────┼──T────
-              │  ╧C     │  ╧C     │  ╧C     │  ╧C
-```
+![Cell 陣列：word line 和 bit line](assets/l01-cell-array.png)
 
 每個 cell 的電晶體：gate 接 word line，一端接 bit line，另一端接電容。
 

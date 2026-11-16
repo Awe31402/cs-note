@@ -1,0 +1,22 @@
+@startuml l03-decoder-overview
+skinparam monochrome false
+skinparam shadowing false
+skinparam defaultFontName "Noto Sans CJK TC"
+skinparam defaultFontSize 13
+skinparam ActivityBackgroundColor #E8F0FE
+skinparam ActivityBorderColor #4A6FA5
+skinparam ArrowColor #4A6FA5
+
+title 第 3 講地圖：decoder
+
+:3 條輸入（row 位址）
+→ 3-to-8 decoder
+→ 8 條輸出，剛好 1 條是 1（one-hot）;
+:內部：3 個 NOT + 8 個 AND
+每個 AND 吃 3 條：原值或反相;
+:加一條 enable
+→ 每個 AND 變 4 個輸入
+→ enable = 0 時全部輸出 0;
+#E6F4EA:兩顆 3-to-8 + 1 個 NOT 接 enable
+→ 4-to-16 decoder;
+@enduml

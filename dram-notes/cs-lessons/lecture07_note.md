@@ -30,20 +30,7 @@
 
 ## 0. 本講地圖
 
-```
-9 bit 位址（高位 → 低位）：
-
-  ┌──────┬────────┬──────┬────────┐
-  │ row  │ col 高 │ bank │ col 低 │
-  │ 3bit │  1bit  │ 3bit │  2bit  │
-  └──────┴────────┴──────┴────────┘
-     │       │        │       └─ burst 裡的 4 個 column（DIMM 自己數）
-     │       │        └───────── 每 4 個位址換一個 bank → interleaving
-     │       └────────────────── 8 個 bank 輪完一圈，換到 column 4–7
-     └────────────────────────── 再輪完一圈，才換下一個 row
-
-連續的位址：bank0 col0–3 → bank1 col0–3 → … → bank7 → bank0 col4–7 → … → row 1
-```
+![9 bit 位址怎麼切](assets/l07-address-bits.png)
 
 ---
 
@@ -52,15 +39,7 @@
 - [00:00] 上一支：bank interleaving 在 DIMM 的每顆晶片裡發生，降低延遲，[00:10] 再配合 prefetching 大大提高速度。
 - [00:17] 投影片 [00:24]～[00:48] 的時間軸：
 
-```
-Bank 0: [Initiate read][Data][  Bank 0 unavailable  ]
-Bank 1:        [Initiate read][Data][  Bank 1 unavailable  ]
-Bank 2:               [Initiate read][Data][ ... ]
-  ...
-Bank 7:                                   [Initiate read][Data][ ... ]
-Bank 0:                                          [Initiate read][Data] ...
-──────────────────────────────────────────────────────────────▶ Time
-```
+![Bank interleaving 的時間軸](assets/l07-interleave.png)
 
 - [00:24] 讀一個 bank 要先等一段時間才有資料。[00:31] burst 結束後 bank 要**回復**才能再送。
 - [00:39] 但可以接著在下一個 bank 開始 burst，不用等 → 經過一開始的延遲後，資料**連續**流出。

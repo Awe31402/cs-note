@@ -30,19 +30,7 @@
 
 ## 0. 本講地圖
 
-```
-array    ：16384 row × 1024 column，一次出 1 bit
-  ×8
-bank     ：8 個 array 吃同一個 row／column 位址，各接 data bus 的一條線 → 一次 8 bit
-  ×8
-chip     ：8 個 bank（也有 4、16 個），要 3 bit bank 位址 + bank decoder
-  ×8
-rank     ：8 顆 chip 同時動，經同一個 channel 存取（DIMM 上的一面）
-  ×1–4
-DIMM     ：插在主機板的 RAM slot
-  ×1–4
-channel  ：memory controller 的一條通道；single／dual／quad channel
-```
+![從 array 到 channel](assets/l05-hierarchy.png)
 
 ---
 
@@ -88,13 +76,7 @@ channel  ：memory controller 的一條通道；single／dual／quad channel
 - [03:52] 結果：一次讀寫**一整個 byte**。
 - [03:59] 這樣一組 array 叫做 **bank**。
 
-```
-         同一個 row 位址、同一個 column 位址
-          │        │        │             │
-       array 0  array 1  array 2  ...  array 7
-          │        │        │             │
-         D0       D1       D2            D7     ← 8 條資料線
-```
+![一個 bank = 8 個 array 吃同一個位址](assets/l05-bank-arrays.png)
 
 投影片 [03:45]：8 個 array 同一個位置的 cell（紅藍相間）同時被選到。
 

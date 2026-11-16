@@ -33,21 +33,10 @@
 
 ## 0. 本講地圖
 
-```
-              位址腳（3 支）            資料腳（1 支，雙向）
-                  │                          ▲▼
-      ┌───────────┴──────────┐               │
- RAS#─┤ row 位址 buffer      │         data buffer
-      │   → row decoder ─────┼─▶ word line   ▲▼
- CAS#─┤ column 位址 buffer   │               │
-      │   → column mux／demux┼─────── sense amplifiers ── 8×8 陣列
- WE# ─┤ timing & control     │
-      └──────────────────────┘
+![8×8 DRAM 的方塊圖](assets/l02-block.png)
 
-讀：precharge → row 位址 + RAS# → 整個 row 進 sense amp
-    → column 位址 + CAS# → mux 選一個 → 資料腳 → 寫回 row → precharge
-寫：同上，但在 CAS# 之前放好資料、拉低 WE# → demux 改一個 sense amp → 寫回 row
-```
+- 讀：precharge → row 位址 + RAS# → 整個 row 進 sense amp → column 位址 + CAS# → mux 選一個 → 資料腳 → 寫回 row → precharge
+- 寫：同上，但在 CAS# 之前放好資料、拉低 WE# → demux 改一個 sense amp → 寫回 row
 
 ---
 
@@ -150,12 +139,7 @@ row 7: 0 0 0 0 0 0 0 1
 - [07:35] 讀週期要非常精準的時序。[07:42] 有些事可以同時做，有些要排隊。[07:46] 要快，也要對。
 - [07:51] 投影片 [07:36] 的 1 bit 讀週期：
 
-```
-Address  ──<row address>──<column address>─────────────────
-RAS#     ‾‾‾‾‾‾‾‾\______________________/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
-CAS#     ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\____________________/‾‾‾‾‾‾‾‾‾‾
-Data out ──────────────────────────────<data out>──────────
-```
+![讀週期時序圖](assets/l02-read-timing.png)
 
 | 時間 | 說明 |
 |---|---|
@@ -194,13 +178,7 @@ Data out ───────────────────────�
 
 投影片 [09:57]：
 
-```
-Address   ──<row address>──<column address>──────────────
-RAS#      ‾‾‾‾‾‾\_____________________________/‾‾‾‾‾‾‾‾‾‾
-CAS#      ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\____________________/‾‾‾‾‾
-WE#       ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\__________/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
-Data in   ─────────────<data input>──────────────────────
-```
+![寫週期時序圖](assets/l02-write-timing.png)
 
 - [10:03] row 位址先出現、被 strobe。
 - [10:09] column 位址出現在腳上的**同時**，WE# 拉低、輸入資料準備好。

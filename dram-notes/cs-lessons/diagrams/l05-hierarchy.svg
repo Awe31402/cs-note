@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="470" viewBox="0 0 700 470" font-family="Noto Sans CJK TC, Noto Sans, sans-serif" font-size="13" fill="#333333">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4A6FA5"/></marker></defs>
+<rect width="700" height="470" fill="#ffffff"/>
+<text x="350.0" y="20" font-size="15" text-anchor="middle" dominant-baseline="central" fill="#333333" font-weight="bold">從 array 到 channel：一層一層疊上去</text>
+<rect x="40" y="40" width="620" height="44" rx="6" fill="#E8F0FE" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="62" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">array</text>
+<text x="150" y="62" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">16384 row × 1024 column，一次出 1 bit</text>
+<polyline points="110,84 110,112" fill="none" stroke="#4A6FA5" stroke-width="1.6" marker-end="url(#ar)"/>
+<text x="124" y="98" font-size="13" text-anchor="start" dominant-baseline="central" fill="#4A6FA5" font-weight="bold">×8</text>
+<rect x="40" y="112" width="620" height="44" rx="6" fill="#E8F0FE" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="134" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">bank</text>
+<text x="150" y="134" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">8 個 array 吃同一個 row／column 位址 → 一次 8 bit</text>
+<polyline points="110,156 110,184" fill="none" stroke="#4A6FA5" stroke-width="1.6" marker-end="url(#ar)"/>
+<text x="124" y="170" font-size="13" text-anchor="start" dominant-baseline="central" fill="#4A6FA5" font-weight="bold">×8</text>
+<rect x="40" y="184" width="620" height="44" rx="6" fill="#E6F4EA" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="206" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">chip</text>
+<text x="150" y="206" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">8 個 bank（也有 4、16 個），3 bit bank 位址 + bank decoder</text>
+<polyline points="110,228 110,256" fill="none" stroke="#4A6FA5" stroke-width="1.6" marker-end="url(#ar)"/>
+<text x="124" y="242" font-size="13" text-anchor="start" dominant-baseline="central" fill="#4A6FA5" font-weight="bold">×8</text>
+<rect x="40" y="256" width="620" height="44" rx="6" fill="#E6F4EA" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="278" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">rank</text>
+<text x="150" y="278" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">8 顆 chip 同時動，經同一個 channel 存取（DIMM 上的一面）</text>
+<polyline points="110,300 110,328" fill="none" stroke="#4A6FA5" stroke-width="1.6" marker-end="url(#ar)"/>
+<text x="124" y="314" font-size="13" text-anchor="start" dominant-baseline="central" fill="#4A6FA5" font-weight="bold">×1–4</text>
+<rect x="40" y="328" width="620" height="44" rx="6" fill="#FEF7E0" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="350" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">DIMM</text>
+<text x="150" y="350" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">插在主機板的 RAM slot</text>
+<polyline points="110,372 110,400" fill="none" stroke="#4A6FA5" stroke-width="1.6" marker-end="url(#ar)"/>
+<text x="124" y="386" font-size="13" text-anchor="start" dominant-baseline="central" fill="#4A6FA5" font-weight="bold">×1–4</text>
+<rect x="40" y="400" width="620" height="44" rx="6" fill="#FCE8E6" stroke="#4A6FA5" stroke-width="1.5"/>
+<text x="60" y="422" font-size="14" text-anchor="start" dominant-baseline="central" fill="#333333" font-weight="bold">channel</text>
+<text x="150" y="422" font-size="13" text-anchor="start" dominant-baseline="central" fill="#333333">memory controller 的一條通道；single／dual／quad channel</text>
+</svg>

@@ -29,15 +29,7 @@
 
 ## 0. 本講地圖
 
-```
-3 條輸入（row 位址）──▶ [3-to-8 decoder] ──▶ 8 條輸出，剛好 1 條是 1（one-hot）
-                              │
-            內部：3 個 NOT + 8 個 AND（每個 AND 吃 3 條：原值或反相）
-                              │
-           加一條 enable ──▶ 每個 AND 變 4 個輸入；enable=0 時全部輸出 0
-                              │
-   兩顆 + 1 個 NOT 接 enable ──▶ 4-to-16 decoder
-```
+![第 3 講地圖：decoder](assets/l03-decoder-overview.png)
 
 ---
 
@@ -106,15 +98,7 @@
   - 第 4 個 bit（最高位）直接接**下面那顆**的 enable，經過一個 NOT 接**上面那顆**的 enable。
 - [03:35] 這個 NOT 確保一顆的 enable 永遠是另一顆的反相，[03:44] 所以**只有一顆會有輸出**。
 
-```
-A2 A1 A0 ──┬──▶ [3-to-8 上] ──▶ 輸出 0–7    （A3 = 0 時動）
-           │        ▲ enable
-           │       NOT
-           │        │
-A3 ────────┼────────┤
-           │        ▼ enable
-           └──▶ [3-to-8 下] ──▶ 輸出 8–15   （A3 = 1 時動）
-```
+![兩顆 3-to-8 組成 4-to-16](assets/l03-4to16.png)
 
 【補充】這就是 [第 4 支](lecture04_note.md#5-demultiplexer-的電路) 會看到的 demultiplexer：把 enable 當成資料輸入，decoder 就變成 1-to-8 demux。
 

@@ -1,0 +1,54 @@
+@startuml l02-read-timing
+skinparam monochrome false
+skinparam defaultFontName "Noto Sans CJK TC"
+skinparam defaultFontSize 12
+
+title 讀週期時序（照影片投影片畫）
+
+scale 50 as 60 pixels
+
+concise "Address" as ADDR
+robust "RAS#" as RAS
+RAS has High,Low
+robust "CAS#" as CAS
+CAS has High,Low
+concise "Data out" as DOUT
+
+@0
+ADDR is {-}
+RAS is High
+CAS is High
+DOUT is {-}
+
+@20
+ADDR is "row address"
+
+@80
+RAS is Low
+
+@150
+ADDR is "column address"
+
+@200
+CAS is Low
+
+@320
+ADDR is {-}
+RAS is High
+DOUT is "data out"
+
+@380
+CAS is High
+DOUT is {-}
+
+@450
+
+highlight 80 to 320 #E8F0FE : RAS# low：latch row、sense 整個 row
+highlight 320 to 380 #FEF7E0 : 資料有效
+
+legend bottom
+  RAS#、CAS# 都是 active low（拉低 = 動作）。
+  ⚠ 影片說「RAS# 放開後資料才出現」。真的非同步 DRAM
+  是 CAS# 拉低後一段時間（tCAC）資料就出現，見內文。
+endlegend
+@enduml

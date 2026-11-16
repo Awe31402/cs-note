@@ -1,0 +1,99 @@
+@startuml l07-interleave
+skinparam monochrome false
+skinparam defaultFontName "Noto Sans CJK TC"
+skinparam defaultFontSize 12
+
+title Bank interleaving：輪流讀，data bus 一直是滿的
+
+scale 10 as 40 pixels
+
+concise "Bank 0" as B0
+concise "Bank 1" as B1
+concise "Bank 2" as B2
+concise "Bank 3" as B3
+concise "Bank 4" as B4
+concise "Bank 5" as B5
+concise "Bank 6" as B6
+concise "Bank 7" as B7
+concise "Data bus" as BUS
+
+@0
+B0 is "Initiate read"
+B1 is {-}
+B2 is {-}
+B3 is {-}
+B4 is {-}
+B5 is {-}
+B6 is {-}
+B7 is {-}
+BUS is {-}
+@10
+B1 is "Initiate read"
+@20
+B0 is Data
+B2 is "Initiate read"
+BUS is "B0"
+@30
+B0 is unavailable
+B1 is Data
+B3 is "Initiate read"
+BUS is "B1"
+@40
+B1 is unavailable
+B2 is Data
+B4 is "Initiate read"
+BUS is "B2"
+@50
+B2 is unavailable
+B3 is Data
+B5 is "Initiate read"
+BUS is "B3"
+@60
+B3 is unavailable
+B4 is Data
+B6 is "Initiate read"
+BUS is "B4"
+@70
+B4 is unavailable
+B5 is Data
+B7 is "Initiate read"
+BUS is "B5"
+@80
+B0 is "Initiate read"
+B5 is unavailable
+B6 is Data
+BUS is "B6"
+@90
+B6 is unavailable
+B7 is Data
+B1 is "Initiate read"
+BUS is "B7"
+@100
+B0 is Data
+B7 is unavailable
+BUS is "B0"
+@110
+B0 is {-}
+B1 is Data
+BUS is "B1"
+@120
+B1 is {-}
+B2 is {-}
+BUS is {-}
+@130
+B3 is {-}
+@140
+B4 is {-}
+@150
+B5 is {-}
+@160
+B6 is {-}
+@170
+B7 is {-}
+@180
+
+legend bottom
+  每個 bank 讀完要關 row、precharge（unavailable），這段時間換下一個 bank 接著送。
+  8 個 bank 輪完一圈，Bank 0 剛好回復好，可以再讀。
+endlegend
+@enduml
