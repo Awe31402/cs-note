@@ -47,6 +47,17 @@ claude plugin install ai-driven-se@ai-driven-se-local
 
 候選來源：每個階段結束時的回顧（見 [`project/roadmap.md`](../project/roadmap.md)）。
 
+## 觀察清單（候選 skill，還沒達到門檻）
+
+每個階段回顧時更新次數。滿 3 次、而且確定無法改成檢查，才做成 skill。
+
+| 候選工作流 | 步驟 | 目前次數 | 預計達標 | 備註 |
+|---|---|:-:|---|---|
+| 把糾正變成檢查 | 判斷哪一層擋（lint／hook／CMake／CI）→ 寫檢查 → 在 `tools/guardrail-tests/run.sh` 加「故意犯錯」案例 → 記進 `docs/correction-log.md` | 0 次真正的糾正（P0 的 CL-000～002 都是預防性的） | P1 | 專案最核心的循環 |
+| 階段回顧 | 回答 roadmap 的回顧題目 → 收集時數、行數、CI 失敗次數、lint 規則數 → 更新 roadmap 與 overview | 1（P0） | P2 結束 | |
+
+**P0 回顧（2026-11-19）的結論**：重複出現的「鎖版本」（4 次）和「寫 ADR＋更新索引」（5 次）都改成了檢查（專案的 `check_pinned.py`、`check_adr_index.py`，correction-log CL-001、CL-002），不做成 skill。ADR 內容的寫法用現成的 `domain-modeling` skill。
+
 ## Skill 清單
 
 | Skill | 用途 | 來自哪個階段 | 加入日期 |
