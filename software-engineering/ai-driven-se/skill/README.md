@@ -12,10 +12,12 @@ skill/
 ├── skills/
 │   └── <skill-name>/
 │       └── SKILL.md       # 一個工作流一個資料夾
+├── agents/
+│   └── <agent-name>.md    # 自訂 subagent
 └── README.md
 ```
 
-載入後，skill 會以 `ai-driven-se:<skill-name>` 的名稱出現。
+載入後，skill 與 agent 會以 `ai-driven-se:<名稱>` 的名稱出現。
 
 ## 載入方式
 
@@ -50,3 +52,16 @@ claude plugin install ai-driven-se@ai-driven-se-local
 | Skill | 用途 | 來自哪個階段 | 加入日期 |
 |---|---|---|---|
 | （尚無） | | | |
+
+## Agent 清單
+
+| Agent | 模型 | 工具 | 用途 | 加入日期 |
+|---|---|---|---|---|
+| [`fable-reviewer`](./agents/fable-reviewer.md) | `claude-fable-5-2` | Read、Grep、Glob、Bash（無 Edit / Write） | 開 PR 前審查目前分支相對 main 的變更：需求追溯、架構決策、防作弊清單；只回報、不修改 | 2026-11-19 |
+
+**用法**：主 session 開發完成後，說「用 fable-reviewer 審查這個分支」。
+
+**注意**
+- 這個 agent 沒有 Edit / Write，但仍有 Bash，理論上可以用 shell 寫檔。目前靠 prompt 限制它只能執行唯讀指令；如果要做到強制唯讀，可以在專案的權限設定或 hook 中限制它能執行的 Bash 指令。
+- 防作弊清單直接寫在 agent 的 prompt 中（內容同 [`quality-strategy.md` 第七節](../quality-strategy.md#七防止-ai-作弊)），因為專案 repo 讀不到這個筆記 repo。兩邊修改時要同步更新。
+- 它不在 [D-008](../decisions.md#d-008-可重用工作流做成-skill以外掛形式載入) 的「重複 3 次」門檻內，是依照明確需求預先加入的。
