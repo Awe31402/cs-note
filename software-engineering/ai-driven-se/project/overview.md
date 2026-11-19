@@ -65,15 +65,15 @@ core 定義：  class ReviewRepository { virtual ... = 0; }   // port
 | 只傳遞**純資料**（數字、字串、簡單結構或 JSON） | 避免跨語言的記憶體所有權問題 |
 | 綁定層**不含商業邏輯**，只做型別轉換 | 邏輯只存在一處（C++ 核心） |
 | 綁定介面要有版本號與 contract 測試 | 任一側修改時，不一致會被 CI 抓到 |
-| TS 型別定義由綁定自動產生，或由測試檢查一致 | 方案【待決】於 P0 |
+| TS 型別定義由綁定自動產生（Embind `--emit-tsd`） | C++ 簽章一改，`tsc` 就失敗（專案 ADR 0003） |
 
-綁定工具：Emscripten 的 Embind 或其他方案，【待決】於 P0。
+綁定工具：**Emscripten 4.0.10 的 Embind**（P0 決定，見專案 ADR 0003）。
 
 ---
 
 ## 專案目錄結構（monorepo，初稿）
 
-> 專案程式碼放在 x86 開發機上的獨立 repo，不放在這個筆記 repo。
+> 專案程式碼放在 x86 開發機上的獨立 repo：`/home/awe/disk/flashcards`（P0 建立），不放在這個筆記 repo。
 
 ```
 flashcards/                       # 專案名稱【待決】
@@ -121,15 +121,15 @@ flashcards/                       # 專案名稱【待決】
 | C++ 標準 | C++20 | 見 [D-005](../decisions.md#d-005-c-標準採用-c20) | ✅ |
 | 建置系統 | CMake | C++ 主流、Emscripten 支援 | ✅ |
 | WASM 工具鏈 | Emscripten | 最成熟的 C++ → WASM 方案 | ✅ |
-| C++ 套件管理 | vcpkg 或 Conan | 兩者皆支援 CMake | 【待決】P0 |
-| C++ 測試框架 | GoogleTest 或 Catch2 | | 【待決】P0 |
+| C++ 套件管理 | CMake FetchContent | 不用另外裝工具；依賴變多時再評估 vcpkg（專案 ADR 0001） | ✅ P0 |
+| C++ 測試框架 | GoogleTest 1.15.2 | 範例最多、gmock 內建（專案 ADR 0001） | ✅ P0 |
 | C++ property-based 測試 | RapidCheck | | 【待決】P1 |
-| UI 框架 | React 或其他 | Web 經驗不多，要選資源最多的 | 【待決】P0 |
-| TS 建置工具 | Vite | | 【待決】P0 |
-| TS 測試框架 | Vitest | | 【待決】P0 |
+| UI 框架 | React 19 | Web 經驗不多，要選資源最多的（專案 ADR 0004） | ✅ P0 |
+| TS 建置工具 | Vite 6 | 專案 ADR 0004 | ✅ P0 |
+| TS 測試框架 | Vitest 3 | 專案 ADR 0004 | ✅ P0 |
 | E2E 測試 | Playwright | 支援錄影與截圖，適合驗證產物 | ✅ |
 | MVP 本機儲存 | 見 [`phase-1-mvp.md`](./phase-1-mvp.md#本機儲存方案) | | 【待決】P1 |
 | HTTP server | Drogon 或 Boost.Beast | | 【待決】P2 |
 | 資料庫 | SQLite 或 PostgreSQL | | 【待決】P2 |
 | 同步模型 | CRDT 或事件溯源 | | 【待決】P3 |
-| CI 平台 | GitHub Actions 或其他 | 取決於 repo 放在哪裡 | 【待決】P0 |
+| CI 平台 | GitHub Actions | 只呼叫 `tools/ci.sh`，本機 pre-push 也用同一支（專案 ADR 0005） | ✅ P0 |

@@ -50,12 +50,22 @@
 
 **驗收機制**
 - [ ] 一個故意違反架構邊界的 PR（例如核心 include 了 UI 標頭）會被 CI **擋下**。
-- [ ] 一個故意製造記憶體錯誤的測試，會被 ASan **抓到**。
+  - 2026-11-19：本機已驗證（clang-tidy、`check_layering.py`、CMake 三層都擋下）。**待辦**：push 到 GitHub、把 `ci` 設成 required check 後，開一個違規 PR 確認。
+- [x] 一個故意製造記憶體錯誤的測試，會被 ASan **抓到**。（`cpp/guardrails/asan_canary.cpp`，asan preset 的 ctest 每次都跑）
 - [ ] 一個 TS 型別錯誤的 PR 會被 CI **擋下**。
-- [ ] Playwright 能開啟頁面，呼叫 WASM 函式並驗證回傳值。
+  - 2026-11-19：本機 `tsc` 已擋下。**待辦**：同上，GitHub 上確認。
+- [x] Playwright 能開啟頁面，呼叫 WASM 函式並驗證回傳值。（`web/e2e/core.spec.ts`，每次錄影）
 - [ ] AI 嘗試修改測試檔時，hook 會**攔截**。
+  - 2026-11-19：hook 以腳本餵 JSON 驗證通過（改既有測試 → 要人核准；新測試檔允許，TDD 需要）。**待辦**：在專案 repo 開 Claude Code 實際試一次。
 
 > 驗收方式是「故意犯錯，確認會被擋下」。只確認工具裝好不算數，要確認護欄真的有作用。
+>
+> 這些「故意犯錯」已寫成可重跑的腳本：專案 repo 的 `tools/guardrail-tests/run.sh`（17 個案例），由 `tools/ci.sh` 每次執行。
+
+**P0 進度（2026-11-19）**
+- 專案 repo：`/home/awe/disk/flashcards`，第一個 commit `P0: monorepo skeleton and guardrails`。
+- 與計畫不同：「第一條自訂 lint 規則」改用 clang-tidy 內建的 `portability-restrict-system-includes`（只對 `cpp/core/` 開）。寫自訂 clang-tidy 外掛需要 clang-tidy 開發標頭，開發機沒有、要 sudo 才能裝。紀錄在專案的 `docs/correction-log.md` CL-000。
+- 工具版本：clang 14、CMake 3.22、Emscripten 4.0.10、Node 24。
 
 **回顧項目**：哪些護欄設定花最多時間？哪些在 P1 前就應該補上？
 
