@@ -17,6 +17,10 @@
 | 需求文件與決策紀錄 | 每次重新猜意圖，越做越偏 | [02 需求工程](./notes/02-requirements.md)、[`decisions.md`](./decisions.md) |
 | 審查與 CI 關卡 | 品質隨行數增加逐步下滑 | [07 品質](./notes/07-quality.md)、[08 建構管理](./notes/08-configuration-management.md) |
 
+![倒金字塔四層](./diagrams/inverted-pyramid.png)
+
+<sub>圖源：[`diagrams/src/inverted-pyramid.dot`](./diagrams/src/inverted-pyramid.dot)</sub>
+
 這個專案的做法是把軟體工程原則從「寫在文件裡的建議」變成「**CI 裡會擋下 PR 的檢查**」，詳見 [`quality-strategy.md`](./quality-strategy.md)。
 
 ---
@@ -79,6 +83,7 @@
 | [`project/overview.md`](./project/overview.md) | ✅ 完成（檢查點 3） |
 | [`project/phase-1-mvp.md`](./project/phase-1-mvp.md) | ✅ 完成（檢查點 3） |
 | `notes/01`–`10` | ✅ 完成（檢查點 3） |
+| [`diagrams/`](./diagrams/render.sh) | ✅ 13 張圖（PlantUML / graphviz / Pillow 原始檔在 `diagrams/src/`，執行 `diagrams/render.sh` 重新渲染） |
 | [`skill/`](./skill/README.md) | ✅ 外掛骨架已建立（尚無 skill，開發中逐步加入） |
 
 ---

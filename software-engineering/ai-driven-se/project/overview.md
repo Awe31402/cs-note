@@ -32,40 +32,9 @@
 
 ## 架構圖
 
-```mermaid
-flowchart TB
-    subgraph Client["客戶端（瀏覽器）"]
-        UI["TS UI<br/>（子系統 8）"]
-        Adapter["TS Adapters<br/>儲存 / 網路 / 音訊"]
-        subgraph WASM["WASM 模組（C++ 編譯）"]
-            Bind["綁定層<br/>bindings"]
-            Core["C++ 核心<br/>排程 1 / 領域 2 / 分析 3"]
-            SyncC["同步引擎 4"]
-            Import["匯入匯出 5"]
-        end
-    end
+![系統架構圖](../diagrams/architecture.png)
 
-    subgraph Server["後端（C++ 原生）"]
-        API["HTTP API 9"]
-        CoreS["C++ 核心（同一份程式碼）"]
-        SyncS["同步引擎 4"]
-        AI["AI 製卡 7"]
-        Speech["語音 6"]
-        DB[("資料庫")]
-    end
-
-    UI --> Bind
-    Bind --> Core
-    Bind --> SyncC
-    Bind --> Import
-    Core -. "port 介面" .-> Adapter
-    Adapter -- "HTTP" --> API
-    API --> CoreS
-    API --> SyncS
-    API --> AI
-    API --> Speech
-    API --> DB
-```
+<sub>圖源：[`diagrams/src/architecture.puml`](../diagrams/src/architecture.puml)</sub>
 
 **依賴方向規則**（由 CMake 與 lint 強制）：
 - **C++ 核心不依賴任何外層**：不知道自己在 WASM 還是 server 中執行，不做 I/O，不 include 平台標頭。
@@ -77,6 +46,10 @@ flowchart TB
 ## C++ / TS 邊界設計
 
 採用 **Ports & Adapters（六角形架構）**，邊界有兩條：
+
+![Ports & Adapters](../diagrams/ports-adapters.png)
+
+<sub>圖源：[`diagrams/src/ports-adapters.puml`](../diagrams/src/ports-adapters.puml)</sub>
 
 ### 邊界 1：C++ 核心 ↔ 外層（port 介面）
 ```
@@ -127,6 +100,11 @@ flashcards/                       # 專案名稱【待決】
 ```
 
 **CMake target 依賴規則**
+
+![CMake target 依賴規則](../diagrams/cmake-targets.png)
+
+<sub>圖源：[`diagrams/src/cmake-targets.puml`](../diagrams/src/cmake-targets.puml)</sub>
+
 | target | 可以依賴 | 不可依賴 |
 |---|---|---|
 | `core` | 標準函式庫、少數純計算函式庫 | 其他所有專案 target |

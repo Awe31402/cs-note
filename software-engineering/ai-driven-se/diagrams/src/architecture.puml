@@ -1,0 +1,34 @@
+@startuml
+!include _style.iuml
+title 系統架構（方案 B+：C++ 核心 + TS UI）
+left to right direction
+package "客戶端（瀏覽器）" {
+  [TS UI\n子系統 8] as UI
+  [TS Adapters\n儲存・網路・音訊] as AD
+  package "WASM 模組（C++ 編譯）" {
+    [綁定層\nbindings] as BIND
+    [C++ 核心\n排程 1・領域 2・分析 3] as CORE
+    [同步引擎 4] as SYNCC
+    [匯入匯出 5] as IO
+  }
+}
+package "後端（C++ 原生）" {
+  [HTTP API 9] as API
+  [C++ 核心\n（同一份程式碼）] as CORES
+  [同步引擎 4] as SYNCS
+  [AI 製卡 7] as AI
+  [語音 6] as SP
+  database "資料庫" as DB
+}
+UI --> BIND
+BIND --> CORE
+BIND --> SYNCC
+BIND --> IO
+CORE ..> AD : port 介面
+AD --> API : HTTP
+API --> CORES
+API --> SYNCS
+API --> AI
+API --> SP
+API --> DB
+@enduml

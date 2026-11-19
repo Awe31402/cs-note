@@ -12,17 +12,9 @@
 
 她把工程時間分配畫成**倒金字塔**，越上層投入越多：
 
-```
-┌───────────────────────────────────────────┐
-│ 1. 程式碼本身：架構、API、型別、邊界       │  ← 投入最多
-├───────────────────────────────────────┤
-│ 2. 靜態分析：lint、型別、測試、CI      │
-├───────────────────────────────────┤
-│ 3. 驗證：runtime、property、formal │
-├───────────────────────────────┤
-│ 4. 文字規範：AGENTS.md、skill  │  ← 投入最少
-└───────────────────────────────┘
-```
+![倒金字塔四層](./diagrams/inverted-pyramid.png)
+
+<sub>圖源：[`diagrams/src/inverted-pyramid.dot`](./diagrams/src/inverted-pyramid.dot)</sub>
 
 三個核心觀念：
 1. **每次糾正 AI，就把那次糾正變成一個確定性的檢查。** lint 規則或 API 修改可以重現；AGENTS.md 多一行不能。更好的做法是**從設計上讓錯誤的寫法根本寫不出來**。
@@ -92,10 +84,10 @@
 詳見 [06 軟體測試](./notes/06-testing.md)。
 
 ### CI 關卡（會擋下合併的檢查）
-```
-PR → 格式檢查 → 建置（警告即錯誤）→ clang-tidy / ESLint → 依賴邊界檢查
-   → 單元 + property + golden 測試 → sanitizer 建置的測試 → E2E 測試 → 可合併
-```
+
+![CI 關卡流程](./diagrams/ci-gates.png)
+
+<sub>圖源：[`diagrams/src/ci-gates.puml`](./diagrams/src/ci-gates.puml)</sub>
 - 每個關卡失敗都會擋下合併，**沒有「先合併再修」的例外**。
 - CI 平台【待決】於 P0（專案 repo 放在哪裡會影響選擇）。
 
@@ -136,6 +128,10 @@ PR → 格式檢查 → 建置（警告即錯誤）→ clang-tidy / ESLint → �
 ## 六、lint 規則紀錄簿（Correction Log）
 
 每次糾正 AI 都要記錄。這是第 10 章「流程改善」的原始資料。
+
+![糾正轉檢查的決策順序](./diagrams/correction-loop.png)
+
+<sub>圖源：[`diagrams/src/correction-loop.puml`](./diagrams/src/correction-loop.puml)</sub>
 
 **位置**：專案 repo 的 `docs/correction-log.md`（建立於 P0）。
 

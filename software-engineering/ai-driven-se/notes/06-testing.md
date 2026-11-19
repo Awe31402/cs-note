@@ -24,6 +24,11 @@
 **測試是 AI 唯一可靠的回饋迴路。** AI 寫完程式碼後跑測試，通過就繼續，失敗就修正。測試的品質直接決定 AI 產出的品質。
 
 ### TDD 對 AI 特別重要
+
+![AI 時代的 TDD](../diagrams/tdd-ai.png)
+
+<sub>圖源：[`diagrams/src/tdd-ai.puml`](../diagrams/src/tdd-ai.puml)</sub>
+
 1. **我（或 AI 在我審查下）先寫失敗的測試**，測試本身就是規格。
 2. AI 實作，直到測試通過。
 3. AI 重構，測試保證行為不變。

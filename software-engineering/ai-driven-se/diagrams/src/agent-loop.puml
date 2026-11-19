@@ -1,0 +1,26 @@
+@startuml
+!include _style.iuml
+title AI 開發的微型迭代：人、AI、機器的分工
+|我|
+start
+:寫需求與驗收條件;
+:決定架構 / 寫 ADR;
+|AI|
+:讀需求・ADR・詞彙表;
+:先寫失敗的測試（我審查）;
+repeat
+  :實作 / 修正;
+  |機器|
+  :自動化檢查\n（建置・lint・測試・sanitizer）;
+repeat while (通過？) is (否：回饋)
+->是;
+|我|
+:看驗證產物;
+if (符合意圖？) then (是)
+  :合併;
+else (否)
+  :糾正 → 轉成檢查;
+endif
+:階段回顧;
+stop
+@enduml

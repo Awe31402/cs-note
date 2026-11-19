@@ -24,6 +24,11 @@
 
 這正是倒金字塔的精神（詳見 [`quality-strategy.md`](../quality-strategy.md)）：
 
+![倒金字塔四層](../diagrams/inverted-pyramid.png)
+
+<sub>圖源：[`diagrams/src/inverted-pyramid.dot`](../diagrams/src/inverted-pyramid.dot)</sub>
+
+
 | 傳統品質活動 | AI 開發中的對應 |
 |---|---|
 | 人工 code review 逐行讀 | 機器檢查先過濾；人看驗證產物與設計決策 |

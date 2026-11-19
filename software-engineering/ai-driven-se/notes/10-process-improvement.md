@@ -34,6 +34,10 @@
 - Lauren Tan 的「每次糾正都變成檢查」本質上就是**持續的流程改善**：每發現一個問題，就永久消除那一類問題。
 - 這對應 CMMI 高成熟度等級所強調的「從量化數據中持續改善」【對應關係為個人詮釋，非 CMMI 原文】。
 
+![糾正轉檢查的決策順序](../diagrams/correction-loop.png)
+
+<sub>圖源：[`diagrams/src/correction-loop.puml`](../diagrams/src/correction-loop.puml)</sub>
+
 ### 工作流沉澱成 skill
 - 重複 3 次以上、多步驟、無法改成確定性檢查的工作流，整理成 skill（[D-008](../decisions.md#d-008-可重用工作流做成-skill以外掛形式載入)、[`skill/`](../skill/README.md)）。
 - 優先順序：設計消除問題 → 確定性檢查 → skill → CLAUDE.md。

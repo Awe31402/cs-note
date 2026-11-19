@@ -45,55 +45,11 @@
 
 ## 領域模型初稿
 
-> 方法見 [03 物件導向開發](../notes/03-object-oriented.md)。以下為討論起點，P1 第 2 週用 OOA 推導後定稿，並同步到 StarUML 或 Mermaid（[`uml-and-ai-workflow.md`](../../uml-and-ai-workflow.md)）。
+> 方法見 [03 物件導向開發](../notes/03-object-oriented.md)。以下為討論起點，P1 第 2 週用 OOA 推導後定稿，並同步到 StarUML 或 PlantUML（[`uml-and-ai-workflow.md`](../../uml-and-ai-workflow.md)）。
 
-```mermaid
-classDiagram
-    class Deck {
-        DeckId id
-        string name
-        int dailyNewLimit
-    }
-    class Note {
-        NoteId id
-        string word
-        string meaning
-        string example
-    }
-    class Card {
-        CardId id
-        CardState state
-        Date due
-    }
-    class MemoryState {
-        double stability
-        double difficulty
-    }
-    class ReviewLog {
-        CardId card
-        Rating rating
-        Timestamp reviewedAt
-        Duration elapsed
-    }
-    class Scheduler {
-        <<interface>>
-        schedule(Card, Rating, Timestamp) Card
-    }
-    class Rating {
-        <<enumeration>>
-        Again
-        Hard
-        Good
-        Easy
-    }
+![領域模型初稿](../diagrams/domain-model.png)
 
-    Deck "1" o-- "*" Note
-    Note "1" *-- "1..*" Card : 產生
-    Card "1" *-- "1" MemoryState
-    Card "1" -- "*" ReviewLog
-    Scheduler ..> Card
-    ReviewLog --> Rating
-```
+<sub>圖源：[`diagrams/src/domain-model.puml`](../diagrams/src/domain-model.puml)</sub>
 
 **詞彙表（Ubiquitous Language）初稿**
 | 術語 | 定義 |

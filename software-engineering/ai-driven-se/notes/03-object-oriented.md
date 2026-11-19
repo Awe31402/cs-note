@@ -24,9 +24,15 @@
 
 做法（延續 [`uml-and-ai-workflow.md`](../../uml-and-ai-workflow.md) 的流程）：
 1. **我主導 OOA**：從需求推導領域概念與關聯，可以用 AI 協助找出遺漏，但結論由我決定。
-2. **領域模型存成 Mermaid 或 StarUML**，放在專案 repo 中，AI 實作前必須讀取。
+2. **領域模型存成 PlantUML 或 StarUML**，放在專案 repo 中，AI 實作前必須讀取。
 3. **詞彙表**放在 `docs/`，定義每個術語；CLAUDE.md 連到它。
 4. **OOD 時用 GRASP 檢查 AI 的設計**：例如 AI 把排程邏輯放進 UI 元件，違反 Information Expert，因為排程所需的資訊在 Card 與 ReviewLog 上。
+
+P1 的領域模型初稿：
+
+![領域模型初稿](../diagrams/domain-model.png)
+
+<sub>圖源：[`diagrams/src/domain-model.puml`](../diagrams/src/domain-model.puml)</sub>
 
 可直接使用的 Claude Code skill：`domain-modeling`（建立詞彙表與 ADR）。
 

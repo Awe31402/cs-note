@@ -1,0 +1,33 @@
+@startuml
+!include _style.iuml
+title Ports & Adapters：核心不知道自己在哪裡執行
+skinparam nodesep 40
+skinparam ranksep 60
+rectangle "C++ 核心（純邏輯，不做 I/O）" as core #DDEFD9 {
+  [排程・領域・分析] as logic
+  interface "ReviewRepository\n（port）" as P1
+  interface "Clock\n（port）" as P2
+  logic -down-> P1
+  logic -down-> P2
+}
+together {
+  [IndexedDB adapter\nTS，經 WASM] as A1
+  [資料庫 adapter\nC++ server] as A2
+  [記憶體假實作\n單元測試] as A3
+}
+together {
+  [系統時鐘] as A5
+  [固定時鐘\n單元測試] as A4
+}
+P1 <|.down. A1
+P1 <|.down. A2
+P1 <|.down. A3
+P2 <|.down. A5
+P2 <|.down. A4
+note bottom of A3
+  核心測試不需要瀏覽器或資料庫
+end note
+note bottom of A4
+  時間由 port 注入 → 測試可重現
+end note
+@enduml

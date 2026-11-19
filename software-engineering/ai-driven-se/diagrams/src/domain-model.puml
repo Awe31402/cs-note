@@ -1,0 +1,46 @@
+@startuml
+!include _style.iuml
+title 領域模型初稿（P1）
+hide empty members
+class Deck {
+  DeckId id
+  string name
+  int dailyNewLimit
+}
+class Note {
+  NoteId id
+  string word
+  string meaning
+  string example
+}
+class Card {
+  CardId id
+  CardState state
+  Date due
+}
+class MemoryState {
+  double stability
+  double difficulty
+}
+class ReviewLog {
+  CardId card
+  Rating rating
+  Timestamp reviewedAt
+  Duration elapsed
+}
+interface Scheduler {
+  schedule(Card, Rating, Timestamp) : Card
+}
+enum Rating {
+  Again
+  Hard
+  Good
+  Easy
+}
+Deck "1" o-- "*" Note
+Note "1" *-- "1..*" Card : 產生
+Card "1" *-- "1" MemoryState
+Card "1" -- "*" ReviewLog
+Scheduler ..> Card
+ReviewLog --> Rating
+@enduml

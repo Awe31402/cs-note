@@ -35,6 +35,10 @@
 - C++ 核心不做 I/O，不知道自己在 WASM 還是 server 中執行（見 [`overview.md`](../project/overview.md#c--ts-邊界設計)）。
 - 好處：核心可以完全用單元測試驗證；同一份核心同時用在客戶端與 server。
 
+![Ports & Adapters](../diagrams/ports-adapters.png)
+
+<sub>圖源：[`diagrams/src/ports-adapters.puml`](../diagrams/src/ports-adapters.puml)</sub>
+
 **讓錯誤寫法寫不出來**（倒金字塔第 1 層）
 - 強型別 ID、`std::chrono` 時間、concepts 限制模板（見 [`quality-strategy.md`](../quality-strategy.md#二第-1-層程式碼本身)）。
 
@@ -43,6 +47,10 @@
 ---
 
 ## ③ 對應的自動化檢查
+
+![CMake target 依賴規則](../diagrams/cmake-targets.png)
+
+<sub>圖源：[`diagrams/src/cmake-targets.puml`](../diagrams/src/cmake-targets.puml)</sub>
 
 | 檢查 | 做法 |
 |---|---|

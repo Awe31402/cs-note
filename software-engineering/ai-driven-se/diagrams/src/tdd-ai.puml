@@ -1,0 +1,12 @@
+@startuml
+!include _style.iuml
+title AI 時代的 TDD：測試是 AI 唯一可靠的回饋
+start
+#FDECEA:RED：先寫失敗的測試\n（由我寫，或 AI 寫我審查）;
+note right: 測試 = 規格\n避免 AI 寫「配合實作」的測試
+#DDEFD9:GREEN：AI 實作到測試通過;
+note right: hook 攔截 AI 修改既有測試
+#EEF4FB:REFACTOR：AI 重構，測試保持通過;
+:mutation testing 檢查測試強度\n（每階段）;
+stop
+@enduml

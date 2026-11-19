@@ -40,6 +40,10 @@
 
 ## ③ 對應的自動化檢查
 
+![需求追溯](../diagrams/traceability.png)
+
+<sub>圖源：[`diagrams/src/traceability.puml`](../diagrams/src/traceability.puml)</sub>
+
 | 檢查 | 做法 |
 |---|---|
 | **需求追溯檢查** | 每條需求有 ID（`R-001`），測試名稱或標籤引用這個 ID；CI 腳本檢查「每條需求至少有一個測試」 |

@@ -34,6 +34,10 @@
 
 **為什麼同步最適合**：分散式系統的錯誤只在特定的訊息順序下才會出現，測試很難覆蓋，但模型檢查可以窮舉所有順序。
 
+![規格與實作的關係](../diagrams/formal-spec.png)
+
+<sub>圖源：[`diagrams/src/formal-spec.puml`](../diagrams/src/formal-spec.puml)</sub>
+
 **要注意**：規格與實作之間仍有落差。TLA+ 證明的是**設計**正確，不是**程式碼**正確，所以仍需要 property-based 測試把規格的性質套用到實作上。
 
 ---

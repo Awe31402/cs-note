@@ -8,6 +8,10 @@
 
 ## 總覽
 
+![分階段時程](../diagrams/roadmap-timeline.png)
+
+<sub>圖源：[`diagrams/src/roadmap-timeline.py`](../diagrams/src/roadmap-timeline.py)</sub>
+
 | 階段 | 名稱 | 子系統 | 預估行數 | 預估週數 |
 |---|---|---|---:|---:|
 | P0 | 環境與護欄 | （基礎建設） | ~3k | 4–6 |

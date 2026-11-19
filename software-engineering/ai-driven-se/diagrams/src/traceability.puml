@@ -1,0 +1,18 @@
+@startuml
+!include _style.iuml
+title 需求追溯：每條需求都要有自動化測試守住
+left to right direction
+artifact "R-003\n答 Good 時\n間隔不縮短" as R
+artifact "驗收條件\n（可執行）" as AC
+[property 測試\nTEST(R_003, ...)] as T
+[排程實作\nScheduler] as C
+[CI 追溯腳本] as CI
+R --> AC : 我寫
+AC --> T : 先寫、先失敗
+T --> C : 驗證
+CI ..> R : 掃描需求 ID
+CI ..> T : 掃描測試標籤
+note bottom of CI
+  有需求沒有測試 → CI 失敗
+end note
+@enduml

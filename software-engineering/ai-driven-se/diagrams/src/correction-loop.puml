@@ -1,0 +1,18 @@
+@startuml
+!include _style.iuml
+title 糾正 → 檢查：每次糾正 AI 時的決策順序
+start
+:發現 AI 犯錯;
+:記錄到 correction log;
+if (能從設計上讓錯誤寫法寫不出來？\n（型別・concepts・模組邊界）) then (能)
+  #DDEFD9:修改設計（第 1 層）;
+elseif (能寫成確定性檢查？\n（lint・hook・CI・測試）) then (能)
+  #DDEFD9:新增檢查（第 2 層）;
+elseif (是重複 3 次以上的多步驟工作流？) then (是)
+  #FFF6E0:整理成 skill\n放進 ai-driven-se/skill/;
+else (否)
+  #FDECEA:寫進 CLAUDE.md（第 4 層）\n並註明為何無法轉成檢查;
+endif
+:清理程式碼庫中既有的同類錯誤\n（程式碼庫就是最大的 prompt）;
+stop
+@enduml

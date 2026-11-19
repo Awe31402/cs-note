@@ -20,9 +20,9 @@
 
 **AI agent 的工作迴圈本身就是一個微型迭代流程。**
 
-```
-需求（我寫） → AI 計畫 → AI 實作 → 自動化檢查 → 失敗則 AI 修正 → 通過則我審查 → 合併
-```
+![AI 開發的微型迭代](../diagrams/agent-loop.png)
+
+<sub>圖源：[`diagrams/src/agent-loop.puml`](../diagrams/src/agent-loop.puml)</sub>
 
 這個迴圈要可靠，取決於兩件事：
 1. **回饋的品質**：檢查越精確，AI 修正的方向越對。這就是 Farley 所說的「回饋」原則，在 AI 開發中被放大：AI 每一輪都依賴回饋，人類可以靠經驗補足的部分，AI 沒辦法。

@@ -1,0 +1,19 @@
+@startuml
+!include _style.iuml
+title 正規方法：驗證設計，再把性質套到實作
+left to right direction
+artifact "TLA+ 規格\n同步協定" as SPEC
+[TLC 模型檢查] as TLC
+artifact "不變式・性質\n不遺失修改・最終收斂" as INV
+[property-based 測試] as PBT
+[C++ 同步引擎] as IMPL
+SPEC --> TLC : 窮舉狀態
+TLC --> SPEC : 反例 → 修正設計
+SPEC --> INV
+INV --> PBT : 衍生
+PBT --> IMPL : 檢查實作
+note bottom of TLC
+  TLA+ 證明「設計」正確
+  property 測試檢查「程式碼」符合設計
+end note
+@enduml

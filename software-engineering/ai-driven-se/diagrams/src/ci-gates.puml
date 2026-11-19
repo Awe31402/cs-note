@@ -1,0 +1,21 @@
+@startuml
+!include _style.iuml
+title CI 關卡：任何一關失敗都擋下合併
+start
+:開 PR（一個任務一個分支）;
+:格式檢查\nclang-format / Prettier;
+:建置\n警告視為錯誤;
+:靜態分析\nclang-tidy / ESLint / tsc;
+:依賴邊界檢查\nCMake target ・ #include 方向;
+:防作弊檢查\n新增 NOLINT・測試數減少・skip 增加;
+:單元 + property + golden 測試;
+:Sanitizer 建置測試\nASan / UBSan（P2 起加 TSan）;
+:E2E 測試 + 錄影\nPlaywright;
+if (全部通過？) then (是)
+  :我看驗證產物\n（測試結果・錄影・設計是否符合 ADR）;
+  :合併;
+else (否)
+  #FDECEA:AI 依失敗訊息修正\n（不得修改測試或關閉檢查）;
+endif
+stop
+@enduml

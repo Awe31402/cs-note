@@ -1,0 +1,21 @@
+@startuml
+!include _style.iuml
+title 建構管理：一個任務一個分支 / worktree
+start
+:issue（含驗收條件、預期修改的模組）;
+:建立分支或 git worktree;
+:AI 在隔離環境中修改\n（不得自行新增依賴）;
+:小 PR;
+:CI 全部關卡;
+if (修改到受保護檔案？\nlint 設定・CI 設定・hooks・依賴) then (是)
+  #FFF6E0:需要我明確同意;
+else (否)
+endif
+:合併到 main;
+:刪除分支 / worktree;
+note right
+  git guardrails hook 阻擋
+  push --force、reset --hard 等指令
+end note
+stop
+@enduml

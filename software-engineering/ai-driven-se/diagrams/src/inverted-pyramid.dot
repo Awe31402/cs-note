@@ -1,0 +1,12 @@
+digraph G {
+  graph [rankdir=TB, nodesep=0, ranksep=0.08, bgcolor="white", dpi=120, pad=0.3];
+  node  [shape=box, style="filled", fixedsize=true, height=0.75, fontname="Noto Sans CJK TC", fontsize=14, color="#3B6EA5", penwidth=1.5];
+  edge  [style=invis];
+  L1 [width=7.2, fillcolor="#2F5D8C", fontcolor="white", label="① 程式碼本身\n架構・API 設計・強型別・模組邊界（讓錯誤寫法寫不出來）"];
+  L2 [width=5.8, fillcolor="#4C7FB3", fontcolor="white", label="② 靜態分析\nclang-tidy・ESLint・型別・測試・CI"];
+  L3 [width=4.4, fillcolor="#8FB3D9", fontcolor="#102030", label="③ 驗證\nPlaywright 錄影・property・TLA+"];
+  L4 [width=3.0, fillcolor="#D6E4F2", fontcolor="#102030", label="④ 文字規範\nCLAUDE.md・skill"];
+  L1 -> L2 -> L3 -> L4;
+  note [shape=plaintext, style="", fixedsize=false, fontsize=12, fontcolor="#555555", label="越上層投入越多 ↑　每次糾正 AI：盡量往上層移動，而非往 ④ 加一行"];
+  L4 -> note;
+}

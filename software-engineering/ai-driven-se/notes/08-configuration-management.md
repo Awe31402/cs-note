@@ -28,6 +28,10 @@
 | 可重現建置 | AI 在任何時候執行建置都得到相同結果，CI 失敗時才能確定是程式碼的問題 |
 | 依賴管理 | 依賴版本鎖定；AI 不得自行新增依賴（需要我同意） |
 
+![一個任務一個分支](../diagrams/branch-per-task.png)
+
+<sub>圖源：[`diagrams/src/branch-per-task.puml`](../diagrams/src/branch-per-task.puml)</sub>
+
 **單人版的變更管理**：不需要 CCB（變更控制委員會），但需要：
 - 需求變更走 PR，並更新需求文件。
 - 架構變更要新增 ADR（[`decisions.md`](../decisions.md)）。

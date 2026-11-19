@@ -1,0 +1,25 @@
+@startuml
+!include _style.iuml
+title CMake target 依賴規則：箭頭只能往下（違反時建置失敗）
+skinparam nodesep 60
+skinparam ranksep 70
+[wasm_bindings\n（客戶端出口）] as wasm
+[server\n（後端出口）] as server
+[sync\n同步] as sync
+[io\n匯入匯出] as io
+[core\n排程・領域・分析] as core #DDEFD9
+wasm -down-> sync
+wasm -down-> io
+server -down-> sync
+server -down-> io
+sync -down-> core
+io -down-> core
+wasm -down-> core
+server -down-> core
+wasm .[#C0392B]right.> server : <color:#C0392B>禁止</color>
+note right of core
+  只依賴標準函式庫
+  不做 I/O、不 include 平台標頭
+  <color:#C0392B>任何往上的依賴都禁止</color>
+end note
+@enduml
