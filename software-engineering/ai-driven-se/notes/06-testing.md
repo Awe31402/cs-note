@@ -19,6 +19,52 @@
 
 ---
 
+## ①-1 原文引用
+
+### 測試驅動開發（TDD）
+> **原文引用（Sommerville, Software Engineering 9e, Ch.8 §8.2, p.222）**
+> "You then run the test, along with all other tests that have been implemented. Initially, you have not implemented the functionality so the new test will fail. This is deliberate as it shows that the test adds something to the test set. 4. You then implement the functionality and re-run the test. This may involve refactoring existing code to improve it and add new code to what's already there."
+
+→ 先跑一個必定失敗的測試（證明它真的測到新東西），再實作讓它通過，過程中可能伴隨重構。
+
+### 測試規模與金字塔
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.11, p.220）**
+> "As a very rough guideline, we tend to aim to have a mix of around 80% of our tests being narrow-scoped unit tests that validate the majority of our business logic; 15% medium-scoped integration tests that validate the interactions between two or more components; and 5% end-to-end tests that validate the entire system."
+
+→ Google 的經驗比例約為 80% 單元測試、15% 整合測試、5% 端對端測試，形成金字塔。
+
+### 單元測試要測行為，不要測實作
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.12, p.234）**
+> "By far the most important way to ensure this is to write tests that invoke the system being tested in the same way its users would; that is, make calls against its public API rather than its implementation details. If tests work the same way as the system's users, by definition, change that breaks a test might also break a user."
+
+→ 測試要像使用者一樣透過公開 API 呼叫系統；這樣測試壞掉時，代表使用者也可能受影響，而不是因為內部重構。
+
+### 測試替身要謹慎使用
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.13, p.265）**
+> "At Google, the preference for real implementations developed over time as we saw that overuse of mocking frameworks had a tendency to pollute tests with repetitive code that got out of sync with the real implementation and made refactoring difficult."
+
+→ Google 偏好真實實作，因為過度使用 mock 會讓測試充滿與真實實作脫節的重複程式碼，反而讓重構更困難。
+
+### 覆蓋率準則
+> **原文引用（Ammann & Offutt, Introduction to Software Testing 1e, Ch.1, p.4）**
+> "Much to our surprise, we have found that a small number of abstract models suffice: graphs, logical expressions, input domain characterizations, and syntactic descriptions. The main contribution of this book is to simplify testing by classifying coverage criteria into these four categories, and this is why Part II of this book has exactly four chapters."
+
+→ 作者把所有覆蓋率準則歸入四種抽象模型，也就是 Part II 的 Ch.2–5：圖形、邏輯運算式、輸入領域、語法。
+
+### Mutation testing
+> **原文引用（Ammann & Offutt, Introduction to Software Testing 1e, Ch.5 §5.1.2, p.175）**
+> "Thus, coverage in mutation equates to killing the mutants. The amount of coverage is usually written as a percent of mutants killed and called the mutation score."
+
+→ 突變測試的覆蓋率就是「殺死」突變體的比例（mutation score）：測試能讓多少個植入錯誤的版本產生不同輸出。
+
+### AI 與回歸測試
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.20 §20.3, p.403）**
+> "Yoo and Harman [Yoo13] write about potential uses of artificial intelligence (AI) in identifying test cases for use in regression test suites. ... This work is promising, but still requires significant human interaction to review the test cases and the recommended order for executing them."
+
+→ Pressman 提到 AI 可以用來挑選或產生回歸測試案例，但也指出這仍需要大量人工審查；書中對此著墨只有一段。
+
+---
+
 ## ② AI 開發中如何落地
 
 **測試是 AI 唯一可靠的回饋迴路。** AI 寫完程式碼後跑測試，通過就繼續，失敗就修正。測試的品質直接決定 AI 產出的品質。

@@ -16,6 +16,34 @@
 
 ---
 
+## ①-1 原文引用
+
+### 流程度量
+> **原文引用（Sommerville, Software Engineering 9e, Ch.26 §26.2, p.711）**
+> "Process measurements are quantitative data about the software process, such as the time taken to perform some process activity. For example, you may measure the time required to develop program test cases. Humphrey (1989), in his book on process improvement, argues that the measurement of process and product attributes is essential for process improvement."
+
+→ 流程度量是關於流程的量化資料；Humphrey 主張度量流程與產品屬性是流程改善的必要條件。
+
+### 流程分析
+> **原文引用（Sommerville, Software Engineering 9e, Ch.26 §26.3, p.715）**
+> "During process analysis you are trying to understand what is going on in a process. You are looking for information about that process's problems and inefficiencies."
+
+→ 流程分析的目的是了解流程中實際發生了什麼，並找出問題與低效率之處。
+
+### CMMI
+> **原文引用（Sommerville, Software Engineering 9e, Ch.26 §26.5, p.722）**
+> "The CMMI model (Ahern et al., 2001; Chrissis et al., 2007) is intended to be a framework for process improvement that has broad applicability across a range of companies. Its staged version is compatible with the Software CMM and allows an organization's system development and management processes to be assessed and assigned a maturity level from 1 to 5."
+
+→ CMMI 是流程改善框架；階段式版本把組織的開發與管理流程評定為 1 到 5 級的成熟度。
+
+### 度量要回答具體問題
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.7, p.125）**
+> "At Google, we've come up with a series of questions to help teams determine whether it's even worth measuring productivity in the first place. We first ask people to describe what they want to measure in the form of a concrete question; we find that the more concrete people can make this question, the more likely they are to derive benefit from the process."
+
+→ 在度量之前，先把想知道的事寫成具體問題；問題越具體，度量越有價值。同頁接著問「如果資料支持你的預期，會採取什麼行動？」：如果不會有任何行動，就沒有度量的必要。
+
+---
+
 ## ② AI 開發中如何落地
 
 **單人版**：CMMI 是為組織設計的，評估流程對單人專案不適用。保留它的核心精神：**以數據驅動持續改善**。

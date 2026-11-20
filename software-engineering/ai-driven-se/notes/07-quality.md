@@ -18,6 +18,46 @@
 
 ---
 
+## ①-1 原文引用
+
+### 審查與檢視
+> **原文引用（Sommerville, Software Engineering 9e, Ch.24 §24.3, p.666）**
+> "As I discussed in Chapter 8, inspections may be part of the software verification and validation processes. They complement testing as they do not require the program to be executed. This means that incomplete versions of the system can be verified and that representations such as UML models can be checked."
+
+→ 檢視不需要執行程式，所以能檢查尚未完成的系統與 UML 模型，這些都是測試做不到的；因此它是測試的補充，而不是替代。
+
+### 靜態分析
+> **原文引用（Sommerville, Software Engineering 9e, Ch.15 §15.1, p.395）**
+> "Static analysis techniques are system verification techniques that don't involve executing a program. Rather, they work on a source representation of the software—either a model of the specification or design, or the source code of the program."
+
+→ 靜態分析的定義就是「不執行程式」，直接分析規格模型、設計模型或原始碼。
+
+### SQA 是系統化的活動
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.17 §17.1, p.341）**
+> "Extending the definition presented earlier, software quality assurance is a "planned and systematic pattern of actions" [Sch01] that are required to ensure high quality in software."
+
+→ SQA 被定義為「有計畫、有系統的一組行動」；同章 §17.4 進一步指出現代 SQA 通常是資料驅動的，由利害關係人訂定目標與品質度量。
+
+### 度量
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.23 §23.1, p.462）**
+> "A software engineer collects measures and develops metrics so that indicators will be obtained. An indicator is a metric or combination of metrics that provides insight into the software process, a software project, or the product itself."
+
+→ 度量的目的是產生「指標」，用來洞察流程、專案與產品；Ch.23 也依此分成產品度量（§23.3）、流程與專案度量（§23.6）、品質度量（§23.8）。
+
+### 規則要有理由，且盡量自動執行
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.8, p.159）**
+> "Although some level of training is always necessary—engineers must, after all, learn the rules so that they can write code that follows them—when it comes to checking for compliance, rather than exclusively depending on engineer-based verification, we strongly prefer to automate enforcement with tooling."
+
+→ Google 強烈偏好以工具自動檢查規則，而不是只靠工程師記得。（「規則要有理由」見同章 p.152：每條規則都附上權衡過的優缺點與決策說明。）
+
+### 靜態分析要整合進開發流程
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.20, p.420）**
+> "At Google, we integrate static analysis into the core workflow via integration with code review tooling. Essentially all code committed at Google is reviewed before being committed; because developers are already in a change mindset when they send code for review, improvements suggested by static analysis tools can be made without too much disruption."
+
+→ 分析結果出現在 code review 中，因為開發者送審時本來就處於「準備修改」的心態；同章 p.419–420 也強調低誤報率是開發者願意使用工具的關鍵。
+
+---
+
 ## ② AI 開發中如何落地
 
 **核心轉變：品質保證從「人檢查」轉向「機器檢查」，人只處理機器無法判斷的部分。**

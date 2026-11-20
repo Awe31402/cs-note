@@ -18,6 +18,46 @@
 
 ---
 
+## ①-1 原文引用
+
+### 變更管理流程
+> **原文引用（Sommerville, Software Engineering 9e, Ch.25 §25.1, p.685）**
+> "The change management process is concerned with analyzing the costs and benefits of proposed changes, approving those changes that are worthwhile, and tracking which components in the system have been changed."
+
+→ 變更管理的三個動作正是：分析成本效益（評估）、核准值得做的變更、追蹤哪些元件被改過。
+
+### 版本控制
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.22 §22.3, p.445）**
+> "Version control combines procedures and tools to manage different versions of configuration objects that are created during the software process. A version control system implements or is directly integrated with four major capabilities: (1) a project database (repository) that stores all relevant configuration objects, (2) a version management capability that stores all versions of a configuration object ..."
+
+→ 版本控制管理的是軟體流程中產生的所有「組態物件」，不只是程式碼，而且保存每個物件的所有版本。
+
+### 持續整合
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.22 §22.4, p.446）**
+> "CI also adds value to SCM by ensuring that each change is promptly integrated into the project source code, compiled, and tested automatically."
+
+→ 每個變更都立即整合、自動編譯並測試，這就是「頻繁整合並自動驗證」。
+
+### 可重現的建置
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.18, p.387）**
+> "For a remote caching system to work, the build system must guarantee that builds are completely reproducible. That is, for any build target, it must be possible to determine the set of inputs to that target such that the same set of inputs will produce exactly the same output on any machine."
+
+→ 可重現的定義：任何建置目標都能確定其完整輸入，而且相同輸入在任何機器上都產生完全相同的輸出。
+
+### 依賴管理
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.21, p.429）**
+> "Dependency management—the management of networks of libraries, packages, and dependencies that we don't control—is one of the least understood and most challenging problems in software engineering. Dependency management focuses on questions like: how do we update between versions of external dependencies? How do we describe versions, for that matter?"
+
+→ 依賴管理處理的是「我們無法控制的程式碼」，核心問題就是如何描述版本、如何在版本之間更新。
+
+### 持續交付
+> **原文引用（Winters, Manshreck & Wright, Software Engineering at Google, Ch.24, p.507）**
+> "In the limit, with CD, every change goes through the QA pipeline and is automatically deployed into production. This is often not a practical reality for many teams, and so there is often work of culture change toward CD as an intermediate step, during which teams can build their readiness to deploy at any time without actually doing so, building up their confidence to release more frequently in the future."
+
+→ CD 的極致是每個變更都自動部署；在做到之前，先培養「隨時可以部署」的能力，即使實際上還沒這樣做。
+
+---
+
 ## ② AI 開發中如何落地
 
 | 原則 | AI 開發中的做法 |

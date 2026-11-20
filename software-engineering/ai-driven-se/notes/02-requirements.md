@@ -13,7 +13,41 @@
 | 寫出好需求 | 完整、正確、可行、必要、可排序、明確、可驗證 | Wiegers Ch.11〈Writing excellent requirements〉 |
 | 需求排序 | 先做最重要的 | Wiegers Ch.16〈First things first〉 |
 | 需求管理與追溯 | 需求會變；要能追蹤每條需求對應到哪些設計、程式碼、測試 | Sommerville Ch.4 §4.7；Wiegers Ch.27–29 |
-| 用範例描述需求 | 以具體範例（Given / When / Then）作為需求與驗收測試的共同語言 | 《BDD in Action》【章節待查】 |
+| 用範例描述需求 | 以具體範例（Given / When / Then）作為需求與驗收測試的共同語言 | Smart & Molak《BDD in Action》2e Ch.2 §2.3.4 |
+
+---
+
+## ①-1 原文引用
+
+### 需求要可驗證
+> **原文引用（Sommerville, Software Engineering 9e, Ch.4 §4.6, p.110）**
+> "Verifiability To reduce the potential for dispute between customer and contractor, system requirements should always be written so that they are verifiable. This means that you should be able to write a set of tests that can demonstrate that the delivered system meets each specified requirement."
+
+→ 「可驗證」的操作定義就是：寫得出一組測試，證明交付的系統滿足每一條需求。
+
+### 寫出好需求
+> **原文引用（Wiegers & Beatty, Software Requirements 3e, Ch.11, p.204）**
+> "In an ideal world, every individual business, user, functional, and nonfunctional requirement would exhibit the qualities described in the following sections."
+
+→ 這句之後的小節依序是 Complete、Correct、Feasible、Necessary、Prioritized、Unambiguous、Verifiable，正是表格列出的七項特性。
+
+### 需求排序
+> **原文引用（Wiegers & Beatty, Software Requirements 3e, Ch.16, p.314）**
+> "Prioritization is a way to deal with competing demands for limited resources. Establishing the relative priority of each product capability lets you plan construction to provide the highest value at the lowest cost. Because prioritization is relative, you can begin prioritization as soon as you discover your second requirement."
+
+→ 資源有限，所以要排序；排序是相對的，從第二條需求出現就可以開始。
+
+### 需求管理與追溯
+> **原文引用（Sommerville, Software Engineering 9e, Ch.4 §4.7, p.112）**
+> "Requirements management is the process of understanding and controlling changes to system requirements. You need to keep track of individual requirements and maintain links between dependent requirements so that you can assess the impact of requirements changes."
+
+→ 需求管理的核心是追蹤每條需求及其依賴關係，才能評估變更的影響範圍。
+
+### 用範例描述需求
+> **原文引用（Smart & Molak, BDD in Action 2e, Ch.2 §2.3.4, p.21）**
+> "In particular, the users help define a set of concrete examples that illustrate key outcomes of the feature (see figure 2.3). These examples use a common vocabulary and can be readily understood by both end users and members of the development team. They're usually expressed using the Given . . . When . . . Then notation you saw in section 2.2."
+
+→ 範例使用使用者與開發團隊都看得懂的共同詞彙，通常以 Given / When / Then 表達。
 
 ---
 
@@ -57,3 +91,11 @@
 - **P1**：MVP 需求表與驗收條件（[`phase-1-mvp.md#需求與驗收條件`](../project/phase-1-mvp.md#需求與驗收條件)）
 - **P4**：「發音好不好」如何定義成可驗證條件
 - **P5**：「好的例句」如何定義，用評估集處理主觀品質（[`roadmap.md#p5`](../project/roadmap.md#p5ai-製卡與進階分析)）
+
+---
+
+## 出處修正紀錄
+
+| 原本 | 修正後 |
+|---|---|
+| 《BDD in Action》【章節待查】 | Smart & Molak《BDD in Action》2e Ch.2 §2.3.4 |

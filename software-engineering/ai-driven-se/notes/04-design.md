@@ -20,6 +20,64 @@
 
 ---
 
+## ①-1 原文引用
+
+### 架構決策要明確記錄
+> **原文引用（Sommerville, Software Engineering 9e, Ch.6 §6.1, p.151）**
+> "Because it is a creative process, the activities within the process depend on the type of system being developed, the background and experience of the system architect, and the specific requirements for the system. It is therefore useful to think of architectural design as a series of decisions to be made rather than a sequence of activities."
+
+→ Sommerville 把架構設計定義為「一連串決策」而非固定步驟；同頁列出的九個基本問題，最後一個就是 "How should the architecture of the system be documented?"。
+
+### 架構模式
+> **原文引用（Sommerville, Software Engineering 9e, Ch.6 §6.3, p.156）**
+> "You can think of an architectural pattern as a stylized, abstract description of good practice, which has been tried and tested in different systems and environments. So, an architectural pattern should describe a system organization that has been successful in previous systems. It should include information of when it is and is not appropriate to use that pattern, and the pattern's strengths and weaknesses."
+
+→ 架構模式是經過驗證的組織方式，而且本身就要說明「何時適用、何時不適用」，這正是表格中「各有適用情境」的依據。
+
+### 模組化
+> **原文引用（Farley, Modern Software Engineering, Ch.9, p.105）**
+> "Modularity is of vital importance in managing the complexity of the systems that we create. Modern software systems are vast, complicated, and often genuinely complex things. Most modern systems exceed the capacity of any human being to hold all of the details in their heads. To cope with this complexity, we must divide the systems that we build into smaller, more understandable pieces—pieces that we can focus on without worrying too much about what is going on elsewhere in the system."
+
+→ 模組化的理由是人腦裝不下整個系統，所以要切成「可以專注其中、不必擔心其他部分」的小塊。
+
+### 高內聚
+> **原文引用（Farley, Modern Software Engineering, Ch.10, p.121）**
+> "To achieve this, we certainly need techniques that will allow us to "Pull the unrelated things further apart," but we also need to take seriously the need to "put the related things closer together." That is where cohesion comes in."
+
+→ Farley 借用 Kent Beck 的說法：拆開無關的東西是模組化，把相關的東西放在一起則是內聚。
+
+### 關注點分離
+> **原文引用（Farley, Modern Software Engineering, Ch.11, p.135）**
+> "Separation of concerns is the most powerful principle of design in my own work. I apply it everywhere. The simple colloquial description of separation of concerns is "One class, one thing. One method, one thing.""
+
+→ 「一個類別做一件事，一個方法做一件事」就是表格中「每個模組只處理一件事」的原文版本。
+
+### 資訊隱藏與抽象
+> **原文引用（Farley, Modern Software Engineering, Ch.12, p.151）**
+> "What I am talking about here is drawing lines, or seams, in our code so that when we look at those lines from the "outside," we don't care about what is behind them. As a consumer of a function, class, library, or module, I should not need, or care, to know anything about how it works, only how I use it."
+
+→ 在程式碼中畫出邊界，讓使用者只需要知道「怎麼用」，不需要知道「怎麼運作」。
+
+### 管理耦合
+> **原文引用（Farley, Modern Software Engineering, Ch.13, p.171）**
+> "Coupling is not something that we can, or should, aim to always wholly eliminate. ... However, coupling is the thing that impacts most directly on our ability to reliably, repeatably, and sustainably create and deliver software."
+
+→ Farley 強調耦合無法、也不應該完全消除（完全解耦的元件無法彼此溝通），重點是「管理」它，因為它最直接影響交付能力。
+
+### 契約式設計（DbC）
+> **原文引用（Meyer, Object-Oriented Software Construction 2e, Ch.11, p.331）**
+> "The key concept will be Design by Contract: viewing the relationship between a class and its clients as a formal agreement, expressing each party's rights and obligations. Only through such a precise definition of every module's claims and responsibilities can we hope to attain a significant degree of trust in large software systems."
+
+→ Meyer 把類別與呼叫者的關係看成正式合約，雙方各有權利與義務；只有精確定義每個模組的責任，才能信任大型系統。
+
+### 設計模式
+> **原文引用（Sommerville, Software Engineering 9e, Ch.7 §7.2, p.189–190）**
+> "The pattern is a description of the problem and the essence of its solution, so that the solution may be reused in different settings. The pattern is not a detailed specification. Rather, you can think of it as a description of accumulated wisdom and experience, a well-tried solution to a common problem."
+
+→ 設計模式描述的是「問題＋解法的本質」，不是具體規格，所以能在不同情境重用。
+
+---
+
 ## ② AI 開發中如何落地
 
 **「程式碼庫就是最大的 prompt。」**（Lauren Tan，第三方摘要）AI 會模仿它看到的結構。好的設計不只是為了人，更是為了讓 AI 每次只需要看一小部分程式碼就能正確修改。

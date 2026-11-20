@@ -16,6 +16,34 @@
 
 ---
 
+## ①-1 原文引用
+
+### 主動式風險策略優於被動
+> **原文引用（Pressman & Maxim, Software Engineering 9e, Ch.26 §26.1, p.533–534）**
+> "A considerably more intelligent strategy for risk management is to be proactive. A proactive risk strategy begins long before technical work is initiated. Potential risks are identified, their probability and impact are assessed, and they are ranked by importance. Then, the software team establishes a plan for managing risk."
+
+→ 被動式是出事才「救火」；主動式在技術工作開始前就辨識風險、評估機率與影響、排序，並訂出管理計畫。
+
+### 專案排程
+> **原文引用（Sommerville, Software Engineering 9e, Ch.23 §23.3, p.626）**
+> "Project scheduling is the process of deciding how the work in a project will be organized as separate tasks, and when and how these tasks will be executed. You estimate the calendar time needed to complete each task, the effort required, and who will work on the tasks that have been identified."
+
+→ 排程就是把工作拆成任務，並估計每個任務的時間、工作量與負責人。
+
+### 敏捷規劃
+> **原文引用（Sommerville, Software Engineering 9e, Ch.23 §23.4, p.631）**
+> "Agile methods of software development are iterative approaches where the software is developed and delivered to customers in increments. Unlike plan-driven approaches, the functionality of these increments is not planned in advance but is decided during the development."
+
+→ 敏捷規劃以增量為單位，每個增量要做什麼不是事先排定，而是在開發過程中依進度與客戶優先順序決定。
+
+### 估算技術
+> **原文引用（Sommerville, Software Engineering 9e, Ch.23 §23.5, p.634）**
+> "In the startup phase of a project, these estimates have a wide margin of error. Based on data collected from a large number of projects, Boehm, et al. (1995) discovered that startup estimates vary significantly. If the initial estimate of effort required is x months of effort, they found that the range may be from 0.25x to 4x of the actual effort as measured when the system was delivered. During development planning, estimates become more and more accurate as the project progresses (Figure 23.9)."
+
+→ 專案初期的估算誤差可達 0.25 倍到 4 倍，隨專案推進才逐漸準確，所以估算必須持續修正。
+
+---
+
 ## ② AI 開發中如何落地
 
 **單人加 AI 版本**：沒有團隊管理問題（Sommerville Ch.22 §22.2–22.3 大多不適用），重點變成：

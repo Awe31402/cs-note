@@ -16,6 +16,34 @@
 
 ---
 
+## ①-1 原文引用
+
+### 流程模型各有適用情境
+> **原文引用（Sommerville, Software Engineering 9e, Ch.2 §2.1, p.30）**
+> "These models are not mutually exclusive and are often used together, especially for large systems development. ... Parts of the system that are well understood can be specified and developed using a waterfall-based process. Parts of the system which are difficult to specify in advance, such as the user interface, should always be developed using an incremental approach."
+
+→ 瀑布、增量、重用三種模型不是互斥的；依「需求能否事先講清楚」決定各部分用哪一種。
+
+### 為變更做準備
+> **原文引用（Sommerville, Software Engineering 9e, Ch.2 §2.3, p.43）**
+> "Change is inevitable in all large software projects. The system requirements change as the business procuring the system responds to external pressures and management priorities change. ... Therefore whatever software process model is used, it is essential that it can accommodate changes to the software being developed."
+
+→ 變更是必然的，所以任何流程都必須能容納變更；同節接著提出原型（避免變更）與增量交付（容忍變更）兩種做法。
+
+### 計畫驅動與敏捷是光譜，不是二選一
+> **原文引用（Sommerville, Software Engineering 9e, Ch.3 §3.2, p.63）**
+> "In fact, most software projects include practices from plan-driven and agile approaches. To decide on the balance between a plan-based and an agile approach, you have to answer a range of technical, human, and organizational questions:"
+
+→ 多數專案兩種做法都有，問題是「比例」；Sommerville 隨後列出規格需求、交付方式、系統規模、系統類型、壽命等問題來決定平衡點。
+
+### 為學習而最佳化
+> **原文引用（Farley, Modern Software Engineering, Ch.4, p.43）**
+> "Fundamentally, iteration is a procedure that drives learning. Iteration allows us to learn, react, and adapt to what we have learned. Without iteration, and the closely related activity of collecting feedback, there is no opportunity to learn on an ongoing basis."
+
+→ Part II 以迭代開篇：迭代與回饋是持續學習的前提，沒有它們就無法從錯誤中修正。
+
+---
+
 ## ② AI 開發中如何落地
 
 **AI agent 的工作迴圈本身就是一個微型迭代流程。**
